@@ -1,0 +1,5 @@
+function(policy _policy _value)
+  if (POLICY _policy)
+    cmake_policy(SET _policy _value)
+  endif()
+endfunction()

@@ -1,0 +1,24 @@
+Language: Cpp
+BasedOnStyle:  Google
+IndentCaseLabels: false
+ColumnLimit: 160 # Same as CPPLINT
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: TopLevelDefinitions
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterColon
+ReflowComments: false
+SpaceAfterTemplateKeyword: false
+PenaltyReturnTypeOnItsOwnLine: 50
+Standard: Cpp03
+IncludeBlocks: Regroup
+IncludeCategories:
+# 1: local headers
+# 2: global headers
+  - Regex:           '^<.*'
+    Priority:        2
+  - Regex:           '.*'
+    Priority:        1
