@@ -66,6 +66,8 @@ cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "BUILD_TESTING" OFF # Stay coherent with CTest variables
 )
 
+set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_")
+
 ## External dependencies
 ## Dynawo and sub-dependencies
 check_env_var(DYNAWO_HOME) # Correspond to deploy installation

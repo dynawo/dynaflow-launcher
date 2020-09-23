@@ -20,7 +20,11 @@
 
 const std::vector<std::string> Options::allowedLogLevels_{"ERROR", "WARN", "INFO", "DEBUG"};
 
+#if _DEBUG_
+const char* Options::defaultLogLevel_ = "DEBUG";
+#else
 const char* Options::defaultLogLevel_ = "INFO";
+#endif
 
 namespace po = boost::program_options;
 
