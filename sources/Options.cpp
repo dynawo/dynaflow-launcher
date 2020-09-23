@@ -16,10 +16,11 @@
 
 #include <algorithm>
 #include <boost/filesystem.hpp>
+#include <sstream>
 
 const std::vector<std::string> Options::allowedLogLevels_{"ERROR", "WARN", "INFO", "DEBUG"};
 
-const std::string Options::defaultLogLevel_ = "INFO";
+const char* Options::defaultLogLevel_ = "INFO";
 
 namespace po = boost::program_options;
 
@@ -31,7 +32,7 @@ namespace po = boost::program_options;
 struct ParsedLogLevel {
   explicit ParsedLogLevel(const std::string& lvl) : logLevelDefinition{lvl} {}
 
-  std::string logLevelDefinition;
+  std::string logLevelDefinition;  ///< Log level definition
 };
 
 /**
@@ -57,42 +58,11 @@ validate(boost::any& v, const std::vector<std::string>& values, ParsedLogLevel*,
   }
 }
 
-std::string
-Options::basename(const std::string& filepath) {
-  boost::filesystem::path path(filepath);
-  return path.filename().generic_string();
-}
-
-std::string
-Options::make_usage_string(const std::string& program_name, const po::options_description& desc, const po::positional_options_description& p) {
-  std::vector<std::string> parts;
-  parts.push_back("Usage:\n");
-  parts.push_back(program_name);
-  for (size_t i = 0; i < p.max_total_count(); ++i) {
-    parts.push_back("<" + p.name_for_position(i) + ">");
-  }
-
-  if (desc.options().size() > 0) {
-    parts.push_back("\n[options]");
-  }
-  std::ostringstream oss;
-  std::copy(parts.begin(), parts.end(), std::ostream_iterator<std::string>(oss, " "));
-  oss << std::endl << desc;
-  return oss.str();
-}
-
-Options::Options() : allOptions_{}, desc_{}, positional_{}, config_{"", "", defaultLogLevel_} {
-  po::options_description hidden;
-
+Options::Options() : desc_{}, config_{"", "", defaultLogLevel_} {
   desc_.add_options()("help,h", "Display help message")("log-level", po::value<ParsedLogLevel>(),
-                                                        "Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is info");
-  hidden.add_options()("iidmFilepath", po::value<std::string>(&config_.iidmPath)->required(), "IIDM file path to process");
-
-  allOptions_.add(desc_);
-  allOptions_.add(hidden);
-
-  // Order of the program's arguments is the order of declaration
-  positional_.add("iidmFilepath", 1);
+                                                        "Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is info")(
+      "iidm", po::value<std::string>(&config_.iidmPath)->required(), "IIDM file path to process")(
+      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use");
 }
 
 bool
@@ -101,7 +71,6 @@ Options::parse(int argc, char* argv[]) {
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(allOptions_).positional(positional_).run(), vm);
 
-    config_.programName = argv[0];
     if (vm.count("help") > 0) {
       return false;
     }
@@ -121,11 +90,13 @@ Options::parse(int argc, char* argv[]) {
 
 std::string
 Options::desc() const {
-  return make_usage_string(basename(config_.programName), desc_, positional_);
+  std::stringstream ss;
+  ss << desc_;
+  return ss.str();
 }
 
 std::ostream&
 operator<<(std::ostream& os, const Options& opt) {
-  os << opt.desc();
+  os << opt.desc_;
   return os;
 }

@@ -33,8 +33,8 @@ class Options {
    * representation after parsing
    */
   struct RuntimeConfiguration {
-    std::string programName;     ///< Name of the programm launched
     std::string iidmPath;        ///< IIDM filepath ot process
+    std::string configPath;      ///< Launcher configuration filepath
     std::string dynawoLogLevel;  ///< chosen log level
   };
 
@@ -98,7 +98,7 @@ class Options {
                                        const boost::program_options::positional_options_description& p);
 
  private:
-  static const std::string defaultLogLevel_;  ///< Default log level
+  static const char* defaultLogLevel_;  ///< Default log level
 
  private:
   friend std::ostream& operator<<(std::ostream& os, const Options& opt);
@@ -112,5 +112,10 @@ class Options {
 
 /**
  * @brief Flow operator to stream options description
+ *
+ * @param os the stream to use
+ * @param opt the options to stream
+ *
+ * @returns os
  */
 std::ostream& operator<<(std::ostream& os, const Options& opt);

@@ -16,7 +16,7 @@ main(int argc, char* argv[]) {
   Options options;
 
   if (!options.parse(argc, argv)) {
-    std::cerr << options.desc() << std::endl;
+    std::cerr << options << std::endl;
     return 0;
   }
 
