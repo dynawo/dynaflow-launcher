@@ -1,7 +1,0 @@
-{
-  // dynawo compile
-  "cmake.configureSettings": {
-    "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/Install",
-  },
-  "cmake.configureOnOpen": true
-}
