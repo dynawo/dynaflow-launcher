@@ -41,6 +41,7 @@ include(Warnings)
 include(CopyDllsForDebug)
 include(Coverage)
 include(Policy)
+include(CheckVar)
 
 ###############
 ## POLICIES ###
@@ -64,6 +65,19 @@ cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "Enable ${PROJECT_NAME} project tests targets" ON # By default we want tests if CTest is enabled
     "BUILD_TESTING" OFF # Stay coherent with CTest variables
 )
+
+## External dependencies
+## Dynawo and sub-dependencies
+check_env_var(DYNAWO_HOME) # Correspond to deploy installation
+set(CMAKE_PREFIX_PATH APPEND "${DYNAWO_HOME}/share")
+find_package(Dynawo 1.3.0 REQUIRED)
+#libXML
+set(CMAKE_PREFIX_PATH APPEND "${DYNAWO_HOME}/share/cmake")
+find_package(libXML 0.2.4 REQUIRED)
+# Boost
+find_package(Boost 1.64 REQUIRED)
+
+##
 
 # It is always easier to navigate in an IDE when projects are organized in folders.
 # set_property(GLOBAL PROPERTY USE_FOLDERS ON)

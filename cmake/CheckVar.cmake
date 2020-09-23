@@ -1,0 +1,5 @@
+function(check_env_var _var)
+  if (NOT DEFINED DYNAWO_HOME AND NOT DEFINED ENV{_var})
+    message(FATAL_ERROR "Variable ${_var} is not defined")
+  endif()
+endfunction()
