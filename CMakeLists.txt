@@ -75,6 +75,15 @@ find_package(Dynawo 1.3.0 REQUIRED)
 set(CMAKE_PREFIX_PATH APPEND "${DYNAWO_HOME}/share/cmake")
 find_package(libXML 0.2.4 REQUIRED)
 # Boost
+# Use only BOOST_ROOT by default to avoid conflicts between dynawo boost and default install
+option(DYNAFLOW_LAUNCHER_USE_BOOST_DEFAULT "Use default system boost installation" OFF)
+if(DYNAFLOW_LAUNCHER_USE_BOOST_DEFAULT)
+  set(Boost_NO_SYSTEM_PATHS FALSE)
+else()
+  set(Boost_NO_SYSTEM_PATHS TRUE)
+endif()
+# Tell BOOST to disable auto linking
+add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem)
 
 ##
