@@ -9,10 +9,20 @@
 
 # Always list the source files explicitly, including headers so that they are listed in the IDE
 # If you need to use files based on a variable value, use target_sources
-add_executable(DynaflowLauncher main.cpp)
+set(SOURCES
+  main.cpp
+  Options.cpp
+)
+
+set(HEADERS
+  Options.h
+)
+add_executable(DynaflowLauncher ${SOURCES} ${HEADERS})
 
 target_link_libraries(DynaflowLauncher
   PRIVATE
+  Boost::program_options
+  Boost::filesystem
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
 )

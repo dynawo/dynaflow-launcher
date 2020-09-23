@@ -75,7 +75,7 @@ find_package(Dynawo 1.3.0 REQUIRED)
 set(CMAKE_PREFIX_PATH APPEND "${DYNAWO_HOME}/share/cmake")
 find_package(libXML 0.2.4 REQUIRED)
 # Boost
-find_package(Boost 1.64 REQUIRED)
+find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem)
 
 ##
 
