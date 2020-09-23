@@ -1,9 +1,13 @@
+# Copyright (c) 2020, RTE (http://www.rte-france.com)
+# See AUTHORS.txt
+# All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, you can obtain one at http://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
+#
+
 cmake_minimum_required(VERSION 3.6)
-# Note : must be included by master CMakeLists.txt
-# Tests in static libraries might not get registered, see https://github.com/onqtam/doctest/blob/master/doc/markdown/faq.md#why-are-my-tests-in-a-static-library-not-getting-registered
-# For this reason, and because it is interesting to have individual
-# test executables for each library, it is suggested not to put tests directly in the libraries (even though doctest advocates this usage)
-# Creating multiple executables is of course not mandatory, and one could use the same executable with various command lines to filter what tests to run.
 
 add_test(
     # Use some per-module/project prefix so that it is easier to run only tests for this module
