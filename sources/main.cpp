@@ -20,7 +20,6 @@ main(int argc, char* argv[]) {
     common::Options options;
 
     if (!options.parse(argc, argv)) {
-      std::cerr << options << std::endl;
       LOG(error) << options << LOG_ENDL;
       return 0;
     }
@@ -29,7 +28,7 @@ main(int argc, char* argv[]) {
     std::stringstream ss;
     ss << "Hello World: ";
     for (int i = 0; i < argc; i++) {
-      ss << argv[i];
+      ss << argv[i] << " ";
     }
     LOG(info) << ss.str() << LOG_ENDL;
 

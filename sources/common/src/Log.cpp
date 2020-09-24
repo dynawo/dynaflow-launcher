@@ -39,6 +39,8 @@ Log::init(const common::Options& options) {
   appender.setShowTimeStamp(true);
   appender.setTimeStampFormat("%Y-%m-%d %H:%M:%S");
 
+  appenders.push_back(appender);
+
   Trace::addAppenders(appenders);
 }
 
