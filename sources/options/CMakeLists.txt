@@ -15,7 +15,7 @@ PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_directories(options
+target_link_libraries(options
   PUBLIC
     Boost::program_options
     Boost::filesystem

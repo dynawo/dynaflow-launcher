@@ -22,8 +22,6 @@ add_executable(DynaflowLauncher ${SOURCES} ${HEADERS})
 target_link_libraries(DynaflowLauncher
   PRIVATE
   DynaflowLauncher::options
-  Boost::program_options
-  Boost::filesystem
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
 )
