@@ -8,6 +8,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "Log.h"
+#include "Options.h"
 
 #include <DYNError.h>
 #include <sstream>
@@ -16,14 +17,14 @@ int
 main(int argc, char* argv[]) {
   try {
     DYN::Trace::init();
-    options::Options options;
+    common::Options options;
 
     if (!options.parse(argc, argv)) {
       std::cerr << options << std::endl;
       LOG(error) << options << LOG_ENDL;
       return 0;
     }
-    Log::init(options);
+    common::Log::init(options);
 
     std::stringstream ss;
     ss << "Hello World: ";
@@ -34,11 +35,14 @@ main(int argc, char* argv[]) {
 
     return 0;
   } catch (DYN::MessageError& e) {
-    std::cerr << "Dynawo error: " << e.what() << std::endl;
-    LOG(error) << "Dynawo error: " << e.what() << LOG_ENDL;
+    std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     return -1;
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
     LOG(error) << e.what() << LOG_ENDL;
+  } catch (...) {
+    std::cerr << "Unknown error" << std::endl;
+    LOG(error) << "Unknown error" << LOG_ENDL;
   }
 }

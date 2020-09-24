@@ -9,10 +9,12 @@
 
 #include "Log.h"
 
+namespace common {
+
 const char* Log::dynaflowLauncherLogTag = "DYNAFLOW_LAUNCHER";
 
 void
-Log::init(const options::Options& options) {
+Log::init(const common::Options& options) {
   using DYN::Trace;
   auto& config = options.config();
 
@@ -39,3 +41,5 @@ Log::init(const options::Options& options) {
 
   Trace::addAppenders(appenders);
 }
+
+}  // namespace common

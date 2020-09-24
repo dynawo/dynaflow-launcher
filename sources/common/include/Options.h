@@ -20,8 +20,8 @@
  * @brief Options header file
  */
 
-/// @brief Namespace for options library
-namespace options {
+/// @brief Namespace for common components to dynawo-launcher
+namespace common {
 
 /**
  * @brief Manager for input programm options
@@ -65,6 +65,8 @@ class Options {
   /**
    * @brief Parse arguments given by main programm
    *
+   * In case help is requested or an error in parsing is detected, this will returns false, meaning that help message should be displayed
+   *
    * @param argc number of arguments
    * @param argv arguments
    *
@@ -97,7 +99,7 @@ class Options {
   RuntimeConfiguration config_;                       ///< current runtime configuration
 };
 
-}  // namespace options
+}  // namespace common
 
 /**
  * @brief Flow operator to stream options description
@@ -107,4 +109,4 @@ class Options {
  *
  * @returns os
  */
-std::ostream& operator<<(std::ostream& os, const options::Options& opt);
+std::ostream& operator<<(std::ostream& os, const common::Options& opt);
