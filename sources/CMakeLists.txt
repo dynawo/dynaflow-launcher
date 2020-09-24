@@ -13,9 +13,11 @@ add_subdirectory(options)
 # If you need to use files based on a variable value, use target_sources
 set(SOURCES
   main.cpp
+  Log.cpp
 )
 
 set(HEADERS
+  Log.h
 )
 add_executable(DynaflowLauncher ${SOURCES} ${HEADERS})
 
@@ -24,4 +26,5 @@ target_link_libraries(DynaflowLauncher
   DynaflowLauncher::options
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
+  Dynawo::dynawo_Common
 )
