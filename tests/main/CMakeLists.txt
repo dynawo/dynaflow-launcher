@@ -8,6 +8,7 @@
 #
 
 DEFINE_TEST(TestOptions MAIN)
+target_link_libraries(TestOptions DynaflowLauncher::options)
 
 add_test(
   # Use some per-module/project prefix so that it is easier to run only tests for this module

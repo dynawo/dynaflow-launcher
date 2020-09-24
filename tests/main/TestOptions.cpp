@@ -7,6 +7,64 @@
 // file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
 
-#include <Tests.h>
+#include "Options.h"
+#include "Tests.h"
 
-TEST(Options, unittest) {}
+TEST(Options, help) {
+  options::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--help"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_FALSE(options.parse(2, argv));
+}
+
+TEST(Options, missingIIDM) {
+  options::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--config=test.json"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_FALSE(options.parse(2, argv));
+}
+
+TEST(Options, missingCONFIG) {
+  options::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--iidm=test.iidm"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_FALSE(options.parse(2, argv));
+}
+
+TEST(Options, nominal) {
+  options::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--iidm=test.iidm "};
+  char argv2[] = {"--config=test.json"};
+  char* argv[] = {argv0, argv1, argv2};
+  ASSERT_TRUE(options.parse(3, argv));
+}
+
+TEST(Options, nominalLogLevel) {
+  options::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--iidm=test.iidm "};
+  char argv2[] = {"--config=test.json "};
+  char argv3[] = {"--log-level=DEBUG"};
+  char* argv[] = {argv0, argv1, argv2, argv3};
+  ASSERT_TRUE(options.parse(4, argv));
+}
+
+TEST(Options, wrongLogLevel) {
+  options::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--iidm=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--log-level=NO_LEVEL"};  // this level is not defined
+  char* argv[] = {argv0, argv1, argv2, argv3};
+  ASSERT_FALSE(options.parse(4, argv));
+}
