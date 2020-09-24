@@ -20,6 +20,7 @@
 #include <boost/filesystem.hpp>
 #include <sstream>
 
+namespace dfl {
 namespace common {
 
 const std::vector<std::string> Options::allowedLogLevels_{"ERROR", "WARN", "INFO", "DEBUG"};
@@ -112,9 +113,10 @@ Options::desc() const {
 }
 
 }  // namespace common
+}  // namespace dfl
 
 std::ostream&
-operator<<(std::ostream& os, const common::Options& opt) {
+operator<<(std::ostream& os, const dfl::common::Options& opt) {
   os << opt.desc();
   return os;
 }

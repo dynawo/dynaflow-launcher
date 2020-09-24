@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-add_subdirectory(common)
+add_subdirectory(Common)
 
 # Always list the source files explicitly, including headers so that they are listed in the IDE
 # If you need to use files based on a variable value, use target_sources
@@ -20,6 +20,7 @@ add_executable(DynaflowLauncher ${SOURCES})
 target_link_libraries(DynaflowLauncher
   PRIVATE
   DynaflowLauncher::common
+
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
 )

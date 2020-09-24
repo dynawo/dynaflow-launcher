@@ -9,6 +9,7 @@
 
 #include "Log.h"
 
+namespace dfl {
 namespace common {
 
 const char* Log::dynaflowLauncherLogTag = "DYNAFLOW_LAUNCHER";
@@ -45,3 +46,4 @@ Log::init(const common::Options& options) {
 }
 
 }  // namespace common
+}  // namespace dfl

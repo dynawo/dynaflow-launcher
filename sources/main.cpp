@@ -17,13 +17,13 @@ int
 main(int argc, char* argv[]) {
   try {
     DYN::Trace::init();
-    common::Options options;
+    dfl::common::Options options;
 
     if (!options.parse(argc, argv)) {
       LOG(error) << options << LOG_ENDL;
       return 0;
     }
-    common::Log::init(options);
+    dfl::common::Log::init(options);
 
     std::stringstream ss;
     ss << "Hello World: ";

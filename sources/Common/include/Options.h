@@ -20,6 +20,8 @@
  * @brief Options header file
  */
 
+/// @brief Namespace for dynaflow launcher libraries
+namespace dfl {
 /// @brief Namespace for common components to dynawo-launcher
 namespace common {
 
@@ -100,6 +102,7 @@ class Options {
 };
 
 }  // namespace common
+}  // namespace dfl
 
 /**
  * @brief Flow operator to stream options description
@@ -109,4 +112,4 @@ class Options {
  *
  * @returns os
  */
-std::ostream& operator<<(std::ostream& os, const common::Options& opt);
+std::ostream& operator<<(std::ostream& os, const dfl::common::Options& opt);

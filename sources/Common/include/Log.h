@@ -13,6 +13,7 @@
 
 #include <DYNTrace.h>
 
+namespace dfl {
 namespace common {
 
 /**
@@ -34,6 +35,7 @@ class Log {
 };
 
 }  // namespace common
+}  // namespace dfl
 
 /**
  * @brief Perform a log
@@ -42,7 +44,7 @@ class Log {
  *
  * @param level the level of the log: must be "error", "warn", "info" or "debug"
  */
-#define LOG(level) DYN::Trace::level(common::Log::dynaflowLauncherLogTag)
+#define LOG(level) DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag)
 
 /**
  * @brief Alias of DYN::Trace::endline

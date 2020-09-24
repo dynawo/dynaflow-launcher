@@ -11,7 +11,7 @@
 #include "Tests.h"
 
 TEST(Options, help) {
-  common::Options options;
+  dfl::common::Options options;
 
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--help"};
@@ -20,7 +20,7 @@ TEST(Options, help) {
 }
 
 TEST(Options, missingIIDM) {
-  common::Options options;
+  dfl::common::Options options;
 
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--config=test.json"};
@@ -29,7 +29,7 @@ TEST(Options, missingIIDM) {
 }
 
 TEST(Options, missingCONFIG) {
-  common::Options options;
+  dfl::common::Options options;
 
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--iidm=test.iidm"};
@@ -38,7 +38,7 @@ TEST(Options, missingCONFIG) {
 }
 
 TEST(Options, nominal) {
-  common::Options options;
+  dfl::common::Options options;
 
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--iidm=test.iidm "};
@@ -48,7 +48,7 @@ TEST(Options, nominal) {
 }
 
 TEST(Options, nominalLogLevel) {
-  common::Options options;
+  dfl::common::Options options;
 
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--iidm=test.iidm "};
@@ -59,7 +59,7 @@ TEST(Options, nominalLogLevel) {
 }
 
 TEST(Options, wrongLogLevel) {
-  common::Options options;
+  dfl::common::Options options;
 
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--iidm=test.iidm"};
