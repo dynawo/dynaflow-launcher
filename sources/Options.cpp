@@ -14,6 +14,8 @@
 
 #include "Options.h"
 
+#include "version.h"
+
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <sstream>
@@ -62,7 +64,13 @@ validate(boost::any& v, const std::vector<std::string>& values, ParsedLogLevel*,
   }
 }
 
-Options::Options() : desc_{}, config_{"", "", defaultLogLevel_} {
+std::string
+Options::basename(const std::string& filepath) {
+  boost::filesystem::path path(filepath);
+  return path.filename().generic_string();
+}
+
+Options::Options() : desc_{}, config_{"", "", "", defaultLogLevel_} {
   desc_.add_options()("help,h", "Display help message")("log-level", po::value<ParsedLogLevel>(),
                                                         "Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is info")(
       "iidm", po::value<std::string>(&config_.iidmPath)->required(), "IIDM file path to process")(
@@ -75,6 +83,7 @@ Options::parse(int argc, char* argv[]) {
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc_).run(), vm);
 
+    config_.programName = basename(argv[0]);
     if (vm.count("help") > 0) {
       return false;
     }
@@ -95,12 +104,13 @@ Options::parse(int argc, char* argv[]) {
 std::string
 Options::desc() const {
   std::stringstream ss;
+  ss << config_.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << std::endl;
   ss << desc_;
   return ss.str();
 }
 
 std::ostream&
 operator<<(std::ostream& os, const Options& opt) {
-  os << opt.desc_;
+  os << opt.desc();
   return os;
 }

@@ -88,6 +88,8 @@ endif()
 add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem)
 
+install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
+
 ##
 
 # It is always easier to navigate in an IDE when projects are organized in folders.

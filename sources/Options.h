@@ -33,6 +33,7 @@ class Options {
    * representation after parsing
    */
   struct RuntimeConfiguration {
+    std::string programName;     ///< Name of the programm
     std::string iidmPath;        ///< IIDM filepath ot process
     std::string configPath;      ///< Launcher configuration filepath
     std::string dynawoLogLevel;  ///< chosen log level
@@ -76,10 +77,17 @@ class Options {
   std::string desc() const;
 
  private:
-  static const char* defaultLogLevel_;  ///< Default log level
+  /**
+   * @brief Extracts the basename of a file path
+   *
+   * @param filepath the filepath to process
+   *
+   * @returns the basename of the file
+   */
+  static std::string basename(const std::string& filepath);
 
  private:
-  friend std::ostream& operator<<(std::ostream& os, const Options& opt);
+  static const char* defaultLogLevel_;  ///< Default log level
 
  private:
   boost::program_options::options_description desc_;  ///< options description
