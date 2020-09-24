@@ -7,25 +7,21 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-configure_file(${CMAKE_SOURCE_DIR}/cmake/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/version.h)
+add_subdirectory(options)
 
 # Always list the source files explicitly, including headers so that they are listed in the IDE
 # If you need to use files based on a variable value, use target_sources
 set(SOURCES
   main.cpp
-  Options.cpp
 )
 
 set(HEADERS
-  Options.h
-
-  # generated
-  version.h
 )
 add_executable(DynaflowLauncher ${SOURCES} ${HEADERS})
 
 target_link_libraries(DynaflowLauncher
   PRIVATE
+  DynaflowLauncher::options
   Boost::program_options
   Boost::filesystem
   Dynawo::dynawo_API_PAR
