@@ -20,6 +20,8 @@
 #include <boost/filesystem.hpp>
 #include <sstream>
 
+namespace options {
+
 const std::vector<std::string> Options::allowedLogLevels_{"ERROR", "WARN", "INFO", "DEBUG"};
 
 #if _DEBUG_
@@ -109,8 +111,10 @@ Options::desc() const {
   return ss.str();
 }
 
+}  // namespace options
+
 std::ostream&
-operator<<(std::ostream& os, const Options& opt) {
+operator<<(std::ostream& os, const options::Options& opt) {
   os << opt.desc();
   return os;
 }

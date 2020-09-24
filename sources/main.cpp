@@ -13,7 +13,7 @@
 
 int
 main(int argc, char* argv[]) {
-  Options options;
+  options::Options options;
 
   if (!options.parse(argc, argv)) {
     std::cerr << options << std::endl;

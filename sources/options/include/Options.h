@@ -20,6 +20,9 @@
  * @brief Options header file
  */
 
+/// @brief Namespace for options library
+namespace options {
+
 /**
  * @brief Manager for input programm options
  *
@@ -94,6 +97,8 @@ class Options {
   RuntimeConfiguration config_;                       ///< current runtime configuration
 };
 
+}  // namespace options
+
 /**
  * @brief Flow operator to stream options description
  *
@@ -102,4 +107,4 @@ class Options {
  *
  * @returns os
  */
-std::ostream& operator<<(std::ostream& os, const Options& opt);
+std::ostream& operator<<(std::ostream& os, const options::Options& opt);
