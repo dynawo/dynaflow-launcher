@@ -25,4 +25,5 @@ main(int argc, char* argv[]) {
     std::cout << argv[i];
   }
   std::cout << std::endl;
+  return 0;
 }

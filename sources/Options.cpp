@@ -73,7 +73,7 @@ bool
 Options::parse(int argc, char* argv[]) {
   try {
     po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).options(allOptions_).positional(positional_).run(), vm);
+    po::store(po::command_line_parser(argc, argv).options(desc_).run(), vm);
 
     if (vm.count("help") > 0) {
       return false;

@@ -76,38 +76,14 @@ class Options {
   std::string desc() const;
 
  private:
-  /**
-   * @brief Extracts the basename of a file path
-   *
-   * @param filepath the filepath to process
-   *
-   * @returns the basename of the file
-   */
-  static std::string basename(const std::string& filepath);
-
-  /**
-   * @brief Format description from arguments
-   *
-   * @param program_name the name of the current running programm
-   * @param desc the internal description of the options ot use
-   * @param p the positionnal description of the options to use
-   *
-   * @returns the string representation of the options described by arguments
-   */
-  static std::string make_usage_string(const std::string& program_name, const boost::program_options::options_description& desc,
-                                       const boost::program_options::positional_options_description& p);
-
- private:
   static const char* defaultLogLevel_;  ///< Default log level
 
  private:
   friend std::ostream& operator<<(std::ostream& os, const Options& opt);
 
  private:
-  boost::program_options::options_description allOptions_;             ///< all parsed options
-  boost::program_options::options_description desc_;                   ///< options relative to description
-  boost::program_options::positional_options_description positional_;  ///< positional options
-  RuntimeConfiguration config_;                                        ///< current runtime configuration
+  boost::program_options::options_description desc_;  ///< options description
+  RuntimeConfiguration config_;                       ///< current runtime configuration
 };
 
 /**
