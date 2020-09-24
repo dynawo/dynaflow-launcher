@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2020, RTE (http://www.rte-france.com)
+# Copyright (c) 2020, RTE (http://www.rte-france.com)
 # See AUTHORS.txt
 # All rights reserved.
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -8,7 +8,10 @@
 #
 
 function(policy _policy _value)
-  if (POLICY _policy)
-    cmake_policy(SET _policy _value)
+  if (POLICY ${_policy})
+    cmake_policy(SET ${_policy} ${_value})
+    message(STATUS "Policy ${_policy} is set to ${_value}")
+  else()
+    message(WARNING "Policy ${_policy} cannot be set")
   endif()
 endfunction()
