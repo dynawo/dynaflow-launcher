@@ -9,8 +9,43 @@
 
 cmake_minimum_required(VERSION 3.6)
 
-add_test(
-    # Use some per-module/project prefix so that it is easier to run only tests for this module
-    NAME MAIN.test
-    COMMAND DynaflowLauncher ${TEST_RUNNER_PARAMS}
-)
+
+## Googletest dependency
+find_package(GTest REQUIRED)
+if(NOT TARGET GTest::gtest AND TARGET GTest::GTest)
+  add_library(GTest::gtest UNKNOWN IMPORTED)
+  if(EXISTS "${GTEST_LIBRARY}")
+    set_target_properties(GTest::gtest PROPERTIES
+            IMPORTED_LOCATION "${GTEST_LIBRARY}")
+  endif()
+endif()
+if(NOT TARGET GTest::gtest_main AND TARGET GTest::Main)
+  add_library(GTest::gtest_main UNKNOWN IMPORTED)
+  if(EXISTS "${GTEST_MAIN_LIBRARY}")
+    set_target_properties(GTest::gtest_main PROPERTIES
+            IMPORTED_LOCATION "${GTEST_MAIN_LIBRARY}")
+  endif()
+endif()
+find_package(GMock REQUIRED)
+add_library(DynaflowLauncherTest INTERFACE)
+  target_link_libraries(DynaflowLauncherTest INTERFACE
+    GTest::gmock_main
+    GTest::gtest_main)
+
+# In order to incude tests.h in all tests
+set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+# macro to define tests
+macro(DEFINE_TEST _name _module_name)
+  add_executable(${_name} ${_name}.cpp)
+  target_link_libraries(${_name}
+    DynaflowLauncherTest)
+  target_include_directories(${_name} PRIVATE ${TEST_DIR})
+  add_test(
+    NAME ${_module_name}.${_name}
+    COMMAND ${_name}
+  )
+endmacro(DEFINE_TEST)
+
+
+add_subdirectory(main)
