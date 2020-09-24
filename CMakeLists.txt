@@ -42,6 +42,7 @@ include(CopyDllsForDebug)
 include(Coverage)
 include(Policy)
 include(CheckVar)
+include(BuildType)
 
 ###############
 ## POLICIES ###
@@ -66,7 +67,8 @@ cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "BUILD_TESTING" OFF # Stay coherent with CTest variables
 )
 
-set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_")
+set_optimization()
+
 
 ## External dependencies
 ## Dynawo and sub-dependencies
