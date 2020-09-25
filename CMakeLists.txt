@@ -67,17 +67,49 @@ cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "BUILD_TESTING" OFF # Stay coherent with CTest variables
 )
 
+set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_=1")
 set_optimization()
 
 
 ## External dependencies
 ## Dynawo and sub-dependencies
 check_env_var(DYNAWO_HOME) # Correspond to deploy installation
-set(CMAKE_PREFIX_PATH APPEND "${DYNAWO_HOME}/share")
+list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share")
 find_package(Dynawo 1.3.0 REQUIRED)
 #libXML
-set(CMAKE_PREFIX_PATH APPEND "${DYNAWO_HOME}/share/cmake")
+list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
 find_package(libXML 0.2.4 REQUIRED)
+# XercesC (rewuired for libxml)
+list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
+find_package(XercesC 3.2.2 REQUIRED)
+#libIIDM
+find_package(libIIDM 0.2.8 REQUIRED
+    COMPONENTS
+    core
+    xml
+    ext-activeseason
+    ext-activeseason-xml
+    ext-busbarsectionposition
+    ext-busbarsectionposition-xml
+    ext-connectableposition
+    ext-connectableposition-xml
+    ext-currentlimitsperseason
+    ext-currentlimitsperseason-xml
+    ext-generatoractivepowercontrol
+    ext-generatoractivepowercontrol-xml
+    ext-hvdcangledroopactivepowercontrol
+    ext-hvdcangledroopactivepowercontrol-xml
+    ext-hvdcoperatoractivepowerrange
+    ext-hvdcoperatoractivepowerrange-xml
+    ext-generatorentsoecategory
+    ext-generatorentsoecategory-xml
+    ext-generatorstartup
+    ext-generatorstartup-xml
+    ext-loaddetail
+    ext-loaddetail-xml
+    ext-standbyautomaton
+    ext-standbyautomaton-xml
+)
 # Boost
 # Use only BOOST_ROOT by default to avoid conflicts between dynawo boost and default install
 option(DYNAFLOW_LAUNCHER_USE_BOOST_DEFAULT "Use default system boost installation" OFF)
@@ -106,6 +138,8 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 ###############
 ##  Project  ##

@@ -7,6 +7,7 @@
 // file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
 
+#include "Context.h"
 #include "Log.h"
 #include "Options.h"
 
@@ -25,12 +26,7 @@ main(int argc, char* argv[]) {
     }
     dfl::common::Log::init(options);
 
-    std::stringstream ss;
-    ss << "Hello World: ";
-    for (int i = 0; i < argc; i++) {
-      ss << argv[i] << " ";
-    }
-    LOG(info) << ss.str() << LOG_ENDL;
+    dfl::Context context(options.config().networkFilePath);
 
     return 0;
   } catch (DYN::MessageError& e) {

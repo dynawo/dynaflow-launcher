@@ -76,7 +76,7 @@ Options::basename(const std::string& filepath) {
 Options::Options() : desc_{}, config_{"", "", "", defaultLogLevel_} {
   desc_.add_options()("help,h", "Display help message")("log-level", po::value<ParsedLogLevel>(),
                                                         "Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is info")(
-      "iidm", po::value<std::string>(&config_.iidmPath)->required(), "IIDM file path to process")(
+      "iidm", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process")(
       "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use");
 }
 
