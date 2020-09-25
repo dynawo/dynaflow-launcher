@@ -38,10 +38,10 @@ class Options {
    * representation after parsing
    */
   struct RuntimeConfiguration {
-    std::string programName;     ///< Name of the programm
-    std::string iidmPath;        ///< IIDM filepath ot process
-    std::string configPath;      ///< Launcher configuration filepath
-    std::string dynawoLogLevel;  ///< chosen log level
+    std::string programName;      ///< Name of the programm
+    std::string networkFilePath;  ///< Network filepath ot process
+    std::string configPath;       ///< Launcher configuration filepath
+    std::string dynawoLogLevel;   ///< chosen log level
   };
 
  public:

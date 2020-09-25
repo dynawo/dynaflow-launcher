@@ -13,7 +13,7 @@ BreakInheritanceList: AfterColon
 ReflowComments: false
 SpaceAfterTemplateKeyword: false
 PenaltyReturnTypeOnItsOwnLine: 50
-Standard: Cpp03
+Standard: Cpp11
 IncludeBlocks: Regroup
 IncludeCategories:
 # 1: local headers

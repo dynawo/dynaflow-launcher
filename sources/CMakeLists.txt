@@ -8,18 +8,25 @@
 #
 
 add_subdirectory(Common)
+add_subdirectory(Inputs)
 
 # Always list the source files explicitly, including headers so that they are listed in the IDE
 # If you need to use files based on a variable value, use target_sources
 set(SOURCES
   main.cpp
+  Context.cpp
 )
 
-add_executable(DynaflowLauncher ${SOURCES})
+set(HEADERS
+  Context.h
+)
+
+add_executable(DynaflowLauncher ${SOURCES} ${HEADERS})
 
 target_link_libraries(DynaflowLauncher
   PRIVATE
   DynaflowLauncher::common
+  DynaflowLauncher::inputs
 
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
