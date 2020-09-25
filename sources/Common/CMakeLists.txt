@@ -9,15 +9,21 @@
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/version.h)
 
-add_library(options STATIC src/Options.cpp)
-target_include_directories(options
+set(SOURCES
+src/Options.cpp
+src/Log.cpp
+)
+
+add_library(common STATIC ${SOURCES})
+target_include_directories(common
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_link_libraries(options
+target_link_libraries(common
   PUBLIC
     Boost::program_options
     Boost::filesystem
+    Dynawo::dynawo_Common
 )
-add_library(DynaflowLauncher::options ALIAS options)
+add_library(DynaflowLauncher::common ALIAS common)

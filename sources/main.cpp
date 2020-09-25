@@ -7,23 +7,41 @@
 // file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
 
+#include "Log.h"
 #include "Options.h"
 
-#include <iostream>
+#include <DYNError.h>
+#include <sstream>
 
 int
 main(int argc, char* argv[]) {
-  options::Options options;
+  try {
+    DYN::Trace::init();
+    dfl::common::Options options;
 
-  if (!options.parse(argc, argv)) {
-    std::cerr << options << std::endl;
+    if (!options.parse(argc, argv)) {
+      LOG(error) << options << LOG_ENDL;
+      return 0;
+    }
+    dfl::common::Log::init(options);
+
+    std::stringstream ss;
+    ss << "Hello World: ";
+    for (int i = 0; i < argc; i++) {
+      ss << argv[i] << " ";
+    }
+    LOG(info) << ss.str() << LOG_ENDL;
+
     return 0;
+  } catch (DYN::MessageError& e) {
+    std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
+    return -1;
+  } catch (std::exception& e) {
+    std::cerr << e.what() << std::endl;
+    LOG(error) << e.what() << LOG_ENDL;
+  } catch (...) {
+    std::cerr << "Unknown error" << std::endl;
+    LOG(error) << "Unknown error" << LOG_ENDL;
   }
-
-  std::cout << "Hello World: ";
-  for (int i = 0; i < argc; i++) {
-    std::cout << argv[i];
-  }
-  std::cout << std::endl;
-  return 0;
 }
