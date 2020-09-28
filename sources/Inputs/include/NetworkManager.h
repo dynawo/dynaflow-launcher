@@ -20,7 +20,7 @@
 #include "Node.h"
 
 #include <DYNDataInterface.h>
-#include <map>
+#include <unordered_map>
 
 namespace dfl {
 namespace inputs {
@@ -46,8 +46,8 @@ class NetworkManager {
   void buildTree();
 
  private:
-  boost::shared_ptr<DYN::DataInterface> interface_;        ///< data interface
-  std::map<Node::NodeId, boost::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
+  boost::shared_ptr<DYN::DataInterface> interface_;                  ///< data interface
+  std::unordered_map<Node::NodeId, boost::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
 };
 
 }  // namespace inputs

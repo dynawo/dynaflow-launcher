@@ -39,9 +39,9 @@ class Node {
    * @brief Constructor
    *
    * @param id the node id
-   * @param voltageLevel the voltage level associated with the node
+   * @param nominalVoltage the voltage level associated with the node
    */
-  Node(const NodeId& id, double voltageLevel);
+  Node(const NodeId& id, double nominalVoltage);
 
   /**
    * @brief Retrieves the node id
@@ -57,8 +57,8 @@ class Node {
    *
    * @returns voltage level
    */
-  double voltageLevel() const {
-    return voltageLevel_;
+  double nominalVoltage() const {
+    return nominalVoltage_;
   }
 
   /**
@@ -81,7 +81,7 @@ class Node {
 
  private:
   NodeId id_;                                        ///< node id
-  double voltageLevel_;                              ///< voltage level of the node
+  double nominalVoltage_;                            ///< Nominal voltage of the node
   std::vector<boost::shared_ptr<Node>> neighbours_;  ///< list of neighbours
 };
 

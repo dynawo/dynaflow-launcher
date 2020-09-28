@@ -78,10 +78,9 @@ list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share")
 find_package(Dynawo 1.3.0 REQUIRED)
 #libXML
 list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
-find_package(libXML 0.2.4 REQUIRED)
-# XercesC (rewuired for libxml)
-list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
+# XercesC (required for libxml)
 find_package(XercesC 3.2.2 REQUIRED)
+find_package(libXML 0.2.4 REQUIRED)
 #libIIDM
 find_package(libIIDM 0.2.8 REQUIRED
     COMPONENTS
