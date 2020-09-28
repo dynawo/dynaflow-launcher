@@ -7,8 +7,7 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-add_test(
-  # Use some per-module/project prefix so that it is easier to run only tests for this module
-  NAME MAIN.launch
-  COMMAND DynaflowLauncher
-)
+DEFINE_TEST(TestNetworkManager INPUTS)
+target_link_libraries(TestNetworkManager DynaflowLauncher::inputs)
+
+set_property(TEST INPUTS.TestNetworkManager PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWo_HOME}/share/iidm/xsd/")

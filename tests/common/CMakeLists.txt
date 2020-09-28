@@ -7,8 +7,5 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-add_test(
-  # Use some per-module/project prefix so that it is easier to run only tests for this module
-  NAME MAIN.launch
-  COMMAND DynaflowLauncher
-)
+DEFINE_TEST(TestOptions COMMON)
+target_link_libraries(TestOptions DynaflowLauncher::common)

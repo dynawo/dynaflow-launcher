@@ -43,9 +43,12 @@ macro(DEFINE_TEST _name _module_name)
   target_include_directories(${_name} PRIVATE ${TEST_DIR})
   add_test(
     NAME ${_module_name}.${_name}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${_name}
   )
 endmacro(DEFINE_TEST)
 
 
+add_subdirectory(common)
+add_subdirectory(inputs)
 add_subdirectory(main)

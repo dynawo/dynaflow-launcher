@@ -21,6 +21,8 @@
 #include <DYNDataInterfaceFactory.h>
 #include <DYNLineInterface.h>
 #include <DYNNetworkInterface.h>
+#include <DYNThreeWTransformerInterface.h>
+#include <DYNTwoWTransformerInterface.h>
 #include <DYNVoltageLevelInterface.h>
 #include <boost/make_shared.hpp>
 
@@ -56,8 +58,44 @@ NetworkManager::buildTree() {
     auto bus1 = (*it_l)->getBusInterface1();
     auto bus2 = (*it_l)->getBusInterface2();
     if (bus1 && bus2) {
-      nodes_[bus1->getID()]->addNeighbour(nodes_[bus2->getID()]);
-      nodes_[bus2->getID()]->addNeighbour(nodes_[bus1->getID()]);
+      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
+      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
+    }
+  }
+
+  const auto& transfos = network->getTwoWTransformers();
+  for (auto it_t = transfos.begin(); it_t != transfos.end(); ++it_t) {
+    auto bus1 = (*it_t)->getBusInterface1();
+    auto bus2 = (*it_t)->getBusInterface2();
+    if (bus1 && bus2) {
+      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
+      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
+    }
+  }
+
+  const auto& transfos_three = network->getThreeWTransformers();
+  for (auto it_t = transfos_three.begin(); it_t != transfos_three.end(); ++it_t) {
+    auto bus1 = (*it_t)->getBusInterface1();
+    auto bus2 = (*it_t)->getBusInterface2();
+    auto bus3 = (*it_t)->getBusInterface3();
+    if (bus1 && bus2 && bus3) {
+      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
+      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus3->getID()]);
+
+      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
+      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus3->getID()]);
+
+      nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
+      nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
+    }
+  }
+}
+
+void
+NetworkManager::walkNodes() {
+  for (auto it = nodes_.begin(); it != nodes_.end(); ++it) {
+    for (auto it_c = nodesCallbacks_.begin(); it_c != nodesCallbacks_.end(); ++it_c) {
+      (*it_c)(it->second);
     }
   }
 }

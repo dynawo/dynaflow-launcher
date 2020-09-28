@@ -30,11 +30,9 @@ namespace inputs {
  *
  * This implement a graph node concept. It contains only the information required to perform the algorithms and not all information extractable from network file
  */
-class Node {
- public:
+struct Node {
   using NodeId = std::string;  ///< node id definition
 
- public:
   /**
    * @brief Constructor
    *
@@ -43,46 +41,9 @@ class Node {
    */
   Node(const NodeId& id, double nominalVoltage);
 
-  /**
-   * @brief Retrieves the node id
-   *
-   * @returns node id
-   */
-  const NodeId& id() const {
-    return id_;
-  }
-
-  /**
-   * @brief Retrieves the voltage level
-   *
-   * @returns voltage level
-   */
-  double nominalVoltage() const {
-    return nominalVoltage_;
-  }
-
-  /**
-   * @brief Retrieves the neighbours of the node
-   *
-   * @returns the list of neighbours
-   */
-  const std::vector<boost::shared_ptr<Node>>& neighbours() const {
-    return neighbours_;
-  }
-
-  /**
-   * @brief Add a neighbour
-   *
-   * @param node the new neighbour
-   */
-  void addNeighbour(boost::shared_ptr<Node> node) {
-    neighbours_.push_back(node);
-  }
-
- private:
-  NodeId id_;                                        ///< node id
-  double nominalVoltage_;                            ///< Nominal voltage of the node
-  std::vector<boost::shared_ptr<Node>> neighbours_;  ///< list of neighbours
+  const NodeId id;                                  ///< node id
+  const double nominalVoltage;                      ///< Nominal voltage of the node
+  std::vector<boost::shared_ptr<Node>> neighbours;  ///< list of neighbours
 };
 
 }  // namespace inputs

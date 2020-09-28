@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-function(set_optimization)
+macro(set_optimization)
   if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 ${CMAKE_CXX_FLAGS_DEBUG}")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 ${CMAKE_CXX_FLAGS_RELEASE}")
@@ -17,4 +17,4 @@ function(set_optimization)
   else()
     message(WARNING "Unsupported compiler ${CMAKE_CXX_COMPILER_ID} : no debug info / optimization is performed")
   endif()
-endfunction()
+endmacro()
