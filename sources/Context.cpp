@@ -17,6 +17,29 @@
 
 #include "Context.h"
 
+#include <tuple>
+
 namespace dfl {
-Context::Context(const std::string& networkFilepath) : networkManager_(networkFilepath) {}
+Context::Context(const std::string& networkFilepath) : networkManager_(networkFilepath) {
+  networkManager_.onNode(std::bind(&Context::processSlackNode, this, std::placeholders::_1));
+}
+
+void
+Context::processSlackNode(const boost::shared_ptr<inputs::Node>& node) {
+  if (!slack_node_) {
+    slack_node_ = node;
+  } else {
+    if (std::forward_as_tuple(slack_node_->nominalVoltage, slack_node_->neighbours.size()) >
+        std::forward_as_tuple(node->nominalVoltage, node->neighbours.size())) {
+      slack_node_ = node;
+    }
+  }
+}
+
+void
+Context::process() {
+  // Process all algorithms on nodes
+  networkManager_.walkNodes();
+}
+
 }  // namespace dfl

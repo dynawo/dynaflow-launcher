@@ -36,7 +36,26 @@ class Context {
    */
   explicit Context(const std::string& networkFilepath);
 
+  /**
+   * @brief Process context
+   *
+   * This perform all algorithms on inputs and write outputs
+   */
+  void process();
+
+ private:
+  /**
+  * @brief Perform elementary step to determine the slack node
+  *
+  * The used criteria: the slack node is the node which has the higher voltage level then the higher number of connected nodes (in that order)
+  *
+  * @param node the node to process
+  */
+  void processSlackNode(const boost::shared_ptr<inputs::Node>& node);
+
  private:
   inputs::NetworkManager networkManager_;  ///< network manager
+
+  boost::shared_ptr<inputs::Node> slack_node_;  ///< computed slack node
 };
 }  // namespace dfl

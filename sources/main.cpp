@@ -28,6 +28,8 @@ main(int argc, char* argv[]) {
 
     dfl::Context context(options.config().networkFilePath);
 
+    context.process();
+
     return 0;
   } catch (DYN::MessageError& e) {
     std::cerr << "Dynawo: " << e.what() << std::endl;
