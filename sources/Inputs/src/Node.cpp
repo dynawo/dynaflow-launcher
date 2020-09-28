@@ -19,7 +19,7 @@
 
 namespace dfl {
 namespace inputs {
-Node::Node(const NodeId& id, double voltageLevel) : id_(id), voltageLevel_{voltageLevel} {}
+Node::Node(const NodeId& id, double nominalVoltage) : id_(id), nominalVoltage_{nominalVoltage} {}
 
 }  // namespace inputs
 }  // namespace dfl

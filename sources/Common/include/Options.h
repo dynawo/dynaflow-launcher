@@ -38,7 +38,7 @@ class Options {
    * representation after parsing
    */
   struct RuntimeConfiguration {
-    std::string programName;      ///< Name of the programm
+    std::string programName;      ///< Name of the program
     std::string networkFilePath;  ///< Network filepath ot process
     std::string configPath;       ///< Launcher configuration filepath
     std::string dynawoLogLevel;   ///< chosen log level
