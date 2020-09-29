@@ -119,7 +119,7 @@ else()
 endif()
 # Tell BOOST to disable auto linking
 add_definitions(-DBOOST_ALL_NO_LIB)
-find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem)
+find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem system)
 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
 

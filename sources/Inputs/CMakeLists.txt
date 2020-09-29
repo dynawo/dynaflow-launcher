@@ -10,6 +10,7 @@
 set(SOURCES
   src/NetworkManager.cpp
   src/Node.cpp
+  src/Configuration.cpp
 )
 
 add_library(inputs STATIC ${SOURCES})
@@ -20,6 +21,8 @@ PUBLIC
 )
 target_link_libraries(inputs
 PUBLIC
+DynaflowLauncher::common
+
 Dynawo::dynawo_DataInterfaceFactory
 )
 add_library(DynaflowLauncher::inputs ALIAS inputs)

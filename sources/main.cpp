@@ -26,7 +26,8 @@ main(int argc, char* argv[]) {
     }
     dfl::common::Log::init(options);
 
-    dfl::Context context(options.config().networkFilePath);
+    auto& config = options.config();
+    dfl::Context context(config.networkFilePath, config.configPath);
 
     context.process();
 

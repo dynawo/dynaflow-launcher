@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Configuration.h"
 #include "NetworkManager.h"
 
 namespace dfl {
@@ -33,8 +34,9 @@ class Context {
    * @brief Constructor
    *
    * @param networkFilepath network filepath
+   * @param configFilepath configuration filepath
    */
-  explicit Context(const std::string& networkFilepath);
+  Context(const std::string& networkFilepath, const std::string& configFilepath);
 
   /**
    * @brief Process context
@@ -55,6 +57,7 @@ class Context {
 
  private:
   inputs::NetworkManager networkManager_;  ///< network manager
+  inputs::Configuration config_;           ///< configuration
 
   boost::shared_ptr<inputs::Node> slack_node_;  ///< computed slack node
 };
