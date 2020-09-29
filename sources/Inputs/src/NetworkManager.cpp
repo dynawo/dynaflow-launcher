@@ -102,7 +102,7 @@ NetworkManager::walkNodes() {
 
 boost::optional<boost::shared_ptr<Node>>
 NetworkManager::getSlackNode() const {
-  // for now, we cannot retrieve from dynawo data interface this information: we will in a future version
+  // TODO for now, we cannot retrieve from dynawo data interface this information: we will in a future version
   return boost::none;
 }
 

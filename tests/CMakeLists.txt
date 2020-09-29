@@ -27,8 +27,8 @@ if(NOT TARGET GTest::gtest_main AND TARGET GTest::Main)
   endif()
 endif()
 find_package(GMock REQUIRED)
-add_library(DynaflowLauncherTest INTERFACE)
-  target_link_libraries(DynaflowLauncherTest INTERFACE
+add_library(DynaFlowLauncherTest INTERFACE)
+  target_link_libraries(DynaFlowLauncherTest INTERFACE
     GTest::gmock_main
     GTest::gtest_main)
 
@@ -39,7 +39,7 @@ set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 macro(DEFINE_TEST _name _module_name)
   add_executable(${_name} ${_name}.cpp)
   target_link_libraries(${_name}
-    DynaflowLauncherTest)
+    DynaFlowLauncherTest)
   target_include_directories(${_name} PRIVATE ${TEST_DIR})
   add_test(
     NAME ${_module_name}.${_name}

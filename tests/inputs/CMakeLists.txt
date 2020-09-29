@@ -8,9 +8,9 @@
 #
 
 DEFINE_TEST(TestNetworkManager INPUTS)
-target_link_libraries(TestNetworkManager DynaflowLauncher::inputs)
+target_link_libraries(TestNetworkManager DynaFlowLauncher::inputs)
 set_property(TEST INPUTS.TestNetworkManager PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")
 
 DEFINE_TEST(TestConfig INPUTS)
-target_link_libraries(TestConfig DynaflowLauncher::inputs)
+target_link_libraries(TestConfig DynaFlowLauncher::inputs)
 set_property(TEST INPUTS.TestConfig PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")
