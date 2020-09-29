@@ -26,14 +26,14 @@ Context::Context(const std::string& networkFilepath, const std::string& configFi
     networkManager_(networkFilepath),
     config_(configFilepath),
     slack_node_{} {
-  auto automatic_slack_node = networkManager_.getSlackNode();
-  if (automatic_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
-    slack_node_ = *automatic_slack_node;
+  auto found_slack_node = networkManager_.getSlackNode();
+  if (found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
+    slack_node_ = *found_slack_node;
   } else {
-    // automatic slack node not given: we must compute it ourselves
-    if (!automatic_slack_node.is_initialized() && config_.isAutomaticSlackBusOn()) {
+    // slack node not given in iidm or not requested: it is computed internally
+    if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
       // TODO(lecourtoisflo) use warning without restriction for language
-      LOG(warn) << "Automatic slack node requested but not present in network input file" << LOG_ENDL;
+      LOG(warn) << "Network slack node requested but not present in network input file" << LOG_ENDL;
     }
     networkManager_.onNode(std::bind(&Context::processSlackNode, this, std::placeholders::_1));
   }
