@@ -19,6 +19,8 @@ target_include_directories(inputs
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
+
+target_set_warnings(inputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
 target_link_libraries(inputs
 PUBLIC
 DynaFlowLauncher::common

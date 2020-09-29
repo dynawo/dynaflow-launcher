@@ -8,7 +8,12 @@
 #
 
 function(check_env_var _var)
-  if (NOT DEFINED ${_var} AND NOT DEFINED ENV{${_var}})
-    message(FATAL_ERROR "Variable ${_var} is not defined")
+  if (NOT DEFINED ${_var})
+    if (NOT DEFINED ENV{${_var}})
+      message(FATAL_ERROR "Variable ${_var} is not defined")
+    else()
+      message(STATUS "Set variable ${_var} to environment variable value at ${ENV{${_var}}}")
+      set(${_var} ENV{${_var}})
+    endif()
   endif()
 endfunction()
