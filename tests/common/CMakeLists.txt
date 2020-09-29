@@ -8,4 +8,4 @@
 #
 
 DEFINE_TEST(TestOptions COMMON)
-target_link_libraries(TestOptions DynaflowLauncher::common)
+target_link_libraries(TestOptions DynaFlowLauncher::common)

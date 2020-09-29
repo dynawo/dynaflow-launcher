@@ -16,7 +16,7 @@ endif()
 # Put the project early since modules might need to detect the compiler.
 # More information https://cmake.org/cmake/help/latest/command/project.html
 project(
-    "DynaflowLauncher" # This will exposed as the variable PROJECT_NAME.
+    "DynaFlowLauncher" # This will exposed as the variable PROJECT_NAME.
     VERSION 0.1.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
@@ -147,17 +147,17 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 include(cpplint/cpplint.cmake)
 
 #===============================#
-#  DynaflowLauncher executable  #
+#  DynaFlowLauncher executable  #
 #===============================#
 
 add_subdirectory(sources)
 
 # CMake scripts extensions
-target_set_warnings(DynaflowLauncher ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
-copy_dlls_for_debug(DynaflowLauncher "" "") # Copy dependencies next to the executable (DLLs for example)
+target_set_warnings(DynaFlowLauncher ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
+copy_dlls_for_debug(DynaFlowLauncher "" "") # Copy dependencies next to the executable (DLLs for example)
 
 # Setup our project as the startup project for Visual so that people don't need to do it manually
-set_directory_properties(PROPERTIES VS_STARTUP_PROJECT DynaflowLauncher)
+set_directory_properties(PROPERTIES VS_STARTUP_PROJECT DynaFlowLauncher)
 
 #===========#
 #   Tests   #
@@ -234,7 +234,7 @@ configure_package_config_file(
 # It will then need a call to `install(EXPORT)`
 install(
     TARGETS
-	  DynaflowLauncher # We can install executables
+	  DynaFlowLauncher # We can install executables
     EXPORT ${PROJECT_NAME}_Targets
 # Following is only needed pre-cmake3.14
    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

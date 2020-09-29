@@ -21,8 +21,8 @@ PUBLIC
 )
 target_link_libraries(inputs
 PUBLIC
-DynaflowLauncher::common
+DynaFlowLauncher::common
 
 Dynawo::dynawo_DataInterfaceFactory
 )
-add_library(DynaflowLauncher::inputs ALIAS inputs)
+add_library(DynaFlowLauncher::inputs ALIAS inputs)

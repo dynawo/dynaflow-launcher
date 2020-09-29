@@ -10,7 +10,7 @@
 add_test(
   # Use some per-module/project prefix so that it is easier to run only tests for this module
   NAME MAIN.launch
-  COMMAND DynaflowLauncher --iidm=res/IEEE14.iidm --config=res/config.json
+  COMMAND DynaFlowLauncher --iidm=res/IEEE14.iidm --config=res/config.json
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 set_property(TEST MAIN.launch PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")

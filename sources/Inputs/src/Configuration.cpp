@@ -60,13 +60,13 @@ Configuration::Configuration(const std::string& filepath) {
 
     auto config = tree.get_child("dfl-config");
 
-    helper::updateValue(InfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
-    helper::updateValue(PSTRegulationOn_, config, "PSTRegulationOn");
-    helper::updateValue(SVCRegulationOn_, config, "SVCRegulationOn");
-    helper::updateValue(ShuntRegulationOn_, config, "ShuntRegulationOn");
-    helper::updateValue(AutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
-    helper::updateValue(VSCAsGenerators_, config, "VSCAsGenerators");
-    helper::updateValue(LCCAsLoads_, config, "LCCAsLoads");
+    helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
+    helper::updateValue(isPSTRegulationOn_, config, "PSTRegulationOn");
+    helper::updateValue(isSVCRegulationOn_, config, "SVCRegulationOn");
+    helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
+    helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
+    helper::updateValue(useVSCAsGenerators_, config, "VSCAsGenerators");
+    helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
   } catch (std::exception& e) {
     LOG(error) << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);

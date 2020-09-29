@@ -26,4 +26,4 @@ target_link_libraries(common
     Boost::filesystem
     Dynawo::dynawo_Common
 )
-add_library(DynaflowLauncher::common ALIAS common)
+add_library(DynaFlowLauncher::common ALIAS common)

@@ -40,7 +40,7 @@ class Configuration {
    * @returns the parameter value
    */
   bool useInfiniteReactiveLimits() const {
-    return InfiniteReactiveLimits_;
+    return useInfiniteReactiveLimits_;
   }
 
   /**
@@ -49,7 +49,7 @@ class Configuration {
    * @returns the parameter value
    */
   bool isPSTRegulationOn() const {
-    return PSTRegulationOn_;
+    return isPSTRegulationOn_;
   }
 
   /**
@@ -58,7 +58,7 @@ class Configuration {
    * @returns the parameter value
    */
   bool isSVCRegulationOn() const {
-    return SVCRegulationOn_;
+    return isSVCRegulationOn_;
   }
 
   /**
@@ -67,7 +67,7 @@ class Configuration {
    * @returns the parameter value
    */
   bool isShuntRegulationOn() const {
-    return ShuntRegulationOn_;
+    return isShuntRegulationOn_;
   }
 
   /**
@@ -76,7 +76,7 @@ class Configuration {
    * @returns the parameter value
    */
   bool isAutomaticSlackBusOn() const {
-    return AutomaticSlackBusOn_;
+    return isAutomaticSlackBusOn_;
   }
 
   /**
@@ -85,7 +85,7 @@ class Configuration {
    * @returns the parameter value
    */
   bool useVSCAsGenerators() const {
-    return VSCAsGenerators_;
+    return useVSCAsGenerators_;
   }
 
   /**
@@ -94,17 +94,17 @@ class Configuration {
    * @returns the parameter value
    */
   bool useLCCAsLoads() const {
-    return LCCAsLoads_;
+    return useLCCAsLoads_;
   }
 
  private:
-  bool InfiniteReactiveLimits_ = false;  ///< infinite reactive limits
-  bool PSTRegulationOn_ = true;          ///< PST regulation on
-  bool SVCRegulationOn_ = true;          ///< SVC regulation on
-  bool ShuntRegulationOn_ = true;        ///< Shunt regulation on
-  bool AutomaticSlackBusOn_ = true;      ///< automatic slack bus on
-  bool VSCAsGenerators_ = false;         ///< VSC considered as generators
-  bool LCCAsLoads_ = false;              ///< LCC are considered as generators
+  bool useInfiniteReactiveLimits_ = false;  ///< infinite reactive limits
+  bool isPSTRegulationOn_ = true;           ///< PST regulation on
+  bool isSVCRegulationOn_ = true;           ///< SVC regulation on
+  bool isShuntRegulationOn_ = true;         ///< Shunt regulation on
+  bool isAutomaticSlackBusOn_ = true;       ///< automatic slack bus on
+  bool useVSCAsGenerators_ = false;         ///< VSC considered as generators
+  bool useLCCAsLoads_ = false;              ///< LCC are considered as generators
 };
 
 }  // namespace inputs

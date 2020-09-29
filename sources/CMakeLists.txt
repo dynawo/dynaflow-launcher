@@ -21,12 +21,12 @@ set(HEADERS
   Context.h
 )
 
-add_executable(DynaflowLauncher ${SOURCES} ${HEADERS})
+add_executable(DynaFlowLauncher ${SOURCES} ${HEADERS})
 
-target_link_libraries(DynaflowLauncher
+target_link_libraries(DynaFlowLauncher
   PRIVATE
-  DynaflowLauncher::common
-  DynaflowLauncher::inputs
+  DynaFlowLauncher::common
+  DynaFlowLauncher::inputs
 
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
