@@ -20,6 +20,7 @@
 #include "Node.h"
 
 #include <DYNDataInterface.h>
+#include <boost/optional.hpp>
 #include <unordered_map>
 namespace dfl {
 namespace inputs {
@@ -56,6 +57,13 @@ class NetworkManager {
    * This will call all registered callbacks for nodes
    */
   void walkNodes();
+
+  /**
+   * @brief Retrieve the slack node if it is given in the network file
+   *
+   * @returns the information of the slack node, if present
+   */
+  boost::optional<boost::shared_ptr<Node>> getSlackNode() const;
 
  private:
   /**
