@@ -49,6 +49,7 @@ include(BuildType)
 ###############
 
 policy(CMP0074 NEW) # find_package uses PackageName_ROOT variables.
+policy(CMP0075 NEW) # honor CMAKE_REQUIRED_LIBRARIES in the include file check macros
 
 ###############
 ##  OPTIONS  ##
@@ -122,6 +123,9 @@ add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem system)
 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
+
+## Python
+find_package(PythonInterp REQUIRED)
 
 ##
 

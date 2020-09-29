@@ -18,6 +18,7 @@
 #include "Context.h"
 
 #include "Log.h"
+#include "Message.hpp"
 
 #include <tuple>
 
@@ -25,15 +26,17 @@ namespace dfl {
 Context::Context(const std::string& networkFilepath, const std::string& configFilepath) :
     networkManager_(networkFilepath),
     config_(configFilepath),
-    slack_node_{} {
+    slackNode_{},
+    slackNodeOrigin_{SlackNodeOrigin::ALGORITHM} {
   auto found_slack_node = networkManager_.getSlackNode();
   if (found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
-    slack_node_ = *found_slack_node;
+    slackNode_ = *found_slack_node;
+    slackNodeOrigin_ = SlackNodeOrigin::FILE;
   } else {
+    slackNodeOrigin_ = SlackNodeOrigin::ALGORITHM;
     // slack node not given in iidm or not requested: it is computed internally
     if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
-      // TODO(lecourtoisflo) use warning without restriction for language
-      LOG(warn) << "Network slack node requested but not present in network input file" << LOG_ENDL;
+      LOG(warn) << MESS(NetworkSlackNodeNotFound, networkFilepath) << LOG_ENDL;
     }
     networkManager_.onNode(std::bind(&Context::processSlackNode, this, std::placeholders::_1));
   }
@@ -41,12 +44,12 @@ Context::Context(const std::string& networkFilepath, const std::string& configFi
 
 void
 Context::processSlackNode(const boost::shared_ptr<inputs::Node>& node) {
-  if (!slack_node_) {
-    slack_node_ = node;
+  if (!slackNode_) {
+    slackNode_ = node;
   } else {
-    if (std::forward_as_tuple(slack_node_->nominalVoltage, slack_node_->neighbours.size()) >
+    if (std::forward_as_tuple(slackNode_->nominalVoltage, slackNode_->neighbours.size()) >
         std::forward_as_tuple(node->nominalVoltage, node->neighbours.size())) {
-      slack_node_ = node;
+      slackNode_ = node;
     }
   }
 }
@@ -55,6 +58,8 @@ void
 Context::process() {
   // Process all algorithms on nodes
   networkManager_.walkNodes();
+
+  LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
 }
 
 }  // namespace dfl

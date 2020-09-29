@@ -1,11 +1,3 @@
 {
-  "dfl-config": {
-    "InfiniteReactiveLimits": "true",
-    "PSTRegulationOn": "false",
-    "SVCRegulationOn": "false",
-    "ShuntRegulationOn": "false",
-    "AutomaticSlackBusOn": "false",
-    "VSCAsGenerators": "true",
-    "LCCAsLoads": "true"
-  }
+  "dfl-config": {}
 }

@@ -31,3 +31,4 @@ target_link_libraries(DynaFlowLauncher
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD
 )
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})

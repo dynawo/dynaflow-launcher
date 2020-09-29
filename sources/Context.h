@@ -46,6 +46,13 @@ class Context {
   void process();
 
  private:
+  /// @brief Slack node origin
+  enum class SlackNodeOrigin {
+    FILE = 0,  ///< Slack node comes from network input file
+    ALGORITHM  ///< Slack node is computed via automatic algorithm
+  };
+
+ private:
   /**
   * @brief Perform elementary step to determine the slack node
   *
@@ -59,6 +66,7 @@ class Context {
   inputs::NetworkManager networkManager_;  ///< network manager
   inputs::Configuration config_;           ///< configuration
 
-  boost::shared_ptr<inputs::Node> slack_node_;  ///< computed slack node
+  boost::shared_ptr<inputs::Node> slackNode_;  ///< computed slack node
+  SlackNodeOrigin slackNodeOrigin_;            ///< slack node origin
 };
 }  // namespace dfl
