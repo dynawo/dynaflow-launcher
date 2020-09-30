@@ -58,6 +58,8 @@ policy(CMP0075 NEW) # honor CMAKE_REQUIRED_LIBRARIES in the include file check m
 # You should try to give as much control over the project setup to the user.
 # When modifying compile flags for example, if they are not mandatory, provide an option.
 
+set(DYNAFLOW_LAUNCHER_LOCALE "en_GB" CACHE STRING "Localization for dictionnaries")
+
 option(DYNAFLOW_LAUNCHER_USE_DOXYGEN "Add a doxygen target to generate the documentation" ON)
 
 option(DYNAFLOW_LAUNCHER_USE_ADDITIONAL_SOURCEFILE "Use the additional source file" ON)
@@ -75,6 +77,7 @@ set_optimization()
 ## External dependencies
 ## Dynawo and sub-dependencies
 check_env_var(DYNAWO_HOME) # Correspond to deploy installation
+list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}")
 list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share")
 find_package(Dynawo 1.3.0 REQUIRED)
 #libXML
@@ -191,10 +194,11 @@ if(DYNAFLOW_LAUNCHER_USE_DOXYGEN AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.9)
         OPTIONAL_COMPONENTS dot mscgen dia
     )
     if(DOXYGEN_FOUND)
+        message(STATUS "Use doxygen")
         set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
         doxygen_add_docs(
-            doc
-            README.md source
+            doc ALL
+            README.md sources
             COMMENT "Generate man pages"
         )
     endif()
@@ -258,6 +262,7 @@ install(
     DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
 )
 
+install(DIRECTORY ${CMAKE_BINARY_DIR}/html DESTINATION doc)
 
 # So far we only installed the exported targets, now install the package config files.
 # If you do not list headers in the PUBLIC_HEADER property, you will need to copy them using `install(FILES)` or `install(DIRECTORY)` too.
