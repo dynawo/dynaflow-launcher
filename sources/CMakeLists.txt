@@ -9,6 +9,7 @@
 
 add_subdirectory(Common)
 add_subdirectory(Inputs)
+add_subdirectory(Algo)
 
 # Always list the source files explicitly, including headers so that they are listed in the IDE
 # If you need to use files based on a variable value, use target_sources
@@ -27,6 +28,7 @@ target_link_libraries(DynaFlowLauncher
   PRIVATE
   DynaFlowLauncher::common
   DynaFlowLauncher::inputs
+  DynaFlowLauncher::algo
 
   Dynawo::dynawo_API_PAR
   Dynawo::dynawo_API_DYD

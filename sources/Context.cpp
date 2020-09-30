@@ -17,6 +17,7 @@
 
 #include "Context.h"
 
+#include "Algo.h"
 #include "Log.h"
 #include "Message.hpp"
 
@@ -38,19 +39,7 @@ Context::Context(const std::string& networkFilepath, const std::string& configFi
     if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
       LOG(warn) << MESS(NetworkSlackNodeNotFound, networkFilepath) << LOG_ENDL;
     }
-    networkManager_.onNode(std::bind(&Context::processSlackNode, this, std::placeholders::_1));
-  }
-}
-
-void
-Context::processSlackNode(const boost::shared_ptr<inputs::Node>& node) {
-  if (!slackNode_) {
-    slackNode_ = node;
-  } else {
-    if (std::forward_as_tuple(slackNode_->nominalVoltage, slackNode_->neighbours.size()) >
-        std::forward_as_tuple(node->nominalVoltage, node->neighbours.size())) {
-      slackNode_ = node;
-    }
+    networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
   }
 }
 

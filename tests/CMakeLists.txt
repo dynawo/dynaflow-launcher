@@ -51,4 +51,5 @@ endmacro(DEFINE_TEST)
 
 add_subdirectory(common)
 add_subdirectory(inputs)
+add_subdirectory(algo)
 add_subdirectory(main)

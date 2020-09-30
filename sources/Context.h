@@ -53,20 +53,10 @@ class Context {
   };
 
  private:
-  /**
-  * @brief Perform elementary step to determine the slack node
-  *
-  * The used criteria: the slack node is the node which has the higher voltage level then the higher number of connected nodes (in that order)
-  *
-  * @param node the node to process
-  */
-  void processSlackNode(const boost::shared_ptr<inputs::Node>& node);
-
- private:
   inputs::NetworkManager networkManager_;  ///< network manager
   inputs::Configuration config_;           ///< configuration
 
-  boost::shared_ptr<inputs::Node> slackNode_;  ///< computed slack node
-  SlackNodeOrigin slackNodeOrigin_;            ///< slack node origin
+  std::shared_ptr<inputs::Node> slackNode_;  ///< computed slack node
+  SlackNodeOrigin slackNodeOrigin_;          ///< slack node origin
 };
 }  // namespace dfl
