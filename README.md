@@ -9,8 +9,7 @@ where:
 * SRC_DIR is the root directory of the dynaflow launcher repository
 * DYNAWO_HOME is the directory of the deployed DYNAWO library (since Boost is deployed along with Dynawo, we use the same directory as Boost root)
 * CMAKE_INSTALL_PREFIX is the directory where DynaFlow Launcher will be installed
-* DYNAFLOW_LAUNCHER_LOCALE is the reference locale value to generate log keys. Suppoorted values are:
-  * en_GB (English)
+* DYNAFLOW_LAUNCHER_LOCALE is the **optional** reference locale value to generate log keys. default value is "en_GB" (English)
 
 Then build the project in the build directory:
 
