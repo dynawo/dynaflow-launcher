@@ -88,5 +88,8 @@ class Message {
 
 /**
  * @brief Macro to easy build a message
+ *
+ * @param key the dico key (without namespaces and type)
+ * @param ... Arguments required to format the corresponding message
  */
 #define MESS(key, ...) dfl::common::Message(dfl::common::generated::DicoKeys::Key::key, __VA_ARGS__).str()
