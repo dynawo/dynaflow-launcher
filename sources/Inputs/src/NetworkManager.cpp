@@ -47,7 +47,7 @@ NetworkManager::buildTree() {
         // ids of nodes should be unique
         assert(nodes_.count((*it_b)->getID()) == 0);
 #endif
-        nodes_[(*it_b)->getID()] = boost::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
+        nodes_[(*it_b)->getID()] = std::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
       }
     }
   }
@@ -100,7 +100,7 @@ NetworkManager::walkNodes() {
   }
 }
 
-boost::optional<boost::shared_ptr<Node>>
+boost::optional<std::shared_ptr<Node>>
 NetworkManager::getSlackNode() const {
   // TODO for now, we cannot retrieve from dynawo data interface this information: we will in a future version
   return boost::none;

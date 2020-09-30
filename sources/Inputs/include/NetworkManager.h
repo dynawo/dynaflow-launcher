@@ -21,7 +21,9 @@
 
 #include <DYNDataInterface.h>
 #include <boost/optional.hpp>
-#include <unordered_map>
+#include <boost/shared_ptr.hpp>
+#include <map>
+#include <memory>
 namespace dfl {
 namespace inputs {
 
@@ -32,7 +34,7 @@ namespace inputs {
  */
 class NetworkManager {
  public:
-  using ProcessNodeCallback = std::function<void(const boost::shared_ptr<Node>&)>;  ///< Callback for node algorithm
+  using ProcessNodeCallback = std::function<void(const std::shared_ptr<Node>&)>;  ///< Callback for node algorithm
 
  public:
   /**
@@ -63,7 +65,7 @@ class NetworkManager {
    *
    * @returns the information of the slack node, if present
    */
-  boost::optional<boost::shared_ptr<Node>> getSlackNode() const;
+  boost::optional<std::shared_ptr<Node>> getSlackNode() const;
 
  private:
   /**
@@ -72,9 +74,9 @@ class NetworkManager {
   void buildTree();
 
  private:
-  boost::shared_ptr<DYN::DataInterface> interface_;                  ///< data interface
-  std::unordered_map<Node::NodeId, boost::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
-  std::vector<ProcessNodeCallback> nodesCallbacks_;                  ///< list of callback or nodes
+  boost::shared_ptr<DYN::DataInterface> interface_;      ///< data interface
+  std::map<Node::NodeId, std::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
+  std::vector<ProcessNodeCallback> nodesCallbacks_;      ///< list of callback or nodes
 };
 
 }  // namespace inputs

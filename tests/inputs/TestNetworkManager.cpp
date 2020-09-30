@@ -17,7 +17,7 @@ static size_t count = 0;
 static const std::regex reg("_BUS_+[0-9]+_TN");
 
 static void
-checkNode(const boost::shared_ptr<dfl::inputs::Node>& node) {
+checkNode(const std::shared_ptr<dfl::inputs::Node>& node) {
   std::smatch match;
   ASSERT_TRUE(std::regex_search(node->id, match, reg));
   ++count;

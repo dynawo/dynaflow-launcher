@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -41,9 +41,9 @@ struct Node {
    */
   Node(const NodeId& id, double nominalVoltage);
 
-  const NodeId id;                                  ///< node id
-  const double nominalVoltage;                      ///< Nominal voltage of the node
-  std::vector<boost::shared_ptr<Node>> neighbours;  ///< list of neighbours
+  const NodeId id;                                ///< node id
+  const double nominalVoltage;                    ///< Nominal voltage of the node
+  std::vector<std::shared_ptr<Node>> neighbours;  ///< list of neighbours
 };
 
 }  // namespace inputs
