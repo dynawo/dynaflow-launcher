@@ -57,7 +57,7 @@ TEST(Options, nominal) {
   char* argv[] = {argv0, argv1, argv2};
   auto status = options.parse(3, argv);
   ASSERT_TRUE(std::get<0>(status));
-  ASSERT_EQ(dfl::common::Options::Request::NORMAL, std::get<1>(status));
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
 }
 
 TEST(Options, nominalLogLevel) {
@@ -70,7 +70,7 @@ TEST(Options, nominalLogLevel) {
   char* argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(3, argv);
   ASSERT_TRUE(std::get<0>(status));
-  ASSERT_EQ(dfl::common::Options::Request::NORMAL, std::get<1>(status));
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
 }
 
 TEST(Options, wrongLogLevel) {
@@ -83,5 +83,5 @@ TEST(Options, wrongLogLevel) {
   char* argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_FALSE(std::get<0>(status));
-  ASSERT_EQ(dfl::common::Options::Request::NORMAL, std::get<1>(status));
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
 }

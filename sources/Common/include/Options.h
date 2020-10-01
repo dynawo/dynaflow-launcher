@@ -49,9 +49,9 @@ class Options {
    * @brief type of request for dynaflow launcher
    */
   enum class Request {
-    NORMAL = 0,  ///< Normal run of launcher
-    HELP,        ///< help display is requested
-    VERSION      ///< versio display is requested
+    RUN_SIMULATION = 0,  ///< Run simulation
+    HELP,                ///< help display is requested
+    VERSION              ///< version display is requested
   };
 
  public:
