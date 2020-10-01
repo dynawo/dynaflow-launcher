@@ -18,9 +18,9 @@
     <par type="DOUBLE" name="line_currentLimit_maxTimeOperation" value="90"/>
     <par type="DOUBLE" name="load_Tp" value="90"/>
     <par type="DOUBLE" name="load_Tq" value="90"/>
-    <par type="DOUBLE" name="load_alpha" value="1"/>
+    <par type="DOUBLE" name="load_alpha" value="0"/>
     <par type="DOUBLE" name="load_alphaLong" value="0"/>
-    <par type="DOUBLE" name="load_beta" value="2"/>
+    <par type="DOUBLE" name="load_beta" value="0"/>
     <par type="DOUBLE" name="load_betaLong" value="0"/>
     <par type="BOOL" name="load_isControllable" value="false"/>
     <par type="BOOL" name="load_isRestorative" value="false"/>
