@@ -6,6 +6,7 @@
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",
     "VSCAsGenerators": "true",
-    "LCCAsLoads": "true"
+    "LCCAsLoads": "true",
+    "OutputDir": "/tmp"
   }
 }

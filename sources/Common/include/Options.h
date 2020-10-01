@@ -13,6 +13,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 /**
@@ -44,6 +45,15 @@ class Options {
     std::string dynawoLogLevel;   ///< chosen log level
   };
 
+  /**
+   * @brief type of request for dynaflow launcher
+   */
+  enum class Request {
+    NORMAL = 0,  ///< Normal run of launcher
+    HELP,        ///< help display is requested
+    VERSION      ///< versio display is requested
+  };
+
  public:
   static const std::vector<std::string> allowedLogLevels_;  ///< allowed values for log levels
 
@@ -72,9 +82,9 @@ class Options {
    * @param argc number of arguments
    * @param argv arguments
    *
-   * @returns false if display description/help message is required, true if not
+   * @returns a pair (status (OK/NOK) of the parsing, type of the request, irrelevant if NOK)
    */
-  bool parse(int argc, char* argv[]);
+  std::tuple<bool, Request> parse(int argc, char* argv[]);
 
   /**
    * @brief Retrieves description of options

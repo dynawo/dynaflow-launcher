@@ -39,6 +39,11 @@ namespace po = boost::program_options;
  * Encapsulate that way is required in order to overload boost program option validate
  */
 struct ParsedLogLevel {
+  /**
+   * @brief Constructor
+   *
+   * @brief lvl the log level string representation
+   */
   explicit ParsedLogLevel(const std::string& lvl) : logLevelDefinition{lvl} {}
 
   std::string logLevelDefinition;  ///< Log level definition
@@ -77,18 +82,21 @@ Options::Options() : desc_{}, config_{"", "", "", defaultLogLevel_} {
   desc_.add_options()("help,h", "Display help message")("log-level", po::value<ParsedLogLevel>(),
                                                         "Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is info")(
       "iidm", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
-      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use");
+      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version");
 }
 
-bool
-Options::parse(int argc, char* argv[]) {
+auto
+Options::parse(int argc, char* argv[]) -> std::tuple<bool, Request> {
   try {
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc_).run(), vm);
 
     config_.programName = basename(argv[0]);
     if (vm.count("help") > 0) {
-      return false;
+      return std::forward_as_tuple(true, Request::HELP);
+    }
+    if (vm.count("version") > 0) {
+      return std::forward_as_tuple(true, Request::VERSION);
     }
 
     po::notify(vm);
@@ -97,10 +105,10 @@ Options::parse(int argc, char* argv[]) {
     if (vm.count("log-level") > 0) {
       config_.dynawoLogLevel = vm["log-level"].as<ParsedLogLevel>().logLevelDefinition;
     }
-    return true;
+    return std::forward_as_tuple(true, Request::NORMAL);
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
-    return false;
+    return std::forward_as_tuple(false, Request::NORMAL);
   }
 }
 

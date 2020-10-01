@@ -16,7 +16,18 @@ TEST(Options, help) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--help"};
   char* argv[] = {argv0, argv1};
-  ASSERT_FALSE(options.parse(2, argv));
+  ASSERT_TRUE(std::get<0>(options.parse(2, argv)));
+  ASSERT_EQ(dfl::common::Options::Request::HELP, std::get<1>(options.parse(2, argv)));
+}
+
+TEST(Options, version) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--version"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_TRUE(std::get<0>(options.parse(2, argv)));
+  ASSERT_EQ(dfl::common::Options::Request::VERSION, std::get<1>(options.parse(2, argv)));
 }
 
 TEST(Options, missingIIDM) {
@@ -25,7 +36,7 @@ TEST(Options, missingIIDM) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--config=test.json"};
   char* argv[] = {argv0, argv1};
-  ASSERT_FALSE(options.parse(2, argv));
+  ASSERT_FALSE(std::get<0>(options.parse(2, argv)));
 }
 
 TEST(Options, missingCONFIG) {
@@ -34,7 +45,7 @@ TEST(Options, missingCONFIG) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--iidm=test.iidm"};
   char* argv[] = {argv0, argv1};
-  ASSERT_FALSE(options.parse(2, argv));
+  ASSERT_FALSE(std::get<0>(options.parse(2, argv)));
 }
 
 TEST(Options, nominal) {
@@ -44,7 +55,9 @@ TEST(Options, nominal) {
   char argv1[] = {"--iidm=test.iidm "};
   char argv2[] = {"--config=test.json"};
   char* argv[] = {argv0, argv1, argv2};
-  ASSERT_TRUE(options.parse(3, argv));
+  auto status = options.parse(3, argv);
+  ASSERT_TRUE(std::get<0>(status));
+  ASSERT_EQ(dfl::common::Options::Request::NORMAL, std::get<1>(status));
 }
 
 TEST(Options, nominalLogLevel) {
@@ -55,7 +68,9 @@ TEST(Options, nominalLogLevel) {
   char argv2[] = {"--config=test.json "};
   char argv3[] = {"--log-level=DEBUG"};
   char* argv[] = {argv0, argv1, argv2, argv3};
-  ASSERT_TRUE(options.parse(4, argv));
+  auto status = options.parse(3, argv);
+  ASSERT_TRUE(std::get<0>(status));
+  ASSERT_EQ(dfl::common::Options::Request::NORMAL, std::get<1>(status));
 }
 
 TEST(Options, wrongLogLevel) {
@@ -66,5 +81,7 @@ TEST(Options, wrongLogLevel) {
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--log-level=NO_LEVEL"};  // this level is not defined
   char* argv[] = {argv0, argv1, argv2, argv3};
-  ASSERT_FALSE(options.parse(4, argv));
+  auto status = options.parse(4, argv);
+  ASSERT_FALSE(std::get<0>(status));
+  ASSERT_EQ(dfl::common::Options::Request::NORMAL, std::get<1>(status));
 }

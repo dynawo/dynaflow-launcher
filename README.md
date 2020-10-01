@@ -21,6 +21,7 @@ To run DynaFlow launcher, the following environment variables must be defined:
 * IIDM_XML_XSD_PATH: must be the path to xsd of dynawo (generally ${DYNAWO_HOME}/share/iidm/xsd depending on the deployement of Dynawo)
 * DYNAFLOW_LAUNCHER_LOCALE: the locale dictionnary to use. The supported values are the same as for the build. The runtime value can be different from the one used in compilation but all keys must be the same in both files and must use the same number of arguments
 * DYNAFLOW_LAUNCHER_DICTS: the directory where the dictionnaries are located
+* DYNAFLOW_LAUNCHER_PAR: the directory where the constant parameter files are located
 
 Runtime options of binary are given by doing:
 
