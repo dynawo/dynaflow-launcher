@@ -105,10 +105,10 @@ Options::parse(int argc, char* argv[]) -> std::tuple<bool, Request> {
     if (vm.count("log-level") > 0) {
       config_.dynawoLogLevel = vm["log-level"].as<ParsedLogLevel>().logLevelDefinition;
     }
-    return std::forward_as_tuple(true, Request::NORMAL);
+    return std::forward_as_tuple(true, Request::RUN_SIMULATION);
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
-    return std::forward_as_tuple(false, Request::NORMAL);
+    return std::forward_as_tuple(false, Request::RUN_SIMULATION);
   }
 }
 
