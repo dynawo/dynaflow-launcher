@@ -274,4 +274,4 @@ install(FILES
         ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
 )
 
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/run_install.sh DESTINATION .)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/dynaflow-launcher.sh DESTINATION .)
