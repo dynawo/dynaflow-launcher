@@ -21,7 +21,7 @@ PUBLIC
 target_set_warnings(outputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
 target_link_libraries(outputs
 PUBLIC
-DynaFlowLauncher::common
+Boost::filesystem
 
 XMLSAXFormatter${LibXML_LINK_SUFFIX}
 )
