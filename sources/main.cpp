@@ -52,9 +52,10 @@ main(int argc, char* argv[]) {
 
     dfl::common::Log::init(options);
 
+    std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
     std::string locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
-    std::string dictDir = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_DICTS");
-    boost::filesystem::path dictPath(dictDir);
+    boost::filesystem::path dictPath(root);
+    dictPath.append("etc");
     std::string dict = dictPrefix + locale + ".dic";
     dictPath.append(dict);
     dfl::common::Dico::configure(dictPath.c_str());
@@ -68,9 +69,10 @@ main(int argc, char* argv[]) {
     auto& config = options.config();
     LOG(info) << MESS(InputsInfo, config.networkFilePath, config.configPath) << LOG_ENDL;
 
-    std::string parFilesDir = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_PAR");
+    boost::filesystem::path parFilesDir(root);
+    parFilesDir.append("etc");
 
-    dfl::Context context(config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir);
+    dfl::Context context(config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir.generic_string());
 
     context.process();
 
