@@ -12,6 +12,7 @@
 #include "Log.h"
 #include "Message.hpp"
 #include "Options.h"
+#include "version.h"
 
 #include <DYNError.h>
 #include <boost/filesystem.hpp>
@@ -38,10 +39,17 @@ main(int argc, char* argv[]) {
     DYN::Trace::init();
     dfl::common::Options options;
 
-    if (!options.parse(argc, argv)) {
+    auto parsing_status = options.parse(argc, argv);
+
+    if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
       LOG(info) << options << LOG_ENDL;
       return 0;
     }
+    if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
+      LOG(info) << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
+      return 0;
+    }
+
     dfl::common::Log::init(options);
 
     std::string locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
@@ -60,9 +68,13 @@ main(int argc, char* argv[]) {
     auto& config = options.config();
     LOG(info) << MESS(InputsInfo, config.networkFilePath, config.configPath) << LOG_ENDL;
 
-    dfl::Context context(config.networkFilePath, config.configPath);
+    std::string parFilesDir = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_PAR");
+
+    dfl::Context context(config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir);
 
     context.process();
+
+    context.exportOutputs();
 
     return 0;
   } catch (DYN::MessageError& e) {

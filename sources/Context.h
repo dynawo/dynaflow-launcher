@@ -18,7 +18,10 @@
 #pragma once
 
 #include "Configuration.h"
+#include "Job.h"
 #include "NetworkManager.h"
+
+#include <boost/filesystem.hpp>
 
 namespace dfl {
 /**
@@ -35,15 +38,22 @@ class Context {
    *
    * @param networkFilepath network filepath
    * @param configFilepath configuration filepath
+   * @param dynawLogLevel string representation of the dynawo log level
+   * @param parFileDir parameter file directory
    */
-  Context(const std::string& networkFilepath, const std::string& configFilepath);
+  Context(const std::string& networkFilepath, const std::string& configFilepath, const std::string& dynawLogLevel, const std::string& parFileDir);
 
   /**
    * @brief Process context
    *
-   * This perform all algorithms on inputs and write outputs
+   * This perform all algorithms on inputs
    */
   void process();
+
+  /**
+   * @brief Export output files
+   */
+  void exportOutputs();
 
  private:
   /// @brief Slack node origin
@@ -56,7 +66,13 @@ class Context {
   inputs::NetworkManager networkManager_;  ///< network manager
   inputs::Configuration config_;           ///< configuration
 
+  std::string basename_;                      ///< basename for all files
+  const std::string dynawLogLevel_;           ///< Dynawo log level for simulation to export
+  const boost::filesystem::path parFileDir_;  ///< constant parameter files directory
+
   std::shared_ptr<inputs::Node> slackNode_;  ///< computed slack node
   SlackNodeOrigin slackNodeOrigin_;          ///< slack node origin
+
+  std::unique_ptr<outputs::Job> jobWriter_;
 };
 }  // namespace dfl

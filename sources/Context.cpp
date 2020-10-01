@@ -21,14 +21,24 @@
 #include "Log.h"
 #include "Message.hpp"
 
+#include <boost/filesystem.hpp>
 #include <tuple>
 
+namespace file = boost::filesystem;
+
 namespace dfl {
-Context::Context(const std::string& networkFilepath, const std::string& configFilepath) :
+Context::Context(const std::string& networkFilepath, const std::string& configFilepath, const std::string& dynawLogLevel, const std::string& parFileDir) :
     networkManager_(networkFilepath),
     config_(configFilepath),
+    basename_{},
+    dynawLogLevel_{dynawLogLevel},
+    parFileDir_{parFileDir},
     slackNode_{},
-    slackNodeOrigin_{SlackNodeOrigin::ALGORITHM} {
+    slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
+    jobWriter_{} {
+  file::path path(networkFilepath);
+  basename_ = path.filename().replace_extension().generic_string();
+
   auto found_slack_node = networkManager_.getSlackNode();
   if (found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
     slackNode_ = *found_slack_node;
@@ -49,6 +59,25 @@ Context::process() {
   networkManager_.walkNodes();
 
   LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+}
+
+void
+Context::exportOutputs() {
+  LOG(info) << MESS(ExportInfo, basename_) << LOG_ENDL;
+
+  // Job
+  jobWriter_ = std::unique_ptr<outputs::Job>(new outputs::Job(outputs::Job::JobDefinition(config_.outputDir(), basename_, dynawLogLevel_)));
+  jobWriter_->write();
+
+  // Par
+  // copy constants files
+  for (auto& entry : boost::make_iterator_range(file::directory_iterator(parFileDir_))) {
+    if (entry.path().extension() == ".par") {
+      file::path dest(config_.outputDir());
+      dest.append(entry.path().filename().generic_string());
+      file::copy_file(entry.path(), dest, file::copy_option::overwrite_if_exists);
+    }
+  }
 }
 
 }  // namespace dfl

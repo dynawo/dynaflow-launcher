@@ -48,8 +48,27 @@ macro(DEFINE_TEST _name _module_name)
   )
 endmacro(DEFINE_TEST)
 
+# macro to define tests with file checking
+macro(DEFINE_TEST_FILE _name _module_name _extension)
+  add_executable(${_name} ${_name}.cpp)
+  target_link_libraries(${_name}
+    DynaFlowLauncherTest)
+  target_include_directories(${_name} PRIVATE ${TEST_DIR})
+  add_test(
+    NAME ${_module_name}.${_name}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND}
+      -DEXE=$<TARGET_FILE:${_name}>
+      -DEXPECTED_OUTPUT_FILE=res/${_name}/${_name}_ref.${_extension}
+      -DTEST_OUTPUT_FILE=results/${_name}.${_extension}
+      -DWORKING_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+      -P ${CMAKE_SOURCE_DIR}/cmake/RunAndCheck.cmake
+  )
+endmacro(DEFINE_TEST_FILE)
+
 
 add_subdirectory(common)
 add_subdirectory(inputs)
 add_subdirectory(algo)
+add_subdirectory(outputs)
 add_subdirectory(main)

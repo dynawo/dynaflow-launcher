@@ -67,6 +67,7 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
     helper::updateValue(useVSCAsGenerators_, config, "VSCAsGenerators");
     helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
+    helper::updateValue(outputDir_, config, "OutputDir");
   } catch (std::exception& e) {
     LOG(error) << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);

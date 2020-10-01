@@ -89,12 +89,21 @@ class Configuration {
   }
 
   /**
-   * @brief determines ifLCC are considered as loads
+   * @brief determines if LCC are considered as loads
    *
    * @returns the parameter value
    */
   bool useLCCAsLoads() const {
     return useLCCAsLoads_;
+  }
+
+  /**
+   * @brief Retrieves the output directory
+   *
+   * @returns the parameter value
+   */
+  const std::string& outputDir() const {
+    return outputDir_;
   }
 
  private:
@@ -105,6 +114,7 @@ class Configuration {
   bool isAutomaticSlackBusOn_ = true;       ///< automatic slack bus on
   bool useVSCAsGenerators_ = false;         ///< VSC considered as generators
   bool useLCCAsLoads_ = false;              ///< LCC are considered as generators
+  std::string outputDir_ = ".";             ///< Directory for output files
 };
 
 }  // namespace inputs

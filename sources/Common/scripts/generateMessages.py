@@ -13,13 +13,18 @@ import sys
 import re
 import os
 
-
+##
 # @brief Dictionnary definition for message keys
 #
+
+
 class Dictionnary:
 
+    ##
+    # @brief the regex for dictionnary pair definition
     message_def_pattern = re.compile(r"\s*(?P<key>\w+)\s*=\s*(?P<message>.*)")
 
+    ##
     # @brief Write common header to all files
     # @param file : the file to write into
     @staticmethod
@@ -35,6 +40,7 @@ class Dictionnary:
 //
 ''')
 
+    ##
     # @brief Write header file code
     # @param self : object pointer
     # @param file : the file to write into
@@ -95,6 +101,7 @@ class Dictionnary:
         file.write("}  // namespace common\n")
         file.write("}  // namespace dfl\n")
 
+    ##
     # @brief Write implementation file code
     # @param self : object pointer
     # @param file : the file to write into
@@ -137,13 +144,17 @@ class Dictionnary:
                         "message": match.group("message")
                     })
 
+    ##
     # @brief Constructor
     # @param self : object pointer
     # @param input : the input filepath of the file ot read
     def __init__(self, input):
+        ##
+        #  List of pairs defining a message
         self.messages = []
         self._parse(input)
 
+    ##
     # @brief Write header file code
     # @param self : object pointer
     # @param outputFile : the filepath of the file to write into
@@ -152,6 +163,7 @@ class Dictionnary:
             Dictionnary._writeHeaderAll(file)
             self._writeHeader(file)
 
+    ##
     # @brief Write implementation file code
     # @param self : object pointer
     # @param outputFile : the filepath of the file to write into

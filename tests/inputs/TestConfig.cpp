@@ -21,6 +21,7 @@ TEST(Config, Nominal) {
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
   ASSERT_TRUE(config.useVSCAsGenerators());
   ASSERT_TRUE(config.useLCCAsLoads());
+  ASSERT_EQ("/tmp", config.outputDir());
 }
 
 TEST(Config, Default) {
@@ -33,4 +34,5 @@ TEST(Config, Default) {
   ASSERT_TRUE(config.isAutomaticSlackBusOn());
   ASSERT_FALSE(config.useVSCAsGenerators());
   ASSERT_FALSE(config.useLCCAsLoads());
+  ASSERT_EQ(".", config.outputDir());
 }
