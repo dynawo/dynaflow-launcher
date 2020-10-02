@@ -21,6 +21,7 @@
 #include "Log.h"
 #include "Message.hpp"
 
+#include <algorithm>
 #include <boost/filesystem.hpp>
 #include <tuple>
 
@@ -70,8 +71,18 @@ Context::process() {
   LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
 
   if (!checkConnexity()) {
-    LOG(error) << MESS(ConnexityError, slackNode_->id) << LOG_ENDL;
-    return false;
+    if (slackNodeOrigin_ == SlackNodeOrigin::FILE) {
+      LOG(error) << MESS(ConnexityError, slackNode_->id) << LOG_ENDL;
+      return false;
+    } else {
+      LOG(warn) << MESS(ConnexityErrorReCompute, slackNode_->id) << LOG_ENDL;
+      // Compute slack node only on main connex component
+      slackNode_.reset();
+      std::for_each(mainConnexNodes_.begin(), mainConnexNodes_.end(), algo::SlackNodeAlgorithm(slackNode_));
+
+      // By construction, the new slack node is in the main connex component
+      LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+    }
   }
 
   return true;
