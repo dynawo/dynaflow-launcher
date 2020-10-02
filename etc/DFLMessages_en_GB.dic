@@ -13,3 +13,4 @@ InputsInfo                    =     Processing network input file %1% and config
 ExportInfo                    =     Exporting outputs files for %1%
 SlackNode                     =     Slack node of id %1% found with origin %2% (0=file, 1=algorithm)
 ConnexityError                =     Slack node of id %1% not present in main connex component
+ConnexityErrorReCompute       =     Slack node of id %1% not present in main connex component: compute slack node only in main connex component
