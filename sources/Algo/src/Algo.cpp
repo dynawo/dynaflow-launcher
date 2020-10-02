@@ -22,10 +22,10 @@
 namespace dfl {
 namespace algo {
 
-SlackNodeAlgorithm::SlackNodeAlgorithm(std::shared_ptr<inputs::Node>& slackNode) : slackNode_{slackNode} {}
+SlackNodeAlgorithm::SlackNodeAlgorithm(NodePtr& slackNode) : slackNode_{slackNode} {}
 
 void
-SlackNodeAlgorithm::operator()(const std::shared_ptr<inputs::Node>& node) {
+SlackNodeAlgorithm::operator()(const NodePtr& node) {
   if (!slackNode_) {
     slackNode_ = node;
   } else {
@@ -33,6 +33,38 @@ SlackNodeAlgorithm::operator()(const std::shared_ptr<inputs::Node>& node) {
         std::forward_as_tuple(node->nominalVoltage, node->neighbours.size())) {
       slackNode_ = node;
     }
+  }
+}
+
+/////////////////////////////////////////////////////////
+
+ConnexityAlgorithm::ConnexityAlgorithm(ConnexGroup& mainConnexity) : markedNodes_{}, mainConnexity_{mainConnexity} {}
+
+void
+ConnexityAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<NodePtr>& nodes) {
+  for (auto it = nodes.begin(); it != nodes.end(); ++it) {
+    if (markedNodes_.count(*it) == 0) {
+      markedNodes_.insert(*it);
+      group.push_back(*it);
+      updateConnexGroup(group, (*it)->neighbours);
+    }
+  }
+}
+
+void
+ConnexityAlgorithm::operator()(const NodePtr& node) {
+  if (markedNodes_.count(node) > 0) {
+    // already processed
+    return;
+  }
+
+  ConnexGroup group;
+  markedNodes_.insert(node);
+  group.push_back(node);
+  updateConnexGroup(group, node->neighbours);
+
+  if (mainConnexity_.size() < group.size()) {
+    mainConnexity_.swap(group);
   }
 }
 

@@ -74,7 +74,9 @@ main(int argc, char* argv[]) {
 
     dfl::Context context(config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir.generic_string());
 
-    context.process();
+    if (!context.process()) {
+      return -1;
+    }
 
     context.exportOutputs();
 

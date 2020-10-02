@@ -46,5 +46,77 @@ struct Node {
   std::vector<std::shared_ptr<Node>> neighbours;  ///< list of neighbours
 };
 
+/**
+ * @brief Determines if two nodes are equal
+ *
+ * Used criteria is node id
+ *
+ * @param lhs first node
+ * @param rhs second node
+ *
+ * @returns sttaus of the comparaison
+ */
+bool operator==(const Node& lhs, const Node& rhs);
+
+/**
+ * @brief Determines if two nodes are different
+ *
+ * Used criteria is node id
+ *
+ * @param lhs first node
+ * @param rhs second node
+ *
+ * @returns sttaus of the comparaison
+ */
+bool operator!=(const Node& lhs, const Node& rhs);
+
+/**
+ * @brief Determines if a node is inferior to another node
+ *
+ * Used criteria is node id
+ *
+ * @param lhs first node
+ * @param rhs second node
+ *
+ * @returns sttaus of the comparaison
+ */
+bool operator<(const Node& lhs, const Node& rhs);
+
+/**
+ * @brief Determines if a node is inferior or equal to another node
+ *
+ * Used criteria is node id
+ *
+ * @param lhs first node
+ * @param rhs second node
+ *
+ * @returns sttaus of the comparaison
+ */
+bool operator<=(const Node& lhs, const Node& rhs);
+
+/**
+ * @brief Determines if a node is superior to another node
+ *
+ * Used criteria is node id
+ *
+ * @param lhs first node
+ * @param rhs second node
+ *
+ * @returns sttaus of the comparaison
+ */
+bool operator>(const Node& lhs, const Node& rhs);
+
+/**
+ * @brief Determines if a node is superior or equal to another node
+ *
+ * Used criteria is node id
+ *
+ * @param lhs first node
+ * @param rhs second node
+ *
+ * @returns sttaus of the comparaison
+ */
+bool operator>=(const Node& lhs, const Node& rhs);
+
 }  // namespace inputs
 }  // namespace dfl

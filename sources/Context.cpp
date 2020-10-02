@@ -51,14 +51,30 @@ Context::Context(const std::string& networkFilepath, const std::string& configFi
     }
     networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
   }
+
+  networkManager_.onNode(algo::ConnexityAlgorithm(mainConnexNodes_));
 }
 
-void
+bool
+Context::checkConnexity() const {
+  // The slack node must be in the main connex component
+  return std::find_if(mainConnexNodes_.begin(), mainConnexNodes_.end(),
+                      [this](const std::shared_ptr<inputs::Node>& node) { return node->id == slackNode_->id; }) != mainConnexNodes_.end();
+}
+
+bool
 Context::process() {
   // Process all algorithms on nodes
   networkManager_.walkNodes();
 
   LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+
+  if (!checkConnexity()) {
+    LOG(error) << MESS(ConnexityError, slackNode_->id) << LOG_ENDL;
+    return false;
+  }
+
+  return true;
 }
 
 void
