@@ -21,5 +21,35 @@ namespace dfl {
 namespace inputs {
 Node::Node(const NodeId& idNode, double nominalVoltageNode) : id(idNode), nominalVoltage{nominalVoltageNode}, neighbours{} {}
 
+bool
+operator==(const Node& lhs, const Node& rhs) {
+  return lhs.id == rhs.id;
+}
+
+bool
+operator!=(const Node& lhs, const Node& rhs) {
+  return !(lhs == rhs);
+}
+
+bool
+operator<(const Node& lhs, const Node& rhs) {
+  return lhs.id < rhs.id;
+}
+
+bool
+operator<=(const Node& lhs, const Node& rhs) {
+  return (lhs < rhs) || (lhs == rhs);
+}
+
+bool
+operator>(const Node& lhs, const Node& rhs) {
+  return !(lhs <= rhs);
+}
+
+bool
+operator>=(const Node& lhs, const Node& rhs) {
+  return !(lhs < rhs);
+}
+
 }  // namespace inputs
 }  // namespace dfl

@@ -47,8 +47,10 @@ class Context {
    * @brief Process context
    *
    * This perform all algorithms on inputs
+   *
+   * @returns status of the process
    */
-  void process();
+  bool process();
 
   /**
    * @brief Export output files
@@ -63,6 +65,16 @@ class Context {
   };
 
  private:
+  /**
+   * @brief Check connexity
+   *
+   * Checks that the found slack node is compatible with the main connex component
+   *
+   * @returns true if comaptible, false if not
+   */
+  bool checkConnexity() const;
+
+ private:
   inputs::NetworkManager networkManager_;  ///< network manager
   inputs::Configuration config_;           ///< configuration
 
@@ -72,7 +84,8 @@ class Context {
 
   std::shared_ptr<inputs::Node> slackNode_;  ///< computed slack node
   SlackNodeOrigin slackNodeOrigin_;          ///< slack node origin
+  std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;
 
-  std::unique_ptr<outputs::Job> jobWriter_;
+  std::unique_ptr<outputs::Job> jobWriter_;  ///< Job writer
 };
 }  // namespace dfl
