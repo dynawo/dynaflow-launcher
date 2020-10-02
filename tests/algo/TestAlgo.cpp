@@ -113,8 +113,8 @@ TEST(Connexity, base) {
   nodes[5]->neighbours.push_back(nodes[4]);
   nodes[6]->neighbours.push_back(nodes[5]);
 
-  dfl::algo::ConnexityAlgorithm::ConnexGroup main;
-  dfl::algo::ConnexityAlgorithm algo(main);
+  dfl::algo::MainConnexComponentAlgorithm::ConnexGroup main;
+  dfl::algo::MainConnexComponentAlgorithm algo(main);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 

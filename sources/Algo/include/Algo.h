@@ -59,9 +59,9 @@ class SlackNodeAlgorithm : public NodeAlgorithm {
 };
 
 /**
- * @brief Algorithm to determine connexity
+ * @brief Algorithm to determine largest connex component
  */
-class ConnexityAlgorithm : public NodeAlgorithm {
+class MainConnexComponentAlgorithm : public NodeAlgorithm {
  public:
   using ConnexGroup = std::vector<NodePtr>;  ///< Alias for group of nodes
 
@@ -71,7 +71,7 @@ class ConnexityAlgorithm : public NodeAlgorithm {
    *
    * @param mainConnexity main connex component to update
    */
-  explicit ConnexityAlgorithm(ConnexGroup& mainConnexity);
+  explicit MainConnexComponentAlgorithm(ConnexGroup& mainConnexity);
 
   /**
    * @brief Perform algorithm

@@ -52,7 +52,7 @@ Context::Context(const std::string& networkFilepath, const std::string& configFi
     networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
   }
 
-  networkManager_.onNode(algo::ConnexityAlgorithm(mainConnexNodes_));
+  networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
 }
 
 bool

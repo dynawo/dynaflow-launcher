@@ -82,9 +82,9 @@ class Context {
   const std::string dynawLogLevel_;           ///< Dynawo log level for simulation to export
   const boost::filesystem::path parFileDir_;  ///< constant parameter files directory
 
-  std::shared_ptr<inputs::Node> slackNode_;  ///< computed slack node
-  SlackNodeOrigin slackNodeOrigin_;          ///< slack node origin
-  std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;
+  std::shared_ptr<inputs::Node> slackNode_;                     ///< computed slack node
+  SlackNodeOrigin slackNodeOrigin_;                             ///< slack node origin
+  std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;  ///< main connex component
 
   std::unique_ptr<outputs::Job> jobWriter_;  ///< Job writer
 };
