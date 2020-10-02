@@ -38,10 +38,10 @@ SlackNodeAlgorithm::operator()(const NodePtr& node) {
 
 /////////////////////////////////////////////////////////
 
-ConnexityAlgorithm::ConnexityAlgorithm(ConnexGroup& mainConnexity) : markedNodes_{}, mainConnexity_{mainConnexity} {}
+MainConnexComponentAlgorithm::MainConnexComponentAlgorithm(ConnexGroup& mainConnexity) : markedNodes_{}, mainConnexity_{mainConnexity} {}
 
 void
-ConnexityAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<NodePtr>& nodes) {
+MainConnexComponentAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<NodePtr>& nodes) {
   for (auto it = nodes.begin(); it != nodes.end(); ++it) {
     if (markedNodes_.count(*it) == 0) {
       markedNodes_.insert(*it);
@@ -52,7 +52,7 @@ ConnexityAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<Node
 }
 
 void
-ConnexityAlgorithm::operator()(const NodePtr& node) {
+MainConnexComponentAlgorithm::operator()(const NodePtr& node) {
   if (markedNodes_.count(node) > 0) {
     // already processed
     return;

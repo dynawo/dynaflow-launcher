@@ -43,11 +43,11 @@ main(int argc, char* argv[]) {
 
     if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
       LOG(info) << options << LOG_ENDL;
-      return 0;
+      return EXIT_SUCCESS;
     }
     if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
       LOG(info) << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
-      return 0;
+      return EXIT_SUCCESS;
     }
 
     dfl::common::Log::init(options);
@@ -63,7 +63,7 @@ main(int argc, char* argv[]) {
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
       LOG(error) << "Dictionnary " << dictPath << " not found: check runtime environment" << LOG_ENDL;
-      return -1;
+      return EXIT_FAILURE;
     }
 
     auto& config = options.config();
@@ -75,23 +75,23 @@ main(int argc, char* argv[]) {
     dfl::Context context(config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir.generic_string());
 
     if (!context.process()) {
-      return -1;
+      return EXIT_FAILURE;
     }
 
     context.exportOutputs();
 
-    return 0;
+    return EXIT_SUCCESS;
   } catch (DYN::MessageError& e) {
     std::cerr << "Dynawo: " << e.what() << std::endl;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
-    return -1;
+    return EXIT_FAILURE;
   } catch (std::exception& e) {
     std::cerr << e.what() << std::endl;
     LOG(error) << e.what() << LOG_ENDL;
-    return -1;
+    return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "Unknown error" << std::endl;
     LOG(error) << "Unknown error" << LOG_ENDL;
-    return -1;
+    return EXIT_FAILURE;
   }
 }
