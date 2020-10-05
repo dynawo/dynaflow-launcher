@@ -21,6 +21,7 @@
 #include "Job.h"
 #include "NetworkManager.h"
 
+#include <DYNSimulation.h>
 #include <boost/filesystem.hpp>
 
 namespace dfl {
@@ -34,14 +35,24 @@ namespace dfl {
 class Context {
  public:
   /**
+   * @brief Context definition
+   */
+  struct ContextDef {
+    std::string networkFilepath;  ///< network filepath
+    std::string configFilepath;   ///< configuration filepath
+    std::string dynawLogLevel;    ///< string representation of the dynawo log level
+    std::string parFileDir;       ///< parameter file directory
+    std::string dynawoResDir;     ///< DYNAWO resources
+    std::string locale;           ///< lcoalization
+  };
+
+ public:
+  /**
    * @brief Constructor
    *
-   * @param networkFilepath network filepath
-   * @param configFilepath configuration filepath
-   * @param dynawLogLevel string representation of the dynawo log level
-   * @param parFileDir parameter file directory
+   * @param def The context definition
    */
-  Context(const std::string& networkFilepath, const std::string& configFilepath, const std::string& dynawLogLevel, const std::string& parFileDir);
+  explicit Context(const ContextDef& def);
 
   /**
    * @brief Process context
@@ -56,6 +67,11 @@ class Context {
    * @brief Export output files
    */
   void exportOutputs();
+
+  /**
+   * @brief Execute simulation
+   */
+  void execute();
 
  private:
   /// @brief Slack node origin
@@ -74,18 +90,24 @@ class Context {
    */
   bool checkConnexity() const;
 
+  /**
+   * @brief Create dynawo simulation
+   *
+   * @param in the job entry to use
+   */
+  void createSimulation(boost::shared_ptr<job::JobEntry>& job);
+
  private:
+  ContextDef def_;                         ///< context definition
   inputs::NetworkManager networkManager_;  ///< network manager
   inputs::Configuration config_;           ///< configuration
 
-  std::string basename_;                      ///< basename for all files
-  const std::string dynawLogLevel_;           ///< Dynawo log level for simulation to export
-  const boost::filesystem::path parFileDir_;  ///< constant parameter files directory
+  std::string basename_;  ///< basename for all files
 
   std::shared_ptr<inputs::Node> slackNode_;                     ///< computed slack node
   SlackNodeOrigin slackNodeOrigin_;                             ///< slack node origin
   std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;  ///< main connex component
 
-  std::unique_ptr<outputs::Job> jobWriter_;  ///< Job writer
+  boost::shared_ptr<DYN::Simulation> simu_;  ///< Dynawo simulation
 };
 }  // namespace dfl

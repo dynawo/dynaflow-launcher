@@ -8,137 +8,125 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+/**
+ * @file  Job.cpp
+ *
+ * @brief Dynaflow launcher job exporter implementation file
+ *
+ */
+
 #include "Job.h"
 
-#include <boost/filesystem.hpp>
+#include <JOBAppenderEntry.h>
+#include <JOBAppenderEntryFactory.h>
+#include <JOBDynModelsEntry.h>
+#include <JOBDynModelsEntryFactory.h>
+#include <JOBFinalStateEntry.h>
+#include <JOBFinalStateEntryFactory.h>
+#include <JOBJobEntry.h>
+#include <JOBJobEntryFactory.h>
+#include <JOBLogsEntry.h>
+#include <JOBLogsEntryFactory.h>
+#include <JOBModelerEntry.h>
+#include <JOBModelerEntryFactory.h>
+#include <JOBModelsDirEntry.h>
+#include <JOBModelsDirEntryFactory.h>
+#include <JOBNetworkEntry.h>
+#include <JOBNetworkEntryFactory.h>
+#include <JOBOutputsEntry.h>
+#include <JOBOutputsEntryFactory.h>
+#include <JOBSimulationEntry.h>
+#include <JOBSimulationEntryFactory.h>
+#include <JOBSolverEntry.h>
+#include <JOBSolverEntryFactory.h>
+#include <boost/make_shared.hpp>
 #include <fstream>
-#include <xml/sax/formatter/AttributeList.h>
 
 namespace dfl {
 namespace outputs {
 
 const std::chrono::seconds Job::timeStart_{0};
 const std::chrono::seconds Job::durationSimu_{30};
-const std::string Job::solverFilename = "solver.par";
+const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
 
 Job::Job(const JobDefinition& def) : def_{def} {}
 
-void
+boost::shared_ptr<job::JobEntry>
 Job::write() {
-  boost::filesystem::path path(def_.dirname);
+  auto job = job::JobEntryFactory::newInstance();
+  job->setName(def_.filename);
 
-  if (!boost::filesystem::is_directory(path)) {
-    boost::filesystem::create_directories(path);
-  }
+  job->setSolverEntry(writeSolver());
+  job->setModelerEntry(writeModeler());
+  job->setSimulationEntry(writeSimulation());
+  job->setOutputsEntry(writeOutputs());
 
-  path.append(def_.filename + ".jobs");
-  std::ofstream os(path.c_str());
-
-  auto formatter = xml::sax::formatter::Formatter::createFormatter(os);
-  formatter->addNamespace("dyn", "http://www.rte-france.com/dynawo");
-
-  formatter->startDocument();
-  xml::sax::formatter::AttributeList attrs;
-
-  formatter->startElement("dyn", "jobs", attrs);
-
-  attrs.add("name", def_.filename);
-  formatter->startElement("dyn", "job", attrs);
-  attrs.clear();
-
-  writeSolver(*formatter);
-  writeModeler(*formatter);
-  writeSimulation(*formatter);
-  writeOutputs(*formatter);
-
-  formatter->endElement();  // job
-
-  formatter->endElement();  // jobs
-  formatter->endDocument();
+  return job;
 }
 
-void
-Job::writeSolver(xml::sax::formatter::Formatter& formatter) {
-  xml::sax::formatter::AttributeList attrs;
+boost::shared_ptr<job::SolverEntry>
+Job::writeSolver() {
+  auto solver = job::SolverEntryFactory::newInstance();
+  solver->setLib(solverName_);
+  solver->setParametersFile(solverFilename_);
+  solver->setParametersId(solverParId_);
 
-  attrs.add("lib", solverName_);
-  attrs.add("parFile", solverFilename);
-  attrs.add("parId", solverParId_);
-  formatter.startElement("dyn", "solver", attrs);
-  formatter.endElement();  // solver
+  return solver;
 }
 
-void
-Job::writeModeler(xml::sax::formatter::Formatter& formatter) {
-  xml::sax::formatter::AttributeList attrs;
-  attrs.add("compileDir", "outputs/compilation");
-  formatter.startElement("dyn", "modeler", attrs);
-  attrs.clear();
+boost::shared_ptr<job::ModelerEntry>
+Job::writeModeler() {
+  auto modeler = job::ModelerEntryFactory::newInstance();
+  modeler->setCompileDir("outputs/compilation");
 
-  attrs.add("iidmFile", def_.filename + ".iidm");
-  attrs.add("parFile", "Network.par");
-  attrs.add("parId", "Network");
-  formatter.startElement("dyn", "network", attrs);
-  attrs.clear();
-  formatter.endElement();  // network
+  auto models = job::DynModelsEntryFactory::newInstance();
+  models->setDydFile(def_.filename + ".dyd");
+  modeler->addDynModelsEntry(models);
 
-  attrs.add("dydFile", def_.filename + ".dyd");
-  formatter.startElement("dyn", "dynModels", attrs);
-  attrs.clear();
-  formatter.endElement();  // dynModels
+  auto network = job::NetworkEntryFactory::newInstance();
+  network->setIidmFile(def_.filename + ".iidm");
+  network->setNetworkParFile("Network.par");
+  network->setNetworkParId("Network");
+  modeler->setNetworkEntry(network);
 
-  attrs.add("useStandardModels", true);
-  formatter.startElement("dyn", "precompiledModels", attrs);
-  attrs.clear();
-  formatter.endElement();  // precompiledModels
+  auto premodels = job::ModelsDirEntryFactory::newInstance();
+  premodels->setUseStandardModels(true);
+  modeler->setPreCompiledModelsDirEntry(premodels);
+  modeler->setModelicaModelsDirEntry(premodels);
 
-  attrs.add("useStandardModels", true);
-  formatter.startElement("dyn", "modelicaModels", attrs);
-  attrs.clear();
-  formatter.endElement();  // modelicaModels
-
-  formatter.endElement();  // modeler
+  return modeler;
 }
 
-void
-Job::writeSimulation(xml::sax::formatter::Formatter& formatter) {
-  xml::sax::formatter::AttributeList attrs;
+boost::shared_ptr<job::SimulationEntry>
+Job::writeSimulation() {
+  auto simu = job::SimulationEntryFactory::newInstance();
+  simu->setStartTime(timeStart_.count());
+  simu->setStopTime((timeStart_ + durationSimu_).count());
 
-  attrs.add("startTime", timeStart_.count());
-  attrs.add("stopTime", durationSimu_.count());
-  formatter.startElement("dyn", "simulation", attrs);
-  formatter.endElement();  // simulation
+  return simu;
 }
 
-void
-Job::writeOutputs(xml::sax::formatter::Formatter& formatter) {
-  xml::sax::formatter::AttributeList attrs;
+boost::shared_ptr<job::OutputsEntry>
+Job::writeOutputs() {
+  auto output = job::OutputsEntryFactory::newInstance();
+  output->setOutputsDirectory("outputs");
 
-  attrs.add("directory", "outputs");
-  formatter.startElement("dyn", "outputs", attrs);
+  auto log = job::LogsEntryFactory::newInstance();
+  auto appender = job::AppenderEntryFactory::newInstance();
+  appender->setTag("");
+  appender->setFilePath("dynawo.log");
+  appender->setLvlFilter(def_.dynawoLogLevel);
+  log->addAppenderEntry(appender);
+  output->setLogsEntry(log);
 
-  attrs.clear();
-  attrs.add("exportIIDMFile", true);
-  attrs.add("exportDumpFile", false);
-  formatter.startElement("dyn", "finalState", attrs);
+  auto final_state = job::FinalStateEntryFactory::newInstance();
+  final_state->setExportIIDMFile(true);
+  final_state->setExportDumpFile(false);
+  output->setFinalStateEntry(final_state);
 
-  attrs.clear();
-  formatter.startElement("dyn", "logs");
-
-  attrs.add("tag", "");
-  attrs.add("file", "dynawo.log");
-  attrs.add("lvlFilter", def_.dynawoLogLevel);
-  formatter.startElement("dyn", "appenders", attrs);
-  attrs.clear();
-  formatter.endElement();
-
-  formatter.endElement();  // logs
-
-  formatter.endElement();  // finalState
-
-  formatter.endElement();  // outputs
+  return output;
 }
 
 }  // namespace outputs
