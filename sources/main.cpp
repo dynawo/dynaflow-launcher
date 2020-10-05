@@ -52,6 +52,7 @@ main(int argc, char* argv[]) {
 
     dfl::common::Log::init(options);
 
+    std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
     std::string locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
     boost::filesystem::path dictPath(root);
@@ -72,7 +73,8 @@ main(int argc, char* argv[]) {
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
-    dfl::Context context(config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir.generic_string());
+    dfl::Context::ContextDef def{config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir.generic_string(), res, locale};
+    dfl::Context context(def);
 
     if (!context.process()) {
       return EXIT_FAILURE;
@@ -80,6 +82,8 @@ main(int argc, char* argv[]) {
 
     context.exportOutputs();
 
+    context.execute();
+    
     return EXIT_SUCCESS;
   } catch (DYN::MessageError& e) {
     std::cerr << "Dynawo: " << e.what() << std::endl;

@@ -32,7 +32,7 @@ target_link_libraries(DynaFlowLauncher
   DynaFlowLauncher::algo
   DynaFlowLauncher::outputs
 
-  Dynawo::dynawo_API_PAR
-  Dynawo::dynawo_API_DYD
+  Dynawo::dynawo_Simulation
+  Dynawo::dynawo_SimulationCommon
 )
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})

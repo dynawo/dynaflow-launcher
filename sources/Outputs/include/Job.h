@@ -11,15 +11,15 @@
 /**
  * @file  Job.h
  *
- * @brief Dynaflow launcher job file writer header file
+ * @brief Dynaflow launcher job exporter header file
  *
  */
 
 #pragma once
 
+#include <JOBJobEntry.h>
 #include <chrono>
 #include <string>
-#include <xml/sax/formatter/Formatter.h>
 
 namespace dfl {
 /// @brief Namespace for outputs management
@@ -37,13 +37,11 @@ class Job {
     /**
      * @brief Constructor
      *
-     * @param dir the output directory for job
      * @param filepath output filename
      * @param lvl dynawo log level
      */
-    JobDefinition(const std::string& dir, const std::string& filepath, const std::string& lvl) : dirname(dir), filename(filepath), dynawoLogLevel(lvl) {}
+    JobDefinition(const std::string& filepath, const std::string& lvl) : filename(filepath), dynawoLogLevel(lvl) {}
 
-    std::string dirname;         ///< output directory
     std::string filename;        ///< filename of the job output file
     std::string dynawoLogLevel;  ///< Dynawo log level, in string representation
   };
@@ -56,45 +54,47 @@ class Job {
   explicit Job(const JobDefinition& def);
 
   /**
-   * @brief Write the output job file
+   * @brief Exports the job
+   *
+   * @returns a job entry
    */
-  void write();
+  boost::shared_ptr<job::JobEntry> write();
 
  private:
   static const std::chrono::seconds timeStart_;     ///< The constant start time of the simulation of the job
   static const std::chrono::seconds durationSimu_;  ///< the constant duration of the simulation in the job
   static const std::string solverName_;             ///< The solver name used during the simulation
-  static const std::string solverFilename;          ///< The solver filename
+  static const std::string solverFilename_;         ///< The solver filename
   static const std::string solverParId_;            ///< The parameter id in the .par file corresponding to the solver parameters
 
  private:
   /**
    * @brief Write the solver element of the job file in formatter
    *
-   * @param formatter the formatter to update
+   * @returns solver entry to add to the job entry
    */
-  void writeSolver(xml::sax::formatter::Formatter& formatter);
+  boost::shared_ptr<job::SolverEntry> writeSolver();
 
   /**
    * @brief Write the modeler element of the job file in formatter
    *
-   * @param formatter the formatter to update
+   * @returns modeler entry to add to the job
    */
-  void writeModeler(xml::sax::formatter::Formatter& formatter);
+  boost::shared_ptr<job::ModelerEntry> writeModeler();
 
   /**
    * @brief Write the simulation element of the job file in formatter
    *
-   * @param formatter the formatter to update
+   * @returns simulation entry to add to the job
    */
-  void writeSimulation(xml::sax::formatter::Formatter& formatter);
+  boost::shared_ptr<job::SimulationEntry> writeSimulation();
 
   /**
    * @brief Write the outputs element of the job file in formatter
    *
-   * @param formatter the formatter to update
+   * @returns outputs entry to add to the job
    */
-  void writeOutputs(xml::sax::formatter::Formatter& formatter);
+  boost::shared_ptr<job::OutputsEntry> writeOutputs();
 
  private:
   JobDefinition def_;  ///< the job definition to use

@@ -7,5 +7,5 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-DEFINE_TEST_FILE(TestJob INPUTS jobs)
+DEFINE_TEST(TestJob OUTPUTS)
 target_link_libraries(TestJob DynaFlowLauncher::outputs)

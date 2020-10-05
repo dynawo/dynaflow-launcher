@@ -22,7 +22,6 @@ target_set_warnings(outputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper t
 target_link_libraries(outputs
 PUBLIC
 Boost::filesystem
-
-XMLSAXFormatter${LibXML_LINK_SUFFIX}
+Dynawo::dynawo_API_JOB
 )
 add_library(DynaFlowLauncher::outputs ALIAS outputs)

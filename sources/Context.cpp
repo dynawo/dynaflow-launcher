@@ -21,23 +21,24 @@
 #include "Log.h"
 #include "Message.hpp"
 
+#include <DYNSimulationContext.h>
 #include <algorithm>
 #include <boost/filesystem.hpp>
+#include <boost/make_shared.hpp>
 #include <tuple>
 
 namespace file = boost::filesystem;
 
 namespace dfl {
-Context::Context(const std::string& networkFilepath, const std::string& configFilepath, const std::string& dynawLogLevel, const std::string& parFileDir) :
-    networkManager_(networkFilepath),
-    config_(configFilepath),
+Context::Context(const ContextDef& def) :
+    def_{def},
+    networkManager_(def.networkFilepath),
+    config_(def.configFilepath),
     basename_{},
-    dynawLogLevel_{dynawLogLevel},
-    parFileDir_{parFileDir},
     slackNode_{},
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
-    jobWriter_{} {
-  file::path path(networkFilepath);
+    simu_{} {
+  file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
   auto found_slack_node = networkManager_.getSlackNode();
@@ -48,7 +49,7 @@ Context::Context(const std::string& networkFilepath, const std::string& configFi
     slackNodeOrigin_ = SlackNodeOrigin::ALGORITHM;
     // slack node not given in iidm or not requested: it is computed internally
     if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
-      LOG(warn) << MESS(NetworkSlackNodeNotFound, networkFilepath) << LOG_ENDL;
+      LOG(warn) << MESS(NetworkSlackNodeNotFound, def.networkFilepath) << LOG_ENDL;
     }
     networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
   }
@@ -89,21 +90,53 @@ Context::process() {
 }
 
 void
+Context::createSimulation(boost::shared_ptr<job::JobEntry>& job) {
+  auto simu_context = boost::make_shared<DYN::SimulationContext>();
+  simu_context->setResourcesDirectory(def_.dynawoResDir);
+  simu_context->setLocale(def_.locale);
+
+  file::path inputPath(config_.outputDir());
+  auto path = file::canonical(inputPath);
+  simu_context->setInputDirectory(path.generic_string() + "/");
+  simu_context->setWorkingDirectory(config_.outputDir() + "/");
+
+  // TODO(lecourtoisflo) For now, since we don't generate the other outputs files, an exception is trigerred: uncomment this once all files are generated
+  // simu_ = boost::make_shared<DYN::Simulation>(job, simu_context);
+  // simu_->init();
+  (void)job;  // TODO(lecourtoisflo) remove this line after uncommenting previous TODO: this line is here to avoid the unused variable error
+}
+
+void
 Context::exportOutputs() {
   LOG(info) << MESS(ExportInfo, basename_) << LOG_ENDL;
 
+  // create output directory
+  file::path outputDir(config_.outputDir());
+  if (!file::exists(outputDir)) {
+    file::create_directory(outputDir);
+  }
+
   // Job
-  jobWriter_ = std::unique_ptr<outputs::Job>(new outputs::Job(outputs::Job::JobDefinition(config_.outputDir(), basename_, dynawLogLevel_)));
-  jobWriter_->write();
+  outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
+  auto job = jobWriter.write();
 
   // Par
   // copy constants files
-  for (auto& entry : boost::make_iterator_range(file::directory_iterator(parFileDir_))) {
+  for (auto& entry : boost::make_iterator_range(file::directory_iterator(def_.parFileDir))) {
     if (entry.path().extension() == ".par") {
-      file::path dest(config_.outputDir());
+      file::path dest(outputDir);
       dest.append(entry.path().filename().generic_string());
       file::copy_file(entry.path(), dest, file::copy_option::overwrite_if_exists);
     }
+  }
+
+  createSimulation(job);
+}
+
+void
+Context::execute() {
+  if (simu_) {
+    simu_->simulate();
   }
 }
 
