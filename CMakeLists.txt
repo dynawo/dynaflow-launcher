@@ -84,8 +84,6 @@ list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
 
-find_package(Dynawo 1.3.0 REQUIRED)
-
 #LibArchive
 find_package(LibArchive 2.8.0 REQUIRED)
 #ZLIB
@@ -140,6 +138,9 @@ add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem system)
 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
+
+## Dynawo
+find_package(Dynawo 1.3.0 REQUIRED)
 
 ## Python
 find_package(PythonInterp REQUIRED)
