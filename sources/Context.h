@@ -43,7 +43,7 @@ class Context {
     std::string dynawLogLevel;    ///< string representation of the dynawo log level
     std::string parFileDir;       ///< parameter file directory
     std::string dynawoResDir;     ///< DYNAWO resources
-    std::string locale;           ///< lcoalization
+    std::string locale;           ///< localization
   };
 
  public:
