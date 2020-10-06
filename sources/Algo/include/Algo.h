@@ -119,5 +119,100 @@ class MainConnexComponentAlgorithm : public NodeAlgorithm {
   ConnexGroup& mainConnexity_;                                                     ///< the main connex component to update
 };
 
+/**
+ * @brief Generation definition for algorithm
+ */
+struct GeneratorDefinition {
+  /**
+   * @brief Generator model type
+   */
+  enum class ModelType {
+    SIGNALN = 0,                       ///< Use GeneratorPVSignalN model
+    DIAGRAM_PQ_SIGNALN,                ///< Use GeneratorPVDiagramPQSignalN model
+    WITH_IMPENDANCE_SIGNALN,           ///< Use GeneratorPVWithImpedanceSignalN model
+    WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN  ///< Use GeneratorPVWithImpedanceDiagramPQSignalN
+  };
+
+  /**
+   * @brief Constructor
+   *
+   * @param genId generator id
+   * @param type the model to use
+   */
+  GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type) : id{genId}, model{type} {}
+
+  inputs::Generator::GeneratorId id;  ///< generator id
+  ModelType model;                    ///< model
+};
+
+/**
+ * @brief Algorithm to find generators
+ */
+class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
+ public:
+  using Generators = std::vector<GeneratorDefinition>;  ///< alias for list of generators
+
+  /**
+   * @brief Constructor
+   *
+   * @param gens generators list to update
+   * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
+   */
+  GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits);
+
+  /**
+   * @brief Perform algorithm
+   *
+   * Add the generators of the nodes and deducing the model to use
+   *
+   * @param node the node to process
+   */
+  void operator()(const NodePtr& node);
+
+ private:
+  Generators& generators_;          ///< the generators list to update
+  bool useInfiniteReactivelimits_;  ///< determine if infinite reactive limits are used
+};
+
+/**
+ * @brief Load definition for algorithms
+ */
+struct LoadDefinition {
+  /**
+   * @brief Constructor
+   *
+   * @param loadId the load id
+   */
+  explicit LoadDefinition(const inputs::Load::LoadId& loadId) : id{loadId} {}
+  inputs::Load::LoadId id;  ///< load id
+};
+
+/**
+ * @brief The load definition algorithm
+ */
+class LoadDefinitionAlgorithm : public NodeAlgorithm {
+ public:
+  using Loads = std::vector<LoadDefinition>;  ///< alias for list of loads
+
+  /**
+   * @brief Constructor
+   *
+   * @param loads the list of loads to update
+   */
+  explicit LoadDefinitionAlgorithm(Loads& loads);
+
+  /**
+   * @brief Perform the algorithm
+   *
+   * Update the list with the loads of the node
+   *
+   * @param node the node to process
+   */
+  void operator()(const NodePtr& node);
+
+ private:
+  Loads& loads_;  ///< the loads to update
+};
+
 }  // namespace algo
 }  // namespace dfl

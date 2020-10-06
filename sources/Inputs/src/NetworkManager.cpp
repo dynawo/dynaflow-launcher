@@ -19,7 +19,9 @@
 
 #include <DYNBusInterface.h>
 #include <DYNDataInterfaceFactory.h>
+#include <DYNGeneratorInterface.h>
 #include <DYNLineInterface.h>
+#include <DYNLoadInterface.h>
 #include <DYNNetworkInterface.h>
 #include <DYNThreeWTransformerInterface.h>
 #include <DYNTwoWTransformerInterface.h>
@@ -48,6 +50,26 @@ NetworkManager::buildTree() {
         assert(nodes_.count((*it_b)->getID()) == 0);
 #endif
         nodes_[(*it_b)->getID()] = std::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
+      }
+
+      const auto& loads = (*it_v)->getLoads();
+      for (auto it_l = loads.begin(); it_l != loads.end(); ++it_l) {
+        auto nodeid = (*it_l)->getBusInterface()->getID();
+#if _DEBUG_
+        // node should exist at this point
+        assert(nodes_.count(nodeid));
+#endif
+        nodes_[nodeid]->loads.emplace_back((*it_l)->getID());
+      }
+
+      const auto& generators = (*it_v)->getGenerators();
+      for (auto it_g = generators.begin(); it_g != generators.end(); ++it_g) {
+        auto nodeid = (*it_g)->getBusInterface()->getID();
+#if _DEBUG_
+        // node should exist at this point
+        assert(nodes_.count(nodeid));
+#endif
+        nodes_[nodeid]->generators.emplace_back((*it_g)->getID());
       }
     }
   }

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Behaviours.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -44,6 +46,8 @@ struct Node {
   const NodeId id;                                ///< node id
   const double nominalVoltage;                    ///< Nominal voltage of the node
   std::vector<std::shared_ptr<Node>> neighbours;  ///< list of neighbours
+  std::vector<Load> loads;                        ///< list of loads associated to this node
+  std::vector<Generator> generators;              ///< list of generators associated to this node
 };
 
 /**
