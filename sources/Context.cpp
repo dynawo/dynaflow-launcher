@@ -37,6 +37,8 @@ Context::Context(const ContextDef& def) :
     basename_{},
     slackNode_{},
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
+    generators_{},
+    loads_{},
     simu_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
@@ -85,6 +87,11 @@ Context::process() {
       LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
     }
   }
+
+  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, config_.useInfiniteReactiveLimits()));
+  onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_));
+
+  walkNodesMain();
 
   return true;
 }
@@ -137,6 +144,15 @@ void
 Context::execute() {
   if (simu_) {
     simu_->simulate();
+  }
+}
+
+void
+Context::walkNodesMain() {
+  for (auto it = mainConnexNodes_.begin(); it != mainConnexNodes_.end(); ++it) {
+    for (auto it_c = callbacksMainConnexComponent_.begin(); it_c != callbacksMainConnexComponent_.end(); ++it_c) {
+      (*it_c)(*it);
+    }
   }
 }
 

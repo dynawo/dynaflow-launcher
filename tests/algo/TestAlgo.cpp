@@ -152,3 +152,86 @@ TEST(Connexity, SameSize) {
   std::sort(nodeids_main.begin(), nodeids_main.end());
   ASSERT_EQ(expected_nodes, nodeids_main);
 }
+
+TEST(Generators, base) {
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
+      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
+      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
+      std::make_shared<dfl::inputs::Node>("6", 0.0),
+  };
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN),
+  };
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN),
+  };
+
+  nodes[0]->generators.emplace_back("00");
+  nodes[0]->generators.emplace_back("01");
+
+  nodes[2]->generators.emplace_back("02");
+
+  nodes[4]->generators.emplace_back("05");
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true);
+
+  std::for_each(nodes.begin(), nodes.end(), algo_infinite);
+
+  ASSERT_EQ(4, generators.size());
+  for (size_t index = 0; index < generators.size(); ++index) {
+    ASSERT_EQ(expected_gens_infinite[index].id, generators[index].id);
+    ASSERT_EQ(expected_gens_infinite[index].model, generators[index].model);
+  }
+
+  generators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, false);
+
+  std::for_each(nodes.begin(), nodes.end(), algo_finite);
+
+  ASSERT_EQ(4, generators.size());
+  for (size_t index = 0; index < generators.size(); ++index) {
+    ASSERT_EQ(expected_gens_finite[index].id, generators[index].id);
+    ASSERT_EQ(expected_gens_finite[index].model, generators[index].model);
+  }
+}
+
+TEST(Loads, base) {
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
+      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
+      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
+      std::make_shared<dfl::inputs::Node>("6", 0.0),
+  };
+
+  dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
+      dfl::algo::LoadDefinition("00"),
+      dfl::algo::LoadDefinition("01"),
+      dfl::algo::LoadDefinition("02"),
+      dfl::algo::LoadDefinition("05"),
+  };
+
+  nodes[0]->loads.emplace_back("00");
+  nodes[0]->loads.emplace_back("01");
+
+  nodes[2]->loads.emplace_back("02");
+
+  nodes[4]->loads.emplace_back("05");
+
+  dfl::algo::LoadDefinitionAlgorithm::Loads loads;
+  dfl::algo::LoadDefinitionAlgorithm algo(loads);
+
+  std::for_each(nodes.begin(), nodes.end(), algo);
+
+  ASSERT_EQ(4, loads.size());
+  for (size_t index = 0; index < loads.size(); ++index) {
+    ASSERT_EQ(expected_loads[index].id, loads[index].id);
+  }
+}

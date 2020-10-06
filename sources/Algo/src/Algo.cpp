@@ -22,7 +22,7 @@
 namespace dfl {
 namespace algo {
 
-SlackNodeAlgorithm::SlackNodeAlgorithm(NodePtr& slackNode) : slackNode_{slackNode} {}
+SlackNodeAlgorithm::SlackNodeAlgorithm(NodePtr& slackNode) : NodeAlgorithm(), slackNode_{slackNode} {}
 
 void
 SlackNodeAlgorithm::operator()(const NodePtr& node) {
@@ -38,7 +38,7 @@ SlackNodeAlgorithm::operator()(const NodePtr& node) {
 
 /////////////////////////////////////////////////////////
 
-MainConnexComponentAlgorithm::MainConnexComponentAlgorithm(ConnexGroup& mainConnexity) : markedNodes_{}, mainConnexity_{mainConnexity} {}
+MainConnexComponentAlgorithm::MainConnexComponentAlgorithm(ConnexGroup& mainConnexity) : NodeAlgorithm(), markedNodes_{}, mainConnexity_{mainConnexity} {}
 
 void
 MainConnexComponentAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<NodePtr>& nodes) {
@@ -65,6 +65,39 @@ MainConnexComponentAlgorithm::operator()(const NodePtr& node) {
 
   if (mainConnexity_.size() < group.size()) {
     mainConnexity_.swap(group);
+  }
+}
+
+////////////////////////////////////////////////////////////////
+
+GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits) :
+    NodeAlgorithm(),
+    generators_{gens},
+    useInfiniteReactivelimits_{infinitereactivelimits} {}
+
+void
+GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
+  auto& node_generators = node->generators;
+  if (node_generators.size() == 1) {
+    auto model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::SIGNALN : GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
+    generators_.emplace_back(node_generators.front().id, model);
+  } else {
+    auto model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN
+                                            : GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN;
+    for (auto it = node_generators.begin(); it != node_generators.end(); ++it) {
+      generators_.emplace_back(it->id, model);
+    }
+  }
+}
+
+/////////////////////////////////////////////////////////////////
+
+LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads) : NodeAlgorithm(), loads_{loads} {}
+
+void
+LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
+  for (auto it = node->loads.begin(); it != node->loads.end(); ++it) {
+    loads_.emplace_back(it->id);
   }
 }
 
