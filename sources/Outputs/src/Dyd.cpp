@@ -17,6 +17,8 @@
 
 #include "Dyd.h"
 
+#include "Constants.h"
+
 #include <DYDBlackBoxModelFactory.h>
 #include <DYDDynamicModelsCollection.h>
 #include <DYDDynamicModelsCollectionFactory.h>
@@ -34,14 +36,14 @@ namespace outputs {
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_lib_ = {
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN, "GeneratorPVWithImpedanceSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "GeneratorPVWithImpedanceSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "GeneratorPVWithImpedanceDiagramPQSignalN")};
 
 // cannot use macroConnectorGenImpedenceName_ and macroConnectorGenName_ because they are private variable
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
-    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GEN_NETWORK_CONNECTOR"),                      // same as macroConnectorGenName_
-    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GEN_NETWORK_CONNECTOR"),           // same as macroConnectorGenName_
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN, "GEN_IMP_NETWORK_CONNECTOR"),  // same as macroConnectorGenImpedenceName_
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GEN_NETWORK_CONNECTOR"),                     // same as macroConnectorGenName_
+    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GEN_NETWORK_CONNECTOR"),          // same as macroConnectorGenName_
+    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "GEN_IMP_NETWORK_CONNECTOR"),  // same as macroConnectorGenImpedenceName_
     std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN,
                    "GEN_IMP_NETWORK_CONNECTOR")  // same as macroConnectorGenImpedenceName_
 };
@@ -112,7 +114,7 @@ Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
   model->setStaticId(load.id);
   model->setLib("LoadAlphaBetaRestorative");
   model->setParFile(basename + ".par");
-  model->setParId("GenericRestorativeLoad");
+  model->setParId(constants::loadParId);
   model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefLoadName_));
 
   return model;
@@ -129,10 +131,10 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   std::string parId;
   switch (def.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN:
-    parId = "signalNGenerator";
+    parId = constants::signalNGeneratorParId;
     break;
-  case algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN:
-    parId = "impSignalNGenerator";
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
+    parId = constants::impSignalNGeneratorParId;
     break;
   default:
     parId = def.id;
@@ -154,7 +156,7 @@ Dyd::writeConstantsModel(const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
   model->setLib("DYNModelSignalN");
   model->setParFile(basename + ".par");
-  model->setParId("SignalN");
+  model->setParId(constants::signalNParId);
 
   ret.push_back(model);
 

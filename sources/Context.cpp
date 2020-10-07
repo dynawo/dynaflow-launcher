@@ -19,8 +19,10 @@
 
 #include "Algo.h"
 #include "Dyd.h"
+#include "Job.h"
 #include "Log.h"
 #include "Message.hpp"
+#include "Par.h"
 
 #include <DYNSimulationContext.h>
 #include <algorithm>
@@ -121,7 +123,7 @@ Context::exportOutputs() {
   // create output directory
   file::path outputDir(config_.outputDir());
   if (!file::exists(outputDir)) {
-    file::create_directory(outputDir);
+    file::create_directories(outputDir);
   }
 
   // Copy IIDM in output directory in order to be used correctly by the simulation
@@ -149,6 +151,11 @@ Context::exportOutputs() {
       file::copy_file(entry.path(), dest, file::copy_option::overwrite_if_exists);
     }
   }
+  // create specific par
+  file::path parOutput(config_.outputDir());
+  parOutput.append(basename_ + ".par");
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, parOutput.generic_string(), generators_));
+  parWriter.write();
 
   createSimulation(job);
 }

@@ -10,6 +10,8 @@
 set(SOURCES
 src/Job.cpp
 src/Dyd.cpp
+src/Par.cpp
+src/Constants.h
 )
 
 add_library(outputs STATIC ${SOURCES})
@@ -28,5 +30,6 @@ Boost::filesystem
 
 Dynawo::dynawo_API_JOB
 Dynawo::dynawo_API_DYD
+Dynawo::dynawo_API_PAR
 )
 add_library(DynaFlowLauncher::outputs ALIAS outputs)

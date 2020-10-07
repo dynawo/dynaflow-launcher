@@ -51,11 +51,25 @@ struct Generator {
    *
    * @param genId the id of the generator
    * @param curvePoints the list of reactive capabilities curve points
+   * @param qmin minimum reactive power for the generator
+   * @param qmax maximum reactive power for the generator
+   * @param pmin minimum active power for the generator
+   * @param pmax maximum active power for the generator
    */
-  explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints) : id{genId}, points(curvePoints) {}
+  explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax) :
+      id{genId},
+      points(curvePoints),
+      qmin{qmin},
+      qmax{qmax},
+      pmin{pmin},
+      pmax{pmax} {}
 
   GeneratorId id;                          ///< generator id
   std::vector<ReactiveCurvePoint> points;  ///< reactive points
+  double qmin;                             ///< minimum reactive power
+  double qmax;                             ///< maximum reactive power
+  double pmin;                             ///< minimum active power
+  double pmax;                             ///< maximum active power
 };
 
 }  // namespace inputs
