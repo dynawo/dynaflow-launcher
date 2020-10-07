@@ -159,27 +159,31 @@ TEST(Generators, base) {
       std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
       std::make_shared<dfl::inputs::Node>("6", 0.0),
   };
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points;
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points0;
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN),
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN),
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN),
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN, "0", points0),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN, "0", {}),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", {}),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", {}),
   };
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN),
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN),
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN),
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points0),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", {}),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", {}),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "4", {}),
   };
 
-  nodes[0]->generators.emplace_back("00");
-  nodes[0]->generators.emplace_back("01");
+  nodes[0]->generators.emplace_back("00", points0);
+  nodes[0]->generators.emplace_back("01", points);
 
-  nodes[2]->generators.emplace_back("02");
+  nodes[2]->generators.emplace_back("02", points);
 
-  nodes[4]->generators.emplace_back("05");
+  nodes[4]->generators.emplace_back("05", points);
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true);
@@ -190,6 +194,12 @@ TEST(Generators, base) {
   for (size_t index = 0; index < generators.size(); ++index) {
     ASSERT_EQ(expected_gens_infinite[index].id, generators[index].id);
     ASSERT_EQ(expected_gens_infinite[index].model, generators[index].model);
+    ASSERT_EQ(expected_gens_infinite[index].points.size(), generators[index].points.size());
+    for (size_t index_p = 0; index_p < expected_gens_infinite[index].points.size(); ++index_p) {
+      ASSERT_EQ(expected_gens_infinite[index].points[index_p].p, generators[index].points[index_p].p);
+      ASSERT_EQ(expected_gens_infinite[index].points[index_p].qmax, generators[index].points[index_p].qmax);
+      ASSERT_EQ(expected_gens_infinite[index].points[index_p].qmin, generators[index].points[index_p].qmin);
+    }
   }
 
   generators.clear();
@@ -201,6 +211,12 @@ TEST(Generators, base) {
   for (size_t index = 0; index < generators.size(); ++index) {
     ASSERT_EQ(expected_gens_finite[index].id, generators[index].id);
     ASSERT_EQ(expected_gens_finite[index].model, generators[index].model);
+    ASSERT_EQ(expected_gens_finite[index].points.size(), generators[index].points.size());
+    for (size_t index_p = 0; index_p < expected_gens_finite[index].points.size(); ++index_p) {
+      ASSERT_EQ(expected_gens_finite[index].points[index_p].p, generators[index].points[index_p].p);
+      ASSERT_EQ(expected_gens_finite[index].points[index_p].qmax, generators[index].points[index_p].qmax);
+      ASSERT_EQ(expected_gens_finite[index].points[index_p].qmin, generators[index].points[index_p].qmin);
+    }
   }
 }
 
@@ -212,10 +228,10 @@ TEST(Loads, base) {
   };
 
   dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
-      dfl::algo::LoadDefinition("00"),
-      dfl::algo::LoadDefinition("01"),
-      dfl::algo::LoadDefinition("02"),
-      dfl::algo::LoadDefinition("05"),
+      dfl::algo::LoadDefinition("00", "0"),
+      dfl::algo::LoadDefinition("01", "0"),
+      dfl::algo::LoadDefinition("02", "2"),
+      dfl::algo::LoadDefinition("05", "4"),
   };
 
   nodes[0]->loads.emplace_back("00");

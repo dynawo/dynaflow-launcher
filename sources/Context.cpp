@@ -18,6 +18,7 @@
 #include "Context.h"
 
 #include "Algo.h"
+#include "Dyd.h"
 #include "Log.h"
 #include "Message.hpp"
 
@@ -123,9 +124,21 @@ Context::exportOutputs() {
     file::create_directory(outputDir);
   }
 
+  // Copy IIDM in output directory in order to be used correctly by the simulation
+  // TODO(lecourtoisflo) Remove this when IIDM will not be re-read by Dynawo library
+  file::path dest(outputDir);
+  dest.append(basename_ + ".iidm");
+  file::copy_file(def_.networkFilepath, dest, file::copy_option::overwrite_if_exists);
+
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
   auto job = jobWriter.write();
+
+  // Dyd
+  file::path dydOutput(config_.outputDir());
+  dydOutput.append(basename_ + ".dyd");
+  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_));
+  dydWriter.write();
 
   // Par
   // copy constants files

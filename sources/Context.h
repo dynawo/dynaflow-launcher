@@ -58,7 +58,7 @@ class Context {
   /**
    * @brief Process context
    *
-   * This perform all algorithms on inputs
+   * This perform all algorithms on nodes inputs of the network manager then perform all specific algorithm on the main connex component
    *
    * @returns status of the process
    */

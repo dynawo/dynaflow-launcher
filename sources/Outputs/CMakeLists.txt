@@ -9,6 +9,7 @@
 
 set(SOURCES
 src/Job.cpp
+src/Dyd.cpp
 )
 
 add_library(outputs STATIC ${SOURCES})
@@ -21,7 +22,11 @@ PUBLIC
 target_set_warnings(outputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
 target_link_libraries(outputs
 PUBLIC
+DynaFlowLauncher::algo
+
 Boost::filesystem
+
 Dynawo::dynawo_API_JOB
+Dynawo::dynawo_API_DYD
 )
 add_library(DynaFlowLauncher::outputs ALIAS outputs)

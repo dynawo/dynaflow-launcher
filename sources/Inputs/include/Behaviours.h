@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <DYNGeneratorInterface.h>
 #include <string>
 
 namespace dfl {
@@ -42,16 +43,19 @@ struct Load {
  * @brief Generator behaviour
  */
 struct Generator {
-  using GeneratorId = std::string;  ///< alias for id
+  using GeneratorId = std::string;                                         ///< alias for id
+  using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< alias for point type
 
   /**
    * @brief Constructor
    *
    * @param genId the id of the generator
+   * @param curvePoints the list of reactive capabilities curve points
    */
-  explicit Generator(const GeneratorId& genId) : id{genId} {}
+  explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints) : id{genId}, points(curvePoints) {}
 
-  GeneratorId id;  ///< generator id
+  GeneratorId id;                          ///< generator id
+  std::vector<ReactiveCurvePoint> points;  ///< reactive points
 };
 
 }  // namespace inputs
