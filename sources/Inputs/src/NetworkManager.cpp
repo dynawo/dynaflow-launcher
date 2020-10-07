@@ -70,7 +70,7 @@ NetworkManager::buildTree() {
         assert(nodes_.count(nodeid));
 #endif
         if ((*it_g)->isVoltageRegulationOn()) {
-          // We don't use dynamic models for generators without voltage regulation
+          // We don't use dynamic models for generators with voltage regulation disabled
           nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints());
         }
       }
