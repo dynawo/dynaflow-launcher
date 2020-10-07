@@ -130,7 +130,7 @@ struct GeneratorDefinition {
   enum class ModelType {
     SIGNALN = 0,                       ///< Use GeneratorPVSignalN model
     DIAGRAM_PQ_SIGNALN,                ///< Use GeneratorPVDiagramPQSignalN model
-    WITH_IMPENDANCE_SIGNALN,           ///< Use GeneratorPVWithImpedanceSignalN model
+    WITH_IMPEDANCE_SIGNALN,            ///< Use GeneratorPVWithImpedanceSignalN model
     WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN  ///< Use GeneratorPVWithImpedanceDiagramPQSignalN
   };
 
@@ -143,18 +143,30 @@ struct GeneratorDefinition {
    * @param type the model to use
    * @param nodeId the node id connected to the generator
    * @param curvePoints the list of reactive capabilities curve points
+   * @param qmin minimum reactive power for the generator
+   * @param qmax maximum reactive power for the generator
+   * @param pmin minimum active power for the generator
+   * @param pmax maximum active power for the generator
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
-                      const std::vector<ReactiveCurvePoint>& curvePoints) :
+                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax) :
       id{genId},
       model{type},
       nodeId{nodeId},
-      points(curvePoints) {}
+      points(curvePoints),
+      qmin{qmin},
+      qmax{qmax},
+      pmin{pmin},
+      pmax{pmax} {}
 
   inputs::Generator::GeneratorId id;       ///< generator id
   ModelType model;                         ///< model
   inputs::Node::NodeId nodeId;             ///< connected node id
   std::vector<ReactiveCurvePoint> points;  ///< curve points
+  double qmin;                             ///< minimum reactive power
+  double qmax;                             ///< maximum reactive power
+  double pmin;                             ///< minimum active power
+  double pmax;                             ///< maximum active power
 };
 
 /**

@@ -19,7 +19,6 @@
 
 #include "Algo.h"
 #include "Configuration.h"
-#include "Job.h"
 #include "NetworkManager.h"
 
 #include <DYNSimulation.h>

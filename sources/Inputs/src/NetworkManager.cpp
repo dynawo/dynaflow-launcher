@@ -71,7 +71,8 @@ NetworkManager::buildTree() {
 #endif
         if ((*it_g)->isVoltageRegulationOn()) {
           // We don't use dynamic models for generators with voltage regulation disabled
-          nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints());
+          nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
+                                                  (*it_g)->getPMin(), (*it_g)->getPMax());
         }
       }
     }

@@ -165,25 +165,25 @@ TEST(Generators, base) {
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN, "0", points0),
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN, "0", {}),
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", {}),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", {}),
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points0, 0, 0, 0, 0),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points, -1, 1, -1, 1),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", points, -2, 2, -2, 2),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5),
   };
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points0),
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", {}),
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", {}),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "4", {}),
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points, -1, 1, -1, 1),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", points, -2, 2, -2, 2),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5),
   };
 
-  nodes[0]->generators.emplace_back("00", points0);
-  nodes[0]->generators.emplace_back("01", points);
+  nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0);
+  nodes[0]->generators.emplace_back("01", points, -1, 1, -1, 1);
 
-  nodes[2]->generators.emplace_back("02", points);
+  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2);
 
-  nodes[4]->generators.emplace_back("05", points);
+  nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5);
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true);
@@ -195,6 +195,10 @@ TEST(Generators, base) {
     ASSERT_EQ(expected_gens_infinite[index].id, generators[index].id);
     ASSERT_EQ(expected_gens_infinite[index].model, generators[index].model);
     ASSERT_EQ(expected_gens_infinite[index].points.size(), generators[index].points.size());
+    ASSERT_EQ(expected_gens_infinite[index].qmin, generators[index].qmin);
+    ASSERT_EQ(expected_gens_infinite[index].qmax, generators[index].qmax);
+    ASSERT_EQ(expected_gens_infinite[index].pmin, generators[index].pmin);
+    ASSERT_EQ(expected_gens_infinite[index].pmax, generators[index].pmax);
     for (size_t index_p = 0; index_p < expected_gens_infinite[index].points.size(); ++index_p) {
       ASSERT_EQ(expected_gens_infinite[index].points[index_p].p, generators[index].points[index_p].p);
       ASSERT_EQ(expected_gens_infinite[index].points[index_p].qmax, generators[index].points[index_p].qmax);
@@ -211,6 +215,10 @@ TEST(Generators, base) {
   for (size_t index = 0; index < generators.size(); ++index) {
     ASSERT_EQ(expected_gens_finite[index].id, generators[index].id);
     ASSERT_EQ(expected_gens_finite[index].model, generators[index].model);
+    ASSERT_EQ(expected_gens_finite[index].qmin, generators[index].qmin);
+    ASSERT_EQ(expected_gens_finite[index].qmax, generators[index].qmax);
+    ASSERT_EQ(expected_gens_finite[index].pmin, generators[index].pmin);
+    ASSERT_EQ(expected_gens_finite[index].pmax, generators[index].pmax);
     ASSERT_EQ(expected_gens_finite[index].points.size(), generators[index].points.size());
     for (size_t index_p = 0; index_p < expected_gens_finite[index].points.size(); ++index_p) {
       ASSERT_EQ(expected_gens_finite[index].points[index_p].p, generators[index].points[index_p].p);
