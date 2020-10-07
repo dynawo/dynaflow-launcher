@@ -47,7 +47,7 @@ class Dyd {
      * @param base the basename for current file (corresponds to filepath basename)
      * @param filepath the filepath of the dyd file to write
      * @param gens generators definition coming from algorithms
-     * @param loaddefs laod definitions coming from algorithms
+     * @param loaddefs load definitions coming from algorithms
      * @param slacknode the slack node to use
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
@@ -62,7 +62,7 @@ class Dyd {
     std::string filename;                               ///< filepath for file to write
     std::vector<algo::GeneratorDefinition> generators;  ///< generators found
     std::vector<algo::LoadDefinition> loads;            ///< list of loads
-    std::shared_ptr<inputs::Node> slackNode;            ///< list of generators
+    std::shared_ptr<inputs::Node> slackNode;            ///< slack node to use
   };
 
   /**
@@ -121,7 +121,7 @@ class Dyd {
   /**
    * @brief Write macro static references
    *
-   * Create maro static reference elements for generators and loads
+   * Create macro static reference elements for generators and loads
    *
    * @returns list of macro connectors
    */
@@ -151,7 +151,7 @@ class Dyd {
 
  private:
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
-      correspondence_lib_;  ///< Correspondence between generator model type and libary name in dyd file
+      correspondence_lib_;  ///< Correspondence between generator model type and library name in dyd file
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_macro_connector_;                           ///< Correspondence between generator model type and macro connector name in dyd file
   static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads

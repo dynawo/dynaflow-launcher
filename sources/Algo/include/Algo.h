@@ -141,14 +141,14 @@ struct GeneratorDefinition {
    *
    * @param genId generator id
    * @param type the model to use
-   * @param nodeid the node id connected to the generator
+   * @param nodeId the node id connected to the generator
    * @param curvePoints the list of reactive capabilities curve points
    */
-  GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeid,
+  GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
                       const std::vector<ReactiveCurvePoint>& curvePoints) :
       id{genId},
       model{type},
-      nodeId{nodeid},
+      nodeId{nodeId},
       points(curvePoints) {}
 
   inputs::Generator::GeneratorId id;       ///< generator id
@@ -194,9 +194,9 @@ struct LoadDefinition {
    * @brief Constructor
    *
    * @param loadId the load id
-   * @param nodeid the node id connected to the load
+   * @param nodeId the node id connected to the load
    */
-  explicit LoadDefinition(const inputs::Load::LoadId& loadId, const inputs::Node::NodeId& nodeid) : id{loadId}, nodeId{nodeid} {}
+  explicit LoadDefinition(const inputs::Load::LoadId& loadId, const inputs::Node::NodeId& nodeId) : id{loadId}, nodeId{nodeId} {}
 
   inputs::Load::LoadId id;      ///< load id
   inputs::Node::NodeId nodeId;  ///< connected node id
