@@ -80,12 +80,13 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
   auto& node_generators = node->generators;
   if (node_generators.size() == 1) {
     auto model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::SIGNALN : GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
-    generators_.emplace_back(node_generators.front().id, model);
+    const auto& gen = node_generators.front();
+    generators_.emplace_back(gen.id, model, node->id, gen.points);
   } else {
     auto model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::WITH_IMPENDANCE_SIGNALN
                                             : GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN;
     for (auto it = node_generators.begin(); it != node_generators.end(); ++it) {
-      generators_.emplace_back(it->id, model);
+      generators_.emplace_back(it->id, model, node->id, it->points);
     }
   }
 }
@@ -97,7 +98,7 @@ LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads) : NodeAlgorithm()
 void
 LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
   for (auto it = node->loads.begin(); it != node->loads.end(); ++it) {
-    loads_.emplace_back(it->id);
+    loads_.emplace_back(it->id, node->id);
   }
 }
 

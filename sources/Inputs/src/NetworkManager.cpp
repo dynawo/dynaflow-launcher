@@ -69,7 +69,10 @@ NetworkManager::buildTree() {
         // node should exist at this point
         assert(nodes_.count(nodeid));
 #endif
-        nodes_[nodeid]->generators.emplace_back((*it_g)->getID());
+        if ((*it_g)->isVoltageRegulationOn()) {
+          // We don't use dynamic models for generators without voltage regulation
+          nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints());
+        }
       }
     }
   }

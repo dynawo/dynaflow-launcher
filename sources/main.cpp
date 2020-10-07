@@ -15,6 +15,7 @@
 #include "version.h"
 
 #include <DYNError.h>
+#include <DYNIoDico.h>
 #include <boost/filesystem.hpp>
 #include <cstdlib>
 #include <sstream>
@@ -31,6 +32,16 @@ getMandatoryEnvVar(const std::string& key) {
     LOG(error) << "Cannot find environnement variable " << key << " : please check runtime environement" << LOG_ENDL;
     std::exit(EXIT_FAILURE);
   }
+}
+
+static void
+initializeDynawo(const std::string& locale) {
+  boost::shared_ptr<DYN::IoDicos> dicos = DYN::IoDicos::getInstance();
+  dicos->addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
+  dicos->addDico("ERROR", "DYNError", locale);
+  dicos->addDico("TIMELINE", "DYNTimeline", locale);
+  dicos->addDico("CONSTRAINT", "DYNConstraint", locale);
+  dicos->addDico("LOG", "DYNLog", locale);
 }
 
 int
@@ -60,6 +71,7 @@ main(int argc, char* argv[]) {
     std::string dict = dictPrefix + locale + ".dic";
     dictPath.append(dict);
     dfl::common::Dico::configure(dictPath.c_str());
+    initializeDynawo(locale);
 
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
@@ -83,7 +95,7 @@ main(int argc, char* argv[]) {
     context.exportOutputs();
 
     context.execute();
-    
+
     return EXIT_SUCCESS;
   } catch (DYN::MessageError& e) {
     std::cerr << "Dynawo: " << e.what() << std::endl;

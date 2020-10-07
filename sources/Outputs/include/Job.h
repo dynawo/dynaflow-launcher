@@ -51,7 +51,7 @@ class Job {
    *
    * @param def the job definition to use
    */
-  explicit Job(const JobDefinition& def);
+  explicit Job(JobDefinition&& def);
 
   /**
    * @brief Exports the job

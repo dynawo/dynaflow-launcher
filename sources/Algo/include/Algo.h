@@ -19,6 +19,7 @@
 
 #include "Node.h"
 
+#include <DYNGeneratorInterface.h>
 #include <unordered_set>
 #include <vector>
 
@@ -133,16 +134,27 @@ struct GeneratorDefinition {
     WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN  ///< Use GeneratorPVWithImpedanceDiagramPQSignalN
   };
 
+  using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< Alias for reactive curve point
+
   /**
    * @brief Constructor
    *
    * @param genId generator id
    * @param type the model to use
+   * @param nodeid the node id connected to the generator
+   * @param curvePoints the list of reactive capabilities curve points
    */
-  GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type) : id{genId}, model{type} {}
+  GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeid,
+                      const std::vector<ReactiveCurvePoint>& curvePoints) :
+      id{genId},
+      model{type},
+      nodeId{nodeid},
+      points(curvePoints) {}
 
-  inputs::Generator::GeneratorId id;  ///< generator id
-  ModelType model;                    ///< model
+  inputs::Generator::GeneratorId id;       ///< generator id
+  ModelType model;                         ///< model
+  inputs::Node::NodeId nodeId;             ///< connected node id
+  std::vector<ReactiveCurvePoint> points;  ///< curve points
 };
 
 /**
@@ -182,9 +194,12 @@ struct LoadDefinition {
    * @brief Constructor
    *
    * @param loadId the load id
+   * @param nodeid the node id connected to the load
    */
-  explicit LoadDefinition(const inputs::Load::LoadId& loadId) : id{loadId} {}
-  inputs::Load::LoadId id;  ///< load id
+  explicit LoadDefinition(const inputs::Load::LoadId& loadId, const inputs::Node::NodeId& nodeid) : id{loadId}, nodeId{nodeid} {}
+
+  inputs::Load::LoadId id;      ///< load id
+  inputs::Node::NodeId nodeId;  ///< connected node id
 };
 
 /**
