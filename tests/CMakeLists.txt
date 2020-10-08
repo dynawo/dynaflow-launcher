@@ -32,12 +32,12 @@ add_library(DynaFlowLauncherTest INTERFACE)
     GTest::gmock_main
     GTest::gtest_main)
 
-# In order to incude tests.h in all tests
+# In order to incude tests.h in all tests and compile Tests.cpp in all test executables
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # macro to define tests
 macro(DEFINE_TEST _name _module_name)
-  add_executable(${_name} ${_name}.cpp)
+  add_executable(${_name} ${_name}.cpp ${TEST_DIR}/Tests.cpp)
   target_link_libraries(${_name}
     DynaFlowLauncherTest)
   target_include_directories(${_name} PRIVATE ${TEST_DIR})

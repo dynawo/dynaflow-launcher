@@ -9,3 +9,9 @@
 
 DEFINE_TEST(TestJob OUTPUTS)
 target_link_libraries(TestJob DynaFlowLauncher::outputs)
+
+DEFINE_TEST(TestDyd OUTPUTS)
+target_link_libraries(TestDyd DynaFlowLauncher::outputs)
+
+DEFINE_TEST(TestPar OUTPUTS)
+target_link_libraries(TestPar DynaFlowLauncher::outputs)

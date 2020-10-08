@@ -11,3 +11,10 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <string>
+
+namespace dfl {
+namespace test {
+void checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath);
+}  // namespace test
+}  // namespace dfl
