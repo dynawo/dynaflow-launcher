@@ -143,6 +143,8 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
 
   set->addParameter(helper::buildParameter("generator_tFilter", 0.001));
   // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
+  // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
+  // on the limit of the reactive capability curve
   set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
