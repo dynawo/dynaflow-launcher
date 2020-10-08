@@ -29,7 +29,7 @@ const std::string diagramFileSuffixExt("_Diagram.txt");             ///< Basenam
 const std::string diagramMaxTableSuffix("_tableqmax");              ///< Suffix for the table name for qmax in diagram file
 const std::string diagramMinTableSuffix("_tableqmin");              ///< Suffix for the table name for qmin in diagram file
 const std::string signalNGeneratorParId("signalNGenerator");        ///< PAR id for generators using signal N
-const std::string impSignalNGeneratorParId("impSignalNGenerator");  ///< PAR id for generators using signal N
+const std::string impSignalNGeneratorParId("impSignalNGenerator");  ///< PAR id for generators using signal N with impendance
 
 constexpr double qValueMax = std::numeric_limits<double>::max();  ///< Maximum value for reactive power, meaning infinite
 
