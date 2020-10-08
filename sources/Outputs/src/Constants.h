@@ -31,7 +31,7 @@ const std::string diagramMinTableSuffix("_tableqmin");              ///< Suffix 
 const std::string signalNGeneratorParId("signalNGenerator");        ///< PAR id for generators using signal N
 const std::string impSignalNGeneratorParId("impSignalNGenerator");  ///< PAR id for generators using signal N with impendance
 
-constexpr double qValueMax = std::numeric_limits<double>::max();  ///< Maximum value for reactive power, meaning infinite
+constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 
 }  // namespace constants
 }  // namespace outputs

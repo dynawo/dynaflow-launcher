@@ -78,10 +78,10 @@ Par::write() {
 void
 Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set) {
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
-  set->addParameter(helper::buildParameter("generator_QMin", -constants::qValueMax));
-  set->addParameter(helper::buildParameter("generator_QMax", constants::qValueMax));
-  set->addParameter(helper::buildParameter("generator_PMin", -constants::qValueMax));
-  set->addParameter(helper::buildParameter("generator_PMax", constants::qValueMax));
+  set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
+  set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
+  set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
+  set->addParameter(helper::buildParameter("generator_PMax", constants::powerValueMax));
   set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
