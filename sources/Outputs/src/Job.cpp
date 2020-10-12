@@ -120,17 +120,6 @@ Job::writeOutputs() {
   appender->setLvlFilter(def_.dynawoLogLevel);
   log->addAppenderEntry(appender);
 
-  appender = job::AppenderEntryFactory::newInstance();
-  appender->setTag("COMPILE");
-  appender->setFilePath("dynawoCompiler.log");
-  appender->setLvlFilter(def_.dynawoLogLevel);
-  log->addAppenderEntry(appender);
-
-  appender = job::AppenderEntryFactory::newInstance();
-  appender->setTag("MODELER");
-  appender->setFilePath("dynawoModeler.log");
-  appender->setLvlFilter(def_.dynawoLogLevel);
-  log->addAppenderEntry(appender);
   output->setLogsEntry(log);
 
   auto final_state = job::FinalStateEntryFactory::newInstance();

@@ -91,7 +91,7 @@ NetworkManager::buildTree() {
     if (bus1 && bus2) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << LOG_ENDL;
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << (*it_l)->getID() << LOG_ENDL;
     }
   }
 
@@ -102,7 +102,7 @@ NetworkManager::buildTree() {
     if (bus1 && bus2) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << LOG_ENDL;
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << (*it_t)->getID() << LOG_ENDL;
     }
   }
 
@@ -121,7 +121,7 @@ NetworkManager::buildTree() {
       nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
       nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
 
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << LOG_ENDL;
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << (*it_t)->getID() << LOG_ENDL;
     }
   }
 }
