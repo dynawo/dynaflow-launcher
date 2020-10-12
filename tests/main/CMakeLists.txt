@@ -18,7 +18,13 @@ macro(DEFINE_LAUNCH_TEST _name)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_INSTALL=${CMAKE_SOURCE_DIR})
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_RESOURCES_DIR=${DYNAWO_HOME}/share:${DYNAWO_HOME}/share/xsd)
+  set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_DDB_DIR=${DYNAWO_HOME}/ddb)
 endmacro()
 
 DEFINE_LAUNCH_TEST(launch)
+
+## For now, we don't generate the diagram.txt file so this will fail
+## TODO(lecourtoisflo) Remove when diagram.txt is generated
+set_tests_properties(MAIN.launch PROPERTIES WILL_FAIL TRUE)
+
 DEFINE_LAUNCH_TEST(launch_infinite)

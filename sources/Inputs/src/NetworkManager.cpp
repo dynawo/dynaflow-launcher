@@ -17,6 +17,8 @@
 
 #include "NetworkManager.h"
 
+#include "Log.h"
+
 #include <DYNBusInterface.h>
 #include <DYNDataInterfaceFactory.h>
 #include <DYNGeneratorInterface.h>
@@ -50,6 +52,7 @@ NetworkManager::buildTree() {
         assert(nodes_.count((*it_b)->getID()) == 0);
 #endif
         nodes_[(*it_b)->getID()] = std::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
+        LOG(debug) << "Node " << (*it_b)->getID() << " created" << LOG_ENDL;
       }
 
       const auto& loads = (*it_v)->getLoads();
@@ -60,6 +63,7 @@ NetworkManager::buildTree() {
         assert(nodes_.count(nodeid));
 #endif
         nodes_[nodeid]->loads.emplace_back((*it_l)->getID());
+        LOG(debug) << "Node " << nodeid << " contains load " << (*it_l)->getID() << LOG_ENDL;
       }
 
       const auto& generators = (*it_v)->getGenerators();
@@ -73,6 +77,7 @@ NetworkManager::buildTree() {
           // We don't use dynamic models for generators with voltage regulation disabled
           nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
                                                   (*it_g)->getPMin(), (*it_g)->getPMax());
+          LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
         }
       }
     }
@@ -86,6 +91,7 @@ NetworkManager::buildTree() {
     if (bus1 && bus2) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << LOG_ENDL;
     }
   }
 
@@ -96,6 +102,7 @@ NetworkManager::buildTree() {
     if (bus1 && bus2) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << LOG_ENDL;
     }
   }
 
@@ -113,6 +120,8 @@ NetworkManager::buildTree() {
 
       nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
       nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
+
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << LOG_ENDL;
     }
   }
 }

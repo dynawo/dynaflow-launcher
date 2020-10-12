@@ -54,20 +54,39 @@ TEST(Job, write) {
 
   auto simulationEntry = jobEntry->getSimulationEntry();
   ASSERT_EQ(0, simulationEntry->getStartTime());
-  ASSERT_EQ(30, simulationEntry->getStopTime());
+  ASSERT_EQ(100, simulationEntry->getStopTime());
 
   auto outputs = jobEntry->getOutputsEntry();
   ASSERT_EQ("outputs", outputs->getOutputsDirectory());
   ASSERT_EQ(nullptr, outputs->getTimelineEntry());
   ASSERT_EQ(nullptr, outputs->getInitValuesEntry());
   auto appenders = outputs->getLogsEntry()->getAppenderEntries();
-  ASSERT_EQ(1, appenders.size());
-  auto appender = *(appenders.begin());
+  ASSERT_EQ(3, appenders.size());
+
+  auto appender_it = appenders.begin();
+  auto& appender = *appender_it;
   ASSERT_EQ("INFO", appender->getLvlFilter());
   ASSERT_EQ("", appender->getTag());
   ASSERT_EQ(" | ", appender->getSeparator());
   ASSERT_EQ(true, appender->getShowLevelTag());
   ASSERT_EQ("dynawo.log", appender->getFilePath());
+
+  appender_it++;
+  appender = *appender_it;
+  ASSERT_EQ("INFO", appender->getLvlFilter());
+  ASSERT_EQ("COMPILE", appender->getTag());
+  ASSERT_EQ(" | ", appender->getSeparator());
+  ASSERT_EQ(true, appender->getShowLevelTag());
+  ASSERT_EQ("dynawoCompiler.log", appender->getFilePath());
+
+  appender_it++;
+  appender = *appender_it;
+  ASSERT_EQ("INFO", appender->getLvlFilter());
+  ASSERT_EQ("MODELER", appender->getTag());
+  ASSERT_EQ(" | ", appender->getSeparator());
+  ASSERT_EQ(true, appender->getShowLevelTag());
+  ASSERT_EQ("dynawoModeler.log", appender->getFilePath());
+
   auto finalstate = outputs->getFinalStateEntry();
   ASSERT_EQ(true, finalstate->getExportIIDMFile());
   ASSERT_EQ(false, finalstate->getExportDumpFile());

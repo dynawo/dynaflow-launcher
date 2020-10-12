@@ -104,7 +104,7 @@ class Options {
   static std::string basename(const std::string& filepath);
 
  private:
-  static const char* defaultLogLevel_;  ///< Default log level
+  static const std::string defaultLogLevel_;  ///< Default log level
 
  private:
   boost::program_options::options_description desc_;  ///< options description

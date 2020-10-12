@@ -51,9 +51,10 @@ Context::Context(const ContextDef& def) :
     slackNode_ = *found_slack_node;
     slackNodeOrigin_ = SlackNodeOrigin::FILE;
   } else {
-    slackNodeOrigin_ = SlackNodeOrigin::ALGORITHM;
     // slack node not given in iidm or not requested: it is computed internally
+    slackNodeOrigin_ = SlackNodeOrigin::ALGORITHM;
     if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
+      // case slack node is requested to be extracted from IIDM but is not present in IIDM: we will compute it internally but a warning is sent
       LOG(warn) << MESS(NetworkSlackNodeNotFound, def.networkFilepath) << LOG_ENDL;
     }
     networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
@@ -110,10 +111,10 @@ Context::createSimulation(boost::shared_ptr<job::JobEntry>& job) {
   simu_context->setInputDirectory(path.generic_string() + "/");
   simu_context->setWorkingDirectory(config_.outputDir() + "/");
 
-  // TODO(lecourtoisflo) For now, since we don't generate the other outputs files, an exception is trigerred: uncomment this once all files are generated
-  // simu_ = boost::make_shared<DYN::Simulation>(job, simu_context);
-  // simu_->init();
-  (void)job;  // TODO(lecourtoisflo) remove this line after uncommenting previous TODO: this line is here to avoid the unused variable error
+  LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
+
+  simu_ = boost::make_shared<DYN::Simulation>(job, simu_context);
+  simu_->init();
 }
 
 void
@@ -164,6 +165,8 @@ void
 Context::execute() {
   if (simu_) {
     simu_->simulate();
+    simu_->terminate();
+    simu_->clean();
   }
 }
 

@@ -97,6 +97,10 @@ main(int argc, char* argv[]) {
     context.execute();
 
     return EXIT_SUCCESS;
+  } catch (DYN::Error& e) {
+    std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
+    return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
     std::cerr << "Dynawo: " << e.what() << std::endl;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;

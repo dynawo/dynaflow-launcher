@@ -26,9 +26,9 @@ namespace common {
 const std::vector<std::string> Options::allowedLogLevels_{"ERROR", "WARN", "INFO", "DEBUG"};
 
 #if _DEBUG_
-const char* Options::defaultLogLevel_ = "DEBUG";
+const std::string Options::defaultLogLevel_ = "DEBUG";
 #else
-const char* Options::defaultLogLevel_ = "INFO";
+const std::string Options::defaultLogLevel_ = "INFO";
 #endif
 
 namespace po = boost::program_options;
@@ -79,8 +79,9 @@ Options::basename(const std::string& filepath) {
 }
 
 Options::Options() : desc_{}, config_{"", "", "", defaultLogLevel_} {
-  desc_.add_options()("help,h", "Display help message")("log-level", po::value<ParsedLogLevel>(),
-                                                        "Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is info")(
+  desc_.add_options()("help,h", "Display help message")(
+      "log-level", po::value<ParsedLogLevel>(),
+      (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())(
       "iidm", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
       "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version");
 }
