@@ -11,7 +11,7 @@ macro(DEFINE_LAUNCH_TEST _name)
   add_test(
     # Use some per-module/project prefix so that it is easier to run only tests for this module
     NAME MAIN.${_name}
-    COMMAND DynaFlowLauncher --iidm=res/IEEE14.iidm --config=res/config_${_name}.json
+    COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:DynaFlowLauncher> -DTEST_NAME=${_name} -P ${CMAKE_SOURCE_DIR}/cmake/TestMain.cmake
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
   set_property(TEST MAIN.${_name} PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH=${DYNAWO_HOME}/share/iidm/xsd/)
