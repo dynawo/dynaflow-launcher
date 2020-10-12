@@ -46,7 +46,7 @@ namespace dfl {
 namespace outputs {
 
 const std::chrono::seconds Job::timeStart_{0};
-const std::chrono::seconds Job::durationSimu_{30};
+const std::chrono::seconds Job::durationSimu_{100};
 const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
@@ -117,6 +117,18 @@ Job::writeOutputs() {
   auto appender = job::AppenderEntryFactory::newInstance();
   appender->setTag("");
   appender->setFilePath("dynawo.log");
+  appender->setLvlFilter(def_.dynawoLogLevel);
+  log->addAppenderEntry(appender);
+
+  appender = job::AppenderEntryFactory::newInstance();
+  appender->setTag("COMPILE");
+  appender->setFilePath("dynawoCompiler.log");
+  appender->setLvlFilter(def_.dynawoLogLevel);
+  log->addAppenderEntry(appender);
+
+  appender = job::AppenderEntryFactory::newInstance();
+  appender->setTag("MODELER");
+  appender->setFilePath("dynawoModeler.log");
   appender->setLvlFilter(def_.dynawoLogLevel);
   log->addAppenderEntry(appender);
   output->setLogsEntry(log);
