@@ -24,3 +24,9 @@ Runtime options of binary are given by doing:
 `dynaflow-launcher.sh --help`
 
 Only network file and configuration are required
+
+## Coverage
+Coverage analysis is based on ctest. To launch coverage, launch from source directory:
+`ctest -S cmake/CTestScript.cmake -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -VV`
+
+Outputs are gcov and lcov reports
