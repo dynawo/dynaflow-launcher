@@ -7,6 +7,26 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
+add_test(
+    NAME MAIN.varEnv
+    COMMAND DynaFlowLauncher --iidm=res/IEEE14.iidm --config=res/launch_infinite.json
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+# Test will fail because environement variables are not set
+set_tests_properties(MAIN.varEnv PROPERTIES WILL_FAIL TRUE)
+
+add_test(
+    NAME MAIN.help
+    COMMAND DynaFlowLauncher --help
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+
+  add_test(
+    NAME MAIN.version
+    COMMAND DynaFlowLauncher --version
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+
 macro(DEFINE_LAUNCH_TEST _name)
   add_test(
     # Use some per-module/project prefix so that it is easier to run only tests for this module

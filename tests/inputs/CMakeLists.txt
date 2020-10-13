@@ -7,6 +7,9 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
+DEFINE_TEST(TestNode INPUTS)
+target_link_libraries(TestNode DynaFlowLauncher::inputs)
+
 DEFINE_TEST(TestNetworkManager INPUTS)
 target_link_libraries(TestNetworkManager DynaFlowLauncher::inputs)
 set_property(TEST INPUTS.TestNetworkManager PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")

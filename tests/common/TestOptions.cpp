@@ -10,6 +10,8 @@
 #include "Options.h"
 #include "Tests.h"
 
+#include <sstream>
+
 TEST(Options, help) {
   dfl::common::Options options;
 
@@ -18,6 +20,14 @@ TEST(Options, help) {
   char* argv[] = {argv0, argv1};
   ASSERT_TRUE(std::get<0>(options.parse(2, argv)));
   ASSERT_EQ(dfl::common::Options::Request::HELP, std::get<1>(options.parse(2, argv)));
+
+  auto desc = options.desc();
+  ASSERT_FALSE(desc.empty());
+  std::stringstream ss;
+  ss << options;
+  ASSERT_FALSE(ss.str().empty());
+
+  ASSERT_EQ(ss.str(), desc);
 }
 
 TEST(Options, version) {
@@ -68,7 +78,7 @@ TEST(Options, nominalLogLevel) {
   char argv2[] = {"--config=test.json "};
   char argv3[] = {"--log-level=DEBUG"};
   char* argv[] = {argv0, argv1, argv2, argv3};
-  auto status = options.parse(3, argv);
+  auto status = options.parse(4, argv);
   ASSERT_TRUE(std::get<0>(status));
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
 }
