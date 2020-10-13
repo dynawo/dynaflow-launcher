@@ -32,7 +32,7 @@
 
 include(CMakeDependentOption)
 
-set(COVERAGE_COMPILER_FLAGS  "-g -O0 --coverage" CACHE INTERNAL "")
+set(COVERAGE_COMPILER_FLAGS  "-g -O0 --coverage -fprofile-arcs -ftest-coverage" CACHE INTERNAL "")
 set(COVERAGE_LINKER_FLAGS    "--coverage"        CACHE INTERNAL "")
 
 get_property(ENABLED_LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
@@ -55,7 +55,7 @@ foreach(_LANG IN LISTS ENABLED_LANGUAGES)
 	if(${_LANG}_COVERAGE_SUPPORTED)
 		set(CMAKE_${_LANG}_FLAGS_COVERAGE
 			${COVERAGE_COMPILER_FLAGS}
-			CACHE STRING "Flags used by the ${_LANG} compiler during coverage builds."
+			CACHE STRING "Flags used by the ${_LANG} compiler during coverage builds." FORCE
 		)
 		mark_as_advanced(CMAKE_${_LANG}_FLAGS_COVERAGE)
 		set(COVERAGE_SUPPORTED TRUE CACHE INTERNAL "Whether or not coverage is supported by at least one compiler.")
