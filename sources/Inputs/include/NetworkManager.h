@@ -67,6 +67,15 @@ class NetworkManager {
    */
   boost::optional<std::shared_ptr<Node>> getSlackNode() const;
 
+  /**
+   * @brief Retrieve data interface
+   *
+   * @returns data interface
+   */
+  boost::shared_ptr<DYN::DataInterface> dataInterface() const {
+    return interface_;
+  }
+
  private:
   /**
    * @brief Build node tree from data interface
