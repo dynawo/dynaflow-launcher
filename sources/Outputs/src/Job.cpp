@@ -86,7 +86,7 @@ Job::writeModeler() {
   modeler->addDynModelsEntry(models);
 
   auto network = job::NetworkEntryFactory::newInstance();
-  network->setIidmFile(def_.filename + ".iidm");
+  network->setIidmFile("");  // not providing IIDM file here as data interface will be provided to simulation
   network->setNetworkParFile("Network.par");
   network->setNetworkParId("Network");
   modeler->setNetworkEntry(network);

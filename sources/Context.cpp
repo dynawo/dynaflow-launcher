@@ -113,7 +113,7 @@ Context::createSimulation(boost::shared_ptr<job::JobEntry>& job) {
 
   LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
 
-  simu_ = boost::make_shared<DYN::Simulation>(job, simu_context);
+  simu_ = boost::make_shared<DYN::Simulation>(job, simu_context, networkManager_.dataInterface());
   simu_->init();
 }
 
@@ -126,12 +126,6 @@ Context::exportOutputs() {
   if (!file::exists(outputDir)) {
     file::create_directories(outputDir);
   }
-
-  // Copy IIDM in output directory in order to be used correctly by the simulation
-  // TODO(lecourtoisflo) Remove this when IIDM will not be re-read by Dynawo library
-  file::path dest(outputDir);
-  dest.append(basename_ + ".iidm");
-  file::copy_file(def_.networkFilepath, dest, file::copy_option::overwrite_if_exists);
 
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));

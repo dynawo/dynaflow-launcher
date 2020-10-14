@@ -37,7 +37,7 @@ TEST(Job, write) {
   auto modelerEntry = jobEntry->getModelerEntry();
   ASSERT_EQ("outputs/compilation", modelerEntry->getCompileDir());
   auto network = modelerEntry->getNetworkEntry();
-  ASSERT_EQ("TestJob.iidm", network->getIidmFile());
+  ASSERT_EQ("", network->getIidmFile());
   ASSERT_EQ("Network.par", network->getNetworkParFile());
   ASSERT_EQ("Network", network->getNetworkParId());
   auto models = modelerEntry->getDynModelsEntries();
