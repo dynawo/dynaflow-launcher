@@ -8,6 +8,11 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+/**
+ * @file Dico.cpp
+ * @brief Dictionnary manager impelmentation file
+ */
+
 #include "Dico.h"
 
 #include "Log.h"

@@ -8,6 +8,11 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+/**
+ * @file Dico.h
+ * @brief Dictionnary manager header file
+ */
+
 #pragma once
 
 #include "DicoKeys.h"

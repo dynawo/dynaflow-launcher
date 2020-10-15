@@ -6,10 +6,20 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
+//
+
+/**
+ * @file version.h
+ * @brief geerated version definition file
+ */
 
 #pragma once
 
+/// @brief Major version number of dynaflow launcher
 #define DYNAFLOW_LAUNCHER_VERSION_MAJOR ${PROJECT_VERSION_MAJOR}
+/// @brief Minor version number of dynaflow launcher
 #define DYNAFLOW_LAUNCHER_VERSION_MINOR ${PROJECT_VERSION_MINOR}
+/// @brief Patch version number of dynaflow launcher
 #define DYNAFLOW_LAUNCHER_VERSION_PATCH ${PROJECT_VERSION_PATCH}
+/// @brief String representation of the version of dynaflow launcher
 #define DYNAFLOW_LAUNCHER_VERSION_STRING "${CMAKE_PROJECT_VERSION}"

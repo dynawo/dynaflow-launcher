@@ -211,10 +211,12 @@ if(DYNAFLOW_LAUNCHER_USE_DOXYGEN AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.9)
     if(DOXYGEN_FOUND)
         message(STATUS "Use doxygen")
         set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+        set(DOXYGEN_FILE_PATTERNS *.h *.cpp *.hpp)
+        set(DOXYGEN_EXTRACT_PRIVATE YES)
         doxygen_add_docs(
             doc ALL
             README.md sources
-            COMMENT "Generate man pages"
+            COMMENT "Generate html documentation"
         )
     endif()
 endif()

@@ -58,7 +58,7 @@ struct ParsedLogLevel {
  */
 static void
 validate(boost::any& v, const std::vector<std::string>& values, ParsedLogLevel*, int) {
-  // Make sure no previous assignment to 'a' was made.
+  // Make sure no previous assignment was made.
   po::validators::check_first_occurrence(v);
 
   // Extract the first string from 'values'. If there is more than

@@ -28,9 +28,11 @@ namespace dfl {
 /**
  * @brief Dynaflow launcher context
  *
- * This contains the algorithms that need to be applied on inputs to produce outputs.
- *
- * It also contain the inputs and outputs managers
+ * This class aims to link together the different parts of DFL:
+ * - inputs (network and configuration)
+ * - algorithms
+ * - outputs (writers)
+ * - dynawo simulation
  */
 class Context {
  public:
@@ -65,6 +67,8 @@ class Context {
 
   /**
    * @brief Export output files
+   *
+   * This create the job entry, exports all intermediate files for dynawo simulation and create dynawo simulation
    */
   void exportOutputs();
 
@@ -93,7 +97,7 @@ class Context {
   /**
    * @brief Create dynawo simulation
    *
-   * @param in the job entry to use
+   * @param job the job entry to use
    */
   void createSimulation(boost::shared_ptr<job::JobEntry>& job);
 

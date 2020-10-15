@@ -21,7 +21,7 @@
  * @brief Options header file
  */
 
-/// @brief Namespace for dynaflow launcher libraries
+/// @brief Namespace for dynaflow launcher components
 namespace dfl {
 /// @brief Namespace for common components to dynawo-launcher
 namespace common {
@@ -36,7 +36,7 @@ class Options {
   /**
    * @brief Runtime configuration
    *
-   * representation after parsing
+   * Representation of the options after parsing
    */
   struct RuntimeConfiguration {
     std::string programName;      ///< Name of the program
@@ -77,12 +77,13 @@ class Options {
   /**
    * @brief Parse arguments given by main programm
    *
-   * In case help is requested or an error in parsing is detected, this will returns false, meaning that help message should be displayed
+   * The returned status will be NOK if a parsing error is detected, i.e. the runtime options are incorrect
+   * The returned type of the request is undefined if the status is NOK.
    *
    * @param argc number of arguments
    * @param argv arguments
    *
-   * @returns a pair (status (OK/NOK) of the parsing, type of the request, irrelevant if NOK)
+   * @returns a pair (status OK/NOK, request type)
    */
   std::tuple<bool, Request> parse(int argc, char* argv[]);
 

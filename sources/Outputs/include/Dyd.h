@@ -33,7 +33,7 @@ namespace dfl {
 namespace outputs {
 
 /**
- * @brief Dyd writer
+ * @brief DYD file writer
  */
 class Dyd {
  public:
@@ -132,7 +132,7 @@ class Dyd {
    *
    * Use macro connection
    *
-   * @param loaded the load definition to process
+   * @param loaddef the load definition to process
    *
    * @returns the macro connection element
    */
@@ -144,6 +144,7 @@ class Dyd {
    * Use macro connection
    *
    * @param def the generator definition to process
+   * @param index the index of the generator in the global list of generators
    *
    * @returns the macro connection element
    */

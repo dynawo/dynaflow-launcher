@@ -24,7 +24,12 @@
 #include <vector>
 
 namespace dfl {
-/// @brief Namespace for algorithms to perform on netpork
+/**
+ * @brief Namespace for algorithms to perform on network
+ *
+ * All nodes algorithms are based on functor taking a node in input to perform the algorithm
+ * Data to update are provided to the algorithm at construction by reference
+ */
 namespace algo {
 
 /**
@@ -92,7 +97,7 @@ class MainConnexComponentAlgorithm : public NodeAlgorithm {
     /**
      * @brief invocable operator
      *
-     * performs @p lhs == @p rhs
+     * performs @p lhs == @p rhs by relying on Node equality operator
      *
      * @param lhs first node
      * @param rhs second node
