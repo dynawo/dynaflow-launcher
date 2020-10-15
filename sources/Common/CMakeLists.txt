@@ -28,8 +28,6 @@ check_env_var(DYNAFLOW_LAUNCHER_LOCALE)
 # We use a target to ensure it will be executed at each build
 add_custom_target(dicokeys
 BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/DicoKeys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/include/DicoKeys.h
-COMMAND rm -f ${CMAKE_CURRENT_SOURCE_DIR}/src/DicoKeys.cpp
-COMMAND rm -f ${CMAKE_CURRENT_SOURCE_DIR}/include/DicoKeys.h
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generateMessages.py
         ${CMAKE_SOURCE_DIR}/etc/DFLMessages_${DYNAFLOW_LAUNCHER_LOCALE}.dic ${CMAKE_CURRENT_SOURCE_DIR})
 

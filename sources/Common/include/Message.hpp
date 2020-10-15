@@ -8,6 +8,11 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+/**
+ * @file Message.hpp
+ * @brief Dictionnary message file
+ */
+
 #pragma once
 
 #include "Dico.h"
@@ -20,7 +25,10 @@ namespace dfl {
 namespace common {
 
 /**
- * @brief Message
+ * @brief Message formatter
+ *
+ * Message linking a dico key with its formatted string, filled with external data
+ *
  */
 class Message {
  public:

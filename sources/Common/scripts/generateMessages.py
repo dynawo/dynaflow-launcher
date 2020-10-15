@@ -9,6 +9,10 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
+##
+# Small python utility to create header and CPP files associated to a dictionary
+#
+
 import sys
 import re
 import os
@@ -45,6 +49,10 @@ class Dictionnary:
     # @param self : object pointer
     # @param file : the file to write into
     def _writeHeader(self, file):
+        file.write("/**\n")
+        file.write(" * @file DicoKeys.h\n")
+        file.write(" * @brief generated dico keys header file\n")
+        file.write(" */\n")
         file.write("#pragma once\n\n")
         file.write("#include <unordered_map>\n")
         file.write("#include <string>\n\n")
@@ -106,6 +114,10 @@ class Dictionnary:
     # @param self : object pointer
     # @param file : the file to write into
     def _writeSource(self, file):
+        file.write("/**\n")
+        file.write(" * @file DicoKeys.cpp\n")
+        file.write(" * @brief generated dico keys implementation file\n")
+        file.write(" */\n")
         file.write('#include "DicoKeys.h"\n\n')
         file.write("#include <algorithm>\n\n")
         file.write("namespace dfl {\n")

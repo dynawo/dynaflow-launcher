@@ -9,7 +9,7 @@
 //
 
 /**
- * @file  Constants.h
+ * @file Constants.h
  *
  * @brief Dynaflow launcher constants common to all writers
  *
@@ -22,14 +22,15 @@
 
 namespace dfl {
 namespace outputs {
+/// @brief Namespace for constant variables common to all writers
 namespace constants {
-const std::string loadParId("GenericRestorativeLoad");              ///< PAR id common to all loads
-const std::string signalNParId("SignalN");                          ///< PAR id for signalN
-const std::string diagramFileSuffixExt("_Diagram.txt");             ///< Basename for QTables diagrams
-const std::string diagramMaxTableSuffix("_tableqmax");              ///< Suffix for the table name for qmax in diagram file
-const std::string diagramMinTableSuffix("_tableqmin");              ///< Suffix for the table name for qmin in diagram file
-const std::string signalNGeneratorParId("signalNGenerator");        ///< PAR id for generators using signal N
-const std::string impSignalNGeneratorParId("impSignalNGenerator");  ///< PAR id for generators using signal N with impendance
+const std::string loadParId{"GenericRestorativeLoad"};              ///< PAR id common to all loads
+const std::string signalNParId{"SignalN"};                          ///< PAR id for signalN
+const std::string diagramFileSuffixExt{"_Diagram.txt"};             ///< Basename for QTables diagrams
+const std::string diagramMaxTableSuffix{"_tableqmax"};              ///< Suffix for the table name for qmax in diagram file
+const std::string diagramMinTableSuffix{"_tableqmin"};              ///< Suffix for the table name for qmin in diagram file
+const std::string signalNGeneratorParId{"signalNGenerator"};        ///< PAR id for generators using signal N
+const std::string impSignalNGeneratorParId{"impSignalNGenerator"};  ///< PAR id for generators using signal N with impendance
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 
