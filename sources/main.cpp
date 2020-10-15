@@ -75,7 +75,7 @@ main(int argc, char* argv[]) {
 
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
-      LOG(error) << "Dictionnary " << dictPath << " not found: check runtime environment" << LOG_ENDL;
+      LOG(error) << "Dictionary " << dictPath << " not found: check runtime environment" << LOG_ENDL;
       return EXIT_FAILURE;
     }
 

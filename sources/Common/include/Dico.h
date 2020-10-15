@@ -10,7 +10,7 @@
 
 /**
  * @file Dico.h
- * @brief Dictionnary manager header file
+ * @brief Dictionary manager header file
  */
 
 #pragma once
@@ -23,7 +23,7 @@ namespace dfl {
 namespace common {
 
 /**
- * @brief Dictionnary manager
+ * @brief Dictionary manager
  *
  * Singleton managing the dictionnary of messages
  */

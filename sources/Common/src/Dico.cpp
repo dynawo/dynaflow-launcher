@@ -10,7 +10,7 @@
 
 /**
  * @file Dico.cpp
- * @brief Dictionnary manager impelmentation file
+ * @brief Dictionary manager impelmentation file
  */
 
 #include "Dico.h"
