@@ -77,6 +77,7 @@ set_optimization()
 ## External dependencies
 ## Dynawo and sub-dependencies
 check_env_var(DYNAWO_HOME) # Correspond to deploy installation
+get_filename_component(DYNAWO_HOME ${DYNAWO_HOME} ABSOLUTE)
 list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}")
 list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/cmake")
 list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share")
@@ -84,18 +85,23 @@ list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
 
-#LibArchive
-find_package(LibArchive 2.8.0 REQUIRED)
-#ZLIB
+# ZLIB
 find_package(ZLIB 1.2.3 REQUIRED)
+set_property(TARGET ZLIB::ZLIB APPEND PROPERTY
+  IMPORTED_LOCATION "${ZLIB_LIBRARY}")
+# LibArchive
+find_package(LibArchive 2.8.0 REQUIRED)
 # KLU
 find_package(SuiteSparse REQUIRED)
 # Sundials
 find_package(Sundials REQUIRED)
-#libZIP
+# libZIP
 find_package(libZIP 1.3.0 REQUIRED)
 # XercesC (required for libxml)
 find_package(XercesC 3.2.2 REQUIRED)
+# libXML, targets name in static and shared are different so we need to do find_package twice
+find_package(libXML 0.2.4 REQUIRED)
+set(LibXML_USE_STATIC_LIBS TRUE)
 find_package(libXML 0.2.4 REQUIRED)
 #libIIDM
 find_package(libIIDM 0.2.8 REQUIRED
@@ -135,7 +141,7 @@ else()
 endif()
 # Tell BOOST to disable auto linking
 add_definitions(-DBOOST_ALL_NO_LIB)
-find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem system)
+find_package(Boost 1.64.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
 
