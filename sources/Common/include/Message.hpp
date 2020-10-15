@@ -10,7 +10,7 @@
 
 /**
  * @file Message.hpp
- * @brief Dictionnary message file
+ * @brief Dictionary message file
  */
 
 #pragma once

@@ -18,11 +18,11 @@ import re
 import os
 
 ##
-# @brief Dictionnary definition for message keys
+# @brief Dictionary definition for message keys
 #
 
 
-class Dictionnary:
+class Dictionary:
 
     ##
     # @brief the regex for dictionnary pair definition
@@ -61,11 +61,11 @@ class Dictionnary:
         file.write("/// @brief namespace for generated code\n")
         file.write("namespace generated {\n\n")
 
-        file.write("/// @brief Dictionnary keys\n")
+        file.write("/// @brief Dictionary keys\n")
         file.write("class DicoKeys {\n")
         file.write(" public:\n")
 
-        file.write("  /// @brief Dictionnary keys definition\n")
+        file.write("  /// @brief Dictionary keys definition\n")
         file.write("  enum class Key {\n")
         for mess in self.messages:
             file.write("    " + mess["key"] +
@@ -149,7 +149,7 @@ class Dictionnary:
         with open(input, 'r') as file:
             lines = file.readlines()
             for line in lines:
-                match = Dictionnary.message_def_pattern.match(line)
+                match = Dictionary.message_def_pattern.match(line)
                 if match != None:
                     self.messages.append({
                         "key": match.group("key"),
@@ -172,7 +172,7 @@ class Dictionnary:
     # @param outputFile : the filepath of the file to write into
     def generate_header(self, outputFile):
         with open(outputFile, 'w') as file:
-            Dictionnary._writeHeaderAll(file)
+            Dictionary._writeHeaderAll(file)
             self._writeHeader(file)
 
     ##
@@ -181,14 +181,14 @@ class Dictionnary:
     # @param outputFile : the filepath of the file to write into
     def generate_source(self, outputFile):
         with open(outputFile, 'w') as file:
-            Dictionnary._writeHeaderAll(file)
+            Dictionary._writeHeaderAll(file)
             self._writeSource(file)
 
 if __name__ == "__main__":
     inputDic = sys.argv[1]
     outputDir = sys.argv[2]
 
-    dict = Dictionnary(inputDic)
+    dict = Dictionary(inputDic)
 
     dict.generate_header(os.path.join(outputDir, "include/DicoKeys.h"))
     dict.generate_source(os.path.join(outputDir, "src/DicoKeys.cpp"))
