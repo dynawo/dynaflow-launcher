@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <parametersSet xmlns="http://www.rte-france.com/dynawo">
-  <set id="G2">
+  <set id="10160083025018531003">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_QMax0" type="DOUBLE" value="31"/>
+    <par name="generator_QMax0" type="DOUBLE" value="41"/>
     <par name="generator_QMaxTableFile" type="STRING" value="TestPar_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="G2_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="2"/>
+    <par name="generator_QMaxTableName" type="STRING" value="10160083025018531003_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="3"/>
     <par name="generator_QMinTableFile" type="STRING" value="TestPar_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="G2_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="10160083025018531003_tableqmin"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
+    <par name="line_BPu" type="DOUBLE" value="0"/>
+    <par name="line_GPu" type="DOUBLE" value="0"/>
+    <par name="line_RPu" type="DOUBLE" value="0"/>
+    <par name="line_XPu" type="DOUBLE" value="0.0001"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
     <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
@@ -17,19 +21,15 @@
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
-  <set id="G3">
+  <set id="6320417593396202500">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_QMax0" type="DOUBLE" value="41"/>
+    <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="TestPar_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="G3_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="3"/>
+    <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="TestPar_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="G3_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
-    <par name="line_BPu" type="DOUBLE" value="0"/>
-    <par name="line_GPu" type="DOUBLE" value="0"/>
-    <par name="line_RPu" type="DOUBLE" value="0"/>
-    <par name="line_XPu" type="DOUBLE" value="0.0001"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
     <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
