@@ -70,14 +70,15 @@ Diagram::writeTable(const algo::GeneratorDefinition& generator, std::stringstrea
   buffer << numberLines;
   buffer << ",2)";
 
+  int divisorFactor = 100;
   if (generator.points.empty()) {
     double qValue = table == Tables::TABLE_QMIN ? generator.qmin : generator.qmax;
-    buffer << '\n' << generator.pmin / divisorFactor_ << " " << qValue / divisorFactor_ << '\n';
-    buffer << generator.pmax / divisorFactor_ << " " << qValue / divisorFactor_;
+    buffer << '\n' << generator.pmin / divisorFactor << " " << qValue / divisorFactor << '\n';
+    buffer << generator.pmax / divisorFactor << " " << qValue / divisorFactor;
   } else {
     for (const DYN::GeneratorInterface::ReactiveCurvePoint& point : generator.points) {
       double qValue = table == Tables::TABLE_QMIN ? point.qmin : point.qmax;
-      buffer << '\n' << point.p / divisorFactor_ << " " << qValue / divisorFactor_;
+      buffer << '\n' << point.p / divisorFactor << " " << qValue / divisorFactor;
     }
   }
 }
