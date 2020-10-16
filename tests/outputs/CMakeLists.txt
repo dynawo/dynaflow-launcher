@@ -15,3 +15,6 @@ target_link_libraries(TestDyd DynaFlowLauncher::outputs)
 
 DEFINE_TEST(TestPar OUTPUTS)
 target_link_libraries(TestPar DynaFlowLauncher::outputs)
+
+DEFINE_TEST(TestDiagram OUTPUTS)
+target_link_libraries(TestDiagram DynaFlowLauncher::outputs)

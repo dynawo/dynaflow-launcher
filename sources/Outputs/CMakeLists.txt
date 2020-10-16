@@ -12,6 +12,7 @@ src/Job.cpp
 src/Dyd.cpp
 src/Par.cpp
 src/Constants.h
+src/Diagram.cpp
 )
 
 add_library(outputs STATIC ${SOURCES})

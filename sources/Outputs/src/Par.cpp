@@ -128,12 +128,14 @@ Par::writeConstantSets(unsigned int nb_generators) {
 
 boost::shared_ptr<parameters::ParametersSet>
 Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename) {
-  auto set = parameters::ParametersSetFactory::newInstance(def.id);
-
   if (def.model == algo::GeneratorDefinition::ModelType::SIGNALN || def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
     // already processed by constant
     return nullptr;
   }
+  std::size_t hash_id = constants::hash(def.id);
+  std::string hash_id_str = std::to_string(hash_id);
+  auto set = parameters::ParametersSetFactory::newInstance(hash_id_str);
+  //change def.id to the hash
 
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
   if (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN ||
@@ -149,9 +151,9 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
   set->addParameter(helper::buildParameter("generator_QMaxTableFile", basename + constants::diagramFileSuffixExt));
-  set->addParameter(helper::buildParameter("generator_QMaxTableName", def.id + constants::diagramMaxTableSuffix));
+  set->addParameter(helper::buildParameter("generator_QMaxTableName", hash_id_str + constants::diagramMaxTableSuffix));
   set->addParameter(helper::buildParameter("generator_QMinTableFile", basename + constants::diagramFileSuffixExt));
-  set->addParameter(helper::buildParameter("generator_QMinTableName", def.id + constants::diagramMinTableSuffix));
+  set->addParameter(helper::buildParameter("generator_QMinTableName", hash_id_str + constants::diagramMinTableSuffix));
 
   set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
