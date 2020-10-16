@@ -218,6 +218,7 @@ if(DYNAFLOW_LAUNCHER_USE_DOXYGEN AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.9)
             README.md sources
             COMMENT "Generate html documentation"
         )
+        install(DIRECTORY ${CMAKE_BINARY_DIR}/html DESTINATION doc)
     endif()
 endif()
 
@@ -278,8 +279,6 @@ install(
     FILE ${PROJECT_NAME}Targets.cmake  # This is the file that needs to be included from your *Config.cmake. Otherwise, you could just make this your actual *Config.cmake file.
     DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
 )
-
-install(DIRECTORY ${CMAKE_BINARY_DIR}/html DESTINATION doc)
 
 # So far we only installed the exported targets, now install the package config files.
 # If you do not list headers in the PUBLIC_HEADER property, you will need to copy them using `install(FILES)` or `install(DIRECTORY)` too.
