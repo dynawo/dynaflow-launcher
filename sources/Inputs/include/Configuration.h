@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <boost/filesystem.hpp>
 #include <string>
 
 namespace dfl {
@@ -107,14 +108,14 @@ class Configuration {
   }
 
  private:
-  bool useInfiniteReactiveLimits_ = false;  ///< infinite reactive limits
-  bool isPSTRegulationOn_ = true;           ///< PST regulation on
-  bool isSVCRegulationOn_ = true;           ///< SVC regulation on
-  bool isShuntRegulationOn_ = true;         ///< Shunt regulation on
-  bool isAutomaticSlackBusOn_ = true;       ///< automatic slack bus on
-  bool useVSCAsGenerators_ = false;         ///< VSC considered as generators
-  bool useLCCAsLoads_ = false;              ///< LCC are considered as generators
-  std::string outputDir_ = ".";             ///< Directory for output files
+  bool useInfiniteReactiveLimits_ = false;                                      ///< infinite reactive limits
+  bool isPSTRegulationOn_ = true;                                               ///< PST regulation on
+  bool isSVCRegulationOn_ = true;                                               ///< SVC regulation on
+  bool isShuntRegulationOn_ = true;                                             ///< Shunt regulation on
+  bool isAutomaticSlackBusOn_ = true;                                           ///< automatic slack bus on
+  bool useVSCAsGenerators_ = false;                                             ///< VSC considered as generators
+  bool useLCCAsLoads_ = false;                                                  ///< LCC are considered as generators
+  std::string outputDir_ = boost::filesystem::current_path().generic_string();  ///< Directory for output files
 };
 
 }  // namespace inputs

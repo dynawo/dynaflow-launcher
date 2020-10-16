@@ -34,5 +34,5 @@ TEST(Config, Default) {
   ASSERT_TRUE(config.isAutomaticSlackBusOn());
   ASSERT_FALSE(config.useVSCAsGenerators());
   ASSERT_FALSE(config.useLCCAsLoads());
-  ASSERT_EQ(".", config.outputDir());
+  ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
 }
