@@ -1,6 +1,7 @@
 build/
 buildCoverage/
 Install/
+install/
 version.h
 *.log
 *.orig

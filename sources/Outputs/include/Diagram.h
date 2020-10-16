@@ -62,10 +62,14 @@ class Diagram {
   void write();
 
  private:
+  /// @brief Different tables in the diagram, qmin or qmax
   enum class Tables { TABLE_QMIN = 0, TABLE_QMAX };
+
+  /**
+   * @brief Write a single table in the Diagram file
+   */
   void writeTable(const algo::GeneratorDefinition& generator, std::stringstream& buffer, Tables table);
   DiagramDefinition def_;  ///< Diagram file information
-  std::size_t divisorFactor_ = 100;
 };
 }  // namespace outputs
 }  // namespace dfl

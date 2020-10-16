@@ -31,6 +31,9 @@ const std::string diagramMaxTableSuffix{"_tableqmax"};              ///< Suffix 
 const std::string diagramMinTableSuffix{"_tableqmin"};              ///< Suffix for the table name for qmin in diagram file
 const std::string signalNGeneratorParId{"signalNGenerator"};        ///< PAR id for generators using signal N
 const std::string impSignalNGeneratorParId{"impSignalNGenerator"};  ///< PAR id for generators using signal N with impendance
+  /**
+   * @brief Return a hash number from a string as input
+   */
 static inline std::size_t hash(std::string str) {
     return std::hash<std::string>{}(str);
 }
