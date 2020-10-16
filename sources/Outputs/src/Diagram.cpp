@@ -35,8 +35,8 @@ Diagram::write() {
   bool empty = true;
 
   for (algo::GeneratorDefinition& generator : def_.generators) {
-    if (generator.model != algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN and
-        generator.model != algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
+    if (generator.model != algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN
+        && generator.model != algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
       continue;
     empty = false;
 
@@ -44,12 +44,11 @@ Diagram::write() {
               [](const DYN::GeneratorInterface::ReactiveCurvePoint& gen1, const DYN::GeneratorInterface::ReactiveCurvePoint& gen2) -> bool {
                 return gen1.p < gen2.p;
               });
-
-    write_table(generator, buffer, true);
-    write_table(generator, buffer, false);
+    writeTable(generator, buffer, Tables::TABLE_QMIN);
+    writeTable(generator, buffer, Tables::TABLE_QMAX);
   }
 
-  if (not empty) {
+  if (!empty) {
     //Put buffer into file
     std::ofstream ofs(def_.filename, std::ofstream::out);
     ofs << buffer.str();
@@ -58,27 +57,27 @@ Diagram::write() {
 }
 
 void
-Diagram::write_table(const algo::GeneratorDefinition& generator, std::stringstream& buffer, bool is_table_qmin) {
+Diagram::writeTable(const algo::GeneratorDefinition& generator, std::stringstream& buffer, Tables table) {
   buffer << "\ndouble ";
-  auto hash = constants::hash(generator.id);
+  std::size_t hash = constants::hash(generator.id);
   buffer << hash;
-  if (is_table_qmin)
+  if (table == Tables::TABLE_QMIN)
     buffer << constants::diagramMinTableSuffix << '(';
   else
     buffer << constants::diagramMaxTableSuffix << '(';
-  std::size_t number_lines = generator.points.empty() ? 2 : generator.points.size();
+  std::size_t numberLines = generator.points.empty() ? 2 : generator.points.size();
   //The number of lines is 2 when there are no points
-  buffer << number_lines;
+  buffer << numberLines;
   buffer << ",2)";
 
   if (generator.points.empty()) {
-    double q_value = is_table_qmin ? generator.qmin : generator.qmax;
-    buffer << '\n' << generator.pmin / 100 << " " << q_value / 100 << '\n';
-    buffer << generator.pmax / 100 << " " << q_value / 100;
+    double qValue = table == Tables::TABLE_QMIN ? generator.qmin : generator.qmax;
+    buffer << '\n' << generator.pmin / divisorFactor_ << " " << qValue / divisorFactor_ << '\n';
+    buffer << generator.pmax / divisorFactor_ << " " << qValue / divisorFactor_;
   } else {
     for (const DYN::GeneratorInterface::ReactiveCurvePoint& point : generator.points) {
-      double q_value = is_table_qmin ? point.qmin : point.qmax;
-      buffer << '\n' << point.p / 100 << " " << q_value / 100;
+      double qValue = table == Tables::TABLE_QMIN ? point.qmin : point.qmax;
+      buffer << '\n' << point.p / divisorFactor_ << " " << qValue / divisorFactor_;
     }
   }
 }
