@@ -9,7 +9,7 @@
 
 add_test(
     NAME MAIN.varEnv
-    COMMAND DynaFlowLauncher --iidm=res/IEEE14.iidm --config=res/launch_infinite.json
+    COMMAND DynaFlowLauncher --network=res/IEEE14.iidm --config=res/launch_infinite.json
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
 # Test will fail because environement variables are not set
