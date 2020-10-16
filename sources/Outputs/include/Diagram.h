@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -37,7 +38,7 @@ class Diagram {
      * @brief Constructor
      *
      * @param base the basename for current file (corresponds to filepath basename)
-     * @param filepath the filepath of the dyd file to write
+     * @param filepath the filepath of the diagram file to write
      * @param gens generators definition coming from algorithms
      */
     DiagramDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens) :
@@ -51,18 +52,20 @@ class Diagram {
   /**
    * @brief Constructor
    *
-   * @param def the dyd definition
+   * @param def the Diagram definition
    */
   explicit Diagram(DiagramDefinition&& def);
 
   /**
-   * @brief Write the dyd file
+   * @brief Write the Diagram file
    */
   void write();
 
  private:
-  void write_table(const algo::GeneratorDefinition& generator, std::stringstream& buffer, bool is_table_qmin);
-  DiagramDefinition def_;  ///< Dyd file information
+  enum class Tables { TABLE_QMIN = 0, TABLE_QMAX };
+  void writeTable(const algo::GeneratorDefinition& generator, std::stringstream& buffer, Tables table);
+  DiagramDefinition def_;  ///< Diagram file information
+  std::size_t divisorFactor_ = 100;
 };
 }  // namespace outputs
 }  // namespace dfl

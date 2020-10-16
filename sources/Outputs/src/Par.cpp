@@ -59,7 +59,6 @@ Par::write() {
   parameters::XmlExporter exporter;
 
   auto collection = parameters::ParametersSetCollectionFactory::newCollection();
-
   auto constants = writeConstantSets(def_.generators.size());
   for (auto it = constants.begin(); it != constants.end(); ++it) {
     collection->addParametersSet(*it);
@@ -132,9 +131,9 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
     // already processed by constant
     return nullptr;
   }
-  std::size_t hash_id = constants::hash(def.id);
-  std::string hash_id_str = std::to_string(hash_id);
-  auto set = parameters::ParametersSetFactory::newInstance(hash_id_str);
+  std::size_t hashId = constants::hash(def.id);
+  std::string hashIdStr = std::to_string(hashId);
+  auto set = parameters::ParametersSetFactory::newInstance(hashIdStr);
   //change def.id to the hash
 
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
@@ -151,9 +150,9 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
   set->addParameter(helper::buildParameter("generator_QMaxTableFile", basename + constants::diagramFileSuffixExt));
-  set->addParameter(helper::buildParameter("generator_QMaxTableName", hash_id_str + constants::diagramMaxTableSuffix));
+  set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
   set->addParameter(helper::buildParameter("generator_QMinTableFile", basename + constants::diagramFileSuffixExt));
-  set->addParameter(helper::buildParameter("generator_QMinTableName", hash_id_str + constants::diagramMinTableSuffix));
+  set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
 
   set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
