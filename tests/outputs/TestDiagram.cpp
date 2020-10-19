@@ -134,6 +134,6 @@ TEST(Diagram, writeEmpty) {
     std::ifstream stream(filePath);
     ASSERT_TRUE(stream.fail()) << "The Diagram file has been written to even though there are no generators which model requires it." << std::endl;
   } catch (std::exception& e) {
-    ASSERT_TRUE(false) << "An IO error has occured\n" << std::endl;
+    ASSERT_TRUE(false) << "An IO error has occured" << std::endl;
   }
 }
