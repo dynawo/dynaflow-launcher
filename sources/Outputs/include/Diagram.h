@@ -63,7 +63,10 @@ class Diagram {
 
  private:
   /// @brief Different tables in the diagram, qmin or qmax
-  enum class Tables { TABLE_QMIN = 0, TABLE_QMAX };
+  enum class Tables {
+    TABLE_QMIN = 0,  ///< Table Qmin
+    TABLE_QMAX       ///< Table Qmax
+  };
 
   /**
    * @brief Write a single table in the Diagram file

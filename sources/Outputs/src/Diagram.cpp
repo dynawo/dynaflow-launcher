@@ -35,8 +35,8 @@ Diagram::write() {
   bool empty = true;
 
   for (algo::GeneratorDefinition& generator : def_.generators) {
-    if (generator.model != algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN
-        && generator.model != algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
+    if (generator.model != algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN &&
+        generator.model != algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
       continue;
     empty = false;
 
@@ -70,7 +70,7 @@ Diagram::writeTable(const algo::GeneratorDefinition& generator, std::stringstrea
   buffer << numberLines;
   buffer << ",2)";
 
-  int divisorFactor = 100;
+  const int divisorFactor = 100;
   if (generator.points.empty()) {
     double qValue = table == Tables::TABLE_QMIN ? generator.qmin : generator.qmax;
     buffer << '\n' << generator.pmin / divisorFactor << " " << qValue / divisorFactor << '\n';
