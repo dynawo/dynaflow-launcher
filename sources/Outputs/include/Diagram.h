@@ -20,18 +20,17 @@
 #include "Algo.h"
 
 #include <string>
-#include <unordered_map>
 #include <vector>
 namespace dfl {
 namespace outputs {
 
 /**
-* @brief Dyd writer
+* @brief Diagram writer
 */
 class Diagram {
  public:
   /**
-  * @brief Dyd definition to provide informations to build the Dyd file
+  * @brief Diagram definition to provide informations to build the Diagram file
   */
   struct DiagramDefinition {
     /**
@@ -42,7 +41,9 @@ class Diagram {
      * @param gens generators definition coming from algorithms
      */
     DiagramDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens) :
-        basename{base}, filename{filepath}, generators{gens} {}
+        basename{base},
+        filename{filepath},
+        generators{gens} {}
 
     std::string basename;                               ///< basename for file
     std::string filename;                               ///< filepath for file to write
@@ -70,7 +71,12 @@ class Diagram {
 
   /**
    * @brief Write a single table in the Diagram file
+   * 
+   * @param generator The generator that will be used to write the diagram values
+   * @param buffer The buffer to store the string that will be written to the file
+   * @param table The enum determining if we write the Qmin or Qmax table
    */
+
   void writeTable(const algo::GeneratorDefinition& generator, std::stringstream& buffer, Tables table);
   DiagramDefinition def_;  ///< Diagram file information
 };

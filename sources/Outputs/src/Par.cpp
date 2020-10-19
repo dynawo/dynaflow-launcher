@@ -134,7 +134,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   std::size_t hashId = constants::hash(def.id);
   std::string hashIdStr = std::to_string(hashId);
   auto set = parameters::ParametersSetFactory::newInstance(hashIdStr);
-  //change def.id to the hash
+  //Use the hash id in exported files to prevent use of non-ascii characters
 
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
   if (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN ||
