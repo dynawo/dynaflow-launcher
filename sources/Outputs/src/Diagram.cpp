@@ -32,6 +32,7 @@ Diagram::write() {
   //maybe use stdbuf for using << and not .append(..()))
   std::stringstream buffer;
   buffer << "#1";
+  //Modelica requires this file to start with "#1", if it is not present, problems occurs
   bool empty = true;
 
   for (algo::GeneratorDefinition& generator : def_.generators) {
