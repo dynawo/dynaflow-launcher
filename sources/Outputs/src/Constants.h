@@ -24,6 +24,17 @@ namespace dfl {
 namespace outputs {
 /// @brief Namespace for constant variables common to all writers
 namespace constants {
+
+/**
+ * @brief Return a hash number from a string as input
+ * @param str The string that will serve as input for the hash function
+ * @return The hash as a number
+ */
+static inline std::size_t
+hash(const std::string& str) {
+  return std::hash<std::string>{}(str);
+}
+
 const std::string loadParId{"GenericRestorativeLoad"};              ///< PAR id common to all loads
 const std::string signalNParId{"SignalN"};                          ///< PAR id for signalN
 const std::string diagramFileSuffixExt{"_Diagram.txt"};             ///< Basename for QTables diagrams
@@ -31,12 +42,6 @@ const std::string diagramMaxTableSuffix{"_tableqmax"};              ///< Suffix 
 const std::string diagramMinTableSuffix{"_tableqmin"};              ///< Suffix for the table name for qmin in diagram file
 const std::string signalNGeneratorParId{"signalNGenerator"};        ///< PAR id for generators using signal N
 const std::string impSignalNGeneratorParId{"impSignalNGenerator"};  ///< PAR id for generators using signal N with impendance
-  /**
-   * @brief Return a hash number from a string as input
-   */
-static inline std::size_t hash(std::string str) {
-    return std::hash<std::string>{}(str);
-}
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 
