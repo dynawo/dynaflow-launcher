@@ -24,7 +24,10 @@ target_set_warnings(inputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper th
 target_link_libraries(inputs
 PUBLIC
 DynaFlowLauncher::common
+Boost::filesystem
+Dynawo::dynawo_DataInterface
 
+PRIVATE
 Dynawo::dynawo_DataInterfaceFactory
 )
 add_library(DynaFlowLauncher::inputs ALIAS inputs)

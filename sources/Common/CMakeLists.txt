@@ -36,7 +36,9 @@ add_dependencies(common dicokeys)
 target_link_libraries(common
   PUBLIC
     Boost::program_options
-    Boost::filesystem
     Dynawo::dynawo_Common
+
+  PRIVATE
+    Boost::filesystem
 )
 add_library(DynaFlowLauncher::common ALIAS common)
