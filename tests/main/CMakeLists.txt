@@ -44,3 +44,8 @@ endmacro()
 DEFINE_LAUNCH_TEST(launch)
 
 DEFINE_LAUNCH_TEST(launch_infinite)
+
+DEFINE_LAUNCH_TEST(node_breaker)
+
+## Expected to fail because node breaker is not supported
+set_tests_properties(MAIN.node_breaker PROPERTIES WILL_FAIL TRUE)

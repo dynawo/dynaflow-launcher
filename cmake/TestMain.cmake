@@ -14,7 +14,7 @@ function(check_file _file _expected_file)
   endif()
 endfunction(check_file)
 
-execute_process(COMMAND ${EXE}  --network=res/IEEE14.iidm --config=res/config_${TEST_NAME}.json RESULT_VARIABLE EXE_RESULT)
+execute_process(COMMAND ${EXE}  --network=res/IEEE14_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json RESULT_VARIABLE EXE_RESULT)
 if(EXE_RESULT)
     message(FATAL_ERROR "Execution failed: ${EXE} --network=res/IEEE14.iidm --config=res/config_${TEST_NAME}.json")
 endif()
