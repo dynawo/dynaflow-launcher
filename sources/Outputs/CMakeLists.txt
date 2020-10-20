@@ -27,10 +27,12 @@ target_link_libraries(outputs
 PUBLIC
 DynaFlowLauncher::algo
 
-Boost::filesystem
-
 Dynawo::dynawo_API_JOB
 Dynawo::dynawo_API_DYD
 Dynawo::dynawo_API_PAR
+
+PRIVATE
+Boost::filesystem
+
 )
 add_library(DynaFlowLauncher::outputs ALIAS outputs)
