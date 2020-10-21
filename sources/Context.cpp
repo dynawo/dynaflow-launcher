@@ -18,13 +18,13 @@
 #include "Context.h"
 
 #include "Algo.h"
+#include "Constants.h"
+#include "Diagram.h"
 #include "Dyd.h"
 #include "Job.h"
 #include "Log.h"
 #include "Message.hpp"
 #include "Par.h"
-#include "Diagram.h"
-#include "Constants.h"
 
 #include <DYNSimulationContext.h>
 #include <algorithm>
@@ -151,15 +151,15 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, parOutput.generic_string(), generators_));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_));
   parWriter.write();
 
-  //Diagram
+  // Diagram
   file::path diagramOutput(config_.outputDir());
   diagramOutput.append(basename_ + outputs::constants::diagramFileSuffixExt);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramOutput.generic_string(), generators_));
   diagramWriter.write();
-  
+
   createSimulation(job);
 }
 

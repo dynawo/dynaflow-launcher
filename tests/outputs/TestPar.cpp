@@ -18,7 +18,8 @@ TEST(TestPar, write) {
   using dfl::algo::LoadDefinition;
 
   std::string basename = "TestPar";
-  std::string outputDir = "results/" + basename;
+  std::string dirname = "results";
+  std::string outputDir = dirname + "/" + basename;
   std::string filename = basename + ".par";
 
   if (!boost::filesystem::exists(outputDir)) {
@@ -58,7 +59,7 @@ TEST(TestPar, write) {
                                                                      },
                                                                      4., 40., 44., 440.)};
 
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputDir + "/" + filename, generators));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputDir + "/" + filename, generators));
 
   parWriter.write();
 
