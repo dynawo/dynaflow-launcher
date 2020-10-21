@@ -79,12 +79,10 @@ main(int argc, char* argv[]) {
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
       LOG(error) << "Dictionary " << dictPath << " not found: check runtime environment" << LOG_ENDL;
-      std::cerr << "Dictionary " << dictPath << " not found: check runtime environment" << std::endl;
       return EXIT_FAILURE;
     }
     if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
       LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
-      std::cerr << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << std::endl;
       return EXIT_FAILURE;
     }
     LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
