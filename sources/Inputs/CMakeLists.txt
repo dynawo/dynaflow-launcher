@@ -13,7 +13,7 @@ set(SOURCES
   src/Configuration.cpp
 )
 
-add_library(inputs STATIC ${SOURCES})
+add_library(inputs ${LINK_TYPE} ${SOURCES})
 
 target_include_directories(inputs
 PUBLIC
@@ -31,3 +31,4 @@ PRIVATE
 Dynawo::dynawo_DataInterfaceFactory
 )
 add_library(DynaFlowLauncher::inputs ALIAS inputs)
+install_lib_shared(inputs)

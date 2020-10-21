@@ -27,10 +27,10 @@ add_executable(DynaFlowLauncher ${SOURCES} ${HEADERS})
 
 target_link_libraries(DynaFlowLauncher
   PRIVATE
-  DynaFlowLauncher::common
-  DynaFlowLauncher::inputs
-  DynaFlowLauncher::algo
   DynaFlowLauncher::outputs
+  DynaFlowLauncher::algo
+  DynaFlowLauncher::inputs
+  DynaFlowLauncher::common
 
   Dynawo::dynawo_Simulation
   Dynawo::dynawo_SimulationCommon
