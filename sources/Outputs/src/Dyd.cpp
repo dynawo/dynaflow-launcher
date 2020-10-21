@@ -37,7 +37,7 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "GeneratorPVWithImpedanceSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "GeneratorPVWithImpedanceDiagramPQSignalN")};
+    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQWithImpedanceSignalN")};
 
 // cannot use macroConnectorGenImpedenceName_ and macroConnectorGenName_ because they are private variable
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
