@@ -65,7 +65,7 @@ Par::write() {
   }
 
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
-    auto set = writeGenerator(*it, def_.basename);
+    auto set = writeGenerator(*it, def_.basename, def_.dirname);
     if (set) {
       collection->addParametersSet(set);
     }
@@ -126,7 +126,7 @@ Par::writeConstantSets(unsigned int nb_generators) {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename) {
+Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname) {
   if (def.model == algo::GeneratorDefinition::ModelType::SIGNALN || def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
     // already processed by constant
     return nullptr;
@@ -134,7 +134,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   std::size_t hashId = constants::hash(def.id);
   std::string hashIdStr = std::to_string(hashId);
   auto set = parameters::ParametersSetFactory::newInstance(hashIdStr);
-  //Use the hash id in exported files to prevent use of non-ascii characters
+  //  Use the hash id in exported files to prevent use of non-ascii characters
 
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
   if (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN ||
@@ -149,9 +149,12 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
-  set->addParameter(helper::buildParameter("generator_QMaxTableFile", basename + constants::diagramFileSuffixExt));
+  auto dirname_diagram = boost::filesystem::path(dirname);
+  dirname_diagram.append(basename + constants::diagramFileSuffixExt);
+
+  set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
-  set->addParameter(helper::buildParameter("generator_QMinTableFile", basename + constants::diagramFileSuffixExt));
+  set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
 
   set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));

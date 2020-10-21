@@ -3,10 +3,10 @@
   <set id="10160083025018531003">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_QMax0" type="DOUBLE" value="41"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="TestPar_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="results/TestPar_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="10160083025018531003_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="3"/>
-    <par name="generator_QMinTableFile" type="STRING" value="TestPar_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="results/TestPar_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="10160083025018531003_tableqmin"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
     <par name="line_BPu" type="DOUBLE" value="0"/>
@@ -24,10 +24,10 @@
   <set id="6320417593396202500">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="TestPar_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="results/TestPar_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
-    <par name="generator_QMinTableFile" type="STRING" value="TestPar_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="results/TestPar_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>

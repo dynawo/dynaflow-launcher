@@ -42,14 +42,17 @@ class Par {
      *
      * @param base basename for current simulation
      * @param filename file path for output PAR file (corresponds to basename)
+     * @param dirname the dirname of the output PAR file
      * @param gens list of the generators taken into account
      */
-    ParDefinition(const std::string& base, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens) :
+    ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens) :
         basename{base},
+        dirname{dir},
         filepath{filename},
         generators{gens} {}
 
     std::string basename;                               ///< basename
+    std::string dirname;                                ///< Dirname of output file relative to execution dir
     std::string filepath;                               ///< file path of the output file to write
     std::vector<algo::GeneratorDefinition> generators;  ///< list of generators
   };
@@ -95,10 +98,12 @@ class Par {
    *
    * @param def the generator definition to use
    * @param basename the basename for the simulation
+   * @param dirname the dirname of the output directory
    *
    * @returns nullptr if the generator use a SignalN model, the parameter set if not
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename);
+  static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
+                                                                     const std::string& dirname);
 
  private:
   ParDefinition def_;  ///< PAR file definition
