@@ -38,10 +38,10 @@
   <dyn:blackBoxModel id="G1" staticId="G1" lib="GeneratorPVWithImpedanceSignalN" parFile="TestDyd.par" parId="impSignalNGenerator">
     <dyn:macroStaticRef id="GeneratorImpStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVDiagramPQSignalN" parFile="TestDyd.par" parId="G2">
+  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVDiagramPQSignalN" parFile="TestDyd.par" parId="6320417593396202500">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G3" staticId="G3" lib="GeneratorPVDiagramPQWithImpedanceSignalN" parFile="TestDyd.par" parId="G3">
+  <dyn:blackBoxModel id="G3" staticId="G3" lib="GeneratorPVDiagramPQWithImpedanceSignalN" parFile="TestDyd.par" parId="10160083025018531003">
     <dyn:macroStaticRef id="GeneratorImpStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="L0" staticId="L0" lib="LoadAlphaBetaRestorative" parFile="TestDyd.par" parId="GenericRestorativeLoad">
