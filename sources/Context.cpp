@@ -125,9 +125,6 @@ Context::exportOutputs() {
 
   // create output directory
   file::path outputDir(config_.outputDir());
-  if (!file::exists(outputDir)) {
-    file::create_directories(outputDir);
-  }
 
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));

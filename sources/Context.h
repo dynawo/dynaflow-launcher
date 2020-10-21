@@ -52,9 +52,9 @@ class Context {
    * @brief Constructor
    *
    * @param def The context definition
-   * @param config simulation configuration
+   * @param config configuration to use
    */
-  explicit Context(const ContextDef& def, const inputs::Configuration& config);
+  Context(const ContextDef& def, const inputs::Configuration& config);
 
   /**
    * @brief Process context
@@ -118,7 +118,7 @@ class Context {
  private:
   ContextDef def_;                         ///< context definition
   inputs::NetworkManager networkManager_;  ///< network manager
-  const inputs::Configuration& config_;           ///< configuration
+  const inputs::Configuration& config_;    ///< configuration
 
   std::string basename_;                                                                   ///< basename for all files
   std::vector<inputs::NetworkManager::ProcessNodeCallback> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
