@@ -24,6 +24,7 @@
 #include "Message.hpp"
 #include "Par.h"
 #include "Diagram.h"
+#include "Outputs/src/Constants.h"
 
 #include <DYNSimulationContext.h>
 #include <algorithm>
@@ -155,7 +156,7 @@ Context::exportOutputs() {
 
   //Diagram
   file::path diagramOutput(config_.outputDir());
-  diagramOutput.append(basename_ + ".txt");
+  diagramOutput.append(basename_ + outputs::constants::diagramFileSuffixExt);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramOutput.generic_string(), generators_));
   diagramWriter.write();
   
