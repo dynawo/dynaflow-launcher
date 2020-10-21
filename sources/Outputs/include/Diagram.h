@@ -62,6 +62,7 @@ class Diagram {
    */
   void write();
 
+
  private:
   /// @brief Different tables in the diagram, qmin or qmax
   enum class Tables {
@@ -76,8 +77,8 @@ class Diagram {
    * @param buffer The buffer to store the string that will be written to the file
    * @param table The enum determining if we write the Qmin or Qmax table
    */
+  static void writeTable(const algo::GeneratorDefinition& generator, std::stringstream& buffer, Tables table);
 
-  void writeTable(const algo::GeneratorDefinition& generator, std::stringstream& buffer, Tables table);
   DiagramDefinition def_;  ///< Diagram file information
 };
 }  // namespace outputs
