@@ -36,8 +36,9 @@ class Log {
    * - one logger with the name of the program, containing logs from dynaflow launcher
    * - one logger named dynawo.log, containing the rest of dynawo logs
    * All loggers have the same pattern of messages and the same level, given by the input
+   * @param outputDir directory where the log should be written
    */
-  static void init(const common::Options& options);
+  static void init(const common::Options& options, const std::string& outputDir);
 };
 
 }  // namespace common

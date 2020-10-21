@@ -34,10 +34,10 @@
 namespace file = boost::filesystem;
 
 namespace dfl {
-Context::Context(const ContextDef& def) :
+Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     def_{def},
     networkManager_(def.networkFilepath),
-    config_(def.configFilepath),
+    config_(config),
     basename_{},
     slackNode_{},
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
