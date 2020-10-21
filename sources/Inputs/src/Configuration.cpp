@@ -69,7 +69,7 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
     helper::updateValue(outputDir_, config, "OutputDir");
   } catch (std::exception& e) {
-    LOG(error) << e.what() << LOG_ENDL;
+    LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);
   }
 }

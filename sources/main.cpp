@@ -18,7 +18,9 @@
 #include <DYNError.h>
 #include <DYNIoDico.h>
 #include <boost/filesystem.hpp>
+#include <boost/timer.hpp>
 #include <cstdlib>
+#include <iomanip>
 #include <sstream>
 
 static const char* dictPrefix = "DFLMessages_";
@@ -48,6 +50,7 @@ initializeDynawo(const std::string& locale) {
 int
 main(int argc, char* argv[]) {
   try {
+    boost::timer timerInit;
     DYN::Trace::init();
     dfl::common::Options options;
 
@@ -67,6 +70,10 @@ main(int argc, char* argv[]) {
     auto& runtimeConfig = options.config();
     dfl::inputs::Configuration config(runtimeConfig.configPath);
     dfl::common::Log::init(options, config.outputDir(), !continuePreviousLogFile);
+    LOG(info) << " ============================================================ " << LOG_ENDL;
+    LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING <<  LOG_ENDL;
+    LOG(info) << " ============================================================ " <<  LOG_ENDL;
+
 
     std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
@@ -80,7 +87,7 @@ main(int argc, char* argv[]) {
 
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
-      LOG(error) << "Dictionary " << dictPath << " not found: check runtime environment" << LOG_ENDL;
+      LOG(error) << MESS(DictionaryNotFound, dictPath) << LOG_ENDL;
       return EXIT_FAILURE;
     }
     if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
@@ -96,31 +103,45 @@ main(int argc, char* argv[]) {
     dfl::Context context(def, config);
 
     if (!context.process()) {
+      LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
       return EXIT_FAILURE;
     }
+    LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
 
+    boost::timer timerFiles;
     context.exportOutputs();
+    dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
+    LOG(info) << MESS(FilesEnd, timerFiles.elapsed()) << LOG_ENDL;
+
+    boost::timer timerSimu;
     context.execute();
 
-    dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
-
-    LOG(info) << MESS(SimulationEnded, context.basename()) << LOG_ENDL;
+    LOG(info) << " ============================================================ " << LOG_ENDL;
+    LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
+    std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
+    std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (std::exception& e) {
+    std::cerr << "Simulation failed" << std::endl;
     std::cerr << e.what() << std::endl;
+    LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << e.what() << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (...) {
+    std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Unknown error" << std::endl;
+    LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Unknown error" << LOG_ENDL;
     return EXIT_FAILURE;
   }
