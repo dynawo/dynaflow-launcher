@@ -11,7 +11,6 @@ set(SOURCES
 src/Job.cpp
 src/Dyd.cpp
 src/Par.cpp
-src/Constants.h
 src/Diagram.cpp
 )
 

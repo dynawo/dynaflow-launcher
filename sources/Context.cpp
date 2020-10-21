@@ -24,7 +24,7 @@
 #include "Message.hpp"
 #include "Par.h"
 #include "Diagram.h"
-#include "Outputs/src/Constants.h"
+#include "Constants.h"
 
 #include <DYNSimulationContext.h>
 #include <algorithm>
