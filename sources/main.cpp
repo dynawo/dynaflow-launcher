@@ -8,6 +8,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include "Context.h"
+#include "Configuration.h"
 #include "Dico.h"
 #include "Log.h"
 #include "Message.hpp"
@@ -61,7 +62,9 @@ main(int argc, char* argv[]) {
       return EXIT_SUCCESS;
     }
 
-    dfl::common::Log::init(options);
+    auto& runtimeConfig = options.config();
+    dfl::inputs::Configuration config(runtimeConfig.configPath);
+    dfl::common::Log::init(options, config.outputDir());
 
     std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
@@ -76,17 +79,21 @@ main(int argc, char* argv[]) {
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
       LOG(error) << "Dictionary " << dictPath << " not found: check runtime environment" << LOG_ENDL;
+      std::cerr << "Dictionary " << dictPath << " not found: check runtime environment" << std::endl;
       return EXIT_FAILURE;
     }
-
-    auto& config = options.config();
-    LOG(info) << MESS(InputsInfo, config.networkFilePath, config.configPath) << LOG_ENDL;
+    if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
+      LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
+      std::cerr << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << std::endl;
+      return EXIT_FAILURE;
+    }
+    LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
 
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
-    dfl::Context::ContextDef def{config.networkFilePath, config.configPath, config.dynawoLogLevel, parFilesDir.generic_string(), res, locale};
-    dfl::Context context(def);
+    dfl::Context::ContextDef def{runtimeConfig.networkFilePath, runtimeConfig.dynawoLogLevel, parFilesDir.generic_string(), res, locale};
+    dfl::Context context(def, config);
 
     if (!context.process()) {
       return EXIT_FAILURE;
