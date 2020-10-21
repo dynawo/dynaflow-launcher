@@ -19,6 +19,31 @@
 
 #include <unordered_map>
 
+namespace std {
+/**
+ * @brief specialization hash for generated keys
+ *
+ * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
+ * see https://en.cppreference.com/w/cpp/utility/hash for template definition
+ */
+template<>
+struct hash<dfl::common::generated::DicoKeys::Key> {
+  /// @brief Constructor
+  hash() {}
+  /**
+   * @brief Action operator
+   *
+   * Performs hash by relying on integer cast for enum class
+   *
+   * @param key the key to hash
+   * @returns the hash value
+   */
+  size_t operator()(const dfl::common::generated::DicoKeys::Key& key) const {
+    return hash<unsigned int>{}(static_cast<unsigned int>(key));
+  }
+};
+}  // namespace std
+
 namespace dfl {
 namespace common {
 
