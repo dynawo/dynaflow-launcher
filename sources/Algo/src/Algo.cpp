@@ -16,6 +16,7 @@
  */
 
 #include "Algo.h"
+#include "Log.h"
 
 #include <DYNCommon.h>
 #include <tuple>
@@ -82,14 +83,51 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
   if (node_generators.size() == 1) {
     auto model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::SIGNALN : GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
     const auto& gen = node_generators.front();
+
+    if (model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN && !isDiagramValid(gen)) {
+      return;
+    }
+
     generators_.emplace_back(gen.id, model, node->id, gen.points, gen.qmin, gen.qmax, gen.pmin, gen.pmax);
   } else {
     auto model =
         useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN : GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN;
     for (auto it = node_generators.begin(); it != node_generators.end(); ++it) {
+      if (model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN && !isDiagramValid(*it)) {
+        continue;
+      }
       generators_.emplace_back(it->id, model, node->id, it->points, it->qmin, it->qmax, it->pmin, it->pmax);
     }
   }
+}
+
+bool
+GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator) {
+  bool valid = true;
+
+  if (generator.points.size() == 0) {
+    return true;
+  }
+  if (generator.points.size() == 1) {
+    LOG(info) << generator.id + "has not a valid diagram." << LOG_ENDL;
+    return false;
+  }
+
+  auto firstP = generator.points.front().p;
+  bool allQminEqualQmax = true;
+  bool allPEqual = true;
+  auto it = generator.points.begin();
+  while ((allQminEqualQmax || allPEqual) && it != generator.points.end()) {
+    allQminEqualQmax = allQminEqualQmax && it->qmin == it->qmax;
+    allPEqual = allPEqual && it->p == firstP;
+    ++it;
+  }
+  valid = !allQminEqualQmax && !allPEqual;
+
+  if (!valid) {
+    LOG(warn) << generator.id + "has not a valid diagram." << LOG_ENDL;
+  }
+  return valid;
 }
 
 /////////////////////////////////////////////////////////////////

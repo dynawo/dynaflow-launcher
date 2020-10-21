@@ -192,13 +192,24 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
   /**
    * @brief Perform algorithm
    *
-   * Add the generators of the nodes and deducing the model to use
+   * Add the generators of the nodes and deducing the model to use. If the node is a generator with a deduced
+   * model of a diagram then the function isDiagramValid is called. If the diagram is not valid the generator
+   * is not added to the list of generators. 
    *
    * @param node the node to process
    */
   void operator()(const NodePtr& node);
 
  private:
+  /**
+   * @brief Checks for diagram validity according to the list of points associated with the generator, and
+   * change the model type of the generator if the diagram is invalid
+   * 
+   * @param generator The generator with it list of points 
+   * @return Boolean indicating if the diagram is valid
+   */
+  static bool isDiagramValid(const inputs::Generator& generator);
+
   Generators& generators_;          ///< the generators list to update
   bool useInfiniteReactivelimits_;  ///< determine if infinite reactive limits are used
 };

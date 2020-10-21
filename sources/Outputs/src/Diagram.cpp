@@ -83,6 +83,5 @@ Diagram::writeTable(const algo::GeneratorDefinition& generator, std::stringstrea
     }
   }
 }
-
 }  // namespace outputs
 }  // namespace dfl

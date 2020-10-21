@@ -160,7 +160,8 @@ TEST(Generators, base) {
       std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
       std::make_shared<dfl::inputs::Node>("6", 0.0),
   };
-  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points;
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
+      {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points0;
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
@@ -260,4 +261,81 @@ TEST(Loads, base) {
   for (size_t index = 0; index < loads.size(); ++index) {
     ASSERT_EQ(expected_loads[index].id, loads[index].id);
   }
+}
+
+TEST(Generators, validDiagram) {
+  using dfl::inputs::Generator;
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(12., 44., 440.), Generator::ReactiveCurvePoint(65., 44., 440.)});
+  const Generator generator("G1", points, 3., 30., 33., 330.);
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
+  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+
+  const dfl::algo::GeneratorDefinition expectedGenerator("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points, 0, 0, 0, 0);
+
+  node->generators.emplace_back(generator);
+  algo_infinite(node);
+  ASSERT_EQ(generators.size(), 1);
+}
+
+TEST(Generators, allPEqual) {
+  using dfl::inputs::Generator;
+  Generator generator("G1",
+                      {Generator::ReactiveCurvePoint(65., 44., 450.), Generator::ReactiveCurvePoint(65., 24., 420.),
+                       Generator::ReactiveCurvePoint(65., 44., 250.), Generator::ReactiveCurvePoint(65., 45., 440.)},
+                      3., 30., 33., 330.);
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
+  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+
+  node->generators.emplace_back(generator);
+  algo_infinite(node);
+  ASSERT_EQ(generators.size(), 0);
+}
+
+TEST(Generators, allQminEqualQmax) {
+  using dfl::inputs::Generator;
+  Generator generator("G1",
+                      {Generator::ReactiveCurvePoint(1., 44., 44.), Generator::ReactiveCurvePoint(2., 420., 420.),
+                       Generator::ReactiveCurvePoint(3., 250., 250.), Generator::ReactiveCurvePoint(4., 440., 440.)},
+                      3., 30., 33., 330.);
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
+  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+
+  node->generators.emplace_back(generator);
+  algo_infinite(node);
+  ASSERT_EQ(generators.size(), 0);
+}
+
+TEST(Generators, validDiagram2) {
+  using dfl::inputs::Generator;
+  Generator generator("G1",
+                      {Generator::ReactiveCurvePoint(10., 44., 440.), Generator::ReactiveCurvePoint(12., 44., 440.),
+                       Generator::ReactiveCurvePoint(12., 44., 440.), Generator::ReactiveCurvePoint(65., 44., 440.)},
+                      3., 30., 33., 330.);
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
+  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+
+  node->generators.emplace_back(generator);
+  algo_infinite(node);
+  ASSERT_EQ(generators.size(), 1);
+}
+
+TEST(Generators, validDiagram3) {
+  using dfl::inputs::Generator;
+  Generator generator("G1",
+                      {Generator::ReactiveCurvePoint(10., 44., 44.), Generator::ReactiveCurvePoint(11., 44., 44.), Generator::ReactiveCurvePoint(12., 44., 44.),
+                       Generator::ReactiveCurvePoint(65., 1., 87.)},
+                      3., 30., 33., 330.);
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
+  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+
+  node->generators.emplace_back(generator);
+  algo_infinite(node);
+  ASSERT_EQ(generators.size(), 1);
 }
