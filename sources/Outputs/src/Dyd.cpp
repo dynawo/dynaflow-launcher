@@ -137,7 +137,9 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
     parId = constants::impSignalNGeneratorParId;
     break;
   default:
-    parId = def.id;
+    std::size_t hashId = constants::hash(def.id);
+    std::string hashIdStr = std::to_string(hashId);
+    parId = hashIdStr;
     break;
   }
 
