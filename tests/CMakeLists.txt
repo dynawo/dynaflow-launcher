@@ -28,9 +28,9 @@ if(NOT TARGET GTest::gtest_main AND TARGET GTest::Main)
 endif()
 find_package(GMock REQUIRED)
 add_library(DynaFlowLauncherTest INTERFACE)
-  target_link_libraries(DynaFlowLauncherTest INTERFACE
-    GTest::gmock_main
-    GTest::gtest_main)
+target_link_libraries(DynaFlowLauncherTest INTERFACE
+  GTest::gmock_main
+  GTest::gtest_main)
 
 # In order to incude tests.h in all tests and compile Tests.cpp in all test executables
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR})

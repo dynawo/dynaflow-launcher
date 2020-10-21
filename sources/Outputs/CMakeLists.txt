@@ -15,7 +15,7 @@ src/Constants.h
 src/Diagram.cpp
 )
 
-add_library(outputs STATIC ${SOURCES})
+add_library(outputs ${LINK_TYPE} ${SOURCES})
 
 target_include_directories(outputs
 PUBLIC
@@ -36,3 +36,4 @@ Boost::filesystem
 
 )
 add_library(DynaFlowLauncher::outputs ALIAS outputs)
+install_lib_shared(outputs)

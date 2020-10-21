@@ -11,7 +11,7 @@ set(SOURCES
 src/Algo.cpp
 )
 
-add_library(algo STATIC ${SOURCES})
+add_library(algo ${LINK_TYPE} ${SOURCES})
 
 target_include_directories(algo
 PUBLIC
@@ -24,3 +24,4 @@ PUBLIC
 DynaFlowLauncher::inputs
 )
 add_library(DynaFlowLauncher::algo ALIAS algo)
+install_lib_shared(algo)

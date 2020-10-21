@@ -16,7 +16,9 @@ src/DicoKeys.cpp
 src/Dico.cpp
 )
 
-add_library(common STATIC ${SOURCES})
+set_source_files_properties(src/DicoKeys.cpp PROPERTIES GENERATED 1)
+
+add_library(common ${LINK_TYPE} ${SOURCES})
 target_include_directories(common
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -42,3 +44,4 @@ target_link_libraries(common
     Boost::filesystem
 )
 add_library(DynaFlowLauncher::common ALIAS common)
+install_lib_shared(common)
