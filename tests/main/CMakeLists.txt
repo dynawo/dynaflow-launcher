@@ -43,8 +43,4 @@ endmacro()
 
 DEFINE_LAUNCH_TEST(launch)
 
-## For now, we don't generate the diagram.txt file so this will fail
-## TODO(lecourtoisflo) Remove when diagram.txt is generated
-set_tests_properties(MAIN.launch PROPERTIES WILL_FAIL TRUE)
-
 DEFINE_LAUNCH_TEST(launch_infinite)
