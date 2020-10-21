@@ -29,6 +29,31 @@
 #include <unordered_map>
 #include <vector>
 
+namespace std {
+/**
+ * @brief specialization hash for generators model types
+ *
+ * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
+ * see https://en.cppreference.com/w/cpp/utility/hash for template definition
+ */
+template<>
+struct hash<dfl::algo::GeneratorDefinition::ModelType> {
+  /// @brief Constructor
+  hash() {}
+  /**
+   * @brief Action operator
+   *
+   * Performs hash by relying on integer cast for enum class
+   *
+   * @param key the key to hash
+   * @returns the hash value
+   */
+  size_t operator()(const dfl::algo::GeneratorDefinition::ModelType& key) const {
+    return hash<unsigned int>{}(static_cast<unsigned int>(key));
+  }
+};
+}  // namespace std
+
 namespace dfl {
 namespace outputs {
 
