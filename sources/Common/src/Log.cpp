@@ -40,7 +40,7 @@ Log::init(const common::Options& options, const std::string& outputDir, bool con
   appender.setLvlFilter(Trace::severityLevelFromString(config.dynawoLogLevel));
   appender.setTag(dynaflowLauncherLogTag);
   appender.setShowLevelTag(true);
-  appender.setSeparator(" ");
+  appender.setSeparator(" | ");
   appender.setShowTimeStamp(true);
   appender.setAppend(continuePreviousLog);
   appender.setTimeStampFormat("%Y-%m-%d %H:%M:%S");
