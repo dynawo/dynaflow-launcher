@@ -17,8 +17,9 @@
 
 #include "Log.h"
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
-#include <regex>
 
 namespace dfl {
 namespace common {
@@ -47,18 +48,18 @@ Dico::configure(const std::string& filepath) {
 }
 
 Dico::Dico(const std::string& filepath) : messages_{} {
-  std::regex reg("[ ]*([a-zA-Z_-]+)[ ]*=[ ]*(.*)", std::regex::extended);
-
   std::ifstream is(filepath);
   std::string line;
-  std::smatch result;
 
   while (std::getline(is, line)) {
-    if (std::regex_match(line, result, reg)) {
-      // The first sub_match is the whole string; the next
-      // sub_match is the first parenthesized expression.
-      auto key = result[1];
-      auto message = result[2];
+    size_t index = line.find_first_of('=');
+    if (index != std::string::npos) {
+      auto key = line.substr(0, index);
+      key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c) != 0; }), key.end());
+
+      size_t first_message_index = line.find_first_not_of(' ', index + 1);
+      auto message = line.substr(first_message_index);
+
       if (generated::DicoKeys::canConvertString(key)) {
         messages_.insert(std::make_pair(generated::DicoKeys::stringToKey(key), message));
       } else {

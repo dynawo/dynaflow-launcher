@@ -22,7 +22,7 @@
 namespace dfl {
 namespace algo {
 
-SlackNodeAlgorithm::SlackNodeAlgorithm(NodePtr& slackNode) : NodeAlgorithm(), slackNode_{slackNode} {}
+SlackNodeAlgorithm::SlackNodeAlgorithm(NodePtr& slackNode) : NodeAlgorithm(), slackNode_(slackNode) {}
 
 void
 SlackNodeAlgorithm::operator()(const NodePtr& node) {
@@ -38,7 +38,7 @@ SlackNodeAlgorithm::operator()(const NodePtr& node) {
 
 /////////////////////////////////////////////////////////
 
-MainConnexComponentAlgorithm::MainConnexComponentAlgorithm(ConnexGroup& mainConnexity) : NodeAlgorithm(), markedNodes_{}, mainConnexity_{mainConnexity} {}
+MainConnexComponentAlgorithm::MainConnexComponentAlgorithm(ConnexGroup& mainConnexity) : NodeAlgorithm(), markedNodes_{}, mainConnexity_(mainConnexity) {}
 
 void
 MainConnexComponentAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<NodePtr>& nodes) {
@@ -72,7 +72,7 @@ MainConnexComponentAlgorithm::operator()(const NodePtr& node) {
 
 GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits) :
     NodeAlgorithm(),
-    generators_{gens},
+    generators_(gens),
     useInfiniteReactivelimits_{infinitereactivelimits} {}
 
 void
@@ -93,7 +93,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 /////////////////////////////////////////////////////////////////
 
-LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads) : NodeAlgorithm(), loads_{loads} {}
+LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads) : NodeAlgorithm(), loads_(loads) {}
 
 void
 LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
