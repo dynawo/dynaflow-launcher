@@ -57,6 +57,15 @@ class Context {
   Context(const ContextDef& def, const inputs::Configuration& config);
 
   /**
+   * @brief Retrieve the basename of current simulation
+   *
+   * @returns basename used for current simulation
+   */
+  const std::string& basename() const {
+    return basename_;
+  }
+
+  /**
    * @brief Process context
    *
    * This perform all algorithms on nodes inputs of the network manager then perform all specific algorithm on the main connex component
