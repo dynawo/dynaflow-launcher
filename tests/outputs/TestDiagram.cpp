@@ -17,11 +17,12 @@ TEST(Diagram, writeWithCurvePoint) {
   using dfl::algo::GeneratorDefinition;
 
   std::string basename = "TestDiagram";
-  std::string outputDir = "results/" + basename;
   std::string filename = basename + ".txt";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
 
-  if (!boost::filesystem::exists(outputDir)) {
-    boost::filesystem::create_directories(outputDir);
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
   }
 
   std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00",
@@ -59,22 +60,29 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
                                                                      4., 40., 44., 440.)};
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDir + "/" + filename, generators));
+
+  outputPath.append(filename);
+  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputPath.generic_string(), generators));
 
   DiagramWriter.write();
 
-  dfl::test::checkFilesEqual(outputDir + "/" + filename, "reference/" + basename + "/" + filename);
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
 TEST(Diagram, writeWithCurveAndDefaultPoints) {
   using dfl::algo::GeneratorDefinition;
 
   std::string basename = "TestDiagram";
-  std::string outputDir = "results/" + basename;
   std::string filename = "TestDiagramMixed.txt";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
 
-  if (!boost::filesystem::exists(outputDir)) {
-    boost::filesystem::create_directories(outputDir);
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
   }
 
   std::vector<GeneratorDefinition> generators = {
@@ -105,31 +113,41 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                           },
                           3., 30., 33., 330.),
       GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440.)};
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDir + "/" + filename, generators));
+
+  outputPath.append(filename);
+  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputPath.generic_string(), generators));
 
   DiagramWriter.write();
 
-  dfl::test::checkFilesEqual(outputDir + "/" + filename, "reference/" + basename + "/" + filename);
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
 TEST(Diagram, writeEmpty) {
   using dfl::algo::GeneratorDefinition;
 
   std::string basename = "TestDiagram";
-  std::string outputDir = "results/" + basename;
   std::string filename = "TestDiagramEmpty.txt";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
 
-  if (!boost::filesystem::exists(outputDir)) {
-    boost::filesystem::create_directories(outputDir);
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
   }
 
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN, "01", {}, -20., -2., 22., 220.),
       GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "03", {}, 4., 40., 44., 440.)};
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDir + "/" + filename, generators));
+
+  outputPath.append(filename);
+
+  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputPath.generic_string(), generators));
 
   DiagramWriter.write();
-  std::string filePath = outputDir + "/" + filename;
+  std::string filePath = outputPath.generic_string();
   try {
     std::ifstream stream(filePath);
     ASSERT_TRUE(stream.fail()) << "The Diagram file has been written to even though there are no generators which model requires it." << std::endl;

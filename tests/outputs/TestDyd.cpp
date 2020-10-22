@@ -18,11 +18,12 @@ TEST(Dyd, write) {
   using dfl::algo::LoadDefinition;
 
   std::string basename = "TestDyd";
-  std::string outputDir = "results/" + basename;
   std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
 
-  if (!boost::filesystem::exists(outputDir)) {
-    boost::filesystem::create_directories(outputDir);
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
   }
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", "00"), LoadDefinition("L1", "01"), LoadDefinition("L2", "02"), LoadDefinition("L3", "03")};
@@ -34,9 +35,16 @@ TEST(Dyd, write) {
       GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440.)};
 
   auto node = std::make_shared<dfl::inputs::Node>("Slack", 100.);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputDir + "/" + filename, generators, loads, node));
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node));
 
   dydWriter.write();
 
-  dfl::test::checkFilesEqual(outputDir + "/" + filename, "reference/" + basename + "/" + filename);
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
