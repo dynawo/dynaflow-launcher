@@ -43,7 +43,6 @@ Log::init(const common::Options& options, const std::string& outputDir, bool con
   appender.setSeparator(" ");
   appender.setShowTimeStamp(true);
   appender.setAppend(continuePreviousLog);
-  appender.setAppend(continuePreviousLog);
   appender.setTimeStampFormat("%Y-%m-%d %H:%M:%S");
 
   appenders.push_back(appender);
