@@ -11,15 +11,22 @@
 #include "NetworkManager.h"
 #include "Tests.h"
 
-#include <regex>
-
 static size_t count = 0;
-static const std::regex reg("_BUS_+[0-9]+_TN");
 
 static void
 checkNode(const std::shared_ptr<dfl::inputs::Node>& node) {
-  std::smatch match;
-  ASSERT_TRUE(std::regex_search(node->id, match, reg));
+  // Pattern = _BUS_+[0-9]+_TN
+  ASSERT_EQ(0, node->id.compare(0, 5, "_BUS_"));
+
+  size_t index = node->id.find_first_not_of('_', 5);
+  ASSERT_NE(index, std::string::npos);
+  size_t index2 = node->id.find_first_of('_', index + 1);
+  ASSERT_TRUE(index2 == node->id.length() - 3);
+  for (size_t i = index + 1; i < index2; i++) {
+    ASSERT_TRUE(std::isdigit(node->id.at(i)));
+  }
+
+  ASSERT_EQ(0, node->id.compare(node->id.length() - 3, 3, "_TN"));
   ++count;
 }
 

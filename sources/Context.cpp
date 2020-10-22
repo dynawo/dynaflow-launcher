@@ -36,7 +36,7 @@ namespace file = boost::filesystem;
 
 namespace dfl {
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
-    def_{def},
+    def_(def),
     networkManager_(def.networkFilepath),
     config_(config),
     basename_{},

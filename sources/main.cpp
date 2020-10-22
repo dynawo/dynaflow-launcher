@@ -7,8 +7,8 @@
 // file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
 
-#include "Context.h"
 #include "Configuration.h"
+#include "Context.h"
 #include "Dico.h"
 #include "Log.h"
 #include "Message.hpp"
@@ -54,7 +54,7 @@ main(int argc, char* argv[]) {
     auto parsing_status = options.parse(argc, argv);
 
     if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
-      LOG(info) << options << LOG_ENDL;
+      LOG(info) << options.desc() << LOG_ENDL;
       return EXIT_SUCCESS;
     }
     if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
