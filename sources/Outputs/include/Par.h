@@ -41,8 +41,8 @@ class Par {
      * @brief Constructor
      *
      * @param base basename for current simulation
+     * @param dir the dirname of the output PAR file
      * @param filename file path for output PAR file (corresponds to basename)
-     * @param dirname the dirname of the output PAR file
      * @param gens list of the generators taken into account
      */
     ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens) :
