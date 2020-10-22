@@ -36,3 +36,19 @@ target_link_libraries(DynaFlowLauncher
   Dynawo::dynawo_SimulationCommon
 )
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+# The following will export the targets under the name ${PROJECT_NAME}_Targets, not install them yet
+# It will then need a call to `install(EXPORT)`
+install(
+    TARGETS
+	  DynaFlowLauncher # We can install executables
+    EXPORT ${PROJECT_NAME}_Targets
+# Following is only needed pre-cmake3.14
+   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+# If you want to split between runtime and dev for examples, take a look at COMPONENT, NAMELINK_COMPONENT etc
+# More info in Craig Scott's talk "Deep CMake for library authors" https://www.youtube.com/watch?v=m0DwB4OvDXk
+    INCLUDES
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
