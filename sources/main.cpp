@@ -62,9 +62,11 @@ main(int argc, char* argv[]) {
       return EXIT_SUCCESS;
     }
 
+    bool continuePreviousLogFile = true;
+
     auto& runtimeConfig = options.config();
     dfl::inputs::Configuration config(runtimeConfig.configPath);
-    dfl::common::Log::init(options, config.outputDir(), false);
+    dfl::common::Log::init(options, config.outputDir(), !continuePreviousLogFile);
 
     std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
@@ -100,7 +102,7 @@ main(int argc, char* argv[]) {
     context.exportOutputs();
     context.execute();
 
-    dfl::common::Log::init(options, config.outputDir(), true);
+    dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
 
     LOG(info) << MESS(SimulationEnded, context.basename()) << LOG_ENDL;
 
