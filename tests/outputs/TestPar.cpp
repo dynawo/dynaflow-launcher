@@ -19,11 +19,13 @@ TEST(TestPar, write) {
 
   std::string basename = "TestPar";
   std::string dirname = "results";
-  std::string outputDir = dirname + "/" + basename;
   std::string filename = basename + ".par";
 
-  if (!boost::filesystem::exists(outputDir)) {
-    boost::filesystem::create_directories(outputDir);
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
   }
 
   std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00",
@@ -59,9 +61,15 @@ TEST(TestPar, write) {
                                                                      },
                                                                      4., 40., 44., 440.)};
 
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputDir + "/" + filename, generators));
+  outputPath.append(filename);
+
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators));
 
   parWriter.write();
 
-  dfl::test::checkFilesEqual(outputDir + "/" + filename, "reference/" + basename + "/" + filename);
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
