@@ -7,8 +7,8 @@
 // file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
 
-#include "Context.h"
 #include "Configuration.h"
+#include "Context.h"
 #include "Dico.h"
 #include "Log.h"
 #include "Message.hpp"
@@ -100,7 +100,9 @@ main(int argc, char* argv[]) {
     context.exportOutputs();
     context.execute();
 
-    dfl::common::Log::init(options, true);
+    dfl::common::Log::init(options, config.outputDir(), true);
+
+    LOG(info) << MESS(SimulationEnded, context.basename()) << LOG_ENDL;
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {

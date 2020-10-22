@@ -17,3 +17,4 @@ ConnexityErrorReCompute       =     Slack node of id %1% not present in main con
 SimulateInfo                  =     Initializing %1% simulation
 NetworkFileNotFound           =     Network file %1% does not exist
 NodeBreakerInterface          =     Node breaker topology for voltage level interface is not supported (%1%)
+SimulationEnded               =     Simulation %1% ended sucessfully
