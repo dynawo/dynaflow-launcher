@@ -25,7 +25,7 @@ namespace common {
 const char* Log::dynaflowLauncherLogTag = "DYNAFLOW_LAUNCHER";
 
 void
-Log::init(const common::Options& options, const std::string& outputDir) {
+Log::init(const common::Options& options, const std::string& outputDir, bool continuePreviousLog) {
   using DYN::Trace;
   auto& config = options.config();
 
@@ -42,6 +42,8 @@ Log::init(const common::Options& options, const std::string& outputDir) {
   appender.setShowLevelTag(true);
   appender.setSeparator(" ");
   appender.setShowTimeStamp(true);
+  appender.setAppend(continuePreviousLog);
+  appender.setAppend(continuePreviousLog);
   appender.setTimeStampFormat("%Y-%m-%d %H:%M:%S");
 
   appenders.push_back(appender);
