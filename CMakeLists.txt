@@ -98,6 +98,7 @@ find_package(Sundials REQUIRED)
 # libZIP
 find_package(libZIP 1.3.0 REQUIRED)
 # XercesC (required for libxml)
+set(CXX_STDFLAG "-std=c++11") # Required to test Xerces compilation
 find_package(XercesC 3.2.2 REQUIRED)
 # libXML, targets name in static and shared are different so we need to do find_package twice
 find_package(libXML 0.2.4 REQUIRED)
@@ -259,23 +260,6 @@ configure_package_config_file(
     # Imported targets do not require the following macros
     NO_SET_AND_CHECK_MACRO
     NO_CHECK_REQUIRED_COMPONENTS_MACRO
-)
-
-
-# The following will export the targets under the name ${PROJECT_NAME}_Targets, not install them yet
-# It will then need a call to `install(EXPORT)`
-install(
-    TARGETS
-	  DynaFlowLauncher # We can install executables
-    EXPORT ${PROJECT_NAME}_Targets
-# Following is only needed pre-cmake3.14
-   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-# If you want to split between runtime and dev for examples, take a look at COMPONENT, NAMELINK_COMPONENT etc
-# More info in Craig Scott's talk "Deep CMake for library authors" https://www.youtube.com/watch?v=m0DwB4OvDXk
-    INCLUDES
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 # This time, install all the exported targets under the ${PROJECT_NAME}_Targets name.
