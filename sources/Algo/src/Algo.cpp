@@ -16,6 +16,7 @@
  */
 
 #include "Algo.h"
+#include "Message.hpp"
 #include "Log.h"
 
 #include <DYNCommon.h>
@@ -109,7 +110,7 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
     return true;
   }
   if (generator.points.size() == 1) {
-    LOG(info) << generator.id + "has not a valid diagram." << LOG_ENDL;
+    LOG(warn) << MESS(InvalidDiagram, generator.id) << LOG_ENDL;
     return false;
   }
 
@@ -125,7 +126,7 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   valid = !allQminEqualQmax && !allPEqual;
 
   if (!valid) {
-    LOG(warn) << generator.id + "has not a valid diagram." << LOG_ENDL;
+    LOG(warn) << MESS(InvalidDiagram, generator.id) << LOG_ENDL;
   }
   return valid;
 }
