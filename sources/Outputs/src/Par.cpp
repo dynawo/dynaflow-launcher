@@ -71,7 +71,7 @@ Par::write() {
     }
   }
 
-  exporter.exportToFile(collection, def_.filepath);
+  exporter.exportToFile(collection, def_.filepath, constants::xmlEncoding);
 }
 
 void

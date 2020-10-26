@@ -42,6 +42,7 @@ const std::string diagramMaxTableSuffix{"_tableqmax"};              ///< Suffix 
 const std::string diagramMinTableSuffix{"_tableqmin"};              ///< Suffix for the table name for qmin in diagram file
 const std::string signalNGeneratorParId{"signalNGenerator"};        ///< PAR id for generators using signal N
 const std::string impSignalNGeneratorParId{"impSignalNGenerator"};  ///< PAR id for generators using signal N with impendance
+const std::string xmlEncoding{"UTF-8"};                             ///< Default encoding for XML outputs files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 

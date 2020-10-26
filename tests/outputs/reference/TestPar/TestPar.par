@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <parametersSet xmlns="http://www.rte-france.com/dynawo">
   <set id="10160083025018531003">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
