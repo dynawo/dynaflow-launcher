@@ -22,6 +22,7 @@ target_set_warnings(algo ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that
 target_link_libraries(algo
 PUBLIC
 DynaFlowLauncher::inputs
+DynaFlowLauncher::common
 )
 add_library(DynaFlowLauncher::algo ALIAS algo)
 install_lib_shared(algo)
