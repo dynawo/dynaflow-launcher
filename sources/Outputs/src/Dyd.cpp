@@ -104,7 +104,7 @@ Dyd::write() {
     }
   }
 
-  exporter.exportToFile(collection, def_.filename);
+  exporter.exportToFile(collection, def_.filename, constants::xmlEncoding);
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
