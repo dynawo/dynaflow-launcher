@@ -3,7 +3,7 @@
 ## Build
 To build DynaFlow launcher, you must first deploy the Dynawo library with c++11 enabled. Then generate the cmake cache in your build directory:
 
-`cmake <SRC_DIR> -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>`
+`cmake <SRC_DIR> -DCMAKE_BUILD_TYPE=Release -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>`
 
 where:
 * SRC_DIR is the root directory of the dynaflow launcher repository
