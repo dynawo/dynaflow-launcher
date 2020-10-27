@@ -71,9 +71,8 @@ main(int argc, char* argv[]) {
     dfl::inputs::Configuration config(runtimeConfig.configPath);
     dfl::common::Log::init(options, config.outputDir(), !continuePreviousLogFile);
     LOG(info) << " ============================================================ " << LOG_ENDL;
-    LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING <<  LOG_ENDL;
-    LOG(info) << " ============================================================ " <<  LOG_ENDL;
-
+    LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
+    LOG(info) << " ============================================================ " << LOG_ENDL;
 
     std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
@@ -111,12 +110,13 @@ main(int argc, char* argv[]) {
 
     boost::timer timerFiles;
     context.exportOutputs();
-    dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
     LOG(info) << MESS(FilesEnd, timerFiles.elapsed()) << LOG_ENDL;
 
     boost::timer timerSimu;
     context.execute();
 
+    // Traces must be re-initiliazed to append to current DynaflowLauncher log file as simulation had modified it
+    dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
     LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;

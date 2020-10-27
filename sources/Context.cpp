@@ -26,6 +26,7 @@
 #include "Message.hpp"
 #include "Par.h"
 
+#include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
 #include <algorithm>
 #include <boost/filesystem.hpp>
@@ -44,7 +45,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
     generators_{},
     loads_{},
-    simu_{} {
+    jobEntry_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
@@ -103,23 +104,6 @@ Context::process() {
 }
 
 void
-Context::createSimulation(boost::shared_ptr<job::JobEntry>& job) {
-  auto simu_context = boost::make_shared<DYN::SimulationContext>();
-  simu_context->setResourcesDirectory(def_.dynawoResDir);
-  simu_context->setLocale(def_.locale);
-
-  file::path inputPath(config_.outputDir());
-  auto path = file::canonical(inputPath);
-  simu_context->setInputDirectory(path.generic_string() + "/");
-  simu_context->setWorkingDirectory(config_.outputDir() + "/");
-
-  LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
-
-  simu_ = boost::make_shared<DYN::Simulation>(job, simu_context, networkManager_.dataInterface());
-  simu_->init();
-}
-
-void
 Context::exportOutputs() {
   LOG(info) << MESS(ExportInfo, basename_) << LOG_ENDL;
 
@@ -128,7 +112,7 @@ Context::exportOutputs() {
 
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
-  auto job = jobWriter.write();
+  jobEntry_ = jobWriter.write();
 
   // Dyd
   file::path dydOutput(config_.outputDir());
@@ -156,17 +140,28 @@ Context::exportOutputs() {
   diagramOutput.append(basename_ + outputs::constants::diagramFileSuffixExt);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramOutput.generic_string(), generators_));
   diagramWriter.write();
-
-  createSimulation(job);
 }
 
 void
 Context::execute() {
-  if (simu_) {
-    simu_->simulate();
-    simu_->terminate();
-    simu_->clean();
-  }
+  auto simu_context = boost::make_shared<DYN::SimulationContext>();
+  simu_context->setResourcesDirectory(def_.dynawoResDir);
+  simu_context->setLocale(def_.locale);
+
+  file::path inputPath(config_.outputDir());
+  auto path = file::canonical(inputPath);
+  simu_context->setInputDirectory(path.generic_string() + "/");
+  simu_context->setWorkingDirectory(config_.outputDir() + "/");
+
+  // This SHALL be the last log performed before reseting traces in DynaFlowLauncher,
+  // because simulation constructor will re-initialize traces for Dynawo
+  LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
+
+  auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+  simu->init();
+  simu->simulate();
+  simu->terminate();
+  simu->clean();
 }
 
 void
