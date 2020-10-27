@@ -20,7 +20,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/timer.hpp>
 #include <cstdlib>
-#include <iomanip>
 #include <sstream>
 
 static const char* dictPrefix = "DFLMessages_";
@@ -50,6 +49,7 @@ initializeDynawo(const std::string& locale) {
 int
 main(int argc, char* argv[]) {
   try {
+    boost::timer timerGlobal;
     boost::timer timerInit;
     DYN::Trace::init();
     dfl::common::Options options;
@@ -104,6 +104,7 @@ main(int argc, char* argv[]) {
 
     if (!context.process()) {
       LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
+      LOG(error) << MESS(ContextProcessError, context.basename()) << LOG_ENDL;
       return EXIT_FAILURE;
     }
     LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
@@ -116,8 +117,9 @@ main(int argc, char* argv[]) {
     boost::timer timerSimu;
     context.execute();
 
-    LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
+    LOG(info) << " ============================================================ " << LOG_ENDL;
+    LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
