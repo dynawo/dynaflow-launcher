@@ -9,7 +9,7 @@
 
 add_test(
     NAME MAIN.varEnv
-    COMMAND DynaFlowLauncher --network=res/IEEE14.iidm --config=res/launch_infinite.json
+    COMMAND DynaFlowLauncher --network=res/TestIIDM_launch_infinite.iidm --config=res/launch_infinite.json
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
 # Test will fail because environement variables are not set
@@ -50,3 +50,5 @@ DEFINE_LAUNCH_TEST(node_breaker)
 
 ## Expected to fail because node breaker is not supported
 set_tests_properties(MAIN.node_breaker PROPERTIES WILL_FAIL TRUE)
+
+DEFINE_LAUNCH_TEST(special_characters)
