@@ -21,7 +21,7 @@
 #include "Configuration.h"
 #include "NetworkManager.h"
 
-#include <DYNSimulation.h>
+#include <JOBJobEntry.h>
 #include <boost/filesystem.hpp>
 
 namespace dfl {
@@ -83,6 +83,9 @@ class Context {
 
   /**
    * @brief Execute simulation
+   *
+   * Constructs, initializes and execute Dynawo simulation.
+   * After call of the function, Traces must be re-initialized
    */
   void execute();
 
@@ -102,13 +105,6 @@ class Context {
    * @returns true if comaptible, false if not
    */
   bool checkConnexity() const;
-
-  /**
-   * @brief Create dynawo simulation
-   *
-   * @param job the job entry to use
-   */
-  void createSimulation(boost::shared_ptr<job::JobEntry>& job);
 
   /**
    * @brief Register a callback to call at each node
@@ -138,6 +134,6 @@ class Context {
   std::vector<algo::GeneratorDefinition> generators_;           ///< generators found
   std::vector<algo::LoadDefinition> loads_;                     ///< loads found
 
-  boost::shared_ptr<DYN::Simulation> simu_;  ///< Dynawo simulation
+  boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };
 }  // namespace dfl
