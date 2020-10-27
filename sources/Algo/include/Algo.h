@@ -192,9 +192,9 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
   /**
    * @brief Perform algorithm
    *
-   * Add the generators of the nodes and deducing the model to use. If the node is a generator with a deduced
-   * model of a diagram then the function isDiagramValid is called. If the diagram is not valid the generator
-   * is not added to the list of generators. 
+   * Add the generators of the nodes and deducing the model to use.
+   * Validity of the generator is checked whenever it makes sense. 
+   * If the diagram is not valid, the default generator model is used
    *
    * @param node the node to process
    */

@@ -264,82 +264,81 @@ TEST(Loads, base) {
   }
 }
 
-TEST(Generators, validDiagram) {
+static void
+testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points, bool isDiagramValid) {
   using dfl::inputs::Generator;
-  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(12., 44., 440.), Generator::ReactiveCurvePoint(65., 44., 440.)});
-  const Generator generator("G1", points, 3., 30., 33., 330.);
-
+  Generator generator("G1", points, 3., 30., 33., 330.);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
   std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
 
-  const dfl::algo::GeneratorDefinition expectedGenerator("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points, 0, 0, 0, 0);
-
   node->generators.emplace_back(generator);
   algo_infinite(node);
-  ASSERT_EQ(generators.size(), 1);
+  if (isDiagramValid) {
+    ASSERT_EQ(generators.size(), 1);
+  } else {
+    ASSERT_EQ(generators.size(), 0);
+  }
+}
+
+TEST(Generators, validDiagram) {
+  using dfl::inputs::Generator;
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(12., 44., 440.), Generator::ReactiveCurvePoint(65., 44., 440.)});
+  bool isDiagramValid = true;
+  testDiagramValidity(points, isDiagramValid);
 }
 
 TEST(Generators, allPEqual) {
   using dfl::inputs::Generator;
   dfl::common::Dico::configure("../../etc/DFLMessages_en_GB.dic");
 
-  Generator generator("G1",
-                      {Generator::ReactiveCurvePoint(65., 44., 450.), Generator::ReactiveCurvePoint(65., 24., 420.),
-                       Generator::ReactiveCurvePoint(65., 44., 250.), Generator::ReactiveCurvePoint(65., 45., 440.)},
-                      3., 30., 33., 330.);
-
-  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
-  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
-
-  node->generators.emplace_back(generator);
-  algo_infinite(node);
-  ASSERT_EQ(generators.size(), 0);
+  using dfl::inputs::Generator;
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(65., 44., 450.), Generator::ReactiveCurvePoint(65., 24., 420.),
+                                                     Generator::ReactiveCurvePoint(65., 44., 250.), Generator::ReactiveCurvePoint(65., 45., 440.)});
+  bool isDiagramValid = false;
+  testDiagramValidity(points, isDiagramValid);
 }
 
 TEST(Generators, allQminEqualQmax) {
   using dfl::inputs::Generator;
   dfl::common::Dico::configure("../../etc/DFLMessages_en_GB.dic");
-  Generator generator("G1",
-                      {Generator::ReactiveCurvePoint(1., 44., 44.), Generator::ReactiveCurvePoint(2., 420., 420.),
-                       Generator::ReactiveCurvePoint(3., 250., 250.), Generator::ReactiveCurvePoint(4., 440., 440.)},
-                      3., 30., 33., 330.);
-  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
-  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
 
-  node->generators.emplace_back(generator);
-  algo_infinite(node);
-  ASSERT_EQ(generators.size(), 0);
+  using dfl::inputs::Generator;
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(1., 44., 44.), Generator::ReactiveCurvePoint(2., 420., 420.),
+                                                     Generator::ReactiveCurvePoint(3., 250., 250.), Generator::ReactiveCurvePoint(4., 440., 440.)});
+  bool isDiagramValid = false;
+  testDiagramValidity(points, isDiagramValid);
 }
 
 TEST(Generators, validDiagram2) {
   using dfl::inputs::Generator;
-  Generator generator("G1",
-                      {Generator::ReactiveCurvePoint(10., 44., 440.), Generator::ReactiveCurvePoint(12., 44., 440.),
-                       Generator::ReactiveCurvePoint(12., 44., 440.), Generator::ReactiveCurvePoint(65., 44., 440.)},
-                      3., 30., 33., 330.);
-  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
-  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
-
-  node->generators.emplace_back(generator);
-  algo_infinite(node);
-  ASSERT_EQ(generators.size(), 1);
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(10., 44., 440.), Generator::ReactiveCurvePoint(12., 44., 440.),
+                       Generator::ReactiveCurvePoint(12., 44., 440.), Generator::ReactiveCurvePoint(65., 44., 440.)});
+  bool isDiagramValid = true;
+  testDiagramValidity(points, isDiagramValid);
 }
 
 TEST(Generators, validDiagram3) {
   using dfl::inputs::Generator;
-  Generator generator("G1",
-                      {Generator::ReactiveCurvePoint(10., 44., 44.), Generator::ReactiveCurvePoint(11., 44., 44.), Generator::ReactiveCurvePoint(12., 44., 44.),
-                       Generator::ReactiveCurvePoint(65., 1., 87.)},
-                      3., 30., 33., 330.);
-  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
-  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(10., 44., 44.), Generator::ReactiveCurvePoint(11., 44., 44.), Generator::ReactiveCurvePoint(12., 44., 44.),
+                       Generator::ReactiveCurvePoint(65., 1., 87.)});
+  bool isDiagramValid = true;
+  testDiagramValidity(points, isDiagramValid);
+}
 
-  node->generators.emplace_back(generator);
-  algo_infinite(node);
-  ASSERT_EQ(generators.size(), 1);
+TEST(Generators, emptyDiagram) {
+  using dfl::inputs::Generator;
+  std::vector<Generator::ReactiveCurvePoint> points({});
+  bool isDiagramValid = true;
+  testDiagramValidity(points, isDiagramValid);
+}
+
+TEST(Generators, oneReactiveCurvePoint) {
+  using dfl::inputs::Generator;
+  dfl::common::Dico::configure("../../etc/DFLMessages_en_GB.dic");
+  
+  using dfl::inputs::Generator;
+  std::vector<Generator::ReactiveCurvePoint> points({Generator::ReactiveCurvePoint(12., 44., 440.)});
+  bool isDiagramValid = false;
+  testDiagramValidity(points, isDiagramValid);
 }
