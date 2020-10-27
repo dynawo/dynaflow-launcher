@@ -23,4 +23,4 @@ DFLEnded                      =     DynaFlowLauncher %1% ended successfully (wal
 DictionaryNotFound            =     Dictionary %1% not found: check runtime environment
 InitEnd                       =     End of initialization (wall-time: %1%s)
 FilesEnd                      =     End of files generation (wall-time: %1%s)
-InvalidDiagram                =     The diagram of the generator %1% is invalid
+InvalidDiagram                =     The diagram of the generator %1% is invalid, %2%. The default model will be used for this generator

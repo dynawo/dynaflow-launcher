@@ -62,7 +62,6 @@ class Diagram {
    */
   void write();
 
-
  private:
   /// @brief Different tables in the diagram, qmin or qmax
   enum class Tables {

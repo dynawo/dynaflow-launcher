@@ -16,8 +16,9 @@
  */
 
 #include "Algo.h"
-#include "Message.hpp"
+
 #include "Log.h"
+#include "Message.hpp"
 
 #include <DYNCommon.h>
 #include <tuple>
@@ -104,13 +105,12 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 bool
 GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator) {
-  bool valid = true;
-
-  if (generator.points.size() == 0) {
+  //If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values
+  if (generator.points.empty()) {
     return true;
   }
   if (generator.points.size() == 1) {
-    LOG(warn) << MESS(InvalidDiagram, generator.id) << LOG_ENDL;
+    LOG(warn) << MESS(InvalidDiagram, generator.id, "there was only one reactive curve point provided") << LOG_ENDL;
     return false;
   }
 
@@ -123,10 +123,20 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
     allPEqual = allPEqual && it->p == firstP;
     ++it;
   }
-  valid = !allQminEqualQmax && !allPEqual;
+  bool valid = !allQminEqualQmax && !allPEqual;
 
   if (!valid) {
-    LOG(warn) << MESS(InvalidDiagram, generator.id) << LOG_ENDL;
+    std::string errorMessage = "";
+    if (allQminEqualQmax) {
+      errorMessage = "each reactive curve point has the same qmin and qmax";
+    }
+    if (allQminEqualQmax && allPEqual) {
+      errorMessage += " and ";
+    }
+    if (allPEqual) {
+      errorMessage += "all reactive curve points have the same p";
+    }
+    LOG(warn) << MESS(InvalidDiagram, generator.id, errorMessage) << LOG_ENDL;
   }
   return valid;
 }
