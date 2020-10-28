@@ -230,7 +230,7 @@ TEST(Generators, base) {
 }
 
 TEST(Loads, base) {
-  dfl::inputs::Configuration config("../inputs/res/config.json");
+  dfl::inputs::Configuration config("config.json");
 
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       std::make_shared<dfl::inputs::Node>("0", 98.0), std::make_shared<dfl::inputs::Node>("1", 111.0), std::make_shared<dfl::inputs::Node>("2", 24.0),

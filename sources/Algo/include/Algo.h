@@ -230,7 +230,7 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
    * @brief Constructor
    *
    * @param loads the list of loads to update
-   * @param dsoVoltageLevel the upper bound for the change of load model 
+   * @param dsoVoltageLevel Minimum voltage level of the load to be taken into account 
    */
   explicit LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel);
 
@@ -246,7 +246,7 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
 
  private:
   Loads& loads_;            ///< the loads to update
-  double dsoVoltageLevel_;  ///< the upper bound to determine wether we use the default modelica model
+  double dsoVoltageLevel_;  ///< Minimum voltage level of the load to be taken into account
 };
 
 }  // namespace algo
