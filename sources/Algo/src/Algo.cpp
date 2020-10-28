@@ -97,6 +97,10 @@ LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads) : NodeAlgorithm()
 
 void
 LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
+  if (node->nominalVoltage < dsoVoltageLevel) {
+    return;
+  }
+
   for (auto it = node->loads.begin(); it != node->loads.end(); ++it) {
     loads_.emplace_back(it->id, node->id);
   }
