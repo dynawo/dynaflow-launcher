@@ -230,15 +230,14 @@ TEST(Generators, base) {
 
 TEST(Loads, base) {
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
-      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
+      std::make_shared<dfl::inputs::Node>("0", 98.0), std::make_shared<dfl::inputs::Node>("1", 111.0), std::make_shared<dfl::inputs::Node>("2", 24.0),
+      std::make_shared<dfl::inputs::Node>("3", 63.0), std::make_shared<dfl::inputs::Node>("4", 56.0), std::make_shared<dfl::inputs::Node>("5", 46.0),
       std::make_shared<dfl::inputs::Node>("6", 0.0),
   };
 
   dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
       dfl::algo::LoadDefinition("00", "0"),
       dfl::algo::LoadDefinition("01", "0"),
-      dfl::algo::LoadDefinition("02", "2"),
       dfl::algo::LoadDefinition("05", "4"),
   };
 
@@ -254,7 +253,7 @@ TEST(Loads, base) {
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
-  ASSERT_EQ(4, loads.size());
+  ASSERT_EQ(3, loads.size());
   for (size_t index = 0; index < loads.size(); ++index) {
     ASSERT_EQ(expected_loads[index].id, loads[index].id);
   }

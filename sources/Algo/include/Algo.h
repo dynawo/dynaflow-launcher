@@ -236,13 +236,15 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
   /**
    * @brief Perform the algorithm
    *
-   * Update the list with the loads of the node
+   * Update the list with the loads of the node. Only add the loads for which the nominal voltage of the node is 
+   * superior to dsoVoltageLevel, otherwise we use the default modelica library
    *
    * @param node the node to process
    */
   void operator()(const NodePtr& node);
 
  private:
+  static constexpr double dsoVoltageLevel = 45.0;   ///< the upper bound to determine wether we use the default modelica model
   Loads& loads_;  ///< the loads to update
 };
 
