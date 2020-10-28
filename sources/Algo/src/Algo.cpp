@@ -110,7 +110,7 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
     return true;
   }
   if (generator.points.size() == 1) {
-    LOG(warn) << MESS(InvalidDiagram, generator.id, "there was only one reactive curve point provided") << LOG_ENDL;
+    LOG(warn) << MESS(InvalidDiagramOnePoint, generator.id) << LOG_ENDL;
     return false;
   }
 
@@ -127,16 +127,15 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
 
   if (!valid) {
     std::string errorMessage = "";
-    if (allQminEqualQmax) {
-      errorMessage = "each reactive curve point has the same qmin and qmax";
-    }
     if (allQminEqualQmax && allPEqual) {
-      errorMessage += " and ";
+      LOG(warn) << MESS(InvalidDiagramBothError, generator.id) << LOG_ENDL;
     }
-    if (allPEqual) {
-      errorMessage += "all reactive curve points have the same p";
+    else if (allQminEqualQmax) {
+      LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
     }
-    LOG(warn) << MESS(InvalidDiagram, generator.id, errorMessage) << LOG_ENDL;
+    else if (allPEqual) {
+      LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
+    }
   }
   return valid;
 }
