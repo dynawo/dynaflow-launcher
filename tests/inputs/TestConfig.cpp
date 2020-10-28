@@ -22,7 +22,7 @@ TEST(Config, Nominal) {
   ASSERT_TRUE(config.useVSCAsGenerators());
   ASSERT_TRUE(config.useLCCAsLoads());
   ASSERT_EQ("/tmp", config.outputDir());
-  ASSERT_EQ(45.0, config.getDsoVoltageLevel());
+  ASSERT_EQ(63.0, config.getDsoVoltageLevel());
 }
 
 TEST(Config, Default) {

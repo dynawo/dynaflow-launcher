@@ -17,7 +17,7 @@
 
 #include "Algo.h"
 
-#include "DYNCommon.h"
+#include <DYNCommon.h>
 #include <tuple>
 
 namespace dfl {
