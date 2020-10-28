@@ -107,6 +107,15 @@ class Configuration {
     return outputDir_;
   }
 
+  /**
+   * @brief Retrieves the upper bound for the change of load model 
+   *
+   * @returns the parameter value
+   */
+  double getDsoVoltageLevel() const {
+    return dsoVoltageLevel_;
+  }
+
  private:
   bool useInfiniteReactiveLimits_ = false;                                      ///< infinite reactive limits
   bool isPSTRegulationOn_ = true;                                               ///< PST regulation on
@@ -116,6 +125,7 @@ class Configuration {
   bool useVSCAsGenerators_ = false;                                             ///< VSC considered as generators
   bool useLCCAsLoads_ = false;                                                  ///< LCC are considered as generators
   std::string outputDir_ = boost::filesystem::current_path().generic_string();  ///< Directory for output files
+  double dsoVoltageLevel_ = 45.0;                                               ///< the upper bound to determine wether we use the default modelica model
 };
 
 }  // namespace inputs
