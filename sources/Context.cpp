@@ -96,7 +96,7 @@ Context::process() {
   }
 
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, config_.useInfiniteReactiveLimits()));
-  onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_));
+  onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
 
   walkNodesMain();
 

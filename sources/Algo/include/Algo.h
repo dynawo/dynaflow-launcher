@@ -230,22 +230,23 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
    * @brief Constructor
    *
    * @param loads the list of loads to update
+   * @param dsoVoltageLevel the upper bound for the change of load model 
    */
-  explicit LoadDefinitionAlgorithm(Loads& loads);
+  explicit LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel);
 
   /**
    * @brief Perform the algorithm
    *
    * Update the list with the loads of the node. Only add the loads for which the nominal voltage of the node is 
-   * superior to dsoVoltageLevel, otherwise we use the default modelica library
+   * superior to dsoVoltageLevel, otherwise the load is ignored and is handled by the default dynawo behavior
    *
    * @param node the node to process
    */
   void operator()(const NodePtr& node);
 
  private:
-  static constexpr double dsoVoltageLevel = 45.0;   ///< the upper bound to determine wether we use the default modelica model
-  Loads& loads_;  ///< the loads to update
+  Loads& loads_;            ///< the loads to update
+  double dsoVoltageLevel_;  ///< the upper bound to determine wether we use the default modelica model
 };
 
 }  // namespace algo

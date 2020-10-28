@@ -68,6 +68,8 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(useVSCAsGenerators_, config, "VSCAsGenerators");
     helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
     helper::updateValue(outputDir_, config, "OutputDir");
+    helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
+  
   } catch (std::exception& e) {
     LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);

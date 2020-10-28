@@ -17,6 +17,7 @@
 
 #include "Algo.h"
 
+#include "DYNCommon.h"
 #include <tuple>
 
 namespace dfl {
@@ -93,11 +94,11 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 /////////////////////////////////////////////////////////////////
 
-LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads) : NodeAlgorithm(), loads_(loads) {}
+LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel) : NodeAlgorithm(), loads_(loads), dsoVoltageLevel_(dsoVoltageLevel) {}
 
 void
 LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
-  if (node->nominalVoltage < dsoVoltageLevel) {
+  if (DYN::doubleNotEquals(node->nominalVoltage, dsoVoltageLevel_) && node->nominalVoltage < dsoVoltageLevel_) {
     return;
   }
 
