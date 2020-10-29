@@ -63,6 +63,9 @@ NetworkManager::buildTree() {
 
     const auto& loads = (*it_v)->getLoads();
     for (auto it_l = loads.begin(); it_l != loads.end(); ++it_l) {
+      // if load is not connected, it is ignored
+      if (!(*it_l)->getInitialConnected())
+        continue;
       auto nodeid = (*it_l)->getBusInterface()->getID();
 #if _DEBUG_
       // node should exist at this point
@@ -74,6 +77,9 @@ NetworkManager::buildTree() {
 
     const auto& generators = (*it_v)->getGenerators();
     for (auto it_g = generators.begin(); it_g != generators.end(); ++it_g) {
+      // if generator is not connected, it is ignored
+      if (!(*it_g)->getInitialConnected())
+        continue;
       auto nodeid = (*it_g)->getBusInterface()->getID();
 #if _DEBUG_
       // node should exist at this point
@@ -93,7 +99,7 @@ NetworkManager::buildTree() {
   for (auto it_l = lines.begin(); it_l != lines.end(); ++it_l) {
     auto bus1 = (*it_l)->getBusInterface1();
     auto bus2 = (*it_l)->getBusInterface2();
-    if (bus1 && bus2) {
+    if ((*it_l)->getInitialConnected1() && (*it_l)->getInitialConnected2()) {
       auto id = bus1->getID();
 #if _DEBUG_
       assert(nodes_.count(bus1->getID()) > 0);
@@ -109,7 +115,7 @@ NetworkManager::buildTree() {
   for (auto it_t = transfos.begin(); it_t != transfos.end(); ++it_t) {
     auto bus1 = (*it_t)->getBusInterface1();
     auto bus2 = (*it_t)->getBusInterface2();
-    if (bus1 && bus2) {
+    if ((*it_t)->getInitialConnected1() && (*it_t)->getInitialConnected2()) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
       LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << (*it_t)->getID() << LOG_ENDL;
@@ -121,7 +127,7 @@ NetworkManager::buildTree() {
     auto bus1 = (*it_t)->getBusInterface1();
     auto bus2 = (*it_t)->getBusInterface2();
     auto bus3 = (*it_t)->getBusInterface3();
-    if (bus1 && bus2 && bus3) {
+    if ((*it_t)->getInitialConnected1() && (*it_t)->getInitialConnected2() && (*it_t)->getInitialConnected3()) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus3->getID()]);
 
