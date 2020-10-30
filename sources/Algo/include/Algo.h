@@ -194,7 +194,7 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
    *
    * Add the generators of the nodes and deducing the model to use.
    * Validity of the generator is checked whenever it makes sense. 
-   * If the diagram is not valid, the default generator model is used
+   * If the diagram is not valid, the generator is ignored by the algorithm and the default dynawo behavior is used.
    *
    * @param node the node to process
    */
@@ -202,8 +202,7 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
 
  private:
   /**
-   * @brief Checks for diagram validity according to the list of points associated with the generator, and
-   * change the model type of the generator if the diagram is invalid
+   * @brief Checks for diagram validity according to the list of points associated with the generator
    * 
    * @param generator The generator with it list of points 
    * @return Boolean indicating if the diagram is valid

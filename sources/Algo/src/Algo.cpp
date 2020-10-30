@@ -126,7 +126,6 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   bool valid = !allQminEqualQmax && !allPEqual;
 
   if (!valid) {
-    std::string errorMessage = "";
     if (allQminEqualQmax && allPEqual) {
       LOG(warn) << MESS(InvalidDiagramBothError, generator.id) << LOG_ENDL;
     }
