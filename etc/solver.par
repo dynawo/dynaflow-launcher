@@ -26,7 +26,7 @@
     <par type="INT" name="maxNewtonTry" value="10"/>
     <par type="INT" name="maxRootRestart" value="3"/>
     <par type="INT" name="msbset" value="0"/>
-    <par type="INT" name="msbsetAlg" value="4"/>
+    <par type="INT" name="msbsetAlg" value="1"/>
     <par type="INT" name="msbsetAlgJ" value="1"/>
     <par type="INT" name="mxiter" value="15"/>
     <par type="INT" name="mxiterAlg" value="30"/>
