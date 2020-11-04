@@ -150,7 +150,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
   auto dirname_diagram = boost::filesystem::path(dirname);
-  dirname_diagram.append(basename + constants::diagramFileSuffixExt);
+  dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(def.id + outputs::constants::diagramFileSuffixExt);
 
   set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));

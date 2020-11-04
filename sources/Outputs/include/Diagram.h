@@ -37,16 +37,16 @@ class Diagram {
      * @brief Constructor
      *
      * @param base the basename for current file (corresponds to filepath basename)
-     * @param filepath the filepath of the diagram file to write
+     * @param directoryPath the directoryPath of the diagram files to write
      * @param gens generators definition coming from algorithms
      */
-    DiagramDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens) :
+    DiagramDefinition(const std::string& base, const std::string& directoryPath, const std::vector<algo::GeneratorDefinition>& gens) :
         basename{base},
-        filename{filepath},
+        directoryPath{directoryPath},
         generators{gens} {}
 
     std::string basename;                               ///< basename for file
-    std::string filename;                               ///< filepath for file to write
+    std::string directoryPath;                          ///< directoryPath for files to write
     std::vector<algo::GeneratorDefinition> generators;  ///< generators found
   };
 

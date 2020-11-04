@@ -136,9 +136,9 @@ Context::exportOutputs() {
   parWriter.write();
 
   // Diagram
-  file::path diagramOutput(config_.outputDir());
-  diagramOutput.append(basename_ + outputs::constants::diagramFileSuffixExt);
-  outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramOutput.generic_string(), generators_));
+  file::path diagramDirectory(config_.outputDir());
+  diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
+  outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_));
   diagramWriter.write();
 }
 
