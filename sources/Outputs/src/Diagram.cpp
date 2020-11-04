@@ -19,6 +19,7 @@
 
 #include "Constants.h"
 
+#include <boost/filesystem.hpp>
 #include <fstream>
 
 namespace dfl {
@@ -28,30 +29,27 @@ Diagram::Diagram(DiagramDefinition&& def) : def_{std::forward<DiagramDefinition>
 
 void
 Diagram::write() {
-  //We don't want to create the file if there are no generators diagrams to write
-  //maybe use stdbuf for using << and not .append(..()))
-  std::stringstream buffer;
-  buffer << "#1";
-  //Modelica requires this file to start with "#1", if it is not present, problems occurs
-  bool empty = true;
-
   for (algo::GeneratorDefinition& generator : def_.generators) {
     if (generator.model != algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN &&
         generator.model != algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
       continue;
-    empty = false;
-
     std::sort(generator.points.begin(), generator.points.end(),
               [](const DYN::GeneratorInterface::ReactiveCurvePoint& gen1, const DYN::GeneratorInterface::ReactiveCurvePoint& gen2) -> bool {
                 return gen1.p < gen2.p;
               });
+    if (!boost::filesystem::exists(def_.directoryPath)) {
+      boost::filesystem::create_directories(def_.directoryPath);
+    }
+
+    std::stringstream buffer;
+    //Modelica requires this file to start with "#1", if it is not present, problems occurs
+    buffer << "#1";
+
     writeTable(generator, buffer, Tables::TABLE_QMIN);
     writeTable(generator, buffer, Tables::TABLE_QMAX);
-  }
-
-  if (!empty) {
-    //Put buffer into file
-    std::ofstream ofs(def_.filename, std::ofstream::out);
+    boost::filesystem::path dir(def_.directoryPath);
+    std::string filename = dir.append(generator.id + outputs::constants::diagramFileSuffixExt).generic_string();
+    std::ofstream ofs(filename, std::ofstream::out);
     ofs << buffer.str();
     ofs.close();
   }
