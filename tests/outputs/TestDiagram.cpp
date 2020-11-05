@@ -15,8 +15,8 @@
 #include <boost/filesystem.hpp>
 
 static void
-testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& generators, boost::filesystem::path outputDirectory, std::string basename,
-                           std::string prefixDir) {
+testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& generators, const boost::filesystem::path& outputDirectory, 
+                            const std::string& basename, const std::string& prefixDir) {
   using dfl::algo::GeneratorDefinition;
 
   boost::filesystem::path reference("reference");
