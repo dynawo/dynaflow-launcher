@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Algo.h"
+
 #include <limits>
 #include <string>
 
@@ -35,9 +37,18 @@ hash(const std::string& str) {
   return std::hash<std::string>{}(str);
 }
 
+/**
+ * @brief Return the filename of a diagram file
+ * @param generator The generator from which the id will be extracted and appended to the result
+ * @return The string filename of the diagram file
+ */
+static inline std::string
+diagramFilename(const dfl::algo::GeneratorDefinition& generator) {
+  return generator.id + "_Diagram.txt";
+}
+
 const std::string loadParId{"GenericRestorativeLoad"};              ///< PAR id common to all loads
 const std::string signalNParId{"SignalN"};                          ///< PAR id for signalN
-const std::string diagramFileSuffixExt{"_Diagram.txt"};             ///< Suffix and extension for the diagram file
 const std::string diagramDirectorySuffix{"_Diagram"};               ///< Suffix for the diagram directory
 const std::string diagramMaxTableSuffix{"_tableqmax"};              ///< Suffix for the table name for qmax in diagram file
 const std::string diagramMinTableSuffix{"_tableqmin"};              ///< Suffix for the table name for qmin in diagram file

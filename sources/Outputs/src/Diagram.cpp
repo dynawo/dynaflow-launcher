@@ -48,7 +48,7 @@ Diagram::write() {
     writeTable(generator, buffer, Tables::TABLE_QMIN);
     writeTable(generator, buffer, Tables::TABLE_QMAX);
     boost::filesystem::path dir(def_.directoryPath);
-    std::string filename = dir.append(generator.id + outputs::constants::diagramFileSuffixExt).generic_string();
+    std::string filename = dir.append(outputs::constants::diagramFilename(generator)).generic_string();
     std::ofstream ofs(filename, std::ofstream::out);
     ofs << buffer.str();
     ofs.close();
