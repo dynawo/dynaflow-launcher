@@ -28,8 +28,8 @@ testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& ge
       continue;
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);
-    dfl::test::checkFilesEqual(outputDir.append(gen.id + dfl::outputs::constants::diagramFileSuffixExt).generic_string(),
-                               ref.append(gen.id + dfl::outputs::constants::diagramFileSuffixExt).generic_string());
+    dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(gen)).generic_string(),
+                               ref.append(dfl::outputs::constants::diagramFilename(gen)).generic_string());
   }
 }
 
