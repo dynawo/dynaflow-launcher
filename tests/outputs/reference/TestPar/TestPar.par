@@ -44,8 +44,8 @@
     <par name="load_UMaxPu" type="DOUBLE" value="1.05"/>
     <par name="load_UMinPu" type="DOUBLE" value="0.94999999999999996"/>
     <par name="load_tFilter" type="DOUBLE" value="10"/>
-    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p_pu"/>
-    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
     <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
@@ -64,9 +64,11 @@
     <par name="line_XPu" type="DOUBLE" value="0.0001"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_Pref0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_Uref0Pu" origData="IIDM" origName="targetV_pu"/>
   </set>
   <set id="signalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
@@ -76,8 +78,10 @@
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_Pref0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_Uref0Pu" origData="IIDM" origName="targetV_pu"/>
   </set>
 </parametersSet>
