@@ -86,6 +86,8 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set) {
   set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_Pref0Pu", "targetP_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_Uref0Pu", "targetV_pu", "DOUBLE"));
 }
 
 std::vector<boost::shared_ptr<parameters::ParametersSet>>
@@ -99,8 +101,8 @@ Par::writeConstantSets(unsigned int nb_generators) {
   set->addParameter(helper::buildParameter("load_UMaxPu", 1.05));
   set->addParameter(helper::buildParameter("load_UMinPu", 0.95));
   set->addParameter(helper::buildParameter("load_tFilter", 10.));
-  set->addReference(helper::buildReference("load_P0Pu", "p_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("load_Q0Pu", "q_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("load_P0Pu", "p0_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("load_Q0Pu", "q0_pu", "DOUBLE"));
   set->addReference(helper::buildReference("load_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("load_UPhase0", "angle_pu", "DOUBLE"));
 
