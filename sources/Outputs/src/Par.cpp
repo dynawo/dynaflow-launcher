@@ -166,6 +166,8 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_Pref0Pu", "targetP_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_Uref0Pu", "targetV_pu", "DOUBLE"));
 
   return set;
 }
