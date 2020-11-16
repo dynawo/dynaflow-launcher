@@ -79,18 +79,21 @@ class Par {
     * @brief Write constants parameter sets
     *
     * @param nb_generators total number of generators taken into account
+    * @param activePowerCompensation the type of active power compensation
     *
     * @returns list of generated parameter sets
     */
-  std::vector<boost::shared_ptr<parameters::ParametersSet>>
-  writeConstantSets(unsigned int nb_generators);
+  static std::vector<boost::shared_ptr<parameters::ParametersSet>>
+  writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
    *
    * @param set the parameter set to update
+   * @param activePowerCompensation the type of active power compensation
    */
-  void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set);
+  static void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set,
+                                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
 
   /**
    * @brief Update parameter set with impendance model parameters and references
@@ -105,11 +108,13 @@ class Par {
    * @param def the generator definition to use
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
+   * @param activePowerCompensation the type of active power compensation
    *
    * @returns nullptr if the generator use a SignalN model, the parameter set if not
    */
-  boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
-                                                                     const std::string& dirname);
+  static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
+                                                                     const std::string& dirname,
+                                                                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
 
  private:
   ParDefinition def_;  ///< PAR file definition

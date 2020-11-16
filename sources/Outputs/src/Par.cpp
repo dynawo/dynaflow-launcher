@@ -59,13 +59,13 @@ Par::write() {
   parameters::XmlExporter exporter;
 
   auto collection = parameters::ParametersSetCollectionFactory::newCollection();
-  auto constants = writeConstantSets(def_.generators.size());
+  auto constants = writeConstantSets(def_.generators.size(), def_.activePowerCompensation);
   for (auto it = constants.begin(); it != constants.end(); ++it) {
     collection->addParametersSet(*it);
   }
 
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
-    auto set = writeGenerator(*it, def_.basename, def_.dirname);
+    auto set = writeGenerator(*it, def_.basename, def_.dirname, def_.activePowerCompensation);
     if (set) {
       collection->addParametersSet(set);
     }
@@ -75,14 +75,14 @@ Par::write() {
 }
 
 void
-Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set) {
+Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMax", constants::powerValueMax));
 
-  switch (def_.activePowerCompensation) {
+  switch (activePowerCompensation) {
   case dfl::inputs::Configuration::ActivePowerCompensation::P:
     set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
     break;
@@ -103,7 +103,7 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set) {
 }
 
 std::vector<boost::shared_ptr<parameters::ParametersSet>>
-Par::writeConstantSets(unsigned int nb_generators) {
+Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
   std::vector<boost::shared_ptr<parameters::ParametersSet>> ret;
 
   // Load
@@ -127,12 +127,12 @@ Par::writeConstantSets(unsigned int nb_generators) {
 
   // Signal N generator
   set = parameters::ParametersSetFactory::newInstance(constants::signalNGeneratorParId);
-  updateSignalNGenerator(set);
+  updateSignalNGenerator(set, activePowerCompensation);
   ret.push_back(set);
 
   // Signal N generator with impendance
   set = parameters::ParametersSetFactory::newInstance(constants::impSignalNGeneratorParId);
-  updateSignalNGenerator(set);
+  updateSignalNGenerator(set, activePowerCompensation);
   updateCouplingParameters(set);
   ret.push_back(set);
 
@@ -140,7 +140,7 @@ Par::writeConstantSets(unsigned int nb_generators) {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname) {
+Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
   if (def.model == algo::GeneratorDefinition::ModelType::SIGNALN || def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
     // already processed by constant
     return nullptr;
@@ -171,7 +171,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
 
-  switch (def_.activePowerCompensation) {
+  switch (activePowerCompensation) {
   case dfl::inputs::Configuration::ActivePowerCompensation::P:
     set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
     break;
