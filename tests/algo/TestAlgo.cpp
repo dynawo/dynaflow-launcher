@@ -252,7 +252,6 @@ TEST(Loads, base) {
   nodes[4]->loads.emplace_back("05");
 
   dfl::algo::LoadDefinitionAlgorithm::Loads loads;
-  //TODO remove config.json
   double dsoVoltageLevel = 45.0;
   dfl::algo::LoadDefinitionAlgorithm algo(loads, dsoVoltageLevel);
 
