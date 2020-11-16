@@ -232,8 +232,6 @@ TEST(Generators, base) {
 }
 
 TEST(Loads, base) {
-  dfl::inputs::Configuration config("config.json");
-
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       std::make_shared<dfl::inputs::Node>("0", 98.0), std::make_shared<dfl::inputs::Node>("1", 111.0), std::make_shared<dfl::inputs::Node>("2", 24.0),
       std::make_shared<dfl::inputs::Node>("3", 63.0), std::make_shared<dfl::inputs::Node>("4", 56.0),  std::make_shared<dfl::inputs::Node>("5", 46.0),
@@ -254,7 +252,9 @@ TEST(Loads, base) {
   nodes[4]->loads.emplace_back("05");
 
   dfl::algo::LoadDefinitionAlgorithm::Loads loads;
-  dfl::algo::LoadDefinitionAlgorithm algo(loads, config.getDsoVoltageLevel());
+  //TODO remove config.json
+  double dsoVoltageLevel = 45.0;
+  dfl::algo::LoadDefinitionAlgorithm algo(loads, dsoVoltageLevel);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 

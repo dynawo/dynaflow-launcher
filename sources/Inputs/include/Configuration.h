@@ -127,7 +127,7 @@ class Configuration {
    * @returns the parameter value
    */
   ActivePowerCompensation getActivePowerCompensation() const {
-    return activePowerCompensation;
+    return activePowerCompensation_;
   }
 
  private:
@@ -140,7 +140,7 @@ class Configuration {
   bool useLCCAsLoads_ = false;                                                      ///< LCC are considered as loads
   std::string outputDir_ = boost::filesystem::current_path().generic_string();      ///< Directory for output files
   double dsoVoltageLevel_ = 45.0;                                                   ///< Minimum voltage level of the load to be taken into account
-  ActivePowerCompensation activePowerCompensation = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
+  ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
 };
 
 }  // namespace inputs
