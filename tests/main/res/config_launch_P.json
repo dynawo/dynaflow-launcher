@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "results/special_characters",
+    "OutputDir": "results/launch_P",
     "ActivePowerCompensation": "P"
   }
 }

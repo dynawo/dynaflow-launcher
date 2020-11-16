@@ -44,6 +44,8 @@ endmacro()
 
 DEFINE_LAUNCH_TEST(launch)
 
+DEFINE_LAUNCH_TEST(launch_P)
+
 DEFINE_LAUNCH_TEST(launch_infinite)
 
 DEFINE_LAUNCH_TEST(node_breaker)

@@ -81,7 +81,19 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set) {
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMax", constants::powerValueMax));
-  set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+
+  switch (def_.activePowerCompensation) {
+  case dfl::inputs::Configuration::ActivePowerCompensation::P:
+    set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
+    set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::ActivePowerCompensation::PMAX:
+    set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+    break;
+  }
+
   set->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
@@ -159,7 +171,18 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
 
-  set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+  switch (def_.activePowerCompensation) {
+  case dfl::inputs::Configuration::ActivePowerCompensation::P:
+    set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
+    set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::ActivePowerCompensation::PMAX:
+    set->addReference(helper::buildReference("generator_PNom", "pMax_pu", "DOUBLE"));
+    break;
+  }
+
   set->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
   set->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
