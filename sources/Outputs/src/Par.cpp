@@ -86,8 +86,8 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set) {
   set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_Pref0Pu", "targetP_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_Uref0Pu", "targetV_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
 }
 
 std::vector<boost::shared_ptr<parameters::ParametersSet>>
@@ -166,8 +166,8 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_Pref0Pu", "targetP_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_Uref0Pu", "targetV_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
 
   return set;
 }
