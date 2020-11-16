@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "Configuration.h"
 
 #include <PARParametersSet.h>
 #include <boost/shared_ptr.hpp>
@@ -44,17 +45,21 @@ class Par {
      * @param dir the dirname of the output PAR file
      * @param filename file path for output PAR file (corresponds to basename)
      * @param gens list of the generators taken into account
+     * @param activePowerCompensation the type of active power compensation
      */
-    ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens) :
+    ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens,
+                  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) :
         basename{base},
         dirname{dir},
         filepath{filename},
-        generators{gens} {}
+        generators{gens},
+        activePowerCompensation{activePowerCompensation} {}
 
-    std::string basename;                               ///< basename
-    std::string dirname;                                ///< Dirname of output file relative to execution dir
-    std::string filepath;                               ///< file path of the output file to write
-    std::vector<algo::GeneratorDefinition> generators;  ///< list of generators
+    std::string basename;                                                         ///< basename
+    std::string dirname;                                                          ///< Dirname of output file relative to execution dir
+    std::string filepath;                                                         ///< file path of the output file to write
+    std::vector<algo::GeneratorDefinition> generators;                            ///< list of generators
+    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
   };
 
   /**
@@ -77,14 +82,15 @@ class Par {
     *
     * @returns list of generated parameter sets
     */
-  static std::vector<boost::shared_ptr<parameters::ParametersSet>> writeConstantSets(unsigned int nb_generators);
+  std::vector<boost::shared_ptr<parameters::ParametersSet>>
+  writeConstantSets(unsigned int nb_generators);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
    *
    * @param set the parameter set to update
    */
-  static void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set);
+  void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set);
 
   /**
    * @brief Update parameter set with impendance model parameters and references
@@ -102,7 +108,7 @@ class Par {
    *
    * @returns nullptr if the generator use a SignalN model, the parameter set if not
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
+  boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
                                                                      const std::string& dirname);
 
  private:

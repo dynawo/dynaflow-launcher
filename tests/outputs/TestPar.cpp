@@ -62,8 +62,8 @@ TEST(TestPar, write) {
                                                                      4., 40., 44., 440.)};
 
   outputPath.append(filename);
-
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators));
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, activePowerCompensation));
 
   parWriter.write();
 

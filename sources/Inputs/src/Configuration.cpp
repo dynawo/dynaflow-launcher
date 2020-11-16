@@ -18,6 +18,7 @@
 #include "Configuration.h"
 
 #include "Log.h"
+#include "Message.hpp"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -39,6 +40,28 @@ updateValue(T& value, const boost::property_tree::ptree& tree, const std::string
   auto value_opt = tree.get_child_optional(key);
   if (value_opt.is_initialized()) {
     value = value_opt->get_value<T>();
+  }
+}
+
+/**
+ * @brief Helper function to update the active power compensation parameter
+ *
+ * @param activePowerCompensation the value to update
+ * @param tree the element of the boost tree
+ */
+static void
+updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activePowerCompensation, const boost::property_tree::ptree& tree) {
+  std::map<std::string, Configuration::ActivePowerCompensation> enumResolver = {{"P", Configuration::ActivePowerCompensation::P},
+                                                                                {"targetP", Configuration::ActivePowerCompensation::TARGET_P},
+                                                                                {"PMax", Configuration::ActivePowerCompensation::PMAX}};
+  std::string apcString;
+  helper::updateValue(apcString, tree, "ActivePowerCompensation");
+  auto it = enumResolver.find(apcString);
+  if (it != enumResolver.end()) {
+    activePowerCompensation = it->second;
+  } else if (!apcString.empty()) {
+    //LOG(warn) << MESS(BadActivePowerCompensation) << LOG_ENDL; //This doesn't work, I think it always expect args
+    LOG(warn) << "The ActivePowerCompensation parameter was wrongly entered in the config file, the different possibility are : PMAX, P or targetP. The default value of PMAX will be used." << LOG_ENDL;
   }
 }
 }  // namespace helper
@@ -69,7 +92,7 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
-
+    helper::updateActivePowerCompensationValue(activePowerCompensation, config);
   } catch (std::exception& e) {
     LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);

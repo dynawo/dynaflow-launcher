@@ -8,6 +8,7 @@
     "VSCAsGenerators": "true",
     "LCCAsLoads": "true",
     "OutputDir": "/tmp",
-    "DsoVoltageLevel": 63.0
+    "DsoVoltageLevel": 63.0,
+    "ActivePowerCompensation": "P"
   }
 }

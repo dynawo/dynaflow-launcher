@@ -116,16 +116,31 @@ class Configuration {
     return dsoVoltageLevel_;
   }
 
+  /**
+   * @brief type of active power compensation for generator
+   */
+  enum class ActivePowerCompensation { P, TARGET_P, PMAX };
+
+  /**
+   * @brief Retrieves the type of active power compensation
+   *
+   * @returns the parameter value
+   */
+  ActivePowerCompensation getActivePowerCompensation() const {
+    return activePowerCompensation;
+  }
+
  private:
-  bool useInfiniteReactiveLimits_ = false;                                      ///< infinite reactive limits
-  bool isPSTRegulationOn_ = true;                                               ///< PST regulation on
-  bool isSVCRegulationOn_ = true;                                               ///< SVC regulation on
-  bool isShuntRegulationOn_ = true;                                             ///< Shunt regulation on
-  bool isAutomaticSlackBusOn_ = true;                                           ///< automatic slack bus on
-  bool useVSCAsGenerators_ = false;                                             ///< VSC considered as generators
-  bool useLCCAsLoads_ = false;                                                  ///< LCC are considered as loads
-  std::string outputDir_ = boost::filesystem::current_path().generic_string();  ///< Directory for output files
-  double dsoVoltageLevel_ = 45.0;                                               ///< Minimum voltage level of the load to be taken into account
+  bool useInfiniteReactiveLimits_ = false;                                          ///< infinite reactive limits
+  bool isPSTRegulationOn_ = true;                                                   ///< PST regulation on
+  bool isSVCRegulationOn_ = true;                                                   ///< SVC regulation on
+  bool isShuntRegulationOn_ = true;                                                 ///< Shunt regulation on
+  bool isAutomaticSlackBusOn_ = true;                                               ///< automatic slack bus on
+  bool useVSCAsGenerators_ = false;                                                 ///< VSC considered as generators
+  bool useLCCAsLoads_ = false;                                                      ///< LCC are considered as loads
+  std::string outputDir_ = boost::filesystem::current_path().generic_string();      ///< Directory for output files
+  double dsoVoltageLevel_ = 45.0;                                                   ///< Minimum voltage level of the load to be taken into account
+  ActivePowerCompensation activePowerCompensation = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
 };
 
 }  // namespace inputs
