@@ -60,8 +60,7 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
   if (it != enumResolver.end()) {
     activePowerCompensation = it->second;
   } else if (!apcString.empty()) {
-    //LOG(warn) << MESS(BadActivePowerCompensation) << LOG_ENDL; //This doesn't work, I think it always expect args
-    LOG(warn) << "The ActivePowerCompensation parameter was wrongly entered in the config file, the different possibility are : PMAX, P or targetP. The default value of PMAX will be used." << LOG_ENDL;
+    LOG(warn) << MESS(BadActivePowerCompensation, apcString) << LOG_ENDL;
   }
 }
 }  // namespace helper
@@ -92,7 +91,7 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
-    helper::updateActivePowerCompensationValue(activePowerCompensation, config);
+    helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);

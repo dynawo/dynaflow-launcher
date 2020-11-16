@@ -10,8 +10,11 @@
 
 #include "Configuration.h"
 #include "Tests.h"
+#include "Dico.h"
 
 TEST(Config, Nominal) {
+  dfl::common::Dico::configure("../../etc/DFLMessages_en_GB.dic");
+
   dfl::inputs::Configuration config("res/config.json");
 
   ASSERT_TRUE(config.useInfiniteReactiveLimits());
