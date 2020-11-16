@@ -84,13 +84,13 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, df
 
   switch (activePowerCompensation) {
   case dfl::inputs::Configuration::ActivePowerCompensation::P:
+  case dfl::inputs::Configuration::ActivePowerCompensation::PMAX:
     set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
     break;
   case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
     set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
     break;
-  case dfl::inputs::Configuration::ActivePowerCompensation::PMAX:
-    set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+  default: //impossible by definition of the enum
     break;
   }
 
