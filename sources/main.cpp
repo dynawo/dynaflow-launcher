@@ -48,13 +48,14 @@ initializeDynawo(const std::string& locale) {
 
 int
 main(int argc, char* argv[]) {
-  try {
     boost::timer timerGlobal;
     boost::timer timerInit;
     DYN::Trace::init();
     dfl::common::Options options;
 
     auto parsing_status = options.parse(argc, argv);
+    std::string outputDir;
+    try {
 
     if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
       LOG(info) << options.desc() << LOG_ENDL;
@@ -70,6 +71,7 @@ main(int argc, char* argv[]) {
     auto& runtimeConfig = options.config();
     dfl::inputs::Configuration config(runtimeConfig.configPath);
     dfl::common::Log::init(options, config.outputDir(), !continuePreviousLogFile);
+    outputDir = config.outputDir();
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
@@ -115,7 +117,7 @@ main(int argc, char* argv[]) {
     boost::timer timerSimu;
     context.execute();
 
-    // Traces must be re-initiliazed to append to current DynaflowLauncher log file as simulation had modified it
+    // Traces must be re-initialized to append to current DynaflowLauncher log file as simulation had modified it
     dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
     LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
@@ -123,24 +125,28 @@ main(int argc, char* argv[]) {
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
+    dfl::common::Log::init(options, outputDir, true);
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
+    dfl::common::Log::init(options, outputDir, true);
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (std::exception& e) {
+    dfl::common::Log::init(options, outputDir, true);
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << e.what() << std::endl;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << e.what() << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (...) {
+    dfl::common::Log::init(options, outputDir, true);
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Unknown error" << std::endl;
     LOG(error) << "Simulation failed" << LOG_ENDL;
