@@ -19,6 +19,7 @@
 #include "DicoKeys.h"
 
 #include <boost/format.hpp>
+#include <sstream>
 #include <vector>
 
 namespace dfl {
@@ -36,17 +37,32 @@ class Message {
    * @brief Constructor
    *
    * Build a message from a list of argument. This will format the message string according to the arguments.
-   * see boost::format documentation for the behaviour if the number of arguments doesn't match the format
+   * see boost::format documentation for the behaviour if the number of arguments doesn't match the format.
+   *
+   * In case the key is unknown (dictionnary not loaded or not compliant with current code), a default format is displayed:
+   * KEY ARG1 ARG2 ...
+   *
+   * where KEY is the string repsentation of the key and Argx the raw arguments in the order
    *
    * @param key the message key
-   * @param args package of arguments
+   * @param args pack of arguments
    */
   template<class... Args>
   Message(generated::DicoKeys::Key key, Args... args) : str_{} {
-    boost::format fmter(dico().message(key));
+    std::string str = dico().message(key);
 
-    updateFormatter(fmter, args...);
-    str_ = fmter.str();
+    if (str.empty()) {
+      // case key is unknown: default message
+      std::stringstream ss;
+      ss << generated::DicoKeys::keyToString(key) + ' ';
+      updateStr(ss, args...);
+      str_ = ss.str();
+    } else {
+      // case key is known: we use the formatter
+      boost::format fmter(str);
+      updateFormatter(fmter, args...);
+      str_ = fmter.str();
+    }
   }
 
   /**
@@ -54,7 +70,7 @@ class Message {
    *
    * @returns the formatted message
    */
-  std::string str() const {
+  const std::string& str() const {
     return str_;
   }
 
@@ -85,6 +101,34 @@ class Message {
   template<class Arg>
   static void updateFormatter(boost::format& fmter, Arg arg) {
     fmter % arg;
+  }
+
+  /**
+   * @brief stream generic updater function
+   *
+   * This function implements a recursive template functions pattern to iterate on the arguments of multiple types
+   *
+   * @param os the stream to update
+   * @param arg the argument to process
+   * @param args the rest of the arguments
+   */
+  template<class Arg, class... Args>
+  static void updateStr(std::ostream& os, Arg arg, Args... args) {
+    os << arg << ' ';
+    updateStr(os, args...);
+  }
+
+  /**
+   * @brief stream single updater function
+   *
+   * Update the stream in case of a single argument. Corresponds to the stop case of the recursive template algorithm.
+   *
+   * @param os the stream to update
+   * @param arg the argument to process
+   */
+  template<class Arg>
+  static void updateStr(std::ostream& os, Arg arg) {
+    os << arg;
   }
 
  private:
