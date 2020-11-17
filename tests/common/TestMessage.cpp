@@ -11,6 +11,15 @@
 #include "Message.hpp"
 #include "Tests.h"
 
+TEST(Message, wrongkey) {
+  dfl::common::Dico::configure("res/test.dic");
+
+  auto message = MESS(SimulateInfo, true, "test");
+
+  // SimulateInfo is not defined in dictionnary test.dic
+  ASSERT_EQ(message, "SimulateInfo 1 test");
+}
+
 TEST(Message, message) {
   dfl::common::Dico::configure("res/test.dic");
 
