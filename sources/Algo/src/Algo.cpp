@@ -105,10 +105,21 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 bool
 GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator) {
-  //If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values
+  //If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values.
+  //We check the validity of pmin,pmax and qmin,qmax values
   if (generator.points.empty()) {
+    if (generator.pmin == generator.pmax) {
+      LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
+      return false;
+    }
+    if (generator.qmin == generator.qmax) {
+      LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
+      return false;
+    }
     return true;
   }
+
+  //If there is only one point, the diagram is not valid
   if (generator.points.size() == 1) {
     LOG(warn) << MESS(InvalidDiagramOnePoint, generator.id) << LOG_ENDL;
     return false;
