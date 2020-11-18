@@ -20,7 +20,6 @@ NodeBreakerInterface          =     Node breaker topology for voltage level inte
 ContextProcessError           =     Processing of the network %1% failed
 SimulationEnded               =     Simulation %1% ended successfully (wall-time: %2%s)
 DFLEnded                      =     DynaFlowLauncher %1% ended successfully (wall-time: %2%s)
-DictionaryNotFound            =     Dictionary %1% not found: check runtime environment
 InitEnd                       =     End of initialization (wall-time: %1%s)
 FilesEnd                      =     End of files generation (wall-time: %1%s)
 InvalidDiagramAllPEqual       =     The diagram of the generator %1% is invalid, all reactive curve points have the same p. The default model will be used for this generator

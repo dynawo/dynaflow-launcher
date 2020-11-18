@@ -123,7 +123,7 @@ class Configuration {
   bool isShuntRegulationOn_ = true;                                             ///< Shunt regulation on
   bool isAutomaticSlackBusOn_ = true;                                           ///< automatic slack bus on
   bool useVSCAsGenerators_ = false;                                             ///< VSC considered as generators
-  bool useLCCAsLoads_ = false;                                                  ///< LCC are considered as generators
+  bool useLCCAsLoads_ = false;                                                  ///< LCC are considered as loads
   std::string outputDir_ = boost::filesystem::current_path().generic_string();  ///< Directory for output files
   double dsoVoltageLevel_ = 45.0;                                               ///< Minimum voltage level of the load to be taken into account
 };

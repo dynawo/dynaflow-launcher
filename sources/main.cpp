@@ -81,14 +81,16 @@ main(int argc, char* argv[]) {
     dictPath.append("etc");
     std::string dict = dictPrefix + locale + ".dic";
     dictPath.append(dict);
-    dfl::common::Dico::configure(dictPath.c_str());
-    initializeDynawo(locale);
 
     if (!boost::filesystem::is_regular_file(dictPath)) {
       // we cannot use dictionnary errors since they are not be initialized yet
-      LOG(error) << MESS(DictionaryNotFound, dictPath) << LOG_ENDL;
+      std::cerr << "Dictionary " << dictPath << " not found: check runtime environment" << std::endl;
       return EXIT_FAILURE;
     }
+
+    dfl::common::Dico::configure(dictPath.c_str());
+    initializeDynawo(locale);
+
     if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
       LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
       return EXIT_FAILURE;
