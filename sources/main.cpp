@@ -118,35 +118,43 @@ main(int argc, char* argv[]) {
     context.execute();
 
     // Traces must be re-initiliazed to append to current DynaflowLauncher log file as simulation had modified it
-    dfl::common::Log::init(options, config.outputDir(), continuePreviousLogFile);
     LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
+    DYN::Trace::resetPersistantCustomAppenders();
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (std::exception& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << e.what() << std::endl;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << e.what() << LOG_ENDL;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Unknown error" << std::endl;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Unknown error" << LOG_ENDL;
+    LOG(error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   }
 }
