@@ -45,7 +45,7 @@ updateValue(T& value, const boost::property_tree::ptree& tree, const std::string
 
 /**
  * @brief Helper function to update the active power compensation parameter, if the value of ActivePowerCompensation
- * is not one of the three available, then the default value is used 
+ * is not one of the three available, then the function does not update the value of the active power compensation parameter.
  *
  * @param activePowerCompensation the value to update
  * @param tree the element of the boost tree
