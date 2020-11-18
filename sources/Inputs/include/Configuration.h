@@ -119,7 +119,11 @@ class Configuration {
   /**
    * @brief type of active power compensation for generator
    */
-  enum class ActivePowerCompensation { P, TARGET_P, PMAX };
+  enum class ActivePowerCompensation {
+    P,         ///< active power mismatch compensation proportional to active power injection P
+    TARGET_P,  ///< active power mismatch compensation proportional to active power target targetP
+    PMAX       ///< active power mismatch compensation proportional to generator maximal active power PMax
+  };
 
   /**
    * @brief Retrieves the type of active power compensation
@@ -131,15 +135,15 @@ class Configuration {
   }
 
  private:
-  bool useInfiniteReactiveLimits_ = false;                                          ///< infinite reactive limits
-  bool isPSTRegulationOn_ = true;                                                   ///< PST regulation on
-  bool isSVCRegulationOn_ = true;                                                   ///< SVC regulation on
-  bool isShuntRegulationOn_ = true;                                                 ///< Shunt regulation on
-  bool isAutomaticSlackBusOn_ = true;                                               ///< automatic slack bus on
-  bool useVSCAsGenerators_ = false;                                                 ///< VSC considered as generators
-  bool useLCCAsLoads_ = false;                                                      ///< LCC are considered as loads
-  std::string outputDir_ = boost::filesystem::current_path().generic_string();      ///< Directory for output files
-  double dsoVoltageLevel_ = 45.0;                                                   ///< Minimum voltage level of the load to be taken into account
+  bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
+  bool isPSTRegulationOn_ = true;                                                    ///< PST regulation on
+  bool isSVCRegulationOn_ = true;                                                    ///< SVC regulation on
+  bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
+  bool isAutomaticSlackBusOn_ = true;                                                ///< automatic slack bus on
+  bool useVSCAsGenerators_ = false;                                                  ///< VSC considered as generators
+  bool useLCCAsLoads_ = false;                                                       ///< LCC are considered as loads
+  std::string outputDir_ = boost::filesystem::current_path().generic_string();       ///< Directory for output files
+  double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
 };
 
