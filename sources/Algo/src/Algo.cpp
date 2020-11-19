@@ -108,11 +108,11 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   //If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values.
   //We check the validity of pmin,pmax and qmin,qmax values
   if (generator.points.empty()) {
-    if (DYN::doubleEquals(generator.pmin,generator.pmax)) {
+    if (DYN::doubleEquals(generator.pmin, generator.pmax)) {
       LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
       return false;
     }
-    if (DYN::doubleEquals(generator.qmin,generator.qmax)) {
+    if (DYN::doubleEquals(generator.qmin, generator.qmax)) {
       LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
       return false;
     }
@@ -139,11 +139,9 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   if (!valid) {
     if (allQminEqualQmax && allPEqual) {
       LOG(warn) << MESS(InvalidDiagramBothError, generator.id) << LOG_ENDL;
-    }
-    else if (allQminEqualQmax) {
+    } else if (allQminEqualQmax) {
       LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
-    }
-    else if (allPEqual) {
+    } else if (allPEqual) {
       LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
     }
   }

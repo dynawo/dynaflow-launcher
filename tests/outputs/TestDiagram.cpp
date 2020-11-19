@@ -15,8 +15,8 @@
 #include <boost/filesystem.hpp>
 
 static void
-testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& generators, const boost::filesystem::path& outputDirectory, 
-                            const std::string& basename, const std::string& prefixDir) {
+testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& generators, const boost::filesystem::path& outputDirectory,
+                           const std::string& basename, const std::string& prefixDir) {
   using dfl::algo::GeneratorDefinition;
 
   boost::filesystem::path reference("reference");
@@ -52,7 +52,6 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-
                                                                      },
                                                                      1., 10., 11., 110.),
                                                  GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01",
@@ -70,7 +69,6 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2.7, 22., 220.),
-
                                                                      },
                                                                      3., 30., 33., 330.),
                                                  GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03",
@@ -108,7 +106,6 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                               GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                               GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                               GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-
                           },
                           1., 10., -11., 110.),
       GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "01", {}, -20., -2., 22., 220.),
@@ -125,7 +122,6 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                               GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                               GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                               GeneratorDefinition::ReactiveCurvePoint(2.7, 22., 220.),
-
                           },
                           3., 30., 33., 330.),
       GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440.)};
@@ -159,9 +155,8 @@ TEST(Diagram, writeEmpty) {
   std::string directoryPath = outputDirectory.generic_string();
   try {
     std::ifstream stream(directoryPath);
-    ASSERT_TRUE(stream.fail()) << "The Diagram directory " << directoryPath << " has been created to even though there are no generators which model requires it."
-                               << std::endl;
+    ASSERT_TRUE(stream.fail()) << "The Diagram directory " << directoryPath << " has been created even though it is not used by any generator model";
   } catch (std::exception& e) {
-    ASSERT_TRUE(false) << "An IO error has occured" << std::endl;
+    ASSERT_TRUE(false) << "An IO error has occured: " << e.what();
   }
 }
