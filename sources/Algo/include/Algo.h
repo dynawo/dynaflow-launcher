@@ -193,7 +193,7 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
    * @brief Perform algorithm
    *
    * Add the generators of the nodes and deducing the model to use.
-   * Validity of the generator is checked whenever it makes sense. 
+   * Validity of the generator is checked whenever it makes sense.
    * If the diagram is not valid, the generator is ignored by the algorithm and the default dynawo behavior is used.
    *
    * @param node the node to process
@@ -203,8 +203,8 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
  private:
   /**
    * @brief Checks for diagram validity according to the list of points associated with the generator
-   * 
-   * @param generator The generator with it list of points 
+   *
+   * @param generator The generator with it list of points
    * @return Boolean indicating if the diagram is valid
    */
   static bool isDiagramValid(const inputs::Generator& generator);
@@ -240,14 +240,14 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
    * @brief Constructor
    *
    * @param loads the list of loads to update
-   * @param dsoVoltageLevel Minimum voltage level of the load to be taken into account 
+   * @param dsoVoltageLevel Minimum voltage level of the load to be taken into account
    */
   explicit LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel);
 
   /**
    * @brief Perform the algorithm
    *
-   * Update the list with the loads of the node. Only add the loads for which the nominal voltage of the node is 
+   * Update the list with the loads of the node. Only add the loads for which the nominal voltage of the node is
    * superior to dsoVoltageLevel, otherwise the load is ignored and is handled by the default dynawo behavior
    *
    * @param node the node to process
