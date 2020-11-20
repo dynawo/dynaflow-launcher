@@ -37,9 +37,8 @@ class Log {
    * messages patterns and  level are given by the input
    * @param options user options
    * @param outputDir directory where the log should be written
-   * @param continuePreviousLog determines iof it is the first init of the run
    */
-  static void init(const common::Options& options, const std::string& outputDir, bool continuePreviousLog);
+  static void init(const common::Options& options, const std::string& outputDir);
 };
 
 }  // namespace common

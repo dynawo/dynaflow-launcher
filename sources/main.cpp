@@ -65,11 +65,9 @@ main(int argc, char* argv[]) {
       return EXIT_SUCCESS;
     }
 
-    bool continuePreviousLogFile = true;
-
     auto& runtimeConfig = options.config();
     dfl::inputs::Configuration config(runtimeConfig.configPath);
-    dfl::common::Log::init(options, config.outputDir(), !continuePreviousLogFile);
+    dfl::common::Log::init(options, config.outputDir());
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
@@ -121,7 +119,6 @@ main(int argc, char* argv[]) {
     LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
-    DYN::Trace::resetPersistantCustomAppenders();
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
