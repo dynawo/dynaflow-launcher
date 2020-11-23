@@ -46,6 +46,15 @@ class Job {
     std::string dynawoLogLevel;  ///< Dynawo log level, in string representation
   };
 
+ public:
+  /**
+  * @brief Export job file
+  *
+  * @param jobEntry the job entry to export
+  * @param outputDir the output directory
+  */
+  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& outputDir);
+
   /**
    * @brief Constructor
    *

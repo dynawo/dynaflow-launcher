@@ -41,6 +41,8 @@
 #include <JOBSolverEntryFactory.h>
 #include <boost/make_shared.hpp>
 #include <fstream>
+#include <xml/sax/formatter/AttributeList.h>
+#include <xml/sax/formatter/Formatter.h>
 
 namespace dfl {
 namespace outputs {
@@ -128,6 +130,107 @@ Job::writeOutputs() {
   output->setFinalStateEntry(final_state);
 
   return output;
+}
+
+void
+Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& outputDir) {
+  boost::filesystem::path path(outputDir);
+
+  if (!boost::filesystem::is_directory(path)) {
+    boost::filesystem::create_directories(path);
+  }
+
+  path.append(jobEntry->getName() + ".jobs");
+  std::ofstream os(path.c_str());
+
+  auto formatter = xml::sax::formatter::Formatter::createFormatter(os);
+  formatter->addNamespace("dyn", "http://www.rte-france.com/dynawo");
+
+  formatter->startDocument();
+  xml::sax::formatter::AttributeList attrs;
+
+  formatter->startElement("dyn", "jobs", attrs);
+
+  attrs.add("name", jobEntry->getName());
+  formatter->startElement("dyn", "job", attrs);
+  attrs.clear();
+
+  // solver
+
+  auto solver = jobEntry->getSolverEntry();
+  attrs.add("lib", solver->getLib());
+  attrs.add("parFile", solver->getParametersFile());
+  attrs.add("parId", solver->getParametersId());
+  formatter->startElement("dyn", "solver", attrs);
+  attrs.clear();
+  formatter->endElement();  // solver
+
+  // modeler
+
+  auto modeler = jobEntry->getModelerEntry();
+  attrs.add("compileDir", modeler->getCompileDir());
+  formatter->startElement("dyn", "modeler", attrs);
+  attrs.clear();
+
+  auto models = modeler->getDynModelsEntries();
+  for (auto model : models) {
+    attrs.add("dydFile", model->getDydFile());
+    formatter->startElement("dyn", "dynModels", attrs);
+    attrs.clear();
+    formatter->endElement();  // model
+  }
+
+  auto network = modeler->getNetworkEntry();
+  attrs.add("iidmFile", network->getIidmFile());
+  attrs.add("parFile", network->getNetworkParFile());
+  attrs.add("parId", network->getNetworkParId());
+  formatter->startElement("dyn", "network", attrs);
+  attrs.clear();
+  formatter->endElement();  // network
+
+  auto pre_models = modeler->getPreCompiledModelsDirEntry();
+  attrs.add("useStandardModels", pre_models->getUseStandardModels());
+  formatter->startElement("dyn", "precompiledModels", attrs);
+  attrs.clear();
+  formatter->endElement();  // precompiledModels
+
+  formatter->endElement();  // modeler
+
+  // simu
+
+  auto simu = jobEntry->getSimulationEntry();
+  attrs.add("startTime", simu->getStartTime());
+  attrs.add("stopTime", simu->getStopTime());
+  formatter->startElement("dyn", "simulation", attrs);
+  attrs.clear();
+  formatter->endElement();  // simulation
+
+  // outputs
+  auto outputs = jobEntry->getOutputsEntry();
+  attrs.add("directory", outputs->getOutputsDirectory());
+  formatter->startElement("dyn", "outputs", attrs);
+  attrs.clear();
+
+  auto logs = outputs->getLogsEntry();
+  formatter->startElement("dyn", "logs");
+  auto appenders = logs->getAppenderEntries();
+  for (auto appender : appenders) {
+    attrs.add("tag", appender->getTag());
+    attrs.add("file", appender->getFilePath());
+    attrs.add("lvlFilter", appender->getLvlFilter());
+    formatter->startElement("dyn", "appender", attrs);
+    attrs.clear();
+    formatter->endElement();  // appender
+  }
+
+  formatter->endElement();  // logs
+
+  formatter->endElement();  // outputs
+
+  formatter->endElement();  // job
+
+  formatter->endElement();  // jobs
+  formatter->endDocument();
 }
 
 }  // namespace outputs

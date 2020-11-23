@@ -113,6 +113,9 @@ Context::exportOutputs() {
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
   jobEntry_ = jobWriter.write();
+#if _DEBUG_
+  outputs::Job::exportJob(jobEntry_, config_.outputDir());
+#endif
 
   // Dyd
   file::path dydOutput(config_.outputDir());
@@ -132,7 +135,8 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_, config_.getActivePowerCompensation()));
+  outputs::Par parWriter(
+      outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_, config_.getActivePowerCompensation()));
   parWriter.write();
 
   // Diagram
