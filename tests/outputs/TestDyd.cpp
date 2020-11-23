@@ -12,6 +12,7 @@
 #include "Tests.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/make_shared.hpp>
 
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;
@@ -38,7 +39,43 @@ TEST(Dyd, write) {
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Dyd, writeHvdc) {
+  using dfl::algo::HvdcLineDefinition;
+
+  std::string basename = "TestDydHvdc";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+  auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN", boost::optional<bool>());
+  auto lccStation2 = dfl::inputs::ConverterInterface("LCCStation2", "_BUS___10_TN", boost::optional<bool>());
+  auto vscStation1 = dfl::inputs::ConverterInterface("VSCStation1", "_BUS___10_TN", true);
+  auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
+  
+  auto hvdcLineLCC = dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, lccStation2, dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
+  auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, vscStation2, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
+//maybe watch out but you can't access the hdvLine from the converterInterface
+  std::vector<dfl::algo::HvdcLineDefinition> hvdcLines = {hvdcLineVSC, hvdcLineLCC};
+
+  auto node = std::make_shared<dfl::inputs::Node>("Slack", 100.);
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcLines));
 
   dydWriter.write();
 

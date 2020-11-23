@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "HvdcLine.h"
+#include "NetworkManager.h"
 #include "Node.h"
 
 #include <DYNDataInterface.h>
@@ -75,6 +77,14 @@ class NetworkManager {
   boost::shared_ptr<DYN::DataInterface> dataInterface() const {
     return interface_;
   }
+  /**
+   * @brief Retrieve the hvdc lines of the network
+   *
+   * @returns hvdc line
+   */
+  const std::vector<boost::shared_ptr<HvdcLine>>& getHvdcLine() {
+    return hvdcLines_;
+  }
 
  private:
   /**
@@ -86,6 +96,7 @@ class NetworkManager {
   boost::shared_ptr<DYN::DataInterface> interface_;      ///< data interface
   std::map<Node::NodeId, std::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
   std::vector<ProcessNodeCallback> nodesCallbacks_;      ///< list of callback or nodes
+  std::vector<boost::shared_ptr<HvdcLine>> hvdcLines_;   ///< hvdc Lines
 };
 
 }  // namespace inputs

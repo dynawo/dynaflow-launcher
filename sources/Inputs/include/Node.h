@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace dfl {
@@ -43,11 +44,12 @@ struct Node {
    */
   Node(const NodeId& id, double nominalVoltage);
 
-  const NodeId id;                                ///< node id
-  const double nominalVoltage;                    ///< Nominal voltage of the node
-  std::vector<std::shared_ptr<Node>> neighbours;  ///< list of neighbours
-  std::vector<Load> loads;                        ///< list of loads associated to this node
-  std::vector<Generator> generators;              ///< list of generators associated to this node
+  const NodeId id;                                      ///< node id
+  const double nominalVoltage;                          ///< Nominal voltage of the node
+  std::vector<std::shared_ptr<Node>> neighbours;        ///< list of neighbours
+  std::vector<Load> loads;                              ///< list of loads associated to this node
+  std::vector<Generator> generators;                    ///< list of generators associated to this node
+  std::vector<ConverterInterface> converterInterfaces;  ///< list of converter associated to this node
 };
 
 /**

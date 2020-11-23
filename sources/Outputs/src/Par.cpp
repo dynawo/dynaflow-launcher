@@ -70,6 +70,9 @@ Par::write() {
       collection->addParametersSet(set);
     }
   }
+  for (const auto& hvdcLine : def_.hdvcLines) {
+    collection->addParametersSet(writeHdvcLine(hvdcLine));
+  }
 
   exporter.exportToFile(collection, def_.filepath, constants::xmlEncoding);
 }
@@ -90,7 +93,7 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, df
   case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
     set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
     break;
-  default: //impossible by definition of the enum
+  default:  //impossible by definition of the enum
     break;
   }
 
@@ -141,7 +144,45 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
+Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
+  auto set = parameters::ParametersSetFactory::newInstance(hvdcLine.id);
+  std::string first = "1";
+  std::string second = "2";
+  if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+    first = "2";
+    second = "1";
+  }
+  set->addReference(helper::buildReference("hvdc_P10Pu", "p" + first + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_Q10Pu", "q" + first + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_U10Pu", "v" + first + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_UPhase10", "angle" + first + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_P20Pu", "p" + second + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_Q20Pu", "q" + second + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
+
+  set->addParameter(helper::buildParameter("hvdc_Q1MinPu", std::numeric_limits<double>::lowest()));
+  set->addParameter(helper::buildParameter("hvdc_Q1MaxPu", std::numeric_limits<double>::max()));
+  set->addParameter(helper::buildParameter("hvdc_Q2MinPu", std::numeric_limits<double>::lowest()));
+  set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
+  set->addParameter(helper::buildParameter("hvdc_KLosses", 1.0));
+
+  if (hvdcLine.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
+    if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter1.voltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter2.voltageRegulationOn.value()));
+    }
+    else if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter2.voltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter1.voltageRegulationOn.value()));
+    }
+  }
+  return set;
+}
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname,
+                    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
   if (def.model == algo::GeneratorDefinition::ModelType::SIGNALN || def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
     // already processed by constant
     return nullptr;

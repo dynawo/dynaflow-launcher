@@ -89,7 +89,9 @@ Dyd::write() {
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
     collection->addModel(writeGenerator(*it, def_.basename));
   }
-
+  for (const auto& hvdcLine : def_.hvdcLines) {
+    collection->addModel(writeHvdcLine(hvdcLine, def_.basename));
+  }
   // connections
   for (auto it = def_.loads.begin(); it != def_.loads.end(); ++it) {
     collection->addMacroConnect(writeLoadConnect(*it));
@@ -104,7 +106,41 @@ Dyd::write() {
     }
   }
 
+  for (const auto& hvdcLine : def_.hvdcLines) {
+    writeHvdcLineConnect(collection, hvdcLine);
+  }
   exporter.exportToFile(collection, def_.filename, constants::xmlEncoding);
+}
+
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& basename) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(hvdcLine.id);
+
+  model->setStaticId(hvdcLine.id);
+  if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
+    model->setLib("HvdcPTanPhiDangling");
+  } else {
+    model->setLib("HvdcPVDangling");
+  }
+  model->setParFile(basename + ".par");
+  model->setParId(hvdcLine.id);
+  if (hvdcLine.position == algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
+    model->addStaticRef("hvdc_PInj1Pu", "p1");
+    model->addStaticRef("hvdc_QInj1Pu", "q1");
+    model->addStaticRef("hvdc_state", "state1");
+    model->addStaticRef("hvdc_PInj2Pu", "p2");
+    model->addStaticRef("hvdc_QInj2Pu", "q2");
+    model->addStaticRef("hvdc_state", "state2");
+  } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+    model->addStaticRef("hvdc_PInj1Pu", "p2");
+    model->addStaticRef("hvdc_QInj1Pu", "q2");
+    model->addStaticRef("hvdc_state", "state2");
+    model->addStaticRef("hvdc_PInj2Pu", "p1");
+    model->addStaticRef("hvdc_QInj2Pu", "q1");
+    model->addStaticRef("hvdc_state", "state1");
+  }
+
+  return model;
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
@@ -231,5 +267,15 @@ Dyd::writeGenConnect(const algo::GeneratorDefinition& def, unsigned int index) {
   return {connection, signal};
 }
 
+void
+Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& collection, const algo::HvdcLineDefinition& hvdcLine) {
+  if (hvdcLine.position == algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
+    collection->addConnect("NETWORK", hvdcLine.converter1.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+    collection->addConnect("NETWORK", hvdcLine.converter2.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
+  } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+    collection->addConnect("NETWORK", hvdcLine.converter1.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
+    collection->addConnect("NETWORK", hvdcLine.converter2.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+  }
+}  // namespace outputs
 }  // namespace outputs
 }  // namespace dfl

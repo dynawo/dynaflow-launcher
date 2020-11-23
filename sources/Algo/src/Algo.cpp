@@ -14,7 +14,7 @@
  * @brief Dynaflow launcher algorithms implementation file
  *
  */
-
+#include "HvdcLine.h"
 #include "Algo.h"
 
 #include "Log.h"
@@ -162,6 +162,25 @@ LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
     loads_.emplace_back(it->id, node->id);
   }
 }
+/////////////////////////////////////////////////////////////////
 
+ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(std::vector<HvdcLineDefinition>& hvdcLines) : hvdcLines_(hvdcLines) {}
+
+void
+ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
+  for (auto converter : node->converterInterfaces) {
+    auto hvdcLine = converter.hvdcLine;
+    HvdcLineDefinition::Position position;
+    if (converter.converterId == hvdcLine->converter1.converterId) {
+      position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
+    } else if (converter.converterId == hvdcLine->converter2.converterId) {
+      position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
+    } else {
+      throw("The hvdcLine was badly initialized.");
+    }
+
+    hvdcLines_.emplace_back(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1, hvdcLine->converter2, position);
+  }
+}
 }  // namespace algo
 }  // namespace dfl

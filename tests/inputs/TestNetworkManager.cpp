@@ -41,3 +41,25 @@ TEST(NetworkManager, walk) {
   manager.walkNodes();
   ASSERT_EQ(14, count);
 }
+
+TEST(NetworkManager, hvdcLines) {
+  using dfl::inputs::NetworkManager;
+
+  NetworkManager manager("res/HvdcDangling.iidm");
+  auto hvdcLines = manager.getHvdcLine();
+  auto hvdcLine = hvdcLines.at(0);
+  ASSERT_EQ(hvdcLine->id, "HVDCLCCLine");
+  ASSERT_EQ(hvdcLine->converter1.converterId, "LCCStation1");
+  ASSERT_EQ(hvdcLine->converter2.converterId, "LCCStation2");
+  ASSERT_EQ(hvdcLine->converterType, dfl::inputs::HvdcLine::ConverterType::LCC);
+  ASSERT_EQ(hvdcLine->converter1.voltageRegulationOn.is_initialized(), false);
+  ASSERT_EQ(hvdcLine->converter2.voltageRegulationOn.is_initialized(), false);
+
+  hvdcLine = hvdcLines.at(1);
+  ASSERT_EQ(hvdcLine->id, "HVDCVSCLine");
+  ASSERT_EQ(hvdcLine->converter1.converterId, "VSCStation1");
+  ASSERT_EQ(hvdcLine->converter2.converterId, "VSCStation2");
+  ASSERT_EQ(hvdcLine->converterType, dfl::inputs::HvdcLine::ConverterType::VSC);
+  ASSERT_EQ(hvdcLine->converter1.voltageRegulationOn.value(), true);
+  ASSERT_EQ(hvdcLine->converter2.voltageRegulationOn.value(), false);
+}

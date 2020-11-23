@@ -97,7 +97,7 @@ Context::process() {
 
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, config_.useInfiniteReactiveLimits()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
-
+  onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();
 
   return true;
@@ -120,7 +120,7 @@ Context::exportOutputs() {
   // Dyd
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
-  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_));
+  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_));
   dydWriter.write();
 
   // Par
@@ -135,8 +135,7 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(
-      outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_, config_.getActivePowerCompensation()));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_, hvdcLines_, config_.getActivePowerCompensation()));
   parWriter.write();
 
   // Diagram

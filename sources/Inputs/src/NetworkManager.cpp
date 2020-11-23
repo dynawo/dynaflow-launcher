@@ -21,14 +21,18 @@
 #include "Message.hpp"
 
 #include <DYNBusInterface.h>
+#include <DYNConverterInterface.h>
 #include <DYNDataInterfaceFactory.h>
 #include <DYNGeneratorInterface.h>
+#include <DYNHvdcLineInterface.h>
+#include <DYNLccConverterInterface.h>
 #include <DYNLineInterface.h>
 #include <DYNLoadInterface.h>
 #include <DYNNetworkInterface.h>
 #include <DYNThreeWTransformerInterface.h>
 #include <DYNTwoWTransformerInterface.h>
 #include <DYNVoltageLevelInterface.h>
+#include <DYNVscConverterInterface.h>
 #include <boost/make_shared.hpp>
 
 namespace dfl {
@@ -139,6 +143,34 @@ NetworkManager::buildTree() {
 
       LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << (*it_t)->getID() << LOG_ENDL;
     }
+  }
+
+  const auto& hvdcLines = network->getHvdcLines();
+  for (auto hvdcLine : hvdcLines) {
+    auto converter_dyn_1 = hvdcLine->getConverter1();
+    auto converter_1 = ConverterInterface(converter_dyn_1->getID(), converter_dyn_1->getBusInterface()->getID());
+    auto converter_dyn_2 = hvdcLine->getConverter2();
+    auto converter_2 = ConverterInterface(converter_dyn_2->getID(), converter_dyn_2->getBusInterface()->getID());
+
+    HvdcLine::ConverterType converterType;
+    if (converter_dyn_1->getConverterType() == DYN::ConverterInterface::ConverterType_t::VSC_CONVERTER) {
+      converterType = HvdcLine::ConverterType::VSC;
+      auto vsc_converter_dyn_1 = boost::static_pointer_cast<DYN::VscConverterInterface>(converter_dyn_1);
+      converter_1.voltageRegulationOn = vsc_converter_dyn_1->getVoltageRegulatorOn();
+
+      auto vsc_converter_dyn_2 = boost::static_pointer_cast<DYN::VscConverterInterface>(converter_dyn_2);
+      converter_2.voltageRegulationOn = vsc_converter_dyn_2->getVoltageRegulatorOn();
+    } else {
+      converterType = HvdcLine::ConverterType::LCC;
+    }
+    auto hvdcLineCreated =
+        boost::make_shared<dfl::inputs::HvdcLine>(hvdcLine->getID(), converterType, converter_1, converter_2);
+    hvdcLines_.emplace_back(hvdcLineCreated);
+
+    converter_1.hvdcLine = hvdcLineCreated;
+    converter_2.hvdcLine = hvdcLineCreated;
+    nodes_[converter_dyn_1->getBusInterface()->getID()]->converterInterfaces.push_back(converter_1);
+    nodes_[converter_dyn_2->getBusInterface()->getID()]->converterInterfaces.push_back(converter_2);
   }
 }
 

@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "HvdcLine.h"
 #include "Node.h"
 
 #include <DYNGeneratorInterface.h>
@@ -259,5 +260,74 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
   double dsoVoltageLevel_;  ///< Minimum voltage level of the load to be taken into account
 };
 
+/**
+ * @brief Hvdc line definition for algorithms
+ */
+struct HvdcLineDefinition {
+  using HvdcLines = std::vector<HvdcLineDefinition>;  ///< alias for list of hvdcLines
+
+  using HvdcLineId = std::string;  ///< HvdcLine id definition
+
+  /** @brief enum to determine how the converters of this hvdc line are connected inside the network
+   *  and their position compared to the main connex component.
+   */
+  enum class Position {
+    FIRST_IN_MAIN_COMPONENT,   ///< the first converter of this hvdc line is in the main connex component
+    SECOND_IN_MAIN_COMPONENT,  ///< the second converter of this hvdc line is in the main connex component
+    BOTH_IN_MAIN_COMPONENT     ///< both converters of this hvdc line are in the main connex component
+  };
+
+  /**
+   * @brief Constructor
+   *
+   * @param id the HvdcLine id
+   * @param converterType type of converter of the hvdc line
+   * @param converter1 first converter connected to the hvdc line
+   * @param converter2 second converter connected to the hvdc line
+   * @param position position of the converters of this hvdc line compared to the main connex component
+   */
+  explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType,
+                              inputs::ConverterInterface converter1, inputs::ConverterInterface converter2,
+                              Position position) :
+      id{id},
+      converterType{converterType},
+      converter1{converter1},
+      converter2{converter2},
+      position{position} {}
+
+  const HvdcLineId id;                                       ///< HvdcLine id
+  const inputs::HvdcLine::ConverterType converterType;       ///< type of converter of the hvdc line
+  inputs::ConverterInterface converter1;  ///< TODO do we need the pointer, first converter
+  inputs::ConverterInterface converter2;  ///< second converter
+  Position position;                                         ///< position of the converters of this hvdc line compared to the main connex component
+};
+
+/**
+ * @brief the controller interface definition algorithm
+ */
+class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
+ public:
+  /**
+   * @brief Constructor
+   *
+   * @param hvdcLines the list of hvdc lines to update
+   */
+  explicit ControllerInterfaceDefinitionAlgorithm(std::vector<HvdcLineDefinition>& hvdcLines);
+
+  /**
+   * @brief Perform the algorithm
+   *
+   * Update the list with the hvdc line of the converters of the node. 
+   * This function also put the position of the converters compared to the main connex component in the newly created hvdc line definition.
+   * Indeed, the node that are processed through this operator() are only those that are in the main connex component, which let us deduce the position of the 
+   * converters of the hvdc line
+   * 
+   * @param node the node to process
+   */
+  void operator()(const NodePtr& node);
+
+ private:
+  std::vector<HvdcLineDefinition>& hvdcLines_;  ///< the hvdc lines to update
+};
 }  // namespace algo
 }  // namespace dfl

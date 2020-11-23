@@ -10,6 +10,7 @@
 
 #include "Par.h"
 #include "Tests.h"
+#include <boost/make_shared.hpp>
 
 #include <boost/filesystem.hpp>
 
@@ -63,7 +64,45 @@ TEST(TestPar, write) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, activePowerCompensation));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(TestPar, writeHdvc) {
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::LoadDefinition;
+
+  std::string basename = "TestParHvdc";
+  std::string dirname = "results";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN", boost::optional<bool>());
+  auto lccStation2 = dfl::inputs::ConverterInterface("LCCStation2", "_BUS___10_TN", boost::optional<bool>());
+  auto vscStation1 = dfl::inputs::ConverterInterface("VSCStation1", "_BUS___10_TN", true);
+  auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
+  
+  auto hvdcLineLCC = dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, lccStation2, dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
+  auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, vscStation2, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
+//maybe watch out but you can't access the hdvLine from the converterInterface
+  std::vector<dfl::algo::HvdcLineDefinition> hvdcLines = {hvdcLineVSC, hvdcLineLCC};
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation));
 
   parWriter.write();
 
