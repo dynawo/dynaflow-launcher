@@ -30,8 +30,16 @@ Runtime options of binary are given by doing:
 
 Only network file and configuration are required
 
+## Testing
+DynaFlow Launcher testing relies on cmake tests. To launch units tests, launch from *build* directory:
+
+`ctest -j<N> --output-on-failure`
+
+where N is the number of jobs to use for the testing session
+
 ## Coverage
 Coverage analysis is based on ctest. To launch coverage, launch from source directory:
+
 `ctest -S cmake/CTestScript.cmake -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -VV`
 
 Outputs are gcov and lcov reports
