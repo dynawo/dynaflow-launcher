@@ -19,6 +19,7 @@
 
 #include "Algo.h"
 
+#include <DYDDynamicModelsCollection.h>
 #include <DYDBlackBoxModel.h>
 #include <DYDMacroConnect.h>
 #include <DYDMacroConnection.h>
@@ -74,20 +75,24 @@ class Dyd {
      * @param gens generators definition coming from algorithms
      * @param loaddefs load definitions coming from algorithms
      * @param slacknode the slack node to use
+     * @param hvdcLines hvdc definition coming from algorithms
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
-                  const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode) :
+                  const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
+                  const std::vector<algo::HvdcLineDefinition>& hvdcLines) :
         basename{base},
         filename{filepath},
         generators{gens},
         loads{loaddefs},
-        slackNode{slacknode} {}
+        slackNode{slacknode},
+        hvdcLines{hvdcLines} {}
 
     std::string basename;                               ///< basename for file
     std::string filename;                               ///< filepath for file to write
     std::vector<algo::GeneratorDefinition> generators;  ///< generators found
     std::vector<algo::LoadDefinition> loads;            ///< list of loads
     std::shared_ptr<inputs::Node> slackNode;            ///< slack node to use
+    std::vector<algo::HvdcLineDefinition> hvdcLines;    ///< list of hvdc lines
   };
 
   /**
@@ -122,6 +127,16 @@ class Dyd {
    * @returns black box model for generator
    */
   static boost::shared_ptr<dynamicdata::BlackBoxModel> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename);
+
+  /**
+   * @brief Create black box model for hvdc line
+   *
+   * @param hvdcLine generator definition to use
+   * @param basename basename for file
+   *
+   * @returns black box model for generator
+   */
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& basename);
 
   /**
    * @brief Create constant models
@@ -175,8 +190,17 @@ class Dyd {
    */
   static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeGenConnect(const algo::GeneratorDefinition& def, unsigned int index);
 
+  /**
+   * @brief Write connections for hvdc lines
+   *   *
+   * @param collection the collection where the connection will be added
+   * @param hvdcLine the hvdc line definition to process
+   */
+  static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& collection, const algo::HvdcLineDefinition& hvdcLine);
+
  private:
-  static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
+  static const std::unordered_map<algo::GeneratorDefinition::ModelType,
+                                  std::string>
       correspondence_lib_;  ///< Correspondence between generator model type and library name in dyd file
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_macro_connector_;                           ///< Correspondence between generator model type and macro connector name in dyd file

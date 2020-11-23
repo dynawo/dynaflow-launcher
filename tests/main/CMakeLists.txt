@@ -50,6 +50,10 @@ DEFINE_LAUNCH_TEST(launch_infinite)
 
 DEFINE_LAUNCH_TEST(node_breaker)
 
+DEFINE_LAUNCH_TEST(hvdc_line_normal)
+
+DEFINE_LAUNCH_TEST(hvdc_line_inverse)
+
 ## Expected to fail because node breaker is not supported
 set_tests_properties(MAIN.node_breaker PROPERTIES WILL_FAIL TRUE)
 

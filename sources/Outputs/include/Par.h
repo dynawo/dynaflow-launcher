@@ -45,20 +45,23 @@ class Par {
      * @param dir the dirname of the output PAR file
      * @param filename file path for output PAR file (corresponds to basename)
      * @param gens list of the generators taken into account
+     * @param hdvcLines list of hdvc lines taken into account
      * @param activePowerCompensation the type of active power compensation
      */
     ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens,
-                  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) :
+                  const std::vector<algo::HvdcLineDefinition>& hdvcLines, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) :
         basename{base},
         dirname{dir},
         filepath{filename},
         generators{gens},
+        hdvcLines{hdvcLines},
         activePowerCompensation{activePowerCompensation} {}
 
     std::string basename;                                                         ///< basename
     std::string dirname;                                                          ///< Dirname of output file relative to execution dir
     std::string filepath;                                                         ///< file path of the output file to write
     std::vector<algo::GeneratorDefinition> generators;                            ///< list of generators
+    std::vector<algo::HvdcLineDefinition> hdvcLines;                              ///< list of hdvc lines
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
   };
 
@@ -115,6 +118,14 @@ class Par {
   static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
                                                                      const std::string& dirname,
                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
+  /**
+   * @brief Write hvdc line parameter set
+   *
+   * @param hvdcLine the hvdc line definition to use
+   *
+   * @returns the parameter set
+   */
+  static boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine);
 
  private:
   ParDefinition def_;  ///< PAR file definition
