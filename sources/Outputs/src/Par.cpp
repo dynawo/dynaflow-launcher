@@ -110,8 +110,8 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   auto set = parameters::ParametersSetFactory::newInstance(constants::loadParId);
   set->addParameter(helper::buildParameter("load_Alpha", 1.5));
   set->addParameter(helper::buildParameter("load_Beta", 2.5));
-  set->addParameter(helper::buildParameter("load_UMaxPu", 1.05));
-  set->addParameter(helper::buildParameter("load_UMinPu", 0.95));
+  set->addParameter(helper::buildParameter("load_UMaxPu", 1.15));
+  set->addParameter(helper::buildParameter("load_UMinPu", 0.85));
   set->addParameter(helper::buildParameter("load_tFilter", 10.));
   set->addReference(helper::buildReference("load_P0Pu", "p0_pu", "DOUBLE"));
   set->addReference(helper::buildReference("load_Q0Pu", "q0_pu", "DOUBLE"));
