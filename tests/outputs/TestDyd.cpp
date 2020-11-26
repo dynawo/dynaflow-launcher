@@ -61,14 +61,13 @@ TEST(Dyd, writeHvdc) {
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
   }
-  auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN", boost::optional<bool>());
-  auto lccStation2 = dfl::inputs::ConverterInterface("LCCStation2", "_BUS___10_TN", boost::optional<bool>());
-  auto vscStation1 = dfl::inputs::ConverterInterface("VSCStation1", "_BUS___10_TN", true);
-  auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
-  
-  auto hvdcLineLCC = dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, lccStation2, dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
-  auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, vscStation2, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
-//maybe watch out but you can't access the hdvLine from the converterInterface
+
+  auto hvdcLineLCC =
+      dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
+                                    "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
+  auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
+                                                   "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
+  //maybe watch out but you can't access the hdvLine from the converterInterface
   std::vector<dfl::algo::HvdcLineDefinition> hvdcLines = {hvdcLineVSC, hvdcLineLCC};
 
   auto node = std::make_shared<dfl::inputs::Node>("Slack", 100.);

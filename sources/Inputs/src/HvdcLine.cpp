@@ -18,12 +18,23 @@
 #include "HvdcLine.h"
 namespace dfl {
 namespace inputs {
-HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const inputs::ConverterInterface& converter1,
-                   const inputs::ConverterInterface& converter2) :
+HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const ConverterId& converter1_id, const BusId& converter1_busId,
+                   const boost::optional<bool> converter1_voltageRegulationOn, const ConverterId& converter2_id, const BusId& converter2_busId,
+                   const boost::optional<bool> converter2_voltageRegulationOn) :
     id{id},
     converterType{converterType},
-    converter1{converter1},
-    converter2{converter2} {}
+    converter1_id{converter1_id},
+    converter1_busId{converter1_busId},
+    converter1_voltageRegulationOn{converter1_voltageRegulationOn},
+    converter2_id{converter2_id},
+    converter2_busId{converter2_busId},
+    converter2_voltageRegulationOn{converter2_voltageRegulationOn} {}
 
+bool
+HvdcLine::operator==(const HvdcLine& other) const {
+  return id == other.id && converterType == other.converterType && converter1_id == other.converter1_id && converter1_busId == other.converter1_busId &&
+         converter2_voltageRegulationOn == other.converter2_voltageRegulationOn && converter2_id == other.converter2_id &&
+         converter2_busId == other.converter2_busId && converter2_voltageRegulationOn == other.converter2_voltageRegulationOn;
+}
 }  // namespace inputs
 }  // namespace dfl

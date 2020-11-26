@@ -265,8 +265,9 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
  */
 struct HvdcLineDefinition {
   using HvdcLines = std::vector<HvdcLineDefinition>;  ///< alias for list of hvdcLines
-
-  using HvdcLineId = std::string;  ///< HvdcLine id definition
+  using ConverterId = std::string;                    ///< alias for converter id
+  using BusId = std::string;                          ///< alias for bus id
+  using HvdcLineId = std::string;                     ///< HvdcLine id definition
 
   /** @brief Enum Position that indicates how the converters of this hvdcLine are positioned.
    * 
@@ -280,27 +281,49 @@ struct HvdcLineDefinition {
   };
 
   /**
+   * @brief Determines if two converter interfaces are equal
+   *
+   * @param other the other converter to be compared against
+   * 
+   * @return status of the comparaison
+   */
+  bool operator==(const HvdcLineDefinition& other) const;
+
+  /**
    * @brief Constructor
    *
    * @param id the HvdcLine id
    * @param converterType type of converter of the hvdc line
-   * @param converter1 first converter connected to the hvdc line
-   * @param converter2 second converter connected to the hvdc line
+   * @param converter1_id first converter id 
+   * @param converter1_busId first converter bus id
+   * @param converter1_voltageRegulationOn firt converter voltage regulation parameter, for VSC converters only
+   * @param converter2_id second converter id 
+   * @param converter2_busId second converter bus id
+   * @param converter2_voltageRegulationOn second converter voltage regulation parameter, for VSC converters only
    * @param position position of the converters of this hvdc line compared to the main connex component
    */
-  explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const inputs::ConverterInterface& converter1,
-                              const inputs::ConverterInterface& converter2, Position position) :
+  explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const ConverterId& converter1_id,
+                              const BusId& converter1_busId, const boost::optional<bool> converter1_voltageRegulationOn, const ConverterId& converter2_id,
+                              const BusId& converter2_busId, const boost::optional<bool> converter2_voltageRegulationOn, const Position position) :
       id{id},
       converterType{converterType},
-      converter1{converter1},
-      converter2{converter2},
+      converter1_id{converter1_id},
+      converter1_busId{converter1_busId},
+      converter1_voltageRegulationOn{converter1_voltageRegulationOn},
+      converter2_id{converter2_id},
+      converter2_busId{converter2_busId},
+      converter2_voltageRegulationOn{converter2_voltageRegulationOn},
       position{position} {}
 
-  const HvdcLineId id;                                  ///< HvdcLine id
-  const inputs::HvdcLine::ConverterType converterType;  ///< type of converter of the hvdc line
-  inputs::ConverterInterface converter1;                ///< first converter
-  inputs::ConverterInterface converter2;                ///< second converter
-  Position position;                                    ///< position of the converters of this hvdc line compared to the main connex component
+  const HvdcLineId id;                                         ///< HvdcLine id
+  const inputs::HvdcLine::ConverterType converterType;         ///< type of converter of the hvdc line
+  const ConverterId converter1_id;                             ///< first converter id
+  const BusId converter1_busId;                                ///< first converter bus id
+  const boost::optional<bool> converter1_voltageRegulationOn;  ///< firt converter voltage regulation parameter, for VSC converters only
+  const ConverterId converter2_id;                             ///< second converter id
+  const BusId converter2_busId;                                ///< second converter bus id
+  const boost::optional<bool> converter2_voltageRegulationOn;  ///< second converter voltage regulation parameter, for VSC converters only
+  const Position position;                                     ///< position of the converters of this hvdc line compared to the main connex component
 };
 
 /**
