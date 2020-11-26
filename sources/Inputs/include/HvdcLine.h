@@ -23,7 +23,6 @@
 #include <string>
 
 namespace dfl {
-/// @brief Namespace for inputs of Dynaflow launcher
 namespace inputs {
 
 /**
@@ -46,7 +45,8 @@ struct HvdcLine {
    * @param converter1 first converter connected to the hvdc line
    * @param converter2 second converter connected to the hvdc line
    */
-  HvdcLine(const std::string& id, const ConverterType converterType, inputs::ConverterInterface converter1, inputs::ConverterInterface converter2);
+  HvdcLine(const std::string& id, const ConverterType converterType, const inputs::ConverterInterface& converter1,
+           const inputs::ConverterInterface& converter2);
 
   const HvdcLineId id;                    ///< HvdcLine id
   const ConverterType converterType;      ///< type of converter

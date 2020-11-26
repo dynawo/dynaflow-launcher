@@ -18,7 +18,8 @@
 #include "HvdcLine.h"
 namespace dfl {
 namespace inputs {
-HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, inputs::ConverterInterface converter1, inputs::ConverterInterface converter2) :
+HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const inputs::ConverterInterface& converter1,
+                   const inputs::ConverterInterface& converter2) :
     id{id},
     converterType{converterType},
     converter1{converter1},

@@ -18,7 +18,6 @@
 #pragma once
 
 #include "HvdcLine.h"
-#include "NetworkManager.h"
 #include "Node.h"
 
 #include <DYNDataInterface.h>

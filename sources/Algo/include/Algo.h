@@ -268,8 +268,10 @@ struct HvdcLineDefinition {
 
   using HvdcLineId = std::string;  ///< HvdcLine id definition
 
-  /** @brief enum to determine how the converters of this hvdc line are connected inside the network
-   *  and their position compared to the main connex component.
+  /** @brief Enum Position that indicates how the converters of this hvdcLine are positioned.
+   * 
+   * enum to determine how the converters of this hvdc line are connected inside the network
+   * and their position compared to the main connex component.
    */
   enum class Position {
     FIRST_IN_MAIN_COMPONENT,   ///< the first converter of this hvdc line is in the main connex component
@@ -286,20 +288,19 @@ struct HvdcLineDefinition {
    * @param converter2 second converter connected to the hvdc line
    * @param position position of the converters of this hvdc line compared to the main connex component
    */
-  explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType,
-                              inputs::ConverterInterface converter1, inputs::ConverterInterface converter2,
-                              Position position) :
+  explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const inputs::ConverterInterface& converter1,
+                              const inputs::ConverterInterface& converter2, Position position) :
       id{id},
       converterType{converterType},
       converter1{converter1},
       converter2{converter2},
       position{position} {}
 
-  const HvdcLineId id;                                       ///< HvdcLine id
-  const inputs::HvdcLine::ConverterType converterType;       ///< type of converter of the hvdc line
-  inputs::ConverterInterface converter1;  ///< TODO do we need the pointer, first converter
-  inputs::ConverterInterface converter2;  ///< second converter
-  Position position;                                         ///< position of the converters of this hvdc line compared to the main connex component
+  const HvdcLineId id;                                  ///< HvdcLine id
+  const inputs::HvdcLine::ConverterType converterType;  ///< type of converter of the hvdc line
+  inputs::ConverterInterface converter1;                ///< first converter
+  inputs::ConverterInterface converter2;                ///< second converter
+  Position position;                                    ///< position of the converters of this hvdc line compared to the main connex component
 };
 
 /**

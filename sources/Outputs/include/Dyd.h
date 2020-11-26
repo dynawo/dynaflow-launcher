@@ -19,8 +19,8 @@
 
 #include "Algo.h"
 
-#include <DYDDynamicModelsCollection.h>
 #include <DYDBlackBoxModel.h>
+#include <DYDDynamicModelsCollection.h>
 #include <DYDMacroConnect.h>
 #include <DYDMacroConnection.h>
 #include <DYDMacroConnector.h>
@@ -134,7 +134,7 @@ class Dyd {
    * @param hvdcLine generator definition to use
    * @param basename basename for file
    *
-   * @returns black box model for generator
+   * @returns black box model for hvdc line
    */
   static boost::shared_ptr<dynamicdata::BlackBoxModel> writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& basename);
 
@@ -199,8 +199,7 @@ class Dyd {
   static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& collection, const algo::HvdcLineDefinition& hvdcLine);
 
  private:
-  static const std::unordered_map<algo::GeneratorDefinition::ModelType,
-                                  std::string>
+  static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_lib_;  ///< Correspondence between generator model type and library name in dyd file
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_macro_connector_;                           ///< Correspondence between generator model type and macro connector name in dyd file
