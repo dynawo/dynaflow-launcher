@@ -14,9 +14,9 @@
  * @brief Dynaflow launcher algorithms implementation file
  *
  */
-#include "HvdcLine.h"
 #include "Algo.h"
 
+#include "HvdcLine.h"
 #include "Log.h"
 #include "Message.hpp"
 
@@ -176,7 +176,7 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
     } else if (converter.converterId == hvdcLine->converter2.converterId) {
       position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
-      throw("The hvdcLine was badly initialized.");
+      LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
     }
 
     hvdcLines_.emplace_back(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1, hvdcLine->converter2, position);
