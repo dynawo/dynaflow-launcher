@@ -56,5 +56,5 @@
     <currentLimits1 permanentLimit="4183.6999999999998"/>
   </line>
   <hvdcLine id="HVDCLCCLine" r="0.02" nominalV="400" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="100" maxP="2000" converterStation1="LCCStation1" converterStation2="LCCStation2"/>
-  <hvdcLine id="HVDCVSCLine" r="0.02" nominalV="400" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="100" maxP="2000" converterStation1="VSCStation1" converterStation2="VSCStation2"/>
+  <hvdcLine id="HVDCVSCLine" r="0.02" nominalV="400" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="100" maxP="2000" converterStation1="VSCStation2" converterStation2="VSCStation1"/>
 </network>
