@@ -163,7 +163,9 @@ NetworkManager::buildTree() {
     } else {
       converterType = HvdcLine::ConverterType::LCC;
     }
-    auto hvdcLineCreated = boost::make_shared<dfl::inputs::HvdcLine>(hvdcLine->getID(), converterType, converter_1, converter_2);
+    auto hvdcLineCreated =
+        boost::make_shared<dfl::inputs::HvdcLine>(hvdcLine->getID(), converterType, converter_1.converterId, converter_1.busId, converter_1.voltageRegulationOn,
+                                                  converter_2.converterId, converter_2.busId, converter_2.voltageRegulationOn);
     hvdcLines_.emplace_back(hvdcLineCreated);
 
     converter_1.hvdcLine = hvdcLineCreated;

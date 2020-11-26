@@ -271,28 +271,21 @@ TEST(HvdcLine, base) {
       std::make_shared<dfl::inputs::Node>("6", 0.0),
   };
   auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN", boost::optional<bool>());
-  auto lccStation2 = dfl::inputs::ConverterInterface("LCCStation2", "_BUS___10_TN", boost::optional<bool>());
-  auto vscStation1 = dfl::inputs::ConverterInterface("VSCStation1", "_BUS___10_TN", true);
   auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
 
-  auto hvdcLineLCC = boost::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, lccStation2);
-  auto hvdcLineVSC = boost::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, vscStation2);
+  auto hvdcLineLCC = boost::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",
+                                                               boost::optional<bool>(), "LCCStation2", "_BUS___10_TN", boost::optional<bool>());
+  auto hvdcLineVSC = boost::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true,
+                                                               "VSCStation2", "_BUS___11_TN", false);
 
   lccStation1.hvdcLine = hvdcLineLCC;
-  lccStation2.hvdcLine = hvdcLineLCC;
-  vscStation1.hvdcLine = hvdcLineVSC;
   vscStation2.hvdcLine = hvdcLineVSC;
 
-  hvdcLineLCC->converter1.hvdcLine = hvdcLineLCC;
-  hvdcLineLCC->converter2.hvdcLine = hvdcLineLCC;
-  hvdcLineVSC->converter1.hvdcLine = hvdcLineVSC;
-  hvdcLineVSC->converter2.hvdcLine = hvdcLineVSC;
-
   dfl::algo::HvdcLineDefinition::HvdcLines expected_hvdcLines = {
-      dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, lccStation2,
-                                    dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT),
-      dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, vscStation2,
-                                    dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT)};
+      dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
+                                    "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT),
+      dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
+                                    "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT)};
 
   nodes[0]->converterInterfaces.emplace_back(lccStation1);
 
@@ -305,11 +298,7 @@ TEST(HvdcLine, base) {
 
   ASSERT_EQ(2, hvdcLines.size());
   for (size_t index = 0; index < hvdcLines.size(); ++index) {
-    ASSERT_EQ(expected_hvdcLines[index].id, hvdcLines[index].id);
-    ASSERT_EQ(expected_hvdcLines[index].converterType, hvdcLines[index].converterType);
-    ASSERT_TRUE(expected_hvdcLines[index].converter1 == hvdcLines[index].converter1);
-    ASSERT_TRUE(expected_hvdcLines[index].converter2 == hvdcLines[index].converter2);
-    ASSERT_EQ(expected_hvdcLines[index].position, hvdcLines[index].position);
+    ASSERT_TRUE(expected_hvdcLines[index] == hvdcLines[index]);
   }
 }
 

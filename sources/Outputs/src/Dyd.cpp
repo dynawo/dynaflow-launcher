@@ -272,11 +272,11 @@ Dyd::writeGenConnect(const algo::GeneratorDefinition& def, unsigned int index) {
 void
 Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& collection, const algo::HvdcLineDefinition& hvdcLine) {
   if (hvdcLine.position == algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
-    collection->addConnect("NETWORK", hvdcLine.converter1.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
-    collection->addConnect("NETWORK", hvdcLine.converter2.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
+    collection->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+    collection->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
   } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-    collection->addConnect("NETWORK", hvdcLine.converter1.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
-    collection->addConnect("NETWORK", hvdcLine.converter2.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+    collection->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
+    collection->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
   } else {
     // TODO when we will handle the case were both converters are in the main connex component
   }

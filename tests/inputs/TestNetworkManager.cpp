@@ -44,22 +44,15 @@ TEST(NetworkManager, walk) {
 
 TEST(NetworkManager, hvdcLines) {
   using dfl::inputs::NetworkManager;
+  std::vector<dfl::inputs::HvdcLine> expected_hvdcLines = {
+      dfl::inputs::HvdcLine("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___10_TN", boost::optional<bool>(), "LCCStation2",
+                            "_BUS___11_TN", boost::optional<bool>()),
+      dfl::inputs::HvdcLine("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2", "_BUS___11_TN",
+                            false)};
 
   NetworkManager manager("res/HvdcDangling.iidm");
   auto hvdcLines = manager.getHvdcLine();
-  auto hvdcLine = hvdcLines.at(0);
-  ASSERT_EQ(hvdcLine->id, "HVDCLCCLine");
-  ASSERT_EQ(hvdcLine->converter1.converterId, "LCCStation1");
-  ASSERT_EQ(hvdcLine->converter2.converterId, "LCCStation2");
-  ASSERT_EQ(hvdcLine->converterType, dfl::inputs::HvdcLine::ConverterType::LCC);
-  ASSERT_EQ(hvdcLine->converter1.voltageRegulationOn.is_initialized(), false);
-  ASSERT_EQ(hvdcLine->converter2.voltageRegulationOn.is_initialized(), false);
-
-  hvdcLine = hvdcLines.at(1);
-  ASSERT_EQ(hvdcLine->id, "HVDCVSCLine");
-  ASSERT_EQ(hvdcLine->converter1.converterId, "VSCStation1");
-  ASSERT_EQ(hvdcLine->converter2.converterId, "VSCStation2");
-  ASSERT_EQ(hvdcLine->converterType, dfl::inputs::HvdcLine::ConverterType::VSC);
-  ASSERT_EQ(hvdcLine->converter1.voltageRegulationOn.value(), true);
-  ASSERT_EQ(hvdcLine->converter2.voltageRegulationOn.value(), false);
+  for (int index = 0; index < 2; ++index) {
+    ASSERT_TRUE(*hvdcLines[index] == expected_hvdcLines[index]);
+  }
 }

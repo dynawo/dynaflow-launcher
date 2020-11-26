@@ -171,16 +171,26 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
   for (auto converter : node->converterInterfaces) {
     auto hvdcLine = converter.hvdcLine;
     HvdcLineDefinition::Position position;
-    if (converter.converterId == hvdcLine->converter1.converterId) {
+    if (converter.converterId == hvdcLine->converter1_id) {
       position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
-    } else if (converter.converterId == hvdcLine->converter2.converterId) {
+    } else if (converter.converterId == hvdcLine->converter2_id) {
       position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
       LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
     }
 
-    hvdcLines_.emplace_back(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1, hvdcLine->converter2, position);
+    hvdcLines_.emplace_back(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1_id, hvdcLine->converter1_busId,
+                            hvdcLine->converter1_voltageRegulationOn, hvdcLine->converter2_id, hvdcLine->converter2_busId,
+                            hvdcLine->converter2_voltageRegulationOn, position);
   }
+}
+/////////////////////////////////////////////////////////////////
+
+bool
+HvdcLineDefinition::operator==(const HvdcLineDefinition& other) const {
+  return id == other.id && converterType == other.converterType && converter1_id == other.converter1_id && converter1_busId == other.converter1_busId &&
+         converter2_voltageRegulationOn == other.converter2_voltageRegulationOn && converter2_id == other.converter2_id &&
+         converter2_busId == other.converter2_busId && converter2_voltageRegulationOn == other.converter2_voltageRegulationOn && position == other.position;
 }
 }  // namespace algo
 }  // namespace dfl

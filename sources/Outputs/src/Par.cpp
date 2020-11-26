@@ -152,7 +152,7 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
     first = "2";
     second = "1";
   } else if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
-    // TODO when we will handle the case were both converters are in the main connex component 
+    // TODO when we will handle the case were both converters are in the main connex component
   }
   set->addReference(helper::buildReference("hvdc_P10Pu", "p" + first + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_Q10Pu", "q" + first + "_pu", "DOUBLE"));
@@ -171,15 +171,14 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
 
   if (hvdcLine.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
     if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
-      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter1.voltageRegulationOn.value()));
-      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter2.voltageRegulationOn.value()));
-    }
-    else if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter2.voltageRegulationOn.value()));
-      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter1.voltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter1_voltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter2_voltageRegulationOn.value()));
+    } else if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter2_voltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter1_voltageRegulationOn.value()));
     } else {
-    // TODO when we will handle the case were both converters are in the main connex component 
-  }
+      // TODO when we will handle the case were both converters are in the main connex component
+    }
   }
   return set;
 }
