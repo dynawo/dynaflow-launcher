@@ -90,7 +90,7 @@ struct ConverterInterface {
    * @param hvdcLine the hvdc line this converter is contained into
    */
   explicit ConverterInterface(const ConverterInterfaceId& converterId, BusId busId, boost::optional<bool> voltageRegulationOn = {},
-                              boost::shared_ptr<HvdcLine> hvdcLine = nullptr) :
+                              std::shared_ptr<HvdcLine> hvdcLine = nullptr) :
       converterId{converterId},
       busId{busId},
       voltageRegulationOn{voltageRegulationOn},
@@ -109,7 +109,7 @@ struct ConverterInterface {
   ConverterInterfaceId converterId;           ///< converter id
   BusId busId;                                ///< bus id
   boost::optional<bool> voltageRegulationOn;  ///< voltage regulation parameter, for VSC converters only
-  boost::shared_ptr<HvdcLine> hvdcLine;       ///< hvdc line this converter is contained into
+  std::shared_ptr<HvdcLine> hvdcLine;         ///< hvdc line this converter is contained into
 };
 }  // namespace inputs
 }  // namespace dfl
