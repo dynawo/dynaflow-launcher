@@ -320,8 +320,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
    *
    * Update the list with the hvdc line of the converters of the node. 
    * This function also put the position of the converters compared to the main connex component in the newly created hvdc line definition.
-   * Indeed, the node that are processed through this operator() are only those that are in the main connex component, which let us deduce the position of the 
-   * converters of the hvdc line
+   * Pre-condition: the nodes used as parameter of this operator should be nodes of the main connex component only
    * 
    * @param node the node to process
    */

@@ -27,3 +27,4 @@ InvalidDiagramQminsEqualQmaxs =     The diagram of the generator %1% is invalid,
 InvalidDiagramOnePoint        =     The diagram of the generator %1% is invalid, there was only one reactive curve point provided. The default model will be used for this generator
 InvalidDiagramBothError       =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. Also all reactive curve points have the same p. The default model will be used for this generator
 BadActivePowerCompensation    =     ActivePowerCompensation was given with the unsupported value %1%. Supported values are: PMAX, P or targetP. Default value PMAX will be used
+HvdcLineBadInitialization     =     The hvdcLine %1%'s converters were badly initialized

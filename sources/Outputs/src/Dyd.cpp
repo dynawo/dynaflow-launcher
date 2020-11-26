@@ -138,6 +138,8 @@ Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& 
     model->addStaticRef("hvdc_PInj2Pu", "p1");
     model->addStaticRef("hvdc_QInj2Pu", "q1");
     model->addStaticRef("hvdc_state", "state1");
+  } else {
+    // TODO when we will handle the case were both converters are in the main connex component
   }
 
   return model;
@@ -275,6 +277,8 @@ Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsColl
   } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
     collection->addConnect("NETWORK", hvdcLine.converter1.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
     collection->addConnect("NETWORK", hvdcLine.converter2.busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+  } else {
+    // TODO when we will handle the case were both converters are in the main connex component
   }
 }  // namespace outputs
 }  // namespace outputs
