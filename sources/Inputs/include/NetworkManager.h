@@ -81,7 +81,7 @@ class NetworkManager {
    *
    * @returns hvdc line
    */
-  const std::vector<boost::shared_ptr<HvdcLine>>& getHvdcLine() {
+  const std::vector<std::shared_ptr<HvdcLine>>& getHvdcLine() {
     return hvdcLines_;
   }
 
@@ -95,7 +95,7 @@ class NetworkManager {
   boost::shared_ptr<DYN::DataInterface> interface_;      ///< data interface
   std::map<Node::NodeId, std::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
   std::vector<ProcessNodeCallback> nodesCallbacks_;      ///< list of callback or nodes
-  std::vector<boost::shared_ptr<HvdcLine>> hvdcLines_;   ///< hvdc Lines
+  std::vector<std::shared_ptr<HvdcLine>> hvdcLines_;     ///< hvdc Lines
 };
 
 }  // namespace inputs

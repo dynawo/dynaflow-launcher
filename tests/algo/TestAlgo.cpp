@@ -273,9 +273,9 @@ TEST(HvdcLine, base) {
   auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN", boost::optional<bool>());
   auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
 
-  auto hvdcLineLCC = boost::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",
+  auto hvdcLineLCC = std::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",
                                                                boost::optional<bool>(), "LCCStation2", "_BUS___10_TN", boost::optional<bool>());
-  auto hvdcLineVSC = boost::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true,
+  auto hvdcLineVSC = std::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true,
                                                                "VSCStation2", "_BUS___11_TN", false);
 
   lccStation1.hvdcLine = hvdcLineLCC;
