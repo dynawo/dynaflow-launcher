@@ -169,7 +169,7 @@ ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(s
 void
 ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
   for (const auto& converter : node->converterInterfaces) {
-    auto hvdcLine = converter.hvdcLine;
+    const auto& hvdcLine = converter.hvdcLine;
     HvdcLineDefinition::Position position;
     if (converter.converterId == hvdcLine->converter1_id) {
       position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;

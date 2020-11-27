@@ -1,7 +1,0 @@
-{
-  "dfl-config": {
-    "OutputDir": "results/hvdc_line_inverse",
-    "DsoVoltageLevel": 600,
-    "InfiniteReactiveLimits": true
-  }
-}
