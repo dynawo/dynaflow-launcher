@@ -146,7 +146,7 @@ NetworkManager::buildTree() {
   }
 
   const auto& hvdcLines = network->getHvdcLines();
-  for (auto hvdcLine : hvdcLines) {
+  for (const auto& hvdcLine : hvdcLines) {
     auto converter_dyn_1 = hvdcLine->getConverter1();
     auto converter_dyn_2 = hvdcLine->getConverter2();
     if (!converter_dyn_1->getInitialConnected() || !converter_dyn_2->getInitialConnected()) {
