@@ -351,6 +351,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
 
  private:
   std::vector<HvdcLineDefinition>& hvdcLines_;  ///< the hvdc lines to update
+  std::unordered_set<std::string> hvdcLinesIds_;   ///< the set of hvdc line ids, to know if we have already encountered this hvdc line
 };
 }  // namespace algo
 }  // namespace dfl
