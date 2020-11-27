@@ -303,8 +303,8 @@ struct HvdcLineDefinition {
    * @param position position of the converters of this hvdc line compared to the main connex component
    */
   explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const ConverterId& converter1_id,
-                              const BusId& converter1_busId, const boost::optional<bool> converter1_voltageRegulationOn, const ConverterId& converter2_id,
-                              const BusId& converter2_busId, const boost::optional<bool> converter2_voltageRegulationOn, const Position position) :
+                              const BusId& converter1_busId, const boost::optional<bool>& converter1_voltageRegulationOn, const ConverterId& converter2_id,
+                              const BusId& converter2_busId, const boost::optional<bool>& converter2_voltageRegulationOn, const Position position) :
       id{id},
       converterType{converterType},
       converter1_id{converter1_id},
