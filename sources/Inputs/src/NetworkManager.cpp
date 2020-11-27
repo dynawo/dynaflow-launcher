@@ -50,7 +50,7 @@ void
 NetworkManager::buildTree() {
   auto network = interface_->getNetwork();
 
-  auto opt_id = interface_->getSlackNodeBusId();
+  auto opt_id = network->getSlackNodeBusId();
 
   const auto& voltageLevels = network->getVoltageLevels();
   for (auto it_v = voltageLevels.begin(); it_v != voltageLevels.end(); ++it_v) {
