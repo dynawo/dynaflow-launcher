@@ -170,11 +170,21 @@ void
 ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
   for (const auto& converter : node->converterInterfaces) {
     const auto& hvdcLine = converter.hvdcLine;
+    bool inserted;
+    std::tie(std::ignore, inserted) = hvdcLinesIds_.emplace(hvdcLine->id);
     HvdcLineDefinition::Position position;
     if (converter.converterId == hvdcLine->converter1_id) {
-      position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
+      if (!inserted) {
+        position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
+      } else {
+        position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
+      }
     } else if (converter.converterId == hvdcLine->converter2_id) {
-      position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
+      if (!inserted) {
+        position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
+      } else {
+        position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
+      }
     } else {
       LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
       continue;
