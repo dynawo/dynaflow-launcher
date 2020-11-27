@@ -12,7 +12,6 @@
 #include "Tests.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
 
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;

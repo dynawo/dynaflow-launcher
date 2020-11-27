@@ -168,7 +168,7 @@ ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(s
 
 void
 ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
-  for (auto converter : node->converterInterfaces) {
+  for (const auto& converter : node->converterInterfaces) {
     auto hvdcLine = converter.hvdcLine;
     HvdcLineDefinition::Position position;
     if (converter.converterId == hvdcLine->converter1_id) {
@@ -177,6 +177,7 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
       position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
       LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
+      continue;
     }
 
     hvdcLines_.emplace_back(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1_id, hvdcLine->converter1_busId,

@@ -21,7 +21,6 @@
 #include "Tests.h"
 
 #include <algorithm>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 TEST(SlackNodeAlgo, Base) {
@@ -274,9 +273,9 @@ TEST(HvdcLine, base) {
   auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
 
   auto hvdcLineLCC = std::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",
-                                                               boost::optional<bool>(), "LCCStation2", "_BUS___10_TN", boost::optional<bool>());
+                                                             boost::optional<bool>(), "LCCStation2", "_BUS___10_TN", boost::optional<bool>());
   auto hvdcLineVSC = std::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true,
-                                                               "VSCStation2", "_BUS___11_TN", false);
+                                                             "VSCStation2", "_BUS___11_TN", false);
 
   lccStation1.hvdcLine = hvdcLineLCC;
   vscStation2.hvdcLine = hvdcLineVSC;
