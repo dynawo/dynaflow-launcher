@@ -47,8 +47,8 @@ TEST(NetworkManager, hvdcLines) {
   std::vector<dfl::inputs::HvdcLine> expected_hvdcLines = {
       dfl::inputs::HvdcLine("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___10_TN", boost::optional<bool>(), "LCCStation2",
                             "_BUS___11_TN", boost::optional<bool>()),
-      dfl::inputs::HvdcLine("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2", "_BUS___11_TN",
-                            false)};
+      dfl::inputs::HvdcLine("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", false, "VSCStation1", "_BUS___10_TN",
+                            true)};
 
   NetworkManager manager("res/HvdcDangling.iidm");
   auto hvdcLines = manager.getHvdcLine();
