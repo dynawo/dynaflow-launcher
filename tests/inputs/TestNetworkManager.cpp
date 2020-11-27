@@ -51,7 +51,7 @@ TEST(NetworkManager, hvdcLines) {
                             true)};
 
   NetworkManager manager("res/HvdcDangling.iidm");
-  auto hvdcLines = manager.getHvdcLine();
+  const auto& hvdcLines = manager.getHvdcLine();
   for (int index = 0; index < 2; ++index) {
     ASSERT_TRUE(*hvdcLines[index] == expected_hvdcLines[index]);
   }
