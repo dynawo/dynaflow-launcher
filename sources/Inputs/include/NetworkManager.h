@@ -65,7 +65,9 @@ class NetworkManager {
    *
    * @returns the information of the slack node, if present
    */
-  boost::optional<std::shared_ptr<Node>> getSlackNode() const;
+  boost::optional<std::shared_ptr<Node>> getSlackNode() const {
+    return (slackNode_) ? boost::make_optional(slackNode_) : boost::none;
+  }
 
   /**
    * @brief Retrieve data interface
@@ -84,6 +86,7 @@ class NetworkManager {
 
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;      ///< data interface
+  std::shared_ptr<Node> slackNode_;                      ///< Slack node defined in network, if any
   std::map<Node::NodeId, std::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
   std::vector<ProcessNodeCallback> nodesCallbacks_;      ///< list of callback or nodes
 };

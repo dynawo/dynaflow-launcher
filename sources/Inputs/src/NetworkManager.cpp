@@ -35,13 +35,18 @@ namespace dfl {
 namespace inputs {
 
 NetworkManager::NetworkManager(const std::string& filepath) :
-    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM1, filepath)) {
+    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM1, filepath)),
+    slackNode_{},
+    nodes_{},
+    nodesCallbacks_{} {
   buildTree();
 }
 
 void
 NetworkManager::buildTree() {
   auto network = interface_->getNetwork();
+
+  auto opt_id = interface_->getSlackNodeBusId();
 
   const auto& voltageLevels = network->getVoltageLevels();
   for (auto it_v = voltageLevels.begin(); it_v != voltageLevels.end(); ++it_v) {
@@ -59,6 +64,10 @@ NetworkManager::buildTree() {
 #endif
       nodes_[(*it_b)->getID()] = std::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
       LOG(debug) << "Node " << (*it_b)->getID() << " created" << LOG_ENDL;
+      if (opt_id && *opt_id == (*it_b)->getID()) {
+        LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
+        slackNode_ = nodes_[(*it_b)->getID()];
+      }
     }
 
     const auto& loads = (*it_v)->getLoads();
@@ -149,12 +158,6 @@ NetworkManager::walkNodes() {
       (*it_c)(it->second);
     }
   }
-}
-
-boost::optional<std::shared_ptr<Node>>
-NetworkManager::getSlackNode() const {
-  // TODO for now, we cannot retrieve from dynawo data interface this information: we will in a future version
-  return boost::none;
 }
 
 }  // namespace inputs
