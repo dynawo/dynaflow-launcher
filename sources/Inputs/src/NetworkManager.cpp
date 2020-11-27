@@ -175,6 +175,8 @@ NetworkManager::buildTree() {
     converter_2.hvdcLine = hvdcLineCreated;
     nodes_[converter_dyn_1->getBusInterface()->getID()]->converterInterfaces.push_back(converter_1);
     nodes_[converter_dyn_2->getBusInterface()->getID()]->converterInterfaces.push_back(converter_2);
+    LOG(debug) << "Network contains hvdcLine " << hvdcLine->getID() << " with converterStation " << hvdcLine->getIdConverter1() << " and converterStation "
+               << hvdcLine->getIdConverter2() << LOG_ENDL;
   }
 }
 

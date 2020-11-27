@@ -270,7 +270,7 @@ TEST(HvdcLine, base) {
       std::make_shared<dfl::inputs::Node>("3", 63.0), std::make_shared<dfl::inputs::Node>("4", 56.0),  std::make_shared<dfl::inputs::Node>("5", 46.0),
       std::make_shared<dfl::inputs::Node>("6", 0.0),
   };
-  auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN", boost::optional<bool>());
+  auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN");
   auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
 
   auto hvdcLineLCC = std::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",

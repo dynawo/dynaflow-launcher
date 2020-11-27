@@ -9,9 +9,9 @@
 //
 
 /**
- * @file  Node.cpp
+ * @file  HvdcLine.cpp
  *
- * @brief Node structure implementation file
+ * @brief Hvdc line structure implementation file
  *
  */
 
@@ -19,8 +19,8 @@
 namespace dfl {
 namespace inputs {
 HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const ConverterId& converter1_id, const BusId& converter1_busId,
-                   const boost::optional<bool> converter1_voltageRegulationOn, const ConverterId& converter2_id, const BusId& converter2_busId,
-                   const boost::optional<bool> converter2_voltageRegulationOn) :
+                   const boost::optional<bool>& converter1_voltageRegulationOn, const ConverterId& converter2_id, const BusId& converter2_busId,
+                   const boost::optional<bool>& converter2_voltageRegulationOn) :
     id{id},
     converterType{converterType},
     converter1_id{converter1_id},
