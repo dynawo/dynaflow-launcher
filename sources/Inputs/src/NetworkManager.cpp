@@ -148,8 +148,11 @@ NetworkManager::buildTree() {
   const auto& hvdcLines = network->getHvdcLines();
   for (auto hvdcLine : hvdcLines) {
     auto converter_dyn_1 = hvdcLine->getConverter1();
-    auto converter_1 = ConverterInterface(converter_dyn_1->getID(), converter_dyn_1->getBusInterface()->getID());
     auto converter_dyn_2 = hvdcLine->getConverter2();
+    if (!converter_dyn_1->getInitialConnected() || !converter_dyn_2->getInitialConnected()) {
+      continue;
+    }
+    auto converter_1 = ConverterInterface(converter_dyn_1->getID(), converter_dyn_1->getBusInterface()->getID());
     auto converter_2 = ConverterInterface(converter_dyn_2->getID(), converter_dyn_2->getBusInterface()->getID());
 
     HvdcLine::ConverterType converterType;
@@ -165,7 +168,7 @@ NetworkManager::buildTree() {
     }
     auto hvdcLineCreated =
         std::make_shared<dfl::inputs::HvdcLine>(hvdcLine->getID(), converterType, converter_1.converterId, converter_1.busId, converter_1.voltageRegulationOn,
-                                                  converter_2.converterId, converter_2.busId, converter_2.voltageRegulationOn);
+                                                converter_2.converterId, converter_2.busId, converter_2.voltageRegulationOn);
     hvdcLines_.emplace_back(hvdcLineCreated);
 
     converter_1.hvdcLine = hvdcLineCreated;
