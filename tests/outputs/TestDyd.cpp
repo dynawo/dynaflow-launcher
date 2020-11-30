@@ -67,7 +67,7 @@ TEST(Dyd, writeHvdc) {
   auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
                                                    "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
   //maybe watch out but you can't access the hdvLine from the converterInterface
-  std::vector<dfl::algo::HvdcLineDefinition> hvdcLines = {hvdcLineVSC, hvdcLineLCC};
+  dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hvdcLines = {hvdcLineVSC, hvdcLineLCC};
 
   auto node = std::make_shared<dfl::inputs::Node>("Slack", 100.);
 

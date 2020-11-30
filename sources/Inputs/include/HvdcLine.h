@@ -40,11 +40,11 @@ struct HvdcLine {
   };
 
   /**
-   * @brief Determines if two converter interfaces are equal
+   * @brief Determines if two hvdc lines are equal
    *
-   * @param other the other converter to be compared against
+   * @param other the other hvdc line to be compared against
    * 
-   * @return status of the comparaison
+   * @return status of the comparison
    */
   bool operator==(const HvdcLine& other) const;
 

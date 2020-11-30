@@ -281,11 +281,11 @@ struct HvdcLineDefinition {
   };
 
   /**
-   * @brief Determines if two converter interfaces are equal
+   * @brief Determines if two hvdc line definition are equal
    *
-   * @param other the other converter to be compared against
+   * @param other the other hvdc line definition to be compared against
    * 
-   * @return status of the comparaison
+   * @return status of the comparison
    */
   bool operator==(const HvdcLineDefinition& other) const;
 
@@ -323,20 +323,49 @@ struct HvdcLineDefinition {
   const ConverterId converter2_id;                             ///< second converter id
   const BusId converter2_busId;                                ///< second converter bus id
   const boost::optional<bool> converter2_voltageRegulationOn;  ///< second converter voltage regulation parameter, for VSC converters only
-  const Position position;                                     ///< position of the converters of this hvdc line compared to the main connex component
+  mutable Position position;                                   ///< position of the converters of this hvdc line compared to the main connex component
 };
 
+/**
+   * @brief Hash structure for term
+   *
+   * required to use set on terms
+   */
+struct HashTerm {
+  /**
+   * @brief Hash function
+   *
+   * @param hvdcLine the term to hash
+   * @returns the hash value of @p hvdcLine
+   */
+  std::size_t operator()(const HvdcLineDefinition& hvdcLine) const {
+    return std::hash<std::string>{}(hvdcLine.id);
+  }
+  /**
+   * @brief Less function
+   *
+   * @param lhs the left hand side to compare
+   * @param rhs the right hand side to compare
+   * @returns true if lhs is inferior to rhs based on their id
+   */
+  bool operator()(const HvdcLineDefinition& lhs, const HvdcLineDefinition& rhs) const {
+    return lhs.id < rhs.id;
+  }
+};
 /**
  * @brief the controller interface definition algorithm
  */
 class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
  public:
+  using HvdcLineId = std::string;                              ///< HvdcLine id definition
+  using HvdcLineSet = std::set<HvdcLineDefinition, HashTerm>;  ///< TODO
+
   /**
    * @brief Constructor
    *
    * @param hvdcLines the list of hvdc lines to update
    */
-  explicit ControllerInterfaceDefinitionAlgorithm(std::vector<HvdcLineDefinition>& hvdcLines);
+  explicit ControllerInterfaceDefinitionAlgorithm(HvdcLineSet& hvdcLines);
 
   /**
    * @brief Perform the algorithm
@@ -350,8 +379,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
   void operator()(const NodePtr& node);
 
  private:
-  std::vector<HvdcLineDefinition>& hvdcLines_;  ///< the hvdc lines to update
-  std::unordered_set<std::string> hvdcLinesIds_;   ///< the set of hvdc line ids, to know if we have already encountered this hvdc line
+  HvdcLineSet& hvdcLines_;  ///< the set of hvdc line, to know if we have already encountered this hvdc line
 };
 }  // namespace algo
 }  // namespace dfl

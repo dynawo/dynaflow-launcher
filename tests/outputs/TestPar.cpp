@@ -94,7 +94,7 @@ TEST(TestPar, writeHdvc) {
                                     "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
   auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
                                                    "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
-  std::vector<dfl::algo::HvdcLineDefinition> hvdcLines = {hvdcLineVSC, hvdcLineLCC};
+  dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hvdcLines = {hvdcLineVSC, hvdcLineLCC};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
