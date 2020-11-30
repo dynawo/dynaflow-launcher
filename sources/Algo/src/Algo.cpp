@@ -164,35 +164,32 @@ LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
 }
 /////////////////////////////////////////////////////////////////
 
-ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(std::vector<HvdcLineDefinition>& hvdcLines) : hvdcLines_(hvdcLines) {}
+ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(HvdcLineSet& hvdcLines) : hvdcLines_(hvdcLines) {}
 
 void
 ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
   for (const auto& converter : node->converterInterfaces) {
     const auto& hvdcLine = converter.hvdcLine;
-    bool inserted;
-    std::tie(std::ignore, inserted) = hvdcLinesIds_.emplace(hvdcLine->id);
-    HvdcLineDefinition::Position position;
+    HvdcLineDefinition createdHvdcLine = HvdcLineDefinition(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1_id, hvdcLine->converter1_busId,
+                                                            hvdcLine->converter1_voltageRegulationOn, hvdcLine->converter2_id, hvdcLine->converter2_busId,
+                                                            hvdcLine->converter2_voltageRegulationOn, HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT);
+    auto it = hvdcLines_.find(createdHvdcLine);
+    bool alreadyInserted = it != hvdcLines_.end();
+    if (alreadyInserted) {
+      it->position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
+      continue;
+    }
+
     if (converter.converterId == hvdcLine->converter1_id) {
-      if (!inserted) {
-        position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
-      } else {
-        position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
-      }
+      createdHvdcLine.position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
     } else if (converter.converterId == hvdcLine->converter2_id) {
-      if (!inserted) {
-        position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
-      } else {
-        position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
-      }
+      createdHvdcLine.position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
       LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
       continue;
     }
 
-    hvdcLines_.emplace_back(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1_id, hvdcLine->converter1_busId,
-                            hvdcLine->converter1_voltageRegulationOn, hvdcLine->converter2_id, hvdcLine->converter2_busId,
-                            hvdcLine->converter2_voltageRegulationOn, position);
+    hvdcLines_.emplace(createdHvdcLine);
   }
 }
 /////////////////////////////////////////////////////////////////

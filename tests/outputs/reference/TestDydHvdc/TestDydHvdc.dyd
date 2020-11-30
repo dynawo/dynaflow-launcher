@@ -50,8 +50,8 @@
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="Model_Signal_N" lib="DYNModelSignalN" parFile="TestDydHvdc.par" parId="SignalN"/>
   <dyn:connect id1="Model_Signal_N" var1="tetaRef_0_value" id2="NETWORK" var2="Slack_phi_value"/>
-  <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
 </dyn:dynamicModelsArchitecture>

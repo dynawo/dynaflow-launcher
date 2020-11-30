@@ -79,7 +79,7 @@ class Dyd {
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
-                  const std::vector<algo::HvdcLineDefinition>& hvdcLines) :
+                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet& hvdcLines) :
         basename{base},
         filename{filepath},
         generators{gens},
@@ -87,12 +87,12 @@ class Dyd {
         slackNode{slacknode},
         hvdcLines{hvdcLines} {}
 
-    std::string basename;                               ///< basename for file
-    std::string filename;                               ///< filepath for file to write
-    std::vector<algo::GeneratorDefinition> generators;  ///< generators found
-    std::vector<algo::LoadDefinition> loads;            ///< list of loads
-    std::shared_ptr<inputs::Node> slackNode;            ///< slack node to use
-    std::vector<algo::HvdcLineDefinition> hvdcLines;    ///< list of hvdc lines
+    std::string basename;                                                 ///< basename for file
+    std::string filename;                                                 ///< filepath for file to write
+    std::vector<algo::GeneratorDefinition> generators;                    ///< generators found
+    std::vector<algo::LoadDefinition> loads;                              ///< list of loads
+    std::shared_ptr<inputs::Node> slackNode;                              ///< slack node to use
+    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hvdcLines;  ///< list of hvdc lines
   };
 
   /**

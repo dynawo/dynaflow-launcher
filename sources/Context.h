@@ -133,7 +133,7 @@ class Context {
   std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;  ///< main connex component
   std::vector<algo::GeneratorDefinition> generators_;           ///< generators found
   std::vector<algo::LoadDefinition> loads_;                     ///< loads found
-  std::vector<algo::HvdcLineDefinition> hvdcLines_;                     ///< hvdc lines found
+  algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hvdcLines_;                     ///< hvdc lines found
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };
