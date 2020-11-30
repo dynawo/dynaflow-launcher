@@ -331,8 +331,9 @@ struct HvdcLineDefinition {
  */
 class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
  public:
-  using HvdcLineId = std::string;                                ///< HvdcLine id definition
-  using HvdcLineMap = std::map<HvdcLineId, HvdcLineDefinition>;  ///< TODO
+  using HvdcLineId = std::string;  ///< HvdcLine id definition
+  using HvdcLineMap =
+      std::map<HvdcLineId, HvdcLineDefinition>;  ///< HvdcLineMap definition, useful in algo.cpp for checking if a hvdcLineDefinition is already inserted
 
   /**
    * @brief Constructor
