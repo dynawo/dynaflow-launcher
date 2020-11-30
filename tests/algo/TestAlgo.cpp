@@ -290,7 +290,7 @@ TEST(HvdcLine, base) {
 
   nodes[4]->converterInterfaces.emplace_back(vscStation2);
 
-  dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hvdcLines;
+  dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;
   dfl::algo::ControllerInterfaceDefinitionAlgorithm algo(hvdcLines);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
@@ -298,7 +298,7 @@ TEST(HvdcLine, base) {
   ASSERT_EQ(2, hvdcLines.size());
   size_t index = 0;
   for (const auto& hvdcLine : hvdcLines) {
-    ASSERT_TRUE(expected_hvdcLines[index] == hvdcLine);
+    ASSERT_TRUE(expected_hvdcLines[index] == hvdcLine.second);
     ++index;
   }
 }

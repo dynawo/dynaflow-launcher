@@ -164,7 +164,7 @@ LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
 }
 /////////////////////////////////////////////////////////////////
 
-ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(HvdcLineSet& hvdcLines) : hvdcLines_(hvdcLines) {}
+ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(HvdcLineMap& hvdcLines) : hvdcLines_(hvdcLines) {}
 
 void
 ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
@@ -173,10 +173,10 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
     HvdcLineDefinition createdHvdcLine = HvdcLineDefinition(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1_id, hvdcLine->converter1_busId,
                                                             hvdcLine->converter1_voltageRegulationOn, hvdcLine->converter2_id, hvdcLine->converter2_busId,
                                                             hvdcLine->converter2_voltageRegulationOn, HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT);
-    auto it = hvdcLines_.find(createdHvdcLine);
+    auto it = hvdcLines_.find(hvdcLine->id);
     bool alreadyInserted = it != hvdcLines_.end();
     if (alreadyInserted) {
-      it->position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
+      it->second.position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
       continue;
     }
 
@@ -189,7 +189,7 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
       continue;
     }
 
-    hvdcLines_.emplace(createdHvdcLine);
+    hvdcLines_.emplace(hvdcLine->id, createdHvdcLine);
   }
 }
 /////////////////////////////////////////////////////////////////

@@ -45,24 +45,24 @@ class Par {
      * @param dir the dirname of the output PAR file
      * @param filename file path for output PAR file (corresponds to basename)
      * @param gens list of the generators taken into account
-     * @param hdvcLines list of hdvc lines taken into account
+     * @param hvdcLines list of hdvc lines taken into account
      * @param activePowerCompensation the type of active power compensation
      */
     ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens,
-                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet& hdvcLines,
+                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) :
         basename{base},
         dirname{dir},
         filepath{filename},
         generators{gens},
-        hdvcLines{hdvcLines},
+        hvdcLines{hvdcLines},
         activePowerCompensation{activePowerCompensation} {}
 
     std::string basename;                                                         ///< basename
     std::string dirname;                                                          ///< Dirname of output file relative to execution dir
     std::string filepath;                                                         ///< file path of the output file to write
     std::vector<algo::GeneratorDefinition> generators;                            ///< list of generators
-    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hdvcLines;          ///< list of hdvc lines
+    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;          ///< list of hvdc lines
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
   };
 
