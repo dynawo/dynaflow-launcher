@@ -70,8 +70,8 @@ Par::write() {
       collection->addParametersSet(set);
     }
   }
-  for (const auto& hvdcLine : def_.hdvcLines) {
-    collection->addParametersSet(writeHdvcLine(hvdcLine));
+  for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
+    collection->addParametersSet(writeHdvcLine(it->second));
   }
 
   exporter.exportToFile(collection, def_.filepath, constants::xmlEncoding);

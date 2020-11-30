@@ -323,49 +323,23 @@ struct HvdcLineDefinition {
   const ConverterId converter2_id;                             ///< second converter id
   const BusId converter2_busId;                                ///< second converter bus id
   const boost::optional<bool> converter2_voltageRegulationOn;  ///< second converter voltage regulation parameter, for VSC converters only
-  mutable Position position;                                   ///< position of the converters of this hvdc line compared to the main connex component
+  Position position;                                           ///< position of the converters of this hvdc line compared to the main connex component
 };
 
-/**
-   * @brief Hash structure for term
-   *
-   * required to use set on terms
-   */
-struct HashTerm {
-  /**
-   * @brief Hash function
-   *
-   * @param hvdcLine the term to hash
-   * @returns the hash value of @p hvdcLine
-   */
-  std::size_t operator()(const HvdcLineDefinition& hvdcLine) const {
-    return std::hash<std::string>{}(hvdcLine.id);
-  }
-  /**
-   * @brief Less function
-   *
-   * @param lhs the left hand side to compare
-   * @param rhs the right hand side to compare
-   * @returns true if lhs is inferior to rhs based on their id
-   */
-  bool operator()(const HvdcLineDefinition& lhs, const HvdcLineDefinition& rhs) const {
-    return lhs.id < rhs.id;
-  }
-};
 /**
  * @brief the controller interface definition algorithm
  */
 class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
  public:
-  using HvdcLineId = std::string;                              ///< HvdcLine id definition
-  using HvdcLineSet = std::set<HvdcLineDefinition, HashTerm>;  ///< TODO
+  using HvdcLineId = std::string;                                ///< HvdcLine id definition
+  using HvdcLineMap = std::map<HvdcLineId, HvdcLineDefinition>;  ///< TODO
 
   /**
    * @brief Constructor
    *
    * @param hvdcLines the list of hvdc lines to update
    */
-  explicit ControllerInterfaceDefinitionAlgorithm(HvdcLineSet& hvdcLines);
+  explicit ControllerInterfaceDefinitionAlgorithm(HvdcLineMap& hvdcLines);
 
   /**
    * @brief Perform the algorithm
@@ -379,7 +353,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
   void operator()(const NodePtr& node);
 
  private:
-  HvdcLineSet& hvdcLines_;  ///< the set of hvdc line, to know if we have already encountered this hvdc line
+  HvdcLineMap& hvdcLines_;  ///< the set of hvdc line, to know if we have already encountered this hvdc line
 };
 }  // namespace algo
 }  // namespace dfl

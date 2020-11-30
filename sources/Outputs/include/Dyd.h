@@ -79,7 +79,7 @@ class Dyd {
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
-                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet& hvdcLines) :
+                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines) :
         basename{base},
         filename{filepath},
         generators{gens},
@@ -92,7 +92,7 @@ class Dyd {
     std::vector<algo::GeneratorDefinition> generators;                    ///< generators found
     std::vector<algo::LoadDefinition> loads;                              ///< list of loads
     std::shared_ptr<inputs::Node> slackNode;                              ///< slack node to use
-    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineSet hvdcLines;  ///< list of hvdc lines
+    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;  ///< list of hvdc lines
   };
 
   /**

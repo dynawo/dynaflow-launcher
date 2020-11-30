@@ -89,8 +89,8 @@ Dyd::write() {
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
     collection->addModel(writeGenerator(*it, def_.basename));
   }
-  for (const auto& hvdcLine : def_.hvdcLines) {
-    collection->addModel(writeHvdcLine(hvdcLine, def_.basename));
+  for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
+    collection->addModel(writeHvdcLine(it->second, def_.basename));
   }
   // connections
   for (auto it = def_.loads.begin(); it != def_.loads.end(); ++it) {
@@ -106,8 +106,8 @@ Dyd::write() {
     }
   }
 
-  for (const auto& hvdcLine : def_.hvdcLines) {
-    writeHvdcLineConnect(collection, hvdcLine);
+  for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
+    writeHvdcLineConnect(collection, it->second);
   }
   exporter.exportToFile(collection, def_.filename, constants::xmlEncoding);
 }
