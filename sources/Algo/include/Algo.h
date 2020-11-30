@@ -333,7 +333,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
  public:
   using HvdcLineId = std::string;  ///< HvdcLine id definition
   using HvdcLineMap =
-      std::map<HvdcLineId, HvdcLineDefinition>;  ///< HvdcLineMap definition, useful in algo.cpp for checking if a hvdcLineDefinition is already inserted
+      std::map<HvdcLineId, HvdcLineDefinition>;  ///< Alias for map of hvdc line definition
 
   /**
    * @brief Constructor
