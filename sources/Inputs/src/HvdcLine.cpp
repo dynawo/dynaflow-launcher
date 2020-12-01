@@ -29,12 +29,5 @@ HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, con
     converter2_id{converter2_id},
     converter2_busId{converter2_busId},
     converter2_voltageRegulationOn{converter2_voltageRegulationOn} {}
-
-bool
-HvdcLine::operator==(const HvdcLine& other) const {
-  return id == other.id && converterType == other.converterType && converter1_id == other.converter1_id && converter1_busId == other.converter1_busId &&
-         converter2_voltageRegulationOn == other.converter2_voltageRegulationOn && converter2_id == other.converter2_id &&
-         converter2_busId == other.converter2_busId && converter2_voltageRegulationOn == other.converter2_voltageRegulationOn;
-}
 }  // namespace inputs
 }  // namespace dfl

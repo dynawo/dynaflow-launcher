@@ -281,15 +281,6 @@ struct HvdcLineDefinition {
   };
 
   /**
-   * @brief Determines if two hvdc line definition are equal
-   *
-   * @param other the other hvdc line definition to be compared against
-   * 
-   * @return status of the comparison
-   */
-  bool operator==(const HvdcLineDefinition& other) const;
-
-  /**
    * @brief Constructor
    *
    * @param id the HvdcLine id
@@ -331,9 +322,8 @@ struct HvdcLineDefinition {
  */
 class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
  public:
-  using HvdcLineId = std::string;  ///< HvdcLine id definition
-  using HvdcLineMap =
-      std::map<HvdcLineId, HvdcLineDefinition>;  ///< Alias for map of hvdc line definition
+  using HvdcLineId = std::string;                                ///< HvdcLine id definition
+  using HvdcLineMap = std::map<HvdcLineId, HvdcLineDefinition>;  ///< Alias for map of hvdc line definition
 
   /**
    * @brief Constructor

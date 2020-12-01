@@ -42,6 +42,13 @@ TEST(NetworkManager, walk) {
   ASSERT_EQ(14, count);
 }
 
+static bool
+hvdcLineEqual(const dfl::inputs::HvdcLine& lhs, const dfl::inputs::HvdcLine& rhs) {
+  return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.converter1_id == rhs.converter1_id && lhs.converter1_busId == rhs.converter1_busId &&
+         lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn && lhs.converter2_id == rhs.converter2_id &&
+         lhs.converter2_busId == rhs.converter2_busId && lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn;
+}
+
 TEST(NetworkManager, hvdcLines) {
   using dfl::inputs::NetworkManager;
   std::vector<dfl::inputs::HvdcLine> expected_hvdcLines = {
@@ -53,6 +60,6 @@ TEST(NetworkManager, hvdcLines) {
   NetworkManager manager("res/HvdcDangling.iidm");
   const auto& hvdcLines = manager.getHvdcLine();
   for (int index = 0; index < 2; ++index) {
-    ASSERT_TRUE(*hvdcLines[index] == expected_hvdcLines[index]);
+    ASSERT_TRUE(hvdcLineEqual(*hvdcLines[index], expected_hvdcLines[index]));
   }
 }

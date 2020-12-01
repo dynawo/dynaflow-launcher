@@ -263,6 +263,14 @@ TEST(Loads, base) {
   }
 }
 
+static bool
+hvdcLineDefinitionEqual(const dfl::algo::HvdcLineDefinition& lhs, const dfl::algo::HvdcLineDefinition& rhs) {
+  return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.converter1_id == rhs.converter1_id && lhs.converter1_busId == rhs.converter1_busId &&
+         lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn && lhs.converter2_id == rhs.converter2_id &&
+         lhs.converter2_busId == rhs.converter2_busId && lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn &&
+         lhs.position == rhs.position;
+}
+
 TEST(HvdcLine, base) {
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       std::make_shared<dfl::inputs::Node>("0", 98.0), std::make_shared<dfl::inputs::Node>("1", 111.0), std::make_shared<dfl::inputs::Node>("2", 24.0),
@@ -298,7 +306,7 @@ TEST(HvdcLine, base) {
   ASSERT_EQ(2, hvdcLines.size());
   size_t index = 0;
   for (const auto& hvdcLine : hvdcLines) {
-    ASSERT_TRUE(expected_hvdcLines[index] == hvdcLine.second);
+    ASSERT_TRUE(hvdcLineDefinitionEqual(expected_hvdcLines[index], hvdcLine.second));
     ++index;
   }
 }

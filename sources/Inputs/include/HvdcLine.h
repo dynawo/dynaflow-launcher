@@ -40,15 +40,6 @@ struct HvdcLine {
   };
 
   /**
-   * @brief Determines if two hvdc lines are equal
-   *
-   * @param other the other hvdc line to be compared against
-   * 
-   * @return status of the comparison
-   */
-  bool operator==(const HvdcLine& other) const;
-
-  /**
    * @brief Constructor
    *
    * @param id the hvdc line id
