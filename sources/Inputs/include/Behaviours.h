@@ -100,7 +100,7 @@ struct ConverterInterface {
    *
    * @param other the other converter to be compared against
    * 
-   * @return status of the comparaison
+   * @return status of the comparison
    */
   bool operator==(const ConverterInterface& other) const {
     return converterId == other.converterId && busId == other.busId && voltageRegulationOn == other.voltageRegulationOn && hvdcLine == other.hvdcLine;
