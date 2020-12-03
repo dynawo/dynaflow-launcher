@@ -112,7 +112,7 @@ Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(load.id);
 
   model->setStaticId(load.id);
-  model->setLib("LoadAlphaBetaRestorative");
+  model->setLib("LoadAlphaBetaRestorativeLimitsRecalc");
   model->setParFile(basename + ".par");
   model->setParId(constants::loadParId);
   model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefLoadName_));
