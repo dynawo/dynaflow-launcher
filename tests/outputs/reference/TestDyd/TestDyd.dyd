@@ -44,16 +44,16 @@
   <dyn:blackBoxModel id="G3" staticId="G3" lib="GeneratorPVDiagramPQWithImpedanceSignalN" parFile="TestDyd.par" parId="10160083025018531003">
     <dyn:macroStaticRef id="GeneratorImpStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="L0" staticId="L0" lib="LoadAlphaBetaRestorative" parFile="TestDyd.par" parId="GenericRestorativeLoad">
+  <dyn:blackBoxModel id="L0" staticId="L0" lib="LoadAlphaBetaRestorativeLimitsRecalc" parFile="TestDyd.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="L1" staticId="L1" lib="LoadAlphaBetaRestorative" parFile="TestDyd.par" parId="GenericRestorativeLoad">
+  <dyn:blackBoxModel id="L1" staticId="L1" lib="LoadAlphaBetaRestorativeLimitsRecalc" parFile="TestDyd.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="L2" staticId="L2" lib="LoadAlphaBetaRestorative" parFile="TestDyd.par" parId="GenericRestorativeLoad">
+  <dyn:blackBoxModel id="L2" staticId="L2" lib="LoadAlphaBetaRestorativeLimitsRecalc" parFile="TestDyd.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="L3" staticId="L3" lib="LoadAlphaBetaRestorative" parFile="TestDyd.par" parId="GenericRestorativeLoad">
+  <dyn:blackBoxModel id="L3" staticId="L3" lib="LoadAlphaBetaRestorativeLimitsRecalc" parFile="TestDyd.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="Model_Signal_N" lib="DYNModelSignalN" parFile="TestDyd.par" parId="SignalN"/>
