@@ -23,7 +23,6 @@
 #include <PARParameterFactory.h>
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
-#include <PARParametersSetFactory.h>
 #include <PARReference.h>
 #include <PARReferenceFactory.h>
 #include <PARXmlExporter.h>
@@ -110,7 +109,7 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   std::vector<boost::shared_ptr<parameters::ParametersSet>> ret;
 
   // Load
-  auto set = parameters::ParametersSetFactory::newInstance(constants::loadParId);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::loadParId));
   set->addParameter(helper::buildParameter("load_Alpha", 1.5));
   set->addParameter(helper::buildParameter("load_Beta", 2.5));
   set->addParameter(helper::buildParameter("load_UMax0Pu", 1.15));
@@ -125,17 +124,17 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   ret.push_back(set);
 
   // Signal N
-  set = parameters::ParametersSetFactory::newInstance(constants::signalNParId);
+  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNParId));
   set->addParameter(helper::buildParameter("nbGen", static_cast<int>(nb_generators)));  // static cast because of Dynawo API
   ret.push_back(set);
 
   // Signal N generator
-  set = parameters::ParametersSetFactory::newInstance(constants::signalNGeneratorParId);
+  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNGeneratorParId));
   updateSignalNGenerator(set, activePowerCompensation);
   ret.push_back(set);
 
   // Signal N generator with impendance
-  set = parameters::ParametersSetFactory::newInstance(constants::impSignalNGeneratorParId);
+  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorParId));
   updateSignalNGenerator(set, activePowerCompensation);
   updateCouplingParameters(set);
   ret.push_back(set);
@@ -145,7 +144,7 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
 
 boost::shared_ptr<parameters::ParametersSet>
 Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
-  auto set = parameters::ParametersSetFactory::newInstance(hvdcLine.id);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hvdcLine.id));
   std::string first = "1";
   std::string second = "2";
   if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
@@ -192,7 +191,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   }
   std::size_t hashId = constants::hash(def.id);
   std::string hashIdStr = std::to_string(hashId);
-  auto set = parameters::ParametersSetFactory::newInstance(hashIdStr);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
   //  Use the hash id in exported files to prevent use of non-ascii characters
 
   set->addParameter(helper::buildParameter("generator_KGover", 1.));
