@@ -25,6 +25,7 @@
 #include <boost/shared_ptr.hpp>
 #include <map>
 #include <memory>
+#include <unordered_map>
 namespace dfl {
 namespace inputs {
 
@@ -35,7 +36,17 @@ namespace inputs {
  */
 class NetworkManager {
  public:
+  /**
+  * @brief Enum representing the number of regulating generators for one bus
+  */
+  enum class NbOfRegulatingGenerators {
+    ONE = 0,   ///< There is one generator regulating the bus
+    MULTIPLES  ///< There are more than one generator regulating the bus
+  };
+
   using ProcessNodeCallback = std::function<void(const std::shared_ptr<Node>&)>;  ///< Callback for node algorithm
+  using BusId = std::string;                                                      ///< alias of BusId
+  using BusMapRegulating = std::unordered_map<BusId, NbOfRegulatingGenerators>;   ///< alias for the bus map
 
  public:
   /**
@@ -78,6 +89,7 @@ class NetworkManager {
   boost::shared_ptr<DYN::DataInterface> dataInterface() const {
     return interface_;
   }
+
   /**
    * @brief Retrieve the hvdc lines of the network
    *
@@ -85,6 +97,15 @@ class NetworkManager {
    */
   const std::vector<std::shared_ptr<HvdcLine>>& getHvdcLine() {
     return hvdcLines_;
+  }
+
+  /**
+   * @brief Retrieve the mapping of busId and the number of generators that regulates them 
+   *
+   * @returns map of bus id to nbOfRegulatingGenerators
+   */
+  const BusMapRegulating& getMapBusId() {
+    return mapBusId_;
   }
 
  private:
@@ -100,6 +121,7 @@ class NetworkManager {
   std::vector<ProcessNodeCallback> nodesCallbacks_;           ///< list of callback or nodes
   std::vector<std::shared_ptr<HvdcLine>> hvdcLines_;          ///< hvdc Lines
   std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
+  BusMapRegulating mapBusId_;                                 ///< mapping of busId and the number of generators that regulates them
 };
 
 }  // namespace inputs

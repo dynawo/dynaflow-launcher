@@ -134,6 +134,7 @@ class Context {
   std::vector<algo::GeneratorDefinition> generators_;                    ///< generators found
   std::vector<algo::LoadDefinition> loads_;                              ///< loads found
   algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines_;  ///< hvdc lines found
+  algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;              ///< map of bus ids to a generator that regulates them
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };

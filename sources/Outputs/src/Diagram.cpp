@@ -30,8 +30,7 @@ Diagram::Diagram(DiagramDefinition&& def) : def_{std::forward<DiagramDefinition>
 void
 Diagram::write() {
   for (algo::GeneratorDefinition& generator : def_.generators) {
-    if (generator.model != algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN &&
-        generator.model != algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
+    if (!generator.isUsingDiagram())
       continue;
     std::sort(generator.points.begin(), generator.points.end(),
               [](const DYN::GeneratorInterface::ReactiveCurvePoint& gen1, const DYN::GeneratorInterface::ReactiveCurvePoint& gen2) -> bool {

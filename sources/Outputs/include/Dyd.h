@@ -76,23 +76,27 @@ class Dyd {
      * @param loaddefs load definitions coming from algorithms
      * @param slacknode the slack node to use
      * @param hvdcLines hvdc definition coming from algorithms
+     * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
-                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines) :
+                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) :
         basename{base},
         filename{filepath},
         generators{gens},
         loads{loaddefs},
         slackNode{slacknode},
-        hvdcLines{hvdcLines} {}
+        hvdcLines{hvdcLines},
+        busesWithDynamicModel{busesWithDynamicModel} {}
 
-    std::string basename;                                                 ///< basename for file
-    std::string filename;                                                 ///< filepath for file to write
-    std::vector<algo::GeneratorDefinition> generators;                    ///< generators found
-    std::vector<algo::LoadDefinition> loads;                              ///< list of loads
-    std::shared_ptr<inputs::Node> slackNode;                              ///< slack node to use
-    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;  ///< list of hvdc lines
+    std::string basename;                                                        ///< basename for file
+    std::string filename;                                                        ///< filepath for file to write
+    std::vector<algo::GeneratorDefinition> generators;                           ///< generators found
+    std::vector<algo::LoadDefinition> loads;                                     ///< list of loads
+    std::shared_ptr<inputs::Node> slackNode;                                     ///< slack node to use
+    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;         ///< list of hvdc lines
+    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
   };
 
   /**
@@ -127,6 +131,16 @@ class Dyd {
    * @returns black box model for generator
    */
   static boost::shared_ptr<dynamicdata::BlackBoxModel> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename);
+
+  /**
+   * @brief Create black box model for remote voltage regulators
+   * 
+   * @param busId bus id to use
+   * @param basename basename for file
+   * 
+   * @returns black box model for a remote voltage regulator
+   */
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeVRRemote(const std::string& busId, const std::string& basename);
 
   /**
    * @brief Create black box model for hvdc line
@@ -179,7 +193,7 @@ class Dyd {
   static boost::shared_ptr<dynamicdata::MacroConnect> writeLoadConnect(const algo::LoadDefinition& loaddef);
 
   /**
-   * @brief Write connections for generators
+   * @brief Write macro connections for generators
    *
    * Use macro connection
    *
@@ -188,15 +202,33 @@ class Dyd {
    *
    * @returns the macro connection element
    */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeGenConnect(const algo::GeneratorDefinition& def, unsigned int index);
+  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int index);
+
+  /**
+   * @brief Write connection for generators
+   * 
+   * @param dynamicModelsToConnect the collection where the connections will be added
+   * @param def the generator definition to process
+   * 
+   */
+  static void writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::GeneratorDefinition& def);
+
+  /**
+   * @brief Write connections for remote voltage regulators
+   *
+   * @param dynamicModelsToConnect the collection where the connections will be added
+   * @param busId the bus id to use
+   */
+  static void writeVRRemoteConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& busId);
 
   /**
    * @brief Write connections for hvdc lines
    *   *
-   * @param collection the collection where the connection will be added
+   * @param dynamicModelsToConnect the collection where the connections will be added
    * @param hvdcLine the hvdc line definition to process
    */
-  static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& collection, const algo::HvdcLineDefinition& hvdcLine);
+  static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
+                                   const algo::HvdcLineDefinition& hvdcLine);
 
  private:
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>

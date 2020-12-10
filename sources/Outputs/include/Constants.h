@@ -56,7 +56,9 @@ const std::string signalNGeneratorParId{"signalNGenerator"};                    
 const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};        ///< PAR id for generators using signal N with fixed P
 const std::string impSignalNGeneratorParId{"impSignalNGenerator"};              ///< PAR id for generators using signal N with impendance
 const std::string impSignalNGeneratorFixedPParId{"impSignalNGeneratorFixedP"};  ///< PAR id for generators using signal N with impendance with fixed P
-const std::string xmlEncoding{"UTF-8"};                                         ///< Default encoding for XML outputs files
+const std::string propSignalNGeneratorParId{"propSignalNGenerator"};      ///< PAR id for generators using prop signal N
+const std::string remoteSignalNGeneratorParId{"remoteSignalNGenerator"};  ///< PAR id for generators using remote signal N
+const std::string xmlEncoding{"UTF-8"};                                   ///< Default encoding for XML outputs files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 

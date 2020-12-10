@@ -46,6 +46,7 @@ struct Load {
 struct Generator {
   using GeneratorId = std::string;                                         ///< alias for id
   using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< alias for point type
+  using BusId = std::string;                                               ///< alias of BusId
 
   /**
    * @brief Constructor
@@ -57,16 +58,20 @@ struct Generator {
    * @param pmin minimum active power for the generator
    * @param pmax maximum active power for the generator
    * @param targetP target active power of the generator
+   * @param regulatedBusId the Bus Id this generator is regulating
+   * @param connectedBusId the Bus Id this generator is connected to
    */
   explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
-                     double targetP) :
+                     double targetP, const BusId& regulatedBusId, const BusId& connectedBusId) :
       id{genId},
       points(curvePoints),
       qmin{qmin},
       qmax{qmax},
       pmin{pmin},
       pmax{pmax},
-      targetP{targetP} {}
+      targetP{targetP},
+      regulatedBusId{regulatedBusId},
+      connectedBusId{connectedBusId} {}
 
   GeneratorId id;                          ///< generator id
   std::vector<ReactiveCurvePoint> points;  ///< reactive points
@@ -75,6 +80,8 @@ struct Generator {
   double pmin;                             ///< minimum active power
   double pmax;                             ///< maximum active power
   double targetP;                          ///< target active power of the generator
+  const BusId regulatedBusId;              ///< regulated Bus Id
+  const BusId connectedBusId;              ///< connected Bus Id
 };
 
 class HvdcLine;

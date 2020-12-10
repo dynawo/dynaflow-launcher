@@ -28,45 +28,59 @@ TEST(TestPar, write) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00",
-                                                                     {
-                                                                         GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                     },
-                                                                     1., 10., 11., 110., 100.),
-                                                 GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01",
-                                                                     {
-                                                                         GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                     },
-                                                                     2., 20., 22., 220., 100.),
-                                                 GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02",
-                                                                     {
-                                                                         GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                     },
-                                                                     3., 30., 33., 330., 100.),
-                                                 GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03",
-                                                                     {
-                                                                         GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                     },
-                                                                     4., 40., 44., 440., 100.),
+  const std::string bus1 = "BUS_1";
+  std::vector<GeneratorDefinition> generators = {
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
+      GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1)};
                                                  GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04",
                                                                      {},
-                                                                     3., 30., -33., 330., 0.)};
+                                                                     3., 30., -33., 330., 0 , bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(TestPar, writeRemote) {
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::LoadDefinition;
+
+  std::string basename = "TestParRemote";
+  std::string dirname = "results";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  std::string bus1 = "BUS_1";
+  std::string bus2 = "BUS_2";
+  std::vector<GeneratorDefinition> generators = {
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "00", {}, 1., 10., 11., 110., bus1),
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., bus1),
+      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., bus2),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., bus2)};
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, busesWithDynamicModel));
 
   parWriter.write();
 
@@ -78,9 +92,7 @@ TEST(TestPar, write) {
 }
 
 TEST(TestPar, writeHdvc) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
-
+  using dfl::algo::HvdcLineDefinition;
   std::string basename = "TestParHvdc";
   std::string dirname = "results";
   std::string filename = basename + ".par";
@@ -92,17 +104,16 @@ TEST(TestPar, writeHdvc) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  auto hvdcLineLCC =
-      dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
-                                    "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
-  auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
-                                                   "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
+  auto hvdcLineLCC = HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
+                                        "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
+  auto hvdcLineVSC = HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
+                                        "_BUS___11_TN", false, HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
   dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC),
                                                                               std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}));
 
   parWriter.write();
 

@@ -38,16 +38,11 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "GeneratorPVWithImpedanceSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQWithImpedanceSignalN")};
-
-// cannot use macroConnectorGenImpedenceName_ and macroConnectorGenName_ because they are private variable
-const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
-    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GEN_NETWORK_CONNECTOR"),                     // same as macroConnectorGenName_
-    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GEN_NETWORK_CONNECTOR"),          // same as macroConnectorGenName_
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "GEN_IMP_NETWORK_CONNECTOR"),  // same as macroConnectorGenImpedenceName_
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN,
-                   "GEN_IMP_NETWORK_CONNECTOR")  // same as macroConnectorGenImpedenceName_
-};
+    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQWithImpedanceSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "GeneratorPVRemoteSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "GeneratorPVRemoteDiagramPQSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "GeneratorPQPropSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "GeneratorPQPropDiagramPQSignalN")};
 
 const std::string Dyd::macroConnectorLoadName_("LOAD_NETWORK_CONNECTOR");
 const std::string Dyd::macroConnectorGenName_("GEN_NETWORK_CONNECTOR");
@@ -59,58 +54,78 @@ const std::string Dyd::macroStaticRefSignalNGeneratorName_("GeneratorStaticRef")
 const std::string Dyd::macroStaticRefImpGeneratorName_("GeneratorImpStaticRef");
 const std::string Dyd::macroStaticRefLoadName_("LoadRef");
 
+const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, macroConnectorGenName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, macroConnectorGenName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, macroConnectorGenImpedenceName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, macroConnectorGenImpedenceName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, macroConnectorGenName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, macroConnectorGenName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN, macroConnectorGenName_),
+    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, macroConnectorGenName_)};
+
 Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
 
 void
 Dyd::write() {
   dynamicdata::XmlExporter exporter;
 
-  auto collection = dynamicdata::DynamicModelsCollectionFactory::newCollection();
+  auto dynamicModelsToConnect = dynamicdata::DynamicModelsCollectionFactory::newCollection();
 
   // macros connectors
   auto macro_connectors = writeMacroConnectors();
   for (auto it = macro_connectors.begin(); it != macro_connectors.end(); ++it) {
-    collection->addMacroConnector(*it);
+    dynamicModelsToConnect->addMacroConnector(*it);
   }
 
   // macro static refs
   auto macro_static_ref = writeMacroStaticRef();
   for (auto it = macro_static_ref.begin(); it != macro_static_ref.end(); ++it) {
-    collection->addMacroStaticReference(*it);
+    dynamicModelsToConnect->addMacroStaticReference(*it);
   }
 
-  // models
-  for (auto it = def_.loads.begin(); it != def_.loads.end(); ++it) {
-    collection->addModel(writeLoad(*it, def_.basename));
+  // models and connections
+  for (const auto& load : def_.loads) {
+    dynamicModelsToConnect->addModel(writeLoad(load, def_.basename));
+    dynamicModelsToConnect->addMacroConnect(writeLoadConnect(load));
   }
   auto const_models = writeConstantsModel(def_.basename);
-  for (auto it = const_models.begin(); it != const_models.end(); ++it) {
-    collection->addModel(*it);
+  for (const auto& const_model : const_models) {
+    dynamicModelsToConnect->addModel(const_model);
   }
-  for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
-    collection->addModel(writeGenerator(*it, def_.basename));
+  for (const auto& generator : def_.generators) {
+    dynamicModelsToConnect->addModel(writeGenerator(generator, def_.basename));
   }
-  for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
-    collection->addModel(writeHvdcLine(it->second, def_.basename));
+  for (const auto& keyValue : def_.hvdcLines) {
+    dynamicModelsToConnect->addModel(writeHvdcLine(keyValue.second, def_.basename));
+    writeHvdcLineConnect(dynamicModelsToConnect, keyValue.second);
   }
-  // connections
-  for (auto it = def_.loads.begin(); it != def_.loads.end(); ++it) {
-    collection->addMacroConnect(writeLoadConnect(*it));
+  for (const auto& keyValue : def_.busesWithDynamicModel) {
+    dynamicModelsToConnect->addModel(writeVRRemote(keyValue.first, def_.basename));
+    writeVRRemoteConnect(dynamicModelsToConnect, keyValue.first);
   }
 
-  collection->addConnect(signalNModelName_, "tetaRef_0_value", "NETWORK", def_.slackNode->id + "_phi_value");
+  dynamicModelsToConnect->addConnect(signalNModelName_, "tetaRef_0_value", "NETWORK", def_.slackNode->id + "_phi_value");
 
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
-    auto connections = writeGenConnect(*it, static_cast<unsigned int>(it - def_.generators.begin()));
+    writeGenConnect(dynamicModelsToConnect, *it);
+    auto connections = writeGenMacroConnect(*it, static_cast<unsigned int>(it - def_.generators.begin()));
     for (auto it_c = connections.begin(); it_c != connections.end(); ++it_c) {
-      collection->addMacroConnect(*it_c);
+      dynamicModelsToConnect->addMacroConnect(*it_c);
     }
   }
 
-  for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
-    writeHvdcLineConnect(collection, it->second);
-  }
-  exporter.exportToFile(collection, def_.filename, constants::xmlEncoding);
+  exporter.exportToFile(dynamicModelsToConnect, def_.filename, constants::xmlEncoding);
+}
+
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+Dyd::writeVRRemote(const std::string& busId, const std::string& basename) {
+  std::string id = "Model_Signal_NQ_" + busId;
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(id);
+  model->setLib("VRRemote");
+  model->setParFile(basename + ".par");
+  model->setParId(id);
+  return model;
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
@@ -170,11 +185,10 @@ Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(def.id);
-
-  const std::string& static_ref_macro =
-      (def.model == algo::GeneratorDefinition::ModelType::SIGNALN || def.model == algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN)
-          ? macroStaticRefSignalNGeneratorName_
-          : macroStaticRefImpGeneratorName_;
+  const std::string& static_ref_macro = (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN ||
+                                         def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
+                                            ? macroStaticRefImpGeneratorName_
+                                            : macroStaticRefSignalNGeneratorName_;
   std::string parId;
   switch (def.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN:
@@ -182,6 +196,12 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
     break;
   case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
     parId = (DYN::doubleIsZero(def.targetP)) ? constants::impSignalNGeneratorFixedPParId : constants::impSignalNGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+    parId = constants::propSignalNGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+    parId = constants::remoteSignalNGeneratorParId;
     break;
   default:
     std::size_t hashId = constants::hash(def.id);
@@ -195,7 +215,6 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   model->setParFile(basename + ".par");
   model->setParId(parId);
   model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(static_ref_macro));
-
   return model;
 }
 
@@ -271,7 +290,7 @@ Dyd::writeLoadConnect(const algo::LoadDefinition& loaddef) {
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnect>>
-Dyd::writeGenConnect(const algo::GeneratorDefinition& def, unsigned int index) {
+Dyd::writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int index) {
   auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(correspondence_macro_connector_.at(def.model), def.id, networkModelName_);
   auto signal = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenSignalNName_, def.id, signalNModelName_);
   signal->setIndex2(std::to_string(index));
@@ -279,13 +298,27 @@ Dyd::writeGenConnect(const algo::GeneratorDefinition& def, unsigned int index) {
 }
 
 void
-Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& collection, const algo::HvdcLineDefinition& hvdcLine) {
+Dyd::writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::GeneratorDefinition& def) {
+  if (def.model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN) {
+    dynamicModelsToConnect->addConnect(def.id, "generator_URegulated", "NETWORK", def.regulatedBusId + "_U_value");
+  } else if (def.model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) {
+    dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", "Model_Signal_NQ_" + def.regulatedBusId, "vrremote_NQ_value");
+  }
+}
+
+void
+Dyd::writeVRRemoteConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& busId) {
+  dynamicModelsToConnect->addConnect("Model_Signal_NQ_" + busId, "vrremote_URegulated_value", "NETWORK", busId + "_U_value");
+}
+
+void
+Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HvdcLineDefinition& hvdcLine) {
   if (hvdcLine.position == algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
-    collection->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
-    collection->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
   } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-    collection->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
-    collection->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
   } else {
     // TODO when we will handle the case were both converters are in the main connex component
   }

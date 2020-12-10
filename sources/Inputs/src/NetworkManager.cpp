@@ -108,8 +108,16 @@ NetworkManager::buildTree() {
       auto pmax = (*it_g)->getPMax();
       if ((*it_g)->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) && (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
         // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
+        auto regulated_bus = interface_->getServiceManager()->getRegulatedBus((*it_g)->getID())->getID();
+        auto it = mapBusId_.find(regulated_bus);
+        if (it == mapBusId_.end()) {
+          mapBusId_.insert({regulated_bus, NbOfRegulatingGenerators::ONE});
+        } else {
+          it->second = NbOfRegulatingGenerators::MULTIPLES;
+        }
+
         nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
-                                                pmin, pmax, targetP);
+                                                pmin, pmax, targetP, regulated_bus, nodeid);
         LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
       }
     }
@@ -203,7 +211,6 @@ NetworkManager::buildTree() {
         std::make_shared<dfl::inputs::HvdcLine>(hvdcLine->getID(), converterType, converter_1.converterId, converter_1.busId, converter_1.voltageRegulationOn,
                                                 converter_2.converterId, converter_2.busId, converter_2.voltageRegulationOn);
     hvdcLines_.emplace_back(hvdcLineCreated);
-
     converter_1.hvdcLine = hvdcLineCreated;
     converter_2.hvdcLine = hvdcLineCreated;
     nodes_[converter_dyn_1->getBusInterface()->getID()]->converterInterfaces.push_back(converter_1);

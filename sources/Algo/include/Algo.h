@@ -18,6 +18,7 @@
 #pragma once
 
 #include "HvdcLine.h"
+#include "NetworkManager.h"
 #include "Node.h"
 
 #include <DYNGeneratorInterface.h>
@@ -135,13 +136,27 @@ struct GeneratorDefinition {
    * @brief Generator model type
    */
   enum class ModelType {
-    SIGNALN = 0,                       ///< Use GeneratorPVSignalN model
-    DIAGRAM_PQ_SIGNALN,                ///< Use GeneratorPVDiagramPQSignalN model
-    WITH_IMPEDANCE_SIGNALN,            ///< Use GeneratorPVWithImpedanceSignalN model
-    WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN  ///< Use GeneratorPVWithImpedanceDiagramPQSignalN
+    SIGNALN = 0,                        ///< Use GeneratorPVSignalN model
+    DIAGRAM_PQ_SIGNALN,                 ///< Use GeneratorPVDiagramPQSignalN model
+    WITH_IMPEDANCE_SIGNALN,             ///< Use GeneratorPVWithImpedanceSignalN model
+    WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN,  ///< Use GeneratorPVWithImpedanceDiagramPQSignalN
+    REMOTE_SIGNALN,                     ///< Use GeneratorPVRemoteSignalN
+    REMOTE_DIAGRAM_PQ_SIGNALN,          ///< Use GeneratorPVRemoteDiagramPQSignalN
+    PROP_SIGNALN,                       ///< Use GeneratorPQPropSignalN
+    PROP_DIAGRAM_PQ_SIGNALN             ///< Use GeneratorPQPropDiagramPQSignalN
   };
-
   using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< Alias for reactive curve point
+  using BusId = std::string;                                               ///< alias of BusId
+
+  /**
+   * @brief test if the model used is a diagram
+   * 
+   * @return boolean indicating if the model uses a diagram
+   */
+  bool isUsingDiagram() const {
+    return model == ModelType::DIAGRAM_PQ_SIGNALN || model == ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
+           model == ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+  }
 
   /**
    * @brief Constructor
@@ -155,9 +170,10 @@ struct GeneratorDefinition {
    * @param pmin minimum active power for the generator
    * @param pmax maximum active power for the generator
    * @param targetP target active power of the generator
+   * @param regulatedBusId the Bus Id this generator is regulating
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
-                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP) :
+                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP, const BusId& regulatedBusId) :
       id{genId},
       model{type},
       nodeId{nodeId},
@@ -166,7 +182,8 @@ struct GeneratorDefinition {
       qmax{qmax},
       pmin{pmin},
       pmax{pmax},
-      targetP{targetP} {}
+      targetP{targetP},
+      regulatedBusId{regulatedBusId} {}
 
   inputs::Generator::GeneratorId id;       ///< generator id
   ModelType model;                         ///< model
@@ -177,6 +194,7 @@ struct GeneratorDefinition {
   double pmin;                             ///< minimum active power
   double pmax;                             ///< maximum active power
   double targetP;                          ///< target active power of the generator
+  const BusId regulatedBusId;              ///< regulated Bus Id
 };
 
 /**
@@ -185,15 +203,21 @@ struct GeneratorDefinition {
 class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
  public:
   using Generators = std::vector<GeneratorDefinition>;  ///< alias for list of generators
+  using BusId = std::string;                            ///< alias for bus id
+  using GenId = std::string;                            ///< alias for generator id
+  using BusGenMap = std::unordered_map<BusId, GenId>;   ///< alias for map of bus id to generator id
 
   /**
    * @brief Constructor
    *
    * @param gens generators list to update
+   * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+   * @param busMap mapping of busId and the number of generators that regulates them
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
    * @param serviceManager dynawo service manager in order to use Dynawo extra algorithms
    */
-  GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits, const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager);
+  GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel, const inputs::NetworkManager::BusMapRegulating& busMap,
+                               bool infinitereactivelimits, const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager);
 
   /**
    * @brief Perform algorithm
@@ -201,7 +225,12 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
    * Add the generators of the nodes and deducing the model to use.
    * Validity of the generator is checked whenever it makes sense.
    * If the diagram is not valid, the generator is ignored by the algorithm and the default dynawo behavior is used.
-   *
+   * For each generator, we look in the busMap_ the number of generators that are regulating the same bus as this generator,
+   * If this generator is the only one regulating the bus, then we decide which model to use based on whether this generator
+   * regulates the bus in local or not. Otherwise we use the prop model.
+   * In order to create later on in the dyd and the par specific models based on the buses that are regulated by multiples
+   * generators, we fill the busesWithDynamicModel_ map. Each time we found a bus regulated by multiples generators we add in the 
+   * busesWithDynamicModel_ map an element mapping the regulated bus to a generator id that regulates that bus.
    * @param node the node to process
    */
   void operator()(const NodePtr& node);
@@ -227,6 +256,8 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
   bool IsOtherGeneratorConnectedBySwitches(const NodePtr& node) const;
 
   Generators& generators_;                                          ///< the generators list to update
+  BusGenMap& busesWithDynamicModel_;                                ///< map of bus ids to a generator that regulates them
+  const inputs::NetworkManager::BusMapRegulating& busMap_;          ///< mapping of busId and the number of generators that regulates them
   bool useInfiniteReactivelimits_;                                  ///< determine if infinite reactive limits are used
   boost::shared_ptr<DYN::ServiceManagerInterface> serviceManager_;  ///< dynawo service manager
 };
