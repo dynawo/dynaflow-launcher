@@ -69,3 +69,17 @@ TEST(NetworkManager, hvdcLines) {
     ASSERT_TRUE(hvdcLineEqual(*hvdcLines[index], expected_hvdcLines[index]));
   }
 }
+
+TEST(NetworkManager, generators) {
+  using dfl::inputs::NetworkManager;
+  NetworkManager manager("res/Generators.iidm");
+  NetworkManager::BusMapRegulating expected_busMap = {{"_BUS____1_TN", NetworkManager::NbOfRegulatingGenerators::ONE},
+                                                      {"_BUS____5_TN", NetworkManager::NbOfRegulatingGenerators::MULTIPLES},
+                                                      {"_BUS___10_TN", NetworkManager::NbOfRegulatingGenerators::ONE}};
+  auto busMapId = manager.getMapBusId();
+  for (auto it_expected : expected_busMap) {
+    auto it_map = busMapId.find(it_expected.first);
+    ASSERT_FALSE(it_map == busMapId.end());
+    ASSERT_EQ(it_expected.second, it_map->second);
+  }
+}

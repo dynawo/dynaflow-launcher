@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="GEN_IMP_NETWORK_CONNECTOR">
+    <dyn:connect var1="coupling_terminal1" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
+    <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
+    <dyn:connect var1="generator_alphaSum_value" var2="alphaSum_grp_@INDEX@_value"/>
+    <dyn:connect var1="generator_alpha_value" var2="alpha_grp_@INDEX@_value"/>
+    <dyn:connect var1="generator_N_value" var2="n_grp_@INDEX@_value"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
+    <dyn:connect var1="load_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="load_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroStaticReference id="GeneratorImpStaticRef">
+    <dyn:staticRef var="coupling_P1GenPu" staticVar="p"/>
+    <dyn:staticRef var="coupling_Q1GenPu" staticVar="q"/>
+    <dyn:staticRef var="generator_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="GeneratorStaticRef">
+    <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
+    <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
+    <dyn:staticRef var="generator_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="LoadRef">
+    <dyn:staticRef var="load_PPu" staticVar="p"/>
+    <dyn:staticRef var="load_QPu" staticVar="q"/>
+    <dyn:staticRef var="load_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:blackBoxModel id="G0" staticId="G0" lib="GeneratorPVRemoteSignalN" parFile="TestDydRemote.par" parId="remoteSignalNGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G1" staticId="G1" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVRemoteDiagramPQSignalN" parFile="TestDydRemote.par" parId="6320417593396202500">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G3" staticId="G3" lib="GeneratorPQPropDiagramPQSignalN" parFile="TestDydRemote.par" parId="10160083025018531003">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G4" staticId="G4" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="DYNModelSignalN" parFile="TestDydRemote.par" parId="SignalN"/>
+  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_1" lib="VRRemote" parFile="TestDydRemote.par" parId="Model_Signal_NQ_BUS_1"/>
+  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_2" lib="VRRemote" parFile="TestDydRemote.par" parId="Model_Signal_NQ_BUS_2"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G0" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G0" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G1" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G1" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G2" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G3" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G3" id2="Model_Signal_N" index2="3"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G4" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="4"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G5" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="5"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated_value" id2="NETWORK" var2="BUS_2_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated_value" id2="NETWORK" var2="BUS_1_U_value"/>
+  <dyn:connect id1="Model_Signal_N" var1="tetaRef_0_value" id2="NETWORK" var2="Slack_phi_value"/>
+  <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
+  <dyn:connect id1="G1" var1="generator_NQ_value" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ_value"/>
+  <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
+  <dyn:connect id1="G3" var1="generator_NQ_value" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ_value"/>
+  <dyn:connect id1="G4" var1="generator_NQ_value" id2="Model_Signal_NQ_BUS_2" var2="vrremote_NQ_value"/>
+  <dyn:connect id1="G5" var1="generator_NQ_value" id2="Model_Signal_NQ_BUS_2" var2="vrremote_NQ_value"/>
+</dyn:dynamicModelsArchitecture>

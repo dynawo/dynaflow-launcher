@@ -41,11 +41,14 @@ buildParameter(const std::string& name, const T& value) {
 }
 
 static boost::shared_ptr<parameters::Reference>
-buildReference(const std::string& name, const std::string& origName, const std::string& type) {
+buildReference(const std::string& name, const std::string& origName, const std::string& type, const boost::optional<std::string>& componentId = {}) {
   auto ref = parameters::ReferenceFactory::newReference(name);
   ref->setOrigData("IIDM");
   ref->setOrigName(origName);
   ref->setType(type);
+  if (componentId.is_initialized()) {
+    ref->setComponentId(componentId.value());
+  }
 
   return ref;
 }
@@ -58,28 +61,32 @@ void
 Par::write() {
   parameters::XmlExporter exporter;
 
-  auto collection = parameters::ParametersSetCollectionFactory::newCollection();
+  auto dynamicModelsToConnect = parameters::ParametersSetCollectionFactory::newCollection();
   auto constants = writeConstantSets(def_.generators.size(), def_.activePowerCompensation);
   for (auto it = constants.begin(); it != constants.end(); ++it) {
-    collection->addParametersSet(*it);
+    dynamicModelsToConnect->addParametersSet(*it);
   }
 
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
     auto set = writeGenerator(*it, def_.basename, def_.dirname, def_.activePowerCompensation);
     if (set) {
-      collection->addParametersSet(set);
+      dynamicModelsToConnect->addParametersSet(set);
     }
   }
   for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
-    collection->addParametersSet(writeHdvcLine(it->second));
+    dynamicModelsToConnect->addParametersSet(writeHdvcLine(it->second));
+  }
+  for (const auto& keyValue : def_.busesWithDynamicModel) {
+    dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
   }
 
-  exporter.exportToFile(collection, def_.filepath, constants::xmlEncoding);
+  exporter.exportToFile(dynamicModelsToConnect, def_.filepath, constants::xmlEncoding);
 }
 
-void
+boost::shared_ptr<parameters::ParametersSet>
 Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                             bool fixedP) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(modelId));
   double value = fixedP ? kGoverNullValue_ : kGoverDefaultValue_;
   set->addParameter(helper::buildParameter("generator_KGover", value));
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
@@ -104,7 +111,12 @@ Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, df
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+  if (modelId == constants::remoteSignalNGeneratorParId) {
+    set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
+  } else if (modelId != constants::propSignalNGeneratorParId) {
+    set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+  }
+  return set;
 }
 
 std::vector<boost::shared_ptr<parameters::ParametersSet>>
@@ -153,7 +165,24 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   updateCouplingParameters(set);
   ret.push_back(set);
 
+  set = updateSignalNGenerator(constants::propSignalNGeneratorParId, activePowerCompensation);
+  updatePropParameters(set);
+  ret.push_back(set);
+
+  ret.push_back(updateSignalNGenerator(constants::remoteSignalNGeneratorParId, activePowerCompensation));
+
   return ret;
+}
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeVRRemote(const std::string& busId, const std::string& genId) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
+  set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", genId));
+  set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", genId));
+
+  set->addParameter(helper::buildParameter("vrremote_Gain", 100.0));
+  set->addParameter(helper::buildParameter("vrremote_tIntegral", 0.1));
+  return set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
@@ -200,7 +229,7 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
 boost::shared_ptr<parameters::ParametersSet>
 Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname,
                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
-  if (def.model == algo::GeneratorDefinition::ModelType::SIGNALN || def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
+  if (!def.isUsingDiagram()) {
     // already processed by constant
     return nullptr;
   }
@@ -210,9 +239,23 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   //  Use the hash id in exported files to prevent use of non-ascii characters
   double value = (DYN::doubleIsZero(def.targetP)) ? kGoverNullValue_ : kGoverDefaultValue_;
   set->addParameter(helper::buildParameter("generator_KGover", value));
-  if (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN ||
-      def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
+  switch (def.model) {
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
     updateCouplingParameters(set);
+    set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
+    updatePropParameters(set);
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
+    set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
+    break;
+  default:  //Signal N
+    set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+    break;
   }
 
   set->addParameter(helper::buildParameter("generator_tFilter", 0.001));
@@ -249,8 +292,6 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
-
   return set;
 }
 
@@ -262,5 +303,10 @@ Par::updateCouplingParameters(boost::shared_ptr<parameters::ParametersSet> set) 
   set->addParameter(helper::buildParameter("line_XPu", 0.0001));
 }
 
+void
+Par::updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set) {
+  set->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_QPercent", "qMax_pu", "DOUBLE"));
+}
 }  // namespace outputs
 }  // namespace dfl
