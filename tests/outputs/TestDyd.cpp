@@ -36,7 +36,8 @@ TEST(Dyd, write) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0.),
       GeneratorDefinition("G5", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01", {}, 2., 20., -22., 220., 0.)};
 
-  auto node = std::make_shared<dfl::inputs::Node>("Slack", 100.);
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
 
   outputPath.append(filename);
 
@@ -68,11 +69,12 @@ TEST(Dyd, writeHvdc) {
                                     "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
   auto hvdcLineVSC = dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
                                                    "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
-  //maybe watch out but you can't access the hdvLine from the converterInterface
+  //  maybe watch out but you can't access the hdvLine from the converterInterface
   dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC),
                                                                               std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
 
-  auto node = std::make_shared<dfl::inputs::Node>("Slack", 100.);
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
 
   outputPath.append(filename);
 

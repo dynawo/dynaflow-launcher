@@ -12,18 +12,19 @@
 #include "Tests.h"
 
 TEST(TestNode, base) {
-  dfl::inputs::Node node("0", 0.0);
-  dfl::inputs::Node node0("0", 10.);
-  dfl::inputs::Node node2("1", 4.5);
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("0", vl, 0.0);
+  auto node0 = dfl::inputs::Node::build("0", vl, 10.);
+  auto node2 = dfl::inputs::Node::build("1", vl, 4.5);
 
-  ASSERT_TRUE(node == node0);
-  ASSERT_TRUE(node0 != node2);
-  ASSERT_FALSE(node != node0);
-  ASSERT_FALSE(node == node2);
-  ASSERT_TRUE(node < node2);
-  ASSERT_TRUE(node <= node2);
-  ASSERT_TRUE(node <= node0);
-  ASSERT_TRUE(node2 > node);
-  ASSERT_TRUE(node2 >= node);
-  ASSERT_TRUE(node0 >= node);
+  ASSERT_TRUE(*node == *node0);
+  ASSERT_TRUE(*node0 != *node2);
+  ASSERT_FALSE(*node != *node0);
+  ASSERT_FALSE(*node == *node2);
+  ASSERT_TRUE(*node < *node2);
+  ASSERT_TRUE(*node <= *node2);
+  ASSERT_TRUE(*node <= *node0);
+  ASSERT_TRUE(*node2 > *node);
+  ASSERT_TRUE(*node2 >= *node);
+  ASSERT_TRUE(*node0 >= *node);
 }

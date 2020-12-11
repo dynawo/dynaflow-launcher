@@ -16,18 +16,103 @@
  */
 
 #include "Algo.h"
+#include <DYNBusInterface.h>
 #include "Configuration.h"
 #include "Dico.h"
 #include "Tests.h"
 
 #include <algorithm>
+#include <boost/make_shared.hpp>
+#include <map>
+#include <set>
+#include <tuple>
 #include <vector>
 
+namespace test {
+
+/**
+ * @brief Implement Service manager interface stub for testing purpose
+ *
+ * This aims to stub the Dynawo service manager interface, to avoid using dynawo library during unit testing.
+ * The idea is to represent the switches connections by a map of (busId, voltagelevelId) / otherBusId,
+ * allowing to easy retrieve the list of bus connected by a switch to another bus in the same voltage level
+ */
+class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
+ public:
+  using MapKey = std::tuple<std::string, std::string>;
+
+ public:
+  void clear() {
+    map_.clear();
+  }
+
+  /**
+   * @brief Add a switch connection
+   *
+   * this will perform the connection @p busId <=> @p otherbusid in voltage level
+   *
+   * @param busId the bus to connect to
+   * @param VLId the voltage level id containing both buses
+   * @param otherbusid the other bus id
+   */
+  void add(const std::string& busId, const std::string& VLId, const std::string& otherbusid) {
+    map_[std::tie(busId, VLId)].push_back(otherbusid);
+    map_[std::tie(otherbusid, VLId)].push_back(busId);
+  }
+
+  /**
+   * @copydoc DYN::ServiceManagerInterface::getBusesConnectedBySwitch
+   */
+  std::vector<std::string> getBusesConnectedBySwitch(const std::string& busId, const std::string& VLId) const final {
+    auto it = map_.find(std::tie(busId, VLId));
+    if (it == map_.end()) {
+      return {};
+    }
+
+    std::set<std::string> set;
+    for (const auto& id : it->second) {
+      updateSet(set, busId, VLId);
+    }
+    std::vector<std::string> ret(set.begin(), set.end());
+    ret.erase(std::find(ret.begin(), ret.end(), busId));
+    return ret;
+  }
+
+  /**
+   * @copydoc DYN::ServiceManagerInterface::getRegulatedBus
+   */
+  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string& regulatingComponent) const final {
+    return boost::shared_ptr<DYN::BusInterface> ();
+  }
+
+ private:
+  void updateSet(std::set<std::string>& set, const std::string& str, const std::string& vlid) const {
+    if (set.count(str) > 0) {
+      return;
+    }
+
+    set.insert(str);
+    auto it = map_.find(std::tie(str, vlid));
+    if (it == map_.end()) {
+      return;
+    }
+
+    for (const auto& id : it->second) {
+      updateSet(set, id, vlid);
+    }
+  }
+
+ private:
+  std::map<MapKey, std::vector<std::string>> map_;
+};
+}  // namespace test
+
 TEST(SlackNodeAlgo, Base) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
-      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 4.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 0.0), dfl::inputs::Node::build("1", vl, 1.0), dfl::inputs::Node::build("2", vl, 2.0),
+      dfl::inputs::Node::build("3", vl, 3.0), dfl::inputs::Node::build("4", vl, 4.0), dfl::inputs::Node::build("5", vl, 5.0),
+      dfl::inputs::Node::build("6", vl, 0.0),
   };
 
   nodes[0]->neighbours.push_back(nodes[1]);
@@ -48,10 +133,11 @@ TEST(SlackNodeAlgo, Base) {
 }
 
 TEST(SlackNodeAlgo, neighbours) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
-      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 0.0), dfl::inputs::Node::build("1", vl, 1.0), dfl::inputs::Node::build("2", vl, 2.0),
+      dfl::inputs::Node::build("3", vl, 3.0), dfl::inputs::Node::build("4", vl, 5.0), dfl::inputs::Node::build("5", vl, 5.0),
+      dfl::inputs::Node::build("6", vl, 0.0),
   };
 
   nodes[0]->neighbours.push_back(nodes[1]);
@@ -72,10 +158,11 @@ TEST(SlackNodeAlgo, neighbours) {
 }
 
 TEST(SlackNodeAlgo, equivalent) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
-      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 0.0), dfl::inputs::Node::build("1", vl, 1.0), dfl::inputs::Node::build("2", vl, 2.0),
+      dfl::inputs::Node::build("3", vl, 3.0), dfl::inputs::Node::build("4", vl, 5.0), dfl::inputs::Node::build("5", vl, 5.0),
+      dfl::inputs::Node::build("6", vl, 0.0),
   };
 
   nodes[5]->neighbours.push_back(nodes[1]);
@@ -96,10 +183,11 @@ TEST(SlackNodeAlgo, equivalent) {
 }
 
 TEST(Connexity, base) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
-      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 0.0), dfl::inputs::Node::build("1", vl, 1.0), dfl::inputs::Node::build("2", vl, 2.0),
+      dfl::inputs::Node::build("3", vl, 3.0), dfl::inputs::Node::build("4", vl, 5.0), dfl::inputs::Node::build("5", vl, 5.0),
+      dfl::inputs::Node::build("6", vl, 0.0),
   };
   std::vector<dfl::inputs::Node::NodeId> expected_nodes{"0", "1", "2", "3"};
 
@@ -128,9 +216,10 @@ TEST(Connexity, base) {
 }
 
 TEST(Connexity, SameSize) {
-  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0),
-                                                        std::make_shared<dfl::inputs::Node>("2", 2.0), std::make_shared<dfl::inputs::Node>("3", 3.0),
-                                                        std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0)};
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("0", vl, 0.0), dfl::inputs::Node::build("1", vl, 1.0),
+                                                        dfl::inputs::Node::build("2", vl, 2.0), dfl::inputs::Node::build("3", vl, 3.0),
+                                                        dfl::inputs::Node::build("4", vl, 5.0), dfl::inputs::Node::build("5", vl, 5.0)};
   std::vector<dfl::inputs::Node::NodeId> expected_nodes{"0", "1", "2"};
 
   nodes[0]->neighbours.push_back(nodes[1]);
@@ -156,11 +245,15 @@ TEST(Connexity, SameSize) {
 }
 
 TEST(Generators, base) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
+  auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 0.0), std::make_shared<dfl::inputs::Node>("1", 1.0), std::make_shared<dfl::inputs::Node>("2", 2.0),
-      std::make_shared<dfl::inputs::Node>("3", 3.0), std::make_shared<dfl::inputs::Node>("4", 5.0), std::make_shared<dfl::inputs::Node>("5", 5.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 0.0),  dfl::inputs::Node::build("1", vl, 1.0),  dfl::inputs::Node::build("2", vl, 2.0),
+      dfl::inputs::Node::build("3", vl, 3.0),  dfl::inputs::Node::build("4", vl2, 5.0), dfl::inputs::Node::build("5", vl2, 5.0),
+      dfl::inputs::Node::build("6", vl2, 0.0),
   };
+
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
       {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points0;
@@ -189,7 +282,7 @@ TEST(Generators, base) {
   nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5, 0);
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true, testServiceManager);
 
   std::for_each(nodes.begin(), nodes.end(), algo_infinite);
 
@@ -211,7 +304,7 @@ TEST(Generators, base) {
   }
 
   generators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, false);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, false, testServiceManager);
 
   std::for_each(nodes.begin(), nodes.end(), algo_finite);
 
@@ -233,11 +326,68 @@ TEST(Generators, base) {
   }
 }
 
-TEST(Loads, base) {
+TEST(Generators, SwitchConnexity) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
+  auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 98.0), std::make_shared<dfl::inputs::Node>("1", 111.0), std::make_shared<dfl::inputs::Node>("2", 24.0),
-      std::make_shared<dfl::inputs::Node>("3", 63.0), std::make_shared<dfl::inputs::Node>("4", 56.0),  std::make_shared<dfl::inputs::Node>("5", 46.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 0.0),  dfl::inputs::Node::build("1", vl, 1.0),  dfl::inputs::Node::build("2", vl, 2.0),
+      dfl::inputs::Node::build("3", vl, 3.0),  dfl::inputs::Node::build("4", vl2, 5.0), dfl::inputs::Node::build("5", vl2, 5.0),
+      dfl::inputs::Node::build("6", vl2, 0.0),
+  };
+
+  testServiceManager->add("0", "VL", "1");
+  testServiceManager->add("1", "VL", "2");
+  testServiceManager->add("4", "VL2", "5");
+
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
+      {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points0;
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points0, -1, 1, -1,
+                                     1, 1),  // due to switch connexity
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "2", points, -2, 2, -2,
+                                     2, 2),  // due to switch connexity
+      dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5, 5),
+  };
+
+  nodes[0]->generators.emplace_back("00", points0, -1, 1, -1, 1, 1);
+
+  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2 ,2);
+
+  nodes[4]->generators.emplace_back("04", points, -5, 5, -5, 5 ,5);
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true, testServiceManager);
+
+  std::for_each(nodes.begin(), nodes.end(), algo_infinite);
+
+  ASSERT_EQ(3, generators.size());
+  for (size_t index = 0; index < generators.size(); ++index) {
+    ASSERT_EQ(expected_gens_infinite[index].id, generators[index].id);
+    ASSERT_EQ(expected_gens_infinite[index].model, generators[index].model);
+    ASSERT_EQ(expected_gens_infinite[index].points.size(), generators[index].points.size());
+    ASSERT_EQ(expected_gens_infinite[index].qmin, generators[index].qmin);
+    ASSERT_EQ(expected_gens_infinite[index].qmax, generators[index].qmax);
+    ASSERT_EQ(expected_gens_infinite[index].pmin, generators[index].pmin);
+    ASSERT_EQ(expected_gens_infinite[index].pmax, generators[index].pmax);
+    for (size_t index_p = 0; index_p < expected_gens_infinite[index].points.size(); ++index_p) {
+      ASSERT_EQ(expected_gens_infinite[index].points[index_p].p, generators[index].points[index_p].p);
+      ASSERT_EQ(expected_gens_infinite[index].points[index_p].qmax, generators[index].points[index_p].qmax);
+      ASSERT_EQ(expected_gens_infinite[index].points[index_p].qmin, generators[index].points[index_p].qmin);
+    }
+  }
+}
+
+TEST(Loads, base) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
+      dfl::inputs::Node::build("0", vl, 98.0), dfl::inputs::Node::build("1", vl, 111.0), dfl::inputs::Node::build("2", vl, 24.0),
+      dfl::inputs::Node::build("3", vl, 63.0), dfl::inputs::Node::build("4", vl, 56.0),  dfl::inputs::Node::build("5", vl, 46.0),
+      dfl::inputs::Node::build("6", vl, 0.0),
   };
 
   dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
@@ -274,10 +424,11 @@ hvdcLineDefinitionEqual(const dfl::algo::HvdcLineDefinition& lhs, const dfl::alg
 }
 
 TEST(HvdcLine, base) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      std::make_shared<dfl::inputs::Node>("0", 98.0), std::make_shared<dfl::inputs::Node>("1", 111.0), std::make_shared<dfl::inputs::Node>("2", 24.0),
-      std::make_shared<dfl::inputs::Node>("3", 63.0), std::make_shared<dfl::inputs::Node>("4", 56.0),  std::make_shared<dfl::inputs::Node>("5", 46.0),
-      std::make_shared<dfl::inputs::Node>("6", 0.0),
+      dfl::inputs::Node::build("0", vl, 98.0), dfl::inputs::Node::build("1", vl, 111.0), dfl::inputs::Node::build("2", vl, 24.0),
+      dfl::inputs::Node::build("3", vl, 63.0), dfl::inputs::Node::build("4", vl, 56.0),  dfl::inputs::Node::build("5", vl, 46.0),
+      dfl::inputs::Node::build("6", vl, 0.0),
   };
   auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN");
   auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
@@ -326,10 +477,12 @@ TEST(HvdcLine, base) {
 static void
 testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points, bool isDiagramValid) {
   using dfl::inputs::Generator;
+  auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   Generator generator("G1", points, 3., 30., 33., 330., 100);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
-  std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false, testServiceManager);
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0);
 
   node->generators.emplace_back(generator);
   algo_infinite(node);
