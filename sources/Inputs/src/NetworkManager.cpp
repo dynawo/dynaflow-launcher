@@ -39,7 +39,7 @@ namespace dfl {
 namespace inputs {
 
 NetworkManager::NetworkManager(const std::string& filepath) :
-    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM1, filepath)),
+    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath)),
     slackNode_{},
     nodes_{},
     nodesCallbacks_{} {
