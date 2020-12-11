@@ -30,6 +30,7 @@
 #include <DYNLineInterface.h>
 #include <DYNLoadInterface.h>
 #include <DYNNetworkInterface.h>
+#include <DYNSwitchInterface.h>
 #include <DYNThreeWTransformerInterface.h>
 #include <DYNTwoWTransformerInterface.h>
 #include <DYNVoltageLevelInterface.h>
@@ -40,7 +41,7 @@ namespace dfl {
 namespace inputs {
 
 NetworkManager::NetworkManager(const std::string& filepath) :
-    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM1, filepath)),
+    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath)),
     slackNode_{},
     nodes_{},
     nodesCallbacks_{} {
@@ -61,13 +62,16 @@ NetworkManager::buildTree() {
       std::exit(EXIT_FAILURE);
     }
 
+    auto vl = std::make_shared<VoltageLevel>((*it_v)->getID());
+    voltagelevels_.push_back(vl);
+
     const auto& buses = (*it_v)->getBuses();
     for (auto it_b = buses.begin(); it_b != buses.end(); ++it_b) {
 #if _DEBUG_
       // ids of nodes should be unique
       assert(nodes_.count((*it_b)->getID()) == 0);
 #endif
-      nodes_[(*it_b)->getID()] = std::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
+      nodes_[(*it_b)->getID()] = Node::build((*it_b)->getID(), vl, (*it_v)->getVNom());
       LOG(debug) << "Node " << (*it_b)->getID() << " created" << LOG_ENDL;
       if (opt_id && *opt_id == (*it_b)->getID()) {
         LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
@@ -107,6 +111,22 @@ NetworkManager::buildTree() {
         nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
                                                 pmin, pmax, targetP);
         LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
+      }
+    }
+
+    const auto& switches = (*it_v)->getSwitches();
+    for (const auto& sw : switches) {
+      if (!sw->isOpen()) {
+        auto bus1 = sw->getBusInterface1();
+        auto bus2 = sw->getBusInterface2();
+#ifdef _DEBUG_
+        // By construction buses in switches are all inside the voltage level, so the nodes already exist
+        assert(nodes_.count(bus1->getID()) > 0);
+        assert(nodes_.count(bus2->getID()) > 0);
+#endif
+        nodes_[bus1->getID()]->neighbours.push_back(nodes_.at(bus2->getID()));
+        nodes_[bus2->getID()]->neighbours.push_back(nodes_.at(bus1->getID()));
+        LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by switch " << sw->getID() << LOG_ENDL;
       }
     }
   }

@@ -95,7 +95,8 @@ Context::process() {
     }
   }
 
-  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, config_.useInfiniteReactiveLimits()));
+  onNodeOnMainConnexComponent(
+      algo::GeneratorDefinitionAlgorithm(generators_, config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();

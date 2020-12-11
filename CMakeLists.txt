@@ -113,34 +113,8 @@ find_package(XercesC 3.2.2 REQUIRED)
 find_package(libXML 0.2.4 REQUIRED)
 set(LibXML_USE_STATIC_LIBS TRUE)
 find_package(libXML 0.2.4 REQUIRED)
-#libIIDM
-find_package(libIIDM 0.2.8 REQUIRED
-    COMPONENTS
-    core
-    xml
-    ext-activeseason
-    ext-activeseason-xml
-    ext-busbarsectionposition
-    ext-busbarsectionposition-xml
-    ext-connectableposition
-    ext-connectableposition-xml
-    ext-currentlimitsperseason
-    ext-currentlimitsperseason-xml
-    ext-generatoractivepowercontrol
-    ext-generatoractivepowercontrol-xml
-    ext-hvdcangledroopactivepowercontrol
-    ext-hvdcangledroopactivepowercontrol-xml
-    ext-hvdcoperatoractivepowerrange
-    ext-hvdcoperatoractivepowerrange-xml
-    ext-generatorentsoecategory
-    ext-generatorentsoecategory-xml
-    ext-generatorstartup
-    ext-generatorstartup-xml
-    ext-loaddetail
-    ext-loaddetail-xml
-    ext-standbyautomaton
-    ext-standbyautomaton-xml
-)
+find_package(LibXml2 "2.9" REQUIRED)
+find_package(LibIIDM "1.2.1" REQUIRED PATHS ${LIBIIDM_HOME})
 # Boost
 # Use only BOOST_ROOT by default to avoid conflicts between dynawo boost and default install
 option(DYNAFLOW_LAUNCHER_USE_BOOST_DEFAULT "Use default system boost installation" OFF)
