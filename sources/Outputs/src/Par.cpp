@@ -161,6 +161,7 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
   set->addReference(helper::buildReference("hvdc_Q20Pu", "q" + second + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
+  set->addReference(helper::buildReference("hvdc_PMaxPu", "pMax_pu", "DOUBLE"));
 
   set->addParameter(helper::buildParameter("hvdc_Q1MinPu", std::numeric_limits<double>::lowest()));
   set->addParameter(helper::buildParameter("hvdc_Q1MaxPu", std::numeric_limits<double>::max()));
