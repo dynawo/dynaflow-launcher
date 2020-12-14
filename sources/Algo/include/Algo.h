@@ -21,6 +21,7 @@
 #include "Node.h"
 
 #include <DYNGeneratorInterface.h>
+#include <DYNServiceManagerInterface.h>
 #include <unordered_set>
 #include <vector>
 
@@ -187,8 +188,9 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
    *
    * @param gens generators list to update
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
+   * @param serviceManager dynawo service manager in order to use Dynawo extra algorithms
    */
-  GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits);
+  GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits, const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager);
 
   /**
    * @brief Perform algorithm
@@ -210,8 +212,20 @@ class GeneratorDefinitionAlgorithm : public NodeAlgorithm {
    */
   static bool isDiagramValid(const inputs::Generator& generator);
 
-  Generators& generators_;          ///< the generators list to update
-  bool useInfiniteReactivelimits_;  ///< determine if infinite reactive limits are used
+  /**
+   * @brief Determines if a node is connected to another generator node through a switch network path
+   *
+   * Uses the dynawo service manager
+   *
+   * @param node the generator node to check
+   *
+   * @returns @b true if another generator is connected, @b false if not
+   */
+  bool IsOtherGeneratorConnectedBySwitches(const NodePtr& node) const;
+
+  Generators& generators_;                                          ///< the generators list to update
+  bool useInfiniteReactivelimits_;                                  ///< determine if infinite reactive limits are used
+  boost::shared_ptr<DYN::ServiceManagerInterface> serviceManager_;  ///< dynawo service manager
 };
 
 /**
@@ -270,7 +284,7 @@ struct HvdcLineDefinition {
   using HvdcLineId = std::string;                     ///< HvdcLine id definition
 
   /** @brief Enum Position that indicates how the converters of this hvdcLine are positioned.
-   * 
+   *
    * enum to determine how the converters of this hvdc line are connected inside the network
    * and their position compared to the main connex component.
    */
@@ -285,10 +299,10 @@ struct HvdcLineDefinition {
    *
    * @param id the HvdcLine id
    * @param converterType type of converter of the hvdc line
-   * @param converter1_id first converter id 
+   * @param converter1_id first converter id
    * @param converter1_busId first converter bus id
    * @param converter1_voltageRegulationOn firt converter voltage regulation parameter, for VSC converters only
-   * @param converter2_id second converter id 
+   * @param converter2_id second converter id
    * @param converter2_busId second converter bus id
    * @param converter2_voltageRegulationOn second converter voltage regulation parameter, for VSC converters only
    * @param position position of the converters of this hvdc line compared to the main connex component
@@ -335,10 +349,10 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
   /**
    * @brief Perform the algorithm
    *
-   * Update the list with the hvdc line of the converters of the node. 
+   * Update the list with the hvdc line of the converters of the node.
    * This function also put the position of the converters compared to the main connex component in the newly created hvdc line definition.
    * Pre-condition: the nodes used as parameter of this operator should be nodes of the main connex component only
-   * 
+   *
    * @param node the node to process
    */
   void operator()(const NodePtr& node);

@@ -19,7 +19,19 @@
 
 namespace dfl {
 namespace inputs {
-Node::Node(const NodeId& idNode, double nominalVoltageNode) : id(idNode), nominalVoltage{nominalVoltageNode}, neighbours{} {}
+
+std::shared_ptr<Node>
+Node::build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage) {
+  auto ret = std::shared_ptr<Node>(new Node(id, vl, nominalVoltage));
+  vl->nodes.push_back(ret);
+  return ret;
+}
+
+Node::Node(const NodeId& idNode, const std::shared_ptr<VoltageLevel> vl, double nominalVoltageNode) :
+    id(idNode),
+    voltageLevel(vl),
+    nominalVoltage{nominalVoltageNode},
+    neighbours{} {}
 
 bool
 operator==(const Node& lhs, const Node& rhs) {
@@ -50,6 +62,10 @@ bool
 operator>=(const Node& lhs, const Node& rhs) {
   return !(lhs < rhs);
 }
+
+/////////////////////////////////////////////////
+
+VoltageLevel::VoltageLevel(const VoltageLevelId& vlid) : id(vlid) {}
 
 }  // namespace inputs
 }  // namespace dfl

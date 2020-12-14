@@ -94,11 +94,12 @@ class NetworkManager {
   void buildTree();
 
  private:
-  boost::shared_ptr<DYN::DataInterface> interface_;      ///< data interface
-  std::shared_ptr<Node> slackNode_;                      ///< Slack node defined in network, if any
-  std::map<Node::NodeId, std::shared_ptr<Node>> nodes_;  ///< nodes representing the node tree
-  std::vector<ProcessNodeCallback> nodesCallbacks_;      ///< list of callback or nodes
-  std::vector<std::shared_ptr<HvdcLine>> hvdcLines_;     ///< hvdc Lines
+  boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface
+  std::shared_ptr<Node> slackNode_;                           ///< Slack node defined in network, if any
+  std::map<Node::NodeId, std::shared_ptr<Node>> nodes_;       ///< nodes representing the node tree
+  std::vector<ProcessNodeCallback> nodesCallbacks_;           ///< list of callback or nodes
+  std::vector<std::shared_ptr<HvdcLine>> hvdcLines_;          ///< hvdc Lines
+  std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
 };
 
 }  // namespace inputs

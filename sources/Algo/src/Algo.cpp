@@ -74,19 +74,28 @@ MainConnexComponentAlgorithm::operator()(const NodePtr& node) {
 
 ////////////////////////////////////////////////////////////////
 
-GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits) :
+GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, bool infinitereactivelimits,
+                                                           const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager) :
     NodeAlgorithm(),
     generators_(gens),
-    useInfiniteReactivelimits_{infinitereactivelimits} {}
+    useInfiniteReactivelimits_{infinitereactivelimits},
+    serviceManager_(serviceManager) {}
 
 void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
   auto& node_generators = node->generators;
   if (node_generators.size() == 1) {
     auto model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::SIGNALN : GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
+    if (IsOtherGeneratorConnectedBySwitches(node)) {
+      // Use the model with impedance in case another generator is connected to the node through a switch network path
+      model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN
+                                         : GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN;
+    }
+
     const auto& gen = node_generators.front();
 
-    if (model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN && !isDiagramValid(gen)) {
+    if ((model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN) &&
+        !isDiagramValid(gen)) {
       return;
     }
 
@@ -105,8 +114,8 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 bool
 GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator) {
-  //If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values.
-  //We check the validity of pmin,pmax and qmin,qmax values
+  // If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values.
+  // We check the validity of pmin,pmax and qmin,qmax values
   if (generator.points.empty()) {
     if (DYN::doubleEquals(generator.pmin, generator.pmax)) {
       LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
@@ -119,7 +128,7 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
     return true;
   }
 
-  //If there is only one point, the diagram is not valid
+  // If there is only one point, the diagram is not valid
   if (generator.points.size() == 1) {
     LOG(warn) << MESS(InvalidDiagramOnePoint, generator.id) << LOG_ENDL;
     return false;
@@ -146,6 +155,29 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
     }
   }
   return valid;
+}
+
+bool
+GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr& node) const {
+  auto vl = node->voltageLevel.lock();
+  auto buses = serviceManager_->getBusesConnectedBySwitch(node->id, vl->id);
+
+  if (buses.size() == 0) {
+    return false;
+  }
+
+  for (const auto& id : buses) {
+    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& node) { return node->id == id; });
+#ifdef _DEBUG_
+    // shouldn't happen by construction of the elements
+    assert(found != vl->nodes.end());
+#endif
+    if ((*found)->generators.size() != 0) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /////////////////////////////////////////////////////////////////

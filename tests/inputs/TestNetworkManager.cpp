@@ -28,6 +28,12 @@ checkNode(const std::shared_ptr<dfl::inputs::Node>& node) {
 
   ASSERT_EQ(0, node->id.compare(node->id.length() - 3, 3, "_TN"));
   ++count;
+
+  // 1 VL <=> 1 node in this example
+  ASSERT_FALSE(node->voltageLevel.expired());
+  auto vl = node->voltageLevel.lock();
+  ASSERT_EQ(1, vl->nodes.size());
+  ASSERT_EQ(node->id, vl->nodes.front()->id);
 }
 
 TEST(NetworkManager, walk) {
