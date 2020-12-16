@@ -28,6 +28,14 @@
 #include <vector>
 
 namespace test {
+
+/**
+ * @brief Implement Service manager interface stub for testing purpose
+ *
+ * This aims to stub the Dynawo service manager interface, to avoid using dynawo library during unit testing.
+ * The idea is to represent the switches connections by a map of (busId, voltagelevelId) / otherBusId,
+ * allowing to easy retrieve the list of bus connected by a switch to another bus in the same voltage level
+ */
 class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
  public:
   using MapKey = std::tuple<std::string, std::string>;
@@ -37,11 +45,23 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
     map_.clear();
   }
 
-  void add(const std::string& busId, const std::string& VLId, const std::string& value) {
-    map_[std::tie(busId, VLId)].push_back(value);
-    map_[std::tie(value, VLId)].push_back(busId);
+  /**
+   * @brief Add a switch connection
+   *
+   * this will perform the connection @p busId <=> @p otherbusid in voltage level
+   *
+   * @param busId the bus to connect to
+   * @param VLId the voltage level id containing both buses
+   * @param otherbusid the other bus id
+   */
+  void add(const std::string& busId, const std::string& VLId, const std::string& otherbusid) {
+    map_[std::tie(busId, VLId)].push_back(otherbusid);
+    map_[std::tie(otherbusid, VLId)].push_back(busId);
   }
 
+  /**
+   * @copydoc DYN::ServiceManagerInterface::getBusesConnectedBySwitch
+   */
   std::vector<std::string> getBusesConnectedBySwitch(const std::string& busId, const std::string& VLId) const final {
     auto it = map_.find(std::tie(busId, VLId));
     if (it == map_.end()) {
