@@ -144,13 +144,13 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   updateSignalNGenerator(set, activePowerCompensation, true);
   ret.push_back(set);
 
-  // Signal N generator with impendance
+  // Signal N generator with impedance
   set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorParId));
   updateSignalNGenerator(set, activePowerCompensation, false);
   updateCouplingParameters(set);
   ret.push_back(set);
 
-  // Signal N generator with impendance with fixed P
+  // Signal N generator with impedance with fixed P
   set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorFixedPParId));
   updateSignalNGenerator(set, activePowerCompensation, true);
   updateCouplingParameters(set);
