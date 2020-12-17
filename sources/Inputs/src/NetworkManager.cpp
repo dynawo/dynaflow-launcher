@@ -21,6 +21,7 @@
 #include "Message.hpp"
 
 #include <DYNBusInterface.h>
+#include <DYNCommon.h>
 #include <DYNConverterInterface.h>
 #include <DYNDataInterfaceFactory.h>
 #include <DYNGeneratorInterface.h>
@@ -99,10 +100,12 @@ NetworkManager::buildTree() {
       assert(nodes_.count(nodeid));
 #endif
       auto targetP = (*it_g)->getTargetP();
-      if ((*it_g)->isVoltageRegulationOn() && targetP >= (*it_g)->getPMin() && targetP <= (*it_g)->getPMax()) {
+      auto pmin = (*it_g)->getPMin();
+      auto pmax = (*it_g)->getPMax();
+      if ((*it_g)->isVoltageRegulationOn() && (DYN::doubleEquals(targetP, pmin) || targetP > pmin) && (DYN::doubleEquals(targetP, pmax) || targetP < pmax)) {
         // We don't use dynamic models for generators with voltage regulation disabled
         nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
-                                                (*it_g)->getPMin(), (*it_g)->getPMax(), targetP);
+                                                pmin, pmax, targetP);
         LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
       }
     }
