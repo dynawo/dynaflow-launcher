@@ -95,9 +95,10 @@ class Par {
    *
    * @param set the parameter set to update
    * @param activePowerCompensation the type of active power compensation
+   * @param fixedP boolean to determines if the set represents a generator with a targetP equal to 0
    */
   static void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set,
-                                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
+                                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);
 
   /**
    * @brief Update parameter set with impendance model parameters and references
