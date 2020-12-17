@@ -98,10 +98,11 @@ NetworkManager::buildTree() {
       // node should exist at this point
       assert(nodes_.count(nodeid));
 #endif
-      if ((*it_g)->isVoltageRegulationOn()) {
+      auto targetP = (*it_g)->getTargetP();
+      if ((*it_g)->isVoltageRegulationOn() && targetP >= (*it_g)->getPMin() && targetP <= (*it_g)->getPMax()) {
         // We don't use dynamic models for generators with voltage regulation disabled
         nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
-                                                (*it_g)->getPMin(), (*it_g)->getPMax());
+                                                (*it_g)->getPMin(), (*it_g)->getPMax(), targetP);
         LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
       }
     }

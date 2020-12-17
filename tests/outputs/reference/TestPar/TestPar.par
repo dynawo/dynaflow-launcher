@@ -23,6 +23,25 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
   </set>
+  <set id="2751660957840315519">
+    <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_QMax0" type="DOUBLE" value="31"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="results/TestPar_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="2751660957840315519_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="2"/>
+    <par name="generator_QMinTableFile" type="STRING" value="results/TestPar_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="2751660957840315519_tableqmin"/>
+    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+  </set>
   <set id="6320417593396202500">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
@@ -55,7 +74,7 @@
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
   <set id="SignalN">
-    <par name="nbGen" type="INT" value="4"/>
+    <par name="nbGen" type="INT" value="5"/>
   </set>
   <set id="impSignalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>

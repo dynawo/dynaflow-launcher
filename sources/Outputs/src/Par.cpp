@@ -19,6 +19,7 @@
 
 #include "Constants.h"
 
+#include <DYNCommon.h>
 #include <PARParameter.h>
 #include <PARParameterFactory.h>
 #include <PARParametersSetCollection.h>
@@ -195,7 +196,11 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
   //  Use the hash id in exported files to prevent use of non-ascii characters
 
-  set->addParameter(helper::buildParameter("generator_KGover", 1.));
+  if (DYN::doubleIsZero(def.targetP)) {
+    set->addParameter(helper::buildParameter("generator_KGover", 0.));
+  } else {
+    set->addParameter(helper::buildParameter("generator_KGover", 1.));
+  }
   if (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN ||
       def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
     updateCouplingParameters(set);

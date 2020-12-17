@@ -90,7 +90,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
       return;
     }
 
-    generators_.emplace_back(gen.id, model, node->id, gen.points, gen.qmin, gen.qmax, gen.pmin, gen.pmax);
+    generators_.emplace_back(gen.id, model, node->id, gen.points, gen.qmin, gen.qmax, gen.pmin, gen.pmax, gen.targetP);
   } else {
     auto model =
         useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN : GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN;
@@ -98,7 +98,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
       if (model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN && !isDiagramValid(*it)) {
         continue;
       }
-      generators_.emplace_back(it->id, model, node->id, it->points, it->qmin, it->qmax, it->pmin, it->pmax);
+      generators_.emplace_back(it->id, model, node->id, it->points, it->qmin, it->qmax, it->pmin, it->pmax, it->targetP);
     }
   }
 }

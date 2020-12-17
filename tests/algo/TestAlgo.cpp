@@ -168,25 +168,25 @@ TEST(Generators, base) {
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points0, 0, 0, 0, 0),
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points, -1, 1, -1, 1),
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", points, -2, 2, -2, 2),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5),
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points0, 0, 0, 0, 0, 0),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "0", points, -1, 1, -1, 1, 0),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", points, -2, 2, -2, 2, 0),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5, 0),
   };
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0),
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points, -1, 1, -1, 1),
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", points, -2, 2, -2, 2),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5),
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0),
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "0", points, -1, 1, -1, 1, 0),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", points, -2, 2, -2, 2, 0),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5, 0),
   };
 
-  nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0);
-  nodes[0]->generators.emplace_back("01", points, -1, 1, -1, 1);
+  nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0, 0);
+  nodes[0]->generators.emplace_back("01", points, -1, 1, -1, 1, 0);
 
-  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2);
+  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 0);
 
-  nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5);
+  nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5, 0);
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, true);
@@ -202,6 +202,7 @@ TEST(Generators, base) {
     ASSERT_EQ(expected_gens_infinite[index].qmax, generators[index].qmax);
     ASSERT_EQ(expected_gens_infinite[index].pmin, generators[index].pmin);
     ASSERT_EQ(expected_gens_infinite[index].pmax, generators[index].pmax);
+    ASSERT_EQ(expected_gens_infinite[index].targetP, generators[index].targetP);
     for (size_t index_p = 0; index_p < expected_gens_infinite[index].points.size(); ++index_p) {
       ASSERT_EQ(expected_gens_infinite[index].points[index_p].p, generators[index].points[index_p].p);
       ASSERT_EQ(expected_gens_infinite[index].points[index_p].qmax, generators[index].points[index_p].qmax);
@@ -222,6 +223,7 @@ TEST(Generators, base) {
     ASSERT_EQ(expected_gens_finite[index].qmax, generators[index].qmax);
     ASSERT_EQ(expected_gens_finite[index].pmin, generators[index].pmin);
     ASSERT_EQ(expected_gens_finite[index].pmax, generators[index].pmax);
+    ASSERT_EQ(expected_gens_finite[index].targetP, generators[index].targetP);
     ASSERT_EQ(expected_gens_finite[index].points.size(), generators[index].points.size());
     for (size_t index_p = 0; index_p < expected_gens_finite[index].points.size(); ++index_p) {
       ASSERT_EQ(expected_gens_finite[index].points[index_p].p, generators[index].points[index_p].p);
@@ -314,7 +316,7 @@ TEST(HvdcLine, base) {
 static void
 testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points, bool isDiagramValid) {
   using dfl::inputs::Generator;
-  Generator generator("G1", points, 3., 30., 33., 330.);
+  Generator generator("G1", points, 3., 30., 33., 330., 100);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, false);
   std::shared_ptr<dfl::inputs::Node> node = std::make_shared<dfl::inputs::Node>("0", 0.0);

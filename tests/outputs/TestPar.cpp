@@ -35,7 +35,7 @@ TEST(TestPar, write) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
-                                                                     1., 10., 11., 110.),
+                                                                     1., 10., 11., 110., 100.),
                                                  GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
@@ -43,7 +43,7 @@ TEST(TestPar, write) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
-                                                                     2., 20., 22., 220.),
+                                                                     2., 20., 22., 220., 100.),
                                                  GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
@@ -51,7 +51,7 @@ TEST(TestPar, write) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
-                                                                     3., 30., 33., 330.),
+                                                                     3., 30., 33., 330., 100.),
                                                  GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
@@ -59,7 +59,10 @@ TEST(TestPar, write) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
-                                                                     4., 40., 44., 440.)};
+                                                                     4., 40., 44., 440., 100.),
+                                                 GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04",
+                                                                     {},
+                                                                     3., 30., -33., 330., 0.)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
