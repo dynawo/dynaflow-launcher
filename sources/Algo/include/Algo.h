@@ -153,9 +153,10 @@ struct GeneratorDefinition {
    * @param qmax maximum reactive power for the generator
    * @param pmin minimum active power for the generator
    * @param pmax maximum active power for the generator
+   * @param targetP target active power of the generator
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
-                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax) :
+                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP) :
       id{genId},
       model{type},
       nodeId{nodeId},
@@ -163,7 +164,8 @@ struct GeneratorDefinition {
       qmin{qmin},
       qmax{qmax},
       pmin{pmin},
-      pmax{pmax} {}
+      pmax{pmax},
+      targetP{targetP} {}
 
   inputs::Generator::GeneratorId id;       ///< generator id
   ModelType model;                         ///< model
@@ -173,6 +175,7 @@ struct GeneratorDefinition {
   double qmax;                             ///< maximum reactive power
   double pmin;                             ///< minimum active power
   double pmax;                             ///< maximum active power
+  double targetP;                          ///< target active power of the generator
 };
 
 /**

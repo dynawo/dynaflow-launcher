@@ -56,14 +56,17 @@ struct Generator {
    * @param qmax maximum reactive power for the generator
    * @param pmin minimum active power for the generator
    * @param pmax maximum active power for the generator
+   * @param targetP target active power of the generator
    */
-  explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax) :
+  explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
+                     double targetP) :
       id{genId},
       points(curvePoints),
       qmin{qmin},
       qmax{qmax},
       pmin{pmin},
-      pmax{pmax} {}
+      pmax{pmax},
+      targetP{targetP} {}
 
   GeneratorId id;                          ///< generator id
   std::vector<ReactiveCurvePoint> points;  ///< reactive points
@@ -71,6 +74,7 @@ struct Generator {
   double qmax;                             ///< maximum reactive power
   double pmin;                             ///< minimum active power
   double pmax;                             ///< maximum active power
+  double targetP;                          ///< target active power of the generator
 };
 
 class HvdcLine;
