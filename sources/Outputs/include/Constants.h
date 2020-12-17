@@ -47,14 +47,16 @@ diagramFilename(const dfl::algo::GeneratorDefinition& generator) {
   return generator.id + "_Diagram.txt";
 }
 
-const std::string loadParId{"GenericRestorativeLoad"};              ///< PAR id common to all loads
-const std::string signalNParId{"SignalN"};                          ///< PAR id for signalN
-const std::string diagramDirectorySuffix{"_Diagram"};               ///< Suffix for the diagram directory
-const std::string diagramMaxTableSuffix{"_tableqmax"};              ///< Suffix for the table name for qmax in diagram file
-const std::string diagramMinTableSuffix{"_tableqmin"};              ///< Suffix for the table name for qmin in diagram file
-const std::string signalNGeneratorParId{"signalNGenerator"};        ///< PAR id for generators using signal N
-const std::string impSignalNGeneratorParId{"impSignalNGenerator"};  ///< PAR id for generators using signal N with impendance
-const std::string xmlEncoding{"UTF-8"};                             ///< Default encoding for XML outputs files
+const std::string loadParId{"GenericRestorativeLoad"};                          ///< PAR id common to all loads
+const std::string signalNParId{"SignalN"};                                      ///< PAR id for signalN
+const std::string diagramDirectorySuffix{"_Diagram"};                           ///< Suffix for the diagram directory
+const std::string diagramMaxTableSuffix{"_tableqmax"};                          ///< Suffix for the table name for qmax in diagram file
+const std::string diagramMinTableSuffix{"_tableqmin"};                          ///< Suffix for the table name for qmin in diagram file
+const std::string signalNGeneratorParId{"signalNGenerator"};                    ///< PAR id for generators using signal N
+const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};        ///< PAR id for generators using signal N with fixed P
+const std::string impSignalNGeneratorParId{"impSignalNGenerator"};              ///< PAR id for generators using signal N with impendance
+const std::string impSignalNGeneratorFixedPParId{"impSignalNGeneratorFixedP"};  ///< PAR id for generators using signal N with impendance with fixed P
+const std::string xmlEncoding{"UTF-8"};                                         ///< Default encoding for XML outputs files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 

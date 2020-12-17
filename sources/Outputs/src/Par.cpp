@@ -78,8 +78,13 @@ Par::write() {
 }
 
 void
-Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
-  set->addParameter(helper::buildParameter("generator_KGover", 1.));
+Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                            bool fixedP) {
+  if (fixedP) {
+    set->addParameter(helper::buildParameter("generator_KGover", 0.));
+  } else {
+    set->addParameter(helper::buildParameter("generator_KGover", 1.));
+  }
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
@@ -131,12 +136,23 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
 
   // Signal N generator
   set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNGeneratorParId));
-  updateSignalNGenerator(set, activePowerCompensation);
+  updateSignalNGenerator(set, activePowerCompensation, false);
+  ret.push_back(set);
+
+  // Signal N generator with fixed P
+  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNGeneratorFixedPParId));
+  updateSignalNGenerator(set, activePowerCompensation, true);
   ret.push_back(set);
 
   // Signal N generator with impendance
   set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorParId));
-  updateSignalNGenerator(set, activePowerCompensation);
+  updateSignalNGenerator(set, activePowerCompensation, false);
+  updateCouplingParameters(set);
+  ret.push_back(set);
+
+  // Signal N generator with impendance with fixed P
+  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorFixedPParId));
+  updateSignalNGenerator(set, activePowerCompensation, true);
   updateCouplingParameters(set);
   ret.push_back(set);
 

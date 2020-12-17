@@ -29,6 +29,7 @@
 #include <DYDMacroStaticReferenceFactory.h>
 #include <DYDStaticRef.h>
 #include <DYDXmlExporter.h>
+#include <DYNCommon.h>
 
 namespace dfl {
 namespace outputs {
@@ -169,10 +170,18 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   std::string parId;
   switch (def.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN:
-    parId = constants::signalNGeneratorParId;
+    if (DYN::doubleIsZero(def.targetP)) {
+      parId = constants::signalNGeneratorFixedPParId;
+    } else {
+      parId = constants::signalNGeneratorParId;
+    }
     break;
   case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-    parId = constants::impSignalNGeneratorParId;
+    if (DYN::doubleIsZero(def.targetP)) {
+      parId = constants::impSignalNGeneratorFixedPParId;
+    } else {
+      parId = constants::impSignalNGeneratorParId;
+    }
     break;
   default:
     std::size_t hashId = constants::hash(def.id);
