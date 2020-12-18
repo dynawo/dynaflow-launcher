@@ -32,7 +32,6 @@ target_link_libraries(DynaFlowLauncher
   DynaFlowLauncher::inputs
   DynaFlowLauncher::common
 
-  Dynawo::dynawo_API_JOB
   Dynawo::dynawo_Simulation
   Dynawo::dynawo_SimulationCommon
 )

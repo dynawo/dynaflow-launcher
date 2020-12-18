@@ -59,7 +59,7 @@ struct Node {
  * @param lhs first node
  * @param rhs second node
  *
- * @returns sttaus of the comparaison
+ * @returns status of the comparaison
  */
 bool operator==(const Node& lhs, const Node& rhs);
 
@@ -71,7 +71,7 @@ bool operator==(const Node& lhs, const Node& rhs);
  * @param lhs first node
  * @param rhs second node
  *
- * @returns sttaus of the comparaison
+ * @returns status of the comparaison
  */
 bool operator!=(const Node& lhs, const Node& rhs);
 
@@ -83,7 +83,7 @@ bool operator!=(const Node& lhs, const Node& rhs);
  * @param lhs first node
  * @param rhs second node
  *
- * @returns sttaus of the comparaison
+ * @returns status of the comparaison
  */
 bool operator<(const Node& lhs, const Node& rhs);
 
@@ -95,7 +95,7 @@ bool operator<(const Node& lhs, const Node& rhs);
  * @param lhs first node
  * @param rhs second node
  *
- * @returns sttaus of the comparaison
+ * @returns status of the comparaison
  */
 bool operator<=(const Node& lhs, const Node& rhs);
 
@@ -107,7 +107,7 @@ bool operator<=(const Node& lhs, const Node& rhs);
  * @param lhs first node
  * @param rhs second node
  *
- * @returns sttaus of the comparaison
+ * @returns status of the comparaison
  */
 bool operator>(const Node& lhs, const Node& rhs);
 
@@ -119,7 +119,7 @@ bool operator>(const Node& lhs, const Node& rhs);
  * @param lhs first node
  * @param rhs second node
  *
- * @returns sttaus of the comparaison
+ * @returns status of the comparaison
  */
 bool operator>=(const Node& lhs, const Node& rhs);
 
