@@ -170,18 +170,10 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   std::string parId;
   switch (def.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN:
-    if (DYN::doubleIsZero(def.targetP)) {
-      parId = constants::signalNGeneratorFixedPParId;
-    } else {
-      parId = constants::signalNGeneratorParId;
-    }
+    parId = (DYN::doubleIsZero(def.targetP)) ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
     break;
   case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-    if (DYN::doubleIsZero(def.targetP)) {
-      parId = constants::impSignalNGeneratorFixedPParId;
-    } else {
-      parId = constants::impSignalNGeneratorParId;
-    }
+    parId = (DYN::doubleIsZero(def.targetP)) ? constants::impSignalNGeneratorFixedPParId : constants::impSignalNGeneratorParId;
     break;
   default:
     std::size_t hashId = constants::hash(def.id);
