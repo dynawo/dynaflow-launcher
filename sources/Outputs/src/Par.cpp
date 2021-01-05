@@ -80,7 +80,7 @@ Par::write() {
 void
 Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                             bool fixedP) {
-  double value = fixedP ? 0. : 1.;
+  double value = fixedP ? kGoverNullValue_ : kGoverDefaultValue_;
   set->addParameter(helper::buildParameter("generator_KGover", value));
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
@@ -208,7 +208,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   std::string hashIdStr = std::to_string(hashId);
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
   //  Use the hash id in exported files to prevent use of non-ascii characters
-  double value = (DYN::doubleIsZero(def.targetP)) ? 0. : 1.;
+  double value = (DYN::doubleIsZero(def.targetP)) ? kGoverNullValue_ : kGoverDefaultValue_;
   set->addParameter(helper::buildParameter("generator_KGover", value));
   if (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN ||
       def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN) {
