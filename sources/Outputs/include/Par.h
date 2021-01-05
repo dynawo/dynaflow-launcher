@@ -95,7 +95,7 @@ class Par {
    *
    * @param set the parameter set to update
    * @param activePowerCompensation the type of active power compensation
-   * @param fixedP boolean to determines if the set represents a generator with a targetP equal to 0
+   * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
    */
   static void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set,
                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);
@@ -130,7 +130,9 @@ class Par {
   static boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine);
 
  private:
-  ParDefinition def_;  ///< PAR file definition
+  ParDefinition def_;                                ///< PAR file definition
+  static constexpr double kGoverNullValue_ = 0.;     ///< KGover null value
+  static constexpr double kGoverDefaultValue_ = 1.;  ///< KGover default value
 };
 
 }  // namespace outputs
