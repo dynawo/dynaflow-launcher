@@ -177,6 +177,9 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
     bool alreadyInserted = it != hvdcLines_.end();
     if (alreadyInserted) {
       it->second.position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
+      // Once we want to use the hvdcLine with both converters in main component, we should remove the line that erase the hvdcLine
+      // from the hvdcLines_ map.
+      hvdcLines_.erase(it);
       continue;
     }
 
