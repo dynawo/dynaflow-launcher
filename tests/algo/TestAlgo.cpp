@@ -281,14 +281,22 @@ TEST(HvdcLine, base) {
   };
   auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN");
   auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
+  auto lccStationMain1 = dfl::inputs::ConverterInterface("LCCStationMain1", "_BUS__11_TN");
+
+  auto lccStationMain2 = dfl::inputs::ConverterInterface("LCCStationMain2", "_BUS__11_TN");
 
   auto hvdcLineLCC = std::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",
                                                              boost::optional<bool>(), "LCCStation2", "_BUS___10_TN", boost::optional<bool>());
   auto hvdcLineVSC = std::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true,
                                                              "VSCStation2", "_BUS___11_TN", false);
+  auto hvdcLineBothInMainComponent =
+      std::make_shared<dfl::inputs::HvdcLine>("HVDCLineBothInMain", dfl::inputs::HvdcLine::ConverterType::VSC, "LCCStationMain1", "_BUS__11_TN",
+                                              boost::optional<bool>(), "LCCStationMain2", "_BUS__11_TN", boost::optional<bool>());
 
   lccStation1.hvdcLine = hvdcLineLCC;
   vscStation2.hvdcLine = hvdcLineVSC;
+  lccStationMain2.hvdcLine = hvdcLineBothInMainComponent;
+  lccStationMain1.hvdcLine = hvdcLineBothInMainComponent;
 
   dfl::algo::HvdcLineDefinition::HvdcLines expected_hvdcLines = {
       dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
@@ -297,7 +305,8 @@ TEST(HvdcLine, base) {
                                     "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT)};
 
   nodes[0]->converterInterfaces.emplace_back(lccStation1);
-
+  nodes[2]->converterInterfaces.emplace_back(lccStationMain1);
+  nodes[0]->converterInterfaces.emplace_back(lccStationMain2);
   nodes[4]->converterInterfaces.emplace_back(vscStation2);
 
   dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;
@@ -307,9 +316,10 @@ TEST(HvdcLine, base) {
 
   ASSERT_EQ(2, hvdcLines.size());
   size_t index = 0;
-  for (const auto& hvdcLine : hvdcLines) {
-    ASSERT_TRUE(hvdcLineDefinitionEqual(expected_hvdcLines[index], hvdcLine.second));
-    ++index;
+  for (const auto& expected_hvdcLine : expected_hvdcLines) {
+    auto it = hvdcLines.find(expected_hvdcLine.id);
+    ASSERT_NE(hvdcLines.end(), it);
+    ASSERT_TRUE(hvdcLineDefinitionEqual(expected_hvdcLine, it->second));
   }
 }
 
