@@ -1,0 +1,7 @@
+{
+    "dfl-config": {
+      "OutputDir": "results/hvdc",
+      "DsoVoltageLevel": 600,
+      "InfiniteReactiveLimits": true
+    }
+  }

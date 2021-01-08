@@ -55,6 +55,8 @@ DEFINE_LAUNCH_TEST(hvdc_line_normal)
 
 DEFINE_LAUNCH_TEST(hvdc_dangling)
 
+DEFINE_LAUNCH_TEST(hvdc)
+
 ## Expected to fail because node breaker is not supported
 set_tests_properties(MAIN.node_breaker PROPERTIES WILL_FAIL TRUE)
 
