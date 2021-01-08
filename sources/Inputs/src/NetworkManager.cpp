@@ -102,7 +102,7 @@ NetworkManager::buildTree() {
       auto targetP = (*it_g)->getTargetP();
       auto pmin = (*it_g)->getPMin();
       auto pmax = (*it_g)->getPMax();
-      if ((*it_g)->isVoltageRegulationOn() && (DYN::doubleEquals(targetP, pmin) || targetP > pmin) && (DYN::doubleEquals(targetP, pmax) || targetP < pmax)) {
+      if ((*it_g)->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) && (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
         // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
         nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
                                                 pmin, pmax, targetP);

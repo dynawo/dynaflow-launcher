@@ -118,10 +118,18 @@ Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& 
   auto model = dynamicdata::BlackBoxModelFactory::newModel(hvdcLine.id);
 
   model->setStaticId(hvdcLine.id);
-  if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
-    model->setLib("HvdcPTanPhiDangling");
+  if (hvdcLine.position == algo::HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
+    if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
+      // TODO set lib
+    } else {
+      // TODO set lib
+    }
   } else {
-    model->setLib("HvdcPVDangling");
+    if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
+      model->setLib("HvdcPTanPhiDangling");
+    } else {
+      model->setLib("HvdcPVDangling");
+    }
   }
   model->setParFile(basename + ".par");
   model->setParId(hvdcLine.id);
@@ -144,7 +152,7 @@ Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& 
   }
 
   return model;
-}
+}  // namespace outputs
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
