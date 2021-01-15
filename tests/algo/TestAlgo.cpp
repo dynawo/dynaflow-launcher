@@ -281,21 +281,21 @@ TEST(Generators, base) {
   const std::string bus2 = "BUS_2";
   const std::string bus3 = "BUS_3";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points, -1, 1, -1, 1,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points, -1, 1, -1, 1, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", points, -2, 2, -2, 2, bus2),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "4", points, -5, 5, -5, 5, bus3),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", points, -2, 2, -2, 2, 0, bus2),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3),
   };
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points, -1, 1, -1, 1,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points, -1, 1, -1, 1, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", points, -2, 2, -2, 2, bus2),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5, bus3),
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", points, -2, 2, -2, 2, 0, bus2),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3),
   };
 
   nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0, 0, bus1, bus1);
@@ -356,10 +356,10 @@ TEST(Generators, SwitchConnexity) {
   const std::string bus3 = "BUS_3";
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "0", points0, -1, 1, -1, 1,
-                                     1, bus1),  // due to switch connexity
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "2", points, -2, 2, -2, 2,
-                                     2, bus2),  // due to switch connexity
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "0", points0, -1, 1, -1, 1, 1,
+                                     bus1),  // due to switch connexity
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "2", points, -2, 2, -2, 2, 2,
+                                     bus2),  // due to switch connexity
       dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5, 5, bus3),
   };
 

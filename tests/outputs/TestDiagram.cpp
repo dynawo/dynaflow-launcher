@@ -149,8 +149,8 @@ TEST(Diagram, writeEmpty) {
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN, "01", {}, -20., -2., 22., 220., 100, bus1),
       GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "63", {}, 4., 40., 44., 440., bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "04", {}, -20., -2., 22., 220., bus1)};
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "63", {}, 4., 40., 44., 440., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "04", {}, -20., -2., 22., 220., 100, bus1)};
 
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators));
 

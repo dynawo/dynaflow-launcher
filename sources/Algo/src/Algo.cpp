@@ -116,7 +116,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
         !isDiagramValid(generator)) {
       continue;
     }
-    generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax,
+    generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
                              generator.regulatedBusId);
   }
 }
