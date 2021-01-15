@@ -31,19 +31,18 @@ getMandatoryEnvVar(const std::string& key) {
     return std::string(var);
   } else {
     // we cannot use dictionnary errors since they may not be initialized yet
-    LOG(error) << "Cannot find environnement variable " << key << " : please check runtime environement" << LOG_ENDL;
+    LOG(Error) << "Cannot find environnement variable " << key << " : please check runtime environement" << LOG_ENDL;
     std::exit(EXIT_FAILURE);
   }
 }
 
 static void
 initializeDynawo(const std::string& locale) {
-  boost::shared_ptr<DYN::IoDicos> dicos = DYN::IoDicos::getInstance();
-  dicos->addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
-  dicos->addDico("ERROR", "DYNError", locale);
-  dicos->addDico("TIMELINE", "DYNTimeline", locale);
-  dicos->addDico("CONSTRAINT", "DYNConstraint", locale);
-  dicos->addDico("LOG", "DYNLog", locale);
+  DYN::IoDicos::addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
+  DYN::IoDicos::addDico("ERROR", "DYNError", locale);
+  DYN::IoDicos::addDico("TIMELINE", "DYNTimeline", locale);
+  DYN::IoDicos::addDico("CONSTRAINT", "DYNConstraint", locale);
+  DYN::IoDicos::addDico("LOG", "DYNLog", locale);
 }
 
 int
@@ -57,20 +56,20 @@ main(int argc, char* argv[]) {
     auto parsing_status = options.parse(argc, argv);
 
     if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
-      LOG(info) << options.desc() << LOG_ENDL;
+      LOG(Info) << options.desc() << LOG_ENDL;
       return EXIT_SUCCESS;
     }
     if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
-      LOG(info) << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
+      LOG(Info) << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
       return EXIT_SUCCESS;
     }
 
     auto& runtimeConfig = options.config();
     dfl::inputs::Configuration config(runtimeConfig.configPath);
     dfl::common::Log::init(options, config.outputDir());
-    LOG(info) << " ============================================================ " << LOG_ENDL;
-    LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
-    LOG(info) << " ============================================================ " << LOG_ENDL;
+    LOG(Info) << " ============================================================ " << LOG_ENDL;
+    LOG(Info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
+    LOG(Info) << " ============================================================ " << LOG_ENDL;
 
     std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
@@ -90,10 +89,10 @@ main(int argc, char* argv[]) {
     initializeDynawo(locale);
 
     if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
-      LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
+      LOG(Error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
       return EXIT_FAILURE;
     }
-    LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
+    LOG(Info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
 
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
@@ -102,56 +101,56 @@ main(int argc, char* argv[]) {
     dfl::Context context(def, config);
 
     if (!context.process()) {
-      LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
-      LOG(error) << MESS(ContextProcessError, context.basename()) << LOG_ENDL;
+      LOG(Info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
+      LOG(Error) << MESS(ContextProcessError, context.basename()) << LOG_ENDL;
       return EXIT_FAILURE;
     }
-    LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
+    LOG(Info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
 
     boost::timer timerFiles;
     context.exportOutputs();
-    LOG(info) << MESS(FilesEnd, timerFiles.elapsed()) << LOG_ENDL;
+    LOG(Info) << MESS(FilesEnd, timerFiles.elapsed()) << LOG_ENDL;
 
     boost::timer timerSimu;
     context.execute();
 
     // Traces must be re-initiliazed to append to current DynaflowLauncher log file as simulation had modified it
-    LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
-    LOG(info) << " ============================================================ " << LOG_ENDL;
-    LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
+    LOG(Info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
+    LOG(Info) << " ============================================================ " << LOG_ENDL;
+    LOG(Info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
 
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << "Simulation failed" << LOG_ENDL;
+    LOG(Error) << "Dynawo: " << e.what() << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << "Simulation failed" << LOG_ENDL;
+    LOG(Error) << "Dynawo: " << e.what() << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (std::exception& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << e.what() << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << e.what() << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << "Simulation failed" << LOG_ENDL;
+    LOG(Error) << e.what() << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Unknown error" << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << "Unknown error" << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
+    LOG(Error) << "Simulation failed" << LOG_ENDL;
+    LOG(Error) << "Unknown error" << LOG_ENDL;
+    LOG(Error) << " ============================================================ " << LOG_ENDL;
     return EXIT_FAILURE;
   }
 }

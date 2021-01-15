@@ -49,9 +49,9 @@ class Log {
  *
  * This performs a log with the tag relative to dynaflow launcher
  *
- * @param level the level of the log: must be "error", "warn", "info" or "debug"
+ * @param level the level of the log: must be "Error", "Warn", "Info" or "Debug"
  */
-#define LOG(level) DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag)
+#define LOG(level) Trace##level(dfl::common::Log::dynaflowLauncherLogTag)
 
 /**
  * @brief Alias of DYN::Trace::endline

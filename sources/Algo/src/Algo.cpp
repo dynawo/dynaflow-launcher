@@ -109,11 +109,11 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   // We check the validity of pmin,pmax and qmin,qmax values
   if (generator.points.empty()) {
     if (DYN::doubleEquals(generator.pmin, generator.pmax)) {
-      LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
+      LOG(Warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
       return false;
     }
     if (DYN::doubleEquals(generator.qmin, generator.qmax)) {
-      LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
+      LOG(Warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
       return false;
     }
     return true;
@@ -121,7 +121,7 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
 
   // If there is only one point, the diagram is not valid
   if (generator.points.size() == 1) {
-    LOG(warn) << MESS(InvalidDiagramOnePoint, generator.id) << LOG_ENDL;
+    LOG(Warn) << MESS(InvalidDiagramOnePoint, generator.id) << LOG_ENDL;
     return false;
   }
 
@@ -138,11 +138,11 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
 
   if (!valid) {
     if (allQminEqualQmax && allPEqual) {
-      LOG(warn) << MESS(InvalidDiagramBothError, generator.id) << LOG_ENDL;
+      LOG(Warn) << MESS(InvalidDiagramBothError, generator.id) << LOG_ENDL;
     } else if (allQminEqualQmax) {
-      LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
+      LOG(Warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
     } else if (allPEqual) {
-      LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
+      LOG(Warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
     }
   }
   return valid;
@@ -188,7 +188,7 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
     } else if (converter.converterId == hvdcLine->converter2_id) {
       createdHvdcLine.position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
-      LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
+      LOG(Error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
       continue;
     }
 

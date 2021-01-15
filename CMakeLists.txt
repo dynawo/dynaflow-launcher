@@ -94,6 +94,9 @@ list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
 
+set(BOOST_ROOT ${DYNAWO_HOME})
+message(STATUS "Using Boost version from " ${DYNAWO_HOME})
+
 # ZLIB
 find_package(ZLIB 1.2.3 REQUIRED)
 set_property(TARGET ZLIB::ZLIB APPEND PROPERTY

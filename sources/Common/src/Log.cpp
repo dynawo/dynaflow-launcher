@@ -27,10 +27,11 @@ const char* Log::dynaflowLauncherLogTag = "DYNAFLOW_LAUNCHER";
 void
 Log::init(const common::Options& options, const std::string& outputDir) {
   using DYN::Trace;
+  using DYN::TraceAppender;
   auto& config = options.config();
 
-  std::vector<Trace::TraceAppender> appenders;
-  Trace::TraceAppender appender;
+  std::vector<TraceAppender> appenders;
+  TraceAppender appender;
   file::path outputPath(outputDir);
   if (!file::exists(outputPath)) {
     file::create_directories(outputPath);

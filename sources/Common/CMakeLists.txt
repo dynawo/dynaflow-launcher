@@ -39,6 +39,7 @@ target_link_libraries(common
   PUBLIC
     Boost::program_options
     Dynawo::dynawo_Common
+    Dynawo::dynawo_Util
 
   PRIVATE
     Boost::filesystem

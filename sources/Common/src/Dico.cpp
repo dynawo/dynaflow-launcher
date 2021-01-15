@@ -37,7 +37,7 @@ Dico::message(generated::DicoKeys::Key key) const {
   if (messages_.count(key) > 0) {
     return messages_.at(key);
   } else {
-    LOG(debug) << "Unknown dictionnary key " << generated::DicoKeys::keyToString(key) << " : check input dictionnary" << LOG_ENDL;
+    LOG(Debug) << "Unknown dictionnary key " << generated::DicoKeys::keyToString(key) << " : check input dictionnary" << LOG_ENDL;
     return "";
   }
 }
@@ -63,8 +63,8 @@ Dico::Dico(const std::string& filepath) : messages_{} {
       if (generated::DicoKeys::canConvertString(key)) {
         messages_.insert(std::make_pair(generated::DicoKeys::stringToKey(key), message));
       } else {
-        // We cannot use a log level higher than "debug" because log level higher than "debug" shall use dictionnaries
-        LOG(debug) << "Key string " << key << " is not defined in list of generated keys: check your input file " << filepath << LOG_ENDL;
+        // We cannot use a log level higher than "Debug" because log level higher than "Debug" shall use dictionnaries
+        LOG(Debug) << "Key string " << key << " is not defined in list of generated keys: check your input file " << filepath << LOG_ENDL;
       }
     }
   }

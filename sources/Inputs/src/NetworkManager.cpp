@@ -56,7 +56,7 @@ NetworkManager::buildTree() {
   const auto& voltageLevels = network->getVoltageLevels();
   for (auto it_v = voltageLevels.begin(); it_v != voltageLevels.end(); ++it_v) {
     if ((*it_v)->getVoltageLevelTopologyKind() == DYN::VoltageLevelInterface::NODE_BREAKER) {
-      LOG(error) << MESS(NodeBreakerInterface, (*it_v)->getID()) << LOG_ENDL;
+      LOG(Error) << MESS(NodeBreakerInterface, (*it_v)->getID()) << LOG_ENDL;
       // This is done in class constructor so we exit directly
       std::exit(EXIT_FAILURE);
     }
@@ -68,9 +68,9 @@ NetworkManager::buildTree() {
       assert(nodes_.count((*it_b)->getID()) == 0);
 #endif
       nodes_[(*it_b)->getID()] = std::make_shared<Node>((*it_b)->getID(), (*it_v)->getVNom());
-      LOG(debug) << "Node " << (*it_b)->getID() << " created" << LOG_ENDL;
+      LOG(Debug) << "Node " << (*it_b)->getID() << " created" << LOG_ENDL;
       if (opt_id && *opt_id == (*it_b)->getID()) {
-        LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
+        LOG(Debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
         slackNode_ = nodes_[(*it_b)->getID()];
       }
     }
@@ -86,7 +86,7 @@ NetworkManager::buildTree() {
       assert(nodes_.count(nodeid));
 #endif
       nodes_[nodeid]->loads.emplace_back((*it_l)->getID());
-      LOG(debug) << "Node " << nodeid << " contains load " << (*it_l)->getID() << LOG_ENDL;
+      LOG(Debug) << "Node " << nodeid << " contains load " << (*it_l)->getID() << LOG_ENDL;
     }
 
     const auto& generators = (*it_v)->getGenerators();
@@ -106,7 +106,7 @@ NetworkManager::buildTree() {
         // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
         nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
                                                 pmin, pmax, targetP);
-        LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
+        LOG(Debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
       }
     }
   }
@@ -124,7 +124,7 @@ NetworkManager::buildTree() {
 #endif
       nodes_[bus1->getID()]->neighbours.push_back(nodes_.at(bus2->getID()));
       nodes_[bus2->getID()]->neighbours.push_back(nodes_.at(bus1->getID()));
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << (*it_l)->getID() << LOG_ENDL;
+      LOG(Debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << (*it_l)->getID() << LOG_ENDL;
     }
   }
 
@@ -135,7 +135,7 @@ NetworkManager::buildTree() {
     if ((*it_t)->getInitialConnected1() && (*it_t)->getInitialConnected2()) {
       nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
       nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << (*it_t)->getID() << LOG_ENDL;
+      LOG(Debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << (*it_t)->getID() << LOG_ENDL;
     }
   }
 
@@ -154,7 +154,7 @@ NetworkManager::buildTree() {
       nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
       nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
 
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << (*it_t)->getID() << LOG_ENDL;
+      LOG(Debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << (*it_t)->getID() << LOG_ENDL;
     }
   }
 
@@ -188,7 +188,7 @@ NetworkManager::buildTree() {
     converter_2.hvdcLine = hvdcLineCreated;
     nodes_[converter_dyn_1->getBusInterface()->getID()]->converterInterfaces.push_back(converter_1);
     nodes_[converter_dyn_2->getBusInterface()->getID()]->converterInterfaces.push_back(converter_2);
-    LOG(debug) << "Network contains hvdcLine " << hvdcLine->getID() << " with converterStation " << hvdcLine->getIdConverter1() << " and converterStation "
+    LOG(Debug) << "Network contains hvdcLine " << hvdcLine->getID() << " with converterStation " << hvdcLine->getIdConverter1() << " and converterStation "
                << hvdcLine->getIdConverter2() << LOG_ENDL;
   }
 }

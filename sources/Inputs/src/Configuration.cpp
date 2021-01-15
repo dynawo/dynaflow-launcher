@@ -61,7 +61,7 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
   if (it != enumResolver.end()) {
     activePowerCompensation = it->second;
   } else if (!apcString.empty()) {
-    LOG(warn) << MESS(BadActivePowerCompensation, apcString) << LOG_ENDL;
+    LOG(Warn) << MESS(BadActivePowerCompensation, apcString) << LOG_ENDL;
   }
 }
 }  // namespace helper
@@ -94,7 +94,7 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
-    LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
+    LOG(Error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
     std::exit(EXIT_FAILURE);
   }
 }

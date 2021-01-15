@@ -3,7 +3,7 @@
 ## Build
 To build DynaFlow launcher, you must first deploy the Dynawo library with c++11 enabled. Then generate the cmake cache in your build directory:
 
-`cmake <SRC_DIR> -DCMAKE_BUILD_TYPE=Release -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>`
+`cmake <SRC_DIR> -DCMAKE_BUILD_TYPE=Release -DDYNAWO_HOME=<DYNAWO_HOME> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>`
 
 where:
 * SRC_DIR is the root directory of the dynaflow launcher repository
@@ -40,6 +40,6 @@ where N is the number of jobs to use for the testing session
 ## Coverage
 Coverage analysis is based on ctest. To launch coverage, launch from source directory:
 
-`ctest -S cmake/CTestScript.cmake -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -VV`
+`ctest -S cmake/CTestScript.cmake -DDYNAWO_HOME=<DYNAWO_HOME> -VV`
 
 Outputs are gcov and lcov reports

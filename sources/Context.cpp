@@ -58,7 +58,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     slackNodeOrigin_ = SlackNodeOrigin::ALGORITHM;
     if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
       // case slack node is requested to be extracted from IIDM but is not present in IIDM: we will compute it internally but a warning is sent
-      LOG(warn) << MESS(NetworkSlackNodeNotFound, def.networkFilepath) << LOG_ENDL;
+      LOG(Warn) << MESS(NetworkSlackNodeNotFound, def.networkFilepath) << LOG_ENDL;
     }
     networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
   }
@@ -78,20 +78,20 @@ Context::process() {
   // Process all algorithms on nodes
   networkManager_.walkNodes();
 
-  LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+  LOG(Info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
 
   if (!checkConnexity()) {
     if (slackNodeOrigin_ == SlackNodeOrigin::FILE) {
-      LOG(error) << MESS(ConnexityError, slackNode_->id) << LOG_ENDL;
+      LOG(Error) << MESS(ConnexityError, slackNode_->id) << LOG_ENDL;
       return false;
     } else {
-      LOG(warn) << MESS(ConnexityErrorReCompute, slackNode_->id) << LOG_ENDL;
+      LOG(Warn) << MESS(ConnexityErrorReCompute, slackNode_->id) << LOG_ENDL;
       // Compute slack node only on main connex component
       slackNode_.reset();
       std::for_each(mainConnexNodes_.begin(), mainConnexNodes_.end(), algo::SlackNodeAlgorithm(slackNode_));
 
       // By construction, the new slack node is in the main connex component
-      LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+      LOG(Info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
     }
   }
 
@@ -105,7 +105,7 @@ Context::process() {
 
 void
 Context::exportOutputs() {
-  LOG(info) << MESS(ExportInfo, basename_) << LOG_ENDL;
+  LOG(Info) << MESS(ExportInfo, basename_) << LOG_ENDL;
 
   // create output directory
   file::path outputDir(config_.outputDir());
@@ -159,7 +159,7 @@ Context::execute() {
 
   // This SHALL be the last log performed before reseting traces in DynaFlowLauncher,
   // because simulation constructor will re-initialize traces for Dynawo
-  LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
+  LOG(Info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
 
   auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
   simu->init();
