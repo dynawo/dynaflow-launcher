@@ -84,8 +84,7 @@ Par::write() {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                            bool fixedP) {
+Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(modelId));
   double value = fixedP ? kGoverNullValue_ : kGoverDefaultValue_;
   set->addParameter(helper::buildParameter("generator_KGover", value));
@@ -144,32 +143,26 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   ret.push_back(set);
 
   // Signal N generator
-  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNGeneratorParId));
-  updateSignalNGenerator(set, activePowerCompensation, false);
-  ret.push_back(set);
+  ret.push_back(updateSignalNGenerator(constants::signalNGeneratorParId, activePowerCompensation, false));
 
   // Signal N generator with fixed P
-  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNGeneratorFixedPParId));
-  updateSignalNGenerator(set, activePowerCompensation, true);
-  ret.push_back(set);
+  ret.push_back(updateSignalNGenerator(constants::signalNGeneratorFixedPParId, activePowerCompensation, true));
 
   // Signal N generator with impedance
-  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorParId));
-  updateSignalNGenerator(set, activePowerCompensation, false);
+  set = updateSignalNGenerator(constants::impSignalNGeneratorParId, activePowerCompensation, false);
   updateCouplingParameters(set);
   ret.push_back(set);
 
   // Signal N generator with impedance with fixed P
-  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::impSignalNGeneratorFixedPParId));
-  updateSignalNGenerator(set, activePowerCompensation, true);
+  set = updateSignalNGenerator(constants::impSignalNGeneratorFixedPParId, activePowerCompensation, true);
   updateCouplingParameters(set);
   ret.push_back(set);
 
-  set = updateSignalNGenerator(constants::propSignalNGeneratorParId, activePowerCompensation);
+  set = updateSignalNGenerator(constants::propSignalNGeneratorParId, activePowerCompensation, false);
   updatePropParameters(set);
   ret.push_back(set);
 
-  ret.push_back(updateSignalNGenerator(constants::remoteSignalNGeneratorParId, activePowerCompensation));
+  ret.push_back(updateSignalNGenerator(constants::remoteSignalNGeneratorParId, activePowerCompensation, false));
 
   return ret;
 }

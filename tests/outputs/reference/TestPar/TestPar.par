@@ -74,7 +74,7 @@
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
   <set id="SignalN">
-    <par name="nbGen" type="INT" value="4"/>
+    <par name="nbGen" type="INT" value="5"/>
   </set>
   <set id="impSignalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
@@ -112,6 +112,24 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
   </set>
+  <set id="propSignalNGenerator">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QPercent" origData="IIDM" origName="qMax_pu"/>
+    <reference type="DOUBLE" name="generator_QRef0Pu" origData="IIDM" origName="targetQ_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="remoteSignalNGenerator">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>

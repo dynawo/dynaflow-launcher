@@ -33,10 +33,8 @@ TEST(TestPar, write) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1)};
-                                                 GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04",
-                                                                     {},
-                                                                     3., 30., -33., 330., 0 , bus1)};
+      GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
@@ -69,12 +67,12 @@ TEST(TestPar, writeRemote) {
   std::string bus1 = "BUS_1";
   std::string bus2 = "BUS_2";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "00", {}, 1., 10., 11., 110., bus1),
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., bus1),
-      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., bus2),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., bus2)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
+      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus2),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus2)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
