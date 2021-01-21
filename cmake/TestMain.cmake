@@ -7,15 +7,11 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-function(check_file _file _expected_file)
-  execute_process(COMMAND ${CMAKE_COMMAND} -E compare_files --ignore-eol ${_file} ${_expected_file} RESULT_VARIABLE COMPARE_RESULT)
-  if(COMPARE_RESULT)
-      message(FATAL_ERROR "${_file} is different from expected ${_expected_file} are different")
-  endif()
-endfunction(check_file)
-
 execute_process(COMMAND ${EXE}  --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json RESULT_VARIABLE EXE_RESULT)
 if(EXE_RESULT)
     message(FATAL_ERROR "Execution failed: ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json")
 endif()
-check_file(results/${TEST_NAME}/outputs/finalState/outputIIDM.xml reference/${TEST_NAME}/outputIIDM.xml)
+execute_process(COMMAND python ${DIFF_SCRIPT} -v . ${TEST_NAME} RESULT_VARIABLE COMPARE_RESULT)
+if(COMPARE_RESULT)
+    message(FATAL_ERROR "results/${TEST_NAME}/outputs/finalState/outputIIDM.xml is different from expected reference/${TEST_NAME}/outputIIDM.xml")
+endif()
