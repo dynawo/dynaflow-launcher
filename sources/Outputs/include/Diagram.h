@@ -41,9 +41,9 @@ class Diagram {
      * @param gens generators definition coming from algorithms
      */
     DiagramDefinition(const std::string& base, const std::string& directoryPath, const std::vector<algo::GeneratorDefinition>& gens) :
-        basename{base},
-        directoryPath{directoryPath},
-        generators{gens} {}
+        basename(base),
+        directoryPath(directoryPath),
+        generators(gens) {}
 
     std::string basename;                               ///< basename for file
     std::string directoryPath;                          ///< directory path for files to write
@@ -71,7 +71,7 @@ class Diagram {
 
   /**
    * @brief Write a single table in the Diagram file
-   * 
+   *
    * @param generator The generator that will be used to write the diagram values
    * @param buffer The buffer to store the string that will be written to the file
    * @param table The enum determining if we write the Qmin or Qmax table

@@ -82,13 +82,13 @@ class Dyd {
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
                   const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) :
-        basename{base},
-        filename{filepath},
-        generators{gens},
-        loads{loaddefs},
-        slackNode{slacknode},
-        hvdcLines{hvdcLines},
-        busesWithDynamicModel{busesWithDynamicModel} {}
+        basename(base),
+        filename(filepath),
+        generators(gens),
+        loads(loaddefs),
+        slackNode(slacknode),
+        hvdcLines(hvdcLines),
+        busesWithDynamicModel(busesWithDynamicModel) {}
 
     std::string basename;                                                        ///< basename for file
     std::string filename;                                                        ///< filepath for file to write
@@ -134,10 +134,10 @@ class Dyd {
 
   /**
    * @brief Create black box model for remote voltage regulators
-   * 
+   *
    * @param busId bus id to use
    * @param basename basename for file
-   * 
+   *
    * @returns black box model for a remote voltage regulator
    */
   static boost::shared_ptr<dynamicdata::BlackBoxModel> writeVRRemote(const std::string& busId, const std::string& basename);
@@ -206,10 +206,10 @@ class Dyd {
 
   /**
    * @brief Write connection for generators
-   * 
+   *
    * @param dynamicModelsToConnect the collection where the connections will be added
    * @param def the generator definition to process
-   * 
+   *
    */
   static void writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::GeneratorDefinition& def);
 
