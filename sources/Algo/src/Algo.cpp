@@ -79,10 +79,10 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
                                                            const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager) :
     NodeAlgorithm(),
     generators_(gens),
-    busesWithDynamicModel_{busesWithDynamicModel},
-    busMap_{busMap},
+    busesWithDynamicModel_(busesWithDynamicModel),
+    busMap_(busMap),
     useInfiniteReactivelimits_{infinitereactivelimits},
-    serviceManager_{serviceManager} {}
+    serviceManager_(serviceManager) {}
 
 void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
@@ -91,7 +91,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
     auto it = busMap_.find(generator.regulatedBusId);
     assert(it != busMap_.end());
     auto nbOfRegulatingGenerators = it->second;
-    GeneratorDefinition::ModelType model;
+    GeneratorDefinition::ModelType model = GeneratorDefinition::ModelType::SIGNALN;
     if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
       model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::REMOTE_SIGNALN : GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
     } else {
@@ -107,7 +107,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
         model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
         busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
         break;
-      default:  //impossible by definition of the enum
+      default:  //  impossible by definition of the enum
         break;
       }
     }

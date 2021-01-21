@@ -47,19 +47,19 @@ class Par {
      * @param gens list of the generators taken into account
      * @param hvdcLines list of hdvc lines taken into account
      * @param activePowerCompensation the type of active power compensation
-     * @param busesWithDynamicModel map of bus ids to a generator that regulates them 
+     * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      */
     ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens,
                   const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) :
-        basename{base},
-        dirname{dir},
-        filepath{filename},
-        generators{gens},
-        hvdcLines{hvdcLines},
-        activePowerCompensation{activePowerCompensation},
-        busesWithDynamicModel{busesWithDynamicModel} {}
+        basename(base),
+        dirname(dir),
+        filepath(filename),
+        generators(gens),
+        hvdcLines(hvdcLines),
+        activePowerCompensation(activePowerCompensation),
+        busesWithDynamicModel(busesWithDynamicModel) {}
 
     std::string basename;                                                         ///< basename
     std::string dirname;                                                          ///< Dirname of output file relative to execution dir
@@ -101,8 +101,8 @@ class Par {
    * @param activePowerCompensation the type of active power compensation
    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
    */
-  static boost::shared_ptr<parameters::ParametersSet> updateSignalNGenerator(const std::string& modelId,
-                                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);
+  static boost::shared_ptr<parameters::ParametersSet>
+  updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);
 
   /**
    * @brief Update parameter set with impendance model parameters and references
@@ -113,7 +113,7 @@ class Par {
 
   /**
    * @brief Update parameter set with remote references
-   * 
+   *
    * @param set the parameter set to update
    */
   static void updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set);
