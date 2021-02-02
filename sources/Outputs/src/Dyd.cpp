@@ -247,7 +247,6 @@ Dyd::writeMacroConnectors() {
 
   connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
   connector->addConnect("generator_N_value", "n_grp_@INDEX@_value");
-  connector->addConnect("generator_alphaSum_value", "alphaSum_grp_@INDEX@_value");
   connector->addConnect("generator_alpha_value", "alpha_grp_@INDEX@_value");
   ret.push_back(connector);
 
