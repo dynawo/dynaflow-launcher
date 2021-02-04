@@ -93,7 +93,8 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
     auto nbOfRegulatingGenerators = it->second;
     GeneratorDefinition::ModelType model = GeneratorDefinition::ModelType::SIGNALN;
     if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
-      model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::REMOTE_SIGNALN : GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
+      model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+      busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});    
     } else {
       switch (nbOfRegulatingGenerators) {
       case dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE:
