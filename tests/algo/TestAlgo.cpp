@@ -356,9 +356,9 @@ TEST(Generators, SwitchConnexity) {
   const std::string bus3 = "BUS_3";
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "0", points0, -1, 1, -1, 1, 1,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points0, -1, 1, -1, 1, 1,
                                      bus1),  // due to switch connexity
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "2", points, -2, 2, -2, 2, 2,
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "2", points, -2, 2, -2, 2, 2,
                                      bus2),  // due to switch connexity
       dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5, 5, bus3),
   };
