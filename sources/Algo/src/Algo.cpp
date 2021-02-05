@@ -87,6 +87,13 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
 void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
   auto& node_generators = node->generators;
+
+  auto is_model_diagram = [](GeneratorDefinition::ModelType model, inputs::Generator generator) {
+    return (model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN || 
+            model == GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN) && 
+            !isDiagramValid(generator);
+ };
+
   for (const auto& generator : node_generators) {
     auto it = busMap_.find(generator.regulatedBusId);
     assert(it != busMap_.end());
@@ -94,7 +101,9 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
     GeneratorDefinition::ModelType model = GeneratorDefinition::ModelType::SIGNALN;
     if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
       model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-      busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});    
+      if (!is_model_diagram(model, generator)) {
+        busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});    
+      }
     } else {
       switch (nbOfRegulatingGenerators) {
       case dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE:
@@ -106,16 +115,15 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
         break;
       case dfl::inputs::NetworkManager::NbOfRegulatingGenerators::MULTIPLES:
         model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-        busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+        if (!is_model_diagram(model, generator)) {
+          busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+        }
         break;
       default:  //  impossible by definition of the enum
         break;
       }
     }
-    if ((model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
-         model == GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN) &&
-        !isDiagramValid(generator)) {
-      busesWithDynamicModel_.erase(generator.regulatedBusId);
+    if (is_model_diagram(model, generator)) {
       continue;
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
