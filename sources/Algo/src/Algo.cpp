@@ -88,7 +88,7 @@ void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
   auto& node_generators = node->generators;
 
-  auto is_model_diagram = [](GeneratorDefinition::ModelType model, inputs::Generator generator) {
+  auto isModelWithInvalidDiagram = [](GeneratorDefinition::ModelType model, inputs::Generator generator) {
     return (model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
             model == GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN) &&
            !isDiagramValid(generator);
@@ -101,7 +101,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
     GeneratorDefinition::ModelType model = GeneratorDefinition::ModelType::SIGNALN;
     if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
       model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-      if (!is_model_diagram(model, generator)) {
+      if (!isModelWithInvalidDiagram(model, generator)) {
         busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
       }
     } else {
@@ -115,7 +115,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
         break;
       case dfl::inputs::NetworkManager::NbOfRegulatingGenerators::MULTIPLES:
         model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-        if (!is_model_diagram(model, generator)) {
+        if (!isModelWithInvalidDiagram(model, generator)) {
           busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
         }
         break;
@@ -123,7 +123,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
         break;
       }
     }
-    if (is_model_diagram(model, generator)) {
+    if (isModelWithInvalidDiagram(model, generator)) {
       continue;
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
