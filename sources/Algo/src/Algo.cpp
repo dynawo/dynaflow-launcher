@@ -115,6 +115,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
     if ((model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
          model == GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN) &&
         !isDiagramValid(generator)) {
+      busesWithDynamicModel_.erase(generator.regulatedBusId);
       continue;
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
