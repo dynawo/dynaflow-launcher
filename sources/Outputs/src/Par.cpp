@@ -173,8 +173,8 @@ Par::writeVRRemote(const std::string& busId, const std::string& genId) {
   set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", genId));
   set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", genId));
 
-  set->addParameter(helper::buildParameter("vrremote_Gain", 100.0));
-  set->addParameter(helper::buildParameter("vrremote_tIntegral", 0.1));
+  set->addParameter(helper::buildParameter("vrremote_Gain", 1.));
+  set->addParameter(helper::buildParameter("vrremote_tIntegral", 1.));
   return set;
 }
 
