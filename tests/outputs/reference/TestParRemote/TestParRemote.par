@@ -52,14 +52,14 @@
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
   <set id="Model_Signal_NQ_BUS_1">
-    <par name="vrremote_Gain" type="DOUBLE" value="100"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="0.10000000000000001"/>
+    <par name="vrremote_Gain" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G1"/>
   </set>
   <set id="Model_Signal_NQ_BUS_2">
-    <par name="vrremote_Gain" type="DOUBLE" value="100"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="0.10000000000000001"/>
+    <par name="vrremote_Gain" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
   </set>
