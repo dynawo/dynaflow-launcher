@@ -34,7 +34,15 @@ target_link_libraries(DynaFlowLauncher
 
   Dynawo::dynawo_Simulation
   Dynawo::dynawo_SimulationCommon
+  
+  xml2
 )
+
+target_include_directories(DynaFlowLauncher
+  PRIVATE
+  $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # The following will export the targets under the name ${PROJECT_NAME}_Targets, not install them yet

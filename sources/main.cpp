@@ -21,6 +21,8 @@
 #include <boost/timer.hpp>
 #include <cstdlib>
 #include <sstream>
+#include <libxml/parser.h>
+#include <xercesc/util/PlatformUtils.hpp>
 
 static const char* dictPrefix = "DFLMessages_";
 
@@ -93,6 +95,8 @@ main(int argc, char* argv[]) {
       LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
       return EXIT_FAILURE;
     }
+    xmlInitParser();
+    xercesc::XMLPlatformUtils::Initialize();
     LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
 
     boost::filesystem::path parFilesDir(root);
@@ -104,6 +108,8 @@ main(int argc, char* argv[]) {
     if (!context.process()) {
       LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
       LOG(error) << MESS(ContextProcessError, context.basename()) << LOG_ENDL;
+      xmlCleanupParser();
+      xercesc::XMLPlatformUtils::Terminate();
       return EXIT_FAILURE;
     }
     LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
@@ -120,6 +126,8 @@ main(int argc, char* argv[]) {
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
 
+    xmlCleanupParser();
+    xercesc::XMLPlatformUtils::Terminate();
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
     std::cerr << "Simulation failed" << std::endl;
@@ -128,6 +136,8 @@ main(int argc, char* argv[]) {
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     LOG(error) << " ============================================================ " << LOG_ENDL;
+    xmlCleanupParser();
+    xercesc::XMLPlatformUtils::Terminate();
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
     std::cerr << "Simulation failed" << std::endl;
@@ -136,6 +146,8 @@ main(int argc, char* argv[]) {
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
     LOG(error) << " ============================================================ " << LOG_ENDL;
+    xmlCleanupParser();
+    xercesc::XMLPlatformUtils::Terminate();
     return EXIT_FAILURE;
   } catch (std::exception& e) {
     std::cerr << "Simulation failed" << std::endl;
@@ -144,6 +156,8 @@ main(int argc, char* argv[]) {
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << e.what() << LOG_ENDL;
     LOG(error) << " ============================================================ " << LOG_ENDL;
+    xmlCleanupParser();
+    xercesc::XMLPlatformUtils::Terminate();
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "Simulation failed" << std::endl;
@@ -152,6 +166,8 @@ main(int argc, char* argv[]) {
     LOG(error) << "Simulation failed" << LOG_ENDL;
     LOG(error) << "Unknown error" << LOG_ENDL;
     LOG(error) << " ============================================================ " << LOG_ENDL;
+    xmlCleanupParser();
+    xercesc::XMLPlatformUtils::Terminate();
     return EXIT_FAILURE;
   }
 }
