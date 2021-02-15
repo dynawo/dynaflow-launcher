@@ -95,9 +95,7 @@ main(int argc, char* argv[]) {
       return EXIT_FAILURE;
     }
     DYN::InitXerces xerces;
-#ifdef LANG_CXX11
     DYN::InitLibXml2 libxml2;
-#endif
 
     LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
 
