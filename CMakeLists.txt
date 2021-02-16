@@ -80,6 +80,7 @@ endif()
 message(STATUS "Compile internal libraries in " ${LINK_TYPE})
 
 set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_=1")
+set(CMAKE_CXX_FLAGS "-DLANG_CXX11")
 set_optimization()
 
 
