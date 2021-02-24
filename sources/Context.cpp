@@ -115,7 +115,7 @@ Context::exportOutputs() {
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
   jobEntry_ = jobWriter.write();
 #if _DEBUG_
-  outputs::Job::exportJob(jobEntry_, config_.outputDir());
+  outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
 #endif
 
   // Dyd
