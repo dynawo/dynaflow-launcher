@@ -53,7 +53,7 @@ class Job {
   * @param jobEntry the job entry to export
   * @param outputDir the output directory
   */
-  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& outputDir);
+  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& networkFileEntry, const std::string& outputDir);
 
   /**
    * @brief Constructor

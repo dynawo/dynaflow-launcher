@@ -133,7 +133,8 @@ Job::writeOutputs() {
 }
 
 void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& outputDir) {
+Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& networkFileEntry,
+    const std::string& outputDir) {
   boost::filesystem::path path(outputDir);
 
   if (!boost::filesystem::is_directory(path)) {
@@ -172,6 +173,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   formatter->startElement("dyn", "modeler", attrs);
   attrs.clear();
 
+  auto network = modeler->getNetworkEntry();
+  attrs.add("iidmFile", networkFileEntry);
+  attrs.add("parFile", network->getNetworkParFile());
+  attrs.add("parId", network->getNetworkParId());
+  formatter->startElement("dyn", "network", attrs);
+  attrs.clear();
+  formatter->endElement();  // network
+
   auto models = modeler->getDynModelsEntries();
   for (auto model : models) {
     attrs.add("dydFile", model->getDydFile());
@@ -180,17 +189,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
     formatter->endElement();  // model
   }
 
-  auto network = modeler->getNetworkEntry();
-  attrs.add("iidmFile", network->getIidmFile());
-  attrs.add("parFile", network->getNetworkParFile());
-  attrs.add("parId", network->getNetworkParId());
-  formatter->startElement("dyn", "network", attrs);
-  attrs.clear();
-  formatter->endElement();  // network
-
   auto pre_models = modeler->getPreCompiledModelsDirEntry();
   attrs.add("useStandardModels", pre_models->getUseStandardModels());
   formatter->startElement("dyn", "precompiledModels", attrs);
+  attrs.clear();
+  formatter->endElement();  // precompiledModels
+
+  attrs.add("useStandardModels", true);
+  formatter->startElement("dyn", "modelicaModels", attrs);
   attrs.clear();
   formatter->endElement();  // precompiledModels
 
