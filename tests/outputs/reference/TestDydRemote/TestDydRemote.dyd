@@ -13,8 +13,11 @@
     <dyn:connect var1="generator_N_value" var2="n_grp_@INDEX@_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
-    <dyn:connect var1="load_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
-    <dyn:connect var1="load_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+    <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
+    <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
+    <dyn:connect var1="Ii_value" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
+    <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
+    <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorImpStaticRef">
     <dyn:staticRef var="coupling_P1GenPu" staticVar="p"/>
@@ -27,9 +30,9 @@
     <dyn:staticRef var="generator_state" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:macroStaticReference id="LoadRef">
-    <dyn:staticRef var="load_PPu" staticVar="p"/>
-    <dyn:staticRef var="load_QPu" staticVar="q"/>
-    <dyn:staticRef var="load_state" staticVar="state"/>
+    <dyn:staticRef var="PPu_value" staticVar="p"/>
+    <dyn:staticRef var="QPu_value" staticVar="q"/>
+    <dyn:staticRef var="state_value" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:blackBoxModel id="G0" staticId="G0" lib="GeneratorPVRemoteSignalN" parFile="TestDydRemote.par" parId="remoteSignalNGenerator">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>

@@ -174,7 +174,7 @@ Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(load.id);
 
   model->setStaticId(load.id);
-  model->setLib("LoadAlphaBetaRestorativeLimitsRecalc");
+  model->setLib("DYNModelLoadRestorativeWithLimits");
   model->setParFile(basename + ".par");
   model->setParId(constants::loadParId);
   model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefLoadName_));
@@ -251,8 +251,11 @@ Dyd::writeMacroConnectors() {
   ret.push_back(connector);
 
   connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorLoadName_);
-  connector->addConnect("load_terminal", "@STATIC_ID@@NODE@_ACPIN");
-  connector->addConnect("load_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
+  connector->addConnect("Ur_value", "@STATIC_ID@@NODE@_ACPIN_V_re");
+  connector->addConnect("Ui_value", "@STATIC_ID@@NODE@_ACPIN_V_im");
+  connector->addConnect("Ir_value", "@STATIC_ID@@NODE@_ACPIN_i_re");
+  connector->addConnect("Ii_value", "@STATIC_ID@@NODE@_ACPIN_i_im");
+  connector->addConnect("switchOff1_value", "@STATIC_ID@@NODE@_switchOff_value");
   ret.push_back(connector);
 
   return ret;
@@ -275,9 +278,9 @@ Dyd::writeMacroStaticRef() {
   ret.push_back(ref);
 
   ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefLoadName_);
-  ref->addStaticRef("load_PPu", "p");
-  ref->addStaticRef("load_QPu", "q");
-  ref->addStaticRef("load_state", "state");
+  ref->addStaticRef("PPu_value", "p");
+  ref->addStaticRef("QPu_value", "q");
+  ref->addStaticRef("state_value", "state");
   ret.push_back(ref);
 
   return ret;
