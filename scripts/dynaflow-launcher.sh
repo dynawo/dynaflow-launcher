@@ -9,5 +9,6 @@ export DYNAWO_RESOURCES_DIR=$DYNAWO_HOME/share:$DYNAWO_HOME/share/xsd
 export DYNAWO_DDB_DIR=$DYNAWO_HOME/ddb
 export DYNAWO_IIDM_EXTENSION=$DYNAWO_HOME/lib/libdynawo_DataInterfaceIIDMExtension.so
 export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_HOME/lib
+export DYNAWO_INSTALL_DIR=$DYNAWO_HOME
 
 $INSTALL/bin/DynaFlowLauncher $@
