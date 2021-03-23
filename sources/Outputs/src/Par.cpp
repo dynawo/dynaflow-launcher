@@ -34,6 +34,9 @@ namespace outputs {
 
 namespace helper {
 
+static constexpr double kGoverNullValue_ = 0.;     ///< KGover null value
+static constexpr double kGoverDefaultValue_ = 1.;  ///< KGover default value
+
 template<class T>
 static boost::shared_ptr<parameters::Parameter>
 buildParameter(const std::string& name, const T& value) {
@@ -53,6 +56,117 @@ buildReference(const std::string& name, const std::string& origName, const std::
   return ref;
 }
 
+static std::string getMacroParameterSetId(const std::string& modelType) {
+  return "macro_" + modelType;
+}
+
+static std::string getMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
+  std::string id;
+  switch (modelType) {
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
+    id = fixedP ? getMacroParameterSetId(constants::impSignalNGeneratorFixedPParId) : getMacroParameterSetId(constants::impSignalNGeneratorParId);
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
+    id = fixedP ? getMacroParameterSetId(constants::propSignalNGeneratorFixedPParId) : getMacroParameterSetId(constants::propSignalNGeneratorParId);
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
+    id = fixedP ? getMacroParameterSetId(constants::remoteSignalNGeneratorFixedPParId) : getMacroParameterSetId(constants::remoteSignalNGeneratorParId);
+    break;
+  default:
+    id = fixedP ? getMacroParameterSetId(constants::signalNGeneratorFixedPParId) : getMacroParameterSetId(constants::signalNGeneratorParId);
+    break;
+  }
+  return id;
+}
+
+static std::string getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
+  std::string id;
+  switch (modelType) {
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
+    id = fixedP ? constants::impSignalNGeneratorFixedPParId : constants::impSignalNGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
+    id = fixedP ? constants::propSignalNGeneratorFixedPParId : constants::propSignalNGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
+    id = fixedP ? constants::remoteSignalNGeneratorFixedPParId : constants::remoteSignalNGeneratorParId;
+    break;
+  default:
+    id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
+    break;
+  }
+  return id;
+}
+
+static boost::shared_ptr<parameters::MacroParameterSet>
+buildMacroParameterSet(const std::string& modelType) {
+  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
+  if (modelType == getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")) {
+    macroParameterSet->addParameter(helper::buildParameter("vrremote_Gain", 1.));
+    macroParameterSet->addParameter(helper::buildParameter("vrremote_tIntegral", 1.));
+  }
+  return macroParameterSet;
+}
+
+static boost::shared_ptr<parameters::MacroParameterSet>
+buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP) {
+  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getMacroParameterSetId(modelType, fixedP)));
+  macroParameterSet->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
+  macroParameterSet->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
+  macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
+  macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
+  macroParameterSet->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
+  macroParameterSet->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+  macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
+  macroParameterSet->addParameter(helper::buildParameter("generator_tFilter", 0.001));
+  
+  double value = fixedP ? kGoverNullValue_ : kGoverDefaultValue_;
+  macroParameterSet->addParameter(helper::buildParameter("generator_KGover", value));
+
+  switch (activePowerCompensation) {
+  case dfl::inputs::Configuration::ActivePowerCompensation::P:
+    macroParameterSet->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
+    macroParameterSet->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::ActivePowerCompensation::PMAX:
+    macroParameterSet->addReference(helper::buildReference("generator_PNom", "pMax_pu", "DOUBLE"));
+    break;
+  }
+
+  switch (modelType) {
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
+    macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+    macroParameterSet->addParameter(helper::buildParameter("line_BPu", 0.));
+    macroParameterSet->addParameter(helper::buildParameter("line_GPu", 0.));
+    macroParameterSet->addParameter(helper::buildParameter("line_RPu", 0.));
+    macroParameterSet->addParameter(helper::buildParameter("line_XPu", 0.0001));
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
+    macroParameterSet->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_QPercent", "qMax_pu", "DOUBLE"));
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
+    macroParameterSet->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
+    break;
+  default:
+    macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+    break;
+  }
+  return macroParameterSet;
+}
+
+
 }  // namespace helper
 
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
@@ -62,21 +176,35 @@ Par::write() {
   parameters::XmlExporter exporter;
 
   auto dynamicModelsToConnect = parameters::ParametersSetCollectionFactory::newCollection();
-  auto constants = writeConstantSets(def_.generators.size(), def_.activePowerCompensation);
-  for (auto it = constants.begin(); it != constants.end(); ++it) {
-    dynamicModelsToConnect->addParametersSet(*it);
-  }
-
+  // adding load constant parameter set
+  dynamicModelsToConnect->addParametersSet(writeConstantLoadsSet());
+  // nb_gen: it si added regardless the generators modelling choice
+  auto set_nbgen = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNParId));
+  set_nbgen->addParameter(helper::buildParameter("nbGen", static_cast<int>(def_.generators.size())));
+  dynamicModelsToConnect->addParametersSet(set_nbgen);
+  // loop on generators
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
-    auto set = writeGenerator(*it, def_.basename, def_.dirname, def_.activePowerCompensation);
-    if (set) {
-      dynamicModelsToConnect->addParametersSet(set);
+    // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
+    if(!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(it->model, DYN::doubleIsZero(it->targetP))) && it->isUsingDiagram()) {
+      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(it->model, def_.activePowerCompensation, DYN::doubleIsZero(it->targetP)));
+    }
+    // if generator is not using infinite diagrams, no need to create constant sets
+    if (it->isUsingDiagram()) {
+      dynamicModelsToConnect->addParametersSet(writeGenerator(*it, def_.basename, def_.dirname));
+    } else {
+      if(!dynamicModelsToConnect->hasParametersSet(helper::getGeneratorParameterSetId(it->model, DYN::doubleIsZero(it->targetP)))) {
+        dynamicModelsToConnect->addParametersSet(writeConstantGeneratorsSets(def_.activePowerCompensation, it->model, DYN::doubleIsZero(it->targetP))); 
+      }
     }
   }
   for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
     dynamicModelsToConnect->addParametersSet(writeHdvcLine(it->second));
   }
+  // adding parameters sets related with remote voltage control or multiple generator regulating same bus
   for (const auto& keyValue : def_.busesWithDynamicModel) {
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))) {
+      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")));
+    }
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
   }
 
@@ -118,10 +246,29 @@ Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configurati
   return set;
 }
 
-std::vector<boost::shared_ptr<parameters::ParametersSet>>
-Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
-  std::vector<boost::shared_ptr<parameters::ParametersSet>> ret;
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
+  auto set = updateSignalNGenerator(helper::getGeneratorParameterSetId(modelType,fixedP), activePowerCompensation, fixedP);
+  switch (modelType) {
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
+    updateCouplingParameters(set);
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
+    updatePropParameters(set);
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::SIGNALN:
+  case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN:
+    break;
+  }
+  return set;
+}
 
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeConstantLoadsSet() {
   // Load
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::loadParId));
   set->addParameter(helper::buildParameter("load_Alpha", 1.5));
@@ -134,37 +281,7 @@ Par::writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::A
   set->addReference(helper::buildReference("load_Q0Pu", "q0_pu", "DOUBLE"));
   set->addReference(helper::buildReference("load_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("load_UPhase0", "angle_pu", "DOUBLE"));
-
-  ret.push_back(set);
-
-  // Signal N
-  set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNParId));
-  set->addParameter(helper::buildParameter("nbGen", static_cast<int>(nb_generators)));  // static cast because of Dynawo API
-  ret.push_back(set);
-
-  // Signal N generator
-  ret.push_back(updateSignalNGenerator(constants::signalNGeneratorParId, activePowerCompensation, false));
-
-  // Signal N generator with fixed P
-  ret.push_back(updateSignalNGenerator(constants::signalNGeneratorFixedPParId, activePowerCompensation, true));
-
-  // Signal N generator with impedance
-  set = updateSignalNGenerator(constants::impSignalNGeneratorParId, activePowerCompensation, false);
-  updateCouplingParameters(set);
-  ret.push_back(set);
-
-  // Signal N generator with impedance with fixed P
-  set = updateSignalNGenerator(constants::impSignalNGeneratorFixedPParId, activePowerCompensation, true);
-  updateCouplingParameters(set);
-  ret.push_back(set);
-
-  set = updateSignalNGenerator(constants::propSignalNGeneratorParId, activePowerCompensation, false);
-  updatePropParameters(set);
-  ret.push_back(set);
-
-  ret.push_back(updateSignalNGenerator(constants::remoteSignalNGeneratorParId, activePowerCompensation, false));
-
-  return ret;
+  return set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
@@ -172,9 +289,7 @@ Par::writeVRRemote(const std::string& busId, const std::string& genId) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
   set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", genId));
   set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", genId));
-
-  set->addParameter(helper::buildParameter("vrremote_Gain", 1.));
-  set->addParameter(helper::buildParameter("vrremote_tIntegral", 1.));
+  set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))));
   return set;
 }
 
@@ -220,38 +335,15 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname,
-                    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation) {
-  if (!def.isUsingDiagram()) {
-    // already processed by constant
-    return nullptr;
-  }
+Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname) {
   std::size_t hashId = constants::hash(def.id);
   std::string hashIdStr = std::to_string(hashId);
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
-  //  Use the hash id in exported files to prevent use of non-ascii characters
-  double value = (DYN::doubleIsZero(def.targetP)) ? kGoverNullValue_ : kGoverDefaultValue_;
-  set->addParameter(helper::buildParameter("generator_KGover", value));
-  switch (def.model) {
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
-    updateCouplingParameters(set);
-    set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
-    break;
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
-    updatePropParameters(set);
-    break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-    set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
-    break;
-  default:  //Signal N
-    set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
-    break;
-  }
 
-  set->addParameter(helper::buildParameter("generator_tFilter", 0.001));
+  //  Use the hash id in exported files to prevent use of non-ascii characters
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
+  // The macroParSet is associated to a macroParameterSet via the id
+  set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
+
   // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
   // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
   // on the limit of the reactive capability curve
@@ -266,25 +358,6 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
 
-  switch (activePowerCompensation) {
-  case dfl::inputs::Configuration::ActivePowerCompensation::P:
-    set->addReference(helper::buildReference("generator_PNom", "p_pu", "DOUBLE"));
-    break;
-  case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
-    set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
-    break;
-  case dfl::inputs::Configuration::ActivePowerCompensation::PMAX:
-    set->addReference(helper::buildReference("generator_PNom", "pMax_pu", "DOUBLE"));
-    break;
-  }
-
-  set->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
   return set;
 }
 
