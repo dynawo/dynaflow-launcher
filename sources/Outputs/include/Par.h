@@ -84,15 +84,25 @@ class Par {
 
  private:
   /**
-    * @brief Write constants parameter sets
+    * @brief Write constants parameter sets for generators
     *
-    * @param nb_generators total number of generators taken into account
     * @param activePowerCompensation the type of active power compensation
+    * @param modelType type of modelling chosen for a generator
+    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
     *
-    * @returns list of generated parameter sets
+    * @returns the parameter set
     */
-  static std::vector<boost::shared_ptr<parameters::ParametersSet>>
-  writeConstantSets(unsigned int nb_generators, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
+  static boost::shared_ptr<parameters::ParametersSet>
+  writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                              dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP);
+
+  /**
+    * @brief Write constants parameter sets for load
+    *
+    * @returns the parameter set
+    */
+  static boost::shared_ptr<parameters::ParametersSet>
+  writeConstantLoadsSet();
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -124,13 +134,11 @@ class Par {
    * @param def the generator definition to use
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
-   * @param activePowerCompensation the type of active power compensation
    *
-   * @returns nullptr if the generator use a SignalN model, the parameter set if not
+   * @returns the parameter set
    */
   static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
-                                                                     const std::string& dirname,
-                                                                     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation);
+                                                                     const std::string& dirname);
   /**
    * @brief Write hvdc line parameter set
    *
