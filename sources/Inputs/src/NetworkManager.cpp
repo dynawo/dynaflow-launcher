@@ -59,8 +59,6 @@ NetworkManager::buildTree() {
     if ((*it_v)->getVoltageLevelTopologyKind() == DYN::VoltageLevelInterface::NODE_BREAKER) {
       // Do not emit error if a node/breaker topology is found
       // A version of Dynawo that supports node/breaker is required
-      // See https://github.com/dynawo/dynawo/pull/1536
-      // and related issue https://github.com/dynawo/dynawo/issues/1532
     }
 
     auto vl = std::make_shared<VoltageLevel>((*it_v)->getID());
