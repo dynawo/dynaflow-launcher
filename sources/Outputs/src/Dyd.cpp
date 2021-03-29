@@ -304,13 +304,13 @@ Dyd::writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollectio
   if (def.model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN) {
     dynamicModelsToConnect->addConnect(def.id, "generator_URegulated", "NETWORK", def.regulatedBusId + "_U_value");
   } else if (def.model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) {
-    dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", "Model_Signal_NQ_" + def.regulatedBusId, "vrremote_NQ_value");
+    dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", "Model_Signal_NQ_" + def.regulatedBusId, "vrremote_NQ");
   }
 }
 
 void
 Dyd::writeVRRemoteConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& busId) {
-  dynamicModelsToConnect->addConnect("Model_Signal_NQ_" + busId, "vrremote_URegulated_value", "NETWORK", busId + "_U_value");
+  dynamicModelsToConnect->addConnect("Model_Signal_NQ_" + busId, "vrremote_URegulated", "NETWORK", busId + "_U_value");
 }
 
 void
