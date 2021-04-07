@@ -179,7 +179,6 @@ Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(def.id);
-  const std::string& static_ref_macro = macroStaticRefSignalNGeneratorName_;
   std::string parId;
   switch (def.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN:
@@ -202,7 +201,7 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   model->setLib(correspondence_lib_.at(def.model));
   model->setParFile(basename + ".par");
   model->setParId(parId);
-  model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(static_ref_macro));
+  model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSignalNGeneratorName_));
   return model;
 }
 
