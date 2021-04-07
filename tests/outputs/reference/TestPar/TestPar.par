@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <parametersSet xmlns="http://www.rte-france.com/dynawo">
-  <macroParameterSet id="macro_impSignalNGenerator">
-    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
-    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
-    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
-    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
-    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
-    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
-    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
-    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
-    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
-    <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
-    <par name="line_BPu" type="DOUBLE" value="0"/>
-    <par name="line_GPu" type="DOUBLE" value="0"/>
-    <par name="line_RPu" type="DOUBLE" value="0"/>
-    <par name="line_XPu" type="DOUBLE" value="0.0001"/>
-  </macroParameterSet>
   <macroParameterSet id="macro_signalNGenerator">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
@@ -43,15 +26,6 @@
     <par name="generator_KGover" type="DOUBLE" value="0"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
-  <set id="10160083025018531003">
-    <par name="generator_QMax0" type="DOUBLE" value="41"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="results/TestPar_Diagram/G3_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="10160083025018531003_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="3"/>
-    <par name="generator_QMinTableFile" type="STRING" value="results/TestPar_Diagram/G3_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="10160083025018531003_tableqmin"/>
-    <macroParSet id="macro_impSignalNGenerator"/>
-  </set>
   <set id="2751660957840315519">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="results/TestPar_Diagram/G4_Diagram.txt"/>
@@ -83,25 +57,7 @@
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
   <set id="SignalN">
-    <par name="nbGen" type="INT" value="5"/>
-  </set>
-  <set id="impSignalNGenerator">
-    <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
-    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
-    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="line_BPu" type="DOUBLE" value="0"/>
-    <par name="line_GPu" type="DOUBLE" value="0"/>
-    <par name="line_RPu" type="DOUBLE" value="0"/>
-    <par name="line_XPu" type="DOUBLE" value="0.0001"/>
-    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
-    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
-    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
-    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
-    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
-    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
-    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="nbGen" type="INT" value="3"/>
   </set>
   <set id="signalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>

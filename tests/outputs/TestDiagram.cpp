@@ -53,14 +53,6 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
                                                                      1., 10., 11., 110., 100, bus1),
-                                                 GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "01",
-                                                                     {
-                                                                         GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                     },
-                                                                     2., 20., 22., 220., 100, bus1),
                                                  GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
@@ -69,15 +61,7 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2.7, 22., 220.),
                                                                      },
-                                                                     3., 30., 33., 330., 100, bus1),
-                                                 GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03",
-                                                                     {
-                                                                         GeneratorDefinition::ReactiveCurvePoint(1., -11., 110.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                         GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                     },
-                                                                     4., 40., 44., 440., 100, bus1)};
+                                                                     3., 30., 33., 330., 100, bus1)};
 
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators));
 
@@ -108,7 +92,6 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                               GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
                           },
                           1., 10., -11., 110., 100, bus1),
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "01", {}, -20., -2., 22., 220., -100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "02",
                           {
                               GeneratorDefinition::ReactiveCurvePoint(8., 44., 440.),
@@ -123,8 +106,7 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                               GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                               GeneratorDefinition::ReactiveCurvePoint(2.7, 22., 220.),
                           },
-                          3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1)};
+                          3., 30., 33., 330., 100, bus1)};
 
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators));
 
@@ -148,7 +130,6 @@ TEST(Diagram, writeEmpty) {
 
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN, "01", {}, -20., -2., 22., 220., 100, bus1),
-      GeneratorDefinition("G3", GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
       GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "63", {}, 4., 40., 44., 440., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "04", {}, -20., -2., 22., 220., 100, bus1)};
 

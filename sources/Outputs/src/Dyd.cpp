@@ -37,8 +37,6 @@ namespace outputs {
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_lib_ = {
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, "GeneratorPVWithImpedanceSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQWithImpedanceSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "GeneratorPVRemoteSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "GeneratorPVRemoteDiagramPQSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "GeneratorPQPropSignalN"),
@@ -46,19 +44,15 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
 
 const std::string Dyd::macroConnectorLoadName_("LOAD_NETWORK_CONNECTOR");
 const std::string Dyd::macroConnectorGenName_("GEN_NETWORK_CONNECTOR");
-const std::string Dyd::macroConnectorGenImpedenceName_("GEN_IMP_NETWORK_CONNECTOR");
 const std::string Dyd::networkModelName_("NETWORK");
 const std::string Dyd::macroConnectorGenSignalNName_("GEN_SIGNALN_CONNECTOR");
 const std::string Dyd::signalNModelName_("Model_Signal_N");
 const std::string Dyd::macroStaticRefSignalNGeneratorName_("GeneratorStaticRef");
-const std::string Dyd::macroStaticRefImpGeneratorName_("GeneratorImpStaticRef");
 const std::string Dyd::macroStaticRefLoadName_("LoadRef");
 
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, macroConnectorGenName_),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, macroConnectorGenName_),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN, macroConnectorGenImpedenceName_),
-    std::make_pair(algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN, macroConnectorGenImpedenceName_),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, macroConnectorGenName_),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, macroConnectorGenName_),
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN, macroConnectorGenName_),
@@ -185,17 +179,11 @@ Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(def.id);
-  const std::string& static_ref_macro = (def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN ||
-                                         def.model == algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN)
-                                            ? macroStaticRefImpGeneratorName_
-                                            : macroStaticRefSignalNGeneratorName_;
+  const std::string& static_ref_macro = macroStaticRefSignalNGeneratorName_;
   std::string parId;
   switch (def.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN:
     parId = (DYN::doubleIsZero(def.targetP)) ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
-    break;
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-    parId = (DYN::doubleIsZero(def.targetP)) ? constants::impSignalNGeneratorFixedPParId : constants::impSignalNGeneratorParId;
     break;
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
     parId = constants::propSignalNGeneratorParId;
@@ -240,11 +228,6 @@ Dyd::writeMacroConnectors() {
   connector->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
   ret.push_back(connector);
 
-  connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenImpedenceName_);
-  connector->addConnect("coupling_terminal1", "@STATIC_ID@@NODE@_ACPIN");
-  connector->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
-  ret.push_back(connector);
-
   connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
   connector->addConnect("generator_N_value", "n_grp_@INDEX@_value");
   connector->addConnect("generator_alpha_value", "alpha_grp_@INDEX@_value");
@@ -268,12 +251,6 @@ Dyd::writeMacroStaticRef() {
   auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
   ref->addStaticRef("generator_PGenPu", "p");
   ref->addStaticRef("generator_QGenPu", "q");
-  ref->addStaticRef("generator_state", "state");
-  ret.push_back(ref);
-
-  ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefImpGeneratorName_);
-  ref->addStaticRef("coupling_P1GenPu", "p");
-  ref->addStaticRef("coupling_Q1GenPu", "q");
   ref->addStaticRef("generator_state", "state");
   ret.push_back(ref);
 

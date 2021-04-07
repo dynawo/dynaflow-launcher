@@ -115,13 +115,6 @@ class Par {
   updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);
 
   /**
-   * @brief Update parameter set with impendance model parameters and references
-   *
-   * @param set the parameter set to update
-   */
-  static void updateCouplingParameters(boost::shared_ptr<parameters::ParametersSet> set);
-
-  /**
    * @brief Update parameter set with remote references
    *
    * @param set the parameter set to update

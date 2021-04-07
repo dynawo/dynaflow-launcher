@@ -138,8 +138,6 @@ struct GeneratorDefinition {
   enum class ModelType {
     SIGNALN = 0,                        ///< Use GeneratorPVSignalN model
     DIAGRAM_PQ_SIGNALN,                 ///< Use GeneratorPVDiagramPQSignalN model
-    WITH_IMPEDANCE_SIGNALN,             ///< Use GeneratorPVWithImpedanceSignalN model
-    WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN,  ///< Use GeneratorPVWithImpedanceDiagramPQSignalN
     REMOTE_SIGNALN,                     ///< Use GeneratorPVRemoteSignalN
     REMOTE_DIAGRAM_PQ_SIGNALN,          ///< Use GeneratorPVRemoteDiagramPQSignalN
     PROP_SIGNALN,                       ///< Use GeneratorPQPropSignalN
@@ -154,7 +152,7 @@ struct GeneratorDefinition {
    * @return boolean indicating if the model uses a diagram
    */
   bool isUsingDiagram() const {
-    return model == ModelType::DIAGRAM_PQ_SIGNALN || model == ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
+    return model == ModelType::DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
            model == ModelType::PROP_DIAGRAM_PQ_SIGNALN;
   }
 
@@ -173,7 +171,8 @@ struct GeneratorDefinition {
    * @param regulatedBusId the Bus Id this generator is regulating
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
-                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP, const BusId& regulatedBusId) :
+                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
+                      double targetP, const BusId& regulatedBusId) :
       id{genId},
       model{type},
       nodeId{nodeId},
