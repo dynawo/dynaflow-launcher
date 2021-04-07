@@ -237,10 +237,8 @@ class Dyd {
       correspondence_macro_connector_;                           ///< Correspondence between generator model type and macro connector name in dyd file
   static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads
   static const std::string macroConnectorGenName_;               ///< name for the macro connector for generators
-  static const std::string macroConnectorGenImpedenceName_;      ///< name for the macro connector for generators with impedence
   static const std::string macroConnectorGenSignalNName_;        ///< Name for the macro connector for SignalN
   static const std::string macroStaticRefSignalNGeneratorName_;  ///< Name for the static ref macro for generators using signalN model
-  static const std::string macroStaticRefImpGeneratorName_;      ///< Name for the static ref macro for generators using impedance model
   static const std::string macroStaticRefLoadName_;              ///< Name for the static ref macro for loads
   static const std::string networkModelName_;                    ///< name of the model corresponding to network
   static const std::string signalNModelName_;                    ///< Name of the SignaN model

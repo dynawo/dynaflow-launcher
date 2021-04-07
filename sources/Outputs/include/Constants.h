@@ -54,8 +54,6 @@ const std::string diagramMaxTableSuffix{"_tableqmax"};                          
 const std::string diagramMinTableSuffix{"_tableqmin"};                                ///< Suffix for the table name for qmin in diagram file
 const std::string signalNGeneratorParId{"signalNGenerator"};                          ///< PAR id for generators using signal N
 const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};              ///< PAR id for generators using signal N with fixed P
-const std::string impSignalNGeneratorParId{"impSignalNGenerator"};                    ///< PAR id for generators using signal N with impendance
-const std::string impSignalNGeneratorFixedPParId{"impSignalNGeneratorFixedP"};        ///< PAR id for generators using signal N with impendance with fixed P
 const std::string propSignalNGeneratorParId{"propSignalNGenerator"};                  ///< PAR id for generators using prop signal N
 const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};      ///< PAR id for generators using prop signal N with fixed P
 const std::string remoteSignalNGeneratorParId{"remoteSignalNGenerator"};              ///< PAR id for generators using remote signal N

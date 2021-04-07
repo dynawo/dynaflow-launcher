@@ -63,10 +63,6 @@ static std::string getMacroParameterSetId(const std::string& modelType) {
 static std::string getMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? getMacroParameterSetId(constants::impSignalNGeneratorFixedPParId) : getMacroParameterSetId(constants::impSignalNGeneratorParId);
-    break;
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? getMacroParameterSetId(constants::propSignalNGeneratorFixedPParId) : getMacroParameterSetId(constants::propSignalNGeneratorParId);
@@ -85,10 +81,6 @@ static std::string getMacroParameterSetId(algo::GeneratorDefinition::ModelType m
 static std::string getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? constants::impSignalNGeneratorFixedPParId : constants::impSignalNGeneratorParId;
-    break;
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? constants::propSignalNGeneratorFixedPParId : constants::propSignalNGeneratorParId;
@@ -142,14 +134,6 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
   }
 
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
-    macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
-    macroParameterSet->addParameter(helper::buildParameter("line_BPu", 0.));
-    macroParameterSet->addParameter(helper::buildParameter("line_GPu", 0.));
-    macroParameterSet->addParameter(helper::buildParameter("line_RPu", 0.));
-    macroParameterSet->addParameter(helper::buildParameter("line_XPu", 0.0001));
-    break;
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     macroParameterSet->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
@@ -250,10 +234,6 @@ boost::shared_ptr<parameters::ParametersSet>
 Par::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   auto set = updateSignalNGenerator(helper::getGeneratorParameterSetId(modelType,fixedP), activePowerCompensation, fixedP);
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::WITH_IMPEDANCE_DIAGRAM_PQ_SIGNALN:
-    updateCouplingParameters(set);
-    break;
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     updatePropParameters(set);
@@ -359,14 +339,6 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
 
   return set;
-}
-
-void
-Par::updateCouplingParameters(boost::shared_ptr<parameters::ParametersSet> set) {
-  set->addParameter(helper::buildParameter("line_BPu", 0.));
-  set->addParameter(helper::buildParameter("line_GPu", 0.));
-  set->addParameter(helper::buildParameter("line_RPu", 0.));
-  set->addParameter(helper::buildParameter("line_XPu", 0.0001));
 }
 
 void

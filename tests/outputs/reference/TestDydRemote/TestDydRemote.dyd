@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
-  <dyn:macroConnector id="GEN_IMP_NETWORK_CONNECTOR">
-    <dyn:connect var1="coupling_terminal1" var2="@STATIC_ID@@NODE@_ACPIN"/>
-    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
-  </dyn:macroConnector>
   <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
     <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
     <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
@@ -19,11 +15,6 @@
     <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
-  <dyn:macroStaticReference id="GeneratorImpStaticRef">
-    <dyn:staticRef var="coupling_P1GenPu" staticVar="p"/>
-    <dyn:staticRef var="coupling_Q1GenPu" staticVar="q"/>
-    <dyn:staticRef var="generator_state" staticVar="state"/>
-  </dyn:macroStaticReference>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
     <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
