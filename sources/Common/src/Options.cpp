@@ -78,12 +78,14 @@ Options::basename(const std::string& filepath) {
   return path.filename().generic_string();
 }
 
-Options::Options() : desc_{}, config_{"", "", "", defaultLogLevel_} {
-  desc_.add_options()("help,h", "Display help message")(
-      "log-level", po::value<ParsedLogLevel>(),
-      (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())(
-      "network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
-      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version");
+Options::Options() : desc_{}, config_{"", "", "", "", defaultLogLevel_} {
+  desc_.add_options()
+    ("help,h", "Display help message")
+    ("log-level", po::value<ParsedLogLevel>(), (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())
+    ("network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")
+    ("contingencies", po::value<std::string>(&config_.contingenciesFilePath)->default_value(""), "Contingencies file path to process (Security Analysis)")
+    ("config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")
+    ("version,v", "Display version");
 }
 
 auto

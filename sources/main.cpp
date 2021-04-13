@@ -47,6 +47,21 @@ initializeDynawo(const std::string& locale) {
   dicos->addDico("LOG", "DYNLog", locale);
 }
 
+enum class SimulationKind {
+  STEADY_STATE_CALCULATION,
+  SECURITY_ANALYSIS
+};
+
+SimulationKind
+simulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
+  if (runtimeConfig.contingenciesFilePath.empty()) {
+    return SimulationKind::STEADY_STATE_CALCULATION;
+  }
+  else {
+    return SimulationKind::SECURITY_ANALYSIS;
+  }
+}
+
 int
 main(int argc, char* argv[]) {
   try {
@@ -94,10 +109,23 @@ main(int argc, char* argv[]) {
       LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
       return EXIT_FAILURE;
     }
+    if (!runtimeConfig.contingenciesFilePath.empty() && !boost::filesystem::exists(boost::filesystem::path(runtimeConfig.contingenciesFilePath))) {
+      LOG(error) << MESS(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath) << LOG_ENDL;
+      return EXIT_FAILURE;
+    }
     DYN::InitXerces xerces;
     DYN::InitLibXml2 libxml2;
 
-    LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
+    switch (simulationKind(runtimeConfig)) {
+      case SimulationKind::STEADY_STATE_CALCULATION:
+        LOG(info) << MESS(InputsSteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
+        break;
+      case SimulationKind::SECURITY_ANALYSIS:
+        LOG(info) << MESS(InputsSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath) << LOG_ENDL;
+        break;
+      default:
+        LOG(error) << MESS(SimulationKindUnknown, "") << LOG_ENDL;
+    }
 
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");

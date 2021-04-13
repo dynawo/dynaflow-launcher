@@ -9,13 +9,16 @@
 
 //------------------ Main ---------------------------
 NetworkSlackNodeNotFound      =     Network slack node requested but not found in network input file %1%
-InputsInfo                    =     Processing network input file %1% and config file %2%
+InputsSteadyStateInfo         =     Processing network input file %1% and config file %2% for steady-state calculation
+InputsSecurityAnalysisInfo    =     Processing network input file %1%, contingencies %2% and config file %3% for security analysis
 ExportInfo                    =     Exporting outputs files for %1%
 SlackNode                     =     Slack node of id %1% found with origin %2% (0=file, 1=algorithm)
 ConnexityError                =     Slack node of id %1% not present in main connex component
 ConnexityErrorReCompute       =     Slack node of id %1% not present in main connex component: compute slack node only in main connex component
 SimulateInfo                  =     Initializing %1% simulation
 NetworkFileNotFound           =     Network file %1% does not exist
+ContingenciesFileNotFound     =     Contingencies file %1% was given but does not exist
+SimulationKindUnknown         =     Simulation kind (steady-state calculation or security analysis) could not be determined %1%
 ContextProcessError           =     Processing of the network %1% failed
 SimulationEnded               =     Simulation %1% ended successfully (wall-time: %2%s)
 DFLEnded                      =     DynaFlowLauncher %1% ended successfully (wall-time: %2%s)
