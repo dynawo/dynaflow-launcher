@@ -25,10 +25,10 @@ namespace constants {
 
 std::string
 diagramFilename(const dfl::algo::GeneratorDefinition& generator) {
-  // Remove '/' and '\' characters from id and replace it with '%'
+  // Remove '/' and '\' characters from id and replace it with '_' to avoid mistakes when parsing the path
   auto id = generator.id;
-  std::replace(id.begin(), id.end(), '/', '%');
-  std::replace(id.begin(), id.end(), '\\', '%');
+  std::replace(id.begin(), id.end(), '/', '_');
+  std::replace(id.begin(), id.end(), '\\', '_');
   return id + "_Diagram.txt";
 }
 
