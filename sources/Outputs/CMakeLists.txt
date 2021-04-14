@@ -12,6 +12,7 @@ src/Job.cpp
 src/Dyd.cpp
 src/Par.cpp
 src/Diagram.cpp
+src/Constants.cpp
 )
 
 add_library(outputs ${LINK_TYPE} ${SOURCES})
