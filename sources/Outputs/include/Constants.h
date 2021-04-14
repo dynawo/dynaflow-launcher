@@ -11,7 +11,7 @@
 /**
  * @file Constants.h
  *
- * @brief Dynaflow launcher constants common to all writers
+ * @brief Dynaflow launcher common to all writers
  *
  */
 
@@ -39,13 +39,13 @@ hash(const std::string& str) {
 
 /**
  * @brief Return the filename of a diagram file
- * @param generator The generator from which the id will be extracted and appended to the result
+ * 
+ * The generator from which the id will be extracted, processed to avoid issues with path definition and appended to the result
+ * 
+ * @param generator the generator definition associated with the diagram name
  * @return The string filename of the diagram file
  */
-static inline std::string
-diagramFilename(const dfl::algo::GeneratorDefinition& generator) {
-  return generator.id + "_Diagram.txt";
-}
+std::string diagramFilename(const dfl::algo::GeneratorDefinition& generator);
 
 const std::string loadParId{"GenericRestorativeLoad"};                                ///< PAR id common to all loads
 const std::string signalNParId{"SignalN"};                                            ///< PAR id for signalN
