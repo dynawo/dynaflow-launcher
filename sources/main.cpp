@@ -19,6 +19,8 @@
 #include <DYNIoDico.h>
 #include <DYNInitXml.h>
 #include <boost/filesystem.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <boost/timer.hpp>
 #include <cstdlib>
 #include <sstream>
@@ -60,6 +62,19 @@ simulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfig) 
   else {
     return SimulationKind::SECURITY_ANALYSIS;
   }
+}
+
+void logContingencies(const std::string& contingenciesFilePath) {
+    boost::property_tree::ptree tree;
+    boost::property_tree::read_json(contingenciesFilePath, tree);
+    LOG(info) << "Contingencies" << LOG_ENDL;
+    for (const boost::property_tree::ptree::value_type& v : tree.get_child("contingencies")) {
+      const boost::property_tree::ptree& contingency = v.second;
+      LOG(info) << contingency.get<std::string>("id") << LOG_ENDL;
+      for (const boost::property_tree::ptree::value_type& e : contingency.get_child("elements")) {
+        LOG(info) << "  " << e.second.get<std::string>("id") << " (" << e.second.get<std::string>("type") << ")" << LOG_ENDL;
+      }
+    }
 }
 
 int
@@ -122,6 +137,8 @@ main(int argc, char* argv[]) {
         break;
       case SimulationKind::SECURITY_ANALYSIS:
         LOG(info) << MESS(InputsSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath) << LOG_ENDL;
+        logContingencies(runtimeConfig.contingenciesFilePath);
+        return EXIT_SUCCESS;
         break;
       default:
         LOG(error) << MESS(SimulationKindUnknown, "") << LOG_ENDL;
