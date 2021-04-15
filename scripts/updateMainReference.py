@@ -15,7 +15,10 @@ import iidmDiff
 import shutil
 
 # Execution requires to have iidmDiff module from dynawo library scripts
-# (nrt-diff) in pythonpath
+# (nrt-diff) in pythonpath. To add to python path:
+# `export PYTHONPATH=$PYTHONPATH:<DYNAWO_DEPLOY>/sbin/nrt/nrt_diff`
+# before calling the python script, where DYNAWO_DEPLOY the path to the
+# dynawo deploy installation used by DFL
 
 if __name__ == "__main__":
     root_dir = os.path.realpath(os.path.join(
