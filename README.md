@@ -1,5 +1,7 @@
 # DynaFlow Launcher
 
+Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dynawo](https://github.com/dynawo/dynawo)
+
 ## Build
 To build DynaFlow launcher, you must first deploy the Dynawo library with c++11 enabled. Then generate the cmake cache in your build directory:
 
@@ -43,3 +45,13 @@ Coverage analysis is based on ctest. To launch coverage, launch from source dire
 `ctest -S cmake/CTestScript.cmake -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -VV`
 
 Outputs are gcov and lcov reports
+
+## Developement standard
+### Check style
+The check style, based on Dynawo's, is based on a [clang-format file](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) using [clang-format](https://clang.llvm.org/docs/ClangFormat.html). It is recommended for developpers to apply it before commiting to ensure coherence with future developpements.
+
+### SCM
+git commits have a standard pattern, similar to the one in Dynawo core. This pattern can be checked by hooks. In order to install this hook, the
+developper must run the script:
+
+`./scripts/set_commit_hook.sh`
