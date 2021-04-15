@@ -1,16 +1,30 @@
 # DynaFlow Launcher
 
-Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dynawo](https://github.com/dynawo/dynawo)
+Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dyna&omega;o](https://github.com/dynawo/dynawo)
 
 ## Build
-To build DynaFlow launcher, you must first deploy the Dynawo library with c++11 enabled. Then generate the cmake cache in your build directory:
+To build DynaFlow launcher, you must first deploy the Dyna&omega;o library with *c++11 enabled*.
+
+``` bash
+$> ./myEnvDynawo.sh build-all
+$> ./myEnvDynawo.sh deploy
+```
+
+This command creates a deploy folder in ${DYNAWO_HOME}.
+The path to dynawo deploy is then the path to the subdirectory `dynawo` in the deploy folder. It is generally similar to:
+
+``` bash
+PATH_TO_DYNAWO_DEPLOY=${DYNAWO_HOME}/deploy/gcc8/shared/dynawo/
+```
+
+Then generate the cmake cache in your build directory:
 
 `cmake <SRC_DIR> -DCMAKE_BUILD_TYPE=Release -DDYNAWO_HOME=<DYNAWO_HOME> -DBOOST_ROOT=<DYNAWO_HOME> -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>`
 
 where:
 * SRC_DIR is the root directory of the dynaflow launcher repository
 * INSTALL_DIR is the directory where dynaflow launcher will be installed
-* DYNAWO_HOME is the directory of the deployed DYNAWO library (since Boost is deployed along with Dynawo, we use the same directory as Boost root)
+* DYNAWO_HOME is the directory of the deployed Dyna&omega;o library (since Boost is deployed along with Dyna&omega;o, we use the same directory as Boost root)
 * CMAKE_INSTALL_PREFIX is the directory where DynaFlow Launcher will be installed
 
 The following **optional** CMake variables can be added:
