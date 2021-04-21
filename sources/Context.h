@@ -36,15 +36,23 @@ namespace dfl {
  */
 class Context {
  public:
+  /// @brief The kind of simulation that is requested
+  enum class SimulationKind {
+    STEADY_STATE_CALCULATION,  ///< A steady-state calculation
+    SECURITY_ANALYSIS          ///< A security analysis for a given list of contingencies
+  };
+
   /**
    * @brief Context definition
    */
   struct ContextDef {
-    std::string networkFilepath;  ///< network filepath
-    std::string dynawLogLevel;    ///< string representation of the dynawo log level
-    std::string parFileDir;       ///< parameter file directory
-    std::string dynawoResDir;     ///< DYNAWO resources
-    std::string locale;           ///< localization
+    SimulationKind simulationKind;      ///< kind of simulation requested (steady-state or security analysis)
+    std::string networkFilepath;        ///< network filepath
+    std::string contingenciesFilepath;  ///< contigencies filepath (for Security Analysis simulation)
+    std::string dynawLogLevel;          ///< string representation of the dynawo log level
+    std::string parFileDir;             ///< parameter file directory
+    std::string dynawoResDir;           ///< DYNAWO resources
+    std::string locale;                 ///< localization
   };
 
  public:
