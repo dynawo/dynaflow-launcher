@@ -55,18 +55,13 @@ elapsed(const std::chrono::steady_clock::time_point& timePoint) {
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
-enum class SimulationKind {
-  STEADY_STATE_CALCULATION,
-  SECURITY_ANALYSIS
-};
-
-SimulationKind
-simulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
+dfl::Context::SimulationKind
+getSimulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
   if (runtimeConfig.contingenciesFilePath.empty()) {
-    return SimulationKind::STEADY_STATE_CALCULATION;
+    return dfl::Context::SimulationKind::STEADY_STATE_CALCULATION;
   }
   else {
-    return SimulationKind::SECURITY_ANALYSIS;
+    return dfl::Context::SimulationKind::SECURITY_ANALYSIS;
   }
 }
 
@@ -136,14 +131,14 @@ main(int argc, char* argv[]) {
     DYN::InitXerces xerces;
     DYN::InitLibXml2 libxml2;
 
-    switch (simulationKind(runtimeConfig)) {
-      case SimulationKind::STEADY_STATE_CALCULATION:
+    dfl::Context::SimulationKind simulationKind = getSimulationKind(runtimeConfig);
+    switch (simulationKind) {
+      case dfl::Context::SimulationKind::STEADY_STATE_CALCULATION:
         LOG(info) << MESS(InputsSteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
         break;
-      case SimulationKind::SECURITY_ANALYSIS:
+      case dfl::Context::SimulationKind::SECURITY_ANALYSIS:
         LOG(info) << MESS(InputsSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath) << LOG_ENDL;
         logContingencies(runtimeConfig.contingenciesFilePath);
-        return EXIT_SUCCESS;
         break;
       default:
         LOG(error) << MESS(SimulationKindUnknown, "") << LOG_ENDL;
@@ -153,7 +148,7 @@ main(int argc, char* argv[]) {
     parFilesDir.append("etc");
 
     dfl::Context::ContextDef def{
-        runtimeConfig.networkFilePath, config.settingFilePath(), config.assemblingFilePath(), runtimeConfig.dynawoLogLevel, parFilesDir, res, locale};
+        simulationKind, runtimeConfig.networkFilePath, config.settingFilePath(), config.assemblingFilePath(), runtimeConfig.contingenciesFilePath, runtimeConfig.dynawoLogLevel, parFilesDir, res, locale};
     dfl::Context context(def, config);
 
     if (!context.process()) {

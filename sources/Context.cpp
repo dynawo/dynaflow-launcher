@@ -28,9 +28,14 @@
 
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
+#include <DYNDataInterface.h>
+#include <DYNNetworkInterface.h>
+#include <DYNLineInterface.h>
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <tuple>
 
 namespace file = boost::filesystem;
@@ -107,6 +112,38 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();
+
+  // Check all contingencies have their elements present in the network
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    boost::property_tree::ptree tree;
+    boost::property_tree::read_json(def_.contingenciesFilepath, tree);
+    LOG(info) << "Contingencies inside Context" << LOG_ENDL;
+    for (const boost::property_tree::ptree::value_type& v : tree.get_child("contingencies")) {
+      const boost::property_tree::ptree& contingency = v.second;
+      LOG(info) << contingency.get<std::string>("id") << LOG_ENDL;
+      for (const boost::property_tree::ptree::value_type& e : contingency.get_child("elements")) {
+        std::string elementId = e.second.get<std::string>("id");
+        std::string elementType = e.second.get<std::string>("type");
+        LOG(info) << "  " << elementId << " (" << elementType << ")" << LOG_ENDL;
+        bool found = false;
+        if (elementType == "BRANCH") {
+          LOG(info) << "   Looking for element in Lines ... " << elementId << LOG_ENDL;
+          const auto& lines = networkManager_.dataInterface()->getNetwork()->getLines();
+          for (auto it_l = lines.begin(); it_l != lines.end(); ++it_l) {
+            LOG(info) << "    Checking " << (*it_l)->getID() << LOG_ENDL;
+            if (elementId == (*it_l)->getID()) {
+              LOG(info) << "    Found " << (*it_l)->getID() << LOG_ENDL;
+              found = true;
+              break;
+            }
+          }
+        }
+        if (!found) {
+          LOG(error) << "Missing component interface for element " << elementId << LOG_ENDL;
+        }
+      }
+    }
+  }
 
   return true;
 }
