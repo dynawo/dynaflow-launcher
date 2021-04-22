@@ -24,7 +24,7 @@ export_var_env() {
     local value="${var#*=}"
 
     if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
-      error_exit "You must export variables with DYNAWO prefix for $name."
+      error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
     fi
 
     if eval "[ \"\$$name\" ]"; then
@@ -208,17 +208,17 @@ CMD=$1
 set_environment
 
 case $1 in
-    clean-build-all)
-        clean_build_all || error_exit "Failed to clean build DFL"
-        ;;
     build-user)
         build_user || error_exit "Failed to build DFL"
         ;;
     build-tests-coverage)
         build_tests_coverage || error_exit "Failed to perform coverage"
         ;;
-    tests)
-        cmake_tests || error_exit "Failed to perform tests"
+    clean-build-all)
+        clean_build_all || error_exit "Failed to clean build DFL"
+        ;;
+    help)
+        help
         ;;
     launch-dir)
         launch_dir $2 || error_exit "Failed to perform launch with dir=$2"
@@ -226,14 +226,14 @@ case $1 in
     launch)
         launch $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
         ;;
-    help)
-        help
+    reset-environment)
+        reset_environment_variables || error_exit "Failed to reset environment variables"
+        ;;
+    tests)
+        cmake_tests || error_exit "Failed to perform tests"
         ;;
     version)
         version
-        ;;
-    reset-environment)
-        reset_environment_variables || error_exit "Failed to reset environment variables"
         ;;
     *)
         echo "$1 is an invalid option"
