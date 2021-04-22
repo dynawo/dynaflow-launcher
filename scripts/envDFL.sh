@@ -39,8 +39,38 @@ export_var_env() {
     export $name="$value"
 }
 
+export_var_env_force() {
+  local var="$@"
+  local name=${var%%=*}
+  local value="${var#*=}"
+
+  if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
+    error_exit "You must export variables with DYNAFLOW_LAUNCHER prefix for $name."
+  fi
+
+  if eval "[ \"\$$name\" ]"; then
+    unset $name
+    export $name="$value"
+    return
+  fi
+
+  if [ "$value" = UNDEFINED ]; then
+    error_exit "You must define the value of $name"
+  fi
+  export $name="$value"
+}
+
 ld_library_path_remove() {
-    export LD_LIBRARY_PATH=`echo -n $LD_LIBRARY_PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`;
+  export LD_LIBRARY_PATH=`echo -n $LD_LIBRARY_PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`;
+}
+
+ld_library_path_prepend() {
+  if [ ! -z "$LD_LIBRARY_PATH" ]; then
+    ld_library_path_remove $1
+    export LD_LIBRARY_PATH="$1:$LD_LIBRARY_PATH"
+  else
+    export LD_LIBRARY_PATH="$1"
+  fi
 }
 
 define_options() {
@@ -77,9 +107,12 @@ set_commit_hook() {
 }
 
 set_environment() {
+    # global vars
+    ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_HOME/lib64   # For local DFL libraries, used only at runtime in case we compile in shared
+
     # dynawo vars
     export DYNAWO_INSTALL_DIR=$DYNAWO_HOME
-    export LD_LIBRARY_PATH=$DYNAWO_INSTALL_DIR/lib:$LD_LIBRARY_PATH
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
     export DYNAWO_RESOURCES_DIR=$DYNAWO_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd
     export DYNAWO_DDB_DIR=$DYNAWO_INSTALL_DIR/ddb
@@ -87,8 +120,8 @@ set_environment() {
     export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib
 
     # build
-    export DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
-    export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+    export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
+    export_var_env_force DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
     export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_USE_DOXYGEN=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
@@ -96,11 +129,10 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
 
     # Run
-    export DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
-    export LD_LIBRARY_PATH=$DYNAFLOW_LAUNCHER_HOME/lib64:$LD_LIBRARY_PATH
+    export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
     export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
 
-    # other
+    # hooks
     set_commit_hook
 }
 
@@ -202,8 +234,6 @@ launch_dir() {
 #################################
 ########### Main script #########
 #################################
-
-CMD=$1
 
 set_environment
 
