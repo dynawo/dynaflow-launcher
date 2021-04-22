@@ -73,6 +73,19 @@ ld_library_path_prepend() {
   fi
 }
 
+pythonpath_remove() {
+  export PYTHONPATH=`echo -n $PYTHONPATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`;
+}
+
+pythonpath_prepend() {
+  if [ ! -z "$PYTHONPATH" ]; then
+    pythonpath_remove $1
+    export PYTHONPATH="$1:$PYTHONPATH"
+  else
+    export PYTHONPATH="$1"
+  fi
+}
+
 define_options() {
     export_var_env DYNAFLOW_LAUNCHER_USAGE="Usage: `basename $0` [option] -- program to deal with DynaFlow Launcher
 
@@ -83,6 +96,7 @@ where [option] can be:
 
         =========== Tests
         tests                                   launch DynaFlow Launcher unit tests
+        update-references                       update MAIN tests references
 
         =========== Launch
         launch-dir [dir]                        launch DynaFlow Launcher with:
@@ -132,6 +146,9 @@ set_environment() {
     export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
     export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
 
+    # python
+    pythonpath_prepend $DYNAWO_HOME/sbin/nrt/nrt_diff
+
     # hooks
     set_commit_hook
 }
@@ -143,6 +160,8 @@ reset_environment_variables() {
 
     ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib64
     ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib
+
+    pythonpath_remove $DYNAWO_HOME/sbin/nrt/nrt_diff
 
     unset DYNAWO_HOME
     unset DYNAWO_INSTALL_DIR
@@ -231,6 +250,10 @@ launch_dir() {
     launch $network $config
 }
 
+update_references() {
+    $HERE//updateMainReference.py
+}
+
 #################################
 ########### Main script #########
 #################################
@@ -261,6 +284,9 @@ case $1 in
         ;;
     tests)
         cmake_tests || error_exit "Failed to perform tests"
+        ;;
+    update-references)
+        update_references || error_exit "Failed to update MAIN references"
         ;;
     version)
         version
