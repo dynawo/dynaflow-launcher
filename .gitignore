@@ -1,12 +1,16 @@
 build/
 buildCoverage/
+buildLinux/
 Install/
 install/
+installLinux/
 version.h
 *.log
 *.orig
 DicoKeys.*
 tests/**/results/**
+results/
+myEnvDFL.sh
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode
