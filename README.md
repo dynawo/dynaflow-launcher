@@ -78,6 +78,11 @@ You can use the script myEnvDFL.sh with the "tests" option. DynaFlow Launcher mu
 $> ./myEnvDFL.sh tests
 ```
 
+For MAIN unit tests, which are composed of complete Dyna&omega;o simulations, reference tests can be updated using the script myEnvDFL.sh
+```bash
+$> ./myEnvDFL.sh update-references
+```
+
 ## Coverage
 Coverage analysis is based on ctest.
 Outputs are gcov and lcov reports.
