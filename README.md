@@ -17,7 +17,7 @@ The path to dynawo deploy is then the path to the subdirectory `dynawo` in the d
 PATH_TO_DYNAWO_DEPLOY=${DYNAWO_HOME}/deploy/gcc8/shared/dynawo/
 ```
 
-To build DynaFlow Launcher you need to clone the repository and launch the following commands in the source code directory, it will create a `myEnvDFL.sh` file that will be your personal entrypoint to launch DFL and parametrise some options.
+To build DynaFlow Launcher you need to clone the repository and launch the following commands in the source code directory, it will create a `myEnvDFL.sh` file that will be your personal entrypoint to launch DFL and configure some options.
 
 ``` bash
 $> git clone https://github.com/dynawo/dynaflow-launcher
@@ -36,7 +36,7 @@ export DYNAFLOW_LAUNCHER_LOCALE=en_GB
 # export DYNAFLOW_LAUNCHER_SHARED_LIB=ON # default OFF
 # export DYNAFLOW_LAUNCHER_USE_DOXYGEN=OFF # default ON
 # export DYNAFLOW_LAUNCHER_BUILD_TESTS=OFF # default ON
-# export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO (Release) or DEBUG(Debug): can be DEBUG, INFO, WARN, ERROR
+# export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
 
 # Run
 $DYNAFLOW_LAUNCHER_HOME/scripts/envDFL.sh $@' > myEnvDFL.sh
