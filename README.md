@@ -61,14 +61,6 @@ $> ./myEnvDFL.sh launch <network> <config>
 ```
 where network is the path to the network file (IIDM) and config the path to the configuration file
 
-```bash
-$> ./myEnvDFL.sh launch-dir <dir>
-```
-where dir is the directory to use. This command is equivalent to
-```bash
-$> ./myEnvDFL.sh launch <dir>/network.xml <dir>/config.json
-```
-
 ## Testing
 DynaFlow Launcher testing relies on cmake tests.
 

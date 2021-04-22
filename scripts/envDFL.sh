@@ -99,10 +99,9 @@ where [option] can be:
         update-references                       update MAIN tests references
 
         =========== Launch
-        launch-dir [dir]                        launch DynaFlow Launcher with:
-                                                - network filepath = <dir>/network.xml (only IIDM is supported)
-                                                - configuration filepath = <dir>/config.json
-        launch [network] [config]               launch DynaFlow Launcher
+        launch [network] [config]               launch DynaFlow Launcher:
+                                                - network: filepath (only IIDM is supported)
+                                                - config: filepath (JSON configuration file)
 
         =========== Others
         help                                    show all available options
@@ -226,6 +225,12 @@ build_tests_coverage() {
 }
 
 launch() {
+    if [ ! -f $1 ]; then
+        error_exit "IIDM network file $network doesn't exist"
+    fi
+    if [ ! -f $2 ]; then
+        error_exit "DFL configuration file $config doesn't exist"
+    fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $1 \
@@ -236,22 +241,8 @@ version() {
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --version
 }
 
-launch_dir() {
-    network=$1/network.xml
-    if [ ! -f $network ]; then
-        error_exit "IIDM network file $network doesn't exist"
-    fi
-
-    config=$1/config.json
-    if [ ! -f $config ]; then
-        error_exit "DFL configuration file $config doesn't exist"
-    fi
-
-    launch $network $config
-}
-
 update_references() {
-    $HERE//updateMainReference.py
+    $HERE/updateMainReference.py
 }
 
 #################################
@@ -272,9 +263,6 @@ case $1 in
         ;;
     help)
         help
-        ;;
-    launch-dir)
-        launch_dir $2 || error_exit "Failed to perform launch with dir=$2"
         ;;
     launch)
         launch $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
