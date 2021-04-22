@@ -36,7 +36,7 @@ export DYNAFLOW_LAUNCHER_LOCALE=en_GB
 # export DYNAFLOW_LAUNCHER_SHARED_LIB=ON # default OFF
 # export DYNAFLOW_LAUNCHER_USE_DOXYGEN=OFF # default ON
 # export DYNAFLOW_LAUNCHER_BUILD_TESTS=OFF # default ON
-# export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
+# export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO (Release) or DEBUG(Debug): can be DEBUG, INFO, WARN, ERROR
 
 # Run
 $DYNAFLOW_LAUNCHER_HOME/scripts/envDFL.sh $@' > myEnvDFL.sh
@@ -55,18 +55,7 @@ $> ./myEnvDFL.sh help
 
 
 ## Run
-To run DynaFlow launcher, use the script dynaflow-launcher.sh provided with the installation. This script will set the required environment variables.
-
-Runtime options of binary are given by doing:
-
-```bash
-$> ./dynaflow-launcher.sh --help
-```
-from the install directlory
-
-Only network file and configuration are required.
-
-You can use the script myEnvDFL.sh with the "launch" or "launch-dir" option:
+To run DynaFlow launcher, you can use the script myEnvDFL.sh with the "launch" or "launch-dir" option:
 ```bash
 $> ./myEnvDFL.sh launch <network> <config>
 ```
