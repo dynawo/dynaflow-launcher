@@ -81,24 +81,6 @@ class Configuration {
   }
 
   /**
-   * @brief determines if VSC are considered as generators
-   *
-   * @returns the parameter value
-   */
-  bool useVSCAsGenerators() const {
-    return useVSCAsGenerators_;
-  }
-
-  /**
-   * @brief determines if LCC are considered as loads
-   *
-   * @returns the parameter value
-   */
-  bool useLCCAsLoads() const {
-    return useLCCAsLoads_;
-  }
-
-  /**
    * @brief Retrieves the output directory
    *
    * @returns the parameter value
@@ -140,8 +122,6 @@ class Configuration {
   bool isSVCRegulationOn_ = true;                                                    ///< SVC regulation on
   bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
   bool isAutomaticSlackBusOn_ = true;                                                ///< automatic slack bus on
-  bool useVSCAsGenerators_ = false;                                                  ///< VSC considered as generators
-  bool useLCCAsLoads_ = false;                                                       ///< LCC are considered as loads
   std::string outputDir_ = boost::filesystem::current_path().generic_string();       ///< Directory for output files
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
