@@ -19,8 +19,6 @@ TEST(Config, Nominal) {
   ASSERT_FALSE(config.isSVCRegulationOn());
   ASSERT_FALSE(config.isShuntRegulationOn());
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
-  ASSERT_TRUE(config.useVSCAsGenerators());
-  ASSERT_TRUE(config.useLCCAsLoads());
   ASSERT_EQ("/tmp", config.outputDir());
   ASSERT_EQ(63.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::P, config.getActivePowerCompensation());
@@ -34,8 +32,6 @@ TEST(Config, Default) {
   ASSERT_TRUE(config.isSVCRegulationOn());
   ASSERT_TRUE(config.isShuntRegulationOn());
   ASSERT_TRUE(config.isAutomaticSlackBusOn());
-  ASSERT_FALSE(config.useVSCAsGenerators());
-  ASSERT_FALSE(config.useLCCAsLoads());
   ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
   ASSERT_EQ(45.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());

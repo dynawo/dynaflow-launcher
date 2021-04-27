@@ -88,8 +88,6 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(isSVCRegulationOn_, config, "SVCRegulationOn");
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
-    helper::updateValue(useVSCAsGenerators_, config, "VSCAsGenerators");
-    helper::updateValue(useLCCAsLoads_, config, "LCCAsLoads");
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
