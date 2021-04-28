@@ -99,7 +99,7 @@ Dyd::write() {
     writeVRRemoteConnect(dynamicModelsToConnect, keyValue.first);
   }
 
-  dynamicModelsToConnect->addConnect(signalNModelName_, "tetaRef_0_value", "NETWORK", def_.slackNode->id + "_phi_value");
+  dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", "NETWORK", def_.slackNode->id + "_phi");
 
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
     writeGenConnect(dynamicModelsToConnect, *it);
@@ -209,7 +209,7 @@ std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>>
 Dyd::writeConstantsModel(const std::string& basename) {
   std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> ret;
   auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
-  model->setLib("DYNModelSignalN");
+  model->setLib("SignalN");
   model->setParFile(basename + ".par");
   model->setParId(constants::signalNParId);
 
@@ -228,8 +228,7 @@ Dyd::writeMacroConnectors() {
   ret.push_back(connector);
 
   connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
-  connector->addConnect("generator_N_value", "n_grp_@INDEX@_value");
-  connector->addConnect("generator_alpha_value", "alpha_grp_@INDEX@_value");
+  connector->addConnect("generator_N", "signalN_N");
   ret.push_back(connector);
 
   connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorLoadName_);
