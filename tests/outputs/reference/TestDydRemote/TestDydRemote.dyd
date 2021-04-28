@@ -5,8 +5,7 @@
     <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
-    <dyn:connect var1="generator_alpha_value" var2="alpha_grp_@INDEX@_value"/>
-    <dyn:connect var1="generator_N_value" var2="n_grp_@INDEX@_value"/>
+    <dyn:connect var1="generator_N" var2="signalN_N"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
     <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
@@ -43,7 +42,7 @@
   <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="Model_Signal_N" lib="DYNModelSignalN" parFile="TestDydRemote.par" parId="SignalN"/>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN" parFile="TestDydRemote.par" parId="SignalN"/>
   <dyn:blackBoxModel id="Model_Signal_NQ_BUS_1" lib="VRRemote" parFile="TestDydRemote.par" parId="Model_Signal_NQ_BUS_1"/>
   <dyn:blackBoxModel id="Model_Signal_NQ_BUS_2" lib="VRRemote" parFile="TestDydRemote.par" parId="Model_Signal_NQ_BUS_2"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G0" id2="NETWORK"/>
@@ -60,7 +59,7 @@
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="5"/>
   <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
   <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="Model_Signal_N" var1="tetaRef_0_value" id2="NETWORK" var2="Slack_phi_value"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi"/>
   <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="G1" var1="generator_NQ_value" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ"/>
   <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
