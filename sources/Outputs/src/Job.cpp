@@ -227,7 +227,6 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
     attrs.clear();
     formatter->endElement();  // appender
   }
-
   formatter->endElement();  // logs
 
   // final state
