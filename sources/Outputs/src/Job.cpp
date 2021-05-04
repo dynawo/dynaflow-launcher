@@ -228,8 +228,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
     attrs.clear();
     formatter->endElement();  // appender
   }
-
   formatter->endElement();  // logs
+
+  auto finalState = outputs->getFinalStateEntry();
+  attrs.add("exportIIDMFile", finalState->getExportIIDMFile());
+  attrs.add("exportDumpFile", finalState->getExportDumpFile());
+  formatter->startElement("dyn", "finalState", attrs);
+  attrs.clear();
+  formatter->endElement();  // finalState
 
   formatter->endElement();  // outputs
 
