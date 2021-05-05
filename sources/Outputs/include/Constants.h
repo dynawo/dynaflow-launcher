@@ -48,7 +48,6 @@ hash(const std::string& str) {
 std::string diagramFilename(const dfl::algo::GeneratorDefinition& generator);
 
 const std::string loadParId{"GenericRestorativeLoad"};                                ///< PAR id common to all loads
-const std::string signalNParId{"SignalN"};                                            ///< PAR id for signalN
 const std::string diagramDirectorySuffix{"_Diagram"};                                 ///< Suffix for the diagram directory
 const std::string diagramMaxTableSuffix{"_tableqmax"};                                ///< Suffix for the table name for qmax in diagram file
 const std::string diagramMinTableSuffix{"_tableqmin"};                                ///< Suffix for the table name for qmin in diagram file
