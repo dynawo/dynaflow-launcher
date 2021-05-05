@@ -37,13 +37,32 @@ class Job {
     /**
      * @brief Constructor
      *
-     * @param filepath output filename
+     * @param filename output filename
      * @param lvl dynawo log level
      */
-    JobDefinition(const std::string& filepath, const std::string& lvl) : filename(filepath), dynawoLogLevel(lvl) {}
+    JobDefinition(const std::string& filename, const std::string& lvl) :
+        filename(filename),
+        dynawoLogLevel(lvl),
+        contingencyId{},
+        baseFilename{} {}
 
+    /**
+     * @brief Constructor with a reference to a contingency
+     *
+     * @param filename output filename
+     * @param lvl dynawo log level
+     * @param contingencyId contingency identifier
+     * @param baseFilename filename of base case
+     */
+    JobDefinition(const std::string& filename, const std::string& lvl, const std::string& contingencyId, const std::string& baseFilename) :
+        filename(filename),
+        dynawoLogLevel(lvl),
+        contingencyId(contingencyId),
+        baseFilename(baseFilename) {}
     std::string filename;        ///< filename of the job output file
     std::string dynawoLogLevel;  ///< Dynawo log level, in string representation
+    std::string contingencyId;   ///< Identifier of referred contingency
+    std::string baseFilename;    ///< Name for base case filename if we are defining a jobs file for a contingency
   };
 
  public:

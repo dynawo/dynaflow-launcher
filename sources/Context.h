@@ -145,5 +145,7 @@ class Context {
   algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;              ///< map of bus ids to a generator that regulates them
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
+  // TODO(Luma) should be a vector of shared_ptr<JobEntry> ???
+  std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 };
 }  // namespace dfl
