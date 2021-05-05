@@ -21,10 +21,12 @@
 #include "Constants.h"
 #include "Diagram.h"
 #include "Dyd.h"
+#include "DydEvent.h"
 #include "Job.h"
 #include "Log.h"
 #include "Message.hpp"
 #include "Par.h"
+#include "ParEvent.h"
 
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
@@ -50,7 +52,8 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
     generators_{},
     loads_{},
-    jobEntry_{} {
+    jobEntry_{},
+    jobsEvents_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
@@ -106,11 +109,12 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();
 
+  // TODO(Luma) read contingencies from file and store in a list in the context
   // Check all contingencies have their elements present in the network
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(def_.contingenciesFilepath, tree);
-    LOG(info) << "Contingencies inside Context" << LOG_ENDL;
+    LOG(info) << "Contingencies in Context::process, check elements have dynamic models" << LOG_ENDL;
     for (const boost::property_tree::ptree::value_type& v : tree.get_child("contingencies")) {
       const boost::property_tree::ptree& contingency = v.second;
       LOG(info) << contingency.get<std::string>("id") << LOG_ENDL;
@@ -120,7 +124,7 @@ Context::process() {
         LOG(info) << "  " << elementId << " (" << elementType << ")" << LOG_ENDL;
         bool found = false;
         if (elementType == "BRANCH") {
-          LOG(info) << "   Looking for element in Lines ... " << elementId << LOG_ENDL;
+          LOG(info) << "    Looking for element " << elementId << " in Lines ... " << LOG_ENDL;
           const auto& lines = networkManager_.dataInterface()->getNetwork()->getLines();
           for (auto it_l = lines.begin(); it_l != lines.end(); ++it_l) {
             LOG(info) << "    Checking " << (*it_l)->getID() << LOG_ENDL;
@@ -132,7 +136,7 @@ Context::process() {
           }
         }
         if (!found) {
-          LOG(error) << "Missing component interface for element " << elementId << LOG_ENDL;
+          LOG(warn) << "  Missing component interface for element " << elementId << LOG_ENDL;
         }
       }
     }
@@ -183,6 +187,52 @@ Context::exportOutputs() {
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_));
   diagramWriter.write();
+
+  // Prepare a DYD, PAR and JOBS for every contingency
+  // The DYD and PAR contains the definition of the events of the contingency
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    boost::property_tree::ptree tree;
+    boost::property_tree::read_json(def_.contingenciesFilepath, tree);
+    LOG(info) << "Preparing DYD, PAR and JOBS file for contingencies" << LOG_ENDL;
+    for (const boost::property_tree::ptree::value_type& v : tree.get_child("contingencies")) {
+      const boost::property_tree::ptree& contingency = v.second;
+      const auto& contingencyId = contingency.get<std::string>("id");
+      for (const boost::property_tree::ptree::value_type& e : contingency.get_child("elements")) {
+        std::string elementId = e.second.get<std::string>("id");
+        std::string elementType = e.second.get<std::string>("type");
+        if (elementType == "BRANCH") {
+          LOG(info) << "  Preparing contingency " << contingencyId << " " << elementId << "(" << elementType << ")" << LOG_ENDL;
+          // Basename of event-related DYD, PAR and JOBS files
+          const auto& basenameEvent = basename_ + "-" + contingencyId;
+
+          // Specific DYD for contingency
+          file::path dydEvent(config_.outputDir());
+          dydEvent.append(basenameEvent + ".dyd");
+          // TODO(Luma) dydEvent should accept a list of elements
+          outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), elementId, elementType));
+          dydEventWriter.write();
+
+          // Specific PAR for contingency
+          file::path parEvent(config_.outputDir());
+          parEvent.append(basenameEvent + ".par");
+          // TODO(Luma) should be a parameter
+          double timeEvent = 100;
+          outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), elementId, elementType, timeEvent));
+          parEventWriter.write();
+
+          // Specific JOBS file for contingency
+          outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawLogLevel, contingencyId, basename_));
+          boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
+          jobsEvents_.emplace_back(jobEvent);
+#if _DEBUG_
+          outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_.outputDir());
+#endif
+        } else {
+          LOG(warn) << "  TODO event definition for element type " << elementType << " in contingency " << contingencyId << LOG_ENDL;
+        }
+      }
+    }
+  }
 }
 
 void
@@ -205,6 +255,14 @@ Context::execute() {
   simu->simulate();
   simu->terminate();
   simu->clean();
+
+  for (auto it = jobsEvents_.begin(); it != jobsEvents_.end(); ++it) {
+    auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManager_.dataInterface());
+    simuEvent->init();
+    simuEvent->simulate();
+    simuEvent->terminate();
+    simuEvent->clean();
+  }
 }
 
 void
