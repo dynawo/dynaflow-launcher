@@ -81,11 +81,20 @@ Job::writeSolver() {
 boost::shared_ptr<job::ModelerEntry>
 Job::writeModeler() {
   auto modeler = job::ModelerEntryFactory::newInstance();
-  modeler->setCompileDir("outputs/compilation");
+  if (def_.contingencyId.empty()) {
+    modeler->setCompileDir("outputs/compilation");
+  } else {
+    modeler->setCompileDir("outputs-" + def_.contingencyId + "/compilation");
+  }
 
   auto models = job::DynModelsEntryFactory::newInstance();
   models->setDydFile(def_.filename + ".dyd");
   modeler->addDynModelsEntry(models);
+  if (!def_.contingencyId.empty()) {
+    auto modelsBase = job::DynModelsEntryFactory::newInstance();
+    modelsBase->setDydFile(def_.baseFilename + ".dyd");
+    modeler->addDynModelsEntry(modelsBase);
+  }
 
   auto network = job::NetworkEntryFactory::newInstance();
   network->setIidmFile("");  // not providing IIDM file here as data interface will be provided to simulation
@@ -113,7 +122,11 @@ Job::writeSimulation() {
 boost::shared_ptr<job::OutputsEntry>
 Job::writeOutputs() {
   auto output = job::OutputsEntryFactory::newInstance();
-  output->setOutputsDirectory("outputs");
+  if (def_.contingencyId.empty()) {
+    output->setOutputsDirectory("outputs");
+  } else {
+    output->setOutputsDirectory("outputs-" + def_.contingencyId);
+  }
 
   auto log = job::LogsEntryFactory::newInstance();
   auto appender = job::AppenderEntryFactory::newInstance();

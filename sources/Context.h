@@ -159,5 +159,7 @@ class Context {
   algo::LinesByIdDefinitions linesById_;                                 ///< Lines by ids definition
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
+  // TODO(Luma) should be a vector of shared_ptr<JobEntry> ???
+  std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 };
 }  // namespace dfl
