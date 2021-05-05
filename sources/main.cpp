@@ -9,6 +9,7 @@
 
 #include "Configuration.h"
 #include "Context.h"
+#include "Contingencies.h"
 #include "Dico.h"
 #include "Log.h"
 #include "Message.hpp"
@@ -63,19 +64,6 @@ getSimulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfi
   else {
     return dfl::Context::SimulationKind::SECURITY_ANALYSIS;
   }
-}
-
-void logContingencies(const std::string& contingenciesFilePath) {
-    boost::property_tree::ptree tree;
-    boost::property_tree::read_json(contingenciesFilePath, tree);
-    LOG(info) << "Contingencies" << LOG_ENDL;
-    for (const boost::property_tree::ptree::value_type& v : tree.get_child("contingencies")) {
-      const boost::property_tree::ptree& contingency = v.second;
-      LOG(info) << contingency.get<std::string>("id") << LOG_ENDL;
-      for (const boost::property_tree::ptree::value_type& e : contingency.get_child("elements")) {
-        LOG(info) << "  " << e.second.get<std::string>("id") << " (" << e.second.get<std::string>("type") << ")" << LOG_ENDL;
-      }
-    }
 }
 
 int
@@ -138,7 +126,6 @@ main(int argc, char* argv[]) {
         break;
       case dfl::Context::SimulationKind::SECURITY_ANALYSIS:
         LOG(info) << MESS(InputsSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath) << LOG_ENDL;
-        logContingencies(runtimeConfig.contingenciesFilePath);
         break;
       default:
         LOG(error) << MESS(SimulationKindUnknown, "") << LOG_ENDL;

@@ -20,6 +20,7 @@
 #include "Algo.h"
 #include "Configuration.h"
 #include "DynamicDataBaseManager.h"
+#include "Contingencies.h"
 #include "NetworkManager.h"
 
 #include <JOBJobEntry.h>
@@ -143,6 +144,7 @@ class Context {
   inputs::NetworkManager networkManager_;                  ///< network manager
   inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
   const inputs::Configuration& config_;                    ///< configuration
+  inputs::Contingencies contingencies_;                    ///< contingencies if the simulation is a Security Analysis
 
   std::string basename_;                                                                   ///< basename for all files
   std::vector<inputs::NetworkManager::ProcessNodeCallback> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
@@ -158,8 +160,18 @@ class Context {
   algo::ShuntCounterDefinitions counters_;                               ///< shunt counters definitions
   algo::LinesByIdDefinitions linesById_;                                 ///< Lines by ids definition
 
-  boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
-  // TODO(Luma) should be a vector of shared_ptr<JobEntry> ???
+  boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
+
+  /// @brief Check all elements in contingencies have corresponding dynamic models
+  void checkContingencies();
+  /// @brief Check if a branch is a Line
+  /// @param branchId static identifier of branch
+  bool isLine(const std::string& branchId);
+  /// @brief Check if a branch is a two-windings transformer
+  /// @param branchId static identifier of branch
+  bool isTwoWTransformer(const std::string& branchId);
+  /// @brief Build JOBS, DYD, PAR files for each contingency
+  void exportOutputsContingencies();
 };
 }  // namespace dfl
