@@ -157,11 +157,9 @@ class Dyd {
    *
    * Create Model signal N model
    *
-   * @param basename basename for file
-   *
    * @returns black box models
    */
-  static std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> writeConstantsModel(const std::string& basename);
+  static std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> writeConstantsModel();
 
   /**
    * @brief Write macro connectors

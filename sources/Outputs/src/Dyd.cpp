@@ -83,7 +83,7 @@ Dyd::write() {
     dynamicModelsToConnect->addModel(writeLoad(load, def_.basename));
     dynamicModelsToConnect->addMacroConnect(writeLoadConnect(load));
   }
-  auto const_models = writeConstantsModel(def_.basename);
+  auto const_models = writeConstantsModel();
   for (const auto& const_model : const_models) {
     dynamicModelsToConnect->addModel(const_model);
   }
@@ -206,12 +206,10 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
 }
 
 std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>>
-Dyd::writeConstantsModel(const std::string& basename) {
+Dyd::writeConstantsModel() {
   std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> ret;
   auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
   model->setLib("SignalN");
-  model->setParFile(basename + ".par");
-  model->setParId(constants::signalNParId);
 
   ret.push_back(model);
 

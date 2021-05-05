@@ -40,7 +40,7 @@
     <dyn:staticRef var="hvdc_state" staticVar="state1"/>
     <dyn:staticRef var="hvdc_state" staticVar="state2"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN" parFile="TestDydHvdc.par" parId="SignalN"/>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
