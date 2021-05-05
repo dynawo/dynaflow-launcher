@@ -71,9 +71,6 @@
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
     <macroParSet id="macro_remoteSignalNGenerator_vr"/>
   </set>
-  <set id="SignalN">
-    <par name="nbGen" type="INT" value="6"/>
-  </set>
   <set id="propSignalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>

@@ -45,7 +45,7 @@
   <dyn:blackBoxModel id="L3" staticId="L3" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDyd.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN" parFile="TestDyd.par" parId="SignalN"/>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L1" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>

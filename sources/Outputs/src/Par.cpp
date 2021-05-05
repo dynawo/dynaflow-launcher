@@ -162,10 +162,6 @@ Par::write() {
   auto dynamicModelsToConnect = parameters::ParametersSetCollectionFactory::newCollection();
   // adding load constant parameter set
   dynamicModelsToConnect->addParametersSet(writeConstantLoadsSet());
-  // nb_gen: it si added regardless the generators modelling choice
-  auto set_nbgen = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::signalNParId));
-  set_nbgen->addParameter(helper::buildParameter("nbGen", static_cast<int>(def_.generators.size())));
-  dynamicModelsToConnect->addParametersSet(set_nbgen);
   // loop on generators
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
