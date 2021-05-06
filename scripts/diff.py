@@ -36,6 +36,11 @@ if __name__ == "__main__":
     reference_path = os.path.realpath(os.path.join(
         options.root, "reference", options.testdir, "outputIIDM.xml"))
 
+    if not os.path.exists(reference_path):
+        print("Reference path " + reference_path +
+              " does not exist : not checked")
+        sys.exit(0)
+
     if options.verbose:
         print("comparing " + result_path + " and " + reference_path)
 
