@@ -48,9 +48,10 @@ ParEvent::write() {
   parameters::XmlExporter exporter;
 
   auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
-  // TODO(Luma) loop on pairs (elementId, elementType) of current contingency
-  if (def_.elementType == "BRANCH") {
-    parametersSets->addParametersSet(writeBranchDisconnection(def_.elementId, def_.timeEvent));
+  for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
+    if (e->type == "BRANCH") {
+      parametersSets->addParametersSet(writeBranchDisconnection(e->id, def_.timeEvent));
+    }
   }
 
   exporter.exportToFile(parametersSets, def_.filename, constants::xmlEncoding);

@@ -19,6 +19,7 @@
 
 #include "Algo.h"
 #include "Configuration.h"
+#include "Contingencies.h"
 
 #include <PARParametersSet.h>
 #include <boost/shared_ptr.hpp>
@@ -44,25 +45,22 @@ class ParEvent {
      * @param base basename for current simulation
      * @param filename file path for output PAR file (corresponds to basename)
      * // TODO(Luma) should be a list of (elementId, elementType)
-     * @param elementId element identifier of the equipment affected by the contingency
-     * @param elementType element identifier of the equipment affected by the contingency
+     * @param contingency contingency definition for the event parameters
      * @param timeEvent time of event
      */
     ParEventDefinition(const std::string& base, const std::string& filename,
-            const std::string& elementId,
-            const std::string& elementType,
+            const inputs::Contingencies::ContingencyDefinition& contingency,
             const double& timeEvent) :
         basename(base),
         filename(filename),
-        elementId(elementId),
-        elementType(elementType),
+        contingency(contingency),
         timeEvent(timeEvent) {}
 
-    std::string basename;     ///< basename
-    std::string filename;     ///< filename of the output file to write
-    std::string elementId;    ///< Identifier of the equipment affected by the contingency
-    std::string elementType;  ///< Type of the equipment affected by the contingency
-    double timeEvent;         ///< Time of event
+    std::string basename;                                      ///< basename
+    std::string filename;                                      ///< filename of the output file to write
+    // TODO(Luma) use shared_ptr<Contingency...>?
+    inputs::Contingencies::ContingencyDefinition contingency;  ///< contingency definition for the event parameters
+    double timeEvent;                                          ///< Time of event
   };
 
   /**
