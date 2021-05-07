@@ -173,5 +173,7 @@ class Context {
   bool isTwoWTransformer(const std::string& branchId);
   /// @brief Build JOBS, DYD, PAR files for each contingency
   void exportOutputsContingencies();
+  /// @brief Build JOBS, DYD, PAR files for a given contingency
+  void exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c);
 };
 }  // namespace dfl
