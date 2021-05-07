@@ -220,44 +220,39 @@ Context::exportOutputsContingencies() {
   LOG(debug) << "Preparing DYD, PAR and JOBS file for contingencies" << LOG_ENDL;
   const auto& contingencies = contingencies_.definitions();
   for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
-    const std::string& contingencyId = c->id;
-
-    LOG(debug) << contingencyId << LOG_ENDL;
-    // TODO(Luma) All elements of the contingency have to be considered for dyd/par building, not only one
-    for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
-      if (e->type == "BRANCH") {
-        LOG(debug) << "  Preparing contingency " << contingencyId << " " << e->id << "(" << e->type << ")" << LOG_ENDL;
-
-        // Basename of event-related DYD, PAR and JOBS files
-        const auto& basenameEvent = basename_ + "-" + contingencyId;
-
-        // Specific DYD for contingency
-        file::path dydEvent(config_.outputDir());
-        dydEvent.append(basenameEvent + ".dyd");
-        // TODO(Luma) dydEvent should accept a list of elements
-        outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), e->id, e->type));
-        dydEventWriter.write();
-
-        // Specific PAR for contingency
-        file::path parEvent(config_.outputDir());
-        parEvent.append(basenameEvent + ".par");
-        // TODO(Luma) should be a parameter
-        double timeEvent = 100;
-        outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), e->id, e->type, timeEvent));
-        parEventWriter.write();
-
-        // Specific JOBS file for contingency
-        outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawLogLevel, contingencyId, basename_));
-        boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
-        jobsEvents_.emplace_back(jobEvent);
-#if _DEBUG_
-        outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_.outputDir());
-#endif
-      } else {
-        LOG(warn) << "  TODO event definition for element type " << e->type << " in contingency " << contingencyId << LOG_ENDL;
-      }
-    }
+    exportOutputsContingency(*c);
   }
+}
+
+void
+Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c) {
+  const std::string& contingencyId = c.id;
+  LOG(debug) << contingencyId << LOG_ENDL;
+
+  // Basename of event-related DYD, PAR and JOBS files
+  const auto& basenameEvent = basename_ + "-" + contingencyId;
+
+  // Specific DYD for contingency
+  file::path dydEvent(config_.outputDir());
+  dydEvent.append(basenameEvent + ".dyd");
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c));
+  dydEventWriter.write();
+
+  // Specific PAR for contingency
+  file::path parEvent(config_.outputDir());
+  parEvent.append(basenameEvent + ".par");
+  // TODO(Luma) should be a parameter
+  double timeEvent = 100;
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
+  parEventWriter.write();
+
+  // Specific JOBS file for contingency
+  outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawLogLevel, contingencyId, basename_));
+  boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
+  jobsEvents_.emplace_back(jobEvent);
+#if _DEBUG_
+  outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_.outputDir());
+#endif
 }
 
 void

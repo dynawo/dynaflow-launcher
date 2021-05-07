@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "Contingencies.h"
 
 #include <DYDBlackBoxModel.h>
 #include <DYDDynamicModelsCollection.h>
@@ -47,20 +48,17 @@ class DydEvent {
      *
      * @param base the basename for current file (corresponds to filepath basename)
      * @param filepath the filepath of the dyd file to write
-     * // TODO(Luma) extend to a list of (elementId, elementType) pairs
-     * @param elementId identifier of the affected equipment
-     * @param elementType type of the affected equipment (BRANCH, GENERATOR, LOAD, ...)
+     * @param contingency definition of the contingency for which we have to create a DYD file
      */
-    DydEventDefinition(const std::string& base, const std::string& filepath, const std::string& elementId, const std::string& elementType) :
+    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingencies::ContingencyDefinition& contingency) :
         basename(base),
         filename(filepath),
-        elementId(elementId),
-        elementType(elementType) {}
+        contingency(contingency) {}
 
     std::string basename;     ///< basename for file
     std::string filename;     ///< filepath for file to write
-    std::string elementId;     ///< identifier of the equipment affected by the event
-    std::string elementType;  ///< type of the affected equipment
+    // TODO(Luma) use a shared_ptr<ContingencyDefinition> ...
+    inputs::Contingencies::ContingencyDefinition contingency;  ///< definition of the contingency
   };
 
   /**

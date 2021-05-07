@@ -51,10 +51,11 @@ DydEvent::write() {
   }
 
   // models and connections
-  // TODO(Luma) extend to a list of (elementId, elementType) pairs
-  if (def_.elementType == "BRANCH") {
-    dynamicModels->addModel(writeBranchDisconnection(def_.elementId, def_.basename));
-    dynamicModels->addMacroConnect(writeBranchDisconnectionConnect(def_.elementId));
+  for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
+    if (e->type == "BRANCH") {
+      dynamicModels->addModel(writeBranchDisconnection(e->id, def_.basename));
+      dynamicModels->addMacroConnect(writeBranchDisconnectionConnect(e->id));
+    }
   }
 
   exporter.exportToFile(dynamicModels, def_.filename, constants::xmlEncoding);
