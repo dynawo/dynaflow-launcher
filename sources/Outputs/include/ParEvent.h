@@ -88,12 +88,12 @@ class ParEvent {
   /**
    * @brief Write element disconnection parameter set
    *
-   * @param elementId the identifier of the element (generator, TODO(Luma) load ???)
+   * @param elementId the identifier of the element (can be a generator, load, shunt, ...)
    * @param timeEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeElementDisconnection(const std::string& branchId, double timeEvent);
+  static boost::shared_ptr<parameters::ParametersSet> writeElementDisconnection(const std::string& elementId, double timeEvent);
 
  private:
   ParEventDefinition def_;  ///< PAR event file definition
