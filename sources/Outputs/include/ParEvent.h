@@ -44,7 +44,6 @@ class ParEvent {
      *
      * @param base basename for current simulation
      * @param filename file path for output PAR file (corresponds to basename)
-     * // TODO(Luma) should be a list of (elementId, elementType)
      * @param contingency contingency definition for the event parameters
      * @param timeEvent time of event
      */
@@ -85,6 +84,16 @@ class ParEvent {
    * @returns the parameter set
    */
   static boost::shared_ptr<parameters::ParametersSet> writeBranchDisconnection(const std::string& branchId, double timeEvent);
+
+  /**
+   * @brief Write element disconnection parameter set
+   *
+   * @param elementId the identifier of the element (generator, TODO(Luma) load ???)
+   * @param timeEvent time of event
+   *
+   * @returns the parameter set
+   */
+  static boost::shared_ptr<parameters::ParametersSet> writeElementDisconnection(const std::string& branchId, double timeEvent);
 
  private:
   ParEventDefinition def_;  ///< PAR event file definition
