@@ -105,23 +105,26 @@ class DydEvent {
   static boost::shared_ptr<dynamicdata::MacroConnect> writeBranchDisconnectionConnect(const std::string& branchId);
 
   /**
-   * @brief Create black box model for disconnecting a generator
+   * @brief Create black box model for the event of switching off an equipment
    *
-   * @param elementId static identifier of the generator
+   * @param elementId static identifier of the equipment
    * @param basename basename for file
    *
-   * @returns model for the generator disconnection event
+   * @returns model for the equipment disconnection event
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeGeneratorDisconnection(const std::string& elementId, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeElementDisconnection(const std::string& elementId, const std::string& basename);
 
   /**
-   * @brief Write connections for generator disconnection events
+   * @brief Adds connections for disconnection events
    *
-   * @param branchId the static id of the generator to process
+   * @param dynamicModels the list of dynamic models where the connections will be added
+   * @param elementId the static id of the equipment to process
+   * @param var2Prefix the prefix of the var2 name in the connect depends on the type of equipment ("generator", ...)
    *
-   * @returns the connection elements
    */
-  static void addGeneratorDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
+  static void addElementDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels,
+    const std::string& elementId,
+    const std::string& var2Prefix);
 
  private:
   static const std::string networkModelName_;                       ///< name of the model corresponding to network

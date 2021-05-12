@@ -57,8 +57,18 @@ DydEvent::write() {
       dynamicModels->addModel(writeBranchDisconnection(e->id, def_.basename));
       dynamicModels->addMacroConnect(writeBranchDisconnectionConnect(e->id));
     } else if (e->type == "GENERATOR") {
-      dynamicModels->addModel(writeGeneratorDisconnection(e->id, def_.basename));
-      addGeneratorDisconnectionConnect(dynamicModels, e->id);
+      dynamicModels->addModel(writeElementDisconnection(e->id, def_.basename));
+      addElementDisconnectionConnect(dynamicModels, e->id, "generator_switchOffSignal2");
+    } else if (e->type == "LOAD") {
+      dynamicModels->addModel(writeElementDisconnection(e->id, def_.basename));
+      addElementDisconnectionConnect(dynamicModels, e->id, "switchOff2");
+    } else if (e->type == "SHUNT") {
+      auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + e->id);
+      model->setLib("EventSetPointReal");
+      model->setParFile(def_.basename + ".par");
+      model->setParId("Disconnect_" + e->id);
+      dynamicModels->addModel(model);
+      dynamicModels->addConnect("Disconnect_" + e->id, "event_state1", "NETWORK", e->id + "_state");
     } else {
       throw std::invalid_argument("Element type " + e->type + " not expected in contingency definition");
     }
@@ -97,7 +107,7 @@ DydEvent::writeBranchDisconnectionConnect(const std::string& branchId) {
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
-DydEvent::writeGeneratorDisconnection(const std::string& elementId, const std::string& basename) {
+DydEvent::writeElementDisconnection(const std::string& elementId, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
 
   model->setLib("EventSetPointBoolean");
@@ -108,8 +118,8 @@ DydEvent::writeGeneratorDisconnection(const std::string& elementId, const std::s
 }
 
 void
-DydEvent::addGeneratorDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
-  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", elementId, "generator_switchOffSignal2");
+DydEvent::addElementDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId, const std::string& var2) {
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", elementId, var2);
 }
 
 }  // namespace outputs
