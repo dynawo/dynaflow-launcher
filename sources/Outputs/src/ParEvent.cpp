@@ -51,8 +51,15 @@ ParEvent::write() {
   for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
     if (e->type == "BRANCH") {
       parametersSets->addParametersSet(writeBranchDisconnection(e->id, def_.timeEvent));
-    } else if (e->type == "GENERATOR") {
+    } else if (e->type == "SHUNT") {
+      auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + e->id));
+      set->addParameter(helper::buildParameter("event_tEvent", def_.timeEvent));
+      set->addParameter(helper::buildParameter("event_stateEvent1", 1.0));
+      parametersSets->addParametersSet(set);
+    } else if (e->type == "GENERATOR" || e->type == "LOAD") {
       parametersSets->addParametersSet(writeElementDisconnection(e->id, def_.timeEvent));
+    } else {
+      throw std::invalid_argument("Element type " + e->type + " not expected in contingency definition");
     }
   }
 
@@ -67,11 +74,6 @@ ParEvent::writeBranchDisconnection(const std::string& branchId, double timeEvent
   set->addParameter(helper::buildParameter("event_disconnectExtremity", true));
   return set;
 }
-
-  // <set id="DisconnectGenerator">
-  //   <par type="DOUBLE" name="event_tEvent" value="50"/>
-  //   <par type="BOOL" name="event_stateEvent1" value="true"/>
-  // </set>
 
 boost::shared_ptr<parameters::ParametersSet>
 ParEvent::writeElementDisconnection(const std::string& elementId, double timeEvent) {
