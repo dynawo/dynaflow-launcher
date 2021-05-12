@@ -51,6 +51,8 @@ ParEvent::write() {
   for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
     if (e->type == "BRANCH") {
       parametersSets->addParametersSet(writeBranchDisconnection(e->id, def_.timeEvent));
+    } else if (e->type == "GENERATOR") {
+      parametersSets->addParametersSet(writeElementDisconnection(e->id, def_.timeEvent));
     }
   }
 
@@ -63,6 +65,19 @@ ParEvent::writeBranchDisconnection(const std::string& branchId, double timeEvent
   set->addParameter(helper::buildParameter("event_tEvent", timeEvent));
   set->addParameter(helper::buildParameter("event_disconnectOrigin", true));
   set->addParameter(helper::buildParameter("event_disconnectExtremity", true));
+  return set;
+}
+
+  // <set id="DisconnectGenerator">
+  //   <par type="DOUBLE" name="event_tEvent" value="50"/>
+  //   <par type="BOOL" name="event_stateEvent1" value="true"/>
+  // </set>
+
+boost::shared_ptr<parameters::ParametersSet>
+ParEvent::writeElementDisconnection(const std::string& elementId, double timeEvent) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
+  set->addParameter(helper::buildParameter("event_tEvent", timeEvent));
+  set->addParameter(helper::buildParameter("event_stateEvent1", true));
   return set;
 }
 

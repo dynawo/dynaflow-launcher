@@ -18,6 +18,7 @@
 #include "DydEvent.h"
 
 #include "Constants.h"
+#include "Log.h"
 
 #include <DYDBlackBoxModelFactory.h>
 #include <DYDDynamicModelsCollection.h>
@@ -55,21 +56,15 @@ DydEvent::write() {
     if (e->type == "BRANCH") {
       dynamicModels->addModel(writeBranchDisconnection(e->id, def_.basename));
       dynamicModels->addMacroConnect(writeBranchDisconnectionConnect(e->id));
+    } else if (e->type == "GENERATOR") {
+      dynamicModels->addModel(writeGeneratorDisconnection(e->id, def_.basename));
+      addGeneratorDisconnectionConnect(dynamicModels, e->id);
+    } else {
+      throw std::invalid_argument("Element type " + e->type + " not expected in contingency definition");
     }
   }
 
   exporter.exportToFile(dynamicModels, def_.filename, constants::xmlEncoding);
-}
-
-boost::shared_ptr<dynamicdata::BlackBoxModel>
-DydEvent::writeBranchDisconnection(const std::string& branchId, const std::string& basename) {
-  auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + branchId);
-
-  model->setLib("EventQuadripoleDisconnection");
-  model->setParFile(basename + ".par");
-  model->setParId("Disconnect_" + branchId);
-
-  return model;
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
@@ -83,11 +78,38 @@ DydEvent::writeMacroConnectors() {
   return ret;
 }
 
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+DydEvent::writeBranchDisconnection(const std::string& branchId, const std::string& basename) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + branchId);
+
+  model->setLib("EventQuadripoleDisconnection");
+  model->setParFile(basename + ".par");
+  model->setParId("Disconnect_" + branchId);
+
+  return model;
+}
+
 boost::shared_ptr<dynamicdata::MacroConnect>
 DydEvent::writeBranchDisconnectionConnect(const std::string& branchId) {
   auto connect = dynamicdata::MacroConnectFactory::newMacroConnect("MC_EventQuadripoleDisconnection", "Disconnect_" + branchId, networkModelName_);
   connect->setName2(branchId);
   return connect;
+}
+
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+DydEvent::writeGeneratorDisconnection(const std::string& elementId, const std::string& basename) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
+
+  model->setLib("EventSetPointBoolean");
+  model->setParFile(basename + ".par");
+  model->setParId("Disconnect_" + elementId);
+
+  return model;
+}
+
+void
+DydEvent::addGeneratorDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", elementId, "generator_switchOffSignal2");
 }
 
 }  // namespace outputs
