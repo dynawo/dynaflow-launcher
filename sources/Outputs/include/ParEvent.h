@@ -76,24 +76,34 @@ class ParEvent {
 
  private:
   /**
-   * @brief Write branch disconnection parameter set
+   * @brief Build branch disconnection parameter set
    *
    * @param branchId the identifier of the branch
    * @param timeEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeBranchDisconnection(const std::string& branchId, double timeEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string& branchId, double timeEvent);
 
   /**
-   * @brief Write element disconnection parameter set
+   * @brief Build element disconnection parameter set for EventSetPointBoolean dynamic model
    *
-   * @param elementId the identifier of the element (can be a generator, load, shunt, ...)
+   * @param elementId the identifier of the element
    * @param timeEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeElementDisconnection(const std::string& elementId, double timeEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string& elementId, double timeEvent);
+
+  /**
+   * @brief Build element disconnection parameter set for EventSetPointReal dynamic model
+   *
+   * @param elementId the identifier of the element
+   * @param timeEvent time of event
+   *
+   * @returns the parameter set
+   */
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId, double timeEvent);
 
  private:
   ParEventDefinition def_;  ///< PAR event file definition
