@@ -81,7 +81,7 @@ class DydEvent {
    *
    * @returns list of macro connectors
    */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> writeMacroConnectors();
+  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> buildMacroConnectors();
 
   /**
    * @brief Create black box model for disconnecting a branch
@@ -91,10 +91,10 @@ class DydEvent {
    *
    * @returns model for the branch disconnection event
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeBranchDisconnection(const std::string& branchId, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildBranchDisconnection(const std::string& branchId, const std::string& basename);
 
   /**
-   * @brief Write connections for branch disconnection events
+   * @brief Create connections for branch disconnection events
    *
    * Use macro connection
    *
@@ -102,29 +102,48 @@ class DydEvent {
    *
    * @returns the macro connection elements
    */
-  static boost::shared_ptr<dynamicdata::MacroConnect> writeBranchDisconnectionConnect(const std::string& branchId);
+  static boost::shared_ptr<dynamicdata::MacroConnect> buildBranchDisconnectionConnect(const std::string& branchId);
 
   /**
-   * @brief Create black box model for the event of switching off an equipment
+   * @brief Create black box model for disconnecting an equipment through a switchOffSignal
    *
    * @param elementId static identifier of the equipment
    * @param basename basename for file
    *
    * @returns model for the equipment disconnection event
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeElementDisconnection(const std::string& elementId, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildSwitchOffSignalDisconnection(const std::string& elementId, const std::string& basename);
 
   /**
-   * @brief Adds connections for disconnection events
+   * @brief Adds connections for disconnection events that use a switch off signal
    *
    * @param dynamicModels the list of dynamic models where the connections will be added
    * @param elementId the static id of the equipment to process
    * @param var2Prefix the prefix of the var2 name in the connect depends on the type of equipment ("generator", ...)
    *
    */
-  static void addElementDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels,
+  static void addSwitchOffSignalDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels,
     const std::string& elementId,
     const std::string& var2Prefix);
+
+  /**
+   * @brief Create black box model for disconnecting an equipment through a change in Network state
+   *
+   * @param elementId static identifier of the equipment
+   * @param basename basename for file
+   *
+   * @returns model for the equipment disconnection event
+   */
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildNetworkStateDisconnection(const std::string& elementId, const std::string& basename);
+
+  /**
+   * @brief Adds connections for disconnection events that use a change in Network state
+   *
+   * @param dynamicModels the list of dynamic models where the connections will be added
+   * @param elementId the static id of the equipment to process
+   *
+   */
+  static void addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
 
  private:
   static const std::string networkModelName_;                       ///< name of the model corresponding to network
