@@ -34,7 +34,11 @@ target_link_libraries(DynaFlowLauncher
 
   Dynawo::dynawo_Simulation
   Dynawo::dynawo_SimulationCommon
-  
+
+  DynawoAlgorithms::dynawo_algorithms_Common
+  DynawoAlgorithms::dynawo_algorithms_API_MultipleJobs
+  DynawoAlgorithms::dynawo_algorithms_Launcher
+
   LibXml2::LibXml2
 )
 
@@ -44,7 +48,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})
 # It will then need a call to `install(EXPORT)`
 install(
     TARGETS
-	  DynaFlowLauncher # We can install executables
+    DynaFlowLauncher # We can install executables
     EXPORT ${PROJECT_NAME}_Targets
 # Following is only needed pre-cmake3.14
    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
