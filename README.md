@@ -1,6 +1,7 @@
 # DynaFlow Launcher
 
 Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dyna&omega;o](https://github.com/dynawo/dynawo)
+and [dynawo algorithms](https://github.com/dynawo/dynawo/dynawo-algorithms)
 
 ## Build
 To build DynaFlow launcher, you must first deploy the Dyna&omega;o library with **c++11 enabled**.
@@ -17,6 +18,12 @@ The path to dynawo deploy is then the path to the subdirectory `dynawo` in the d
 PATH_TO_DYNAWO_DEPLOY=${DYNAWO_HOME}/deploy/gcc8/shared/dynawo/
 ```
 
+Also, Dyna&omega;o Algorithms library must be deployed:
+``` bash
+$> ./myEnvDynawoAlgorithms.sh build
+$> ./myEnvDynawoAlgorithms.sh deploy
+```
+
 To build DynaFlow Launcher you need to clone the repository and launch the following commands in the source code directory, it will create a `myEnvDFL.sh` file that will be your personal entrypoint to launch DFL and configure some options.
 
 ``` bash
@@ -27,6 +34,7 @@ $> echo '#!/bin/bash
 # Required
 export DYNAFLOW_LAUNCHER_HOME=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 export DYNAWO_HOME=<PATH_TO_DYNAWO_DEPLOY>
+export DYNAWO_ALGORITHMS_HOME=<PATH_TO_DYNAWO_ALGORITHMS_DEPLOY>
 export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
 export DYNAFLOW_LAUNCHER_LOCALE=en_GB
 
