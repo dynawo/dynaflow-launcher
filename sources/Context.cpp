@@ -35,6 +35,12 @@
 #include <DYNNetworkInterface.h>
 #include <DYNLineInterface.h>
 #include <DYNTwoWTransformerInterface.h>
+
+#include <DYNScenario.h>
+#include <DYNScenarios.h>
+#include <DYNMultipleJobsFactory.h>
+#include <DYNSystematicAnalysisLauncher.h>
+
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
@@ -203,6 +209,7 @@ Context::exportOutputs() {
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel));
   jobEntry_ = jobWriter.write();
+  // TODO(Luma) We always need an explicit jobs file if we are using dynawo-algorithms, not only if debug
 #if _DEBUG_
   outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
 #endif
@@ -299,19 +306,58 @@ Context::execute() {
   // Since DFL traces are persistent, they can be re-used after simulation is performed outside this function
   LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
 
-  auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
-  simu->init();
-  simu->simulate();
-  simu->terminate();
-  simu->clean();
+  if (def_.simulationKind == SimulationKind::STEADY_STATE_CALCULATION) {
+    // For a power flow calcualtion it is ok to directly run here a single simulation
+    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+    simu->init();
+    simu->simulate();
+    simu->terminate();
+    simu->clean();
+  } else if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    // For security analysis we run multiple simulations using dynawo-algorithms
+    auto scenarios = boost::make_shared<DYNAlgorithms::Scenarios>();
+    scenarios->setJobsFile(jobEntry_->getName() + ".jobs");
+    const auto& contingencies = contingencies_.definitions();
+    auto baseCase = boost::make_shared<DYNAlgorithms::Scenario>();
+    baseCase->setId("BaseCase");
+    scenarios->addScenario(baseCase);
+    for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
+      auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
+      scenario->setId(c->id);
+      scenario->setDydFile(basename_ + "-" + c->id + ".dyd");
+      scenarios->addScenario(scenario);
+    }
+    // TODO(Luma) can't use LOG, write directly to stdout
+    std::cout << "dynawo-algorithms: " << scenarios->size() << " scenarios with jobs file [" << scenarios->getJobsFile() << "]" << std::endl;
+    auto multipleJobs = multipleJobs::MultipleJobsFactory::newInstance();
+    multipleJobs->setScenarios(scenarios);
+    auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
+    saLauncher->setMultipleJobs(multipleJobs);
+    saLauncher->setOutputFile("sa.zip");
+    saLauncher->setDirectory(config_.outputDir());
+    saLauncher->setNbThreads(4);
+    saLauncher->init();
+    std::cout << "dynawo-algorithms: init completed" << std::endl;
+    saLauncher->launch();
+    std::cout << "dynawo-algorithms: launch finished" << std::endl;
 
-  for (auto it = jobsEvents_.begin(); it != jobsEvents_.end(); ++it) {
-    auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManager_.dataInterface());
-    simuEvent->init();
-    simuEvent->simulate();
-    simuEvent->terminate();
-    simuEvent->clean();
+// TODO(Luma) this is only used in development while we are integrating dynawo-algorithms
+#if _DEVELOPMENT_
+    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+    simu->init();
+    simu->simulate();
+    simu->terminate();
+    simu->clean();
+    for (auto it = jobsEvents_.begin(); it != jobsEvents_.end(); ++it) {
+      auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManager_.dataInterface());
+      simuEvent->init();
+      simuEvent->simulate();
+      simuEvent->terminate();
+      simuEvent->clean();
+    }
+#endif
   }
+
 }
 
 void
