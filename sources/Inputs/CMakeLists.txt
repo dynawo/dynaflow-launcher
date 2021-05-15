@@ -12,6 +12,7 @@ set(SOURCES
   src/Node.cpp
   src/Configuration.cpp
   src/HvdcLine.cpp
+  src/Contingencies.cpp
 )
 
 add_library(inputs ${LINK_TYPE} ${SOURCES})

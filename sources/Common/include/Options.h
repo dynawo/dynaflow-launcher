@@ -39,10 +39,11 @@ class Options {
    * Representation of the options after parsing
    */
   struct RuntimeConfiguration {
-    std::string programName;      ///< Name of the program
-    std::string networkFilePath;  ///< Network filepath ot process
-    std::string configPath;       ///< Launcher configuration filepath
-    std::string dynawoLogLevel;   ///< chosen log level
+    std::string programName;            ///< Name of the program
+    std::string networkFilePath;        ///< Network filepath to process
+    std::string contingenciesFilePath;  ///< Contingencies filepath for security analysis
+    std::string configPath;             ///< Launcher configuration filepath
+    std::string dynawoLogLevel;         ///< chosen log level
   };
 
   /**

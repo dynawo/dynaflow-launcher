@@ -19,15 +19,28 @@
 
 #include "Algo.h"
 #include "Constants.h"
+#include "Contingencies.h"
 #include "Diagram.h"
 #include "Dyd.h"
+#include "DydEvent.h"
 #include "Job.h"
 #include "Log.h"
 #include "Message.hpp"
 #include "Par.h"
+#include "ParEvent.h"
 
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
+#include <DYNDataInterface.h>
+#include <DYNNetworkInterface.h>
+#include <DYNLineInterface.h>
+#include <DYNTwoWTransformerInterface.h>
+
+#include <DYNScenario.h>
+#include <DYNScenarios.h>
+#include <DYNMultipleJobsFactory.h>
+#include <DYNSystematicAnalysisLauncher.h>
+
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
@@ -40,12 +53,14 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     def_(def),
     networkManager_(def.networkFilepath),
     config_(config),
+    contingencies_(),
     basename_{},
     slackNode_{},
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
     generators_{},
     loads_{},
-    jobEntry_{} {
+    jobEntry_{},
+    jobsEvents_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
@@ -64,6 +79,10 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
+
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    contingencies_ = dfl::inputs::Contingencies(def_.contingenciesFilepath);
+  }
 }
 
 bool
@@ -101,7 +120,55 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();
 
+  // Check all contingencies have their elements present in the network
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    checkContingencies();
+  }
+
   return true;
+}
+
+bool
+Context::isLine(const std::string& branchId) {
+  const auto& lines = networkManager_.dataInterface()->getNetwork()->getLines();
+  for (auto l = lines.begin(); l != lines.end(); ++l) {
+    if (branchId == (*l)->getID()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool
+Context::isTwoWTransformer(const std::string& branchId) {
+  const auto& transformers = networkManager_.dataInterface()->getNetwork()->getTwoWTransformers();
+  for (auto t = transformers.begin(); t != transformers.end(); ++t) {
+    if (branchId == (*t)->getID()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void
+Context::checkContingencies() {
+  LOG(debug) << "Contingencies. Check that elements have dynamic models" << LOG_ENDL;
+  const auto& contingencies = contingencies_.definitions();
+  for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
+    LOG(debug) << c->id << LOG_ENDL;
+    for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
+      LOG(debug) << "  " << e->id << " (" << e->type << ")" << LOG_ENDL;
+      bool found = false;
+      if (e->type == "BRANCH") {
+        found = isLine(e->id) || isTwoWTransformer(e->id);
+      }
+      if (!found) {
+        LOG(warn) << "  Missing component interface for element " << e->id << LOG_ENDL;
+      } else {
+        LOG(debug) << "  Element " << e->id << " has dynamic models" << LOG_ENDL;
+      }
+    }
+  }
 }
 
 void
@@ -114,6 +181,7 @@ Context::exportOutputs() {
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
   jobEntry_ = jobWriter.write();
+  // TODO(Luma) We always need an explicit jobs file if we are using dynawo-algorithms, not only if debug
 #if _DEBUG_
   outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
 #endif
@@ -146,6 +214,52 @@ Context::exportOutputs() {
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_));
   diagramWriter.write();
+
+  // Prepare a DYD, PAR and JOBS for every contingency
+  // The DYD and PAR contains the definition of the events of the contingency
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    exportOutputsContingencies();
+  }
+}
+
+void
+Context::exportOutputsContingencies() {
+  LOG(debug) << "Preparing DYD, PAR and JOBS file for contingencies" << LOG_ENDL;
+  const auto& contingencies = contingencies_.definitions();
+  for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
+    exportOutputsContingency(*c);
+  }
+}
+
+void
+Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c) {
+  const std::string& contingencyId = c.id;
+  LOG(debug) << contingencyId << LOG_ENDL;
+
+  // Basename of event-related DYD, PAR and JOBS files
+  const auto& basenameEvent = basename_ + "-" + contingencyId;
+
+  // Specific DYD for contingency
+  file::path dydEvent(config_.outputDir());
+  dydEvent.append(basenameEvent + ".dyd");
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c));
+  dydEventWriter.write();
+
+  // Specific PAR for contingency
+  file::path parEvent(config_.outputDir());
+  parEvent.append(basenameEvent + ".par");
+  // TODO(Luma) should be a parameter
+  double timeEvent = 100;
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
+  parEventWriter.write();
+
+  // Specific JOBS file for contingency
+  outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawLogLevel, contingencyId, basename_));
+  boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
+  jobsEvents_.emplace_back(jobEvent);
+#if _DEBUG_
+  outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_.outputDir());
+#endif
 }
 
 void
@@ -163,11 +277,58 @@ Context::execute() {
   // because simulation constructor will re-initialize traces for Dynawo
   LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
 
-  auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
-  simu->init();
-  simu->simulate();
-  simu->terminate();
-  simu->clean();
+  if (def_.simulationKind == SimulationKind::STEADY_STATE_CALCULATION) {
+    // For a power flow calcualtion it is ok to directly run here a single simulation
+    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+    simu->init();
+    simu->simulate();
+    simu->terminate();
+    simu->clean();
+  } else if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    // For security analysis we run multiple simulations using dynawo-algorithms
+    auto scenarios = boost::make_shared<DYNAlgorithms::Scenarios>();
+    scenarios->setJobsFile(jobEntry_->getName() + ".jobs");
+    const auto& contingencies = contingencies_.definitions();
+    auto baseCase = boost::make_shared<DYNAlgorithms::Scenario>();
+    baseCase->setId("BaseCase");
+    scenarios->addScenario(baseCase);
+    for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
+      auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
+      scenario->setId(c->id);
+      scenario->setDydFile(basename_ + "-" + c->id + ".dyd");
+      scenarios->addScenario(scenario);
+    }
+    // TODO(Luma) can't use LOG, write directly to stdout
+    std::cout << "dynawo-algorithms: " << scenarios->size() << " scenarios with jobs file [" << scenarios->getJobsFile() << "]" << std::endl;
+    auto multipleJobs = multipleJobs::MultipleJobsFactory::newInstance();
+    multipleJobs->setScenarios(scenarios);
+    auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
+    saLauncher->setMultipleJobs(multipleJobs);
+    saLauncher->setOutputFile("sa.zip");
+    saLauncher->setDirectory(config_.outputDir());
+    saLauncher->setNbThreads(4);
+    saLauncher->init();
+    std::cout << "dynawo-algorithms: init completed" << std::endl;
+    saLauncher->launch();
+    std::cout << "dynawo-algorithms: launch finished" << std::endl;
+
+// TODO(Luma) this is only used in development while we are integrating dynawo-algorithms
+#if _DEVELOPMENT_
+    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+    simu->init();
+    simu->simulate();
+    simu->terminate();
+    simu->clean();
+    for (auto it = jobsEvents_.begin(); it != jobsEvents_.end(); ++it) {
+      auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManager_.dataInterface());
+      simuEvent->init();
+      simuEvent->simulate();
+      simuEvent->terminate();
+      simuEvent->clean();
+    }
+#endif
+  }
+
 }
 
 void

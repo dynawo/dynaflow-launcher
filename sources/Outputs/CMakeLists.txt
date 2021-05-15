@@ -10,7 +10,9 @@
 set(SOURCES
 src/Job.cpp
 src/Dyd.cpp
+src/DydEvent.cpp
 src/Par.cpp
+src/ParEvent.cpp
 src/Diagram.cpp
 src/Constants.cpp
 )
