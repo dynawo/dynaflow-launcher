@@ -320,7 +320,16 @@ Context::execute() {
     simu->terminate();
     simu->clean();
     for (auto it = jobsEvents_.begin(); it != jobsEvents_.end(); ++it) {
-      auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManager_.dataInterface());
+
+      // Use a new instance of NetworkManager for every contingency
+      // To ensure all contingencies are simulated from same starting point
+      // If we reuse the network manager from the context the network
+      // is updated with the results of the previous simulation
+      dfl::inputs::NetworkManager networkManagerc(def_.networkFilepath);
+      std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes;
+      initNetworkManager(networkManagerc, mainConnexNodes);
+
+      auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManagerc.dataInterface());
       simuEvent->init();
       simuEvent->simulate();
       simuEvent->terminate();
@@ -329,6 +338,19 @@ Context::execute() {
 #endif
   }
 
+}
+
+void
+Context::initNetworkManager(dfl::inputs::NetworkManager& networkManager, std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes) {
+  auto found_slack_node = networkManager.getSlackNode();
+  std::shared_ptr<inputs::Node> slackNode;
+  if (found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
+    slackNode = *found_slack_node;
+  } else {
+    // slack node not given in iidm or not requested: it is computed internally
+    networkManager.onNode(algo::SlackNodeAlgorithm(slackNode));
+  }
+  networkManager.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes));
 }
 
 void
