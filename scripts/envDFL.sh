@@ -189,7 +189,7 @@ cmake_configure() {
         -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
         -DDYNAFLOW_LAUNCHER_USE_DOXYGEN:BOOL=$DYNAFLOW_LAUNCHER_USE_DOXYGEN \
         -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS
-    popd
+    popd > /dev/null
 }
 
 cmake_build() {
@@ -199,7 +199,7 @@ cmake_build() {
 cmake_tests() {
     pushd $DYNAFLOW_LAUNCHER_BUILD_DIR
     ctest -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED --output-on-failure
-    popd
+    popd > /dev/null
 }
 
 cmake_coverage() {
