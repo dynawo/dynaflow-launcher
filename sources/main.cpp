@@ -16,8 +16,8 @@
 #include "version.h"
 
 #include <DYNError.h>
-#include <DYNIoDico.h>
 #include <DYNInitXml.h>
+#include <DYNIoDico.h>
 #include <boost/filesystem.hpp>
 #include <boost/timer.hpp>
 #include <cstdlib>
@@ -39,12 +39,12 @@ getMandatoryEnvVar(const std::string& key) {
 
 static void
 initializeDynawo(const std::string& locale) {
-  boost::shared_ptr<DYN::IoDicos> dicos = DYN::IoDicos::getInstance();
-  dicos->addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
-  dicos->addDico("ERROR", "DYNError", locale);
-  dicos->addDico("TIMELINE", "DYNTimeline", locale);
-  dicos->addDico("CONSTRAINT", "DYNConstraint", locale);
-  dicos->addDico("LOG", "DYNLog", locale);
+  DYN::IoDicos& dicos = DYN::IoDicos::instance();
+  dicos.addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
+  dicos.addDico("ERROR", "DYNError", locale);
+  dicos.addDico("TIMELINE", "DYNTimeline", locale);
+  dicos.addDico("CONSTRAINT", "DYNConstraint", locale);
+  dicos.addDico("LOG", "DYNLog", locale);
 }
 
 int
