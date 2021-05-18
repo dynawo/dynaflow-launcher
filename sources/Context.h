@@ -175,5 +175,7 @@ class Context {
   void exportOutputsContingencies();
   /// @brief Build JOBS, DYD, PAR files for a given contingency
   void exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c);
+  /// @brief Initialization of additional instances of network manager
+  void initNetworkManager(dfl::inputs::NetworkManager& networkManager, std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes);
 };
 }  // namespace dfl
