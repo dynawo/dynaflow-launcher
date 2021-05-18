@@ -110,9 +110,7 @@ find_package(libZIP 1.3.0 REQUIRED)
 # XercesC (required for libxml)
 set(CXX_STDFLAG "-std=c++11") # Required to test Xerces compilation
 find_package(XercesC 3.2.2 REQUIRED)
-# libXML, targets name in static and shared are different so we need to do find_package twice
-find_package(libXML 0.2.4 REQUIRED)
-set(LibXML_USE_STATIC_LIBS TRUE)
+# libXML
 find_package(libXML 0.2.4 REQUIRED)
 find_package(LibXml2 "2.9" REQUIRED)
 find_package(LibIIDM "1.2.1" REQUIRED PATHS ${LIBIIDM_HOME})
