@@ -36,6 +36,9 @@ if __name__ == "__main__":
                 "/")[1]  # First element after "results" : the splitted string starts with '/'
             filepathreference = os.path.join(
                 root_filetest, "reference", testname, file)
+            if not os.path.exists(filepathreference):
+                # No reference : ignore
+                continue
             (nb_differences, msg) = iidmDiff.OutputIIDMCloseEnough(
                 filepath, filepathreference)
             if nb_differences > 0:
