@@ -159,7 +159,11 @@ Context::checkContingencies() {
     for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
       LOG(debug) << "  " << e->id << " (" << e->type << ")" << LOG_ENDL;
       bool found = false;
-      if (e->type == "BRANCH") {
+      if (e->type == "LINE") {
+        found = isLine(e->id);
+      } else if (e->type == "TWO_WINDINGS_TRANSFORMER") {
+        found = isTwoWTransformer(e->id);
+      } else if (e->type == "BRANCH") {
         found = isLine(e->id) || isTwoWTransformer(e->id);
       }
       if (!found) {
