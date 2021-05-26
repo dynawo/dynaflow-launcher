@@ -49,7 +49,7 @@ ParEvent::write() {
 
   auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
   for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
-    if (e->type == "BRANCH") {
+    if (e->type == "BRANCH" || e->type == "LINE" || e->type == "TWO_WINDINGS_TRANSFORMER") {
       parametersSets->addParametersSet(buildBranchDisconnection(e->id, def_.timeEvent));
     } else if (e->type == "GENERATOR" || e->type == "LOAD") {
       parametersSets->addParametersSet(buildEventSetPointBooleanDisconnection(e->id, def_.timeEvent));

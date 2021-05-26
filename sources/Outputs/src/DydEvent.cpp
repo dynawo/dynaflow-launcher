@@ -53,7 +53,7 @@ DydEvent::write() {
 
   // models and connections
   for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
-    if (e->type == "BRANCH") {
+    if (e->type == "BRANCH" || e->type == "LINE" || e->type == "TWO_WINDINGS_TRANSFORMER") {
       dynamicModels->addModel(buildBranchDisconnection(e->id, def_.basename));
       dynamicModels->addMacroConnect(buildBranchDisconnectionConnect(e->id));
     } else if (e->type == "GENERATOR") {
