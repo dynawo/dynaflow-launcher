@@ -39,6 +39,7 @@
 #include <JOBSimulationEntryFactory.h>
 #include <JOBSolverEntry.h>
 #include <JOBSolverEntryFactory.h>
+#include <JOBTimelineEntry.h>
 #include <boost/make_shared.hpp>
 #include <fstream>
 #include <xml/sax/formatter/AttributeList.h>
@@ -141,6 +142,12 @@ Job::writeOutputs() {
   final_state->setExportIIDMFile(exportIIDMFile_);
   final_state->setExportDumpFile(exportDumpFile_);
   output->setFinalStateEntry(final_state);
+
+#if _DEBUG_
+  auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
+  timeline->setExportMode("TXT");
+  output->setTimelineEntry(timeline);
+#endif
 
   return output;
 }
@@ -250,6 +257,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();
   formatter->endElement();  // finalState
+
+  auto timeline = outputs->getTimelineEntry();
+  if (timeline) {
+    attrs.add("exportMode", timeline->getExportMode());
+    formatter->startElement("dyn", "timeline", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
 
   formatter->endElement();  // outputs
 
