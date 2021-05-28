@@ -145,6 +145,15 @@ class DydEvent {
    */
   static void addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
 
+  /**
+   * @brief Adds connections for disconnection events that use a change in Network state1 and state2 attributes
+   *
+   * @param dynamicModels the list of dynamic models where the connections will be added
+   * @param elementId the static id of the equipment to process
+   *
+   */
+  static void addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
+
  private:
   static const std::string networkModelName_;                       ///< name of the model corresponding to network
 

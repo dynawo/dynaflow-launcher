@@ -62,6 +62,9 @@ DydEvent::write() {
     } else if (e->type == "LOAD") {
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(e->id, def_.basename));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, e->id, "switchOff2");
+    } else if (e->type == "HVDC_LINE") {
+      dynamicModels->addModel(buildNetworkStateDisconnection(e->id, def_.basename));
+      addNetworkState12DisconnectionConnect(dynamicModels, e->id);
     } else {
       dynamicModels->addModel(buildNetworkStateDisconnection(e->id, def_.basename));
       addNetworkStateDisconnectionConnect(dynamicModels, e->id);
@@ -122,6 +125,12 @@ DydEvent::buildNetworkStateDisconnection(const std::string& elementId, const std
 void
 DydEvent::addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", "NETWORK", elementId + "_state");
+}
+
+void
+DydEvent::addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", "NETWORK", elementId + "_state1");
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", "NETWORK", elementId + "_state2");
 }
 
 }  // namespace outputs
