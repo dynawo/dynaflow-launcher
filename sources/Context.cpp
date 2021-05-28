@@ -253,7 +253,7 @@ Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefini
   file::path parEvent(config_.outputDir());
   parEvent.append(basenameEvent + ".par");
   // TODO(Luma) should be a parameter
-  double timeEvent = 100;
+  double timeEvent = 80;
   outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
   parEventWriter.write();
 
