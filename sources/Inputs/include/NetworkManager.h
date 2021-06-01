@@ -100,7 +100,7 @@ class NetworkManager {
   }
 
   /**
-   * @brief Retrieve the mapping of busId and the number of generators that regulates them 
+   * @brief Retrieve the mapping of busId and the number of generators that regulates them
    *
    * @returns map of bus id to nbOfRegulatingGenerators
    */
@@ -121,6 +121,8 @@ class NetworkManager {
   std::vector<ProcessNodeCallback> nodesCallbacks_;           ///< list of callback or nodes
   std::vector<std::shared_ptr<HvdcLine>> hvdcLines_;          ///< hvdc Lines
   std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
+  std::vector<std::shared_ptr<Line>> lines_;                  ///< List of the lines
+  std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transfos
   BusMapRegulating mapBusId_;                                 ///< mapping of busId and the number of generators that regulates them
 };
 

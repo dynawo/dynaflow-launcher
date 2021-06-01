@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "AutomatonConfigurationManager.h"
 
 #include <DYDBlackBoxModel.h>
 #include <DYDDynamicModelsCollection.h>
@@ -77,18 +78,23 @@ class Dyd {
      * @param slacknode the slack node to use
      * @param hvdcLines hvdc definition coming from algorithms
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+     * @param automatonManager the automaton config manager to use
+     * @param automatons the list of automatons to use
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
                   const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) :
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::AutomatonConfigurationManager& automatonManager,
+                  const algo::AutomatonDefinitions& automatons) :
         basename(base),
         filename(filepath),
         generators(gens),
         loads(loaddefs),
         slackNode(slacknode),
         hvdcLines(hvdcLines),
-        busesWithDynamicModel(busesWithDynamicModel) {}
+        busesWithDynamicModel(busesWithDynamicModel),
+        automatonManager(automatonManager),
+        automatons(automatons) {}
 
     std::string basename;                                                        ///< basename for file
     std::string filename;                                                        ///< filepath for file to write
@@ -97,6 +103,8 @@ class Dyd {
     std::shared_ptr<inputs::Node> slackNode;                                     ///< slack node to use
     algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;         ///< list of hvdc lines
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
+    const inputs::AutomatonConfigurationManager& automatonManager;               ///< automaton config manager
+    const algo::AutomatonDefinitions& automatons;                                ///< the list of automatons to export
   };
 
   /**
@@ -227,6 +235,32 @@ class Dyd {
    */
   static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
                                    const algo::HvdcLineDefinition& hvdcLine);
+
+  /**
+   * @brief Write list of macro connectors for automatons
+   *
+   * @param usedMacros macro connectors used in current simulation
+   * @param macros total list of macro connections defined for automatons
+   * @returns list of macro connectors to write
+   */
+  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
+  writeAutomatonMacroConnectors(const std::unordered_set<std::string>& usedMacros,
+                                const std::vector<dfl::inputs::AssemblyXmlDocument::MacroConnection>& macros);
+
+  /**
+   * @brief Write model for automaton
+   * @param automaton automaton to export
+   * @param basename basename for file
+   * @returns model corresponding to automaton
+   */
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeAutomaton(const algo::AutomatonDefinition& automaton, const std::string& basename);
+
+  /**
+   * @brief Write macro connec for automaton
+   * @param automaton automaton to use
+   * @returns list of macro connect to write
+   */
+  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeAutomatonMacroConnect(const algo::AutomatonDefinition& automaton);
 
  private:
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>

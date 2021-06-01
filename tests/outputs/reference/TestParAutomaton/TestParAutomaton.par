@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="macro_signalNGenerator">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
+  </macroParameterSet>
+  <macroParameterSet id="macro_signalNGeneratorFixedP">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
+  </macroParameterSet>
+  <set id="2751660957840315519">
+    <par name="generator_QMax0" type="DOUBLE" value="31"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="results/TestParAutomaton_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="2751660957840315519_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="2"/>
+    <par name="generator_QMinTableFile" type="STRING" value="results/TestParAutomaton_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="2751660957840315519_tableqmin"/>
+    <macroParSet id="macro_signalNGeneratorFixedP"/>
+  </set>
+  <set id="6320417593396202500">
+    <par name="generator_QMax0" type="DOUBLE" value="31"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="results/TestParAutomaton_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="2"/>
+    <par name="generator_QMinTableFile" type="STRING" value="results/TestParAutomaton_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+  <set id="DM_.ARKA TR 661">
+    <par name="phaseShifter_sign" type="DOUBLE" value="1"/>
+    <par name="phaseShifter_t1st" type="DOUBLE" value="2.7000000000000002"/>
+    <par name="phaseShifter_tNext" type="DOUBLE" value="2.7000000000000002"/>
+    <reference type="DOUBLE" name="phaseShifter_I0" origData="IIDM" origName="i1" componentId="@TFO@"/>
+    <reference type="DOUBLE" name="phaseShifter_iMax" origData="IIDM" origName="iMax" componentId="@TFO@"/>
+    <reference type="DOUBLE" name="phaseShifter_iStop" origData="IIDM" origName="iStop" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" componentId="@TFO@"/>
+    <reference type="DOUBLE" name="phaseShifter_regulating0" origData="IIDM" origName="regulating" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_tap0" origData="IIDM" origName="tap0" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_tapMax" origData="IIDM" origName="tapMax" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_tapMin" origData="IIDM" origName="tapMin" componentId="@TFO@"/>
+  </set>
+  <set id="DM_ADA_CAHOR_ZMEYM">
+    <par name="currentLimitAutomaton_IThresholdIntermediate1" type="DOUBLE" value="465"/>
+    <par name="currentLimitAutomaton_IThresholdIntermediate2" type="DOUBLE" value="465"/>
+    <par name="currentLimitAutomaton_IThresholdSummer" type="DOUBLE" value="425"/>
+    <par name="currentLimitAutomaton_IThresholdWinter1" type="DOUBLE" value="480"/>
+    <par name="currentLimitAutomaton_IThresholdWinter2" type="DOUBLE" value="480"/>
+    <par name="currentLimitAutomaton_OrderToEmit" type="INT" value="4"/>
+    <par name="currentLimitAutomaton_Running" type="BOOL" value="true"/>
+    <par name="currentLimitAutomaton_Season" type="STRING" value="UNDEFINED"/>
+    <par name="currentLimitAutomaton_tLagBeforeActing" type="DOUBLE" value="20"/>
+  </set>
+  <set id="DM_BRENNL61TDBRE">
+    <par name="phaseShifter_sign" type="DOUBLE" value="-1"/>
+    <par name="phaseShifter_t1st" type="DOUBLE" value="6"/>
+    <par name="phaseShifter_tNext" type="DOUBLE" value="6"/>
+    <reference type="DOUBLE" name="phaseShifter_I0" origData="IIDM" origName="i1" componentId="@TFO@"/>
+    <reference type="DOUBLE" name="phaseShifter_iMax" origData="IIDM" origName="iMax" componentId="@TFO@"/>
+    <reference type="DOUBLE" name="phaseShifter_iStop" origData="IIDM" origName="iStop" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" componentId="@TFO@"/>
+    <reference type="DOUBLE" name="phaseShifter_regulating0" origData="IIDM" origName="regulating" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_tap0" origData="IIDM" origName="tap0" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_tapMax" origData="IIDM" origName="tapMax" componentId="@TFO@"/>
+    <reference type="INT" name="phaseShifter_tapMin" origData="IIDM" origName="tapMin" componentId="@TFO@"/>
+  </set>
+  <set id="GenericRestorativeLoad">
+    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
+    <par name="load_Beta" type="DOUBLE" value="2.5"/>
+    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
+    <par name="load_tFilter" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="MODELE_1_B.EPIP4">
+    <par name="delay" type="DOUBLE" value="10"/>
+    <par name="nbShunts" type="INT" value="2"/>
+    <par name="uMax" type="DOUBLE" value="243.5"/>
+    <par name="uMin" type="DOUBLE" value="236"/>
+  </set>
+  <set id="MODELE_1_FOUSCP3">
+    <par name="delay" type="DOUBLE" value="10"/>
+    <par name="nbShunts" type="INT" value="1"/>
+    <par name="uMax" type="DOUBLE" value="66"/>
+    <par name="uMin" type="DOUBLE" value="61"/>
+  </set>
+  <set id="signalNGenerator">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+  </set>
+</parametersSet>

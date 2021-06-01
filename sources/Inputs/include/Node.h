@@ -49,6 +49,93 @@ struct VoltageLevel {
 };
 
 /**
+ * @brief Topological line between two ndoes
+ */
+class Line {
+ public:
+  using LineId = std::string;  ///< Alias for line id
+
+  /**
+   * @brief Build a line
+   *
+   * This will update the neighbours and the line references in the input nodes
+   * @param lineId the line id
+   * @param node1 the origin of the line
+   * @param node2 the extremity of the line
+   * @returns the built line
+   */
+  static std::shared_ptr<Line> build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+
+  const LineId id;                                   ///< line id
+  const std::array<std::shared_ptr<Node>, 2> nodes;  ///< nodes of the line
+
+ private:
+  /**
+   * @brief Constructor
+   *
+   * @param lineId the line id
+   * @param node1 the origin of the line
+   * @param node2 the extremity of the line
+   */
+  Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+};
+
+/**
+ * @brief topological Transfo
+ */
+class Tfo {
+ public:
+  using TfoId = std::string;  ///< alias for transfor id
+
+  /**
+   * @brief Build a 2W transfo
+   *
+   * This will update the references insides the input nodes
+   * @param tfoId the transfor id
+   * @param node1 the first node
+   * @param node2 the second node
+   * @returns the built transfo
+   */
+  static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+
+  /**
+   * @brief Build a 3W transfo
+   *
+   * This will update the references insides the input nodes
+   * @param tfoId the transfor id
+   * @param node1 the first node
+   * @param node2 the second node
+   * @param node3 the third node
+   * @returns the built transfo
+   */
+  static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2,
+                                    const std::shared_ptr<Node>& node3);
+
+  const TfoId id;                                  ///< transfo id
+  const std::vector<std::shared_ptr<Node>> nodes;  ///< list of nodes
+
+ private:
+  /**
+   * @brief Constructor
+   *
+   * @param tfoId the transfor id
+   * @param node1 the first node
+   * @param node2 the second node
+   */
+  Tfo(const TfoId tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+
+  /**
+   * @brief Constructor
+   *
+   * @param tfoId the transfor id
+   * @param node1 the first node
+   * @param node2 the second node
+   * @param node3 the third node
+   */
+  Tfo(const TfoId tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3);
+};
+
+/**
  * @brief topological node structure
  *
  * This implement a graph node concept. It contains only the information required to perform the algorithms and not all information extractable from network file
@@ -65,14 +152,18 @@ class Node {
    * @param id the node id
    * @param vl the voltage level element containing the node
    * @param nominalVoltage the nominal voltage of the node
+   * @param nbShunts number of shunts connected to the node
    *
    * @returns the built node
    */
-  static std::shared_ptr<Node> build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage);
+  static std::shared_ptr<Node> build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, unsigned int nbShunts);
 
   const NodeId id;                                      ///< node id
   const std::weak_ptr<VoltageLevel> voltageLevel;       ///< voltage level containing the node
   const double nominalVoltage;                          ///< Nominal voltage of the node
+  const unsigned int nbShunts;                          ///< Number of shunts connected to the node
+  std::vector<std::weak_ptr<Line>> lines;               ///< Lines to which the node belong
+  std::vector<std::weak_ptr<Tfo>> tfos;                 ///< Transfor to which the node belong
   std::vector<std::shared_ptr<Node>> neighbours;        ///< list of neighbours
   std::vector<Load> loads;                              ///< list of loads associated to this node
   std::vector<Generator> generators;                    ///< list of generators associated to this node
@@ -87,8 +178,9 @@ class Node {
    * @param id the node id
    * @param vl the voltage level element containing the node
    * @param nominalVoltage the voltage level associated with the node
+   * @param nbShunts number of shunts connected to the node
    */
-  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage);
+  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, unsigned int nbShunts);
 };
 
 /**

@@ -44,6 +44,7 @@ macro(DEFINE_LAUNCH_TEST _name)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_IIDM_EXTENSION=${DYNAWO_HOME}/lib/libdynawo_DataInterfaceIIDMExtension.so)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_LIBIIDM_EXTENSIONS=${DYNAWO_HOME}/lib)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT PYTHONPATH=${DYNAWO_HOME}/sbin/nrt/nrt_diff)
+  set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LIBRARIES=${DYNAWO_HOME}/ddb)
 endmacro()
 
 DEFINE_LAUNCH_TEST(launch)
@@ -65,3 +66,5 @@ DEFINE_LAUNCH_TEST(distant_regulation)
 
 
 DEFINE_LAUNCH_TEST(special_characters)
+
+DEFINE_LAUNCH_TEST(phase_shifter)

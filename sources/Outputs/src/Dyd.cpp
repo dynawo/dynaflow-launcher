@@ -18,6 +18,8 @@
 #include "Dyd.h"
 
 #include "Constants.h"
+#include "Log.h"
+#include "Message.hpp"
 
 #include <DYDBlackBoxModelFactory.h>
 #include <DYDDynamicModelsCollection.h>
@@ -63,11 +65,16 @@ Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
 void
 Dyd::write() {
   dynamicdata::XmlExporter exporter;
+  const auto& assemblingDoc = def_.automatonManager.assemblyDocument();
 
   auto dynamicModelsToConnect = dynamicdata::DynamicModelsCollectionFactory::newCollection();
 
   // macros connectors
   auto macro_connectors = writeMacroConnectors();
+  for (auto it = macro_connectors.begin(); it != macro_connectors.end(); ++it) {
+    dynamicModelsToConnect->addMacroConnector(*it);
+  }
+  macro_connectors = writeAutomatonMacroConnectors(def_.automatons.usedMacroConnections, assemblingDoc.macroConnections());
   for (auto it = macro_connectors.begin(); it != macro_connectors.end(); ++it) {
     dynamicModelsToConnect->addMacroConnector(*it);
   }
@@ -98,6 +105,13 @@ Dyd::write() {
     dynamicModelsToConnect->addModel(writeVRRemote(keyValue.first, def_.basename));
     writeVRRemoteConnect(dynamicModelsToConnect, keyValue.first);
   }
+  for (const auto& automaton : def_.automatons.automatons) {
+    dynamicModelsToConnect->addModel(writeAutomaton(automaton.second, def_.basename));
+    auto macroConnects = writeAutomatonMacroConnect(automaton.second);
+    for (const auto& connect : macroConnects) {
+      dynamicModelsToConnect->addMacroConnect(connect);
+    }
+  }
 
   dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", "NETWORK", def_.slackNode->id + "_phi");
 
@@ -110,6 +124,70 @@ Dyd::write() {
   }
 
   exporter.exportToFile(dynamicModelsToConnect, def_.filename, constants::xmlEncoding);
+}
+
+std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
+Dyd::writeAutomatonMacroConnectors(const std::unordered_set<std::string>& usedMacros,
+                                   const std::vector<dfl::inputs::AssemblyXmlDocument::MacroConnection>& macros) {
+  std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> ret;
+  for (const auto& macro : usedMacros) {
+    auto macroConnector = dynamicdata::MacroConnectorFactory::newMacroConnector(macro);
+    auto found = std::find_if(macros.begin(), macros.end(),
+                              [&macro](const dfl::inputs::AssemblyXmlDocument::MacroConnection& macroConnection) { return macroConnection.id == macro; });
+#if _DEBUG_
+    assert(found != macros.end());
+#endif
+    if (found == macros.end()) {
+      // macro used in automaton not defined in configuration:  configuration error
+      LOG(warn) << MESS(AutomatonMacroNotDefined, macro) << LOG_ENDL;
+      continue;
+    }
+
+    for (const auto& connection : found->connections) {
+      macroConnector->addConnect(connection.var1, connection.var2);
+    }
+    ret.push_back(macroConnector);
+  }
+
+  return ret;
+}
+
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+Dyd::writeAutomaton(const algo::AutomatonDefinition& automaton, const std::string& basename) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(automaton.id);
+  model->setLib(automaton.lib);
+  model->setParFile(basename + ".par");
+  model->setParId(automaton.id);
+  return model;
+}
+
+std::vector<boost::shared_ptr<dynamicdata::MacroConnect>>
+Dyd::writeAutomatonMacroConnect(const algo::AutomatonDefinition& automaton) {
+  std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> ret;
+  const auto& connections = automaton.nodeConnections;
+
+  std::map<std::string, std::tuple<bool, unsigned int>> indexes;
+  for (const auto& connection : connections) {
+    if (indexes.count(connection.id) > 0) {
+      // More than one iteration of the macro connector for the same automaton
+      std::get<0>(indexes.at(connection.id)) = true;
+      (std::get<1>(indexes.at(connection.id)))++;
+    } else {
+      indexes[connection.id] = std::make_tuple(false, 0);
+    }
+  }
+
+  for (const auto& connection : connections) {
+    auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, automaton.id, networkModelName_);
+    macroConnect->setName2(connection.connectedElementId);
+    if (std::get<0>(indexes.at(connection.id))) {
+      macroConnect->setIndex1(std::to_string(std::get<1>(indexes.at(connection.id))));
+      (std::get<1>(indexes.at(connection.id)))--;
+    }
+    ret.push_back(macroConnect);
+  }
+
+  return ret;
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
@@ -161,7 +239,7 @@ Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& 
   }
 
   return model;
-}  // namespace outputs
+}
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {

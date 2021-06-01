@@ -13,9 +13,15 @@
 
 #include <boost/filesystem.hpp>
 
+testing::Environment* initXmlEnvironment();
+
+testing::Environment* const env = initXmlEnvironment();
+
 TEST(TestPar, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
+
+  dfl::inputs::AutomatonConfigurationManager manager("", "");
 
   std::string basename = "TestPar";
   std::string dirname = "results";
@@ -36,7 +42,8 @@ TEST(TestPar, write) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}, manager, {}));
 
   parWriter.write();
 
@@ -50,6 +57,8 @@ TEST(TestPar, write) {
 TEST(TestPar, writeRemote) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
+
+  dfl::inputs::AutomatonConfigurationManager manager("", "");
 
   std::string basename = "TestParRemote";
   std::string dirname = "results";
@@ -75,8 +84,8 @@ TEST(TestPar, writeRemote) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, busesWithDynamicModel));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation,
+                                                               busesWithDynamicModel, manager, {}));
 
   parWriter.write();
 
@@ -92,6 +101,8 @@ TEST(TestPar, writeHdvc) {
   std::string basename = "TestParHvdc";
   std::string dirname = "results";
   std::string filename = basename + ".par";
+
+  dfl::inputs::AutomatonConfigurationManager manager("", "");
 
   boost::filesystem::path outputPath(dirname);
   outputPath.append(basename);
@@ -109,7 +120,49 @@ TEST(TestPar, writeHdvc) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}, manager, {}));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(TestPar, Automaton) {
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::LoadDefinition;
+
+  dfl::inputs::AutomatonConfigurationManager manager("res/setting.xml", "res/assembling.xml");
+
+  std::string basename = "TestParAutomaton";
+  std::string dirname = "results";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  dfl::algo::CounterDefinitions counters;
+  counters.nbShunts["VL"] = 2;
+  counters.nbShunts["VL2"] = 1;
+
+  const std::string bus1 = "BUS_1";
+  std::vector<GeneratorDefinition> generators = {
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}, manager, counters));
 
   parWriter.write();
 

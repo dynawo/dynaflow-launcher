@@ -39,6 +39,7 @@ namespace dfl {
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     def_(def),
     networkManager_(def.networkFilepath),
+    automatonConfigurationManager_(def.settingsFilePath, def.assemblyFilePath),
     config_(config),
     basename_{},
     slackNode_{},
@@ -99,6 +100,8 @@ Context::process() {
                                                                  config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
+  onNodeOnMainConnexComponent(algo::AutomatonAlgorithm(automatons_, automatonConfigurationManager_));
+  onNodeOnMainConnexComponent(algo::CounterAlgorithm(counters_));
   walkNodesMain();
 
   return true;
@@ -121,8 +124,8 @@ Context::exportOutputs() {
   // Dyd
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
-  outputs::Dyd dydWriter(
-      outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_, busesWithDynamicModel_));
+  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_, busesWithDynamicModel_,
+                                                     automatonConfigurationManager_, automatons_));
   dydWriter.write();
 
   // Par
@@ -138,7 +141,7 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_, hvdcLines_,
-                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_));
+                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_, automatonConfigurationManager_, counters_));
   parWriter.write();
 
   // Diagram

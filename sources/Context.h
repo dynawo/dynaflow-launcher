@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "AutomatonConfigurationManager.h"
 #include "Configuration.h"
 #include "NetworkManager.h"
 
@@ -40,11 +41,13 @@ class Context {
    * @brief Context definition
    */
   struct ContextDef {
-    std::string networkFilepath;  ///< network filepath
-    std::string dynawLogLevel;    ///< string representation of the dynawo log level
-    std::string parFileDir;       ///< parameter file directory
-    std::string dynawoResDir;     ///< DYNAWO resources
-    std::string locale;           ///< localization
+    std::string networkFilepath;   ///< network filepath
+    std::string settingsFilePath;  ///< setting file path for automatons
+    std::string assemblyFilePath;  ///< assembly file path for automatons
+    std::string dynawLogLevel;     ///< string representation of the dynawo log level
+    std::string parFileDir;        ///< parameter file directory
+    std::string dynawoResDir;      ///< DYNAWO resources
+    std::string locale;            ///< localization
   };
 
  public:
@@ -123,7 +126,8 @@ class Context {
  private:
   ContextDef def_;                         ///< context definition
   inputs::NetworkManager networkManager_;  ///< network manager
-  const inputs::Configuration& config_;    ///< configuration
+  inputs::AutomatonConfigurationManager automatonConfigurationManager_;
+  const inputs::Configuration& config_;  ///< configuration
 
   std::string basename_;                                                                   ///< basename for all files
   std::vector<inputs::NetworkManager::ProcessNodeCallback> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
@@ -134,7 +138,9 @@ class Context {
   std::vector<algo::GeneratorDefinition> generators_;                    ///< generators found
   std::vector<algo::LoadDefinition> loads_;                              ///< loads found
   algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines_;  ///< hvdc lines found
-  algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;              ///< map of bus ids to a generator that regulates them
+  algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
+  algo::AutomatonDefinitions automatons_;                                ///< automaton definitions
+  algo::CounterDefinitions counters_;                                    ///< counters definitions
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };

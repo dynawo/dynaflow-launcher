@@ -92,6 +92,7 @@ define_options() {
 where [option] can be:
         =========== Build
         build-user                              build DynaFlow Launcher
+        clean-build-all                         Clean and rebuild DynaFlow Launcher
         build-tests-coverage                    build DynaFlow Launcher and run coverage
 
         =========== Tests
@@ -144,6 +145,7 @@ set_environment() {
     # Run
     export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
     export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
+    export_var_env DYNAFLOW_LAUNCHER_LIBRARIES=$DYNAWO_DDB_DIR
 
     # python
     pythonpath_prepend $DYNAWO_HOME/sbin/nrt/nrt_diff

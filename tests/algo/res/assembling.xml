@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="VCSToUMeasurement" name2="true">
+    <connection var1="U_IMPIN" var2="@NAME@_U" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="VCSToControlledShunts" index1="true" name2="true">
+    <connection var1="shunt_state_@INDEX@" var2="@NAME@_state" required="true" internal="false"/>
+    <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor" required="true" internal="true"/>
+    <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="CLAToIMeasurement" name2="true">
+    <connection var1="currentLimitAutomaton_IMonitored" var2="@NAME@_iSide1" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="CLAToControlledLineState" name2="true">
+    <connection var1="currentLimitAutomaton_order" var2="@NAME@_state" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="CLAToAutomatonActivated" name2="true">
+    <connection var1="currentLimitAutomaton_AutomatonExists" var2="@NAME@_desactivate_currentLimits" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="DummyMacro" index1="true" name2="true">
+    <connection var1="dummy_state_@INDEX@" var2="@NAME@_state" required="true" internal="false"/>
+    <connection var1="dummy_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor" required="true" internal="true"/>
+    <connection var1="dummy_isAvailable_@INDEX@" var2="@NAME@_isAvailable" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="PhaseShifterToIMeasurement" name2="true">
+    <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="PhaseShifterToTap" name2="true">
+    <connection var1="phaseShifter_tap" var2="@NAME@_step" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="PhaseShifterToAutomatonActivated" name2="true">
+    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger" required="true" internal="false"/>
+  </macroConnection>
+  <singleAssociation id="MESURE_MODELE_1_B.EPIP4">
+    <bus voltageLevel="VL" name="1"/>
+    <bus voltageLevel="VL" name="2"/>
+    <busbarSection id="VL_1"/>
+    <busbarSection id="VL_2"/>
+  </singleAssociation>
+  <multipleAssociation id="SHUNTS_MODELE_1_B.EPIP4">
+    <shunt voltageLevel="VL"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="MODELE_1_B.EPIP4" lib="libdummyLib" type="VoltageControlShunt" access="T0|TFIN">
+    <macroConnect macroConnection="VCSToUMeasurement" id="MESURE_MODELE_1_B.EPIP4"/>
+    <macroConnect macroConnection="VCSToControlledShunts" id="SHUNTS_MODELE_1_B.EPIP4"/>
+  </dynamicAutomaton>
+  <multipleAssociation id="SHUNTS_MODELE_1_PERIZP6">
+    <shunt voltageLevel="PERIZP6"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="DM_ADA_SALON" lib="libdummyLib" type="CurrentLimitAutomaton" access="T0|TFIN">
+    <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_ADA_SALON"/>
+    <macroConnect macroConnection="CLAToControlledLineState" id="ORDER_ADA_SALON"/>
+    <macroConnect macroConnection="CLAToAutomatonActivated" id="AUTOMATON_EXISTS_ADA_SALON"/>
+  </dynamicAutomaton>
+  <singleAssociation id="MESURE_I_ADA_SALON">
+    <line name="0"/>
+  </singleAssociation>
+  <singleAssociation id="ORDER_ADA_SALON">
+    <line name="1"/>
+  </singleAssociation>
+  <singleAssociation id="AUTOMATON_EXISTS_ADA_SALON">
+    <line name="1"/>
+  </singleAssociation>
+  <singleAssociation id="MESURE_I_BOUTR TR 661">
+    <tfo name="TFO1"/>
+  </singleAssociation>
+  <singleAssociation id="TAP_BOUTR TR 661">
+    <tfo name="TFO1"/>
+  </singleAssociation>
+  <singleAssociation id="AUTOMATON_EXISTS_BOUTR TR 661">
+    <tfo name="TFO1"/>
+  </singleAssociation>
+  <dynamicAutomaton id="DM_BOUTR TR 661" lib="libdummyLib" type="PhaseShifterI" access="T0|TFIN">
+    <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_BOUTR TR 661"/>
+    <macroConnect macroConnection="PhaseShifterToTap" id="TAP_BOUTR TR 661"/>
+    <macroConnect macroConnection="PhaseShifterrToAutomatonActivated" id="AUTOMATON_EXISTS_BOUTR TR 661"/>
+  </dynamicAutomaton>
+</assembling>

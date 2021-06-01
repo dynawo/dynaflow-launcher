@@ -102,7 +102,13 @@ main(int argc, char* argv[]) {
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
-    dfl::Context::ContextDef def{runtimeConfig.networkFilePath, runtimeConfig.dynawoLogLevel, parFilesDir.generic_string(), res, locale};
+    dfl::Context::ContextDef def{runtimeConfig.networkFilePath,
+                                 config.settingFilePath().generic_string(),
+                                 config.assemblyFilePath().generic_string(),
+                                 runtimeConfig.dynawoLogLevel,
+                                 parFilesDir.generic_string(),
+                                 res,
+                                 locale};
     dfl::Context context(def, config);
 
     if (!context.process()) {

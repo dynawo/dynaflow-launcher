@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "AutomatonConfigurationManager.h"
 #include "Configuration.h"
 
 #include <PARParametersSet.h>
@@ -48,18 +49,23 @@ class Par {
      * @param hvdcLines list of hdvc lines taken into account
      * @param activePowerCompensation the type of active power compensation
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+     * @param automatonManager config automaton manager to use
+     * @param counters the counters definitions to use
      */
     ParDefinition(const std::string& base, const std::string& dir, const std::string& filename, const std::vector<algo::GeneratorDefinition>& gens,
                   const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
-                  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) :
+                  inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::AutomatonConfigurationManager& automatonManager,
+                  const algo::CounterDefinitions& counters) :
         basename(base),
         dirname(dir),
         filepath(filename),
         generators(gens),
         hvdcLines(hvdcLines),
         activePowerCompensation(activePowerCompensation),
-        busesWithDynamicModel(busesWithDynamicModel) {}
+        busesWithDynamicModel(busesWithDynamicModel),
+        automatonManager(automatonManager),
+        counters(counters) {}
 
     std::string basename;                                                         ///< basename
     std::string dirname;                                                          ///< Dirname of output file relative to execution dir
@@ -68,6 +74,8 @@ class Par {
     algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;          ///< list of hvdc lines
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
+    const inputs::AutomatonConfigurationManager& automatonManager;                ///< automaton config manager
+    const algo::CounterDefinitions& counters;                                     ///< Counters to use
   };
 
   /**
@@ -92,17 +100,15 @@ class Par {
     *
     * @returns the parameter set
     */
-  static boost::shared_ptr<parameters::ParametersSet>
-  writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                              dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP);
+  static boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                                                                  dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP);
 
   /**
     * @brief Write constants parameter sets for load
     *
     * @returns the parameter set
     */
-  static boost::shared_ptr<parameters::ParametersSet>
-  writeConstantLoadsSet();
+  static boost::shared_ptr<parameters::ParametersSet> writeConstantLoadsSet();
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -150,6 +156,18 @@ class Par {
    * @returns the parameter set
    */
   static boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string& busId, const std::string& genId);
+
+  /**
+   * @brief Write set for automatons
+   *
+   * @param set the configuration automaton set to write
+   * @param assemblingDoc the corresponding assembling document handler
+   * @param counters the counters to use
+   *
+   * @returns the parameter set to add
+   */
+  static boost::shared_ptr<parameters::ParametersSet>
+  writeAutomatonSet(const inputs::SettingsXmlDocument::Set& set, const inputs::AssemblyXmlDocument& assemblingDoc, const algo::CounterDefinitions& counters);
 
  private:
   ParDefinition def_;                                ///< PAR file definition

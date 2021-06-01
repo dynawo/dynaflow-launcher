@@ -7,5 +7,15 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
+
 DEFINE_TEST(TestAlgo ALGO)
 target_link_libraries(TestAlgo DynaFlowLauncher::algo)
+
+# Dummy Library for algo test
+add_library(dummyLib SHARED res/DummyLibFile.cpp)
+
+DEFINE_TEST_XML(TestAlgoAutomaton ALGO)
+target_link_libraries(TestAlgoAutomaton DynaFlowLauncher::algo)
+add_dependencies(TestAlgoAutomaton dummyLib)
+set_property(TEST ALGO.TestAlgoAutomaton PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LIBRARIES=${CMAKE_CURRENT_BINARY_DIR})
+set_property(TEST ALGO.TestAlgoAutomaton APPEND PROPERTY ENVIRONMENT DYNAWO_INSTALL_DIR=${DYNAWO_HOME})

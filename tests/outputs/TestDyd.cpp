@@ -13,6 +13,10 @@
 
 #include <boost/filesystem.hpp>
 
+testing::Environment* initXmlEnvironment();
+
+testing::Environment* const env = initXmlEnvironment();
+
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
@@ -21,6 +25,8 @@ TEST(Dyd, write) {
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath("results");
   outputPath.append(basename);
+
+  dfl::inputs::AutomatonConfigurationManager manager("", "");
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -35,11 +41,11 @@ TEST(Dyd, write) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., 0);
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}));
 
   dydWriter.write();
 
@@ -59,6 +65,8 @@ TEST(Dyd, writeRemote) {
   boost::filesystem::path outputPath("results");
   outputPath.append(basename);
 
+  dfl::inputs::AutomatonConfigurationManager manager("", "");
+
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
   }
@@ -74,11 +82,12 @@ TEST(Dyd, writeRemote) {
       GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus2)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., 0);
 
   outputPath.append(filename);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel, manager, {}));
 
   dydWriter.write();
 
@@ -97,6 +106,8 @@ TEST(Dyd, writeHvdc) {
   boost::filesystem::path outputPath("results");
   outputPath.append(basename);
 
+  dfl::inputs::AutomatonConfigurationManager manager("", "");
+
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
   }
@@ -110,11 +121,62 @@ TEST(Dyd, writeHvdc) {
                                                                               std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., 0);
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcLines, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcLines, {}, manager, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Dyd, writeAutomaton) {
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::LoadDefinition;
+
+  std::string basename = "TestDydAutomaton";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
+
+  dfl::inputs::AutomatonConfigurationManager manager("res/setting.xml", "res/assembling.xml");
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  dfl::algo::AutomatonDefinitions automatons;
+  automatons.usedMacroConnections.insert("VCSToUMeasurement");
+  automatons.usedMacroConnections.insert("VCSToControlledShunts");
+  automatons.automatons.insert({"MODELE_1_B.EPIP4", dfl::algo::AutomatonDefinition("MODELE_1_B.EPIP4", "DYNModel1")});
+
+  auto macro = dfl::algo::AutomatonDefinition::MacroConnection("VCSToUMeasurement", "0");
+  automatons.automatons.at("MODELE_1_B.EPIP4").nodeConnections.insert(macro);
+  macro = dfl::algo::AutomatonDefinition::MacroConnection("VCSToControlledShunts", "1");
+  automatons.automatons.at("MODELE_1_B.EPIP4").nodeConnections.insert(macro);
+  macro = dfl::algo::AutomatonDefinition::MacroConnection("VCSToControlledShunts", "2");
+  automatons.automatons.at("MODELE_1_B.EPIP4").nodeConnections.insert(macro);
+
+  std::vector<LoadDefinition> loads = {LoadDefinition("L0", "00"), LoadDefinition("L1", "01"), LoadDefinition("L2", "02"), LoadDefinition("L3", "03")};
+
+  const std::string bus1 = "BUS_1";
+  std::vector<GeneratorDefinition> generators = {
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
+
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., 0);
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, automatons));
 
   dydWriter.write();
 

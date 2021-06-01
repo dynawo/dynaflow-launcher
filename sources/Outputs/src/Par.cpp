@@ -18,6 +18,7 @@
 #include "Par.h"
 
 #include "Constants.h"
+#include "Log.h"
 
 #include <DYNCommon.h>
 #include <PARParameter.h>
@@ -56,11 +57,13 @@ buildReference(const std::string& name, const std::string& origName, const std::
   return ref;
 }
 
-static std::string getMacroParameterSetId(const std::string& modelType) {
+static std::string
+getMacroParameterSetId(const std::string& modelType) {
   return "macro_" + modelType;
 }
 
-static std::string getMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
+static std::string
+getMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
@@ -78,7 +81,8 @@ static std::string getMacroParameterSetId(algo::GeneratorDefinition::ModelType m
   return id;
 }
 
-static std::string getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
+static std::string
+getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
@@ -98,7 +102,8 @@ static std::string getGeneratorParameterSetId(algo::GeneratorDefinition::ModelTy
 
 static boost::shared_ptr<parameters::MacroParameterSet>
 buildMacroParameterSet(const std::string& modelType) {
-  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
+  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
+      boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
   if (modelType == getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")) {
     macroParameterSet->addParameter(helper::buildParameter("vrremote_Gain", 1.));
     macroParameterSet->addParameter(helper::buildParameter("vrremote_tIntegral", 1.));
@@ -108,7 +113,8 @@ buildMacroParameterSet(const std::string& modelType) {
 
 static boost::shared_ptr<parameters::MacroParameterSet>
 buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP) {
-  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getMacroParameterSetId(modelType, fixedP)));
+  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
+      boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getMacroParameterSetId(modelType, fixedP)));
   macroParameterSet->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
   macroParameterSet->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
   macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
@@ -117,7 +123,7 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
   macroParameterSet->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
   macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
   macroParameterSet->addParameter(helper::buildParameter("generator_tFilter", 0.001));
-  
+
   double value = fixedP ? kGoverNullValue_ : kGoverDefaultValue_;
   macroParameterSet->addParameter(helper::buildParameter("generator_KGover", value));
 
@@ -150,7 +156,6 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
   return macroParameterSet;
 }
 
-
 }  // namespace helper
 
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
@@ -165,15 +170,15 @@ Par::write() {
   // loop on generators
   for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
-    if(!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(it->model, DYN::doubleIsZero(it->targetP))) && it->isUsingDiagram()) {
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(it->model, DYN::doubleIsZero(it->targetP))) && it->isUsingDiagram()) {
       dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(it->model, def_.activePowerCompensation, DYN::doubleIsZero(it->targetP)));
     }
     // if generator is not using infinite diagrams, no need to create constant sets
     if (it->isUsingDiagram()) {
       dynamicModelsToConnect->addParametersSet(writeGenerator(*it, def_.basename, def_.dirname));
     } else {
-      if(!dynamicModelsToConnect->hasParametersSet(helper::getGeneratorParameterSetId(it->model, DYN::doubleIsZero(it->targetP)))) {
-        dynamicModelsToConnect->addParametersSet(writeConstantGeneratorsSets(def_.activePowerCompensation, it->model, DYN::doubleIsZero(it->targetP))); 
+      if (!dynamicModelsToConnect->hasParametersSet(helper::getGeneratorParameterSetId(it->model, DYN::doubleIsZero(it->targetP)))) {
+        dynamicModelsToConnect->addParametersSet(writeConstantGeneratorsSets(def_.activePowerCompensation, it->model, DYN::doubleIsZero(it->targetP)));
       }
     }
   }
@@ -183,12 +188,59 @@ Par::write() {
   // adding parameters sets related with remote voltage control or multiple generator regulating same bus
   for (const auto& keyValue : def_.busesWithDynamicModel) {
     if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))) {
-      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")));
+      dynamicModelsToConnect->addMacroParameterSet(
+          helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")));
     }
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
   }
 
+  const auto& automatonSets = def_.automatonManager.settingsDocument().sets();
+  for (const auto& set : automatonSets) {
+    dynamicModelsToConnect->addParametersSet(writeAutomatonSet(set, def_.automatonManager.assemblyDocument(), def_.counters));
+  }
+
   exporter.exportToFile(dynamicModelsToConnect, def_.filepath, constants::xmlEncoding);
+}
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeAutomatonSet(const inputs::SettingsXmlDocument::Set& set, const inputs::AssemblyXmlDocument& assemblingDoc,
+                       const algo::CounterDefinitions& counters) {
+  auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
+  const auto& multipleAssociations = assemblingDoc.multipleAssociations();
+  for (const auto& count : set.count) {
+    auto found = std::find_if(multipleAssociations.begin(), multipleAssociations.end(),
+                              [&count](const inputs::AssemblyXmlDocument::MultipleAssociation& association) { return association.id == count.id; });
+    if (found == multipleAssociations.end()) {
+      LOG(debug) << "Count id " << count.id << " not found as a multiple association in assembling: Configuration error" << LOG_ENDL;
+      continue;
+    }
+    if (counters.nbShunts.count(found->shunt.voltageLevel) == 0) {
+      // case voltage level not in network, skip
+      continue;
+    }
+    new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(found->shunt.voltageLevel))));
+  }
+
+  for (const auto& param : set.boolParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+  for (const auto& param : set.doubleParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+  for (const auto& param : set.integerParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+
+  for (const auto& ref : set.references) {
+    new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingsXmlDocument::Reference::toString(ref.dataType), ref.componentId));
+  }
+
+  for (const auto& ref : set.refs) {
+    // TODO(lecourtoisflo) extensions ?
+    new_set->addParameter(helper::buildParameter(ref.name, std::string("UNDEFINED")));
+  }
+
+  return new_set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
@@ -209,7 +261,7 @@ Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configurati
   case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
     set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
     break;
-  default:  //impossible by definition of the enum
+  default:  //  impossible by definition of the enum
     break;
   }
 
@@ -227,8 +279,9 @@ Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configurati
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
-  auto set = updateSignalNGenerator(helper::getGeneratorParameterSetId(modelType,fixedP), activePowerCompensation, fixedP);
+Par::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                 dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
+  auto set = updateSignalNGenerator(helper::getGeneratorParameterSetId(modelType, fixedP), activePowerCompensation, fixedP);
   switch (modelType) {
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
@@ -265,7 +318,8 @@ Par::writeVRRemote(const std::string& busId, const std::string& genId) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
   set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", genId));
   set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", genId));
-  set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))));
+  set->addMacroParSet(
+      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))));
   return set;
 }
 
@@ -318,7 +372,8 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   //  Use the hash id in exported files to prevent use of non-ascii characters
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
   // The macroParSet is associated to a macroParameterSet via the id
-  set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
+  set->addMacroParSet(
+      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
 
   // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
   // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
