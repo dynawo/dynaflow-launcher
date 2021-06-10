@@ -213,10 +213,15 @@ Context::exportOutputs() {
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel));
   jobEntry_ = jobWriter.write();
-  // TODO(Luma) We always need an explicit jobs file if we are using dynawo-algorithms, not only if debug
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    // For security analysis always write the main jobs file, as dynawo-algorithms will need it
+    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
+  } else {
+    // For the rest of simulations, only write jobs file when in DEBUG mode
 #if _DEBUG_
   outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
 #endif
+  }
 
   // Dyd
   file::path dydOutput(config_.outputDir());
@@ -285,11 +290,11 @@ Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefini
   outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
   parEventWriter.write();
 
-  // Specific JOBS file for contingency
+#if _DEBUG_
+  // A JOBS file for every contingency is produced only in DEBUG mode
   outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawoLogLevel, contingencyId, basename_));
   boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
   jobsEvents_.emplace_back(jobEvent);
-#if _DEBUG_
   outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
 #endif
 }
@@ -319,6 +324,7 @@ Context::execute() {
     simu->clean();
   } else if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     // For security analysis we run multiple simulations using dynawo-algorithms
+    // Create one scenario for the base case and one scenario for each contingency
     auto scenarios = boost::make_shared<DYNAlgorithms::Scenarios>();
     scenarios->setJobsFile(jobEntry_->getName() + ".jobs");
     const auto& contingencies = contingencies_.definitions();
@@ -331,59 +337,20 @@ Context::execute() {
       scenario->setDydFile(basename_ + "-" + c->id + ".dyd");
       scenarios->addScenario(scenario);
     }
-    // TODO(Luma) can't use LOG, write directly to stdout
-    std::cout << "dynawo-algorithms: " << scenarios->size() << " scenarios with jobs file [" << scenarios->getJobsFile() << "]" << std::endl;
+    // Use dynawo-algorithms Systematic Analysis Launcher to simulate all the scenarios
     auto multipleJobs = multipleJobs::MultipleJobsFactory::newInstance();
     multipleJobs->setScenarios(scenarios);
     auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
     saLauncher->setMultipleJobs(multipleJobs);
     saLauncher->setOutputFile("sa.zip");
-    saLauncher->setDirectory(config_.outputDir());
+    saLauncher->setDirectory(config_.outputDir().generic_string());
     saLauncher->setNbThreads(4);
     saLauncher->init();
-    std::cout << "dynawo-algorithms: init completed" << std::endl;
     saLauncher->launch();
-    std::cout << "dynawo-algorithms: launch finished" << std::endl;
-
-// TODO(Luma) this is only used in development while we are integrating dynawo-algorithms
-#if _DEVELOPMENT_
-    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
-    simu->init();
-    simu->simulate();
-    simu->terminate();
-    simu->clean();
-    for (auto it = jobsEvents_.begin(); it != jobsEvents_.end(); ++it) {
-
-      // Use a new instance of NetworkManager for every contingency
-      // To ensure all contingencies are simulated from same starting point
-      // If we reuse the network manager from the context the network
-      // is updated with the results of the previous simulation
-      dfl::inputs::NetworkManager networkManagerc(def_.networkFilepath);
-      std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes;
-      initNetworkManager(networkManagerc, mainConnexNodes);
-
-      auto simuEvent = boost::make_shared<DYN::Simulation>(*it, simu_context, networkManagerc.dataInterface());
-      simuEvent->init();
-      simuEvent->simulate();
-      simuEvent->terminate();
-      simuEvent->clean();
-    }
+#if _DEBUG_
+    saLauncher->writeResults();
 #endif
   }
-
-}
-
-void
-Context::initNetworkManager(dfl::inputs::NetworkManager& networkManager, std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes) {
-  auto found_slack_node = networkManager.getSlackNode();
-  std::shared_ptr<inputs::Node> slackNode;
-  if (found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
-    slackNode = *found_slack_node;
-  } else {
-    // slack node not given in iidm or not requested: it is computed internally
-    networkManager.onNode(algo::SlackNodeAlgorithm(slackNode));
-  }
-  networkManager.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes));
 }
 
 void
