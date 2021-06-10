@@ -147,6 +147,9 @@ Job::writeOutputs() {
   auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
   timeline->setExportMode("TXT");
   output->setTimelineEntry(timeline);
+  auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
+  constraints->setExportMode("XML");
+  output->setConstraintsEntry(constraints);
 #endif
 
   return output;
@@ -262,6 +265,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   if (timeline) {
     attrs.add("exportMode", timeline->getExportMode());
     formatter->startElement("dyn", "timeline", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
+
+  auto constraints = outputs->getConstraintsEntry();
+  if (constraints) {
+    attrs.add("exportMode", constraints->getExportMode());
+    formatter->startElement("dyn", "constraints", attrs);
     attrs.clear();
     formatter->endElement();
   }
