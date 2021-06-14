@@ -32,9 +32,7 @@
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
 #include <DYNDataInterface.h>
-#include <DYNNetworkInterface.h>
-#include <DYNLineInterface.h>
-#include <DYNTwoWTransformerInterface.h>
+#include <DYNVoltageLevelInterface.h>
 
 #include <DYNScenario.h>
 #include <DYNScenarios.h>
@@ -136,10 +134,10 @@ Context::process() {
 }
 
 bool
-Context::isLine(const std::string& branchId) {
-  const auto& lines = networkManager_.dataInterface()->getNetwork()->getLines();
-  for (auto l = lines.begin(); l != lines.end(); ++l) {
-    if (branchId == (*l)->getID()) {
+Context::isInMainConnectedComponent(const std::string& nodeId) {
+  for (auto& n : mainConnexNodes_) {
+    if (nodeId == n->id) {
+      LOG(debug) << "        node in main connected component " << n->id << LOG_ENDL;
       return true;
     }
   }
@@ -147,36 +145,90 @@ Context::isLine(const std::string& branchId) {
 }
 
 bool
-Context::isTwoWTransformer(const std::string& branchId) {
-  const auto& transformers = networkManager_.dataInterface()->getNetwork()->getTwoWTransformers();
-  for (auto t = transformers.begin(); t != transformers.end(); ++t) {
-    if (branchId == (*t)->getID()) {
+Context::checkGenerator(const std::string& generatorId, std::string& reason) {
+  const auto& network = networkManager_.dataInterface()->getNetwork();
+  for (auto& vl : network->getVoltageLevels()) {
+    for (auto& g : vl->getGenerators()) {
+      if (generatorId == g->getID()) {
+        const auto& n = g->getBusInterface()->getID();
+        bool nvalid = isInMainConnectedComponent(n);
+        LOG(debug) << "      bus = " << n << " valid = " << nvalid << LOG_ENDL;
+        if (!nvalid) {
+          reason = "generator bus outside main connected component";
+        }
+        return nvalid;
+      }
+    }
+  }
+  reason = "not found as generator";
+  return false;
+}
+
+bool
+Context::checkLine(const std::string& branchId, std::string& reason) {
+  const auto& network = networkManager_.dataInterface()->getNetwork();
+  for (auto& l : network->getLines()) {
+    if (branchId == l->getID()) {
+      const auto& n1 = l->getBusInterface1()->getID();
+      const auto& n2 = l->getBusInterface2()->getID();
+      bool n1valid = isInMainConnectedComponent(n1);
+      bool n2valid = isInMainConnectedComponent(n2);
+      LOG(debug) << "      bus1 " << n1 << " valid = " << n1valid << LOG_ENDL;
+      LOG(debug) << "      bus1 " << n2 << " valid = " << n2valid << LOG_ENDL;
+      if (!(n1valid || n1valid)) {
+        reason = "both ends of line are outside main connected component";
+      }
+      return n1valid || n2valid;
+    }
+  }
+  reason = "not found as line";
+  return false;
+}
+
+bool
+Context::checkTwoWTransformer(const std::string& branchId, std::string& reason) {
+  for (auto& t : networkManager_.dataInterface()->getNetwork()->getTwoWTransformers()) {
+    if (branchId == t->getID()) {
       return true;
     }
   }
+  reason = "not found as two-windings transfomer";
+  return false;
+}
+
+bool
+Context::checkContingencyElement(const std::string& id, const std::string& type, std::string& reason) {
+  if (type == "GENERATOR") {
+    return checkGenerator(id, reason);
+  } else if (type == "LINE") {
+    return checkLine(id, reason);
+  } else if (type == "TWO_WINDINGS_TRANSFORMER") {
+    return checkTwoWTransformer(id, reason);
+  } else if (type == "BRANCH") {
+    bool r = checkLine(id, reason) || checkTwoWTransformer(id, reason);
+    if (!r) {
+      reason = "not found as line or two-windings transformer";
+    }
+    return r;
+  }
+  // FIXME complete access to the different types of elements through NetworkInterface
   return false;
 }
 
 void
 Context::checkContingencies() {
-  LOG(debug) << "Contingencies. Check that elements have dynamic models" << LOG_ENDL;
+  LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
   const auto& contingencies = contingencies_.definitions();
   for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
     LOG(debug) << c->id << LOG_ENDL;
     for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
       LOG(debug) << "  " << e->id << " (" << e->type << ")" << LOG_ENDL;
-      bool found = false;
-      if (e->type == "LINE") {
-        found = isLine(e->id);
-      } else if (e->type == "TWO_WINDINGS_TRANSFORMER") {
-        found = isTwoWTransformer(e->id);
-      } else if (e->type == "BRANCH") {
-        found = isLine(e->id) || isTwoWTransformer(e->id);
-      }
-      if (!found) {
-        LOG(warn) << "  Missing component interface for element " << e->id << LOG_ENDL;
+      std::string reason;
+      bool valid = checkContingencyElement(e->id, e->type, reason);
+      if (!valid) {
+        LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << reason << LOG_ENDL;
       } else {
-        LOG(debug) << "  Element " << e->id << " has dynamic models" << LOG_ENDL;
+        LOG(debug) << "  Element " << e->id << "(" << e->type << ") is valid" << LOG_ENDL;
       }
     }
   }
