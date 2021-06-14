@@ -22,7 +22,11 @@
 #include "Contingencies.h"
 #include "NetworkManager.h"
 
+#include <DYNNetworkInterface.h>
+#include <DYNLineInterface.h>
+#include <DYNTwoWTransformerInterface.h>
 #include <JOBJobEntry.h>
+
 #include <boost/filesystem.hpp>
 
 namespace dfl {
@@ -149,18 +153,34 @@ class Context {
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
-  /// @brief Check all elements in contingencies have corresponding dynamic models
+  /// @brief Check all elements in contingencies have valid dynamic models
   void checkContingencies();
-  /// @brief Check if a branch is a Line
+  /// @brief Check if network has a valid component interface for a generator
+  /// @param branchId static identifier of generator
+  /// @param reason description explaining why no valid component interface is found
+  bool checkGenerator(const std::string& generatorId, std::string& reason);
+  /// @brief Check if network has a valid component interface for a line
   /// @param branchId static identifier of branch
-  bool isLine(const std::string& branchId);
-  /// @brief Check if a branch is a two-windings transformer
+  /// @param reason description explaining why no valid component interface is found
+  bool checkLine(const std::string& branchId, std::string& reason);
+  /// @brief Check if network has a valid component interface for a two-windings transformer
   /// @param branchId static identifier of branch
-  bool isTwoWTransformer(const std::string& branchId);
+  /// @param reason description explaining why no valid component interface is found
+  bool checkTwoWTransformer(const std::string& branchId, std::string& reason);
+  /// @brief Check if network has a component interface for a given element
+  /// @param id static identifier of network element
+  /// @param type type of network element
+  /// @param reason description explaining why no valid component interface is found
+  bool checkContingencyElement(const std::string& id, const std::string& type, std::string& reason);
+  /// @brief Check if node is in main connected component
+  /// @param nodeId identifier of node/bus to check
+  bool isInMainConnectedComponent(const std::string& nodeId);
+
   /// @brief Build JOBS, DYD, PAR files for each contingency
   void exportOutputsContingencies();
   /// @brief Build JOBS, DYD, PAR files for a given contingency
   void exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c);
+
   /// @brief Initialization of additional instances of network manager
   void initNetworkManager(dfl::inputs::NetworkManager& networkManager, std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes);
 };
