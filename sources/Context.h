@@ -38,8 +38,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 
-
-
 namespace dfl {
 /**
  * @brief Dynaflow launcher context
