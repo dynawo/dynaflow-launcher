@@ -212,8 +212,9 @@ Context::checkContingencyElement(const std::string& id, const std::string& type)
   return boost::none; // No problem
 }
 
-void
+std::vector<std::string>
 Context::checkContingencies() {
+  std::vector<std::string> result;
   LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
   const auto& contingencies = contingencies_.definitions();
   for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
@@ -224,11 +225,14 @@ Context::checkContingencies() {
       auto valid = checkContingencyElement(e->id, e->type);
       if (!valid) {
         LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << valid.value() << LOG_ENDL;
+        result.push_back(valid.value());
       } else {
         LOG(debug) << "  Element " << e->id << "(" << e->type << ") is valid" << LOG_ENDL;
       }
     }
   }
+
+  return result;
 }
 
 void

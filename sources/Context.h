@@ -169,7 +169,8 @@ class Context {
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
   /// @brief Check all elements in contingencies have valid dynamic models
-  void checkContingencies();
+  /// @return All ellements that are invalid and why
+  std::vector<std::string> checkContingencies();
   /// @brief Check if network has a valid component interface for a generator
   /// @param branchId static identifier of generator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
