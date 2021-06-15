@@ -135,13 +135,11 @@ Context::process() {
 
 bool
 Context::isInMainConnectedComponent(const std::string& nodeId) {
-  for (auto& n : mainConnexNodes_) {
-    if (nodeId == n->id) {
-      LOG(debug) << "        node in main connected component " << n->id << LOG_ENDL;
-      return true;
-    }
+  auto res = mainConnexIds_.find(nodeId) != mainConnexIds_.end();
+  if (res) {
+    LOG(debug) << "        node in main connected component " << nodeId << LOG_ENDL;
   }
-  return false;
+  return res;
 }
 
 boost::optional<std::string>

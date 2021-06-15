@@ -168,6 +168,8 @@ class Context {
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
+  std::unordered_set<std::string> mainConnexIds_;
+
   /// @brief Check all elements in contingencies have valid dynamic models
   /// @return All ellements that are invalid and why
   std::vector<std::string> checkContingencies();
