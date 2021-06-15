@@ -137,8 +137,8 @@ Context::isInMainConnectedComponent(const std::string& nodeId) {
   return false;
 }
 
-bool
-Context::checkGenerator(const std::string& generatorId, std::string& reason) {
+boost::optional<std::string>
+Context::checkGenerator(const std::string& generatorId) {
   const auto& network = networkManager_.dataInterface()->getNetwork();
   for (auto& vl : network->getVoltageLevels()) {
     for (auto& g : vl->getGenerators()) {
@@ -147,18 +147,17 @@ Context::checkGenerator(const std::string& generatorId, std::string& reason) {
         bool nvalid = isInMainConnectedComponent(n);
         LOG(debug) << "      bus = " << n << " valid = " << nvalid << LOG_ENDL;
         if (!nvalid) {
-          reason = "generator bus outside main connected component";
+          return std::string("generator bus outside main connected component");
         }
-        return nvalid;
+        return boost::none; // No problem found
       }
     }
   }
-  reason = "not found as generator";
-  return false;
+  return std::string("not found as generator");
 }
 
-bool
-Context::checkLine(const std::string& branchId, std::string& reason) {
+boost::optional<std::string>
+Context::checkLine(const std::string& branchId) {
   const auto& network = networkManager_.dataInterface()->getNetwork();
   for (auto& l : network->getLines()) {
     if (branchId == l->getID()) {
@@ -168,44 +167,42 @@ Context::checkLine(const std::string& branchId, std::string& reason) {
       bool n2valid = isInMainConnectedComponent(n2);
       LOG(debug) << "      bus1 " << n1 << " valid = " << n1valid << LOG_ENDL;
       LOG(debug) << "      bus1 " << n2 << " valid = " << n2valid << LOG_ENDL;
-      if (!(n1valid || n1valid)) {
-        reason = "both ends of line are outside main connected component";
+      if (!(n1valid || n2valid)) {
+        return std::string("both ends of line are outside main connected component");
       }
-      return n1valid || n2valid;
+      return boost::none; // No problem found
     }
   }
-  reason = "not found as line";
-  return false;
+  return std::string("not found as line");
 }
 
-bool
-Context::checkTwoWTransformer(const std::string& branchId, std::string& reason) {
+boost::optional<std::string>
+Context::checkTwoWTransformer(const std::string& branchId) {
   for (auto& t : networkManager_.dataInterface()->getNetwork()->getTwoWTransformers()) {
     if (branchId == t->getID()) {
-      return true;
+      return boost::none; // No problem found
     }
   }
-  reason = "not found as two-windings transfomer";
-  return false;
+  return std::string("not found as two-windings transfomer");
 }
 
-bool
-Context::checkContingencyElement(const std::string& id, const std::string& type, std::string& reason) {
+boost::optional<std::string>
+Context::checkContingencyElement(const std::string& id, const std::string& type) {
   if (type == "GENERATOR") {
-    return checkGenerator(id, reason);
+    return checkGenerator(id);
   } else if (type == "LINE") {
-    return checkLine(id, reason);
+    return checkLine(id);
   } else if (type == "TWO_WINDINGS_TRANSFORMER") {
-    return checkTwoWTransformer(id, reason);
+    return checkTwoWTransformer(id);
   } else if (type == "BRANCH") {
-    bool r = checkLine(id, reason) || checkTwoWTransformer(id, reason);
+    bool r = checkLine(id) || checkTwoWTransformer(id);
     if (!r) {
-      reason = "not found as line or two-windings transformer";
+      return std::string("not found as line or two-windings transformer");
     }
-    return r;
+    return boost::none; // No problem
   }
   // FIXME complete access to the different types of elements through NetworkInterface
-  return false;
+  return boost::none; // No problem
 }
 
 void
@@ -217,9 +214,9 @@ Context::checkContingencies() {
     for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
       LOG(debug) << "  " << e->id << " (" << e->type << ")" << LOG_ENDL;
       std::string reason;
-      bool valid = checkContingencyElement(e->id, e->type, reason);
+      auto valid = checkContingencyElement(e->id, e->type);
       if (!valid) {
-        LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << reason << LOG_ENDL;
+        LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << valid.value() << LOG_ENDL;
       } else {
         LOG(debug) << "  Element " << e->id << "(" << e->type << ") is valid" << LOG_ENDL;
       }
