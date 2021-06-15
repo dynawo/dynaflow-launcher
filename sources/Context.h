@@ -28,6 +28,7 @@
 #include <JOBJobEntry.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
 
 namespace dfl {
 /**
@@ -157,21 +158,21 @@ class Context {
   void checkContingencies();
   /// @brief Check if network has a valid component interface for a generator
   /// @param branchId static identifier of generator
-  /// @param reason description explaining why no valid component interface is found
-  bool checkGenerator(const std::string& generatorId, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkGenerator(const std::string& generatorId);
   /// @brief Check if network has a valid component interface for a line
   /// @param branchId static identifier of branch
-  /// @param reason description explaining why no valid component interface is found
-  bool checkLine(const std::string& branchId, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkLine(const std::string& branchId);
   /// @brief Check if network has a valid component interface for a two-windings transformer
   /// @param branchId static identifier of branch
-  /// @param reason description explaining why no valid component interface is found
-  bool checkTwoWTransformer(const std::string& branchId, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkTwoWTransformer(const std::string& branchId);
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
-  /// @param reason description explaining why no valid component interface is found
-  bool checkContingencyElement(const std::string& id, const std::string& type, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkContingencyElement(const std::string& id, const std::string& type);
   /// @brief Check if node is in main connected component
   /// @param nodeId identifier of node/bus to check
   bool isInMainConnectedComponent(const std::string& nodeId);
