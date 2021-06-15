@@ -134,7 +134,7 @@ Context::process() {
 }
 
 bool
-Context::isInMainConnectedComponent(const std::string& nodeId) {
+Context::isInMainConnectedComponent(const std::string& nodeId) const {
   auto res = mainConnexIds_.find(nodeId) != mainConnexIds_.end();
   if (res) {
     LOG(debug) << "        node in main connected component " << nodeId << LOG_ENDL;
@@ -143,7 +143,7 @@ Context::isInMainConnectedComponent(const std::string& nodeId) {
 }
 
 boost::optional<std::string>
-Context::checkGenerator(const std::string& generatorId) {
+Context::checkGenerator(const std::string& generatorId) const {
   const auto& network = networkManager_.dataInterface()->getNetwork();
   for (auto& vl : network->getVoltageLevels()) {
     for (auto& g : vl->getGenerators()) {
@@ -162,7 +162,7 @@ Context::checkGenerator(const std::string& generatorId) {
 }
 
 boost::optional<std::string>
-Context::checkLine(const std::string& branchId) {
+Context::checkLine(const std::string& branchId) const {
   const auto& network = networkManager_.dataInterface()->getNetwork();
   for (auto& l : network->getLines()) {
     if (branchId == l->getID()) {
@@ -182,7 +182,7 @@ Context::checkLine(const std::string& branchId) {
 }
 
 boost::optional<std::string>
-Context::checkTwoWTransformer(const std::string& branchId) {
+Context::checkTwoWTransformer(const std::string& branchId) const {
   for (auto& t : networkManager_.dataInterface()->getNetwork()->getTwoWTransformers()) {
     if (branchId == t->getID()) {
       return boost::none; // No problem found
@@ -192,7 +192,7 @@ Context::checkTwoWTransformer(const std::string& branchId) {
 }
 
 boost::optional<std::string>
-Context::checkContingencyElement(const std::string& id, const std::string& type) {
+Context::checkContingencyElement(const std::string& id, const std::string& type) const {
   if (type == "GENERATOR") {
     return checkGenerator(id);
   } else if (type == "LINE") {
@@ -211,7 +211,7 @@ Context::checkContingencyElement(const std::string& id, const std::string& type)
 }
 
 std::vector<std::string>
-Context::checkContingencies() {
+Context::checkContingencies() const {
   std::vector<std::string> result;
   LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
   const auto& contingencies = contingencies_.definitions();

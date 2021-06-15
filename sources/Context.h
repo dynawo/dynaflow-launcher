@@ -172,27 +172,27 @@ class Context {
 
   /// @brief Check all elements in contingencies have valid dynamic models
   /// @return All ellements that are invalid and why
-  std::vector<std::string> checkContingencies();
+  std::vector<std::string> checkContingencies() const;
   /// @brief Check if network has a valid component interface for a generator
   /// @param branchId static identifier of generator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkGenerator(const std::string& generatorId);
+  boost::optional<std::string> checkGenerator(const std::string& generatorId) const;
   /// @brief Check if network has a valid component interface for a line
   /// @param branchId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkLine(const std::string& branchId);
+  boost::optional<std::string> checkLine(const std::string& branchId) const;
   /// @brief Check if network has a valid component interface for a two-windings transformer
   /// @param branchId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkTwoWTransformer(const std::string& branchId);
+  boost::optional<std::string> checkTwoWTransformer(const std::string& branchId) const;
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkContingencyElement(const std::string& id, const std::string& type);
+  boost::optional<std::string> checkContingencyElement(const std::string& id, const std::string& type) const;
   /// @brief Check if node is in main connected component
   /// @param nodeId identifier of node/bus to check
-  bool isInMainConnectedComponent(const std::string& nodeId);
+  bool isInMainConnectedComponent(const std::string& nodeId) const;
 
   /// @brief Build JOBS, DYD, PAR files for each contingency
   void exportOutputsContingencies();
