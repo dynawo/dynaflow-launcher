@@ -168,7 +168,7 @@ Context::checkLine(const std::string& branchId, std::string& reason) {
       bool n2valid = isInMainConnectedComponent(n2);
       LOG(debug) << "      bus1 " << n1 << " valid = " << n1valid << LOG_ENDL;
       LOG(debug) << "      bus1 " << n2 << " valid = " << n2valid << LOG_ENDL;
-      if (!(n1valid || n1valid)) {
+      if (!(n1valid || n2valid)) {
         reason = "both ends of line are outside main connected component";
       }
       return n1valid || n2valid;
