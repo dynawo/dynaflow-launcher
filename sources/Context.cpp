@@ -413,6 +413,8 @@ Context::filterPartiallyConnectedDynamicModels() {
       }
     }
   }
+
+  return result;
 }
 
 void
