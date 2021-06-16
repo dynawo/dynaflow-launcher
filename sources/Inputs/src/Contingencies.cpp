@@ -86,5 +86,39 @@ Contingencies::log() {
     }
 }
 
+std::string
+Contingencies::toString(ElementInvalidReason reason) {
+  switch (reason) {
+    case ElementInvalidReason::GENERATOR_NOT_FOUND:
+      return "not found as generator";
+
+    case ElementInvalidReason::TWOWINDINGS_TRANFORMER_NOT_FOUND:
+      return "not found as two-windings transfomer";
+
+    case ElementInvalidReason::BRANCH_NOT_FOUND:
+      return "not found as line or two-windings transformer";
+
+    case ElementInvalidReason::LINE_NOT_FOUND:
+      return "not found as line";
+
+    case ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND:
+      return "not found as shunt compensator";
+
+    case ElementInvalidReason::DANGLING_LINE_NOT_FOUND:
+      return "not found as dangling line";
+
+    case ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND:
+      return "not found as static var compensator";
+
+    case ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT:
+      return "no ends are connected to the main connected component";
+
+    case ElementInvalidReason::TYPE_NOT_KNOWN:
+      return "type not known";
+  }
+
+  return "unknwon error";
+}
+
 }  // namespace inputs
 }  // namespace dfl
