@@ -28,6 +28,7 @@
 #include <JOBJobEntry.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
 
 namespace dfl {
 /**
@@ -153,28 +154,50 @@ class Context {
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
+  std::unordered_set<std::string> mainConnexIds_;
+
   /// @brief Check all elements in contingencies have valid dynamic models
-  void checkContingencies();
+  /// @return All ellements that are invalid and why
+  std::vector<std::string> checkContingencies() const;
   /// @brief Check if network has a valid component interface for a generator
   /// @param branchId static identifier of generator
-  /// @param reason description explaining why no valid component interface is found
-  bool checkGenerator(const std::string& generatorId, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkGenerator(const std::string& generatorId) const;
   /// @brief Check if network has a valid component interface for a line
   /// @param branchId static identifier of branch
-  /// @param reason description explaining why no valid component interface is found
-  bool checkLine(const std::string& branchId, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkLine(const std::string& branchId) const;
   /// @brief Check if network has a valid component interface for a two-windings transformer
   /// @param branchId static identifier of branch
-  /// @param reason description explaining why no valid component interface is found
-  bool checkTwoWTransformer(const std::string& branchId, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkTwoWTransformer(const std::string& branchId) const;
+  /// @brief Check if network has a valid component interface for a shun compensator
+  /// @param shuntId static identifier of shunt compensator
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkShuntCompensator(const std::string& shuntId) const;
+  /// @brief Check if network has a valid component interface for a load
+  /// @param loadId static identifier of load
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkLoad(const std::string& loadId) const;
+  /// @brief Check if network has a valid component interface for a dangling line
+  /// @param dlineId static identifier of dangling line
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkDanglingLine(const std::string& dlineId) const;
+  /// @brief Check if network has a valid component interface for a static var compensator
+  /// @param branchId static identifier of branch
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkStaticVarCompensator(const std::string& compensatorId) const;
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
-  /// @param reason description explaining why no valid component interface is found
-  bool checkContingencyElement(const std::string& id, const std::string& type, std::string& reason);
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<std::string> checkContingencyElement(const std::string& id, const std::string& type) const;
   /// @brief Check if node is in main connected component
   /// @param nodeId identifier of node/bus to check
-  bool isInMainConnectedComponent(const std::string& nodeId);
+  bool isInMainConnectedComponent(const std::string& nodeId) const;
+  /// @brief Check if buses are in main connected component
+  /// @param bus pointers of buses to check
+  bool areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
 
   /// @brief Build JOBS, DYD, PAR files for each contingency
   void exportOutputsContingencies();
