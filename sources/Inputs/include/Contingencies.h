@@ -27,6 +27,21 @@ namespace inputs {
 class Contingencies {
  public:
   /**
+   * @brief Explains why an element is considered invalid
+   */
+  enum class ElementInvalidReason {
+    GENERATOR_NOT_FOUND,
+    TWOWINDINGS_TRANFORMER_NOT_FOUND,
+    LINE_NOT_FOUND,
+    BRANCH_NOT_FOUND,
+    SHUNT_COMPENSATOR_NOT_FOUND,
+    DANGLING_LINE_NOT_FOUND,
+    STATIC_VAR_COMPENSATOR_NOT_FOUND,
+    NOT_IN_MAIN_CONNECTED_COMPONENT,
+    TYPE_NOT_KNOWN
+  };
+
+  /**
    * @brief Contingency element definition
    */
   struct ContingencyElementDefinition {
@@ -84,6 +99,14 @@ class Contingencies {
    *
    */
   void log();
+
+  /**
+   * @brief ElementInvalidReason to string
+   *
+   * Transforms an ElementInvalidReason into a string description
+   *
+   */
+  static std::string toString(ElementInvalidReason reason);
 
  private:
   std::vector<ContingencyDefinition> contingencies;  ///< contingency definitions

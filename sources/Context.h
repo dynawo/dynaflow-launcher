@@ -158,40 +158,40 @@ class Context {
 
   /// @brief Check all elements in contingencies have valid dynamic models
   /// @return All ellements that are invalid and why
-  std::vector<std::string> checkContingencies() const;
+  std::vector<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencies() const;
   /// @brief Check if network has a valid component interface for a generator
   /// @param branchId static identifier of generator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkGenerator(const std::string& generatorId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkGenerator(const std::string& generatorId) const;
   /// @brief Check if network has a valid component interface for a line
   /// @param branchId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkLine(const std::string& branchId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkLine(const std::string& branchId) const;
   /// @brief Check if network has a valid component interface for a two-windings transformer
   /// @param branchId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkTwoWTransformer(const std::string& branchId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkTwoWTransformer(const std::string& branchId) const;
   /// @brief Check if network has a valid component interface for a shun compensator
   /// @param shuntId static identifier of shunt compensator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkShuntCompensator(const std::string& shuntId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkShuntCompensator(const std::string& shuntId) const;
   /// @brief Check if network has a valid component interface for a load
   /// @param loadId static identifier of load
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkLoad(const std::string& loadId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkLoad(const std::string& loadId) const;
   /// @brief Check if network has a valid component interface for a dangling line
   /// @param dlineId static identifier of dangling line
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkDanglingLine(const std::string& dlineId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkDanglingLine(const std::string& dlineId) const;
   /// @brief Check if network has a valid component interface for a static var compensator
   /// @param branchId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkStaticVarCompensator(const std::string& compensatorId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkStaticVarCompensator(const std::string& compensatorId) const;
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkContingencyElement(const std::string& id, const std::string& type) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencyElement(const std::string& id, const std::string& type) const;
   /// @brief Check if node is in main connected component
   /// @param nodeId identifier of node/bus to check
   bool isInMainConnectedComponent(const std::string& nodeId) const;

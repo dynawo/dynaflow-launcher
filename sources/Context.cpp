@@ -49,6 +49,7 @@
 #include <tuple>
 
 namespace file = boost::filesystem;
+using dfl::inputs::Contingencies;
 
 namespace dfl {
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
@@ -163,112 +164,112 @@ Context::areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::Bu
   return result;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkGenerator(const std::string& generatorId) const {
   const auto& network = networkManager_.dataInterface()->getNetwork();
   for (auto& vl : network->getVoltageLevels()) {
     for (auto& g : vl->getGenerators()) {
       if (generatorId == g->getID()) {
         if (!areInMainConnectedComponent({g->getBusInterface()})) {
-          return std::string("generator bus outside main connected component");
+          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
         }
         return boost::none; // No problem found
       }
     }
   }
-  return std::string("not found as generator");
+  return Contingencies::ElementInvalidReason::GENERATOR_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkLine(const std::string& branchId) const {
   const auto& network = networkManager_.dataInterface()->getNetwork();
   for (auto& l : network->getLines()) {
     if (branchId == l->getID()) {
       if (!areInMainConnectedComponent({l->getBusInterface1(), l->getBusInterface2()})) {
-        return std::string("both ends of line are outside main connected component");
+        return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
       }
       return boost::none; // No problem found
     }
   }
-  return std::string("not found as line");
+  return Contingencies::ElementInvalidReason::LINE_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkTwoWTransformer(const std::string& branchId) const {
   for (auto& t : networkManager_.dataInterface()->getNetwork()->getTwoWTransformers()) {
     if (branchId == t->getID()) {
       if (!areInMainConnectedComponent({t->getBusInterface1(),t->getBusInterface2()})) {
-        return std::string("both ends of two-windings transformer are outside main connected component");
+        return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
       }
       return boost::none; // No problem found
     }
   }
-  return std::string("not found as two-windings transfomer");
+  return Contingencies::ElementInvalidReason::TWOWINDINGS_TRANFORMER_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkShuntCompensator(const std::string& shuntId) const {
   for (auto& lev : networkManager_.dataInterface()->getNetwork()->getVoltageLevels()) {
     for (auto& s: lev->getShuntCompensators()) {
       if (shuntId == s->getID()) {
         if (!areInMainConnectedComponent({s->getBusInterface()})) {
-          return std::string("both ends of shunt compensator are outside main connected component");
+          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
         }
         return boost::none; // No problem found
       }
     }
   }
-  return std::string("not found as shunt compensator");
+  return Contingencies::ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkLoad(const std::string& loadId) const {
   for (auto& t : networkManager_.dataInterface()->getNetwork()->getVoltageLevels()) {
     for (auto& l: t->getLoads()) {
       if (loadId == l->getID()) {
         if (!areInMainConnectedComponent(t->getBuses())) {
-          return std::string("both ends of shunt compensator are outside main connected component");
+          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
         }
         return boost::none; // No problem found
       }
     }
   }
-  return std::string("not found as shunt compensator");
+  return Contingencies::ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkDanglingLine(const std::string& dlineId) const {
   const auto& vlevels = networkManager_.dataInterface()->getNetwork()->getVoltageLevels();
   for (auto& lev: vlevels) {
     for (auto& l : lev->getDanglingLines()) {
       if (dlineId == l->getID()) {
         if (!areInMainConnectedComponent({l->getBusInterface()})) {
-          return std::string("the end of dangling line is outside main connected component");
+          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
         }
         return boost::none; // No problem found
       }
     }
   }
-  return std::string("not found as dangling line");
+  return Contingencies::ElementInvalidReason::DANGLING_LINE_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkStaticVarCompensator(const std::string& dlineId) const {
   const auto& vlevels = networkManager_.dataInterface()->getNetwork()->getVoltageLevels();
   for (auto& lev: vlevels) {
     for (auto& s : lev->getStaticVarCompensators()) {
       if (dlineId == s->getID()) {
         if (!areInMainConnectedComponent({s->getBusInterface()})) {
-          return std::string("the end of static var compensator is outside main connected component");
+          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
         }
         return boost::none; // No problem found
       }
     }
   }
-  return std::string("not found as static var compensator");
+  return Contingencies::ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND;
 }
 
-boost::optional<std::string>
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkContingencyElement(const std::string& id, const std::string& type) const {
   if (type == "GENERATOR") {
     return checkGenerator(id);
@@ -279,7 +280,7 @@ Context::checkContingencyElement(const std::string& id, const std::string& type)
   } else if (type == "BRANCH") {
     bool r = checkLine(id) || checkTwoWTransformer(id);
     if (!r) {
-      return std::string("not found as line or two-windings transformer");
+      return Contingencies::ElementInvalidReason::BRANCH_NOT_FOUND;
     }
     return boost::none; // No problem
   } else if (type == "SHUNT_COMPENSATOR") {
@@ -294,13 +295,12 @@ Context::checkContingencyElement(const std::string& id, const std::string& type)
     return boost::none;
   }
 
-  // FIXME complete access to the different types of elements through NetworkInterface
-  return std::string("type not known"); // No problem
+  return Contingencies::ElementInvalidReason::TYPE_NOT_KNOWN;
 }
 
-std::vector<std::string>
+std::vector<Contingencies::ElementInvalidReason>
 Context::checkContingencies() const {
-  std::vector<std::string> result;
+  std::vector<Contingencies::ElementInvalidReason> result;
   LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
   const auto& contingencies = contingencies_.definitions();
   for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
@@ -310,8 +310,8 @@ Context::checkContingencies() const {
       std::string reason;
       auto invalid = checkContingencyElement(e->id, e->type);
       if (invalid) {
-        LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << invalid.value() << LOG_ENDL;
-        result.push_back(invalid.value());
+        LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << Contingencies::toString(*invalid) << LOG_ENDL;
+        result.push_back(*invalid);
       } else {
         LOG(debug) << "  Element " << e->id << "(" << e->type << ") is valid" << LOG_ENDL;
       }
