@@ -33,6 +33,7 @@
 #include <DYNSimulationContext.h>
 #include <DYNDataInterface.h>
 #include <DYNDanglingLineInterface.h>
+#include <DYNHvdcLineInterface.h>
 #include <DYNLoadInterface.h>
 #include <DYNVoltageLevelInterface.h>
 #include <DYNShuntCompensatorInterface.h>
@@ -254,6 +255,21 @@ Context::checkDanglingLine(const std::string& dlineId) const {
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
+Context::checkHvdcLine(const std::string& hlineId) const {
+  const auto& lines = networkManager_.dataInterface()->getNetwork()->getHvdcLines();
+  for (auto& l: lines) {
+    if (hlineId == l->getID()) {
+      // TODO: Check that the connected converters are in the main component
+      /*if (!areInMainConnectedComponent({l->getConverter1()})) {
+        return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
+      }*/
+      return boost::none; // No problem found
+    }
+  }
+  return Contingencies::ElementInvalidReason::DANGLING_LINE_NOT_FOUND;
+}
+
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkStaticVarCompensator(const std::string& dlineId) const {
   const auto& vlevels = networkManager_.dataInterface()->getNetwork()->getVoltageLevels();
   for (auto& lev: vlevels) {
@@ -270,29 +286,33 @@ Context::checkStaticVarCompensator(const std::string& dlineId) const {
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
-Context::checkContingencyElement(const std::string& id, const std::string& type) const {
-  if (type == "GENERATOR") {
-    return checkGenerator(id);
-  } else if (type == "LINE") {
-    return checkLine(id);
-  } else if (type == "TWO_WINDINGS_TRANSFORMER") {
-    return checkTwoWTransformer(id);
-  } else if (type == "BRANCH") {
-    bool r = checkLine(id) || checkTwoWTransformer(id);
-    if (!r) {
-      return Contingencies::ElementInvalidReason::BRANCH_NOT_FOUND;
+Context::checkContingencyElement(const std::string& id, Contingencies::Type type) const {
+  switch(type){
+    case Contingencies::Type::GENERATOR:
+      return checkGenerator(id);
+    case Contingencies::Type::LINE:
+      return checkLine(id);
+    case Contingencies::Type::TWO_WINDINGS_TRANSFORMER:
+      return checkTwoWTransformer(id);
+    case Contingencies::Type::BRANCH: {
+      bool r = checkLine(id) || checkTwoWTransformer(id);
+      if (!r) {
+        return Contingencies::ElementInvalidReason::BRANCH_NOT_FOUND;
+      }
+      return boost::none; // No problem
     }
-    return boost::none; // No problem
-  } else if (type == "SHUNT_COMPENSATOR") {
-    return checkShuntCompensator(id);
-  } else if (type == "LOAD") {
-    return checkLoad(id);
-  } else if (type == "DANGLING_LINE") {
-    return checkDanglingLine(id);
-  } else if (type == "STATIC_VAR_COMPENSATOR") {
-    return checkStaticVarCompensator(id);
-  } else if (type == "BUSBAR_SECTION") {
-    return boost::none;
+    case Contingencies::Type::SHUNT_COMPENSATOR:
+      return checkShuntCompensator(id);
+    case Contingencies::Type::LOAD:
+      return checkLoad(id);
+    case Contingencies::Type::DANGLING_LINE:
+      return checkDanglingLine(id);
+    case Contingencies::Type::HVDC_LINE:
+      return checkHvdcLine(id);
+    case Contingencies::Type::STATIC_VAR_COMPENSATOR:
+      return checkStaticVarCompensator(id);
+    case Contingencies::Type::BUSBAR_SECTION:
+      return boost::none;
   }
 
   return Contingencies::ElementInvalidReason::TYPE_NOT_KNOWN;
@@ -306,14 +326,14 @@ Context::checkContingencies() const {
   for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
     LOG(debug) << c->id << LOG_ENDL;
     for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
-      LOG(debug) << "  " << e->id << " (" << e->type << ")" << LOG_ENDL;
+      LOG(debug) << "  " << e->id << " (" << Contingencies::toString(e->type) << ")" << LOG_ENDL;
       std::string reason;
       auto invalid = checkContingencyElement(e->id, e->type);
       if (invalid) {
-        LOG(warn) << "  Element " << e->id << " (" << e->type << ") not valid, reason: " << Contingencies::toString(*invalid) << LOG_ENDL;
+        LOG(warn) << "  Element " << e->id << " (" << Contingencies::toString(e->type) << ") not valid, reason: " << Contingencies::toString(*invalid) << LOG_ENDL;
         result.push_back(*invalid);
       } else {
-        LOG(debug) << "  Element " << e->id << "(" << e->type << ") is valid" << LOG_ENDL;
+        LOG(debug) << "  Element " << e->id << "(" << Contingencies::toString(e->type) << ") is valid" << LOG_ENDL;
       }
     }
   }

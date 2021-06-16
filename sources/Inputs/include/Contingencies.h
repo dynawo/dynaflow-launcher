@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <string>
 
@@ -26,6 +27,22 @@ namespace inputs {
  */
 class Contingencies {
  public:
+   /**
+   * @brief Enum that defines network elements types
+   */
+  enum class Type {
+    GENERATOR,
+    LINE,
+    BRANCH,
+    SHUNT_COMPENSATOR,
+    LOAD,
+    DANGLING_LINE,
+    HVDC_LINE,
+    STATIC_VAR_COMPENSATOR,
+    BUSBAR_SECTION,
+    TWO_WINDINGS_TRANSFORMER
+  };
+
   /**
    * @brief Explains why an element is considered invalid
    */
@@ -51,7 +68,7 @@ class Contingencies {
     explicit ContingencyElementDefinition(const std::string& id) : id(id) {}
 
     std::string id;    ///< id of the element affected by a contingency
-    std::string type;  ///< type of the element affected by the contingency (BRANCH, GENERATOR, LOAD, ...)
+    Type type;  ///< type of the element affected by the contingency (BRANCH, GENERATOR, LOAD, ...)
   };
 
   /**
@@ -101,12 +118,29 @@ class Contingencies {
   void log();
 
   /**
+   * @brief Get type enum
+   *
+   * Parses a string into it's 'Type' enum representation
+   *
+   * @return none if not a valid type, otherwise the enum value
+   */
+  static boost::optional<Type> typeFromString(const std::string& str);
+
+  /**
    * @brief ElementInvalidReason to string
    *
    * Transforms an ElementInvalidReason into a string description
    *
    */
   static std::string toString(ElementInvalidReason reason);
+
+  /**
+   * @brief Type to string
+   *
+   * Transforms a Type enum into it's string representation
+   *
+   */
+  static std::string toString(Type type);
 
  private:
   std::vector<ContingencyDefinition> contingencies;  ///< contingency definitions
