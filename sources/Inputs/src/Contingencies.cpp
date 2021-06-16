@@ -62,10 +62,20 @@ Contingencies::Contingencies(const std::string& filepath) {
       LOG(debug) << ptcontingency.get<std::string>("id") << LOG_ENDL;
       ContingencyDefinition contingency(ptcontingency.get<std::string>("id"));
       for (const boost::property_tree::ptree::value_type& pte : ptcontingency.get_child("elements")) {
-        LOG(debug) << "  " << pte.second.get<std::string>("id") << " (" << pte.second.get<std::string>("type") << ")" << LOG_ENDL;
-        ContingencyElementDefinition element(pte.second.get<std::string>("id"));
-        element.type = pte.second.get<std::string>("type");
-        contingency.elements.push_back(element);
+        const auto element_id = pte.second.get<std::string>("id");
+        const auto element_type = pte.second.get<std::string>("type");
+
+        LOG(debug) << "  " << element_id  << " (" << element_type << ")" << LOG_ENDL;
+
+        if (const auto has_type = typeFromString(element_type)) {
+          ContingencyElementDefinition element(element_id);
+          element.type = *has_type;
+          contingency.elements.push_back(element);
+        }
+        else {
+          LOG(warn) << "  " << element_id << "has an unknown type \"" << element_type << "\"" ;
+        }
+
       }
       contingencies.push_back(contingency);
     }
@@ -81,9 +91,36 @@ Contingencies::log() {
     for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
       LOG(info) << c->id << LOG_ENDL;
       for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
-        LOG(info) << "  " << e->id << " (" << e->type << ")" << LOG_ENDL;
+        LOG(info) << "  " << e->id << " (" << toString(e->type) << ")" << LOG_ENDL;
       }
     }
+}
+
+boost::optional<Contingencies::Type>
+Contingencies::typeFromString(const std::string& str) {
+  if (str == "GENERATOR") {
+    return Type::GENERATOR;
+  } else if (str == "LINE") {
+    return Type::LINE;
+  } else if (str == "TWO_WINDINGS_TRANSFORMER") {
+    return Type::TWO_WINDINGS_TRANSFORMER;
+  } else if (str == "BRANCH") {
+    return Type::BRANCH; // No problem
+  } else if (str == "SHUNT_COMPENSATOR") {
+    return Type::SHUNT_COMPENSATOR;
+  } else if (str == "LOAD") {
+    return Type::LOAD;
+  } else if (str == "DANGLING_LINE") {
+    return Type::DANGLING_LINE;
+  } else if (str == "HVDC_LINE") {
+    return Type::HVDC_LINE;
+  }   else if (str == "STATIC_VAR_COMPENSATOR") {
+    return Type::STATIC_VAR_COMPENSATOR;
+  } else if (str == "BUSBAR_SECTION") {
+    return Type::BUSBAR_SECTION;
+  }
+
+  return boost::none;
 }
 
 std::string
@@ -118,6 +155,43 @@ Contingencies::toString(ElementInvalidReason reason) {
   }
 
   return "unknwon error";
+}
+
+std::string
+Contingencies::toString(Type type) {
+  switch(type){
+    case Type::GENERATOR:
+    return "GENERATOR";
+
+    case Type::LINE:
+    return "LINE";
+
+    case Type::TWO_WINDINGS_TRANSFORMER:
+    return "TWO_WINDINGS_TRANSFORMER";
+
+    case Type::BRANCH:
+    return "BRANCH"; // No problem
+
+    case Type::SHUNT_COMPENSATOR:
+    return "SHUNT_COMPENSATOR";
+
+    case Type::LOAD:
+    return "LOAD";
+
+    case Type::DANGLING_LINE:
+    return "DANGLING_LINE";
+
+    case Type::HVDC_LINE:
+    return "HVDC_LINE";
+
+    case Type::STATIC_VAR_COMPENSATOR:
+    return "STATIC_VAR_COMPENSATOR";
+
+    case Type::BUSBAR_SECTION:
+    return "BUSBAR_SECTION";
+  }
+
+  return "UNKNOWN_TYPE";
 }
 
 }  // namespace inputs

@@ -168,13 +168,13 @@ class Context {
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
-  std::unordered_set<std::string> mainConnexIds_;
+  std::unordered_set<std::string> mainConnexIds_;  ///< Find fast which ids which ids are in the main
 
   /// @brief Check all elements in contingencies have valid dynamic models
   /// @return All ellements that are invalid and why
   std::vector<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencies() const;
   /// @brief Check if network has a valid component interface for a generator
-  /// @param branchId static identifier of generator
+  /// @param generatorId static identifier of generator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkGenerator(const std::string& generatorId) const;
   /// @brief Check if network has a valid component interface for a line
@@ -197,20 +197,24 @@ class Context {
   /// @param dlineId static identifier of dangling line
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkDanglingLine(const std::string& dlineId) const;
+    /// @brief Check if network has a valid component interface for a dangling line
+  /// @param hlineId static identifier of dangling line
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkHvdcLine(const std::string& hlineId) const;
   /// @brief Check if network has a valid component interface for a static var compensator
-  /// @param branchId static identifier of branch
+  /// @param compensatorId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkStaticVarCompensator(const std::string& compensatorId) const;
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencyElement(const std::string& id, const std::string& type) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencyElement(const std::string& id, dfl::inputs::Contingencies::Type type) const;
   /// @brief Check if node is in main connected component
   /// @param nodeId identifier of node/bus to check
   bool isInMainConnectedComponent(const std::string& nodeId) const;
   /// @brief Check if buses are in main connected component
-  /// @param bus pointers of buses to check
+  /// @param buses pointers of buses to check
   bool areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
 
   /// @brief Build JOBS, DYD, PAR files for each contingency

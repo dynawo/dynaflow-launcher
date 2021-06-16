@@ -18,6 +18,7 @@
 #include "ParEvent.h"
 
 #include "Constants.h"
+#include "Contingencies.h"
 
 #include <DYNCommon.h>
 #include <PARParameter.h>
@@ -45,13 +46,14 @@ ParEvent::ParEvent(ParEventDefinition&& def) : def_{std::forward<ParEventDefinit
 
 void
 ParEvent::write() {
+  typedef dfl::inputs::Contingencies::Type Type;
   parameters::XmlExporter exporter;
 
   auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
   for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
-    if (e->type == "BRANCH" || e->type == "LINE" || e->type == "TWO_WINDINGS_TRANSFORMER") {
+    if (e->type == Type::BRANCH || e->type == Type::LINE || e->type == Type::TWO_WINDINGS_TRANSFORMER) {
       parametersSets->addParametersSet(buildBranchDisconnection(e->id, def_.timeEvent));
-    } else if (e->type == "GENERATOR" || e->type == "LOAD") {
+    } else if (e->type == Type::GENERATOR || e->type == Type::LOAD) {
       parametersSets->addParametersSet(buildEventSetPointBooleanDisconnection(e->id, def_.timeEvent));
     } else {
       parametersSets->addParametersSet(buildEventSetPointRealDisconnection(e->id, def_.timeEvent));
