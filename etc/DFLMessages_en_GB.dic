@@ -33,3 +33,4 @@ UnsupportedCountName          =     Unsupported count name %1% for setting set
 UnsupportedDataTypeReference  =     Unsupported data type %1% for reference %2% in setting file
 UnsupportedParameterDataType  =     Unsupported set parameter type %1% in setting file
 AutomatonMacroNotDefined      =     Macro %1% used in automaton not defined
+AutomatonLibraryNotFound      =     Library %1% not found : automaton %2% will be skipped

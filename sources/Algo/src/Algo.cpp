@@ -355,7 +355,7 @@ AutomatonAlgorithm::extractAutomatons() {
   for (const auto& automaton : automatons) {
     // Check that the automaton library is accessible
     if (!doesLibraryExist(automaton.lib)) {
-      LOG(warn) << "Library " << automaton.lib << " not found : automaton " << automaton.id << " will be skipped" << LOG_ENDL;
+      LOG(warn) << MESS(AutomatonLibraryNotFound, automaton.lib, automaton.id) << LOG_ENDL;
       continue;
     }
     automatonsById_[automaton.id] = automaton;
