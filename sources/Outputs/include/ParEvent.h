@@ -49,7 +49,7 @@ class ParEvent {
      */
     ParEventDefinition(const std::string& base, const std::string& filename,
             const inputs::Contingencies::ContingencyDefinition& contingency,
-            const double& timeEvent) :
+            double timeEvent) :
         basename(base),
         filename(filename),
         contingency(contingency),
