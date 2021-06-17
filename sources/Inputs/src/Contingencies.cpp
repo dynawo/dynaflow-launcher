@@ -77,7 +77,7 @@ Contingencies::Contingencies(const std::string& filepath) {
         }
 
       }
-      contingencies.push_back(contingency);
+      contingencies_.push_back(contingency);
     }
   } catch (std::exception& e) {
     LOG(error) << MESS(ContingenciesReadError, filepath, e.what()) << LOG_ENDL;
@@ -88,7 +88,7 @@ Contingencies::Contingencies(const std::string& filepath) {
 void
 Contingencies::log() {
     LOG(info) << "Contingencies" << LOG_ENDL;
-    for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
+    for (auto c = contingencies_.begin(); c != contingencies_.end(); ++c) {
       LOG(info) << c->id << LOG_ENDL;
       for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
         LOG(info) << "  " << e->id << " (" << toString(e->type) << ")" << LOG_ENDL;

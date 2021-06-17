@@ -263,7 +263,7 @@ Context::checkHvdcLine(const std::string& hlineId) const {
   const auto& lines = networkManager_.dataInterface()->getNetwork()->getHvdcLines();
   for (auto& l: lines) {
     if (hlineId == l->getID()) {
-      // TODO: Check that the connected converters are in the main component
+      // TODO(sheosi): Check that the connected converters are in the main component
       /*if (!areInMainConnectedComponent({l->getConverter1()})) {
         return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
       }*/
