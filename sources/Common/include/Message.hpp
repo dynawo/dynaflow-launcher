@@ -36,10 +36,31 @@ class Message {
   /**
    * @brief Constructor
    *
+   * Retrieves a message from the dictionary.
+   *
+   * In case the key is unknown (dictionary not loaded or not compliant with current code),
+   * the string representation of the key is displayed.
+   *
+   * @param key the message key
+   */
+  explicit Message(generated::DicoKeys::Key key) : str_{} {
+    std::string str = dico().message(key);
+
+    if (str.empty()) {
+      // case key is unknown: default message
+      str_ = generated::DicoKeys::keyToString(key);
+    } else {
+      // case key is known: we use the string itself
+      str_ = str;
+    }
+  }
+  /**
+   * @brief Constructor
+   *
    * Build a message from a list of argument. This will format the message string according to the arguments.
    * see boost::format documentation for the behaviour if the number of arguments doesn't match the format.
    *
-   * In case the key is unknown (dictionnary not loaded or not compliant with current code), a default format is displayed:
+   * In case the key is unknown (dictionary not loaded or not compliant with current code), a default format is displayed:
    * KEY ARG1 ARG2 ...
    *
    * where KEY is the string repsentation of the key and Argx the raw arguments in the order
@@ -143,5 +164,11 @@ class Message {
  *
  * @param key the dico key (without namespaces and type)
  * @param ... Arguments required to format the corresponding message
+ *
+ * The expected usage for keys that expect arguments is:
+ * `MESS(DictKey, argA, argB, ...)`
+ * otherwise, if the key expects no arguments:
+ * `MESS(DictKey)`
+ *
  */
-#define MESS(key, ...) dfl::common::Message(dfl::common::generated::DicoKeys::Key::key, __VA_ARGS__).str()
+#define MESS(...) dfl::common::Message(dfl::common::generated::DicoKeys::Key::__VA_ARGS__).str()

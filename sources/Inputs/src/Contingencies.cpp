@@ -73,14 +73,14 @@ Contingencies::Contingencies(const std::string& filepath) {
           contingency.elements.push_back(element);
         }
         else {
-          LOG(warn) << "  " << element_id << "has an unknown type \"" << element_type << "\"" ;
+          LOG(warn) << MESS(ElementTypeUnknown, element_id, element_type) << LOG_ENDL;
         }
 
       }
       contingencies.push_back(contingency);
     }
   } catch (std::exception& e) {
-    LOG(error) << "Error while reading contingencies file " << filepath << " : " << e.what() << LOG_ENDL;
+    LOG(error) << MESS(ContingenciesReadError, filepath, e.what()) << LOG_ENDL;
     std::exit(EXIT_FAILURE);
   }
 }
@@ -127,34 +127,32 @@ std::string
 Contingencies::toString(ElementInvalidReason reason) {
   switch (reason) {
     case ElementInvalidReason::GENERATOR_NOT_FOUND:
-      return "not found as generator";
+      return dfl::common::Message(dfl::common::generated::DicoKeys::Key::GeneratorNotFound).str();
 
     case ElementInvalidReason::TWOWINDINGS_TRANFORMER_NOT_FOUND:
-      return "not found as two-windings transfomer";
+      return MESS(TwoWTransformerNotFound, "");
 
     case ElementInvalidReason::BRANCH_NOT_FOUND:
-      return "not found as line or two-windings transformer";
+      return MESS(BranchNotFound, "");
 
     case ElementInvalidReason::LINE_NOT_FOUND:
-      return "not found as line";
+      return MESS(LineNotFound, "");
 
     case ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND:
-      return "not found as shunt compensator";
+      return MESS(ShuntCompensatorNotFound, "");
 
     case ElementInvalidReason::DANGLING_LINE_NOT_FOUND:
-      return "not found as dangling line";
+      return MESS(DanglingLineNotFound, "");
 
     case ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND:
-      return "not found as static var compensator";
+      return MESS(StaticVarCompensatorNotFound, "");
 
     case ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT:
-      return "no ends are connected to the main connected component";
+      return MESS(NotInMainConnectedComponent, "");
 
-    case ElementInvalidReason::TYPE_NOT_KNOWN:
-      return "type not known";
+    default:
+        __builtin_unreachable();
   }
-
-  return "unknwon error";
 }
 
 std::string

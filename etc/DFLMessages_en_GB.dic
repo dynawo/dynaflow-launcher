@@ -30,3 +30,18 @@ InvalidDiagramOnePoint        =     The diagram of the generator %1% is invalid,
 InvalidDiagramBothError       =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. Also all reactive curve points have the same p. The default model will be used for this generator
 BadActivePowerCompensation    =     ActivePowerCompensation was given with the unsupported value %1%. Supported values are: PMAX, P or targetP. Default value PMAX will be used
 HvdcLineBadInitialization     =     The hvdcLine %1%'s converters were badly initialized
+
+//----------------- Context --------------------------
+ElementInvalid                =     Element %1% (%2%) is invalid, reason: %3%
+ElementTypeUnknown            =     %1% has a unknown type "%2%"
+
+//-------------- Contingencies -----------------------
+ContingenciesReadError        =     Error while reading contingencies file %1%: %2%
+GeneratorNotFound             =     not found as generator
+TwoWTransformerNotFound       =     not found as two-windings transfomer
+BranchNotFound                =     not found as line or two-windings transformer
+LineNotFound                  =     not found as line
+ShuntCompensatorNotFound      =     not found as shunt compensator
+DanglingLineNotFound          =     not found as dangling line
+StaticVarCompensatorNotFound  =     not found as static var compensator
+NotInMainConnectedComponent   =     no ends are connected to the main connected component
