@@ -51,3 +51,18 @@ SimulationEnded               =     Simulation %1% ended successfully (wall-time
 DFLEnded                      =     DynaFlowLauncher %1% ended successfully (wall-time: %2%s)
 InitEnd                       =     End of initialization (wall-time: %1%s)
 FilesEnd                      =     End of files generation (wall-time: %1%s)
+
+//----------------- Context --------------------------
+ElementInvalid                =     Element %1% (%2%) is invalid, reason: %3%
+ElementTypeUnknown            =     %1% has a unknown type "%2%"
+
+//-------------- Contingencies -----------------------
+ContingenciesReadError        =     Error while reading contingencies file %1%: %2%
+GeneratorNotFound             =     not found as generator
+TwoWTransformerNotFound       =     not found as two-windings transfomer
+BranchNotFound                =     not found as line or two-windings transformer
+LineNotFound                  =     not found as line
+ShuntCompensatorNotFound      =     not found as shunt compensator
+DanglingLineNotFound          =     not found as dangling line
+StaticVarCompensatorNotFound  =     not found as static var compensator
+NotInMainConnectedComponent   =     no ends are connected to the main connected component

@@ -317,9 +317,10 @@ Context::checkContingencyElement(const std::string& id, Contingencies::Type type
       return checkStaticVarCompensator(id);
     case Contingencies::Type::BUSBAR_SECTION:
       return boost::none;
-  }
 
-  return Contingencies::ElementInvalidReason::TYPE_NOT_KNOWN;
+    default:
+        __builtin_unreachable();
+  }
 }
 
 std::vector<Contingencies::ElementInvalidReason>
@@ -334,7 +335,7 @@ Context::checkContingencies() const {
       std::string reason;
       auto invalid = checkContingencyElement(e->id, e->type);
       if (invalid) {
-        LOG(warn) << "  Element " << e->id << " (" << Contingencies::toString(e->type) << ") not valid, reason: " << Contingencies::toString(*invalid) << LOG_ENDL;
+        LOG(warn) << MESS(ElementInvalid, e->id, Contingencies::toString(e->type), Contingencies::toString(*invalid)) << LOG_ENDL;
         result.push_back(*invalid);
       } else {
         LOG(debug) << "  Element " << e->id << "(" << Contingencies::toString(e->type) << ") is valid" << LOG_ENDL;
