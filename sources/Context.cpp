@@ -329,8 +329,8 @@ Context::checkContingencies() const {
   LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
   const auto& contingencies = contingencies_.definitions();
   for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
-    LOG(debug) << c->id << LOG_ENDL;
-    for (auto e = c->elements.begin(); e != c->elements.end(); ++e) {
+    LOG(debug) << (*c)->id << LOG_ENDL;
+    for (auto e = (*c)->elements.begin(); e != (*c)->elements.end(); ++e) {
       LOG(debug) << "  " << e->id << " (" << Contingencies::toString(e->type) << ")" << LOG_ENDL;
       std::string reason;
       auto invalid = checkContingencyElement(e->id, e->type);
@@ -433,18 +433,17 @@ Context::exportOutputsContingencies() {
 }
 
 void
-Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c) {
-  const std::string& contingencyId = c.id;
+Context::exportOutputsContingency(const std::shared_ptr<inputs::Contingencies::ContingencyDefinition>& c) {
+  const std::string& contingencyId = c->id;
   LOG(debug) << contingencyId << LOG_ENDL;
 
   // Basename of event-related DYD, PAR and JOBS files
   const auto& basenameEvent = basename_ + "-" + contingencyId;
-  const auto c_shared = std::make_shared<inputs::Contingencies::ContingencyDefinition>(c);
 
   // Specific DYD for contingency
   file::path dydEvent(config_.outputDir());
   dydEvent.append(basenameEvent + ".dyd");
-  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c_shared));
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c));
   dydEventWriter.write();
 
   // Specific PAR for contingency
@@ -452,7 +451,7 @@ Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefini
   parEvent.append(basenameEvent + ".par");
   // TODO(Luma) should be a parameter
   double timeEvent = 80;
-  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c_shared, timeEvent));
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
   parEventWriter.write();
 
 #if _DEBUG_
@@ -498,8 +497,8 @@ Context::execute() {
     scenarios->addScenario(baseCase);
     for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
       auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
-      scenario->setId(c->id);
-      scenario->setDydFile(basename_ + "-" + c->id + ".dyd");
+      scenario->setId((*c)->id);
+      scenario->setDydFile(basename_ + "-" + (*c)->id + ".dyd");
       scenarios->addScenario(scenario);
     }
     // Use dynawo-algorithms Systematic Analysis Launcher to simulate all the scenarios

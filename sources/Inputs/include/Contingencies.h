@@ -106,7 +106,7 @@ class Contingencies {
    * obtain a reference to the contingency definitions
    *
    */
-  const std::vector<ContingencyDefinition>& definitions() const { return contingencies_; }
+  const std::vector<std::shared_ptr<ContingencyDefinition>>& definitions() const { return contingencies_; }
 
   /**
    * @brief Log
@@ -142,7 +142,7 @@ class Contingencies {
   static std::string toString(Type type);
 
  private:
-  std::vector<ContingencyDefinition> contingencies_;  ///< contingency definitions
+  std::vector<std::shared_ptr<ContingencyDefinition>> contingencies_;  ///< contingency definitions
 };
 
 }  // namespace inputs
