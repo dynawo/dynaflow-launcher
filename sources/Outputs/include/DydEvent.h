@@ -50,15 +50,14 @@ class DydEvent {
      * @param filepath the filepath of the dyd file to write
      * @param contingency definition of the contingency for which we have to create a DYD file
      */
-    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingencies::ContingencyDefinition& contingency) :
+    DydEventDefinition(const std::string& base, const std::string& filepath, std::shared_ptr<inputs::Contingencies::ContingencyDefinition> contingency) :
         basename(base),
         filename(filepath),
         contingency(contingency) {}
 
     std::string basename;     ///< basename for file
     std::string filename;     ///< filepath for file to write
-    // TODO(Luma) use a shared_ptr<ContingencyDefinition> ...
-    inputs::Contingencies::ContingencyDefinition contingency;  ///< definition of the contingency
+    std::shared_ptr<inputs::Contingencies::ContingencyDefinition> contingency;  ///< definition of the contingency
   };
 
   /**

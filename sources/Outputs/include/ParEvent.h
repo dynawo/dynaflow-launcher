@@ -48,7 +48,7 @@ class ParEvent {
      * @param timeEvent time of event
      */
     ParEventDefinition(const std::string& base, const std::string& filename,
-            const inputs::Contingencies::ContingencyDefinition& contingency,
+            std::shared_ptr<inputs::Contingencies::ContingencyDefinition> contingency,
             double timeEvent) :
         basename(base),
         filename(filename),
@@ -57,8 +57,7 @@ class ParEvent {
 
     std::string basename;                                      ///< basename
     std::string filename;                                      ///< filename of the output file to write
-    // TODO(Luma) use shared_ptr<Contingency...>?
-    inputs::Contingencies::ContingencyDefinition contingency;  ///< contingency definition for the event parameters
+    std::shared_ptr<inputs::Contingencies::ContingencyDefinition> contingency;  ///< contingency definition for the event parameters
     double timeEvent;                                          ///< Time of event
   };
 
