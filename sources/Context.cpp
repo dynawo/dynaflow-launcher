@@ -414,11 +414,12 @@ Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefini
 
   // Basename of event-related DYD, PAR and JOBS files
   const auto& basenameEvent = basename_ + "-" + contingencyId;
+  const auto c_shared = std::make_shared<inputs::Contingencies::ContingencyDefinition>(c);
 
   // Specific DYD for contingency
   file::path dydEvent(config_.outputDir());
   dydEvent.append(basenameEvent + ".dyd");
-  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c));
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c_shared));
   dydEventWriter.write();
 
   // Specific PAR for contingency
@@ -426,7 +427,7 @@ Context::exportOutputsContingency(const inputs::Contingencies::ContingencyDefini
   parEvent.append(basenameEvent + ".par");
   // TODO(Luma) should be a parameter
   double timeEvent = 80;
-  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c_shared, timeEvent));
   parEventWriter.write();
 
 #if _DEBUG_

@@ -50,7 +50,7 @@ ParEvent::write() {
   parameters::XmlExporter exporter;
 
   auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
-  for (auto e = def_.contingency.elements.begin(); e != def_.contingency.elements.end(); ++e) {
+  for (auto e = def_.contingency->elements.begin(); e != def_.contingency->elements.end(); ++e) {
     if (e->type == Type::BRANCH || e->type == Type::LINE || e->type == Type::TWO_WINDINGS_TRANSFORMER) {
       parametersSets->addParametersSet(buildBranchDisconnection(e->id, def_.timeEvent));
     } else if (e->type == Type::GENERATOR || e->type == Type::LOAD) {
