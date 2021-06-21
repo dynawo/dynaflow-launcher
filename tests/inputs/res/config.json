@@ -9,6 +9,12 @@
     "LCCAsLoads": "true",
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
-    "ActivePowerCompensation": "P"
+    "ActivePowerCompensation": "P",
+    "StartTimestamp": 10,
+    "EndTimestamp": 120,
+    "sa": {
+      "ContingenciesTimestamp": 50,
+      "NumberOfThreads": 6
+    }
   }
 }

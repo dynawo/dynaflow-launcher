@@ -22,6 +22,10 @@ TEST(Config, Nominal) {
   ASSERT_EQ("/tmp", config.outputDir());
   ASSERT_EQ(63.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::P, config.getActivePowerCompensation());
+  ASSERT_EQ(10, config.getStartTimestamp());
+  ASSERT_EQ(120, config.getEndTimestamp());
+  ASSERT_EQ(50.0, config.getContingenciesTimestamp());
+  ASSERT_EQ(6, config.getNumberOfThreads());
 }
 
 TEST(Config, Default) {
@@ -35,4 +39,6 @@ TEST(Config, Default) {
   ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
   ASSERT_EQ(45.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());
+  ASSERT_EQ(80.0, config.getContingenciesTimestamp());
+  ASSERT_EQ(4, config.getNumberOfThreads());
 }

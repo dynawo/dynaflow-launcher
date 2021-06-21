@@ -90,6 +90,10 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
+    helper::updateValue(startTimestamp_, config, "StartTimestamp");
+    helper::updateValue(endTimestamp_, config, "EndTimestamp");
+    helper::updateValue(contingenciesTimestamp_, config, "sa.ContingenciesTimestamp");
+    helper::updateValue(numberOfThreads_, config, "sa.NumberOfThreads");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;

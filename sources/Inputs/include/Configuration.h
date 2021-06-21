@@ -99,6 +99,42 @@ class Configuration {
   }
 
   /**
+   * @brief Get the timestamp at which the simulation will start
+   *
+   * @returns the parameter value
+   */
+  uint32_t getStartTimestamp() const {
+    return startTimestamp_;
+  }
+
+  /**
+   * @brief Get the timestamp at which the simulation will end
+   *
+   * @returns the parameter value
+   */
+  uint32_t getEndTimestamp() const {
+    return endTimestamp_;
+  }
+
+  /**
+   * @brief Retrieves the timestamp at which the contingencies will happen
+   *
+   * @returns the parameter value
+   */
+  double getContingenciesTimestamp() const {
+    return contingenciesTimestamp_;
+  }
+
+  /**
+   * @brief Retrieves the number of threads used by dynaflow launcher
+   *
+   * @returns the parameter value
+   */
+  uint16_t getNumberOfThreads() const {
+    return numberOfThreads_;
+  }
+
+  /**
    * @brief type of active power compensation for generator
    */
   enum class ActivePowerCompensation {
@@ -125,6 +161,11 @@ class Configuration {
   std::string outputDir_ = boost::filesystem::current_path().generic_string();       ///< Directory for output files
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
+  uint32_t startTimestamp_ = 0;                                                      ///< Moment (in seconds) at which starts the simulation
+  uint32_t endTimestamp_ = 100;                                                      ///< Moment (in seconds) at which ends the simulation
+  // Security Analysis only
+  double contingenciesTimestamp_ = 80.0;                                             ///< When will the contengencies be simulated
+  uint16_t numberOfThreads_ = 4;                                                     ///< The number of threads used to simulate
 };
 
 }  // namespace inputs

@@ -54,7 +54,8 @@ class Job {
      * @param contingencyId contingency identifier
      * @param baseFilename filename of base case
      */
-    JobDefinition(const std::string& filename, const std::string& lvl, const std::string& contingencyId, const std::string& baseFilename) :
+    JobDefinition(const std::string& filename, const std::string& lvl,
+                  const std::string& contingencyId, const std::string& baseFilename) :
         filename(filename),
         dynawoLogLevel(lvl),
         contingencyId(contingencyId),
@@ -89,9 +90,14 @@ class Job {
    */
   boost::shared_ptr<job::JobEntry> write();
 
+  static void setStartAndDuration(uint32_t startTimestamp, uint32_t durationTime) {
+    timeStart_ = std::chrono::seconds{startTimestamp};
+    durationSimu_ = std::chrono::seconds{durationTime};
+  }
+
  private:
-  static const std::chrono::seconds timeStart_;     ///< The constant start time of the simulation of the job
-  static const std::chrono::seconds durationSimu_;  ///< the constant duration of the simulation in the job
+  static std::chrono::seconds timeStart_;           ///< The constant start time of the simulation of the job
+  static std::chrono::seconds durationSimu_;        ///< the constant duration of the simulation in the job
   static const std::string solverName_;             ///< The solver name used during the simulation
   static const std::string solverFilename_;         ///< The solver filename
   static const std::string solverParId_;            ///< The parameter id in the .par file corresponding to the solver parameters
