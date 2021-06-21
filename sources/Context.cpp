@@ -389,6 +389,8 @@ Context::exportOutputs() {
 
   // create output directory
   file::path outputDir(config_.outputDir());
+  outputs::Job::setStartAndDuration(config_.getStartTimestamp(),
+    config_.getEndTimestamp() - config_.getStartTimestamp());
 
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel));
@@ -465,9 +467,7 @@ Context::exportOutputsContingency(const std::shared_ptr<inputs::Contingencies::C
   // Specific PAR for contingency
   file::path parEvent(config_.outputDir());
   parEvent.append(basenameEvent + ".par");
-  // TODO(Luma) should be a parameter
-  double timeEvent = 80;
-  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, timeEvent));
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, config_.getContingenciesTimestamp()));
   parEventWriter.write();
 
 #if _DEBUG_
@@ -524,7 +524,7 @@ Context::execute() {
     saLauncher->setMultipleJobs(multipleJobs);
     saLauncher->setOutputFile("sa.zip");
     saLauncher->setDirectory(config_.outputDir().generic_string());
-    saLauncher->setNbThreads(4);
+    saLauncher->setNbThreads(config_.getNumberOfThreads());
     saLauncher->init();
     saLauncher->launch();
 #if _DEBUG_

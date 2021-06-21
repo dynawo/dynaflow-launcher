@@ -48,8 +48,8 @@
 namespace dfl {
 namespace outputs {
 
-const std::chrono::seconds Job::timeStart_{0};
-const std::chrono::seconds Job::durationSimu_{100};
+std::chrono::seconds Job::timeStart_{0}; // Can be changed later in execution
+std::chrono::seconds Job::durationSimu_{100}; // Can be changed later in execution
 const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
