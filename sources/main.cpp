@@ -67,13 +67,13 @@ main(int argc, char* argv[]) {
     }
 
     auto& runtimeConfig = options.config();
-    dfl::inputs::Configuration config(runtimeConfig.configPath);
-    dfl::common::Log::init(options, config.outputDir());
+    dfl::inputs::Configuration config(boost::filesystem::path(runtimeConfig.configPath));
+    dfl::common::Log::init(options, config.outputDir().generic_string());
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
 
-    std::string res = getMandatoryEnvVar("DYNAWO_RESOURCES_DIR");
+    auto res = boost::filesystem::path(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
     std::string locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
     boost::filesystem::path dictPath(root);
@@ -102,7 +102,7 @@ main(int argc, char* argv[]) {
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
-    dfl::Context::ContextDef def{runtimeConfig.networkFilePath, runtimeConfig.dynawoLogLevel, parFilesDir.generic_string(), res, locale};
+    dfl::Context::ContextDef def{runtimeConfig.networkFilePath, runtimeConfig.dynawoLogLevel, parFilesDir, res, locale};
     dfl::Context context(def, config);
 
     if (!context.process()) {

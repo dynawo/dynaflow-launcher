@@ -21,6 +21,7 @@
 #include "Node.h"
 
 #include <DYNDataInterface.h>
+#include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
 #include <map>
@@ -54,7 +55,7 @@ class NetworkManager {
   *
   * @param filepath network file path
   */
-  explicit NetworkManager(const std::string& filepath);
+  explicit NetworkManager(const boost::filesystem::path& filepath);
 
   /**
    * @brief Register a callback to call at each node
@@ -100,7 +101,7 @@ class NetworkManager {
   }
 
   /**
-   * @brief Retrieve the mapping of busId and the number of generators that regulates them 
+   * @brief Retrieve the mapping of busId and the number of generators that regulates them
    *
    * @returns map of bus id to nbOfRegulatingGenerators
    */

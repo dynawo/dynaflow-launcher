@@ -66,10 +66,10 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
 }
 }  // namespace helper
 
-Configuration::Configuration(const std::string& filepath) {
+Configuration::Configuration(const boost::filesystem::path& filepath) {
   try {
     boost::property_tree::ptree tree;
-    boost::property_tree::read_json(filepath, tree);
+    boost::property_tree::read_json(filepath.generic_string(), tree);
 
     /**
      * We assume the following format for the configuration in JSON format

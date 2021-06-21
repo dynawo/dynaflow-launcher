@@ -40,8 +40,8 @@
 namespace dfl {
 namespace inputs {
 
-NetworkManager::NetworkManager(const std::string& filepath) :
-    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath)),
+NetworkManager::NetworkManager(const boost::filesystem::path& filepath) :
+    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())),
     slackNode_{},
     nodes_{},
     nodesCallbacks_{} {

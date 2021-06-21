@@ -33,7 +33,7 @@ class Configuration {
    *
    * @param filepath the configuration file to use
    */
-  explicit Configuration(const std::string& filepath);
+  explicit Configuration(const boost::filesystem::path& filepath);
 
   /**
    * @brief determines if we use infinite reactive limits
@@ -85,7 +85,7 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  const std::string& outputDir() const {
+  const boost::filesystem::path& outputDir() const {
     return outputDir_;
   }
 
@@ -122,7 +122,7 @@ class Configuration {
   bool isSVCRegulationOn_ = true;                                                    ///< SVC regulation on
   bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
   bool isAutomaticSlackBusOn_ = true;                                                ///< automatic slack bus on
-  std::string outputDir_ = boost::filesystem::current_path().generic_string();       ///< Directory for output files
+  boost::filesystem::path outputDir_ = boost::filesystem::current_path();            ///< Directory for output files
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
 };
