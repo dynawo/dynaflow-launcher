@@ -92,6 +92,7 @@ define_options() {
 where [option] can be:
         =========== Build
         build-user                              build DynaFlow Launcher
+        clean-build-all                         Clean and rebuild DynaFlow Launcher
         build-tests-coverage                    build DynaFlow Launcher and run coverage
 
         =========== Tests
@@ -178,7 +179,7 @@ clean() {
 
 cmake_configure() {
     mkdir -p $DYNAFLOW_LAUNCHER_BUILD_DIR
-    pushd $DYNAFLOW_LAUNCHER_BUILD_DIR
+    pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     cmake $DYNAFLOW_LAUNCHER_HOME \
         -G "$DYNAFLOW_LAUNCHER_CMAKE_GENERATOR" \
         -DCMAKE_BUILD_TYPE:STRING=$DYNAFLOW_LAUNCHER_BUILD_TYPE \
@@ -197,7 +198,7 @@ cmake_build() {
 }
 
 cmake_tests() {
-    pushd $DYNAFLOW_LAUNCHER_BUILD_DIR
+    pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     ctest -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED --output-on-failure
     popd > /dev/null
 }
