@@ -115,7 +115,7 @@ Context::exportOutputs() {
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
   jobEntry_ = jobWriter.write();
 #if _DEBUG_
-  outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
+  outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
 #endif
 
   // Dyd
@@ -137,8 +137,8 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput.generic_string(), generators_, hvdcLines_,
-                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLines_, config_.getActivePowerCompensation(),
+                                                     busesWithDynamicModel_));
   parWriter.write();
 
   // Diagram
@@ -151,13 +151,13 @@ Context::exportOutputs() {
 void
 Context::execute() {
   auto simu_context = boost::make_shared<DYN::SimulationContext>();
-  simu_context->setResourcesDirectory(def_.dynawoResDir);
+  simu_context->setResourcesDirectory(def_.dynawoResDir.generic_string());
   simu_context->setLocale(def_.locale);
 
   file::path inputPath(config_.outputDir());
   auto path = file::canonical(inputPath);
   simu_context->setInputDirectory(path.generic_string() + "/");
-  simu_context->setWorkingDirectory(config_.outputDir() + "/");
+  simu_context->setWorkingDirectory(config_.outputDir().generic_string() + "/");
 
   // This SHALL be the last log performed before reseting traces in DynaFlowLauncher,
   // because simulation constructor will re-initialize traces for Dynawo

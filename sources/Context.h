@@ -40,11 +40,11 @@ class Context {
    * @brief Context definition
    */
   struct ContextDef {
-    std::string networkFilepath;  ///< network filepath
-    std::string dynawLogLevel;    ///< string representation of the dynawo log level
-    std::string parFileDir;       ///< parameter file directory
-    std::string dynawoResDir;     ///< DYNAWO resources
-    std::string locale;           ///< localization
+    boost::filesystem::path networkFilepath;   ///< network filepath
+    std::string dynawLogLevel;                 ///< string representation of the dynawo log level
+    boost::filesystem::path parFileDir;        ///< parameter file directory
+    boost::filesystem::path dynawoResDir;      ///< DYNAWO resources
+    std::string locale;                        ///< localization
   };
 
  public:
