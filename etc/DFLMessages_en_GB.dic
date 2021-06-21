@@ -43,5 +43,6 @@ BranchNotFound                =     not found as line or two-windings transforme
 LineNotFound                  =     not found as line
 ShuntCompensatorNotFound      =     not found as shunt compensator
 DanglingLineNotFound          =     not found as dangling line
+HvdcLineNotFound              =     not found as hvdc line
 StaticVarCompensatorNotFound  =     not found as static var compensator
 NotInMainConnectedComponent   =     no ends are connected to the main connected component
