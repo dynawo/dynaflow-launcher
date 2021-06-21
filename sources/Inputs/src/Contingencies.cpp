@@ -144,6 +144,9 @@ Contingencies::toString(ElementInvalidReason reason) {
     case ElementInvalidReason::DANGLING_LINE_NOT_FOUND:
       return MESS(DanglingLineNotFound, "");
 
+    case ElementInvalidReason::HVDC_LINE_NOT_FOUND:
+      return MESS(HvdcLineNotFound, "");
+
     case ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND:
       return MESS(StaticVarCompensatorNotFound, "");
 

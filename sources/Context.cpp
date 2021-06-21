@@ -32,27 +32,53 @@
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
 #include <DYNDataInterface.h>
-#include <DYNDanglingLineInterface.h>
-#include <DYNHvdcLineInterface.h>
-#include <DYNLoadInterface.h>
-#include <DYNVoltageLevelInterface.h>
-#include <DYNShuntCompensatorInterface.h>
-#include <DYNStaticVarCompensatorInterface.h>
 
 #include <DYNScenario.h>
 #include <DYNScenarios.h>
 #include <DYNMultipleJobsFactory.h>
 #include <DYNSystematicAnalysisLauncher.h>
 
-#include <algorithm>
+
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
+#include <numeric>
 #include <tuple>
 
 namespace file = boost::filesystem;
 using dfl::inputs::Contingencies;
 
 namespace dfl {
+
+void Context::Caches::initCaches(
+  const std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes,
+  const boost::shared_ptr<DYN::NetworkInterface> &network
+) {
+  for (auto &n: mainConnexNodes) {
+    mainConnexIds.insert(n->id);
+  }
+
+  lines = makeCacheOf(network->getLines());
+  twoWTransformers = makeCacheOf(network->getTwoWTransformers());
+  hvdcLines = makeCacheOf(network->getHvdcLines());
+
+  for (auto &lev: network->getVoltageLevels()) {
+    const auto gens = makeCacheOf(lev->getGenerators());
+    generators.insert(gens.begin(), gens.end());
+
+    const auto shunts = makeCacheOf(lev->getShuntCompensators());
+    shuntCompensators.insert(shunts.begin(), shunts.end());
+
+    const auto lds = makeCacheOf(lev->getLoads());
+    loads.insert(lds.begin(), lds.end());
+
+    const auto dlines = makeCacheOf(lev->getDanglingLines());
+    danglingLines.insert(dlines.begin(),dlines.end());
+
+    const auto scomps = makeCacheOf(lev->getStaticVarCompensators());
+    staticVarComps.insert(scomps.begin(), scomps.end());
+  }
+}
+
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     def_(def),
     networkManager_(def.networkFilepath),
@@ -87,6 +113,10 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_));
   networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
+
+  // Fill caches
+  const auto& network = networkManager_.dataInterface()->getNetwork();
+  caches_.initCaches(mainConnexNodes_, network);
 
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     contingencies_ = dfl::inputs::Contingencies(def_.contingenciesFilepath);
@@ -141,7 +171,7 @@ Context::process() {
 
 bool
 Context::isInMainConnectedComponent(const std::string& nodeId) const {
-  auto res = mainConnexIds_.find(nodeId) != mainConnexIds_.end();
+  auto res = caches_.mainConnexIds.find(nodeId) != caches_.mainConnexIds.end();
   if (res) {
     LOG(debug) << "        node in main connected component " << nodeId << LOG_ENDL;
   }
@@ -171,121 +201,107 @@ Context::areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::Bu
 
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkGenerator(const std::string& generatorId) const {
-  const auto& network = networkManager_.dataInterface()->getNetwork();
-  for (auto& vl : network->getVoltageLevels()) {
-    for (auto& g : vl->getGenerators()) {
-      if (generatorId == g->getID()) {
-        if (!areInMainConnectedComponent({g->getBusInterface()})) {
-          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-        }
-        return boost::none; // No problem found
-      }
+  const auto item = caches_.generators.find(generatorId);
+  if (item != caches_.generators.end()) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
+
   }
+
   return Contingencies::ElementInvalidReason::GENERATOR_NOT_FOUND;
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkLine(const std::string& branchId) const {
-  const auto& network = networkManager_.dataInterface()->getNetwork();
-  for (auto& l : network->getLines()) {
-    if (branchId == l->getID()) {
-      if (!areInMainConnectedComponent({l->getBusInterface1(), l->getBusInterface2()})) {
-        return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-      }
-      return boost::none; // No problem found
+  const auto item = caches_.lines.find(branchId);
+  if (item != caches_.lines.end()) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface1(), item->second->getBusInterface2()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
   }
+
   return Contingencies::ElementInvalidReason::LINE_NOT_FOUND;
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
-Context::checkTwoWTransformer(const std::string& branchId) const {
-  for (auto& t : networkManager_.dataInterface()->getNetwork()->getTwoWTransformers()) {
-    if (branchId == t->getID()) {
-      if (!areInMainConnectedComponent({t->getBusInterface1(),t->getBusInterface2()})) {
-        return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-      }
-      return boost::none; // No problem found
+Context::checkTwoWTransformer(const std::string& twoWTransId) const {
+  const auto item = caches_.twoWTransformers.find(twoWTransId);
+  if (item != caches_.twoWTransformers.end()) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface1(), item->second->getBusInterface2()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
   }
+
   return Contingencies::ElementInvalidReason::TWOWINDINGS_TRANFORMER_NOT_FOUND;
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkShuntCompensator(const std::string& shuntId) const {
-  for (auto& lev : networkManager_.dataInterface()->getNetwork()->getVoltageLevels()) {
-    for (auto& s: lev->getShuntCompensators()) {
-      if (shuntId == s->getID()) {
-        if (!areInMainConnectedComponent({s->getBusInterface()})) {
-          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-        }
-        return boost::none; // No problem found
-      }
+  const auto item = caches_.shuntCompensators.find(shuntId);
+  if (item != caches_.shuntCompensators.end()) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
   }
+
   return Contingencies::ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND;
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkLoad(const std::string& loadId) const {
-  for (auto& t : networkManager_.dataInterface()->getNetwork()->getVoltageLevels()) {
-    for (auto& l: t->getLoads()) {
-      if (loadId == l->getID()) {
-        if (!areInMainConnectedComponent(t->getBuses())) {
-          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-        }
-        return boost::none; // No problem found
-      }
+  const auto item = caches_.loads.find(loadId);
+  if (item != caches_.loads.find(loadId)) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
   }
   return Contingencies::ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND;
 }
 
+
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkDanglingLine(const std::string& dlineId) const {
-  const auto& vlevels = networkManager_.dataInterface()->getNetwork()->getVoltageLevels();
-  for (auto& lev: vlevels) {
-    for (auto& l : lev->getDanglingLines()) {
-      if (dlineId == l->getID()) {
-        if (!areInMainConnectedComponent({l->getBusInterface()})) {
-          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-        }
-        return boost::none; // No problem found
-      }
+  const auto item = caches_.danglingLines.find(dlineId);
+  if (item != caches_.danglingLines.end()) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
   }
+
   return Contingencies::ElementInvalidReason::DANGLING_LINE_NOT_FOUND;
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkHvdcLine(const std::string& hlineId) const {
-  const auto& lines = networkManager_.dataInterface()->getNetwork()->getHvdcLines();
-  for (auto& l: lines) {
-    if (hlineId == l->getID()) {
+  const auto item = caches_.hvdcLines.find(hlineId);
+  if (item != caches_.hvdcLines.end()) {
       // TODO(sheosi): Check that the connected converters are in the main component
       /*if (!areInMainConnectedComponent({l->getConverter1()})) {
         return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
       }*/
       return boost::none; // No problem found
-    }
   }
-  return Contingencies::ElementInvalidReason::DANGLING_LINE_NOT_FOUND;
+
+  return Contingencies::ElementInvalidReason::HVDC_LINE_NOT_FOUND;
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
 Context::checkStaticVarCompensator(const std::string& dlineId) const {
-  const auto& vlevels = networkManager_.dataInterface()->getNetwork()->getVoltageLevels();
-  for (auto& lev: vlevels) {
-    for (auto& s : lev->getStaticVarCompensators()) {
-      if (dlineId == s->getID()) {
-        if (!areInMainConnectedComponent({s->getBusInterface()})) {
-          return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-        }
-        return boost::none; // No problem found
-      }
+  const auto item = caches_.staticVarComps.find(dlineId);
+  if (item != caches_.staticVarComps.end()) {
+    if (!areInMainConnectedComponent({item->second->getBusInterface()})) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
     }
+    return boost::none; // No problem found
   }
+
   return Contingencies::ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND;
 }
 

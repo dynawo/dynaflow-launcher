@@ -23,6 +23,13 @@
 #include "Contingencies.h"
 #include "NetworkManager.h"
 
+#include <DYNModelDescription.h>
+#include <DYNDanglingLineInterface.h>
+#include <DYNHvdcLineInterface.h>
+#include <DYNLoadInterface.h>
+#include <DYNVoltageLevelInterface.h>
+#include <DYNShuntCompensatorInterface.h>
+#include <DYNStaticVarCompensatorInterface.h>
 #include <DYNNetworkInterface.h>
 #include <DYNLineInterface.h>
 #include <DYNTwoWTransformerInterface.h>
@@ -30,6 +37,8 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
+
+
 
 namespace dfl {
 /**
@@ -168,7 +177,43 @@ class Context {
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
-  std::unordered_set<std::string> mainConnexIds_;  ///< Find fast which ids which ids are in the main
+  /// A small struct to to hold all the sets that serve as check caches
+  struct Caches {
+    std::unordered_set<std::string> mainConnexIds;  ///< Find fast which ids which ids are in the main
+    std::unordered_map<std::string, boost::shared_ptr<DYN::GeneratorInterface>> generators;  /// Each generator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::LineInterface>> lines;  /// Each line associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::TwoWTransformerInterface>> twoWTransformers;  /// Each two winding transformer associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::ShuntCompensatorInterface>> shuntCompensators;    /// Each shunt compensator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::LoadInterface>> loads;   /// Each load associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::DanglingLineInterface>> danglingLines;    /// Each danglingline associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::HvdcLineInterface>> hvdcLines;    /// Each hvdcline associated with its ID
+    /// Each satic var compensator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::StaticVarCompensatorInterface>> staticVarComps;
+
+    /**
+     * @brief Initializes all the caches with the nodes from the network
+     * @param mainConnexNodes the list of nodes that conform the main connected component
+     * @param network the Networkinterface defining the network to work with
+     */
+    void initCaches(
+      const std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes,
+      const boost::shared_ptr<DYN::NetworkInterface> &network);
+
+    /// @brief Transforms a set of model descriptions or components into a cache to check if an ID exists in it
+    /// @param nodes A vector of shared_ptrs to the models, I needs to have a method called getID that returns an std::string
+    template<typename I> static
+    std::unordered_map<std::string, boost::shared_ptr<I>> makeCacheOf(const std::vector<boost::shared_ptr<I>>& nodes) {
+      std::unordered_map<std::string, boost::shared_ptr<I>> result;
+      for (auto n : nodes) {
+        result.insert(std::make_pair(n->getID(), n));
+      }
+
+      return result;
+    }
+  };
+
+  Caches caches_;  /// Holds all the caches from the Context.
+
 
   /// @brief Check all elements in contingencies have valid dynamic models
   /// @return All ellements that are invalid and why
@@ -182,9 +227,9 @@ class Context {
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkLine(const std::string& branchId) const;
   /// @brief Check if network has a valid component interface for a two-windings transformer
-  /// @param branchId static identifier of branch
+  /// @param twoWTransId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkTwoWTransformer(const std::string& branchId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkTwoWTransformer(const std::string& twoWTransId) const;
   /// @brief Check if network has a valid component interface for a shun compensator
   /// @param shuntId static identifier of shunt compensator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
@@ -216,6 +261,7 @@ class Context {
   /// @brief Check if buses are in main connected component
   /// @param buses pointers of buses to check
   bool areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
+
 
   /// @brief Build JOBS, DYD, PAR files for each contingency
   void exportOutputsContingencies();
