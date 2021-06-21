@@ -9,6 +9,11 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
+error_exit() {
+  echo "${1:-"Unknown Error"}" 1>&2
+  exit 1
+}
+
 set_commit_hook() {
   hook_file_msg='#!'"/bin/bash
 $DFL_HOME/scripts/hooks/commit_hook.sh"' $1'
@@ -90,9 +95,11 @@ git diff-index --check --cached HEAD -- ':(exclude)*/reference/*' ':(exclude)*.p
   fi
 
   if [ -e "$DFL_HOME/.git" ]; then
+    pushd $DFL_HOME/.git > /dev/null
     if [ -z "$(git config --get core.commentchar 2> /dev/null)" ] || [ $(git config --get core.commentchar 2> /dev/null) = "#" ]; then
       git config core.commentchar % || error_exit "You need to change git config commentchar from # to %."
     fi
+    popd > /dev/null
   fi
 }
 
