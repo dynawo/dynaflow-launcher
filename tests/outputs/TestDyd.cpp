@@ -35,7 +35,7 @@ TEST(Dyd, write) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   outputPath.append(filename);
 
@@ -74,7 +74,7 @@ TEST(Dyd, writeRemote) {
       GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus2)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   outputPath.append(filename);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
@@ -110,7 +110,8 @@ TEST(Dyd, writeHvdc) {
                                                                               std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  auto node = dfl::inputs::Node::build("Slack", vl, 100.);
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
 
   outputPath.append(filename);
 

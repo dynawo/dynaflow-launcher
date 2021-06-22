@@ -116,6 +116,22 @@ class Configuration {
     return activePowerCompensation_;
   }
 
+  /**
+   * @brief Retrieves the setting file path
+   * @returns the setting file path
+   */
+  const boost::filesystem::path& settingFilePath() const {
+    return settingFilePath_;
+  }
+
+  /**
+   * @brief Retrieves the assembly file path
+   * @returns the assembly file path
+   */
+  const boost::filesystem::path& assemblyFilePath() const {
+    return assemblyFilePath_;
+  }
+
  private:
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
   bool isPSTRegulationOn_ = true;                                                    ///< PST regulation on
@@ -125,6 +141,8 @@ class Configuration {
   boost::filesystem::path outputDir_ = boost::filesystem::current_path();            ///< Directory for output files
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
+  boost::filesystem::path settingFilePath_;                                          ///< setting file path
+  boost::filesystem::path assemblyFilePath_;                                         ///< assembly file path
 };
 
 }  // namespace inputs

@@ -39,6 +39,7 @@ namespace dfl {
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     def_(def),
     networkManager_(def.networkFilepath),
+    automatonConfigurationManager_(def.settingsFilePath, def.assemblyFilePath),
     config_(config),
     basename_{},
     slackNode_{},
@@ -156,8 +157,8 @@ Context::execute() {
 
   file::path inputPath(config_.outputDir());
   auto path = file::canonical(inputPath);
-  simu_context->setInputDirectory(path.generic_string() + "/");
-  simu_context->setWorkingDirectory(config_.outputDir().generic_string() + "/");
+  simu_context->setInputDirectory(path.generic_string());
+  simu_context->setWorkingDirectory(config_.outputDir().generic_string());
 
   // This SHALL be the last log performed before reseting traces in DynaFlowLauncher,
   // because simulation constructor will re-initialize traces for Dynawo

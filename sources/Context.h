@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "AutomatonConfigurationManager.h"
 #include "Configuration.h"
 #include "NetworkManager.h"
 
@@ -41,6 +42,8 @@ class Context {
    */
   struct ContextDef {
     boost::filesystem::path networkFilepath;   ///< network filepath
+    boost::filesystem::path settingsFilePath;  ///< setting file path for automatons
+    boost::filesystem::path assemblyFilePath;  ///< assembly file path for automatons
     std::string dynawLogLevel;                 ///< string representation of the dynawo log level
     boost::filesystem::path parFileDir;        ///< parameter file directory
     boost::filesystem::path dynawoResDir;      ///< DYNAWO resources
@@ -121,9 +124,10 @@ class Context {
   void walkNodesMain();
 
  private:
-  ContextDef def_;                         ///< context definition
-  inputs::NetworkManager networkManager_;  ///< network manager
-  const inputs::Configuration& config_;    ///< configuration
+  ContextDef def_;                                                       ///< context definition
+  inputs::NetworkManager networkManager_;                                ///< network manager
+  inputs::AutomatonConfigurationManager automatonConfigurationManager_;  ///< automaton configuration manager
+  const inputs::Configuration& config_;                                  ///< configuration
 
   std::string basename_;                                                                   ///< basename for all files
   std::vector<inputs::NetworkManager::ProcessNodeCallback> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components

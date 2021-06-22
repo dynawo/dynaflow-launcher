@@ -9,6 +9,8 @@
     "LCCAsLoads": "true",
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
-    "ActivePowerCompensation": "P"
+    "ActivePowerCompensation": "P",
+    "SettingPath": "res/setting.xml",
+    "AssemblyPath": "res/assembling.xml"
   }
 }

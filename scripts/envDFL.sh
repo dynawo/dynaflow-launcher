@@ -144,6 +144,7 @@ set_environment() {
 
     # Run
     export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
+    export_var_env_force DYNAFLOW_LAUNCHER_XSD=$DYNAFLOW_LAUNCHER_INSTALL_DIR/etc/xsd
     export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
 
     # python

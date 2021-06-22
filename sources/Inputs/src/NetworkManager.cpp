@@ -30,6 +30,7 @@
 #include <DYNLineInterface.h>
 #include <DYNLoadInterface.h>
 #include <DYNNetworkInterface.h>
+#include <DYNShuntCompensatorInterface.h>
 #include <DYNSwitchInterface.h>
 #include <DYNThreeWTransformerInterface.h>
 #include <DYNTwoWTransformerInterface.h>
@@ -55,54 +56,64 @@ NetworkManager::buildTree() {
   auto opt_id = network->getSlackNodeBusId();
 
   const auto& voltageLevels = network->getVoltageLevels();
-  for (auto it_v = voltageLevels.begin(); it_v != voltageLevels.end(); ++it_v) {
-    auto vl = std::make_shared<VoltageLevel>((*it_v)->getID());
+  for (const auto& networkVL : voltageLevels) {
+    const auto& shunts = networkVL->getShuntCompensators();
+    std::map<Node::NodeId, std::vector<Shunt>> shuntsMap;
+    for (const auto& shunt : shunts) {
+      // We take into account even disconnected shunts as automatons may aim to connect them
+      (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));
+    }
+
+    auto vl = std::make_shared<VoltageLevel>(networkVL->getID());
     voltagelevels_.push_back(vl);
 
-    const auto& buses = (*it_v)->getBuses();
-    for (auto it_b = buses.begin(); it_b != buses.end(); ++it_b) {
+    const auto& buses = networkVL->getBuses();
+    for (const auto& bus : buses) {
+      const auto& nodeId = bus->getID();
 #if _DEBUG_
       // ids of nodes should be unique
-      assert(nodes_.count((*it_b)->getID()) == 0);
+      assert(nodes_.count(nodeId) == 0);
 #endif
-      nodes_[(*it_b)->getID()] = Node::build((*it_b)->getID(), vl, (*it_v)->getVNom());
-      LOG(debug) << "Node " << (*it_b)->getID() << " created" << LOG_ENDL;
-      if (opt_id && *opt_id == (*it_b)->getID()) {
+      auto found = shuntsMap.find(nodeId);
+      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{});
+      LOG(debug) << "Node " << nodeId << " created" << LOG_ENDL;
+      if (opt_id && *opt_id == nodeId) {
         LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
-        slackNode_ = nodes_[(*it_b)->getID()];
+        slackNode_ = nodes_[nodeId];
       }
     }
 
-    const auto& loads = (*it_v)->getLoads();
-    for (auto it_l = loads.begin(); it_l != loads.end(); ++it_l) {
+    const auto& loads = networkVL->getLoads();
+    for (const auto& load : loads) {
       // if load is not connected, it is ignored
-      if (!(*it_l)->getInitialConnected())
+      if (!load->getInitialConnected())
         continue;
-      auto nodeid = (*it_l)->getBusInterface()->getID();
+      auto nodeid = load->getBusInterface()->getID();
 #if _DEBUG_
       // node should exist at this point
       assert(nodes_.count(nodeid));
 #endif
-      nodes_[nodeid]->loads.emplace_back((*it_l)->getID());
-      LOG(debug) << "Node " << nodeid << " contains load " << (*it_l)->getID() << LOG_ENDL;
+      nodes_[nodeid]->loads.emplace_back(load->getID());
+      LOG(debug) << "Node " << nodeid << " contains load " << load->getID() << LOG_ENDL;
     }
 
-    const auto& generators = (*it_v)->getGenerators();
-    for (auto it_g = generators.begin(); it_g != generators.end(); ++it_g) {
+    const auto& generators = networkVL->getGenerators();
+    for (const auto& generator : generators) {
       // if generator is not connected, it is ignored
-      if (!(*it_g)->getInitialConnected())
+      if (!generator->getInitialConnected())
         continue;
-      auto nodeid = (*it_g)->getBusInterface()->getID();
+      auto nodeid = generator->getBusInterface()->getID();
 #if _DEBUG_
       // node should exist at this point
       assert(nodes_.count(nodeid));
 #endif
-      auto targetP = (*it_g)->getTargetP();
-      auto pmin = (*it_g)->getPMin();
-      auto pmax = (*it_g)->getPMax();
-      if ((*it_g)->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) && (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
+      auto targetP = generator->getTargetP();
+      auto pmin = generator->getPMin();
+      auto pmax = generator->getPMax();
+      if (generator->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) &&
+          (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
         // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
-        auto regulated_bus = interface_->getServiceManager()->getRegulatedBus((*it_g)->getID())->getID();
+        auto regulated_bus = interface_->getServiceManager()->getRegulatedBus(generator->getID())->getID();
         auto it = mapBusId_.find(regulated_bus);
         if (it == mapBusId_.end()) {
           mapBusId_.insert({regulated_bus, NbOfRegulatingGenerators::ONE});
@@ -110,13 +121,13 @@ NetworkManager::buildTree() {
           it->second = NbOfRegulatingGenerators::MULTIPLES;
         }
 
-        nodes_[nodeid]->generators.emplace_back((*it_g)->getID(), (*it_g)->getReactiveCurvesPoints(), (*it_g)->getQMin(), (*it_g)->getQMax(),
-                                                pmin, pmax, targetP, regulated_bus, nodeid);
-        LOG(debug) << "Node " << nodeid << " contains generator " << (*it_g)->getID() << LOG_ENDL;
+        nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin,
+                                                pmax, targetP, regulated_bus, nodeid);
+        LOG(debug) << "Node " << nodeid << " contains generator " << generator->getID() << LOG_ENDL;
       }
     }
 
-    const auto& switches = (*it_v)->getSwitches();
+    const auto& switches = networkVL->getSwitches();
     for (const auto& sw : switches) {
       if (!sw->isOpen()) {
         auto bus1 = sw->getBusInterface1();
@@ -135,48 +146,42 @@ NetworkManager::buildTree() {
 
   // perform connections
   const auto& lines = network->getLines();
-  for (auto it_l = lines.begin(); it_l != lines.end(); ++it_l) {
-    auto bus1 = (*it_l)->getBusInterface1();
-    auto bus2 = (*it_l)->getBusInterface2();
-    if ((*it_l)->getInitialConnected1() && (*it_l)->getInitialConnected2()) {
-      auto id = bus1->getID();
+  for (const auto& line : lines) {
+    auto bus1 = line->getBusInterface1();
+    auto bus2 = line->getBusInterface2();
+    if (line->getInitialConnected1() && line->getInitialConnected2()) {
 #if _DEBUG_
       assert(nodes_.count(bus1->getID()) > 0);
       assert(nodes_.count(bus2->getID()) > 0);
 #endif
-      nodes_[bus1->getID()]->neighbours.push_back(nodes_.at(bus2->getID()));
-      nodes_[bus2->getID()]->neighbours.push_back(nodes_.at(bus1->getID()));
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << (*it_l)->getID() << LOG_ENDL;
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << line->getID() << LOG_ENDL;
+      auto new_line = Line::build(line->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
+      lines_.push_back(new_line);
     }
   }
 
   const auto& transfos = network->getTwoWTransformers();
-  for (auto it_t = transfos.begin(); it_t != transfos.end(); ++it_t) {
-    auto bus1 = (*it_t)->getBusInterface1();
-    auto bus2 = (*it_t)->getBusInterface2();
-    if ((*it_t)->getInitialConnected1() && (*it_t)->getInitialConnected2()) {
-      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
-      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << (*it_t)->getID() << LOG_ENDL;
+  for (const auto& transfo : transfos) {
+    auto bus1 = transfo->getBusInterface1();
+    auto bus2 = transfo->getBusInterface2();
+    if (transfo->getInitialConnected1() && transfo->getInitialConnected2()) {
+      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
+      tfos_.push_back(tfo);
+
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << transfo->getID() << LOG_ENDL;
     }
   }
 
   const auto& transfos_three = network->getThreeWTransformers();
-  for (auto it_t = transfos_three.begin(); it_t != transfos_three.end(); ++it_t) {
-    auto bus1 = (*it_t)->getBusInterface1();
-    auto bus2 = (*it_t)->getBusInterface2();
-    auto bus3 = (*it_t)->getBusInterface3();
-    if ((*it_t)->getInitialConnected1() && (*it_t)->getInitialConnected2() && (*it_t)->getInitialConnected3()) {
-      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
-      nodes_[bus1->getID()]->neighbours.push_back(nodes_[bus3->getID()]);
+  for (const auto& transfo : transfos_three) {
+    auto bus1 = transfo->getBusInterface1();
+    auto bus2 = transfo->getBusInterface2();
+    auto bus3 = transfo->getBusInterface3();
+    if (transfo->getInitialConnected1() && transfo->getInitialConnected2() && transfo->getInitialConnected3()) {
+      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()));
+      tfos_.push_back(tfo);
 
-      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
-      nodes_[bus2->getID()]->neighbours.push_back(nodes_[bus3->getID()]);
-
-      nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus1->getID()]);
-      nodes_[bus3->getID()]->neighbours.push_back(nodes_[bus2->getID()]);
-
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << (*it_t)->getID() << LOG_ENDL;
+      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << transfo->getID() << LOG_ENDL;
     }
   }
 

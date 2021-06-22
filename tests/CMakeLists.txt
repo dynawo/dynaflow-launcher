@@ -37,7 +37,10 @@ set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # macro to define tests
 macro(DEFINE_TEST _name _module_name)
-  add_executable(${_name} ${_name}.cpp ${TEST_DIR}/Tests.cpp)
+  add_executable(${_name}
+  ${_name}.cpp
+  ${TEST_DIR}/Tests.cpp)
+
   target_link_libraries(${_name}
     DynaFlowLauncherTest)
   target_include_directories(${_name} PRIVATE ${TEST_DIR})
@@ -47,6 +50,24 @@ macro(DEFINE_TEST _name _module_name)
     COMMAND ${_name}
   )
 endmacro(DEFINE_TEST)
+
+macro(DEFINE_TEST_XML _name _module_name)
+  add_executable(${_name}
+  ${_name}.cpp
+  ${TEST_DIR}/Tests.cpp
+  ${TEST_DIR}/initXml.cpp)
+
+  target_link_libraries(${_name}
+    DynaFlowLauncherTest
+    XMLSAXParser${LibXML_LINK_SUFFIX}
+    LibXml2::LibXml2)
+  target_include_directories(${_name} PRIVATE ${TEST_DIR})
+  add_test(
+    NAME ${_module_name}.${_name}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND ${_name}
+  )
+endmacro(DEFINE_TEST_XML)
 
 add_subdirectory(common)
 add_subdirectory(inputs)
