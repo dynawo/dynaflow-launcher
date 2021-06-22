@@ -95,6 +95,14 @@ class Contingencies {
   /**
    * @brief Constructor
    *
+   * Define which contingencies do we have
+   *
+   */
+  explicit Contingencies(std::vector<std::shared_ptr<ContingencyDefinition>> contingencies): contingencies_(contingencies) {}
+
+  /**
+   * @brief Constructor
+   *
    * exit the program on error in parsing the file
    *
    * @param filepath the JSON contingencies file to use
