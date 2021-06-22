@@ -161,9 +161,13 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();
 
-  // Check all contingencies have their elements present in the network
+  // Check all contingencies have their elements present in the network and make
+  // a new list of Contingencies with only those that are good
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
-    checkContingencies();
+    std::vector<std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition>> defs;
+    std::vector<dfl::inputs::Contingencies::ElementInvalidReason> errors;
+    std::tie(defs, errors) = checkAndFilterContingencies();
+    contingencies_ = Contingencies(defs);
   }
 
   return true;
@@ -340,26 +344,52 @@ Context::checkContingencyElement(const std::string& id, Contingencies::Type type
 }
 
 std::vector<Contingencies::ElementInvalidReason>
-Context::checkContingencies() const {
+Context::checkContingency(std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition> c) const {
   std::vector<Contingencies::ElementInvalidReason> result;
-  LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
-  const auto& contingencies = contingencies_.definitions();
-  for (auto c = contingencies.begin(); c != contingencies.end(); ++c) {
-    LOG(debug) << (*c)->id << LOG_ENDL;
-    for (auto e = (*c)->elements.begin(); e != (*c)->elements.end(); ++e) {
-      LOG(debug) << "  " << e->id << " (" << Contingencies::toString(e->type) << ")" << LOG_ENDL;
-      std::string reason;
-      auto invalid = checkContingencyElement(e->id, e->type);
-      if (invalid) {
-        LOG(warn) << MESS(ElementInvalid, e->id, Contingencies::toString(e->type), Contingencies::toString(*invalid)) << LOG_ENDL;
-        result.push_back(*invalid);
-      } else {
-        LOG(debug) << "  Element " << e->id << "(" << Contingencies::toString(e->type) << ") is valid" << LOG_ENDL;
-      }
+  LOG(debug) << c->id << LOG_ENDL;
+
+  // Check each element and see whether they are good for inclusion
+  for (auto e: c->elements) {
+    LOG(debug) << "  " << e.id << " (" << Contingencies::toString(e.type) << ")" << LOG_ENDL;
+    auto invalid = checkContingencyElement(e.id, e.type);
+    if (invalid) {
+      LOG(warn) << MESS(ElementInvalid, e.id, Contingencies::toString(e.type), Contingencies::toString(*invalid)) << LOG_ENDL;
+      result.push_back(*invalid);
+    } else {
+      LOG(debug) << "  Element " << e.id << "(" << Contingencies::toString(e.type) << ") is valid" << LOG_ENDL;
     }
   }
 
   return result;
+}
+
+std::tuple<
+  std::vector<std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition>>,
+  std::vector<dfl::inputs::Contingencies::ElementInvalidReason>
+>
+Context::checkAndFilterContingencies() const {
+  std::vector<Contingencies::ElementInvalidReason> errors;
+  LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
+
+  // We'll store here the iterators we don't want
+  std::vector<std::vector<std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition>>::iterator> iteratorsToRemove;
+  auto defs = contingencies_.definitions();
+  for (auto c = defs.begin(); c != defs.end(); ++c) {
+    const auto errs = checkContingency(*c);
+    if (!errs.empty()) {
+      iteratorsToRemove.push_back(c);
+      errors.reserve(errors.size() + errs.size());
+      errors.insert(errors.end(), errs.begin(), errs.end());
+    }
+  }
+
+  // Better start from the end just in case the iterators reffer to elements
+  // by position
+  for (auto i = iteratorsToRemove.rbegin(); i != iteratorsToRemove.rend(); ++i) {
+    defs.erase(*i);
+  }
+
+  return {defs, errors};
 }
 
 void

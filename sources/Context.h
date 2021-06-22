@@ -179,15 +179,31 @@ class Context {
 
   /// A small struct to to hold all the sets that serve as check caches
   struct Caches {
-    std::unordered_set<std::string> mainConnexIds;  ///< Find fast which ids which ids are in the main
-    std::unordered_map<std::string, boost::shared_ptr<DYN::GeneratorInterface>> generators;  /// Each generator associated with its ID
-    std::unordered_map<std::string, boost::shared_ptr<DYN::LineInterface>> lines;  /// Each line associated with its ID
-    std::unordered_map<std::string, boost::shared_ptr<DYN::TwoWTransformerInterface>> twoWTransformers;  /// Each two winding transformer associated with its ID
-    std::unordered_map<std::string, boost::shared_ptr<DYN::ShuntCompensatorInterface>> shuntCompensators;    /// Each shunt compensator associated with its ID
-    std::unordered_map<std::string, boost::shared_ptr<DYN::LoadInterface>> loads;   /// Each load associated with its ID
-    std::unordered_map<std::string, boost::shared_ptr<DYN::DanglingLineInterface>> danglingLines;    /// Each danglingline associated with its ID
-    std::unordered_map<std::string, boost::shared_ptr<DYN::HvdcLineInterface>> hvdcLines;    /// Each hvdcline associated with its ID
-    /// Each satic var compensator associated with its ID
+    ///< Find fast which ids which ids are in the main
+    std::unordered_set<std::string> mainConnexIds;
+
+    ///< Each generator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::GeneratorInterface>> generators;
+
+    ///< Each line associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::LineInterface>> lines;
+
+    ///< Each two winding transformer associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::TwoWTransformerInterface>> twoWTransformers;
+
+    ///< Each shunt compensator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::ShuntCompensatorInterface>> shuntCompensators;
+
+    ///< Each load associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::LoadInterface>> loads;
+
+    ///< Each danglingline associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::DanglingLineInterface>> danglingLines;
+
+    ///< Each hvdcline associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::HvdcLineInterface>> hvdcLines;
+
+    ///< Each satic var compensator associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::StaticVarCompensatorInterface>> staticVarComps;
 
     /**
@@ -215,9 +231,15 @@ class Context {
   Caches caches_;  /// Holds all the caches from the Context.
 
 
+  /// @brief Check that a contengy is ok, otherwise returns all the problems it had
+  /// @return All the problems that the contingency had (empty if none)
+  std::vector<dfl::inputs::Contingencies::ElementInvalidReason> checkContingency(std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition> c) const;
   /// @brief Check all elements in contingencies have valid dynamic models
-  /// @return All ellements that are invalid and why
-  std::vector<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencies() const;
+  /// @return Elements that are good, and why others failed
+  std::tuple<
+    std::vector<std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition>>,
+    std::vector<dfl::inputs::Contingencies::ElementInvalidReason>
+  > checkAndFilterContingencies() const;
   /// @brief Check if network has a valid component interface for a generator
   /// @param generatorId static identifier of generator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
