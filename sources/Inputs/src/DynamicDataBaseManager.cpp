@@ -9,13 +9,13 @@
 //
 
 /**
- * @file  AutomatonConfigurationManager.cpp
+ * @file  DynamicDataBaseManager.cpp
  *
  * @brief Automaton manager implementation file
  *
  */
 
-#include "AutomatonConfigurationManager.h"
+#include "DynamicDataBaseManager.h"
 
 #include "Log.h"
 #include "Message.hpp"
@@ -36,18 +36,18 @@ namespace inputs {
 
 namespace helper {
 
-template<class T>
 /**
  * @brief Trait class for xsd filename by type
  */
+template<class T>
 struct XsdTrait {
   static const std::string filename;  ///< filename trait definition, to specialize
 };
 
 template<>
-const std::string XsdTrait<AssemblyXmlDocument>::filename("assembling.xsd");  ///< XSD filename for assembly xml document
+const std::string XsdTrait<AssemblingXmlDocument>::filename("assembling.xsd");  ///< XSD filename for assembling xml document
 template<>
-const std::string XsdTrait<SettingsXmlDocument>::filename("setting.xsd");  ///< XSD filename for setting xml document
+const std::string XsdTrait<SettingXmlDocument>::filename("setting.xsd");  ///< XSD filename for setting xml document
 
 template<class T>
 static file::path
@@ -79,7 +79,7 @@ parserFile(const boost::filesystem::path& filepath, const parser::ParserFactory&
 
   std::ifstream in(filepath.c_str());
   if (!in) {
-    // only a warning here because not providing an assembling or setting file for automaton is an expected behaviour for some simulations
+    // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
     LOG(warn) << MESS(AutomatonFileNotFound, filepath.c_str()) << LOG_ENDL;
     return;
   }
@@ -101,10 +101,10 @@ parserFile(const boost::filesystem::path& filepath, const parser::ParserFactory&
 }
 }  // namespace helper
 
-AutomatonConfigurationManager::AutomatonConfigurationManager(const boost::filesystem::path& settingsFilePath, const boost::filesystem::path& assemblyFilePath) {
+DynamicDataBaseManager::DynamicDataBaseManager(const boost::filesystem::path& settingsFilePath, const boost::filesystem::path& assemblingFilePath) {
   parser::ParserFactory factory;
   helper::parserFile(settingsFilePath, factory, settingsDoc_);
-  helper::parserFile(assemblyFilePath, factory, assemblyDoc_);
+  helper::parserFile(assemblingFilePath, factory, assemblingDoc_);
 }
 
 }  // namespace inputs

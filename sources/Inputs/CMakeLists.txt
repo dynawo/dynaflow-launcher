@@ -12,9 +12,9 @@ set(SOURCES
   src/Node.cpp
   src/Configuration.cpp
   src/HvdcLine.cpp
-  src/AutomatonConfigurationManager.cpp
-  src/SettingsXmlDocument.cpp
-  src/AssemblyXmlDocument.cpp
+  src/DynamicDataBaseManager.cpp
+  src/SettingXmlDocument.cpp
+  src/AssemblingXmlDocument.cpp
 )
 
 add_library(inputs ${LINK_TYPE} ${SOURCES})

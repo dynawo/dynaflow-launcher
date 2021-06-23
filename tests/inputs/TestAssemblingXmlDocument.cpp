@@ -8,7 +8,7 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "AssemblyXmlDocument.h"
+#include "AssemblingXmlDocument.h"
 #include "Tests.h"
 
 #include <array>
@@ -25,10 +25,10 @@ testing::Environment* initXmlEnvironment();
 
 testing::Environment* const env = initXmlEnvironment();
 
-TEST(AssemblyXmlDocument, readFile) {
-  using dfl::inputs::AssemblyXmlDocument;
+TEST(AssemblingXmlDocument, readFile) {
+  using dfl::inputs::AssemblingXmlDocument;
 
-  AssemblyXmlDocument doc;
+  AssemblingXmlDocument doc;
   parser::ParserFactory factory;
   const std::string filepath = "res/assembling.xml";
 
@@ -40,7 +40,7 @@ TEST(AssemblyXmlDocument, readFile) {
   const auto& macroConnections = doc.macroConnections();
   ASSERT_EQ(macroConnections.size(), 2);
   auto macro = macroConnections[0];
-  ASSERT_EQ(macro.id, "VCSToUMeasurement");
+  ASSERT_EQ(macro.id, "ToUMeasurement");
   ASSERT_EQ(macro.connections.size(), 1);
   ASSERT_EQ(macro.connections.front().var1, "U_IMPIN");
   ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
@@ -58,37 +58,37 @@ TEST(AssemblyXmlDocument, readFile) {
   const auto& singleAssociations = doc.singleAssociations();
   ASSERT_EQ(singleAssociations.size(), 6);
   auto singleAssoc = singleAssociations.front();
-  ASSERT_EQ(singleAssoc.id, "MESURE_MODELE_1_B.EPIP4");
+  ASSERT_EQ(singleAssoc.id, "MESURE_MODELE_1_VL4");
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_TRUE(singleAssoc.bus);
-  ASSERT_EQ(singleAssoc.bus->voltageLevel, "B.EPIP6");
+  ASSERT_EQ(singleAssoc.bus->voltageLevel, "VLP6");
   singleAssoc = singleAssociations[2];
-  ASSERT_EQ(singleAssoc.id, "MESURE_I_BOUTR TR 661");
+  ASSERT_EQ(singleAssoc.id, "MESURE_I_VL661");
   ASSERT_FALSE(singleAssoc.bus);
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_TRUE(singleAssoc.tfo);
-  ASSERT_EQ(singleAssoc.tfo->name, "BOUTR TR 661");
+  ASSERT_EQ(singleAssoc.tfo->name, "VL661");
   singleAssoc = singleAssociations[4];
-  ASSERT_EQ(singleAssoc.id, "MESURE_I_ADA_SALON");
+  ASSERT_EQ(singleAssoc.id, "MESURE_I_SALON");
   ASSERT_FALSE(singleAssoc.bus);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_TRUE(singleAssoc.line);
-  ASSERT_EQ(singleAssoc.line->name, "RQROUL31S.BLA");
+  ASSERT_EQ(singleAssoc.line->name, "QBLA");
 
   const auto& multiAssociations = doc.multipleAssociations();
   ASSERT_EQ(multiAssociations.size(), 2);
-  ASSERT_EQ(multiAssociations.front().id, "SHUNTS_MODELE_1_B.EPIP4");
-  ASSERT_EQ(multiAssociations.front().shunt.voltageLevel, "B.EPIP4");
+  ASSERT_EQ(multiAssociations.front().id, "SHUNTS_MODELE_1_VL4");
+  ASSERT_EQ(multiAssociations.front().shunt.voltageLevel, "VL4");
 
   const auto& dynamicAutomatons = doc.dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 2);
-  ASSERT_EQ(dynamicAutomatons.front().id, "MODELE_1_B.EPIP4");
+  ASSERT_EQ(dynamicAutomatons.front().id, "MODELE_1_VL4");
   ASSERT_EQ(dynamicAutomatons.front().lib, "DYNModel1");
   const auto& macroConnects = dynamicAutomatons.front().macroConnects;
   ASSERT_EQ(macroConnects.size(), 2);
-  ASSERT_EQ(macroConnects[0].id, "MESURE_MODELE_1_B.EPIP4");
-  ASSERT_EQ(macroConnects[0].macroConnection, "VCSToUMeasurement");
-  ASSERT_EQ(macroConnects[1].id, "SHUNTS_MODELE_1_B.EPIP4");
+  ASSERT_EQ(macroConnects[0].id, "MESURE_MODELE_1_VL4");
+  ASSERT_EQ(macroConnects[0].macroConnection, "ToUMeasurement");
+  ASSERT_EQ(macroConnects[1].id, "SHUNTS_MODELE_1_VL4");
   ASSERT_EQ(macroConnects[1].macroConnection, "VCSToControlledShunts");
 }

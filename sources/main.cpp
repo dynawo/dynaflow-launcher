@@ -103,7 +103,7 @@ main(int argc, char* argv[]) {
     parFilesDir.append("etc");
 
     dfl::Context::ContextDef def{
-        runtimeConfig.networkFilePath, config.settingFilePath(), config.assemblyFilePath(), runtimeConfig.dynawoLogLevel, parFilesDir, res, locale};
+        runtimeConfig.networkFilePath, config.settingFilePath(), config.assemblingFilePath(), runtimeConfig.dynawoLogLevel, parFilesDir, res, locale};
     dfl::Context context(def, config);
 
     if (!context.process()) {

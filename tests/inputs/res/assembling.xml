@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assembling>
-  <macroConnection id="VCSToUMeasurement">
+  <macroConnection id="ToUMeasurement">
     <connection var1="U_IMPIN" var2="@NAME@_U"/>
   </macroConnection>
   <macroConnection id="VCSToControlledShunts">
@@ -8,36 +8,36 @@
     <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor"/>
     <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable"/>
   </macroConnection>
-  <singleAssociation id="MESURE_MODELE_1_B.EPIP4">
-    <bus voltageLevel="B.EPIP6" />
+  <singleAssociation id="MESURE_MODELE_1_VL4">
+    <bus voltageLevel="VLP6" />
   </singleAssociation>
-  <multipleAssociation id="SHUNTS_MODELE_1_B.EPIP4">
-    <shunt voltageLevel="B.EPIP4"/>
+  <multipleAssociation id="SHUNTS_MODELE_1_VL4">
+    <shunt voltageLevel="VL4"/>
   </multipleAssociation>
-  <dynamicAutomaton id="MODELE_1_B.EPIP4" lib="DYNModel1">
-    <macroConnect macroConnection="VCSToUMeasurement" id="MESURE_MODELE_1_B.EPIP4"/>
-    <macroConnect macroConnection="VCSToControlledShunts" id="SHUNTS_MODELE_1_B.EPIP4"/>
+  <dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1">
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
+    <macroConnect macroConnection="VCSToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
   </dynamicAutomaton>
-  <singleAssociation id="MESURE_MODELE_1_PERIZP6">
-    <bus voltageLevel="PERIZP6" />
+  <singleAssociation id="MESURE_MODELE_1_VL6">
+    <bus voltageLevel="VL6" />
   </singleAssociation>
-  <multipleAssociation id="SHUNTS_MODELE_1_PERIZP6">
-    <shunt voltageLevel="PERIZP6"/>
+  <multipleAssociation id="SHUNTS_MODELE_1_VL6">
+    <shunt voltageLevel="VL6"/>
   </multipleAssociation>
-  <dynamicAutomaton id="MODELE_1_PERIZP6" lib="DYNModel1">
-    <macroConnect macroConnection="VCSToUMeasurement" id="MESURE_MODELE_1_PERIZP6"/>
-    <macroConnect macroConnection="VCSToControlledShunts" id="SHUNTS_MODELE_1_PERIZP6"/>
+  <dynamicAutomaton id="MODELE_1_VL6" lib="DYNModel1">
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL6"/>
+    <macroConnect macroConnection="VCSToControlledShunts" id="SHUNTS_MODELE_1_VL6"/>
   </dynamicAutomaton>
-  <singleAssociation id="MESURE_I_BOUTR TR 661">
-    <tfo name="BOUTR TR 661"/>
+  <singleAssociation id="MESURE_I_VL661">
+    <tfo name="VL661"/>
   </singleAssociation>
-  <singleAssociation id="TAP_BOUTR TR 661">
-    <tfo name="BOUTR TR 661"/>
+  <singleAssociation id="TAP_VL661">
+    <tfo name="VL661"/>
   </singleAssociation>
-  <singleAssociation id="MESURE_I_ADA_SALON">
-    <line name="RQROUL31S.BLA"/>
+  <singleAssociation id="MESURE_I_SALON">
+    <line name="QBLA"/>
   </singleAssociation>
-  <singleAssociation id="ORDER_ADA_SALON">
-    <line name="ROGNAL31S.BLA"/>
+  <singleAssociation id="ORDER_SALON">
+    <line name="OBLA"/>
   </singleAssociation>
 </assembling>

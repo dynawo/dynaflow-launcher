@@ -9,7 +9,7 @@
 //
 
 /**
- * @file SettingsXmlDocument.h
+ * @file SettingXmlDocument.h
  * @brief setting xml document handler header
  */
 
@@ -28,12 +28,12 @@ namespace inputs {
 /**
  * @brief Setting document handler
  *
- * XML document handler for the setting file for automatons
+ * XML document handler for the setting file for dynamic models
  */
-class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
+class SettingXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
  public:
   /**
-   * @brief Parameter element
+   * @brief Parameter XML element
    */
   template<class T>
   struct Parameter {
@@ -42,7 +42,7 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Ref element
+   * @brief Ref XML element
    */
   struct Ref {
     std::string id;    ///< id of the element
@@ -51,7 +51,7 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Reference element
+   * @brief Reference XML element
    */
   struct Reference {
     /// @brief Type of data in the reference
@@ -61,7 +61,8 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
       BOOL,        ///< Boolean type
       STRING       ///< String type
     };
-    // Data origin is always IIDM
+    // Data origin is always IIDM so it is not extracted
+
     boost::optional<std::string> componentId;  ///< referenced component id
     std::string name;                          ///< name of the reference
     std::string origName;                      ///< origin of the name
@@ -76,19 +77,19 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Count element
+   * @brief Count XML element
    */
   struct Count {
     std::string name;  ///< name of the count
-    std::string id;    ///< id
+    std::string id;    ///< id of the count
   };
 
   /**
-   * @brief Set element
+   * @brief Set XML element
    */
   struct Set {
     std::string id;                                        ///< id of the set
-    std::vector<Count> count;                              ///< list of the counts
+    std::vector<Count> counts;                             ///< list of the counts
     std::vector<Ref> refs;                                 ///< list of the refs
     std::vector<Reference> references;                     ///< list of the references
     std::vector<Parameter<double>> doubleParameters;       ///< list of the double parameters
@@ -99,7 +100,7 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
 
  public:
   /// @brief Default constructor
-  SettingsXmlDocument();
+  SettingXmlDocument();
 
   /**
    * @brief Retrieve the list of the sets
@@ -113,7 +114,7 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   /**
    * @brief Parameter element handler
    *
-   * Boolean, integer and double parameters are exclusive for a same element
+   * Boolean, integer, double and string parameters are exclusive for a same element
    */
   struct ParameterHandler : public xml::sax::parser::ComposableElementHandler {
     /**
@@ -187,6 +188,8 @@ class SettingsXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
  private:
+  static const std::string origData_;  ///< Data origin for all references
+
   /**
    * @brief Create optional parameter
    * @param param the parameter to update

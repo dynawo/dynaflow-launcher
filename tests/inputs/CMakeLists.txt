@@ -10,21 +10,21 @@
 DEFINE_TEST(TestNode INPUTS)
 target_link_libraries(TestNode DynaFlowLauncher::inputs)
 
-DEFINE_TEST_XML(TestSettingsXmlDocument INPUTS)
-target_link_libraries(TestSettingsXmlDocument
+DEFINE_TEST_XML(TestSettingXmlDocument INPUTS)
+target_link_libraries(TestSettingXmlDocument
 DynaFlowLauncher::inputs
 )
 
-DEFINE_TEST_XML(TestAssemblyXmlDocument INPUTS)
-target_link_libraries(TestAssemblyXmlDocument
+DEFINE_TEST_XML(TestAssemblingXmlDocument INPUTS)
+target_link_libraries(TestAssemblingXmlDocument
 DynaFlowLauncher::inputs
 )
 
-DEFINE_TEST_XML(TestAutomatonConfigurationManager INPUTS)
-target_link_libraries(TestAutomatonConfigurationManager
+DEFINE_TEST_XML(TestDynamicDataBaseManager INPUTS)
+target_link_libraries(TestDynamicDataBaseManager
 DynaFlowLauncher::inputs
 )
-set_property(TEST INPUTS.TestAutomatonConfigurationManager PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd)
+set_property(TEST INPUTS.TestDynamicDataBaseManager PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd)
 
 DEFINE_TEST(TestNetworkManager INPUTS)
 target_link_libraries(TestNetworkManager DynaFlowLauncher::inputs)

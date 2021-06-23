@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <setting>
-  <set id="MODELE_1_LAGUIP3">
+  <set id="MODELE_1_IP3">
     <par name="uMin" type="DOUBLE" value="61.0"/>
     <par name="uMax" type="DOUBLE" value="66.0"/>
     <par name="delay" type="DOUBLE" value="10.0"/>
-    <count id="SHUNTS_MODELE_1_LAGUIP3" name="Unsupported"/>
+    <count id="SHUNTS_MODELE_1_IP3" name="Unsupported"/>
   </set>
   <set id="MODELE_2_GRAFF">
     <par name="modeRegulation" type="INT" value="1"/>
@@ -27,7 +27,7 @@
     <par name="openingDelayLV" type="DOUBLE" value="8.0"/>
     <count id="SHUNTS_BAS_MODELE_2_GRAFF" name="nbShuntsLV"/>
   </set>
-  <set id="MODELE_2_BATZE">
+  <set id="MODELE_2_TZE">
     <par name="modeRegulation" type="INT" value="1"/>
     <par name="closingSecurityThresholdHV" type="DOUBLE" value="228.0"/>
     <par name="closingRegulationThresholdHV" type="DOUBLE" value="230.0"/>
@@ -37,7 +37,7 @@
     <par name="openingSecurityThresholdHV" type="DOUBLE" value="247.0"/>
     <par name="closingDelayHV" type="DOUBLE" value="5.0"/>
     <par name="openingDelayHV" type="DOUBLE" value="10.0"/>
-    <count id="SHUNTS_HAUTS_MODELE_2_BATZE" name="nbShuntsHV"/>
+    <count id="SHUNTS_HAUTS_MODELE_2_TZE" name="nbShuntsHV"/>
     <par name="closingSecurityThresholdLV" type="DOUBLE" value="228.0"/>
     <par name="closingRegulationThresholdLV" type="DOUBLE" value="230.0"/>
     <par name="noClosingThresholdLV" type="DOUBLE" value="235.0"/>
@@ -46,6 +46,6 @@
     <par name="openingSecurityThresholdLV" type="DOUBLE" value="247.0"/>
     <par name="closingDelayLV" type="DOUBLE" value="10.0"/>
     <par name="openingDelayLV" type="DOUBLE" value="8.0"/>
-    <count id="SHUNTS_BAS_MODELE_2_BATZE" name="nbShuntsLV"/>
+    <count id="SHUNTS_BAS_MODELE_2_TZE" name="nbShuntsLV"/>
   </set>
 </setting>

@@ -8,7 +8,7 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "SettingsXmlDocument.h"
+#include "SettingXmlDocument.h"
 #include "Tests.h"
 
 #include <array>
@@ -25,10 +25,10 @@ testing::Environment* initXmlEnvironment();
 
 testing::Environment* const env = initXmlEnvironment();
 
-TEST(SettingsXmlDocument, readFile) {
-  using dfl::inputs::SettingsXmlDocument;
+TEST(SettingXmlDocument, readFile) {
+  using dfl::inputs::SettingXmlDocument;
 
-  SettingsXmlDocument doc;
+  SettingXmlDocument doc;
   parser::ParserFactory factory;
   const std::string filepath = "res/setting.xml";
 
@@ -41,10 +41,10 @@ TEST(SettingsXmlDocument, readFile) {
   ASSERT_EQ(sets.size(), 14);
 
   auto set = sets.front();
-  ASSERT_EQ(set.id, "MODELE_1_B.EPIP4");
-  ASSERT_EQ(set.count.size(), 1);
-  auto count = set.count.front();
-  ASSERT_EQ(count.id, "SHUNTS_MODELE_1_B.EPIP4");
+  ASSERT_EQ(set.id, "MODELE_1_VL4");
+  ASSERT_EQ(set.counts.size(), 1);
+  auto count = set.counts.front();
+  ASSERT_EQ(count.id, "SHUNTS_MODELE_1_VL4");
   ASSERT_EQ(count.name, "nbShunts");
   ASSERT_EQ(set.boolParameters.size(), 0);
   ASSERT_EQ(set.integerParameters.size(), 0);
@@ -62,15 +62,15 @@ TEST(SettingsXmlDocument, readFile) {
   ASSERT_EQ(set.refs.size(), 0);
 
   set = sets[5];
-  ASSERT_EQ(set.id, "MODELE_2_BATZE");
+  ASSERT_EQ(set.id, "MODELE_2_TZE");
   ASSERT_EQ(set.references.size(), 0);
   ASSERT_EQ(set.refs.size(), 0);
-  ASSERT_EQ(set.count.size(), 2);
-  count = set.count[0];
-  ASSERT_EQ(count.id, "SHUNTS_HAUTS_MODELE_2_BATZE");
+  ASSERT_EQ(set.counts.size(), 2);
+  count = set.counts[0];
+  ASSERT_EQ(count.id, "SHUNTS_HAUTS_MODELE_2_TZE");
   ASSERT_EQ(count.name, "nbShuntsHV");
-  count = set.count[1];
-  ASSERT_EQ(count.id, "SHUNTS_BAS_MODELE_2_BATZE");
+  count = set.counts[1];
+  ASSERT_EQ(count.id, "SHUNTS_BAS_MODELE_2_TZE");
   ASSERT_EQ(count.name, "nbShuntsLV");
   ASSERT_EQ(set.boolParameters.size(), 0);
   ASSERT_EQ(set.integerParameters.size(), 1);
@@ -100,8 +100,8 @@ TEST(SettingsXmlDocument, readFile) {
   }
 
   set = sets[6];
-  ASSERT_EQ(set.id, "DM_.ARKA TR 661");
-  ASSERT_EQ(set.count.size(), 0);
+  ASSERT_EQ(set.id, "DM_M661");
+  ASSERT_EQ(set.counts.size(), 0);
   ASSERT_EQ(set.refs.size(), 0);
   ASSERT_EQ(set.boolParameters.size(), 0);
   ASSERT_EQ(set.integerParameters.size(), 0);
@@ -116,15 +116,15 @@ TEST(SettingsXmlDocument, readFile) {
     ASSERT_EQ(set.doubleParameters[i].value, values6[i].second);
   }
   ASSERT_EQ(set.references.size(), 8);
-  std::array<std::tuple<std::string, std::string, SettingsXmlDocument::Reference::DataType>, 8> values8 = {
-      std::make_tuple("phaseShifter_I0", "i1", SettingsXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_tap0", "tap0", SettingsXmlDocument::Reference::DataType::INT),
-      std::make_tuple("phaseShifter_tapMin", "tapMin", SettingsXmlDocument::Reference::DataType::INT),
-      std::make_tuple("phaseShifter_tapMax", "tapMax", SettingsXmlDocument::Reference::DataType::INT),
-      std::make_tuple("phaseShifter_regulating0", "regulating", SettingsXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_iMax", "iMax", SettingsXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_iStop", "iStop", SettingsXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_increasePhase", "increasePhase", SettingsXmlDocument::Reference::DataType::INT)};
+  std::array<std::tuple<std::string, std::string, SettingXmlDocument::Reference::DataType>, 8> values8 = {
+      std::make_tuple("phaseShifter_I0", "i1", SettingXmlDocument::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_tap0", "tap0", SettingXmlDocument::Reference::DataType::INT),
+      std::make_tuple("phaseShifter_tapMin", "tapMin", SettingXmlDocument::Reference::DataType::INT),
+      std::make_tuple("phaseShifter_tapMax", "tapMax", SettingXmlDocument::Reference::DataType::INT),
+      std::make_tuple("phaseShifter_regulating0", "regulating", SettingXmlDocument::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_iMax", "iMax", SettingXmlDocument::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_iStop", "iStop", SettingXmlDocument::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_increasePhase", "increasePhase", SettingXmlDocument::Reference::DataType::INT)};
   for (unsigned int i = 0; i < values8.size(); ++i) {
     ASSERT_TRUE(set.references[i].componentId.has_value());
     ASSERT_EQ(set.references[i].componentId.get(), "@TFO@");
@@ -134,12 +134,12 @@ TEST(SettingsXmlDocument, readFile) {
   }
 
   set = sets[9];
-  ASSERT_EQ(set.id, "DM_ADA_TRINQUETAILLE");
-  ASSERT_EQ(set.count.size(), 0);
+  ASSERT_EQ(set.id, "DM_TAILLE");
+  ASSERT_EQ(set.counts.size(), 0);
   ASSERT_EQ(set.references.size(), 0);
   ASSERT_EQ(set.refs.size(), 1);
   const auto& ref = set.refs.front();
-  ASSERT_EQ(ref.id, "MESURE_I_ADA_TRINQUETAILLE");
+  ASSERT_EQ(ref.id, "MESURE_I_TAILLE");
   ASSERT_EQ(ref.name, "currentLimitAutomaton_Season");
   ASSERT_EQ(ref.tag, "@SAISON@");
   ASSERT_EQ(set.doubleParameters.size(), 6);
@@ -159,10 +159,10 @@ TEST(SettingsXmlDocument, readFile) {
   ASSERT_EQ(set.boolParameters.front().value, true);
 }
 
-TEST(SettingsXmlDocument, error) {
-  using dfl::inputs::SettingsXmlDocument;
+TEST(SettingXmlDocument, error) {
+  using dfl::inputs::SettingXmlDocument;
 
-  SettingsXmlDocument doc;
+  SettingXmlDocument doc;
   parser::ParserFactory factory;
   const std::string filepath = "res/setting_error.xml";
 

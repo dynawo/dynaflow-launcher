@@ -8,29 +8,29 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "AutomatonConfigurationManager.h"
+#include "DynamicDataBaseManager.h"
 #include "Tests.h"
 
 testing::Environment* initXmlEnvironment();
 
 testing::Environment* const env = initXmlEnvironment();
 
-TEST(TestAutomatonConfigurationManager, base) {
-  using dfl::inputs::AutomatonConfigurationManager;
-  AutomatonConfigurationManager manager("res/setting.xml", "res/assembling.xml");
+TEST(TestDynamicDataBaseManager, base) {
+  using dfl::inputs::DynamicDataBaseManager;
+  DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
 
-  const auto& sets = manager.settingsDocument().sets();
+  const auto& sets = manager.settingDocument().sets();
   ASSERT_EQ(sets.size(), 14);
 
-  const auto& macroConnections = manager.assemblyDocument().macroConnections();
+  const auto& macroConnections = manager.assemblingDocument().macroConnections();
   ASSERT_EQ(macroConnections.size(), 2);
-  const auto& singleAssociations = manager.assemblyDocument().singleAssociations();
+  const auto& singleAssociations = manager.assemblingDocument().singleAssociations();
   ASSERT_EQ(singleAssociations.size(), 6);
 
-  const auto& multiAssociations = manager.assemblyDocument().multipleAssociations();
+  const auto& multiAssociations = manager.assemblingDocument().multipleAssociations();
   ASSERT_EQ(multiAssociations.size(), 2);
 
-  const auto& dynamicAutomatons = manager.assemblyDocument().dynamicAutomatons();
+  const auto& dynamicAutomatons = manager.assemblingDocument().dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 2);
 
   // The rest is considered covered by the unit tests of the lower classes
@@ -40,15 +40,15 @@ size_t dummySize = 0;
 
 static void
 createManager() {
-  dfl::inputs::AutomatonConfigurationManager manager("res/setting.xml", "res/assembling.xml");
+  dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "");
 
   // pointless operation to ensure that construction is not removed when compiling
-  dummySize = manager.settingsDocument().sets().size();
+  dummySize = manager.settingDocument().sets().size();
 }
 
 // MUST BE THE LAST TEST OF THE FILE, SINCE WE MODIFY THE ENVIRONMENTS VARIABLES
-TEST(TestAutomatonConfigurationManager, wrong_xsd) {
-  using dfl::inputs::AutomatonConfigurationManager;
+TEST(TestDynamicDataBaseManager, wrong_xsd) {
+  using dfl::inputs::DynamicDataBaseManager;
 
   setenv("DYNAFLOW_LAUNCHER_XSD", "res", 1);
 

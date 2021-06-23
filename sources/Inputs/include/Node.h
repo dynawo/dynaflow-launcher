@@ -49,7 +49,7 @@ struct VoltageLevel {
 };
 
 /**
- * @brief Topological line between two ndoes
+ * @brief Topological line between two nodes
  */
 class Line {
  public:
@@ -88,10 +88,10 @@ class Tfo {
   using TfoId = std::string;  ///< alias for transfor id
 
   /**
-   * @brief Build a 2W transfo
+   * @brief Build a two windings transfo
    *
    * This will update the references inside the input nodes
-   * @param tfoId the transfor id
+   * @param tfoId the transfo id
    * @param node1 the first node
    * @param node2 the second node
    * @returns the built transfo
@@ -99,10 +99,10 @@ class Tfo {
   static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
 
   /**
-   * @brief Build a 3W transfo
+   * @brief Build a three windings transfo
    *
    * This will update the references inside the input nodes
-   * @param tfoId the transfor id
+   * @param tfoId the transfo id
    * @param node1 the first node
    * @param node2 the second node
    * @param node3 the third node

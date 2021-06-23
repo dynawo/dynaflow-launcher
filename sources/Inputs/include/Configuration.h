@@ -125,11 +125,11 @@ class Configuration {
   }
 
   /**
-   * @brief Retrieves the assembly file path
-   * @returns the assembly file path
+   * @brief Retrieves the assembling file path
+   * @returns the assembling file path
    */
-  const boost::filesystem::path& assemblyFilePath() const {
-    return assemblyFilePath_;
+  const boost::filesystem::path& assemblingFilePath() const {
+    return assemblingFilePath_;
   }
 
  private:
@@ -142,7 +142,7 @@ class Configuration {
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
   boost::filesystem::path settingFilePath_;                                          ///< setting file path
-  boost::filesystem::path assemblyFilePath_;                                         ///< assembly file path
+  boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
 };
 
 }  // namespace inputs

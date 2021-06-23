@@ -14,6 +14,7 @@ AutomatonFileXSDNotFound      =     XSD file not found to validate %1% : XSD val
 AutomatonFileReadError        =     Cannot parse %1% : %2%
 UnsupportedCountName          =     Unsupported count name %1% for setting set
 UnsupportedDataTypeReference  =     Unsupported data type %1% for reference %2% in setting file
+UnsupportedOrigDataReference  =     Unsupported data origin %1% for reference %2% in setting file
 UnsupportedParameterDataType  =     Unsupported set parameter type %1% in setting file
 
 //------------------ Algo ---------------------------

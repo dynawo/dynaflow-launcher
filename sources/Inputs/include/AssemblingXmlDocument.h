@@ -9,7 +9,7 @@
 //
 
 /**
- * @file AssemblyXmlDocument.h
+ * @file AssemblingXmlDocument.h
  * @brief Assembly xml document handler header
  */
 
@@ -28,12 +28,12 @@ namespace inputs {
 /**
  * @brief Assembly xml document handler
  *
- * XML document handler for the assembly file for automatons
+ * XML document handler for the assembling file for dynamic models
  */
-class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
+class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
  public:
   /**
-   * @brief Connection element
+   * @brief Connection XML element
    */
   struct Connection {
     std::string var1;  ///< first variable to connect
@@ -41,35 +41,35 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Bus association element
+   * @brief Bus XML element
    */
   struct Bus {
     std::string voltageLevel;  ///< voltage level of the bus
   };
 
   /**
-   * @brief Shunt association element
+   * @brief Shunt XML element
    */
   struct Shunt {
     std::string voltageLevel;  ///< id of the voltage level containing the shunts
   };
 
   /**
-   * @brief Transfo association element
+   * @brief Transfo XML element
    */
   struct Tfo {
     std::string name;  ///< name of the transfo
   };
 
   /**
-   * @brief Line association element
+   * @brief Line XML element
    */
   struct Line {
     std::string name;  ///< name of the line
   };
 
   /**
-   * @brief Macro connect element defining a macro connection of an automaton
+   * @brief Macro connect XML element defining a macro connection of a dynamic model
    */
   struct MacroConnect {
     std::string macroConnection;  ///< macro connection id
@@ -77,7 +77,7 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Macro connection elemen defining a macro connector
+   * @brief Macro connection XML element defining a macro connector
    */
 
   struct MacroConnection {
@@ -86,17 +86,17 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Single association element
+   * @brief Single association XML element
    */
   struct SingleAssociation {
     std::string id;              ///< association id
-    boost::optional<Bus> bus;    ///< list of candidate buses of the association
+    boost::optional<Bus> bus;    ///< bus of the association
     boost::optional<Tfo> tfo;    ///< transfo of the association
     boost::optional<Line> line;  ///< line of the association
   };
 
   /**
-   * @brief Multiple association element
+   * @brief Multiple association XML element
    */
   struct MultipleAssociation {
     std::string id;  ///< association id
@@ -104,17 +104,17 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   };
 
   /**
-   * @brief Automaton element
+   * @brief Dynamic automaton XML element
    */
   struct DynamicAutomaton {
     std::string id;                           ///< automaton id
-    std::string lib;                          ///< automaton librayr name
-    std::vector<MacroConnect> macroConnects;  ///< list of macro connections to use for automaton
+    std::string lib;                          ///< automaton library name
+    std::vector<MacroConnect> macroConnects;  ///< list of macro connections to use
   };
 
  public:
   /// @brief Default constructor
-  AssemblyXmlDocument();
+  AssemblingXmlDocument();
 
   /**
    * @brief Retrieve the list of macro connections
@@ -141,8 +141,8 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   }
 
   /**
-   * @brief Retrieve the list of dynamic automatons
-   * @returns the list of dynamic automatons elements
+   * @brief Retrieve the list of dynamic dynamic models
+   * @returns the list of dynamic dynamic models elements
    */
   const std::vector<DynamicAutomaton>& dynamicAutomatons() const {
     return dynamicAutomatons_;
@@ -285,7 +285,7 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
      */
     explicit DynamicAutomatonHandler(const elementName_type& root);
 
-    boost::optional<DynamicAutomaton> currentDynamicAutomaton;  ///< current automaton element
+    boost::optional<DynamicAutomaton> currentDynamicAutomaton;  ///< current dynamic model element
 
     MacroConnectHandler macroConnectHandler;  ///< macro connect handler
   };
@@ -299,7 +299,7 @@ class AssemblyXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   std::vector<MacroConnection> macroConnections_;          ///< list of macro conenctions
   std::vector<SingleAssociation> singleAssociations_;      ///< list of single associations
   std::vector<MultipleAssociation> multipleAssociations_;  ///< list of multiple associations
-  std::vector<DynamicAutomaton> dynamicAutomatons_;        ///< list of automatons
+  std::vector<DynamicAutomaton> dynamicAutomatons_;        ///< list of dynamic models
 };
 }  // namespace inputs
 }  // namespace dfl

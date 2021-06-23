@@ -9,11 +9,11 @@
 //
 
 /**
- * @file AssemblyXmlDocument.cpp
+ * @file AssemblingXmlDocument.cpp
  * @brief Assembly xml document handler implementation
  */
 
-#include "AssemblyXmlDocument.h"
+#include "AssemblingXmlDocument.h"
 
 namespace parser = xml::sax::parser;
 
@@ -22,7 +22,7 @@ namespace inputs {
 
 static parser::namespace_uri ns("");
 
-AssemblyXmlDocument::AssemblyXmlDocument() :
+AssemblingXmlDocument::AssemblingXmlDocument() :
     macroConnectionHandler_(parser::ElementName(ns, "macroConnection")),
     singleAssociationHandler_(parser::ElementName(ns, "singleAssociation")),
     multipleAssociationHandler_(parser::ElementName(ns, "multipleAssociation")),
@@ -57,39 +57,39 @@ AssemblyXmlDocument::AssemblyXmlDocument() :
   });
 }
 
-AssemblyXmlDocument::ConnectionHandler::ConnectionHandler(const elementName_type& root) {
+AssemblingXmlDocument::ConnectionHandler::ConnectionHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
     currentConnection->var1 = attributes["var1"].as_string();
     currentConnection->var2 = attributes["var2"].as_string();
   });
 }
 
-AssemblyXmlDocument::BusHandler::BusHandler(const elementName_type& root) {
+AssemblingXmlDocument::BusHandler::BusHandler(const elementName_type& root) {
   onStartElement(root,
                  [this](const parser::ElementName&, const attributes_type& attributes) { currentBus->voltageLevel = attributes["voltageLevel"].as_string(); });
 }
 
-AssemblyXmlDocument::ShuntHandler::ShuntHandler(const elementName_type& root) {
+AssemblingXmlDocument::ShuntHandler::ShuntHandler(const elementName_type& root) {
   onStartElement(
       root, [this](const parser::ElementName&, const attributes_type& attributes) { currentShunt->voltageLevel = attributes["voltageLevel"].as_string(); });
 }
 
-AssemblyXmlDocument::TfoHandler::TfoHandler(const elementName_type& root) {
+AssemblingXmlDocument::TfoHandler::TfoHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentTfo->name = attributes["name"].as_string(); });
 }
 
-AssemblyXmlDocument::LineHandler::LineHandler(const elementName_type& root) {
+AssemblingXmlDocument::LineHandler::LineHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentLine->name = attributes["name"].as_string(); });
 }
 
-AssemblyXmlDocument::MacroConnectHandler::MacroConnectHandler(const elementName_type& root) {
+AssemblingXmlDocument::MacroConnectHandler::MacroConnectHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
     currentMacroConnect->id = attributes["id"].as_string();
     currentMacroConnect->macroConnection = attributes["macroConnection"].as_string();
   });
 }
 
-AssemblyXmlDocument::MacroConnectionHandler::MacroConnectionHandler(const elementName_type& root) : connectionHandler(parser::ElementName(ns, "connection")) {
+AssemblingXmlDocument::MacroConnectionHandler::MacroConnectionHandler(const elementName_type& root) : connectionHandler(parser::ElementName(ns, "connection")) {
   onElement(root + ns("connection"), connectionHandler);
 
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentMacroConnection->id = attributes["id"].as_string(); });
@@ -101,7 +101,7 @@ AssemblyXmlDocument::MacroConnectionHandler::MacroConnectionHandler(const elemen
   });
 }
 
-AssemblyXmlDocument::SingleAssociationHandler::SingleAssociationHandler(const elementName_type& root) :
+AssemblingXmlDocument::SingleAssociationHandler::SingleAssociationHandler(const elementName_type& root) :
     busHandler(parser::ElementName(ns, "bus")),
     lineHandler(parser::ElementName(ns, "line")),
     tfoHandler(parser::ElementName(ns, "tfo")) {
@@ -130,7 +130,7 @@ AssemblyXmlDocument::SingleAssociationHandler::SingleAssociationHandler(const el
   });
 }
 
-AssemblyXmlDocument::MultipleAssociationHandler::MultipleAssociationHandler(const elementName_type& root) : shuntHandler(parser::ElementName(ns, "shunt")) {
+AssemblingXmlDocument::MultipleAssociationHandler::MultipleAssociationHandler(const elementName_type& root) : shuntHandler(parser::ElementName(ns, "shunt")) {
   onElement(root + ns("shunt"), shuntHandler);
 
   onStartElement(root,
@@ -143,7 +143,7 @@ AssemblyXmlDocument::MultipleAssociationHandler::MultipleAssociationHandler(cons
   });
 }
 
-AssemblyXmlDocument::DynamicAutomatonHandler::DynamicAutomatonHandler(const elementName_type& root) :
+AssemblingXmlDocument::DynamicAutomatonHandler::DynamicAutomatonHandler(const elementName_type& root) :
     macroConnectHandler(parser::ElementName(ns, "macroConnect")) {
   onElement(root + ns("macroConnect"), macroConnectHandler);
 

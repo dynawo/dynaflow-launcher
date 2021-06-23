@@ -91,7 +91,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateValue(settingFilePath_, config, "SettingPath");
-    helper::updateValue(assemblyFilePath_, config, "AssemblyPath");
+    helper::updateValue(assemblingFilePath_, config, "AssemblyPath");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;

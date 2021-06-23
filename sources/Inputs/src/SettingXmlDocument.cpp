@@ -9,11 +9,11 @@
 //
 
 /**
- * @file SettingsXmlDocument.cpp
+ * @file SettingXmlDocument.cpp
  * @brief Setting xml document handler implementation
  */
 
-#include "SettingsXmlDocument.h"
+#include "SettingXmlDocument.h"
 
 #include "Log.h"
 #include "Message.hpp"
@@ -27,6 +27,8 @@ namespace inputs {
 
 static parser::namespace_uri ns("");
 
+const std::string SettingXmlDocument::origData_("IIDM");
+
 /**
  * @brief Specialization for string of @a createOptionalParameter
  * @param param the parameter to update
@@ -34,13 +36,13 @@ static parser::namespace_uri ns("");
  */
 template<>
 void
-SettingsXmlDocument::createOptionalParameter<std::string>(boost::optional<Parameter<std::string>>& param, const attributes_type& attributes) {
+SettingXmlDocument::createOptionalParameter<std::string>(boost::optional<Parameter<std::string>>& param, const attributes_type& attributes) {
   param = Parameter<std::string>();
   param->value = attributes["value"].as_string();
   param->name = attributes["name"].as_string();
 }
 
-SettingsXmlDocument::SettingsXmlDocument() : setHandler_(parser::ElementName(ns, "set")) {
+SettingXmlDocument::SettingXmlDocument() : setHandler_(parser::ElementName(ns, "set")) {
   onElement(ns("setting/set"), setHandler_);
 
   setHandler_.onStart([this]() { setHandler_.currentSet = Set(); });
@@ -50,7 +52,7 @@ SettingsXmlDocument::SettingsXmlDocument() : setHandler_(parser::ElementName(ns,
   });
 }
 
-SettingsXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
+SettingXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
     countHandler(parser::ElementName(ns, "count")),
     refHandler(parser::ElementName(ns, "ref")),
     referenceHandler(parser::ElementName(ns, "reference")),
@@ -64,7 +66,7 @@ SettingsXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
 
   countHandler.onStart([this]() { countHandler.currentCount = Count(); });
   countHandler.onEnd([this]() {
-    currentSet->count.push_back(*countHandler.currentCount);
+    currentSet->counts.push_back(*countHandler.currentCount);
     countHandler.currentCount.reset();
   });
 
@@ -105,13 +107,13 @@ SettingsXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
 }
 
 bool
-SettingsXmlDocument::CountHandler::check(const std::string& name) {
+SettingXmlDocument::CountHandler::check(const std::string& name) {
   static const std::vector<std::string> keys = {"nbShunts", "nbShuntsLV", "nbShuntsHV"};
 
   return std::find(keys.begin(), keys.end(), name) != keys.end();
 }
 
-SettingsXmlDocument::CountHandler::CountHandler(const elementName_type& root) {
+SettingXmlDocument::CountHandler::CountHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
     currentCount->id = attributes["id"].as_string();
     const auto& name = attributes["name"].as_string();
@@ -122,7 +124,7 @@ SettingsXmlDocument::CountHandler::CountHandler(const elementName_type& root) {
   });
 }
 
-SettingsXmlDocument::RefHandler::RefHandler(const elementName_type& root) {
+SettingXmlDocument::RefHandler::RefHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
     currentRef->id = attributes["id"].as_string();
     currentRef->name = attributes["name"].as_string();
@@ -131,13 +133,17 @@ SettingsXmlDocument::RefHandler::RefHandler(const elementName_type& root) {
   });
 }
 
-SettingsXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type& root) {
+SettingXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
     if (attributes.has("componentId")) {
       currentReference->componentId = attributes["componentId"].as_string();
     }
     currentReference->name = attributes["name"].as_string();
     currentReference->origName = attributes["origName"].as_string();
+
+    if (attributes["origData"].as_string() != origData_) {
+      throw std::runtime_error(MESS(UnsupportedOrigDataReference, attributes["origData"].as_string(), currentReference->name));
+    }
 
     auto type = attributes["type"].as_string();
     if (type == "DOUBLE") {
@@ -154,7 +160,7 @@ SettingsXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type& 
   });
 }
 
-SettingsXmlDocument::ParameterHandler::ParameterHandler(const elementName_type& root) {
+SettingXmlDocument::ParameterHandler::ParameterHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
     auto type = attributes["type"].as_string();
     if (type == "INT") {
@@ -172,7 +178,7 @@ SettingsXmlDocument::ParameterHandler::ParameterHandler(const elementName_type& 
 }
 
 std::string
-SettingsXmlDocument::Reference::toString(DataType type) {
+SettingXmlDocument::Reference::toString(DataType type) {
   switch (type) {
   case DataType::DOUBLE:
     return "DOUBLE";
