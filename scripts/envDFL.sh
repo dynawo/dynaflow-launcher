@@ -106,6 +106,7 @@ where [option] can be:
 
         =========== Others
         help                                    show all available options
+        format                                  format modified git files using clang-format
         version                                 show DynaFlow Launcher version
         reset-environment                       reset all environment variables set by DynaFlow Launcher
 "
@@ -195,6 +196,7 @@ cmake_configure() {
 }
 
 cmake_build() {
+    apply_clang_format
     cmake --build $DYNAFLOW_LAUNCHER_BUILD_DIR --target install -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED
 }
 
@@ -248,6 +250,19 @@ update_references() {
     $HERE/updateMainReference.py
 }
 
+apply_clang_format() {
+    CLANGF=$(which clang-format)
+    if [ -z $CLANGF ]; then
+        echo "WARNING: Clang format not found"
+    else
+        pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
+        for file in $(git diff-index --name-only HEAD | grep -iE '\.(cpp|cc|h|hpp)$'); do
+            $CLANGF -i $file
+        done
+        popd > /dev/null
+    fi
+}
+
 #################################
 ########### Main script #########
 #################################
@@ -278,6 +293,9 @@ case $1 in
         ;;
     update-references)
         update_references || error_exit "Failed to update MAIN references"
+        ;;
+    format)
+        apply_clang_format || error_exit "Failed to format files"
         ;;
     version)
         version
