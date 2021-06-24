@@ -42,7 +42,7 @@ class Context {
    */
   struct ContextDef {
     boost::filesystem::path networkFilepath;     ///< network filepath
-    boost::filesystem::path settingsFilePath;    ///< setting file path for dynamic data base
+    boost::filesystem::path settingFilePath;     ///< setting file path for dynamic data base
     boost::filesystem::path assemblingFilePath;  ///< assembling file path for dynamic data base
     std::string dynawLogLevel;                   ///< string representation of the dynawo log level
     boost::filesystem::path parFileDir;          ///< parameter file directory

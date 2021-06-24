@@ -44,21 +44,21 @@ class DynamicDataBaseManager {
    * @returns the setting document handler
    */
   const SettingXmlDocument& settingDocument() const {
-    return settingsDoc_;
+    return settingDoc_;
   }
 
  public:
   /**
    * @brief Constructor
-   * @param settingsFilePath the setting document file path
+   * @param settingFilePath the setting document file path
    * @param assemblingFilePath the assembling document file path
    */
-  DynamicDataBaseManager(const boost::filesystem::path& settingsFilePath, const boost::filesystem::path& assemblingFilePath);
+  DynamicDataBaseManager(const boost::filesystem::path& settingFilePath, const boost::filesystem::path& assemblingFilePath);
 
  private:
   // Configuration
   AssemblingXmlDocument assemblingDoc_;  ///< assembling document handler
-  SettingXmlDocument settingsDoc_;       ///< setting document handler
+  SettingXmlDocument settingDoc_;        ///< setting document handler
 };
 
 }  // namespace inputs

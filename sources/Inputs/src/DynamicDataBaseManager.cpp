@@ -101,9 +101,9 @@ parserFile(const boost::filesystem::path& filepath, const parser::ParserFactory&
 }
 }  // namespace helper
 
-DynamicDataBaseManager::DynamicDataBaseManager(const boost::filesystem::path& settingsFilePath, const boost::filesystem::path& assemblingFilePath) {
+DynamicDataBaseManager::DynamicDataBaseManager(const boost::filesystem::path& settingFilePath, const boost::filesystem::path& assemblingFilePath) {
   parser::ParserFactory factory;
-  helper::parserFile(settingsFilePath, factory, settingsDoc_);
+  helper::parserFile(settingFilePath, factory, settingDoc_);
   helper::parserFile(assemblingFilePath, factory, assemblingDoc_);
 }
 
