@@ -4,6 +4,7 @@
     <par name="uMin" type="DOUBLE" value="236.0"/>
     <par name="uMax" type="DOUBLE" value="243.5"/>
     <par name="delay" type="DOUBLE" value="10.0"/>
+    <par name="dummy" type="STRING" value="test"/>
     <count id="SHUNTS_MODELE_1_VL4" name="nbShunts"/>
   </set>
   <set id="MODELE_1_P3">
@@ -78,6 +79,8 @@
     <reference componentId="@TFO@" name="phaseShifter_iMax" origData="IIDM" origName="iMax" type="DOUBLE"/>
     <reference componentId="@TFO@" name="phaseShifter_iStop" origData="IIDM" origName="iStop" type="DOUBLE"/>
     <reference componentId="@TFO@" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" type="INT"/>
+    <reference componentId="@TFO@" name="test" origData="IIDM" origName="test" type="STRING"/>
+    <reference componentId="@TFO@" name="testb" origData="IIDM" origName="testb" type="BOOL"/>
   </set>
   <set id="DM_MUR">
     <par name="phaseShifter_sign" type="DOUBLE" value="-1"/>
@@ -138,13 +141,13 @@
     <par name="currentLimitAutomaton_tLagBeforeActing" type="DOUBLE" value="30"/>
     <par name="currentLimitAutomaton_OrderToEmit" type="INT" value="4"/>
   </set>
-  <set id="DM_ADA_ARDOISE">
+  <set id="DM_ARDOISE">
     <par name="currentLimitAutomaton_IThresholdSummer" type="DOUBLE" value="564"/>
     <par name="currentLimitAutomaton_IThresholdWinter1" type="DOUBLE" value="658"/>
     <par name="currentLimitAutomaton_IThresholdWinter2" type="DOUBLE" value="741"/>
     <par name="currentLimitAutomaton_IThresholdIntermediate1" type="DOUBLE" value="609"/>
     <par name="currentLimitAutomaton_IThresholdIntermediate2" type="DOUBLE" value="609"/>
-    <ref id="MESURE_I_ADA_ARDOISE" name="currentLimitAutomaton_Season" tag="@SAISON@" type="STRING"/>
+    <ref id="MESURE_I_ARDOISE" name="currentLimitAutomaton_Season" tag="@SAISON@" type="STRING"/>
     <par name="currentLimitAutomaton_Running" type="BOOL" value="true"/>
     <par name="currentLimitAutomaton_tLagBeforeActing" type="DOUBLE" value="20"/>
     <par name="currentLimitAutomaton_OrderToEmit" type="INT" value="4"/>

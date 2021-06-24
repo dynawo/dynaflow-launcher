@@ -49,6 +49,7 @@ TEST(SettingXmlDocument, readFile) {
   ASSERT_EQ(set.boolParameters.size(), 0);
   ASSERT_EQ(set.integerParameters.size(), 0);
   ASSERT_EQ(set.doubleParameters.size(), 3);
+  ASSERT_EQ(set.stringParameters.size(), 1);
   auto param = set.doubleParameters[0];
   ASSERT_EQ(param.name, "uMin");
   ASSERT_EQ(param.value, 236.0);
@@ -58,6 +59,8 @@ TEST(SettingXmlDocument, readFile) {
   param = set.doubleParameters[2];
   ASSERT_EQ(param.name, "delay");
   ASSERT_EQ(param.value, 10.0);
+  ASSERT_EQ(set.stringParameters.front().name, "dummy");
+  ASSERT_EQ(set.stringParameters.front().value, "test");
   ASSERT_EQ(set.references.size(), 0);
   ASSERT_EQ(set.refs.size(), 0);
 
@@ -115,8 +118,8 @@ TEST(SettingXmlDocument, readFile) {
     ASSERT_EQ(set.doubleParameters[i].name, values6[i].first);
     ASSERT_EQ(set.doubleParameters[i].value, values6[i].second);
   }
-  ASSERT_EQ(set.references.size(), 8);
-  std::array<std::tuple<std::string, std::string, SettingXmlDocument::Reference::DataType>, 8> values8 = {
+  ASSERT_EQ(set.references.size(), 10);
+  std::array<std::tuple<std::string, std::string, SettingXmlDocument::Reference::DataType>, 10> values8 = {
       std::make_tuple("phaseShifter_I0", "i1", SettingXmlDocument::Reference::DataType::DOUBLE),
       std::make_tuple("phaseShifter_tap0", "tap0", SettingXmlDocument::Reference::DataType::INT),
       std::make_tuple("phaseShifter_tapMin", "tapMin", SettingXmlDocument::Reference::DataType::INT),
@@ -124,7 +127,9 @@ TEST(SettingXmlDocument, readFile) {
       std::make_tuple("phaseShifter_regulating0", "regulating", SettingXmlDocument::Reference::DataType::DOUBLE),
       std::make_tuple("phaseShifter_iMax", "iMax", SettingXmlDocument::Reference::DataType::DOUBLE),
       std::make_tuple("phaseShifter_iStop", "iStop", SettingXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_increasePhase", "increasePhase", SettingXmlDocument::Reference::DataType::INT)};
+      std::make_tuple("phaseShifter_increasePhase", "increasePhase", SettingXmlDocument::Reference::DataType::INT),
+      std::make_tuple("test", "test", SettingXmlDocument::Reference::DataType::STRING),
+      std::make_tuple("testb", "testb", SettingXmlDocument::Reference::DataType::BOOL)};
   for (unsigned int i = 0; i < values8.size(); ++i) {
     ASSERT_TRUE(set.references[i].componentId.has_value());
     ASSERT_EQ(set.references[i].componentId.get(), "@TFO@");
