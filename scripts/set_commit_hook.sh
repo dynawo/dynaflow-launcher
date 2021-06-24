@@ -78,7 +78,24 @@ fi
 if [[ \"\$whitespace_present\" == \"yes\" || \"\$tab_present\" == \"yes\" ]]; then
   exit 1
 fi
-git diff-index --check --cached HEAD -- ':(exclude)*/reference/*' ':(exclude)*.patch'"
+git diff-index --check --cached HEAD -- ':(exclude)*/reference/*' ':(exclude)*.patch'
+
+check_format_file() {
+  file=\$1
+  if [ -f \$file ]; then
+    # TODO prefer use 'clang-format --dry-run' with new versions of clang-foramt
+    nb=\$(clang-format -output-replacements-xml \$file | grep -c \"<replacement \")
+    # there is always a false positive due to header sorting
+    if [ \$nb -gt 1 ]; then
+      echo \"Commit doesn't match format for file \$file: run clang-format \"
+      exit 1
+    fi
+  fi
+}
+
+for file in \`git diff-index --cached --name-only HEAD | grep -iE '\.(cpp|cc|h|hpp)\$' \` ; do
+  check_format_file \"\$file\"
+done"
   if [ -f "$DFL_HOME/.git/hooks/pre-commit" ]; then
     current_file=$(cat $DFL_HOME/.git/hooks/pre-commit)
     if [ "$hook_file_master" != "$current_file" ]; then

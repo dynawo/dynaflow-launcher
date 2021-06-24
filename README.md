@@ -87,7 +87,10 @@ $> ./myEnvDFL.sh build-tests-coverage
 
 ## Developement standard
 ### Check style
-The check style, based on Dynawo's, is based on a [clang-format file](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) using [clang-format](https://clang.llvm.org/docs/ClangFormat.html). It is recommended for developpers to apply it before commiting to ensure coherence with future developpements.
+The check style, based on Dynawo's, is based on a [clang-format file](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) using [clang-format](https://clang.llvm.org/docs/ClangFormat.html).
+
+The check style is checked before commiting. This check is performed by hooks. This hook is installed automatically when using the script myEnvDFL.sh with any option.
+The commit will be refused if formatting was not applied to the commited file.
 
 ### SCM
 git commits have a standard pattern, similar to the one in Dynawo core. This pattern can be checked by hooks.
