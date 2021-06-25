@@ -154,7 +154,7 @@ Contingencies::toString(ElementInvalidReason reason) {
       return MESS(NotInMainConnectedComponent, "");
 
     default:
-        __builtin_unreachable();
+      throw std::logic_error("Gotten an unexpected error (or a corrupted value)");
   }
 }
 

@@ -35,6 +35,7 @@
 
 #include <DYNScenario.h>
 #include <DYNScenarios.h>
+#include <DYNConverterInterface.h>
 #include <DYNMultipleJobsFactory.h>
 #include <DYNSystematicAnalysisLauncher.h>
 
@@ -280,10 +281,11 @@ boost::optional<Contingencies::ElementInvalidReason>
 Context::checkHvdcLine(const std::string& hlineId) const {
   const auto item = caches_.hvdcLines.find(hlineId);
   if (item != caches_.hvdcLines.end()) {
-      // TODO(sheosi): Check that the connected converters are in the main component
-      /*if (!areInMainConnectedComponent({l->getConverter1()})) {
+      if (!areInMainConnectedComponent({
+        item->second->getConverter1()->getBusInterface(),
+        item->second->getConverter2()->getBusInterface()})) {
         return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
-      }*/
+      }
       return boost::none; // No problem found
   }
 
@@ -333,7 +335,7 @@ Context::checkContingencyElement(const std::string& id, Contingencies::Type type
       return boost::none;
 
     default:
-        __builtin_unreachable();
+      throw std::logic_error("Gotten an unexpected type (or a corrupted value)");
   }
 }
 
