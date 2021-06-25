@@ -58,7 +58,12 @@ TEST(Job, write) {
 
   auto outputs = jobEntry->getOutputsEntry();
   ASSERT_EQ("outputs", outputs->getOutputsDirectory());
+  #if _DEBUG_
+  // On debug we alsways ask for a timeline
+  ASSERT_NE(nullptr, outputs->getTimelineEntry());
+  #else
   ASSERT_EQ(nullptr, outputs->getTimelineEntry());
+  #endif
   ASSERT_EQ(nullptr, outputs->getInitValuesEntry());
   auto appenders = outputs->getLogsEntry()->getAppenderEntries();
   ASSERT_EQ(1, appenders.size());
