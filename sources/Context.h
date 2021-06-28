@@ -44,7 +44,7 @@ class Context {
     boost::filesystem::path networkFilepath;     ///< network filepath
     boost::filesystem::path settingFilePath;     ///< setting file path for dynamic data base
     boost::filesystem::path assemblingFilePath;  ///< assembling file path for dynamic data base
-    std::string dynawLogLevel;                   ///< string representation of the dynawo log level
+    std::string dynawoLogLevel;                  ///< string representation of the dynawo log level
     boost::filesystem::path parFileDir;          ///< parameter file directory
     boost::filesystem::path dynawoResDir;        ///< DYNAWO resources
     std::string locale;                          ///< localization
