@@ -159,8 +159,9 @@ Context::execute() {
   simu_context->setInputDirectory(path.generic_string() + "/");
   simu_context->setWorkingDirectory(config_.outputDir().generic_string() + "/");
 
-  // This SHALL be the last log performed before reseting traces in DynaFlowLauncher,
+  // This shall be the last log performed before building simulation,
   // because simulation constructor will re-initialize traces for Dynawo
+  // Since DFL traces are persistent, they can be re-used after simulation is performed outside this function
   LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
 
   auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
