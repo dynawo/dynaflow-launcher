@@ -58,7 +58,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
    * @brief Transfo XML element
    */
   struct Tfo {
-    std::string name;  ///< name of the transfo
+    std::string name;  ///< name of the transformor
   };
 
   /**
@@ -91,7 +91,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   struct SingleAssociation {
     std::string id;              ///< association id
     boost::optional<Bus> bus;    ///< bus of the association
-    boost::optional<Tfo> tfo;    ///< transfo of the association
+    boost::optional<Tfo> tfo;    ///< transformor of the association
     boost::optional<Line> line;  ///< line of the association
   };
 
@@ -199,7 +199,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
      */
     explicit TfoHandler(const elementName_type& root);
 
-    boost::optional<Tfo> currentTfo;  ///< current transfo element
+    boost::optional<Tfo> currentTfo;  ///< current transformor element
   };
 
   /**
@@ -257,7 +257,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
 
     BusHandler busHandler;    ///< bus element handler
     LineHandler lineHandler;  ///< line element handler
-    TfoHandler tfoHandler;    ///< transfo element handler
+    TfoHandler tfoHandler;    ///< transformor element handler
   };
 
   /**

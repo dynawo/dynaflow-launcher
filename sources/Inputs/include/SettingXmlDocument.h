@@ -123,7 +123,7 @@ class SettingXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
      */
     explicit ParameterHandler(const elementName_type& root);
 
-    boost::optional<Parameter<bool>> currentBoolParameter;           ///< current boolean parameters
+    boost::optional<Parameter<bool>> currentBoolParameter;           ///< current boolean parameter
     boost::optional<Parameter<double>> currentDoubleParameter;       ///< current double parameter
     boost::optional<Parameter<int>> currentIntegerParameter;         ///< current integer parameter
     boost::optional<Parameter<std::string>> currentStringParameter;  ///< current string parameter

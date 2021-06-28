@@ -113,7 +113,7 @@ Context::exportOutputs() {
   file::path outputDir(config_.outputDir());
 
   // Job
-  outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawLogLevel));
+  outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel));
   jobEntry_ = jobWriter.write();
 #if _DEBUG_
   outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
