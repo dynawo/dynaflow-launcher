@@ -12,6 +12,9 @@ set(SOURCES
   src/Node.cpp
   src/Configuration.cpp
   src/HvdcLine.cpp
+  src/DynamicDataBaseManager.cpp
+  src/SettingXmlDocument.cpp
+  src/AssemblingXmlDocument.cpp
 )
 
 add_library(inputs ${LINK_TYPE} ${SOURCES})
@@ -27,6 +30,8 @@ PUBLIC
 DynaFlowLauncher::common
 Boost::filesystem
 Dynawo::dynawo_DataInterface
+XMLSAXParser${LibXML_LINK_SUFFIX}
+LibXml2::LibXml2
 
 PRIVATE
 Dynawo::dynawo_DataInterfaceFactory

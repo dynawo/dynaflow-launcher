@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <!-- THIS SETTING XSD IS WRONG BUT MUST KEEP ITS NAME FOR TESTS PURPOSES -->
+  <xs:element name="setting">
+    <xs:complexType>
+      <xs:sequence maxOccurs="unbounded">
+        <xs:element name="set_wrong" type="singleSet"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="singleSet">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="par" type="Parameter"/>
+      <xs:element name="ref" type="Reference"/>
+      <xs:element name="reference" type="ReferenceIIDM"/>
+      <xs:element name="count" type="Count"/>
+    </xs:choice>
+    <xs:attribute name="id" use="required" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="Parameter">
+    <xs:attribute name="type" use="required" type="ParameterType"/>
+    <xs:attribute name="value" use="required" type="xs:string"/>
+    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Reference">
+    <xs:attribute name="id" use="required" type="xs:string"/>
+    <xs:attribute name="tag" use="required" type="xs:string"/>
+    <xs:attribute name="type" use="required" type="ParameterType"/>
+    <xs:attribute name="name" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ReferenceIIDM">
+    <xs:attribute name="origData" use="required" type="xs:string"/>
+    <xs:attribute name="origName" use="required" type="xs:string"/>
+    <xs:attribute name="type" use="required" type="ParameterType"/>
+    <xs:attribute name="name" use="required" type="xs:string"/>
+    <xs:attribute name="componentId" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Count">
+    <xs:attribute name="name" use="required" type="xs:string"/>
+    <xs:attribute name="id" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:simpleType name="ParameterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INT"/>
+      <xs:enumeration value="DOUBLE"/>
+      <xs:enumeration value="BOOL"/>
+      <xs:enumeration value="STRING"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
