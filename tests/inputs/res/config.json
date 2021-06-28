@@ -10,10 +10,10 @@
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
     "ActivePowerCompensation": "P",
-    "StartTimestamp": 10,
-    "EndTimestamp": 120,
+    "StartTime": 10,
+    "EndTime": 120,
     "sa": {
-      "ContingenciesTimestamp": 50,
+      "TimeOfEvent": 50,
       "NumberOfThreads": 6
     }
   }
