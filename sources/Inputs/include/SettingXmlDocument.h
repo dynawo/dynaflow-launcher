@@ -57,7 +57,7 @@ class SettingXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
     /// @brief Type of data in the reference
     enum class DataType {
       DOUBLE = 0,  ///< Double type
-      INT,         ///< Interger type
+      INT,         ///< Integer type
       BOOL,        ///< Boolean type
       STRING       ///< String type
     };

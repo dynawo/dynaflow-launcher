@@ -58,7 +58,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
    * @brief Transfo XML element
    */
   struct Tfo {
-    std::string name;  ///< name of the transformor
+    std::string name;  ///< name of the transformer
   };
 
   /**
@@ -91,7 +91,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   struct SingleAssociation {
     std::string id;              ///< association id
     boost::optional<Bus> bus;    ///< bus of the association
-    boost::optional<Tfo> tfo;    ///< transformor of the association
+    boost::optional<Tfo> tfo;    ///< transformer of the association
     boost::optional<Line> line;  ///< line of the association
   };
 
@@ -199,7 +199,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
      */
     explicit TfoHandler(const elementName_type& root);
 
-    boost::optional<Tfo> currentTfo;  ///< current transformor element
+    boost::optional<Tfo> currentTfo;  ///< current transformer element
   };
 
   /**
@@ -257,7 +257,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
 
     BusHandler busHandler;    ///< bus element handler
     LineHandler lineHandler;  ///< line element handler
-    TfoHandler tfoHandler;    ///< transformor element handler
+    TfoHandler tfoHandler;    ///< transformer element handler
   };
 
   /**
@@ -296,7 +296,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   MultipleAssociationHandler multipleAssociationHandler_;  ///< Multi association handler
   DynamicAutomatonHandler dynamicAutomatonHandler_;        ///< Automaton handler
 
-  std::vector<MacroConnection> macroConnections_;          ///< list of macro conenctions
+  std::vector<MacroConnection> macroConnections_;          ///< list of macro connections
   std::vector<SingleAssociation> singleAssociations_;      ///< list of single associations
   std::vector<MultipleAssociation> multipleAssociations_;  ///< list of multiple associations
   std::vector<DynamicAutomaton> dynamicAutomatons_;        ///< list of dynamic models

@@ -105,7 +105,7 @@ class Context {
    *
    * Checks that the found slack node is compatible with the main connex component
    *
-   * @returns true if comaptible, false if not
+   * @returns true if compatible, false if not
    */
   bool checkConnexity() const;
 
