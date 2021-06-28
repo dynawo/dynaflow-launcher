@@ -119,7 +119,6 @@ main(int argc, char* argv[]) {
     boost::timer timerSimu;
     context.execute();
 
-    // Traces must be re-initiliazed to append to current DynaflowLauncher log file as simulation had modified it
     LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
     LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
