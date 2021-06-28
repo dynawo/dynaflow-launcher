@@ -90,8 +90,8 @@ class Job {
    */
   boost::shared_ptr<job::JobEntry> write();
 
-  static void setStartAndDuration(uint32_t startTimestamp, uint32_t durationTime) {
-    timeStart_ = std::chrono::seconds{startTimestamp};
+  static void setStartAndDuration(uint32_t startTime, uint32_t durationTime) {
+    timeStart_ = std::chrono::seconds{startTime};
     durationSimu_ = std::chrono::seconds{durationTime};
   }
 

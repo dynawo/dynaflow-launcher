@@ -99,30 +99,30 @@ class Configuration {
   }
 
   /**
-   * @brief Get the timestamp at which the simulation will start
+   * @brief Get the Time at which the simulation will start
    *
    * @returns the parameter value
    */
-  uint32_t getStartTimestamp() const {
-    return startTimestamp_;
+  float getStartTime() const {
+    return startTime_;
   }
 
   /**
-   * @brief Get the timestamp at which the simulation will end
+   * @brief Get the Time at which the simulation will end
    *
    * @returns the parameter value
    */
-  uint32_t getEndTimestamp() const {
-    return endTimestamp_;
+  float getEndTime() const {
+    return endTime_;
   }
 
   /**
-   * @brief Retrieves the timestamp at which the contingencies will happen
+   * @brief Retrieves the Time at which the contingencies will happen
    *
    * @returns the parameter value
    */
-  double getContingenciesTimestamp() const {
-    return contingenciesTimestamp_;
+  double getTimeOfEvent() const {
+    return timeOfEvent_;
   }
 
   /**
@@ -130,7 +130,7 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  uint16_t getNumberOfThreads() const {
+  int getNumberOfThreads() const {
     return numberOfThreads_;
   }
 
@@ -179,11 +179,11 @@ class Configuration {
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
   boost::filesystem::path settingFilePath_;                                          ///< setting file path
   boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
-  uint32_t startTimestamp_ = 0;                                                      ///< Moment (in seconds) at which starts the simulation
-  uint32_t endTimestamp_ = 100;                                                      ///< Moment (in seconds) at which ends the simulation
+  float startTime_ = 0;                                                              ///< Moment (in seconds) at which starts the simulation
+  float endTime_ = 100;                                                              ///< Moment (in seconds) at which ends the simulation
   // Security Analysis only
-  double contingenciesTimestamp_ = 80.0;                                             ///< When will the contengencies be simulated
-  uint16_t numberOfThreads_ = 4;                                                     ///< The number of threads used to simulate
+  double timeOfEvent_ = 80.0;                                                        ///< When will the contengencies be simulated
+  int numberOfThreads_ = 4;                                                          ///< The number of threads used to simulate
 };
 
 }  // namespace inputs

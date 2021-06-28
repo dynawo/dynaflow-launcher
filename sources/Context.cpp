@@ -421,8 +421,8 @@ Context::exportOutputs() {
 
   // create output directory
   file::path outputDir(config_.outputDir());
-  outputs::Job::setStartAndDuration(config_.getStartTimestamp(),
-    config_.getEndTimestamp() - config_.getStartTimestamp());
+  outputs::Job::setStartAndDuration(config_.getStartTime(),
+    config_.getEndTime() - config_.getStartTime());
 
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel));
@@ -499,7 +499,7 @@ Context::exportOutputsContingency(const std::shared_ptr<inputs::Contingencies::C
   // Specific PAR for contingency
   file::path parEvent(config_.outputDir());
   parEvent.append(basenameEvent + ".par");
-  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, config_.getContingenciesTimestamp()));
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, config_.getTimeOfEvent()));
   parEventWriter.write();
 
 #if _DEBUG_

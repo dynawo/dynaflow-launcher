@@ -12,10 +12,10 @@
     "ActivePowerCompensation": "P",
     "SettingPath": "res/setting.xml",
     "AssemblyPath": "res/assembling.xml",
-    "StartTimestamp": 10,
-    "EndTimestamp": 120,
+    "StartTime": 10,
+    "EndTime": 120,
     "sa": {
-      "ContingenciesTimestamp": 50,
+      "TimeOfEvent": 50,
       "NumberOfThreads": 6
     }
   }

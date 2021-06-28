@@ -92,9 +92,9 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateValue(settingFilePath_, config, "SettingPath");
     helper::updateValue(assemblingFilePath_, config, "AssemblyPath");
-    helper::updateValue(startTimestamp_, config, "StartTimestamp");
-    helper::updateValue(endTimestamp_, config, "EndTimestamp");
-    helper::updateValue(contingenciesTimestamp_, config, "sa.ContingenciesTimestamp");
+    helper::updateValue(startTime_, config, "StartTime");
+    helper::updateValue(endTime_, config, "EndTime");
+    helper::updateValue(timeOfEvent_, config, "sa.TimeOfEvent");
     helper::updateValue(numberOfThreads_, config, "sa.NumberOfThreads");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
