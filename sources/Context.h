@@ -19,6 +19,7 @@
 
 #include "Algo.h"
 #include "Configuration.h"
+#include "DynamicDataBaseManager.h"
 #include "NetworkManager.h"
 
 #include <JOBJobEntry.h>
@@ -40,11 +41,13 @@ class Context {
    * @brief Context definition
    */
   struct ContextDef {
-    boost::filesystem::path networkFilepath;   ///< network filepath
-    std::string dynawLogLevel;                 ///< string representation of the dynawo log level
-    boost::filesystem::path parFileDir;        ///< parameter file directory
-    boost::filesystem::path dynawoResDir;      ///< DYNAWO resources
-    std::string locale;                        ///< localization
+    boost::filesystem::path networkFilepath;     ///< network filepath
+    boost::filesystem::path settingFilePath;     ///< setting file path for dynamic data base
+    boost::filesystem::path assemblingFilePath;  ///< assembling file path for dynamic data base
+    std::string dynawLogLevel;                   ///< string representation of the dynawo log level
+    boost::filesystem::path parFileDir;          ///< parameter file directory
+    boost::filesystem::path dynawoResDir;        ///< DYNAWO resources
+    std::string locale;                          ///< localization
   };
 
  public:
@@ -121,9 +124,10 @@ class Context {
   void walkNodesMain();
 
  private:
-  ContextDef def_;                         ///< context definition
-  inputs::NetworkManager networkManager_;  ///< network manager
-  const inputs::Configuration& config_;    ///< configuration
+  ContextDef def_;                                         ///< context definition
+  inputs::NetworkManager networkManager_;                  ///< network manager
+  inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
+  const inputs::Configuration& config_;                    ///< configuration
 
   std::string basename_;                                                                   ///< basename for all files
   std::vector<inputs::NetworkManager::ProcessNodeCallback> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
@@ -134,7 +138,7 @@ class Context {
   std::vector<algo::GeneratorDefinition> generators_;                    ///< generators found
   std::vector<algo::LoadDefinition> loads_;                              ///< loads found
   algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines_;  ///< hvdc lines found
-  algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;              ///< map of bus ids to a generator that regulates them
+  algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };

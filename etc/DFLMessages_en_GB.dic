@@ -7,6 +7,22 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+//------------------ Inputs -------------------------
+BadActivePowerCompensation    =     ActivePowerCompensation was given with the unsupported value %1%. Supported values are: PMAX, P or targetP. Default value PMAX will be used
+DynModelFileNotFound          =     DynModel file %1% cannot be opened
+DynModelFileXSDNotFound       =     XSD file not found to validate %1% : XSD validation is disabled
+DynModelFileReadError         =     Cannot parse %1% : %2%
+UnsupportedCountName          =     Unsupported count name %1% for setting set
+UnsupportedDataTypeReference  =     Unsupported data type %1% for reference %2% in setting file
+UnsupportedOrigDataReference  =     Unsupported data origin %1% for reference %2% in setting file
+UnsupportedParameterDataType  =     Unsupported set parameter type %1% in setting file
+
+//------------------ Algo ---------------------------
+InvalidDiagramAllPEqual       =     The diagram of the generator %1% is invalid, all reactive curve points have the same p. The default model will be used for this generator
+InvalidDiagramQminsEqualQmaxs =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. The default model will be used for this generator
+InvalidDiagramOnePoint        =     The diagram of the generator %1% is invalid, there was only one reactive curve point provided. The default model will be used for this generator
+InvalidDiagramBothError       =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. Also all reactive curve points have the same p. The default model will be used for this generator
+HvdcLineBadInitialization     =     The hvdcLine %1%'s converters were badly initialized
 //------------------ Main ---------------------------
 NetworkSlackNodeNotFound      =     Network slack node requested but not found in network input file %1%
 InputsInfo                    =     Processing network input file %1% and config file %2%
@@ -21,9 +37,3 @@ SimulationEnded               =     Simulation %1% ended successfully (wall-time
 DFLEnded                      =     DynaFlowLauncher %1% ended successfully (wall-time: %2%s)
 InitEnd                       =     End of initialization (wall-time: %1%s)
 FilesEnd                      =     End of files generation (wall-time: %1%s)
-InvalidDiagramAllPEqual       =     The diagram of the generator %1% is invalid, all reactive curve points have the same p. The default model will be used for this generator
-InvalidDiagramQminsEqualQmaxs =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. The default model will be used for this generator
-InvalidDiagramOnePoint        =     The diagram of the generator %1% is invalid, there was only one reactive curve point provided. The default model will be used for this generator
-InvalidDiagramBothError       =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. Also all reactive curve points have the same p. The default model will be used for this generator
-BadActivePowerCompensation    =     ActivePowerCompensation was given with the unsupported value %1%. Supported values are: PMAX, P or targetP. Default value PMAX will be used
-HvdcLineBadInitialization     =     The hvdcLine %1%'s converters were badly initialized

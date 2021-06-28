@@ -39,6 +39,7 @@ namespace dfl {
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     def_(def),
     networkManager_(def.networkFilepath),
+    dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
     config_(config),
     basename_{},
     slackNode_{},
