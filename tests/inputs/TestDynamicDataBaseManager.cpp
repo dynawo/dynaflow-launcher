@@ -33,7 +33,7 @@ TEST(TestDynamicDataBaseManager, base) {
   const auto& dynamicAutomatons = manager.assemblingDocument().dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 2);
 
-  // The rest is considered covered by the unit tests of the lower classes
+  // The rest is considered covered by the unit tests of the members classes
 }
 
 size_t dummySize = 0;

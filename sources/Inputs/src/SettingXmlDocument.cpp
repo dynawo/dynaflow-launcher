@@ -82,7 +82,7 @@ SettingXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
     referenceHandler.currentReference.reset();
   });
 
-  // parameter optional will be initialized after according to the type of parameter : no onStart here
+  // parameter optional will be initialized later on according to the type of parameter : no onStart here
   parameterHandler.onEnd([this]() {
     // by construction, one and only one is set
     if (parameterHandler.currentBoolParameter) {
@@ -94,7 +94,7 @@ SettingXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
     } else if (parameterHandler.currentStringParameter) {
       currentSet->stringParameters.push_back(*parameterHandler.currentStringParameter);
     } else {
-      // Shouldn't happen, an exception should be throw earlier in the sequence
+      // Shouldn't happen, an exception should be thrown earlier in the sequence
 #if _DEBUG_
       assert(false);
 #endif
