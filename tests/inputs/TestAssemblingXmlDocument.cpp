@@ -45,7 +45,7 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(macro.connections.front().var1, "U_IMPIN");
   ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
   macro = macroConnections[1];
-  ASSERT_EQ(macro.id, "VCSToControlledShunts");
+  ASSERT_EQ(macro.id, "ToControlledShunts");
   ASSERT_EQ(macro.connections.size(), 3);
   std::array<std::tuple<std::string, std::string>, 3> connect_values = {std::make_tuple("shunt_state_@INDEX@", "@NAME@_state"),
                                                                         std::make_tuple("shunt_isCapacitor_@INDEX@", "@NAME@_isCapacitor"),
@@ -90,5 +90,5 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(macroConnects[0].id, "MESURE_MODELE_1_VL4");
   ASSERT_EQ(macroConnects[0].macroConnection, "ToUMeasurement");
   ASSERT_EQ(macroConnects[1].id, "SHUNTS_MODELE_1_VL4");
-  ASSERT_EQ(macroConnects[1].macroConnection, "VCSToControlledShunts");
+  ASSERT_EQ(macroConnects[1].macroConnection, "ToControlledShunts");
 }
