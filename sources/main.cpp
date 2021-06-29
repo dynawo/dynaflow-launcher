@@ -19,7 +19,7 @@
 #include <DYNInitXml.h>
 #include <DYNIoDico.h>
 #include <boost/filesystem.hpp>
-#include <boost/timer.hpp>
+#include <chrono>
 #include <cstdlib>
 #include <sstream>
 
@@ -47,11 +47,16 @@ initializeDynawo(const std::string& locale) {
   dicos.addDico("LOG", "DYNLog", locale);
 }
 
+static inline double
+elapsed(const std::chrono::steady_clock::time_point& timePoint) {
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - timePoint);
+  return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
+}
+
 int
 main(int argc, char* argv[]) {
   try {
-    boost::timer timerGlobal;
-    boost::timer timerInit;
+    auto timeStart = std::chrono::steady_clock::now();
     DYN::Trace::init();
     dfl::common::Options options;
 
@@ -106,22 +111,22 @@ main(int argc, char* argv[]) {
     dfl::Context context(def, config);
 
     if (!context.process()) {
-      LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
+      LOG(info) << MESS(InitEnd, elapsed(timeStart)) << LOG_ENDL;
       LOG(error) << MESS(ContextProcessError, context.basename()) << LOG_ENDL;
       return EXIT_FAILURE;
     }
-    LOG(info) << MESS(InitEnd, timerInit.elapsed()) << LOG_ENDL;
+    LOG(info) << MESS(InitEnd, elapsed(timeStart)) << LOG_ENDL;
 
-    boost::timer timerFiles;
+    auto timeFilesStart = std::chrono::steady_clock::now();
     context.exportOutputs();
-    LOG(info) << MESS(FilesEnd, timerFiles.elapsed()) << LOG_ENDL;
+    LOG(info) << MESS(FilesEnd, elapsed(timeFilesStart)) << LOG_ENDL;
 
-    boost::timer timerSimu;
+    auto timeSimuStart = std::chrono::steady_clock::now();
     context.execute();
 
-    LOG(info) << MESS(SimulationEnded, context.basename(), timerSimu.elapsed()) << LOG_ENDL;
+    LOG(info) << MESS(SimulationEnded, context.basename(), elapsed(timeSimuStart)) << LOG_ENDL;
     LOG(info) << " ============================================================ " << LOG_ENDL;
-    LOG(info) << MESS(DFLEnded, context.basename(), timerGlobal.elapsed()) << LOG_ENDL;
+    LOG(info) << MESS(DFLEnded, context.basename(), elapsed(timeStart)) << LOG_ENDL;
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
     std::cerr << "Simulation failed" << std::endl;
