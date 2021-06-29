@@ -58,7 +58,7 @@ NetworkManager::buildTree() {
   const auto& voltageLevels = network->getVoltageLevels();
   for (const auto& networkVL : voltageLevels) {
     const auto& shunts = networkVL->getShuntCompensators();
-    std::map<Node::NodeId, std::vector<Shunt>> shuntsMap;
+    std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
     for (const auto& shunt : shunts) {
       // We take into account even disconnected shunts as dynamic models may aim to connect them
       (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));

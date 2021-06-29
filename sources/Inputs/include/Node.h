@@ -81,44 +81,44 @@ class Line {
 };
 
 /**
- * @brief topological Transfo
+ * @brief topological Transformer
  */
 class Tfo {
  public:
-  using TfoId = std::string;  ///< alias for transfor id
+  using TfoId = std::string;  ///< alias for transformer id
 
   /**
-   * @brief Build a two windings transfo
+   * @brief Build a two windings transformer
    *
    * This will update the references inside the input nodes
-   * @param tfoId the transfo id
+   * @param tfoId the transformer id
    * @param node1 the first node
    * @param node2 the second node
-   * @returns the built transfo
+   * @returns the built transformer
    */
   static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
 
   /**
-   * @brief Build a three windings transfo
+   * @brief Build a three windings transformer
    *
    * This will update the references inside the input nodes
-   * @param tfoId the transfo id
+   * @param tfoId the transformer id
    * @param node1 the first node
    * @param node2 the second node
    * @param node3 the third node
-   * @returns the built transfo
+   * @returns the built transformer
    */
   static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2,
                                     const std::shared_ptr<Node>& node3);
 
-  const TfoId id;                                  ///< transfo id
+  const TfoId id;                                  ///< transformer id
   const std::vector<std::shared_ptr<Node>> nodes;  ///< list of nodes
 
  private:
   /**
    * @brief Constructor
    *
-   * @param tfoId the transfor id
+   * @param tfoId the transformer id
    * @param node1 the first node
    * @param node2 the second node
    */
@@ -127,7 +127,7 @@ class Tfo {
   /**
    * @brief Constructor
    *
-   * @param tfoId the transfor id
+   * @param tfoId the transformer id
    * @param node1 the first node
    * @param node2 the second node
    * @param node3 the third node
@@ -166,7 +166,7 @@ class Node {
    * @param id the node id
    * @param vl the voltage level element containing the node
    * @param nominalVoltage the nominal voltage of the node
-   * @param shunts the list of the shunts connectables to this node
+   * @param shunts the list of the shunts connectable to this node
    *
    * @returns the built node
    */
@@ -175,9 +175,9 @@ class Node {
   const NodeId id;                                      ///< node id
   const std::weak_ptr<VoltageLevel> voltageLevel;       ///< voltage level containing the node
   const double nominalVoltage;                          ///< Nominal voltage of the node
-  const std::vector<Shunt> shunts;                      ///< Shunts connectables to the node
-  std::vector<std::weak_ptr<Line>> lines;               ///< Lines to which the node belong
-  std::vector<std::weak_ptr<Tfo>> tfos;                 ///< Transfos to which the node belong
+  const std::vector<Shunt> shunts;                      ///< Shunts connectable to the node
+  std::vector<std::weak_ptr<Line>> lines;               ///< Lines connected to this node
+  std::vector<std::weak_ptr<Tfo>> tfos;                 ///< Transformers connected to this node
   std::vector<std::shared_ptr<Node>> neighbours;        ///< list of neighbours
   std::vector<Load> loads;                              ///< list of loads associated to this node
   std::vector<Generator> generators;                    ///< list of generators associated to this node
@@ -192,7 +192,7 @@ class Node {
    * @param id the node id
    * @param vl the voltage level element containing the node
    * @param nominalVoltage the voltage level associated with the node
-   * @param shunts the list of the shunts connectables to this node
+   * @param shunts the list of the shunts connectable to this node
    */
   Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, const std::vector<Shunt>& shunts);
 };

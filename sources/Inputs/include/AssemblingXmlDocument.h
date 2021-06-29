@@ -55,7 +55,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   };
 
   /**
-   * @brief Transfo XML element
+   * @brief Tfo XML element
    */
   struct Tfo {
     std::string name;  ///< name of the transformer
@@ -190,7 +190,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   };
 
   /**
-   * @brief Transfo element handler
+   * @brief Transformer element handler
    */
   struct TfoHandler : public xml::sax::parser::ComposableElementHandler {
     /**
