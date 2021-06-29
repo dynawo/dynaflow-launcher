@@ -122,6 +122,8 @@ class NetworkManager {
   std::vector<ProcessNodeCallback> nodesCallbacks_;           ///< list of callback or nodes
   std::vector<std::shared_ptr<HvdcLine>> hvdcLines_;          ///< hvdc Lines
   std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
+  std::vector<std::shared_ptr<Line>> lines_;                  ///< List of the lines
+  std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transformers
   BusMapRegulating mapBusId_;                                 ///< mapping of busId and the number of generators that regulates them
 };
 

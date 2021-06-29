@@ -161,7 +161,7 @@ Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& 
   }
 
   return model;
-}  // namespace outputs
+}
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
