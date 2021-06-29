@@ -110,6 +110,9 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
+  for (auto &n: mainConnexNodes_) {
+    mainConnexIds_.insert(n->id);
+  }
 
   // Fill caches
   const auto& network = networkManager_.dataInterface()->getNetwork();
