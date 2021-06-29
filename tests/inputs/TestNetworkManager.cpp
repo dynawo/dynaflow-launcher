@@ -83,3 +83,13 @@ TEST(NetworkManager, generators) {
     ASSERT_EQ(it_expected.second, it_map->second);
   }
 }
+
+TEST(NetworkManager, shunts) {
+  using dfl::inputs::NetworkManager;
+  NetworkManager manager("res/IEEE14.iidm");
+
+  unsigned int nbShunts = 0;
+  manager.onNode([&nbShunts](const std::shared_ptr<dfl::inputs::Node>& node) { nbShunts += node->shunts.size(); });
+  manager.walkNodes();
+  ASSERT_EQ(nbShunts, 1);
+}
