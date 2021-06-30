@@ -73,6 +73,11 @@ VoltageLevel::VoltageLevel(const VoltageLevelId& vlid) : id(vlid) {}
 std::shared_ptr<Line>
 Line::build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) {
   auto ret = std::shared_ptr<Line>(new Line(lineId, node1, node2));
+
+  // Nodes existence is checked outside the builder
+  assert(node1);
+  assert(node2);
+
   node1->neighbours.push_back(node2);
   node2->neighbours.push_back(node1);
   node1->lines.push_back(ret);
@@ -89,6 +94,10 @@ std::shared_ptr<Tfo>
 Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) {
   auto ret = std::shared_ptr<Tfo>(new Tfo(tfoId, node1, node2));
 
+  // Nodes existence is checked outside the builder
+  assert(node1);
+  assert(node2);
+
   node1->neighbours.push_back(node2);
   node2->neighbours.push_back(node1);
 
@@ -101,6 +110,11 @@ Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::sh
 std::shared_ptr<Tfo>
 Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3) {
   auto ret = std::shared_ptr<Tfo>(new Tfo(tfoId, node1, node2, node3));
+
+  // Nodes existence is checked outside the builder
+  assert(node1);
+  assert(node2);
+  assert(node3);
 
   node1->neighbours.push_back(node2);
   node1->neighbours.push_back(node3);
