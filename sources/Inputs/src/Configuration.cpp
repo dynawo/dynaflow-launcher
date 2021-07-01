@@ -91,7 +91,7 @@ Configuration::Configuration(const std::string& filepath) {
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateValue(startTime_, config, "StartTime");
-    helper::updateValue(endTime_, config, "EndTime");
+    helper::updateValue(stopTime_, config, "StopTime");
     helper::updateValue(timeOfEvent_, config, "sa.TimeOfEvent");
     helper::updateValue(numberOfThreads_, config, "sa.NumberOfThreads");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);

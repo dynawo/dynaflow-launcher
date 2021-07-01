@@ -11,7 +11,7 @@
     "DsoVoltageLevel": 63.0,
     "ActivePowerCompensation": "P",
     "StartTime": 10,
-    "EndTime": 120,
+    "StopTime": 120,
     "sa": {
       "TimeOfEvent": 50,
       "NumberOfThreads": 6

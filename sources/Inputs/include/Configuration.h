@@ -112,8 +112,8 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  float getEndTime() const {
-    return endTime_;
+  float getStopTime() const {
+    return stopTime_;
   }
 
   /**
@@ -162,7 +162,7 @@ class Configuration {
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
   float startTime_ = 0;                                                      ///< Moment (in seconds) at which starts the simulation
-  float endTime_ = 100;                                                      ///< Moment (in seconds) at which ends the simulation
+  float stopTime_ = 100;                                                      ///< Moment (in seconds) at which ends the simulation
   // Security Analysis only
   double timeOfEvent_ = 80.0;                                             ///< When will the contengencies be simulated
   int numberOfThreads_ = 4;                                                     ///< The number of threads used to simulate

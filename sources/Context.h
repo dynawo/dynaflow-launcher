@@ -265,10 +265,10 @@ class Context {
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencyElement(const std::string& id, dfl::inputs::Contingencies::Type type) const;
   /// @brief Check if node is in main connected component
   /// @param nodeId identifier of node/bus to check
-  bool isInMainConnectedComponent(const std::string& nodeId) const;
+  bool isInMainConnectedComponent(const boost::shared_ptr<DYN::BusInterface>& bus) const;
   /// @brief Check if buses are in main connected component
   /// @param buses pointers of buses to check
-  bool areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
+  bool anyInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
 
 
   /// @brief Build JOBS, DYD, PAR files for each contingency
