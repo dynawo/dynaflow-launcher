@@ -13,7 +13,7 @@
     "SettingPath": "res/setting.xml",
     "AssemblyPath": "res/assembling.xml",
     "StartTime": 10,
-    "EndTime": 120,
+    "StopTime": 120,
     "sa": {
       "TimeOfEvent": 50,
       "NumberOfThreads": 6

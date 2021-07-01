@@ -127,31 +127,34 @@ std::string
 Contingencies::toString(ElementInvalidReason reason) {
   switch (reason) {
     case ElementInvalidReason::GENERATOR_NOT_FOUND:
-      return dfl::common::Message(dfl::common::generated::DicoKeys::Key::GeneratorNotFound).str();
+      return MESS(GeneratorNotFound);
 
     case ElementInvalidReason::TWOWINDINGS_TRANFORMER_NOT_FOUND:
-      return MESS(TwoWTransformerNotFound, "");
+      return MESS(TwoWTransformerNotFound);
 
     case ElementInvalidReason::BRANCH_NOT_FOUND:
-      return MESS(BranchNotFound, "");
+      return MESS(BranchNotFound);
 
     case ElementInvalidReason::LINE_NOT_FOUND:
-      return MESS(LineNotFound, "");
+      return MESS(LineNotFound);
 
     case ElementInvalidReason::SHUNT_COMPENSATOR_NOT_FOUND:
-      return MESS(ShuntCompensatorNotFound, "");
+      return MESS(ShuntCompensatorNotFound);
+
+    case ElementInvalidReason::LOAD_NOT_FOUND:
+      return MESS(LoadNotFound);
 
     case ElementInvalidReason::DANGLING_LINE_NOT_FOUND:
-      return MESS(DanglingLineNotFound, "");
+      return MESS(DanglingLineNotFound);
 
     case ElementInvalidReason::HVDC_LINE_NOT_FOUND:
-      return MESS(HvdcLineNotFound, "");
+      return MESS(HvdcLineNotFound);
 
     case ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND:
-      return MESS(StaticVarCompensatorNotFound, "");
+      return MESS(StaticVarCompensatorNotFound);
 
     case ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT:
-      return MESS(NotInMainConnectedComponent, "");
+      return MESS(NotInMainConnectedComponent);
 
     default:
       throw std::logic_error("Gotten an unexpected error (or a corrupted value)");

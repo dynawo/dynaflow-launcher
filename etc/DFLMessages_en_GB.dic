@@ -63,6 +63,7 @@ TwoWTransformerNotFound       =     not found as two-windings transfomer
 BranchNotFound                =     not found as line or two-windings transformer
 LineNotFound                  =     not found as line
 ShuntCompensatorNotFound      =     not found as shunt compensator
+LoadNotFound                  =     not found as load
 DanglingLineNotFound          =     not found as dangling line
 HvdcLineNotFound              =     not found as hvdc line
 StaticVarCompensatorNotFound  =     not found as static var compensator

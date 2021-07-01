@@ -112,8 +112,8 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  float getEndTime() const {
-    return endTime_;
+  float getStopTime() const {
+    return stopTime_;
   }
 
   /**
@@ -180,7 +180,7 @@ class Configuration {
   boost::filesystem::path settingFilePath_;                                          ///< setting file path
   boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
   float startTime_ = 0;                                                              ///< Moment (in seconds) at which starts the simulation
-  float endTime_ = 100;                                                              ///< Moment (in seconds) at which ends the simulation
+  float stopTime_ = 100;                                                             ///< Moment (in seconds) at which ends the simulation
   // Security Analysis only
   double timeOfEvent_ = 80.0;                                                        ///< When will the contengencies be simulated
   int numberOfThreads_ = 4;                                                          ///< The number of threads used to simulate
