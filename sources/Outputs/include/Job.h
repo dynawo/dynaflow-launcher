@@ -90,14 +90,14 @@ class Job {
    */
   boost::shared_ptr<job::JobEntry> write();
 
-  static void setStartAndDuration(uint32_t startTime, uint32_t durationTime) {
-    timeStart_ = std::chrono::seconds{startTime};
-    durationSimu_ = std::chrono::seconds{durationTime};
+  static void setStartAndDuration(float startTime, float durationTime) {
+    timeStart_ = startTime;
+    durationSimu_ = durationTime;
   }
 
  private:
-  static std::chrono::seconds timeStart_;           ///< The constant start time of the simulation of the job
-  static std::chrono::seconds durationSimu_;        ///< the constant duration of the simulation in the job
+  static float timeStart_;           ///< The constant start time of the simulation of the job
+  static float durationSimu_;        ///< the constant duration of the simulation in the job
   static const std::string solverName_;             ///< The solver name used during the simulation
   static const std::string solverFilename_;         ///< The solver filename
   static const std::string solverParId_;            ///< The parameter id in the .par file corresponding to the solver parameters

@@ -121,7 +121,7 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  double getTimeOfEvent() const {
+  float getTimeOfEvent() const {
     return timeOfEvent_;
   }
 

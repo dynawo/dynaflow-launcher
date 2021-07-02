@@ -334,27 +334,21 @@ std::tuple<
 >
 Context::checkAndFilterContingencies() const {
   std::vector<Contingencies::ElementInvalidReason> errors;
+  std::vector<std::shared_ptr<Contingencies::ContingencyDefinition>> results;
   LOG(debug) << "Contingencies. Check that all elements of contingencies are valid for disconnection simulation" << LOG_ENDL;
 
-  // We'll store here the iterators we don't want
-  std::vector<std::vector<std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition>>::iterator> iteratorsToRemove;
-  auto defs = contingencies_.definitions();
-  for (auto c = defs.begin(); c != defs.end(); ++c) {
-    const auto errs = checkContingency(*c);
-    if (!errs.empty()) {
-      iteratorsToRemove.push_back(c);
+  for (auto c: contingencies_.definitions()) {
+    const auto errs = checkContingency(c);
+    if (errs.empty()) {
+      results.push_back(c);
+    }
+    else { // Append errors from this contingency
       errors.reserve(errors.size() + errs.size());
       errors.insert(errors.end(), errs.begin(), errs.end());
     }
   }
 
-  // Better start from the end just in case the iterators reffer to elements
-  // by position
-  for (auto i = iteratorsToRemove.rbegin(); i != iteratorsToRemove.rend(); ++i) {
-    defs.erase(*i);
-  }
-
-  return {defs, errors};
+  return {results, errors};
 }
 
 void
