@@ -48,8 +48,8 @@
 namespace dfl {
 namespace outputs {
 
-std::chrono::seconds Job::timeStart_{0}; // Can be changed later in execution
-std::chrono::seconds Job::durationSimu_{100}; // Can be changed later in execution
+float Job::timeStart_=0; // Can be changed later in execution
+float Job::durationSimu_=100; // Can be changed later in execution
 const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
@@ -114,8 +114,8 @@ Job::writeModeler() {
 boost::shared_ptr<job::SimulationEntry>
 Job::writeSimulation() {
   auto simu = job::SimulationEntryFactory::newInstance();
-  simu->setStartTime(timeStart_.count());
-  simu->setStopTime((timeStart_ + durationSimu_).count());
+  simu->setStartTime(timeStart_);
+  simu->setStopTime(timeStart_ + durationSimu_);
 
   return simu;
 }
