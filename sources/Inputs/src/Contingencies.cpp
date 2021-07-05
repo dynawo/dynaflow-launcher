@@ -61,6 +61,7 @@ Contingencies::Contingencies(const std::string& filepath) {
       const boost::property_tree::ptree& ptcontingency = v.second;
       LOG(debug) << ptcontingency.get<std::string>("id") << LOG_ENDL;
       ContingencyDefinition contingency(ptcontingency.get<std::string>("id"));
+      std::vector<std::string> elements_unknown_types;
       for (const boost::property_tree::ptree::value_type& pte : ptcontingency.get_child("elements")) {
         const auto element_id = pte.second.get<std::string>("id");
         const auto element_type = pte.second.get<std::string>("type");
@@ -73,11 +74,16 @@ Contingencies::Contingencies(const std::string& filepath) {
           contingency.elements.push_back(element);
         }
         else {
+          elements_unknown_types.push_back(element_id);
           LOG(warn) << MESS(ElementTypeUnknown, element_id, element_type) << LOG_ENDL;
         }
 
       }
-      contingencies_.push_back(std::make_shared<ContingencyDefinition>(contingency));
+
+      // If any element had an unknown type the contingency is invalid
+      if (elements_unknown_types.empty()) {
+        contingencies_.push_back(std::make_shared<ContingencyDefinition>(contingency));
+      }
     }
   } catch (std::exception& e) {
     LOG(error) << MESS(ContingenciesReadError, filepath, e.what()) << LOG_ENDL;
