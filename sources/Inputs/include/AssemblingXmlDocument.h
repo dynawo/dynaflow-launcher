@@ -89,7 +89,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
    * @brief Single association XML element
    */
   struct SingleAssociation {
-    std::string id;              ///< association id
+    std::string id;              ///< unique association id
     boost::optional<Bus> bus;    ///< bus of the association
     boost::optional<Tfo> tfo;    ///< transformer of the association
     boost::optional<Line> line;  ///< line of the association
@@ -99,7 +99,7 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
    * @brief Multiple association XML element
    */
   struct MultipleAssociation {
-    std::string id;  ///< association id
+    std::string id;  ///< unique association id
     Shunt shunt;     ///< Shunt of the association
   };
 

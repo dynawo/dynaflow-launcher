@@ -23,6 +23,7 @@ target_link_libraries(algo
 PUBLIC
 DynaFlowLauncher::inputs
 DynaFlowLauncher::common
+Boost::system
 )
 add_library(DynaFlowLauncher::algo ALIAS algo)
 install_lib_shared(algo)

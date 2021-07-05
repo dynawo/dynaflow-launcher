@@ -123,6 +123,13 @@ class Context {
    */
   void walkNodesMain();
 
+  /**
+   * @brief Filter models
+   *
+   * Remove models definitions which macro connections are not all performed
+   */
+  void filterDynModels();
+
  private:
   ContextDef def_;                                         ///< context definition
   inputs::NetworkManager networkManager_;                  ///< network manager
@@ -139,6 +146,8 @@ class Context {
   std::vector<algo::LoadDefinition> loads_;                              ///< loads found
   algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines_;  ///< hvdc lines found
   algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
+  algo::DynModelDefinitions models_;                                     ///< model definitions
+  algo::ShuntCounterDefinitions counters_;                               ///< shunt counters definitions
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };
