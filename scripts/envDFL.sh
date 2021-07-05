@@ -144,9 +144,13 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
 
     # Run
-    export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
-    export_var_env_force DYNAFLOW_LAUNCHER_XSD=$DYNAFLOW_LAUNCHER_INSTALL_DIR/etc/xsd
-    export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
+    if [ $1 -ne 1 ]
+    then
+        # export runtime variables only if unit tests are not run
+        export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
+        export_var_env_force DYNAFLOW_LAUNCHER_XSD=$DYNAFLOW_LAUNCHER_INSTALL_DIR/etc/xsd
+        export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
+    fi
 
     # python
     pythonpath_prepend $DYNAWO_HOME/sbin/nrt/nrt_diff
@@ -267,7 +271,20 @@ apply_clang_format() {
 ########### Main script #########
 #################################
 
-set_environment
+MODE=0 # normal
+case $1 in
+    tests)
+        # environment used for unit tests is defined only in cmakelist
+        MODE=1
+        ;;
+    build-tests-coverage)
+        # environment used for unit tests in coverage case is defined only in cmakelist
+        MODE=1
+        ;;
+    *)
+        ;;
+esac
+set_environment $MODE
 
 case $1 in
     build-user)

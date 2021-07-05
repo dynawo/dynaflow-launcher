@@ -482,7 +482,7 @@ struct DynModelDefinition {
    * @brief Constructor
    *
    * @param dynModelId the dynamic model id
-   * @param dynModelId the library name
+   * @param dynModelLib the library name
    */
   DynModelDefinition(const DynModelId& dynModelId, const std::string& dynModelLib) : id(dynModelId), lib(dynModelLib) {}
 
