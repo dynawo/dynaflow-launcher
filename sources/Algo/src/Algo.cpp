@@ -281,7 +281,7 @@ DynModelAlgorithm::findLibraryPath(const std::string& lib) {
 }
 
 bool
-DynModelAlgorithm::doesLibraryExist(const std::string& lib) {
+DynModelAlgorithm::libraryExists(const std::string& lib) {
   try {
     // check DFL local path
     auto libPath = findLibraryPath(lib);
@@ -298,18 +298,18 @@ DynModelAlgorithm::doesLibraryExist(const std::string& lib) {
 }
 
 void
-DynModelAlgorithm::dispatchAutomatonMulti(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                                          const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                                          const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc) {
+DynModelAlgorithm::extractMultiAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+                                               const inputs::AssemblingXmlDocument::MacroConnect& macro,
+                                               const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc) {
   MacroConnect connection(automaton.id, macro.macroConnection);
   const auto& vlid = multiassoc.shunt.voltageLevel;
   macroConnectByVlForShuntsId_[vlid].push_back(connection);
 }
 
 void
-DynModelAlgorithm::dispatchAutomatonSingle(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                                           const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                                           const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc) {
+DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+                                                const inputs::AssemblingXmlDocument::MacroConnect& macro,
+                                                const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc) {
   MacroConnect connection(automaton.id, macro.macroConnection);
   if (singleassoc.bus) {
     macroConnectByVlForBusesId_[singleassoc.bus->voltageLevel].insert(connection);
@@ -345,7 +345,7 @@ DynModelAlgorithm::extractDynModels() {
 
   for (const auto& automaton : automatons) {
     // Check that the automaton library is available
-    if (!doesLibraryExist(automaton.lib)) {
+    if (!libraryExists(automaton.lib)) {
       LOG(warn) << MESS(DynModelLibraryNotFound, automaton.lib, automaton.id) << LOG_ENDL;
       continue;
     }
@@ -354,13 +354,13 @@ DynModelAlgorithm::extractDynModels() {
     for (const auto& macro : automaton.macroConnects) {
       auto singleassoc = singleAssociationsMap.find(macro.id);
       if (singleassoc != singleAssociationsMap.end()) {
-        dispatchAutomatonSingle(automaton, macro, singleassoc->second);
+        extractSingleAssociationInfo(automaton, macro, singleassoc->second);
         continue;
       }
 
       auto multiassoc = multiAssociationsMap.find(macro.id);
       if (multiassoc != multiAssociationsMap.end()) {
-        dispatchAutomatonMulti(automaton, macro, multiassoc->second);
+        extractMultiAssociationInfo(automaton, macro, multiassoc->second);
         continue;
       }
     }
@@ -409,8 +409,8 @@ DynModelDefinition::MacroConnection::operator>=(const MacroConnection& other) co
 }
 
 void
-DynModelAlgorithm::processDynModelShuntConnection(const NodePtr& node) {
-  // Connect All nodes of voltage level
+DynModelAlgorithm::connectMacroConnectionForShunt(const NodePtr& node) {
+  // Connect all nodes of voltage level
   auto vl = node->voltageLevel.lock();
   const auto& macroConnections = macroConnectByVlForShuntsId_.at(vl->id);
 
@@ -426,7 +426,7 @@ DynModelAlgorithm::processDynModelShuntConnection(const NodePtr& node) {
 }
 
 void
-DynModelAlgorithm::processDynModelLineConnection(const std::shared_ptr<inputs::Line>& line) {
+DynModelAlgorithm::connectMacroConnectionForLine(const std::shared_ptr<inputs::Line>& line) {
   const auto& macroConnections = macroConnectByLineName_.at(line->id);
   for (const auto& macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
@@ -438,7 +438,7 @@ DynModelAlgorithm::processDynModelLineConnection(const std::shared_ptr<inputs::L
 }
 
 void
-DynModelAlgorithm::processDynModelBusConnection(const NodePtr& node) {
+DynModelAlgorithm::connectMacroConnectionForBus(const NodePtr& node) {
   auto vl = node->voltageLevel.lock();
   const auto& macroConnections = macroConnectByVlForBusesId_.at(vl->id);
 
@@ -455,7 +455,7 @@ DynModelAlgorithm::processDynModelBusConnection(const NodePtr& node) {
 }
 
 void
-DynModelAlgorithm::processDynModelTfoConnection(const std::shared_ptr<inputs::Tfo>& tfo) {
+DynModelAlgorithm::connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tfo>& tfo) {
   const auto& macroConnections = macroConnectByTfoName_.at(tfo->id);
   for (const auto& macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
@@ -484,21 +484,21 @@ void
 DynModelAlgorithm::operator()(const NodePtr& node) {
   auto vl = node->voltageLevel.lock();
   if (macroConnectByVlForBusesId_.count(vl->id) > 0) {
-    processDynModelBusConnection(node);
+    connectMacroConnectionForBus(node);
   }
   if (macroConnectByVlForShuntsId_.count(vl->id) > 0) {
-    processDynModelShuntConnection(node);
+    connectMacroConnectionForShunt(node);
   }
   for (const auto& line_ptr : node->lines) {
     auto line = line_ptr.lock();
     if (macroConnectByLineName_.count(line->id) > 0) {
-      processDynModelLineConnection(line);
+      connectMacroConnectionForLine(line);
     }
   }
   for (const auto& tfo_ptr : node->tfos) {
     auto tfo = tfo_ptr.lock();
     if (macroConnectByTfoName_.count(tfo->id) > 0) {
-      processDynModelTfoConnection(tfo);
+      connectMacroConnectionForTfo(tfo);
     }
   }
 }

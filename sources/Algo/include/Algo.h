@@ -416,7 +416,7 @@ struct DynModelDefinition {
 
     /// @brief Connected element type
     enum class ElementType {
-      NODE = 0,  ///< node type
+      NODE = 0,  ///< Node type
       LINE,      ///< Line type
       TFO,       ///< Transformer type
       SHUNT      ///< Shunt type
@@ -474,7 +474,7 @@ struct DynModelDefinition {
     bool operator>=(const MacroConnection& other) const;
 
     MacroId id;                    ///< Macro connector id
-    ElementType elementType;       ///< connected element type
+    ElementType elementType;       ///< Connected element type
     ElementId connectedElementId;  ///< Element id connected throught the macro connection (can be node, line or tfo)
   };
 
@@ -507,7 +507,7 @@ class DynModelAlgorithm : public NodeAlgorithm {
   /**
    * @brief Constructor
    *
-   * The constructor will pre-process some data in order relevant information to be retrieved with efficiency during main algorithm
+   * The constructor will pre-process some data so that relevant information are retrieved with efficiency during main algorithm
    *
    * @param models the models to update
    * @param manager the dynamic data base manager to use
@@ -517,7 +517,7 @@ class DynModelAlgorithm : public NodeAlgorithm {
   /**
    * @brief Perform the algorithm
    *
-   * According to if the node is concerned in a macro connection, dispatch the node to update the macro connections informaton in the models definition.
+   * Depending on whether the node is concerned in a macro connection, dispatch the node to update the macro connections information in the models definition.
    * Macro connections not connected to a network node will be discarded and not put in the dynamic models definitions.
    *
    * @param node the node to process
@@ -577,7 +577,7 @@ class DynModelAlgorithm : public NodeAlgorithm {
    * @param lib library name
    * @returns true if library could be loaded, false if not
    */
-  static bool doesLibraryExist(const std::string& lib);
+  static bool libraryExists(const std::string& lib);
 
   /**
    * @brief Computes library path for library name
@@ -600,8 +600,8 @@ class DynModelAlgorithm : public NodeAlgorithm {
    * @param macro the macro connection connected to the singleassociation
    * @param singleassoc the single association config element to process
    */
-  void dispatchAutomatonSingle(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                               const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc);
+  void extractSingleAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
+                                    const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc);
 
   /**
    * @brief Process multi association from configuration
@@ -610,32 +610,32 @@ class DynModelAlgorithm : public NodeAlgorithm {
    * @param macro the macro connection connected to the singleassociation
    * @param multiassoc the multi association config element to process
    */
-  void dispatchAutomatonMulti(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                              const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc);
+  void extractMultiAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
+                                   const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc);
 
   /**
    * @brief Process node in case of dynamic automaton bus connection
    * @param node node to process
    */
-  void processDynModelBusConnection(const NodePtr& node);
+  void connectMacroConnectionForBus(const NodePtr& node);
 
   /**
    * @brief Process node in case of dynamic automaton shunt connection
    * @param node node to process
    */
-  void processDynModelShuntConnection(const NodePtr& node);
+  void connectMacroConnectionForShunt(const NodePtr& node);
 
   /**
    * @brief Process node in case of dynamic automaton line connection
    * @param line line to process
    */
-  void processDynModelLineConnection(const std::shared_ptr<inputs::Line>& line);
+  void connectMacroConnectionForLine(const std::shared_ptr<inputs::Line>& line);
 
   /**
    * @brief Process node in case of dynamic automaton transformer connection
    * @param tfo transformer to process
    */
-  void processDynModelTfoConnection(const std::shared_ptr<inputs::Tfo>& tfo);
+  void connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tfo>& tfo);
 
   /**
    * @brief Add macro connection to the dynamic model definition
