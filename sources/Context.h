@@ -124,7 +124,7 @@ class Context {
   void walkNodesMain();
 
   /**
-   * @brief Filter models
+   * @brief Filter partially connected dynamic models
    *
    * Remove models definitions with partial connectivity
    */
