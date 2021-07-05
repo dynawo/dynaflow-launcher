@@ -419,7 +419,7 @@ DynModelAlgorithm::connectMacroConnectionForShunt(const NodePtr& node) {
     const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
     for (const auto& shunt : node->shunts) {
-      addMacroConnectionToDef(
+      addMacroConnectionToModelDefinitions(
           automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::SHUNT, shunt.id));
     }
   }
@@ -432,7 +432,7 @@ DynModelAlgorithm::connectMacroConnectionForLine(const std::shared_ptr<inputs::L
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
-    addMacroConnectionToDef(
+    addMacroConnectionToModelDefinitions(
         automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::LINE, line->id));
   }
 }
@@ -449,7 +449,7 @@ DynModelAlgorithm::connectMacroConnectionForBus(const NodePtr& node) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);  // Tag the used macro connection
 
     const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
-    addMacroConnectionToDef(
+    addMacroConnectionToModelDefinitions(
         automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::NODE, nodeId));
   }
 }
@@ -461,14 +461,14 @@ DynModelAlgorithm::connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tf
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
-    addMacroConnectionToDef(
+    addMacroConnectionToModelDefinitions(
         automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::TFO, tfo->id));
   }
 }
 
 void
-DynModelAlgorithm::addMacroConnectionToDef(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                                           const DynModelDefinition::MacroConnection& macroConnection) {
+DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+                                                        const DynModelDefinition::MacroConnection& macroConnection) {
   if (dynamicModels_.models.count(automaton.id) == 0) {
     DynModelDefinition modelDef(automaton.id, automaton.lib);
     modelDef.nodeConnections.insert(macroConnection);

@@ -128,7 +128,7 @@ class Context {
    *
    * Remove models definitions with partial connectivity
    */
-  void filterDynModels();
+  void filterPartiallyConnectedDynamicModels();
 
  private:
   ContextDef def_;                                         ///< context definition
