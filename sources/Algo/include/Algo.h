@@ -402,7 +402,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
 /**
  * @brief DynModel definition
  *
- * Structure containing minimum information to define an dynamic model with its connections
+ * Structure containing minimum information to define a dynamic model with its connections
  */
 struct DynModelDefinition {
   using DynModelId = std::string;  ///< alias for dynamic model id
@@ -418,7 +418,7 @@ struct DynModelDefinition {
     enum class ElementType {
       NODE = 0,  ///< node type
       LINE,      ///< Line type
-      TFO,       ///< Transfo type
+      TFO,       ///< Transformer type
       SHUNT      ///< Shunt type
     };
 
@@ -481,10 +481,10 @@ struct DynModelDefinition {
   /**
    * @brief Constructor
    *
-   * @param idauto the dynamic model id
-   * @param libauto the library name
+   * @param dynModelId the dynamic model id
+   * @param dynModelId the library name
    */
-  DynModelDefinition(const DynModelId& idauto, const std::string& libauto) : id(idauto), lib(libauto) {}
+  DynModelDefinition(const DynModelId& dynModelId, const std::string& dynModelLib) : id(dynModelId), lib(dynModelLib) {}
 
   DynModelId id;                              ///< dynamic model id
   std::string lib;                            ///< library name
@@ -500,7 +500,7 @@ struct DynModelDefinitions {
 };
 
 /**
- * @brief DynModel algorithm
+ * @brief Algorithm to find dynamic models
  */
 class DynModelAlgorithm : public NodeAlgorithm {
  public:
@@ -517,8 +517,8 @@ class DynModelAlgorithm : public NodeAlgorithm {
   /**
    * @brief Perform the algorithm
    *
-   * According to if the node is concerned in a macro connection, dispatch the node to update the macro connections in the models definition.
-   * Macro connections not connected to a network node will be discarded and not put in the dynamic models definitions
+   * According to if the node is concerned in a macro connection, dispatch the node to update the macro connections informaton in the models definition.
+   * Macro connections not connected to a network node will be discarded and not put in the dynamic models definitions.
    *
    * @param node the node to process
    */
@@ -535,11 +535,11 @@ class DynModelAlgorithm : public NodeAlgorithm {
     /**
      * @brief Constructor
      *
-     * @param idauto dynamic model id
+     * @param modelId dynamic model id
      * @param macroConnection macro connector id
      */
-    MacroConnect(const DynModelDefinition::DynModelId& idauto, const DynModelDefinition::MacroConnection::MacroId& macroConnection) :
-        dynModelId(idauto),
+    MacroConnect(const DynModelDefinition::DynModelId& modelId, const DynModelDefinition::MacroConnection::MacroId& macroConnection) :
+        dynModelId(modelId),
         macroConnectionId(macroConnection) {}
 
     /**
@@ -556,12 +556,12 @@ class DynModelAlgorithm : public NodeAlgorithm {
      */
     bool operator!=(const MacroConnect& other) const;
 
-    DynModelDefinition::DynModelId dynModelId;                       ///< automaton id
+    DynModelDefinition::DynModelId dynModelId;                       ///< dynamic model id
     DynModelDefinition::MacroConnection::MacroId macroConnectionId;  ///< macro connection id
   };
 
   /**
-   * @brief Hash structure for macro connec
+   * @brief Hash structure for macro connect
    */
   struct MacroConnectHash {
     /**
@@ -582,83 +582,83 @@ class DynModelAlgorithm : public NodeAlgorithm {
   /**
    * @brief Computes library path for library name
    *
-   * Determines the library path with Dynawo API first then using DFL environement
+   * Search for the library in dynawo environment and then in DFL environment
    *
    * @param lib the library name
    * @returns the filepath of the library, or nullopt if not found
    */
-  static boost::optional<boost::filesystem::path> computeLibPath(const std::string& lib);
+  static boost::optional<boost::filesystem::path> findLibraryPath(const std::string& lib);
 
  private:
   /// @brief Extract models from configuration before processing the nodes
   void extractDynModels();
 
   /**
-   * @brief Process single association from configuratio
+   * @brief Process single association from configuration
    *
-   * @param automaton the config automaton definition
-   * @param macro the macro connection connecting to the singleassociation
+   * @param automaton the dynamic automaton
+   * @param macro the macro connection connected to the singleassociation
    * @param singleassoc the single association config element to process
    */
   void dispatchAutomatonSingle(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
                                const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc);
 
   /**
-   * @brief Process multi association from configuratio
+   * @brief Process multi association from configuration
    *
-   * @param automaton the config automaton definition
-   * @param macro the macro connection connecting to the singleassociation
+   * @param automaton the dynamic automaton
+   * @param macro the macro connection connected to the singleassociation
    * @param multiassoc the multi association config element to process
    */
   void dispatchAutomatonMulti(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
                               const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc);
 
   /**
-   * @brief Process node in case of automaton bus connection
+   * @brief Process node in case of dynamic automaton bus connection
    * @param node node to process
    */
   void processDynModelBusConnection(const NodePtr& node);
 
   /**
-   * @brief Process node in case of automaton shunt connection
+   * @brief Process node in case of dynamic automaton shunt connection
    * @param node node to process
    */
   void processDynModelShuntConnection(const NodePtr& node);
 
   /**
-   * @brief Process node in case of automaton line connection
+   * @brief Process node in case of dynamic automaton line connection
    * @param line line to process
    */
   void processDynModelLineConnection(const std::shared_ptr<inputs::Line>& line);
 
   /**
-   * @brief Process node in case of automaton transfo connection
-   * @param tfo transfo to process
+   * @brief Process node in case of dynamic automaton transformer connection
+   * @param tfo transformer to process
    */
   void processDynModelTfoConnection(const std::shared_ptr<inputs::Tfo>& tfo);
 
   /**
-   * @brief Add macro connection to node connections of the automaton definition
+   * @brief Add macro connection to the dynamic model definition
    *
    * Creates the dynamic model definition if not already existing
    * Update the dynamic model definitions member
    *
-   * @param automaton the config automaton
+   * @param automaton the dynamic automaton
    * @param macroConnection the macro connection to add
    */
   void addMacroConnectionToDef(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
                                const DynModelDefinition::MacroConnection& macroConnection);
 
  private:
-  DynModelDefinitions& models_;  ///< automaton definitions to update
+  DynModelDefinitions& dynamicModels_;  ///< Dynamic model definitions to update
 
-  std::unordered_map<std::string, inputs::AssemblingXmlDocument::DynamicAutomaton> automatonsById_;  ///< config automaton by model id
+  std::unordered_map<std::string, inputs::AssemblingXmlDocument::DynamicAutomaton> dynamicAutomatonsById_;  ///< dynamic automatons by model id
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::unordered_set<MacroConnect, MacroConnectHash>>
       macroConnectByVlForBusesId_;  ///< macro connections for buses, by voltage level
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::vector<MacroConnect>>
       macroConnectByVlForShuntsId_;                                                             ///< macro connections for shunts, by voltage level
   std::unordered_map<inputs::Line::LineId, std::vector<MacroConnect>> macroConnectByLineName_;  ///< macro connections for lines, by line id
-  std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;     ///< macro connections for transfo, by transfo id
+  std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;     ///< macro connections for transformer, by transformer id
 
   const inputs::DynamicDataBaseManager& manager_;  ///< dynamic database config manager
 };
@@ -677,20 +677,21 @@ class ShuntCounterAlgorithm : public NodeAlgorithm {
  public:
   /**
    * @brief Constructor
-   * @param defs the counter definitions to update
+   * @param shuntCounterDefs the counter definitions to update
    */
-  explicit ShuntCounterAlgorithm(ShuntCounterDefinitions& defs);
+  explicit ShuntCounterAlgorithm(ShuntCounterDefinitions& shuntCounterDefs);
 
   /**
    * @brief Performs the algorithm
    *
-   * The algorithm counts the number of shunts by voltage level by counting the ones in each node
+   * The algorithm counts the number of shunts by voltage level
+   *
    * @param node the node to process
    */
   void operator()(const NodePtr& node);
 
  private:
-  ShuntCounterDefinitions& defs_;  ///< the counter definitions to update
+  ShuntCounterDefinitions& shuntCounterDefs_;  ///< the counter definitions to update
 };
 
 }  // namespace algo

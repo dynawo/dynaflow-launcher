@@ -7,7 +7,6 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-
 DEFINE_TEST(TestAlgo ALGO)
 target_link_libraries(TestAlgo DynaFlowLauncher::algo)
 

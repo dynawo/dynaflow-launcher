@@ -252,12 +252,12 @@ ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-DynModelAlgorithm::DynModelAlgorithm(DynModelDefinitions& models, const inputs::DynamicDataBaseManager& manager) : models_(models), manager_(manager) {
+DynModelAlgorithm::DynModelAlgorithm(DynModelDefinitions& models, const inputs::DynamicDataBaseManager& manager) : dynamicModels_(models), manager_(manager) {
   extractDynModels();
 }
 
 boost::optional<boost::filesystem::path>
-DynModelAlgorithm::computeLibPath(const std::string& lib) {
+DynModelAlgorithm::findLibraryPath(const std::string& lib) {
   static auto dflLibEnv = getenv("DYNAFLOW_LAUNCHER_LIBRARIES");
 
   auto libFile = lib + DYN::sharedLibraryExtension();
@@ -284,7 +284,7 @@ bool
 DynModelAlgorithm::doesLibraryExist(const std::string& lib) {
   try {
     // check DFL local path
-    auto libPath = computeLibPath(lib);
+    auto libPath = findLibraryPath(lib);
     if (!libPath) {
       return false;
     }
@@ -330,26 +330,26 @@ DynModelAlgorithm::extractDynModels() {
   using inputs::AssemblingXmlDocument;
 
   const auto& automatons = manager_.assemblingDocument().dynamicAutomatons();
-  const auto& singleassociations = manager_.assemblingDocument().singleAssociations();
-  const auto& multiassociations = manager_.assemblingDocument().multipleAssociations();
+  const auto& singleAssociations = manager_.assemblingDocument().singleAssociations();
+  const auto& multiAssociations = manager_.assemblingDocument().multipleAssociations();
 
   // Use map instead of vector to find the associations
   std::unordered_map<std::string, AssemblingXmlDocument::SingleAssociation> singleAssociationsMap;
-  for (const auto& asso : singleassociations) {
+  for (const auto& asso : singleAssociations) {
     singleAssociationsMap[asso.id] = asso;
   }
   std::unordered_map<std::string, AssemblingXmlDocument::MultipleAssociation> multiAssociationsMap;
-  for (const auto& asso : multiassociations) {
+  for (const auto& asso : multiAssociations) {
     multiAssociationsMap[asso.id] = asso;
   }
 
   for (const auto& automaton : automatons) {
-    // Check that the automaton library is accessible
+    // Check that the automaton library is available
     if (!doesLibraryExist(automaton.lib)) {
       LOG(warn) << MESS(DynModelLibraryNotFound, automaton.lib, automaton.id) << LOG_ENDL;
       continue;
     }
-    automatonsById_[automaton.id] = automaton;
+    dynamicAutomatonsById_[automaton.id] = automaton;
 
     for (const auto& macro : automaton.macroConnects) {
       auto singleassoc = singleAssociationsMap.find(macro.id);
@@ -415,8 +415,8 @@ DynModelAlgorithm::processDynModelShuntConnection(const NodePtr& node) {
   const auto& macroConnections = macroConnectByVlForShuntsId_.at(vl->id);
 
   for (const auto& macroConnection : macroConnections) {
-    models_.usedMacroConnections.insert(macroConnection.macroConnectionId);
-    const auto& automaton = automatonsById_.at(macroConnection.dynModelId);
+    dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
+    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
     for (const auto& shunt : node->shunts) {
       addMacroConnectionToDef(
@@ -429,8 +429,8 @@ void
 DynModelAlgorithm::processDynModelLineConnection(const std::shared_ptr<inputs::Line>& line) {
   const auto& macroConnections = macroConnectByLineName_.at(line->id);
   for (const auto& macroConnection : macroConnections) {
-    models_.usedMacroConnections.insert(macroConnection.macroConnectionId);
-    const auto& automaton = automatonsById_.at(macroConnection.dynModelId);
+    dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
+    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
     addMacroConnectionToDef(
         automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::LINE, line->id));
@@ -446,9 +446,9 @@ DynModelAlgorithm::processDynModelBusConnection(const NodePtr& node) {
     // We use the first node available in the voltage level
     const auto& nodeId = vl->nodes.front()->id;
 
-    models_.usedMacroConnections.insert(macroConnection.macroConnectionId);  // Tag the used macro connection
+    dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);  // Tag the used macro connection
 
-    const auto& automaton = automatonsById_.at(macroConnection.dynModelId);
+    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
     addMacroConnectionToDef(
         automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::NODE, nodeId));
   }
@@ -458,8 +458,8 @@ void
 DynModelAlgorithm::processDynModelTfoConnection(const std::shared_ptr<inputs::Tfo>& tfo) {
   const auto& macroConnections = macroConnectByTfoName_.at(tfo->id);
   for (const auto& macroConnection : macroConnections) {
-    models_.usedMacroConnections.insert(macroConnection.macroConnectionId);
-    const auto& automaton = automatonsById_.at(macroConnection.dynModelId);
+    dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
+    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
     addMacroConnectionToDef(
         automaton, DynModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynModelDefinition::MacroConnection::ElementType::TFO, tfo->id));
@@ -469,13 +469,13 @@ DynModelAlgorithm::processDynModelTfoConnection(const std::shared_ptr<inputs::Tf
 void
 DynModelAlgorithm::addMacroConnectionToDef(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
                                            const DynModelDefinition::MacroConnection& macroConnection) {
-  if (models_.models.count(automaton.id) == 0) {
+  if (dynamicModels_.models.count(automaton.id) == 0) {
     DynModelDefinition modelDef(automaton.id, automaton.lib);
     modelDef.nodeConnections.insert(macroConnection);
 
-    models_.models.insert({automaton.id, modelDef});
+    dynamicModels_.models.insert({automaton.id, modelDef});
   } else {
-    auto& modelDef = models_.models.at(automaton.id);
+    auto& modelDef = dynamicModels_.models.at(automaton.id);
     modelDef.nodeConnections.insert(macroConnection);
   }
 }
@@ -513,12 +513,12 @@ DynModelAlgorithm::MacroConnectHash::operator()(const MacroConnect& connect) con
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ShuntCounterAlgorithm::ShuntCounterAlgorithm(ShuntCounterDefinitions& defs) : defs_(defs) {}
+ShuntCounterAlgorithm::ShuntCounterAlgorithm(ShuntCounterDefinitions& defs) : shuntCounterDefs_(defs) {}
 
 void
 ShuntCounterAlgorithm::operator()(const NodePtr& node) {
   auto vl = node->voltageLevel.lock();
-  defs_.nbShunts[vl->id] += node->shunts.size();
+  shuntCounterDefs_.nbShunts[vl->id] += node->shunts.size();
 }
 
 }  // namespace algo
