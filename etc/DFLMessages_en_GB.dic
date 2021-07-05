@@ -23,6 +23,9 @@ InvalidDiagramQminsEqualQmaxs =     The diagram of the generator %1% is invalid,
 InvalidDiagramOnePoint        =     The diagram of the generator %1% is invalid, there was only one reactive curve point provided. The default model will be used for this generator
 InvalidDiagramBothError       =     The diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. Also all reactive curve points have the same p. The default model will be used for this generator
 HvdcLineBadInitialization     =     The hvdcLine %1%'s converters were badly initialized
+CannotLoadLibrary             =     Cannot load library %1% : %2%
+DynModelLibraryNotFound       =     Library %1% not found : model %2% will be skipped
+
 //------------------ Main ---------------------------
 NetworkSlackNodeNotFound      =     Network slack node requested but not found in network input file %1%
 InputsInfo                    =     Processing network input file %1% and config file %2%

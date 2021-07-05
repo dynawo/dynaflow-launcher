@@ -65,6 +65,8 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
+  networkManager_.onNode(algo::DynModelAlgorithm(models_, dynamicDataBaseManager_));
+  networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
 }
 
 bool
@@ -78,6 +80,9 @@ bool
 Context::process() {
   // Process all algorithms on nodes
   networkManager_.walkNodes();
+
+  // Check models generated with algorithm
+  filterDynModels();
 
   LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
 
@@ -103,6 +108,27 @@ Context::process() {
   walkNodesMain();
 
   return true;
+}
+
+void
+Context::filterDynModels() {
+  const auto& automatonsConfig = dynamicDataBaseManager_.assemblingDocument().dynamicAutomatons();
+  for (const auto& automaton : automatonsConfig) {
+    if (models_.models.count(automaton.id) == 0) {
+      continue;
+    }
+
+    const auto& modelDef = models_.models.at(automaton.id);
+    for (const auto& macroConnect : automaton.macroConnects) {
+      auto found = std::find_if(
+          modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
+          [&macroConnect](const algo::DynModelDefinition::MacroConnection& macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
+      if (found == modelDef.nodeConnections.end()) {
+        LOG(debug) << "Dynamic model " << automaton.id << " is only partially connected to network so it is removed from exported models" << LOG_ENDL;
+        models_.models.erase(automaton.id);
+      }
+    }
+  }
 }
 
 void
