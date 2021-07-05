@@ -82,7 +82,7 @@ Context::process() {
   networkManager_.walkNodes();
 
   // Check models generated with algorithm
-  filterDynModels();
+  filterPartiallyConnectedDynamicModels();
 
   LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
 
@@ -111,7 +111,7 @@ Context::process() {
 }
 
 void
-Context::filterDynModels() {
+Context::filterPartiallyConnectedDynamicModels() {
   const auto& automatonsConfig = dynamicDataBaseManager_.assemblingDocument().dynamicAutomatons();
   for (const auto& automaton : automatonsConfig) {
     if (dynamicModels_.models.count(automaton.id) == 0) {

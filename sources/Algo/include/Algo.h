@@ -646,8 +646,8 @@ class DynModelAlgorithm : public NodeAlgorithm {
    * @param automaton the dynamic automaton
    * @param macroConnection the macro connection to add
    */
-  void addMacroConnectionToDef(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                               const DynModelDefinition::MacroConnection& macroConnection);
+  void addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+                                            const DynModelDefinition::MacroConnection& macroConnection);
 
  private:
   DynModelDefinitions& dynamicModels_;  ///< Dynamic model definitions to update
