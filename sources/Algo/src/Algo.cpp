@@ -416,6 +416,8 @@ DynModelAlgorithm::connectMacroConnectionForShunt(const NodePtr& node) {
 
   for (const auto& macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
+    // dynamic model id is present in the map as for now macroConnectByVlForShuntsId_ is filled only by dynamic automatons data
+    assert(dynamicAutomatonsById_.count(macroConnection.dynModelId) > 0);
     const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
 
     for (const auto& shunt : node->shunts) {
