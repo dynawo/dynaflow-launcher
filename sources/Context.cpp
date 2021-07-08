@@ -148,8 +148,8 @@ Context::exportOutputs() {
   // Dyd
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
-  outputs::Dyd dydWriter(
-      outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_, busesWithDynamicModel_));
+  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_, busesWithDynamicModel_,
+                                                     dynamicDataBaseManager_, dynamicModels_));
   dydWriter.write();
 
   // Par
@@ -165,7 +165,7 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLines_, config_.getActivePowerCompensation(),
-                                                     busesWithDynamicModel_));
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_));
   parWriter.write();
 
   // Diagram
@@ -183,8 +183,8 @@ Context::execute() {
 
   file::path inputPath(config_.outputDir());
   auto path = file::canonical(inputPath);
-  simu_context->setInputDirectory(path.generic_string() + "/");
-  simu_context->setWorkingDirectory(config_.outputDir().generic_string() + "/");
+  simu_context->setInputDirectory(path.generic_string());
+  simu_context->setWorkingDirectory(config_.outputDir().generic_string());
 
   // This shall be the last log performed before building simulation,
   // because simulation constructor will re-initialize traces for Dynawo

@@ -19,6 +19,7 @@
 
 #include "Algo.h"
 #include "Configuration.h"
+#include "DynamicDataBaseManager.h"
 
 #include <PARParametersSet.h>
 #include <boost/filesystem.hpp>
@@ -49,18 +50,25 @@ class Par {
      * @param hvdcLines list of hdvc lines taken into account
      * @param activePowerCompensation the type of active power compensation
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+     * @param dynamicDataBaseManager dynamic database manager to use
+     * @param counters the counters definitions to use
+     * @param models list of models definitions
      */
     ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
-                  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) :
+                  inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+                  const algo::ShuntCounterDefinitions& counters, const algo::DynModelDefinitions& models) :
         basename(base),
         dirname(dir),
         filepath(filename),
         generators(gens),
         hvdcLines(hvdcLines),
         activePowerCompensation(activePowerCompensation),
-        busesWithDynamicModel(busesWithDynamicModel) {}
+        busesWithDynamicModel(busesWithDynamicModel),
+        dynamicDataBaseManager(dynamicDataBaseManager),
+        counters(counters),
+        models(models) {}
 
     std::string basename;                                                         ///< basename
     boost::filesystem::path dirname;                                              ///< Dirname of output file relative to execution dir
@@ -69,6 +77,9 @@ class Par {
     algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;          ///< list of hvdc lines
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
+    const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
+    const algo::ShuntCounterDefinitions& counters;                                ///< Counters to use
+    const algo::DynModelDefinitions& models;                                      ///< list of defined models
   };
 
   /**
@@ -130,7 +141,7 @@ class Par {
    * @returns the parameter set
    */
   static boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
-                                                                     const std::string& dirname);
+                                                                     const boost::filesystem::path& dirname);
   /**
    * @brief Write hvdc line parameter set
    *
@@ -150,10 +161,35 @@ class Par {
    */
   static boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string& busId, const std::string& genId);
 
+  /**
+   * @brief Write set for models
+   *
+   * @param set the configuration set to write
+   * @param assemblingDoc the corresponding assembling document handler
+   * @param counters the counters to use
+   * @param models the models definitions to use
+   *
+   * @returns the parameter set to add
+   */
+  static boost::shared_ptr<parameters::ParametersSet> writeDynModelSet(const inputs::SettingXmlDocument::Set& set,
+                                                                       const inputs::AssemblingXmlDocument& assemblingDoc,
+                                                                       const algo::ShuntCounterDefinitions& counters, const algo::DynModelDefinitions& models);
+
+  /**
+   * @brief Retrieves the first component connected through the dynamic model to a transfo
+   *
+   * @param dynModelDef the dynamic model to process
+   * @returns the tfo id the dynamic model is connected to, nullopt if not found
+   */
+  static boost::optional<std::string> getTfoComponentId(const algo::DynModelDefinition& dynModelDef);
+
  private:
-  ParDefinition def_;                                ///< PAR file definition
   static constexpr double kGoverNullValue_ = 0.;     ///< KGover null value
   static constexpr double kGoverDefaultValue_ = 1.;  ///< KGover default value
+  static const std::string componentIdTag_;          ///< TFO special tag for component id
+
+ private:
+  ParDefinition def_;  ///< PAR file definition
 };
 
 }  // namespace outputs

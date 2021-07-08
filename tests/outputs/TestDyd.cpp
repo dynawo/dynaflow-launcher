@@ -13,6 +13,10 @@
 
 #include <boost/filesystem.hpp>
 
+testing::Environment* initXmlEnvironment();
+
+testing::Environment* const env = initXmlEnvironment();
+
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
@@ -21,6 +25,8 @@ TEST(Dyd, write) {
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath("results");
   outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -39,7 +45,7 @@ TEST(Dyd, write) {
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}));
 
   dydWriter.write();
 
@@ -58,6 +64,8 @@ TEST(Dyd, writeRemote) {
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath("results");
   outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -78,7 +86,8 @@ TEST(Dyd, writeRemote) {
 
   outputPath.append(filename);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel, manager, {}));
 
   dydWriter.write();
 
@@ -97,6 +106,8 @@ TEST(Dyd, writeHvdc) {
   boost::filesystem::path outputPath("results");
   outputPath.append(basename);
 
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
   }
@@ -114,7 +125,58 @@ TEST(Dyd, writeHvdc) {
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcLines, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcLines, {}, manager, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Dyd, writeDynModel) {
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::LoadDefinition;
+
+  std::string basename = "TestDydDynModel";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  dfl::algo::DynModelDefinitions models;
+  models.usedMacroConnections.insert("ToUMeasurement");
+  models.usedMacroConnections.insert("ToControlledShunts");
+  models.models.insert({"MODELE_1_VL4", dfl::algo::DynModelDefinition("MODELE_1_VL4", "DYNModel1")});
+
+  auto macro = dfl::algo::DynModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynModelDefinition::MacroConnection::ElementType::NODE, "0");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+  macro = dfl::algo::DynModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynModelDefinition::MacroConnection::ElementType::SHUNT, "1.1");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+  macro = dfl::algo::DynModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+
+  std::vector<LoadDefinition> loads = {LoadDefinition("L0", "00"), LoadDefinition("L1", "01"), LoadDefinition("L2", "02"), LoadDefinition("L3", "03")};
+
+  const std::string bus1 = "BUS_1";
+  std::vector<GeneratorDefinition> generators = {
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
+
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, models));
 
   dydWriter.write();
 

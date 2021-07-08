@@ -26,6 +26,10 @@ HvdcLineBadInitialization     =     The hvdcLine %1%'s converters were badly ini
 CannotLoadLibrary             =     Cannot load library %1% : %2%
 DynModelLibraryNotFound       =     Library %1% not found : model %2% will be skipped
 
+//------------------ Outputs -----------------------
+DynModelMacroNotDefined       =     Macro %1% used in model not defined
+TFOComponentNotFound          =     Reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
+
 //------------------ Main ---------------------------
 NetworkSlackNodeNotFound      =     Network slack node requested but not found in network input file %1%
 InputsInfo                    =     Processing network input file %1% and config file %2%
