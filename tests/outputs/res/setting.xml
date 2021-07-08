@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setting>
+  <set id="MODELE_1_VL4">
+    <par name="uMin" type="DOUBLE" value="236.0"/>
+    <par name="uMax" type="DOUBLE" value="243.5"/>
+    <par name="delay" type="DOUBLE" value="10.0"/>
+    <count id="SHUNTS_MODELE_1_VL4" name="nbShunts"/>
+  </set>
+  <set id="MODELE_1_VL3">
+    <par name="uMin" type="DOUBLE" value="61.0"/>
+    <par name="uMax" type="DOUBLE" value="66.0"/>
+    <par name="delay" type="DOUBLE" value="10.0"/>
+    <count id="SHUNTS_MODELE_1_VL3" name="nbShunts"/>
+  </set>
+  <set id="DM_VL661">
+    <par name="phaseShifter_sign" type="DOUBLE" value="1"/>
+    <par name="phaseShifter_t1st" type="DOUBLE" value="2.7"/>
+    <par name="phaseShifter_tNext" type="DOUBLE" value="2.7"/>
+    <reference componentId="@TFO@" name="phaseShifter_I0" origData="IIDM" origName="i1" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_tap0" origData="IIDM" origName="tap0" type="INT"/>
+    <reference componentId="@TFO@" name="phaseShifter_tapMin" origData="IIDM" origName="tapMin" type="INT"/>
+    <reference componentId="@TFO@" name="phaseShifter_tapMax" origData="IIDM" origName="tapMax" type="INT"/>
+    <reference componentId="@TFO@" name="phaseShifter_regulating0" origData="IIDM" origName="regulating" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_iMax" origData="IIDM" origName="iMax" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_iStop" origData="IIDM" origName="iStop" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" type="INT"/>
+  </set>
+  <set id="DM_VL61">
+    <par name="phaseShifter_sign" type="DOUBLE" value="-1"/>
+    <par name="phaseShifter_t1st" type="DOUBLE" value="6"/>
+    <par name="phaseShifter_tNext" type="DOUBLE" value="6"/>
+    <reference componentId="@TFO@" name="phaseShifter_I0" origData="IIDM" origName="i1" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_tap0" origData="IIDM" origName="tap0" type="INT"/>
+    <reference componentId="@TFO@" name="phaseShifter_tapMin" origData="IIDM" origName="tapMin" type="INT"/>
+    <reference componentId="@TFO@" name="phaseShifter_tapMax" origData="IIDM" origName="tapMax" type="INT"/>
+    <reference componentId="@TFO@" name="phaseShifter_regulating0" origData="IIDM" origName="regulating" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_iMax" origData="IIDM" origName="iMax" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_iStop" origData="IIDM" origName="iStop" type="DOUBLE"/>
+    <reference componentId="@TFO@" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" type="INT"/>
+  </set>
+  <set id="DM_CA">
+    <par name="currentLimitAutomaton_IThresholdSummer" type="DOUBLE" value="425"/>
+    <par name="currentLimitAutomaton_IThresholdWinter1" type="DOUBLE" value="480"/>
+    <par name="currentLimitAutomaton_IThresholdWinter2" type="DOUBLE" value="480"/>
+    <par name="currentLimitAutomaton_IThresholdIntermediate1" type="DOUBLE" value="465"/>
+    <par name="currentLimitAutomaton_IThresholdIntermediate2" type="DOUBLE" value="465"/>
+    <ref id="MESURE_I_CA" name="currentLimitAutomaton_Season" tag="@SAISON@" type="STRING"/>
+    <par name="currentLimitAutomaton_Running" type="BOOL" value="true"/>
+    <par name="currentLimitAutomaton_tLagBeforeActing" type="DOUBLE" value="20"/>
+    <par name="currentLimitAutomaton_OrderToEmit" type="INT" value="4"/>
+  </set>
+</setting>
