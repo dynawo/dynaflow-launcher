@@ -29,6 +29,10 @@ DynModelLibraryNotFound       =     Library %1% not found : model %2% will be sk
 //------------------ Outputs -----------------------
 DynModelMacroNotDefined       =     Macro %1% used in model not defined in assembling file
 TFOComponentNotFound          =     Reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
+SingleAssociationRefNotFound  =     Ref %1% references single association %2% which is not found in configuration : element is ignored
+SingleAssociationRefNotALine  =     Ref %1% references single association %2% which does not associate a line : element is ignored
+RefLineNotFound               =     Ref %1% references single association %2% which associates to line %3% which is not found in network : element is ignored
+RefUnsupportedTag             =     Ref %1% has a non supported tag %2% : element is ignored
 
 //------------------ Main ---------------------------
 NetworkSlackNodeNotFound      =     Network slack node requested but not found in network input file %1%
