@@ -18,6 +18,8 @@
 #include "Par.h"
 
 #include "Constants.h"
+#include "Log.h"
+#include "Message.hpp"
 
 #include <DYNCommon.h>
 #include <PARParameter.h>
@@ -157,6 +159,8 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
 
 }  // namespace helper
 
+const std::string Par::componentIdTag_("@TFO@");
+
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
 
 void
@@ -174,7 +178,7 @@ Par::write() {
     }
     // if generator is not using infinite diagrams, no need to create constant sets
     if (it->isUsingDiagram()) {
-      dynamicModelsToConnect->addParametersSet(writeGenerator(*it, def_.basename, def_.dirname.generic_string()));
+      dynamicModelsToConnect->addParametersSet(writeGenerator(*it, def_.basename, def_.dirname));
     } else {
       if (!dynamicModelsToConnect->hasParametersSet(helper::getGeneratorParameterSetId(it->model, DYN::doubleIsZero(it->targetP)))) {
         dynamicModelsToConnect->addParametersSet(writeConstantGeneratorsSets(def_.activePowerCompensation, it->model, DYN::doubleIsZero(it->targetP)));
@@ -193,7 +197,89 @@ Par::write() {
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
   }
 
+  const auto& sets = def_.dynamicDataBaseManager.settingDocument().sets();
+  for (const auto& set : sets) {
+    auto new_set = writeDynModelSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.counters, def_.models);
+    if (new_set) {
+      dynamicModelsToConnect->addParametersSet(new_set);
+    }
+  }
+
   exporter.exportToFile(dynamicModelsToConnect, def_.filepath.generic_string(), constants::xmlEncoding);
+}
+
+boost::optional<std::string>
+Par::getTfoComponentId(const algo::DynModelDefinition& dynModelDef) {
+  for (const auto& macro : dynModelDef.nodeConnections) {
+    if (macro.elementType == algo::DynModelDefinition::MacroConnection::ElementType::TFO) {
+      return macro.connectedElementId;
+    }
+  }
+
+  return boost::none;
+}
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeDynModelSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
+                      const algo::ShuntCounterDefinitions& counters, const algo::DynModelDefinitions& models) {
+  if (models.models.count(set.id) == 0) {
+    // model is not connected : ignore corresponding set
+    return nullptr;
+  }
+
+  auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
+  const auto& multipleAssociations = assemblingDoc.multipleAssociations();
+  std::unordered_map<std::string, inputs::AssemblingXmlDocument::MultipleAssociation> associationsById;
+  std::transform(multipleAssociations.begin(), multipleAssociations.end(), std::inserter(associationsById, associationsById.begin()),
+                 [](const inputs::AssemblingXmlDocument::MultipleAssociation& association) { return std::make_pair(association.id, association); });
+  for (const auto& count : set.counts) {
+    auto found = associationsById.find(count.id);
+    if (found == associationsById.end()) {
+      LOG(debug) << "Count id " << count.id << " not found as a multiple association in assembling: Configuration error" << LOG_ENDL;
+      continue;
+    }
+    if (counters.nbShunts.count(found->second.shunt.voltageLevel) == 0) {
+      // case voltage level not in network, skip
+      continue;
+    }
+    new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(found->second.shunt.voltageLevel))));
+  }
+
+  for (const auto& param : set.boolParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+  for (const auto& param : set.doubleParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+  for (const auto& param : set.integerParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+
+  for (const auto& param : set.stringParameters) {
+    new_set->addParameter(helper::buildParameter(param.name, param.value));
+  }
+
+  for (const auto& ref : set.references) {
+    auto componentId = ref.componentId;
+
+    // special case @TFO@ reference
+    if (componentId && *componentId == componentIdTag_) {
+      componentId = getTfoComponentId(models.models.at(set.id));
+      if (!componentId) {
+        // Configuration error : references is using a TFO element while no TFO element is connected to the dynamic model
+        LOG(warn) << MESS(TFOComponentNotFound, ref.name, set.id) << LOG_ENDL;
+        continue;
+      }
+    }
+    new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingXmlDocument::Reference::toString(ref.dataType), componentId));
+  }
+
+  for (const auto& ref : set.refs) {
+    // TODO(lecourtoisflo) extensions ?
+    new_set->addParameter(helper::buildParameter(ref.name, std::string("UNDEFINED")));
+  }
+
+  return new_set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
@@ -214,7 +300,7 @@ Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configurati
   case dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P:
     set->addReference(helper::buildReference("generator_PNom", "targetP_pu", "DOUBLE"));
     break;
-  default:  //impossible by definition of the enum
+  default:  //  impossible by definition of the enum
     break;
   }
 
@@ -318,7 +404,7 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const std::string& dirname) {
+Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const boost::filesystem::path& dirname) {
   std::size_t hashId = constants::hash(def.id);
   std::string hashIdStr = std::to_string(hashId);
 
@@ -334,7 +420,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
-  auto dirname_diagram = boost::filesystem::path(dirname);
+  auto dirname_diagram = dirname;
   dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(def));
 
   set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));

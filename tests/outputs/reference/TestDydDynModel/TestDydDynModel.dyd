@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
+    <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
+    <dyn:connect var1="generator_N" var2="signalN_N"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
+    <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
+    <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
+    <dyn:connect var1="Ii_value" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
+    <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
+    <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="ToControlledShunts">
+    <dyn:connect var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable"/>
+    <dyn:connect var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor"/>
+    <dyn:connect var1="shunt_state_@INDEX@" var2="@NAME@_state"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="ToUMeasurement">
+    <dyn:connect var1="U_IMPIN" var2="@NAME@_U"/>
+  </dyn:macroConnector>
+  <dyn:macroStaticReference id="GeneratorStaticRef">
+    <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
+    <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
+    <dyn:staticRef var="generator_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="LoadRef">
+    <dyn:staticRef var="PPu_value" staticVar="p"/>
+    <dyn:staticRef var="QPu_value" staticVar="q"/>
+    <dyn:staticRef var="state_value" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:blackBoxModel id="G0" staticId="G0" lib="GeneratorPVSignalN" parFile="TestDydDynModel.par" parId="signalNGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVDiagramPQSignalN" parFile="TestDydDynModel.par" parId="6320417593396202500">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G4" staticId="G4" lib="GeneratorPVSignalN" parFile="TestDydDynModel.par" parId="signalNGeneratorFixedP">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="L0" staticId="L0" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="L1" staticId="L1" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="L2" staticId="L2" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="L3" staticId="L3" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="MODELE_1_VL4" lib="DYNModel1" parFile="TestDydDynModel.par" parId="MODELE_1_VL4"/>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L1" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L3" id2="NETWORK"/>
+  <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="1.1"/>
+  <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="1" name2="1.2"/>
+  <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G0" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G0" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G2" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G4" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="2"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi"/>
+</dyn:dynamicModelsArchitecture>
