@@ -90,6 +90,9 @@ class Job {
    */
   boost::shared_ptr<job::JobEntry> write();
 
+  /**
+   * Sets the start and duration time of all jobs
+   */
   static void setStartAndDuration(float startTime, float durationTime) {
     timeStart_ = startTime;
     durationSimu_ = durationTime;

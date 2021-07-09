@@ -214,7 +214,7 @@ class Context {
     }
   };
 
-  Caches caches_;  /// Holds all the caches from the Context.
+  Caches caches_;  ///< Holds all the caches from the Context.
 
 
   /// @brief Check that a contengy is ok, otherwise returns all the problems it had
@@ -264,7 +264,7 @@ class Context {
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencyElement(const std::string& id, dfl::inputs::Contingencies::Type type) const;
   /// @brief Check if node is in main connected component
-  /// @param nodeId identifier of node/bus to check
+  /// @param bus bus object to check
   bool isInMainConnectedComponent(const boost::shared_ptr<DYN::BusInterface>& bus) const;
   /// @brief Check if buses are in main connected component
   /// @param buses pointers of buses to check
