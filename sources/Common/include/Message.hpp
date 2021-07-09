@@ -162,8 +162,7 @@ class Message {
 /**
  * @brief Macro to easy build a message
  *
- * @param key the dico key (without namespaces and type)
- * @param ... Arguments required to format the corresponding message
+ * @param ... First, the key and then any arguments required to format the corresponding message
  *
  * The expected usage for keys that expect arguments is:
  * `MESS(DictKey, argA, argB, ...)`
