@@ -277,8 +277,8 @@ Context::checkContingencyElement(const std::string& id, Contingencies::Type type
     case Contingencies::Type::TWO_WINDINGS_TRANSFORMER:
       return checkTwoWTransformer(id);
     case Contingencies::Type::BRANCH: {
-      bool r = checkLine(id) || checkTwoWTransformer(id);
-      if (!r) {
+      // Check that both checkLine and checkTwoWTransformer fail
+      if (checkLine(id) && checkTwoWTransformer(id)) {
         return Contingencies::ElementInvalidReason::BRANCH_NOT_FOUND;
       }
       return boost::none; // No problem
