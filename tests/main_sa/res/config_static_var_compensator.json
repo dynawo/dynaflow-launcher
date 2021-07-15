@@ -1,0 +1,8 @@
+{
+  "dfl-config": {
+      "InfiniteReactiveLimits": "true",
+      "AutomaticSlackBusOn": "true",
+      "OutputDir": "results/static_var_compensator",
+      "DsoVoltageLevel": 3.0
+  }
+}

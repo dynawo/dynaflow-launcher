@@ -18,3 +18,11 @@ TEST(Dico, Dico) {
 
   ASSERT_EQ(dfl::common::dico().message(dfl::common::generated::DicoKeys::Key::NetworkSlackNodeNotFound), "text with key common to real dic %1% then %2%");
 }
+
+TEST(Dico, NoArguments) {
+  using dfl::common::Dico;
+
+  Dico::configure("res/test.dic");
+
+  ASSERT_EQ(dfl::common::dico().message(dfl::common::generated::DicoKeys::Key::GeneratorNotFound), "not found as generator");
+}

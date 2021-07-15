@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <string>
 
@@ -26,6 +27,38 @@ namespace inputs {
  */
 class Contingencies {
  public:
+   /**
+   * @brief Enum that defines network elements types
+   */
+  enum class Type {
+    GENERATOR,
+    LINE,
+    BRANCH,
+    SHUNT_COMPENSATOR,
+    LOAD,
+    DANGLING_LINE,
+    HVDC_LINE,
+    STATIC_VAR_COMPENSATOR,
+    BUSBAR_SECTION,
+    TWO_WINDINGS_TRANSFORMER
+  };
+
+  /**
+   * @brief Explains why an element is considered invalid
+   */
+  enum class ElementInvalidReason {
+    GENERATOR_NOT_FOUND,
+    TWOWINDINGS_TRANFORMER_NOT_FOUND,
+    LINE_NOT_FOUND,
+    BRANCH_NOT_FOUND,
+    SHUNT_COMPENSATOR_NOT_FOUND,
+    LOAD_NOT_FOUND,
+    DANGLING_LINE_NOT_FOUND,
+    HVDC_LINE_NOT_FOUND,
+    STATIC_VAR_COMPENSATOR_NOT_FOUND,
+    NOT_IN_MAIN_CONNECTED_COMPONENT,
+  };
+
   /**
    * @brief Contingency element definition
    */
@@ -36,7 +69,7 @@ class Contingencies {
     explicit ContingencyElementDefinition(const std::string& id) : id(id) {}
 
     std::string id;    ///< id of the element affected by a contingency
-    std::string type;  ///< type of the element affected by the contingency (BRANCH, GENERATOR, LOAD, ...)
+    Type type;  ///< type of the element affected by the contingency (BRANCH, GENERATOR, LOAD, ...)
   };
 
   /**
@@ -63,6 +96,14 @@ class Contingencies {
   /**
    * @brief Constructor
    *
+   * Define which contingencies do we have
+   *
+   */
+  explicit Contingencies(std::vector<std::shared_ptr<ContingencyDefinition>> contingencies): contingencies_(contingencies) {}
+
+  /**
+   * @brief Constructor
+   *
    * exit the program on error in parsing the file
    *
    * @param filepath the JSON contingencies file to use
@@ -75,7 +116,7 @@ class Contingencies {
    * obtain a reference to the contingency definitions
    *
    */
-  const std::vector<ContingencyDefinition>& definitions() const { return contingencies; }
+  const std::vector<std::shared_ptr<ContingencyDefinition>>& definitions() const { return contingencies_; }
 
   /**
    * @brief Log
@@ -85,8 +126,33 @@ class Contingencies {
    */
   void log();
 
+  /**
+   * @brief Get type enum
+   *
+   * Parses a string into it's 'Type' enum representation
+   *
+   * @return none if not a valid type, otherwise the enum value
+   */
+  static boost::optional<Type> typeFromString(const std::string& str);
+
+  /**
+   * @brief ElementInvalidReason to string
+   *
+   * Transforms an ElementInvalidReason into a string description
+   *
+   */
+  static std::string toString(ElementInvalidReason reason);
+
+  /**
+   * @brief Type to string
+   *
+   * Transforms a Type enum into it's string representation
+   *
+   */
+  static std::string toString(Type type);
+
  private:
-  std::vector<ContingencyDefinition> contingencies;  ///< contingency definitions
+  std::vector<std::shared_ptr<ContingencyDefinition>> contingencies_;  ///< contingency definitions
 };
 
 }  // namespace inputs

@@ -11,3 +11,4 @@
 OKKey      =     this a text with many words
 NOKKey in many words = this text is irrelevant
 NetworkSlackNodeNotFound = text with key common to real dic %1% then %2%
+GeneratorNotFound = not found as generator

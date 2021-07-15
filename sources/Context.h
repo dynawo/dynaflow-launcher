@@ -22,6 +22,13 @@
 #include "Contingencies.h"
 #include "NetworkManager.h"
 
+#include <DYNModelDescription.h>
+#include <DYNDanglingLineInterface.h>
+#include <DYNHvdcLineInterface.h>
+#include <DYNLoadInterface.h>
+#include <DYNVoltageLevelInterface.h>
+#include <DYNShuntCompensatorInterface.h>
+#include <DYNStaticVarCompensatorInterface.h>
 #include <DYNNetworkInterface.h>
 #include <DYNLineInterface.h>
 #include <DYNTwoWTransformerInterface.h>
@@ -29,6 +36,8 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
+
+
 
 namespace dfl {
 /**
@@ -154,55 +163,118 @@ class Context {
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
 
-  std::unordered_set<std::string> mainConnexIds_;
+  /// A small struct to to hold all the sets that serve as check caches
+  struct Caches {
+    ///< Find fast which ids which ids are in the main
+    std::unordered_set<std::string> mainConnexIds;
 
+    ///< Each generator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::GeneratorInterface>> generators;
+
+    ///< Each line associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::LineInterface>> lines;
+
+    ///< Each two winding transformer associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::TwoWTransformerInterface>> twoWTransformers;
+
+    ///< Each shunt compensator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::ShuntCompensatorInterface>> shuntCompensators;
+
+    ///< Each load associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::LoadInterface>> loads;
+
+    ///< Each danglingline associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::DanglingLineInterface>> danglingLines;
+
+    ///< Each hvdcline associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::HvdcLineInterface>> hvdcLines;
+
+    ///< Each satic var compensator associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::StaticVarCompensatorInterface>> staticVarComps;
+
+    /**
+     * @brief Initializes all the caches with the nodes from the network
+     * @param mainConnexNodes the list of nodes that conform the main connected component
+     * @param network the Networkinterface defining the network to work with
+     */
+    void initCaches(
+      const std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes,
+      const boost::shared_ptr<DYN::NetworkInterface> &network);
+
+    /// @brief Transforms a set of model descriptions or components into a cache to check if an ID exists in it
+    /// @param nodes A vector of shared_ptrs to the models, I needs to have a method called getID that returns an std::string
+    template<typename I> static
+    std::unordered_map<std::string, boost::shared_ptr<I>> makeCacheOf(const std::vector<boost::shared_ptr<I>>& nodes) {
+      std::unordered_map<std::string, boost::shared_ptr<I>> result;
+      for (auto n : nodes) {
+        result.insert(std::make_pair(n->getID(), n));
+      }
+
+      return result;
+    }
+  };
+
+  Caches caches_;  ///< Holds all the caches from the Context.
+
+
+  /// @brief Check that a contengy is ok, otherwise returns all the problems it had
+  /// @return All the problems that the contingency had (empty if none)
+  std::vector<dfl::inputs::Contingencies::ElementInvalidReason> checkContingency(std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition> c) const;
   /// @brief Check all elements in contingencies have valid dynamic models
-  /// @return All ellements that are invalid and why
-  std::vector<std::string> checkContingencies() const;
+  /// @return Elements that are good, and why others failed
+  std::tuple<
+    std::vector<std::shared_ptr<dfl::inputs::Contingencies::ContingencyDefinition>>,
+    std::vector<dfl::inputs::Contingencies::ElementInvalidReason>
+  > checkAndFilterContingencies() const;
   /// @brief Check if network has a valid component interface for a generator
-  /// @param branchId static identifier of generator
+  /// @param generatorId static identifier of generator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkGenerator(const std::string& generatorId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkGenerator(const std::string& generatorId) const;
   /// @brief Check if network has a valid component interface for a line
   /// @param branchId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkLine(const std::string& branchId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkLine(const std::string& branchId) const;
   /// @brief Check if network has a valid component interface for a two-windings transformer
-  /// @param branchId static identifier of branch
+  /// @param twoWTransId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkTwoWTransformer(const std::string& branchId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkTwoWTransformer(const std::string& twoWTransId) const;
   /// @brief Check if network has a valid component interface for a shun compensator
   /// @param shuntId static identifier of shunt compensator
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkShuntCompensator(const std::string& shuntId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkShuntCompensator(const std::string& shuntId) const;
   /// @brief Check if network has a valid component interface for a load
   /// @param loadId static identifier of load
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkLoad(const std::string& loadId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkLoad(const std::string& loadId) const;
   /// @brief Check if network has a valid component interface for a dangling line
   /// @param dlineId static identifier of dangling line
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkDanglingLine(const std::string& dlineId) const;
-  /// @brief Check if network has a valid component interface for a static var compensator
-  /// @param branchId static identifier of branch
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkDanglingLine(const std::string& dlineId) const;
+    /// @brief Check if network has a valid component interface for a dangling line
+  /// @param hlineId static identifier of dangling line
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkStaticVarCompensator(const std::string& compensatorId) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkHvdcLine(const std::string& hlineId) const;
+  /// @brief Check if network has a valid component interface for a static var compensator
+  /// @param compensatorId static identifier of branch
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkStaticVarCompensator(const std::string& compensatorId) const;
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
   /// @return Empty if ok, otherwise returns why no valid component interface is found
-  boost::optional<std::string> checkContingencyElement(const std::string& id, const std::string& type) const;
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkContingencyElement(const std::string& id, dfl::inputs::Contingencies::Type type) const;
   /// @brief Check if node is in main connected component
-  /// @param nodeId identifier of node/bus to check
-  bool isInMainConnectedComponent(const std::string& nodeId) const;
+  /// @param bus bus object to check
+  bool isInMainConnectedComponent(const boost::shared_ptr<DYN::BusInterface>& bus) const;
   /// @brief Check if buses are in main connected component
-  /// @param bus pointers of buses to check
-  bool areInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
+  /// @param buses pointers of buses to check
+  bool anyInMainConnectedComponent(const std::vector<boost::shared_ptr<DYN::BusInterface>>& buses) const;
+
 
   /// @brief Build JOBS, DYD, PAR files for each contingency
   void exportOutputsContingencies();
   /// @brief Build JOBS, DYD, PAR files for a given contingency
-  void exportOutputsContingency(const inputs::Contingencies::ContingencyDefinition& c);
+  void exportOutputsContingency(const std::shared_ptr<inputs::Contingencies::ContingencyDefinition>& c);
 
   /// @brief Initialization of additional instances of network manager
   void initNetworkManager(dfl::inputs::NetworkManager& networkManager, std::vector<std::shared_ptr<inputs::Node>>& mainConnexNodes);
