@@ -1,0 +1,11 @@
+{
+  "version" : "1.0",
+  "name" : "list",
+  "contingencies" : [ {
+    "id" : "static_var_compensator_contingency",
+    "elements" : [ {
+      "id" : "_3c69652c-ff14-4550-9a87-b6fdaccbb5f4",
+      "type" : "STATIC_VAR_COMPENSATOR"
+    } ]
+  } ]
+}

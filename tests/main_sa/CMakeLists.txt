@@ -1,0 +1,38 @@
+# Copyright (c) 2020, RTE (http://www.rte-france.com)
+# See AUTHORS.txt
+# All rights reserved.
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, you can obtain one at http://mozilla.org/MPL/2.0/.
+# SPDX-License-Identifier: MPL-2.0
+#
+# XXX(Sergio): Res for this needs to be filled
+add_test(
+    NAME MAIN_SA.varEnv
+    COMMAND DynaFlowLauncher --network=res/TestIIDM_launch_infinite.iidm --config=res/launch_infinite.json --contingencies=res/contingencies.json
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+# Test will fail because environement variables are not set
+set_tests_properties(MAIN_SA.varEnv PROPERTIES WILL_FAIL TRUE)
+
+macro(DEFINE_LAUNCH_TEST _name)
+  add_test(
+    # Use some per-module/project prefix so that it is easier to run only tests for this module
+    NAME MAIN_SA.${_name}
+    COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:DynaFlowLauncher> -DTEST_NAME=${_name} -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diff_sa.py -P ${CMAKE_SOURCE_DIR}/cmake/TestMainSA.cmake
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+  set_property(TEST MAIN_SA.${_name} PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH=${DYNAWO_HOME}/share/iidm/xsd/)
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_INSTALL=${CMAKE_SOURCE_DIR})
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_RESOURCES_DIR=${DYNAWO_HOME}/share:${DYNAWO_HOME}/share/xsd)
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_DDB_DIR=${DYNAWO_HOME}/ddb)
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_INSTALL_DIR=${DYNAWO_HOME})
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_IIDM_EXTENSION=${DYNAWO_HOME}/lib/libdynawo_DataInterfaceIIDMExtension.so)
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_LIBIIDM_EXTENSIONS=${DYNAWO_HOME}/lib)
+  set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT PYTHONPATH=${DYNAWO_HOME}/sbin/nrt/nrt_diff)
+endmacro()
+
+DEFINE_LAUNCH_TEST(general)
+DEFINE_LAUNCH_TEST(static_var_compensator)
