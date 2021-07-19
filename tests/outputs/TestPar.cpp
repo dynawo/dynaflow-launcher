@@ -153,10 +153,10 @@ TEST(TestPar, DynModel) {
   counters.nbShunts["VL"] = 2;
   counters.nbShunts["VL2"] = 1;
 
-  dfl::algo::DynModelDefinitions defs;
-  dfl::algo::DynModelDefinition dynModel("DM_VL61", "DummyLib");
+  dfl::algo::DynamicModelDefinitions defs;
+  dfl::algo::DynamicModelDefinition dynModel("DM_VL61", "DummyLib");
   dynModel.nodeConnections.insert(
-      dfl::algo::DynModelDefinition::MacroConnection("MacroTest", dfl::algo::DynModelDefinition::MacroConnection::ElementType::TFO, "TfoId"));
+      dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId"));
   defs.models.insert({dynModel.id, dynModel});
 
   const std::string bus1 = "BUS_1";

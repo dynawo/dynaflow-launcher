@@ -159,7 +159,7 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
 
 }  // namespace helper
 
-const std::string Par::componentIdTag_("@TFO@");
+const std::string Par::componentTransfoIdTag_("@TFO@");
 
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
 
@@ -199,7 +199,7 @@ Par::write() {
 
   const auto& sets = def_.dynamicDataBaseManager.settingDocument().sets();
   for (const auto& set : sets) {
-    auto new_set = writeDynModelSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.counters, def_.models);
+    auto new_set = writeDynamicModelSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.shuntCounters, def_.dynamicModelsDefinitions);
     if (new_set) {
       dynamicModelsToConnect->addParametersSet(new_set);
     }
@@ -209,9 +209,9 @@ Par::write() {
 }
 
 boost::optional<std::string>
-Par::getTfoComponentId(const algo::DynModelDefinition& dynModelDef) {
+Par::getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef) {
   for (const auto& macro : dynModelDef.nodeConnections) {
-    if (macro.elementType == algo::DynModelDefinition::MacroConnection::ElementType::TFO) {
+    if (macro.elementType == algo::DynamicModelDefinition::MacroConnection::ElementType::TFO) {
       return macro.connectedElementId;
     }
   }
@@ -220,8 +220,8 @@ Par::getTfoComponentId(const algo::DynModelDefinition& dynModelDef) {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeDynModelSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
-                      const algo::ShuntCounterDefinitions& counters, const algo::DynModelDefinitions& models) {
+Par::writeDynamicModelSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
+                          const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models) {
   if (models.models.count(set.id) == 0) {
     // model is not connected : ignore corresponding set
     return nullptr;
@@ -263,8 +263,8 @@ Par::writeDynModelSet(const inputs::SettingXmlDocument::Set& set, const inputs::
     auto componentId = ref.componentId;
 
     // special case @TFO@ reference
-    if (componentId && *componentId == componentIdTag_) {
-      componentId = getTfoComponentId(models.models.at(set.id));
+    if (componentId && *componentId == componentTransfoIdTag_) {
+      componentId = getTransformerComponentId(models.models.at(set.id));
       if (!componentId) {
         // Configuration error : references is using a TFO element while no TFO element is connected to the dynamic model
         LOG(warn) << MESS(TFOComponentNotFound, ref.name, set.id) << LOG_ENDL;

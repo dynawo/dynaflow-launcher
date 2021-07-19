@@ -27,11 +27,11 @@ testing::Environment* initXmlEnvironment();
 testing::Environment* const env = initXmlEnvironment();
 
 TEST(TestAlgoDynModel, base) {
-  using dfl::algo::DynModelDefinitions;
+  using dfl::algo::DynamicModelDefinitions;
   using dfl::inputs::DynamicDataBaseManager;
 
   DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
-  DynModelDefinitions defs;
+  DynamicModelDefinitions defs;
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VLb");
@@ -77,17 +77,17 @@ TEST(TestAlgoDynModel, base) {
 
   std::string searched = "ToUMeasurement";
   auto found_connection = std::find_if(dynModel.nodeConnections.begin(), dynModel.nodeConnections.end(),
-                                       [&searched](const dfl::algo::DynModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+                                       [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
   ASSERT_NE(found_connection, dynModel.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "VL1");
-  ASSERT_EQ(found_connection->elementType, dfl::algo::DynModelDefinition::MacroConnection::ElementType::NODE);
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE);
   auto counter = std::count_if(dynModel.nodeConnections.begin(), dynModel.nodeConnections.end(),
-                               [&searched](const dfl::algo::DynModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+                               [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
   ASSERT_EQ(counter, 1);
 
   searched = "ToControlledShunts";
   counter = std::count_if(dynModel.nodeConnections.begin(), dynModel.nodeConnections.end(),
-                          [&searched](const dfl::algo::DynModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+                          [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
   ASSERT_EQ(counter, 15);
 
   // Line
@@ -99,10 +99,10 @@ TEST(TestAlgoDynModel, base) {
 
   searched = "CLAToControlledLineState";
   found_connection = std::find_if(dynModel_ada.nodeConnections.begin(), dynModel_ada.nodeConnections.end(),
-                                  [&searched](const dfl::algo::DynModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+                                  [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
   ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "1");
-  ASSERT_EQ(found_connection->elementType, dfl::algo::DynModelDefinition::MacroConnection::ElementType::LINE);
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LINE);
 
   // TFO
   ASSERT_NO_THROW(defs.models.at("DM_VL661"));
@@ -112,8 +112,8 @@ TEST(TestAlgoDynModel, base) {
   ASSERT_EQ(dynModel_tfo.nodeConnections.size(), 3);
   searched = "PhaseShifterToIMeasurement";
   found_connection = std::find_if(dynModel_tfo.nodeConnections.begin(), dynModel_tfo.nodeConnections.end(),
-                                  [&searched](const dfl::algo::DynModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+                                  [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
   ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "TFO1");
-  ASSERT_EQ(found_connection->elementType, dfl::algo::DynModelDefinition::MacroConnection::ElementType::TFO);
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO);
 }

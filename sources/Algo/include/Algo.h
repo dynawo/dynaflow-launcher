@@ -404,7 +404,7 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
  *
  * Structure containing minimum information to define a dynamic model with its connections
  */
-struct DynModelDefinition {
+struct DynamicModelDefinition {
   using DynModelId = std::string;  ///< alias for dynamic model id
 
   /**
@@ -484,7 +484,7 @@ struct DynModelDefinition {
    * @param dynModelId the dynamic model id
    * @param dynModelLib the library name
    */
-  DynModelDefinition(const DynModelId& dynModelId, const std::string& dynModelLib) : id(dynModelId), lib(dynModelLib) {}
+  DynamicModelDefinition(const DynModelId& dynModelId, const std::string& dynModelLib) : id(dynModelId), lib(dynModelLib) {}
 
   DynModelId id;                              ///< dynamic model id
   std::string lib;                            ///< library name
@@ -494,9 +494,9 @@ struct DynModelDefinition {
 /**
  * @brief Definition of models
  */
-struct DynModelDefinitions {
-  std::unordered_map<DynModelDefinition::DynModelId, DynModelDefinition> models;          ///< models by dynamic model id
-  std::unordered_set<DynModelDefinition::MacroConnection::MacroId> usedMacroConnections;  ///< list of macro connectors used for current set of models
+struct DynamicModelDefinitions {
+  std::unordered_map<DynamicModelDefinition::DynModelId, DynamicModelDefinition> models;      ///< models by dynamic model id
+  std::unordered_set<DynamicModelDefinition::MacroConnection::MacroId> usedMacroConnections;  ///< list of macro connectors used for current set of models
 };
 
 /**
@@ -512,7 +512,7 @@ class DynModelAlgorithm : public NodeAlgorithm {
    * @param models the models to update
    * @param manager the dynamic data base manager to use
    */
-  DynModelAlgorithm(DynModelDefinitions& models, const inputs::DynamicDataBaseManager& manager);
+  DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager);
 
   /**
    * @brief Perform the algorithm
@@ -538,7 +538,7 @@ class DynModelAlgorithm : public NodeAlgorithm {
      * @param modelId dynamic model id
      * @param macroConnection macro connector id
      */
-    MacroConnect(const DynModelDefinition::DynModelId& modelId, const DynModelDefinition::MacroConnection::MacroId& macroConnection) :
+    MacroConnect(const DynamicModelDefinition::DynModelId& modelId, const DynamicModelDefinition::MacroConnection::MacroId& macroConnection) :
         dynModelId(modelId),
         macroConnectionId(macroConnection) {}
 
@@ -556,8 +556,8 @@ class DynModelAlgorithm : public NodeAlgorithm {
      */
     bool operator!=(const MacroConnect& other) const;
 
-    DynModelDefinition::DynModelId dynModelId;                       ///< dynamic model id
-    DynModelDefinition::MacroConnection::MacroId macroConnectionId;  ///< macro connection id
+    DynamicModelDefinition::DynModelId dynModelId;                       ///< dynamic model id
+    DynamicModelDefinition::MacroConnection::MacroId macroConnectionId;  ///< macro connection id
   };
 
   /**
@@ -647,10 +647,10 @@ class DynModelAlgorithm : public NodeAlgorithm {
    * @param macroConnection the macro connection to add
    */
   void addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                                            const DynModelDefinition::MacroConnection& macroConnection);
+                                            const DynamicModelDefinition::MacroConnection& macroConnection);
 
  private:
-  DynModelDefinitions& dynamicModels_;  ///< Dynamic model definitions to update
+  DynamicModelDefinitions& dynamicModels_;  ///< Dynamic model definitions to update
 
   std::unordered_map<std::string, inputs::AssemblingXmlDocument::DynamicAutomaton> dynamicAutomatonsById_;  ///< dynamic automatons by model id
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::unordered_set<MacroConnect, MacroConnectHash>>
