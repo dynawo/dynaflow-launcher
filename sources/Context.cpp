@@ -122,7 +122,7 @@ Context::filterPartiallyConnectedDynamicModels() {
     for (const auto& macroConnect : automaton.macroConnects) {
       auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
-          [&macroConnect](const algo::DynModelDefinition::MacroConnection& macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
+          [&macroConnect](const algo::DynamicModelDefinition::MacroConnection& macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
       if (found == modelDef.nodeConnections.end()) {
         LOG(debug) << "Dynamic model " << automaton.id << " is only partially connected to network so it is removed from exported models" << LOG_ENDL;
         dynamicModels_.models.erase(automaton.id);

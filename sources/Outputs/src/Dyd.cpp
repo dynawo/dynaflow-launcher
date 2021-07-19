@@ -79,7 +79,7 @@ Dyd::write() {
   std::transform(assemblingDoc.macroConnections().begin(), assemblingDoc.macroConnections().end(), std::inserter(macrosById, macrosById.begin()),
                  [](const inputs::AssemblingXmlDocument::MacroConnection& macro) { return std::make_pair(macro.id, macro); });
 
-  macro_connectors = writeDynModelMacroConnectors(def_.models.usedMacroConnections, macrosById);
+  macro_connectors = writeDynamicModelMacroConnectors(def_.dynamicModelsDefinitions.usedMacroConnections, macrosById);
   for (auto it = macro_connectors.begin(); it != macro_connectors.end(); ++it) {
     dynamicModelsToConnect->addMacroConnector(*it);
   }
@@ -110,9 +110,9 @@ Dyd::write() {
     dynamicModelsToConnect->addModel(writeVRRemote(keyValue.first, def_.basename));
     writeVRRemoteConnect(dynamicModelsToConnect, keyValue.first);
   }
-  for (const auto& model : def_.models.models) {
-    dynamicModelsToConnect->addModel(writeDynModel(model.second, def_.basename));
-    auto macroConnects = writeDynModelMacroConnect(model.second);
+  for (const auto& model : def_.dynamicModelsDefinitions.models) {
+    dynamicModelsToConnect->addModel(writeDynamicModel(model.second, def_.basename));
+    auto macroConnects = writeDynamicModelMacroConnect(model.second);
     for (const auto& connect : macroConnects) {
       dynamicModelsToConnect->addMacroConnect(connect);
     }
@@ -132,8 +132,8 @@ Dyd::write() {
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
-Dyd::writeDynModelMacroConnectors(const std::unordered_set<std::string>& usedMacros,
-                                  const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macros) {
+Dyd::writeDynamicModelMacroConnectors(const std::unordered_set<std::string>& usedMacros,
+                                      const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macros) {
   std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> ret;
   for (const auto& macro : usedMacros) {
     auto macroConnector = dynamicdata::MacroConnectorFactory::newMacroConnector(macro);
@@ -157,7 +157,7 @@ Dyd::writeDynModelMacroConnectors(const std::unordered_set<std::string>& usedMac
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
-Dyd::writeDynModel(const algo::DynModelDefinition& dynModel, const std::string& basename) {
+Dyd::writeDynamicModel(const algo::DynamicModelDefinition& dynModel, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(dynModel.id);
   model->setLib(dynModel.lib);
   model->setParFile(basename + ".par");
@@ -166,13 +166,13 @@ Dyd::writeDynModel(const algo::DynModelDefinition& dynModel, const std::string& 
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnect>>
-Dyd::writeDynModelMacroConnect(const algo::DynModelDefinition& dynModel) {
+Dyd::writeDynamicModelMacroConnect(const algo::DynamicModelDefinition& dynModel) {
   std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> ret;
   const auto& connections = dynModel.nodeConnections;
 
-  // Here we compute the number of connections performed by macro connection, in order to generate the coresponding
+  // Here we compute the number of connections performed by macro connection, in order to generate the corresponding
   // index attributes
-  std::map<std::string, std::tuple<unsigned int, unsigned int>> indexes;
+  std::unordered_map<std::string, std::tuple<unsigned int, unsigned int>> indexes;
   enum { INDEXES_NB_CONNECTIONS = 0, INDEXES_CURRENT_INDEX };
   for (const auto& connection : connections) {
     if (indexes.count(connection.id) > 0) {
