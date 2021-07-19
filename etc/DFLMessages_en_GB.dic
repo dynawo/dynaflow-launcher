@@ -27,7 +27,7 @@ CannotLoadLibrary             =     Cannot load library %1% : %2%
 DynModelLibraryNotFound       =     Library %1% not found : model %2% will be skipped
 
 //------------------ Outputs -----------------------
-DynModelMacroNotDefined       =     Macro %1% used in model not defined
+DynModelMacroNotDefined       =     Macro %1% used in model not defined in assembling file
 TFOComponentNotFound          =     Reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
 
 //------------------ Main ---------------------------

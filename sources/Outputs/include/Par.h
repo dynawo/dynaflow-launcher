@@ -52,13 +52,13 @@ class Par {
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager dynamic database manager to use
      * @param counters the counters definitions to use
-     * @param models list of models definitions
+     * @param models list of dynamic models definitions
      */
     ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::ShuntCounterDefinitions& counters, const algo::DynModelDefinitions& models) :
+                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models) :
         basename(base),
         dirname(dir),
         filepath(filename),
@@ -67,8 +67,8 @@ class Par {
         activePowerCompensation(activePowerCompensation),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
-        counters(counters),
-        models(models) {}
+        shuntCounters(counters),
+        dynamicModelsDefinitions(models) {}
 
     std::string basename;                                                         ///< basename
     boost::filesystem::path dirname;                                              ///< Dirname of output file relative to execution dir
@@ -78,8 +78,8 @@ class Par {
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
-    const algo::ShuntCounterDefinitions& counters;                                ///< Counters to use
-    const algo::DynModelDefinitions& models;                                      ///< list of defined models
+    const algo::ShuntCounterDefinitions& shuntCounters;                           ///< Shunt counters to use
+    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
   };
 
   /**
@@ -162,7 +162,7 @@ class Par {
   static boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string& busId, const std::string& genId);
 
   /**
-   * @brief Write set for models
+   * @brief Write setting set for dynamic models
    *
    * @param set the configuration set to write
    * @param assemblingDoc the corresponding assembling document handler
@@ -171,22 +171,23 @@ class Par {
    *
    * @returns the parameter set to add
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeDynModelSet(const inputs::SettingXmlDocument::Set& set,
-                                                                       const inputs::AssemblingXmlDocument& assemblingDoc,
-                                                                       const algo::ShuntCounterDefinitions& counters, const algo::DynModelDefinitions& models);
+  static boost::shared_ptr<parameters::ParametersSet> writeDynamicModelSet(const inputs::SettingXmlDocument::Set& set,
+                                                                           const inputs::AssemblingXmlDocument& assemblingDoc,
+                                                                           const algo::ShuntCounterDefinitions& counters,
+                                                                           const algo::DynamicModelDefinitions& models);
 
   /**
-   * @brief Retrieves the first component connected through the dynamic model to a transfo
+   * @brief Retrieves the first component connected through the dynamic model to a transformer
    *
    * @param dynModelDef the dynamic model to process
-   * @returns the tfo id the dynamic model is connected to, nullopt if not found
+   * @returns the transformer id connected to the dynamic model, nullopt if not found
    */
-  static boost::optional<std::string> getTfoComponentId(const algo::DynModelDefinition& dynModelDef);
+  static boost::optional<std::string> getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef);
 
  private:
   static constexpr double kGoverNullValue_ = 0.;     ///< KGover null value
   static constexpr double kGoverDefaultValue_ = 1.;  ///< KGover default value
-  static const std::string componentIdTag_;          ///< TFO special tag for component id
+  static const std::string componentTransfoIdTag_;   ///< TFO special tag for component id
 
  private:
   ParDefinition def_;  ///< PAR file definition
