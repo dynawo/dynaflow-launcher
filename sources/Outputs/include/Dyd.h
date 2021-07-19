@@ -79,13 +79,13 @@ class Dyd {
      * @param hvdcLines hvdc definition coming from algorithms
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager the database manager to use
-     * @param models the list of models to use
+     * @param models the list of dynamic models to use
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
                   const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::DynModelDefinitions& models) :
+                  const algo::DynamicModelDefinitions& models) :
         basename(base),
         filename(filepath),
         generators(gens),
@@ -94,7 +94,7 @@ class Dyd {
         hvdcLines(hvdcLines),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
-        models(models) {}
+        dynamicModelsDefinitions(models) {}
 
     std::string basename;                                                        ///< basename for file
     std::string filename;                                                        ///< filepath for file to write
@@ -104,7 +104,7 @@ class Dyd {
     algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;         ///< list of hvdc lines
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                ///< dynamic database manager
-    const algo::DynModelDefinitions& models;                                     ///< the list of models to export
+    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;               ///< the list of dynamic models to export
   };
 
   /**
@@ -240,31 +240,31 @@ class Dyd {
    * @brief Write list of macro connectors for models
    *
    * @param usedMacros macro connectors used in current simulation
-   * @param macros total list of macro connections defined for models
+   * @param macros complete list of macro connections defined for dynamic models
    * @returns list of macro connectors to write
    */
   static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
-  writeDynModelMacroConnectors(const std::unordered_set<std::string>& usedMacros,
-                               const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macros);
+  writeDynamicModelMacroConnectors(const std::unordered_set<std::string>& usedMacros,
+                                   const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macros);
 
   /**
-   * @brief Write model for dynamic model
+   * @brief Write black box model for dynamic model
    * @param dynModel dynamic model to export
    * @param basename basename for file
-   * @returns model corresponding to dynamic model
+   * @returns black box model corresponding to dynamic model
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeDynModel(const algo::DynModelDefinition& dynModel, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeDynamicModel(const algo::DynamicModelDefinition& dynModel, const std::string& basename);
 
   /**
-   * @brief Write macro connec for dynamic model
+   * @brief Write macro connect for dynamic model
    * @param dynModel dynamic model to use
    * @returns list of macro connect to write
    */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeDynModelMacroConnect(const algo::DynModelDefinition& dynModel);
+  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeDynamicModelMacroConnect(const algo::DynamicModelDefinition& dynModel);
 
  private:
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
-      correspondence_lib_;  ///< Correspondence between generator model type and library name in dyd file
+      correspondence_lib_;  ///< Correspondance between generator model type and library name in dyd file
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_macro_connector_;                           ///< Correspondence between generator model type and macro connector name in dyd file
   static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads

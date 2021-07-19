@@ -136,7 +136,7 @@ TEST(Dyd, writeHvdc) {
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
-TEST(Dyd, writeDynModel) {
+TEST(Dyd, writeDynamicModel) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
 
@@ -151,16 +151,18 @@ TEST(Dyd, writeDynModel) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  dfl::algo::DynModelDefinitions models;
+  dfl::algo::DynamicModelDefinitions models;
   models.usedMacroConnections.insert("ToUMeasurement");
   models.usedMacroConnections.insert("ToControlledShunts");
-  models.models.insert({"MODELE_1_VL4", dfl::algo::DynModelDefinition("MODELE_1_VL4", "DYNModel1")});
+  models.models.insert({"MODELE_1_VL4", dfl::algo::DynamicModelDefinition("MODELE_1_VL4", "DYNModel1")});
 
-  auto macro = dfl::algo::DynModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynModelDefinition::MacroConnection::ElementType::NODE, "0");
+  auto macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
-  macro = dfl::algo::DynModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynModelDefinition::MacroConnection::ElementType::SHUNT, "1.1");
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.1");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
-  macro = dfl::algo::DynModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", "00"), LoadDefinition("L1", "01"), LoadDefinition("L2", "02"), LoadDefinition("L3", "03")};
