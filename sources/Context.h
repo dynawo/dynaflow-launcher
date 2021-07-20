@@ -192,6 +192,9 @@ class Context {
     ///< Each satic var compensator associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::StaticVarCompensatorInterface>> staticVarComps;
 
+    /// Each bus bar section associated with its ID
+    std::unordered_map<std::string, boost::shared_ptr<DYN::BusInterface>> busBarSections;
+
     /**
      * @brief Initializes all the caches with the nodes from the network
      * @param mainConnexNodes the list of nodes that conform the main connected component
@@ -250,7 +253,7 @@ class Context {
   /// @param dlineId static identifier of dangling line
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkDanglingLine(const std::string& dlineId) const;
-    /// @brief Check if network has a valid component interface for a dangling line
+  /// @brief Check if network has a valid component interface for a dangling line
   /// @param hlineId static identifier of dangling line
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkHvdcLine(const std::string& hlineId) const;
@@ -258,6 +261,10 @@ class Context {
   /// @param compensatorId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkStaticVarCompensator(const std::string& compensatorId) const;
+    /// @brief Check if network has a valid component interface for a bus bar section
+  /// @param busBarId static identifier of branch
+  /// @return Empty if ok, otherwise returns why no valid component interface is found
+  boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkBusBarSection(const std::string& busBarId) const;
   /// @brief Check if network has a component interface for a given element
   /// @param id static identifier of network element
   /// @param type type of network element
