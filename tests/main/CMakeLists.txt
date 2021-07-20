@@ -20,12 +20,15 @@ add_test(
     COMMAND DynaFlowLauncher --help
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
+set_property(TEST MAIN.help PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
+
 
   add_test(
     NAME MAIN.version
     COMMAND DynaFlowLauncher --version
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
+set_property(TEST MAIN.version PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
 
 macro(DEFINE_LAUNCH_TEST _name)
   add_test(
