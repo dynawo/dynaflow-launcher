@@ -122,10 +122,6 @@ set_commit_hook() {
 }
 
 set_environment() {
-    # global vars
-    ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
-    ld_library_path_prepend $DYNAFLOW_LAUNCHER_HOME/lib64   # For local DFL libraries, used only at runtime in case we compile in shared
-
     # dynawo vars
     export DYNAWO_INSTALL_DIR=$DYNAWO_HOME
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
@@ -133,6 +129,10 @@ set_environment() {
     export DYNAWO_DDB_DIR=$DYNAWO_INSTALL_DIR/ddb
     export DYNAWO_IIDM_EXTENSION=$DYNAWO_INSTALL_DIR/lib/libdynawo_DataInterfaceIIDMExtension.so
     export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib
+
+    # global vars
+    ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_HOME/lib64   # For local DFL libraries, used only at runtime in case we compile in shared
 
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux

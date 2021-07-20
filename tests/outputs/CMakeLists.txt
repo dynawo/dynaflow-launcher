@@ -8,12 +8,15 @@
 #
 
 DEFINE_TEST(TestJob OUTPUTS)
+set_property(TEST OUTPUTS.TestJob PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
 target_link_libraries(TestJob DynaFlowLauncher::outputs)
 
 DEFINE_TEST(TestDyd OUTPUTS)
+set_property(TEST OUTPUTS.TestDyd PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
 target_link_libraries(TestDyd DynaFlowLauncher::outputs)
 
 DEFINE_TEST(TestPar OUTPUTS)
+set_property(TEST OUTPUTS.TestPar PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
 target_link_libraries(TestPar DynaFlowLauncher::outputs)
 
 DEFINE_TEST(TestDiagram OUTPUTS)
