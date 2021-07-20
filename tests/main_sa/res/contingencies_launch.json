@@ -6,7 +6,6 @@
       "id": "load_contingency",
       "elements": [
         {
-          "id_another": "_04689566-c766-11e1-8775-005056c00008",
           "id": "_047abdd7-c766-11e1-8775-005056c00008",
           "type": "LOAD"
         }
@@ -171,6 +170,15 @@
         {
           "id": "_XXX",
           "type": "THIS_TYPE_DOES_NOT_EXIST"
+        }
+      ]
+    },
+    {
+      "id" : "static_var_compensator_contingency",
+      "elements" : [
+        {
+          "id" : "_047fc6e6-c766-11e1-8775-005056c00008",
+          "type" : "STATIC_VAR_COMPENSATOR"
         }
       ]
     }

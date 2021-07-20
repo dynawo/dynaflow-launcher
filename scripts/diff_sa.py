@@ -31,9 +31,9 @@ def compare_file(options, file_name):
     """ Will compare a reference file and a result file"""
 
     result_path = full_path(
-        options.root, "results", options.testdir, file_name ,"outputIIDM.xml")
+        options.root, "results", options.testdir, file_name ,"outputs/finalState/outputIIDM.xml")
     reference_path = full_path(
-        options.root, "reference", options.testdir, file_name, "outputs/finalState/outputIIDM.xml")
+        options.root, "reference", options.testdir, file_name, "outputIIDM.xml")
 
     # A reference file that does not exist is only a problem if there's a result
     # file, there are cases where the file itself should not exist
@@ -66,6 +66,7 @@ if __name__ == "__main__":
 
     results_root = full_path(options.root, "results", options.testdir)
 
+    print(results_root)
     for folder in os.listdir(results_root):
 
         if os.path.isdir(os.path.join(results_root, folder)):
