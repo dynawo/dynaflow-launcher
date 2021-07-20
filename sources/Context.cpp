@@ -274,6 +274,19 @@ Context::checkStaticVarCompensator(const std::string& dlineId) const {
 }
 
 boost::optional<Contingencies::ElementInvalidReason>
+Context::checkBusBarSection(const std::string& busBarId) const {
+  const auto item = caches_.busBarSections.find(busBarId);
+  if (item != caches_.busBarSections.end()) {
+    if (!isInMainConnectedComponent(item->second)) {
+      return Contingencies::ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT;
+    }
+    return boost::none; // No problem found
+  }
+
+  return Contingencies::ElementInvalidReason::BUSBAR_SECTION_NOT_FOUND;
+}
+
+boost::optional<Contingencies::ElementInvalidReason>
 Context::checkContingencyElement(const std::string& id, Contingencies::Type type) const {
   switch(type){
     case Contingencies::Type::GENERATOR:
@@ -300,8 +313,7 @@ Context::checkContingencyElement(const std::string& id, Contingencies::Type type
     case Contingencies::Type::STATIC_VAR_COMPENSATOR:
       return checkStaticVarCompensator(id);
     case Contingencies::Type::BUSBAR_SECTION:
-      // TODO (sergio): How should we check this?
-      return boost::none;
+      return checkBusBarSection(id);
 
     default:
       throw std::logic_error("Gotten an unexpected type (or a corrupted value)");
@@ -558,6 +570,12 @@ void Context::Caches::initCaches(
 
     const auto scomps = makeCacheOf(lev->getStaticVarCompensators());
     staticVarComps.insert(scomps.begin(), scomps.end());
+
+    for (auto bus: lev->getBuses()) {
+      for (auto bbs: bus->getBusBarSectionNames()){
+        busBarSections.insert({bbs, bus});
+      }
+    }
   }
 }
 

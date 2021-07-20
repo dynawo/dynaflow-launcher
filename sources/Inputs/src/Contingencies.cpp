@@ -159,6 +159,9 @@ Contingencies::toString(ElementInvalidReason reason) {
     case ElementInvalidReason::STATIC_VAR_COMPENSATOR_NOT_FOUND:
       return MESS(StaticVarCompensatorNotFound);
 
+    case ElementInvalidReason::BUSBAR_SECTION_NOT_FOUND:
+      return MESS(BusbarSectionNotFound);
+
     case ElementInvalidReason::NOT_IN_MAIN_CONNECTED_COMPONENT:
       return MESS(NotInMainConnectedComponent);
 
