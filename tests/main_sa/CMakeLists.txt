@@ -6,7 +6,7 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 # SPDX-License-Identifier: MPL-2.0
 #
-# XXX(Sergio): Res for this needs to be filled
+
 add_test(
     NAME MAIN_SA.varEnv
     COMMAND DynaFlowLauncher --network=res/TestIIDM_launch_infinite.iidm --config=res/launch_infinite.json --contingencies=res/contingencies.json
@@ -34,5 +34,4 @@ macro(DEFINE_LAUNCH_TEST _name)
   set_property(TEST MAIN_SA.${_name} APPEND PROPERTY ENVIRONMENT PYTHONPATH=${DYNAWO_HOME}/sbin/nrt/nrt_diff)
 endmacro()
 
-DEFINE_LAUNCH_TEST(general)
-DEFINE_LAUNCH_TEST(static_var_compensator)
+DEFINE_LAUNCH_TEST(launch)
