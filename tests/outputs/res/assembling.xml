@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="ToUMeasurement" name2="true">
+    <connection var1="U_IMPIN" var2="@NAME@_U" required="true" internal="false"/>
+  </macroConnection>
+  <macroConnection id="ToControlledShunts" index1="true" name2="true">
+    <connection var1="shunt_state_@INDEX@" var2="@NAME@_state" required="true" internal="false"/>
+    <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor" required="true" internal="true"/>
+    <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable" required="true" internal="false"/>
+  </macroConnection>
+  <multipleAssociation id="SHUNTS_MODELE_1_VL4">
+    <shunt voltageLevel="VL"/>
+  </multipleAssociation>
+  <multipleAssociation id="SHUNTS_MODELE_1_VL3">
+    <shunt voltageLevel="VL2"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1" type="VoltageControlShunt" access="T0|TFIN">
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
+    <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
+  </dynamicAutomaton>
+  <singleAssociation id="MESURE_I_VL661">
+    <tfo name="VL661"/>
+  </singleAssociation>
+  <singleAssociation id="TAP_VL661">
+    <tfo name="VL661"/>
+  </singleAssociation>
+  <singleAssociation id="MESURE_MODELE_1_VL4">
+    <bus voltageLevel="B.EPIP6" name="1"/>
+    <bus voltageLevel="B.EPIP6" name="2"/>
+    <busbarSection id="B.EPIP6_1"/>
+    <busbarSection id="B.EPIP6_2"/>
+  </singleAssociation>
+  <singleAssociation id="MESURE_I_VL61">
+    <tfo name="VL61"/>
+  </singleAssociation>
+  <singleAssociation id="TAP_VL61">
+    <tfo name="VL61"/>
+  </singleAssociation>
+  <singleAssociation id="AUTOMATON_EXISTS_VL61">
+    <tfo name="VL61"/>
+  </singleAssociation>
+  <dynamicAutomaton id="DM_VL61" lib="PhaseShifterI" type="PhaseShifterI" access="T0|TFIN">
+    <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_VL61"/>
+    <macroConnect macroConnection="PhaseShifterToTap" id="TAP_VL61"/>
+    <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_VL61"/>
+  </dynamicAutomaton>
+</assembling>

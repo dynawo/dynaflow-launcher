@@ -10,10 +10,10 @@
 DEFINE_TEST(TestJob OUTPUTS)
 target_link_libraries(TestJob DynaFlowLauncher::outputs)
 
-DEFINE_TEST(TestDyd OUTPUTS)
+DEFINE_TEST_XML(TestDyd OUTPUTS)
 target_link_libraries(TestDyd DynaFlowLauncher::outputs)
 
-DEFINE_TEST(TestPar OUTPUTS)
+DEFINE_TEST_XML(TestPar OUTPUTS)
 target_link_libraries(TestPar DynaFlowLauncher::outputs)
 
 DEFINE_TEST(TestDiagram OUTPUTS)
