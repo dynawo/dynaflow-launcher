@@ -46,4 +46,5 @@ LoadNotFound                  =     not found as load
 DanglingLineNotFound          =     not found as dangling line
 HvdcLineNotFound              =     not found as hvdc line
 StaticVarCompensatorNotFound  =     not found as static var compensator
+BusbarSectionNotFound         =     not found as a bus bar section
 NotInMainConnectedComponent   =     no ends are connected to the main connected component
