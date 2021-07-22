@@ -171,10 +171,10 @@ class Par {
    *
    * @returns the parameter set to add
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeDynamicModelSet(const inputs::SettingXmlDocument::Set& set,
-                                                                           const inputs::AssemblingXmlDocument& assemblingDoc,
-                                                                           const algo::ShuntCounterDefinitions& counters,
-                                                                           const algo::DynamicModelDefinitions& models);
+  static boost::shared_ptr<parameters::ParametersSet> writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set,
+                                                                                    const inputs::AssemblingXmlDocument& assemblingDoc,
+                                                                                    const algo::ShuntCounterDefinitions& counters,
+                                                                                    const algo::DynamicModelDefinitions& models);
 
   /**
    * @brief Retrieves the first component connected through the dynamic model to a transformer
@@ -185,9 +185,9 @@ class Par {
   static boost::optional<std::string> getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef);
 
  private:
-  static constexpr double kGoverNullValue_ = 0.;     ///< KGover null value
-  static constexpr double kGoverDefaultValue_ = 1.;  ///< KGover default value
-  static const std::string componentTransfoIdTag_;   ///< TFO special tag for component id
+  static constexpr double kGoverNullValue_ = 0.;        ///< KGover null value
+  static constexpr double kGoverDefaultValue_ = 1.;     ///< KGover default value
+  static const std::string componentTransformerIdTag_;  ///< TFO special tag for component id
 
  private:
   ParDefinition def_;  ///< PAR file definition
