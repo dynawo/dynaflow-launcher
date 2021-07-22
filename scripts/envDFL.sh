@@ -60,6 +60,34 @@ export_var_env_force() {
   export $name="$value"
 }
 
+export_var_env_force_dynawo() {
+  local var="$@"
+  local name=${var%%=*}
+  local value="${var#*=}"
+
+  if ! `expr $name : "DYNAWO_.*" > /dev/null`; then
+    error_exit "You must export variables with DYNAWO prefix for $name."
+  fi
+
+  if eval "[ \"\$$name\" ]"; then
+    unset $name
+    export $name="$value"
+    return
+  fi
+
+  if [ "$value" = UNDEFINED ]; then
+    error_exit "You must define the value of $name"
+  fi
+  export $name="$value"
+}
+
+export_var_env_dynawo() {
+  # export_var_env_dynawo <VAR> <EXTERNAL_VAL> <DEFAULT_VAL>
+  # case <EXTERNAL_VAL> non empty : <EXTERNAL_VAL>
+  # case <EXTERNAL_VAL> empty : <DEFAULT_VAL>
+  export_var_env_force_dynawo $1=$2
+}
+
 ld_library_path_remove() {
   export LD_LIBRARY_PATH=`echo -n $LD_LIBRARY_PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`;
 }
@@ -125,18 +153,27 @@ set_environment() {
     # dynawo vars
     export DYNAWO_INSTALL_DIR=$DYNAWO_HOME
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
-    export DYNAWO_RESOURCES_DIR=$DYNAWO_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd
-    export DYNAWO_DDB_DIR=$DYNAWO_INSTALL_DIR/ddb
-    export DYNAWO_IIDM_EXTENSION=$DYNAWO_INSTALL_DIR/lib/libdynawo_DataInterfaceIIDMExtension.so
-    export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib
+
+    # dynawo vars that can be replaced by external
+    export_var_env_dynawo DYNAWO_DDB_DIR $DYNAFLOW_LAUNCHER_EXTERNAL_DDB $DYNAWO_INSTALL_DIR/ddb
+
+    # DYNAWO_IIDM_EXTENSION is used only in case of external IIDM extensions.
+    # Empty string is equivalent to not set for Dynawo
+    export DYNAWO_IIDM_EXTENSION=$DYNAFLOW_LAUNCHER_EXTERNAL_IIDM_EXTENSION
+
+    # dynawo vars that can be extended by external
+    export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
+    export DYNAWO_RESOURCES_DIR=$DYNAWO_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd:$DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR
 
     # global vars
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_HOME/lib64   # For local DFL libraries, used only at runtime in case we compile in shared
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES # To add external model libraries loaded during simulation
 
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
     export_var_env_force DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+
     export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_USE_DOXYGEN=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
@@ -148,6 +185,7 @@ set_environment() {
     then
         # export runtime variables only if unit tests are not run
         export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
+        export_var_env_force DYNAFLOW_LAUNCHER_LIBRARIES=$DYNAWO_DDB_DIR # same as dynawo
         export_var_env_force DYNAFLOW_LAUNCHER_XSD=$DYNAFLOW_LAUNCHER_INSTALL_DIR/etc/xsd
         export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
     fi
