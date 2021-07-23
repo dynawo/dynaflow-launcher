@@ -16,3 +16,7 @@ execute_process(COMMAND python ${DIFF_SCRIPT} -v . ${TEST_NAME} RESULT_VARIABLE 
 if(COMPARE_RESULT)
     message(FATAL_ERROR "results/${TEST_NAME} has some different files from reference/${TEST_NAME}")
 endif()
+execute_process(COMMAND python ${CHECK_SCRIPT} . ${TEST_NAME} RESULT_VARIABLE CHECKS_RESULT)
+if(CHECKS_RESULT)
+    message(FATAL_ERROR "results/${TEST_NAME} has some input or output files that contain errors")
+endif()
