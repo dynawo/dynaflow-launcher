@@ -81,8 +81,8 @@ export_var_env_force_dynawo() {
   export $name="$value"
 }
 
-export_var_env_dynawo() {
-  # export_var_env_dynawo <VAR> <EXTERNAL_VAL> <DEFAULT_VAL>
+export_var_env_dynawo_with_default() {
+  # export_var_env_dynawo_with_default <VAR> <EXTERNAL_VAL> <DEFAULT_VAL>
   # case <EXTERNAL_VAL> non empty : <EXTERNAL_VAL>
   # case <EXTERNAL_VAL> empty : <DEFAULT_VAL>
   export_var_env_force_dynawo $1=$2
@@ -155,11 +155,11 @@ set_environment() {
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
 
     # dynawo vars that can be replaced by external
-    export_var_env_dynawo DYNAWO_DDB_DIR $DYNAFLOW_LAUNCHER_EXTERNAL_DDB $DYNAWO_INSTALL_DIR/ddb
+    export_var_env_dynawo_with_default DYNAWO_DDB_DIR $DYNAFLOW_LAUNCHER_EXTERNAL_DDB $DYNAWO_INSTALL_DIR/ddb
 
     # DYNAWO_IIDM_EXTENSION is used only in case of external IIDM extensions.
     # Empty string is equivalent to not set for Dynawo
-    export DYNAWO_IIDM_EXTENSION=$DYNAFLOW_LAUNCHER_EXTERNAL_IIDM_EXTENSION
+    export_var_env_force_dynawo DYNAWO_IIDM_EXTENSION=$DYNAFLOW_LAUNCHER_EXTERNAL_IIDM_EXTENSION
 
     # dynawo vars that can be extended by external
     export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
