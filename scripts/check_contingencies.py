@@ -8,7 +8,8 @@ import re
 import xml.etree.ElementTree as ET
 
 ### Regexes ####################################################################
-element_log_reg = re.compile("^80\s\|\s([\w-]+)\s\|\s\w+\s:\s[\w\s]+$", re.MULTILINE)
+contingency_event_time = 80
+timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-]+)\s\|\s\w+\s:\s[\w\s]+$", re.MULTILINE)
 
 ### Code #######################################################################
 def check_test_contingencies(tests_path, test_name):
@@ -17,27 +18,25 @@ def check_test_contingencies(tests_path, test_name):
 
     return check_contingencies(contingencies_file, results_folder)
 
-def check_contingencies(cont_file, results_folder):
+def check_contingencies(contingencies_file, results_folder):
     all_ok = True
 
-    for (id, elms) in load_contingencies(cont_file):
-        dyd_file  = os.path.join(results_folder ,'TestIIDM_launch-' + id + '.dyd')
-        par_file  = os.path.join(results_folder ,'TestIIDM_launch-' + id + '.par')
-        log_file  = os.path.join(results_folder , id, 'outputs/timeLine/timeline.log')
-        iidm_file = os.path.join(results_folder , id, 'outputs/finalState/outputIIDM.xml')
+    for (contingency_id, contingency_elements) in load_contingencies(contingencies_file):
+        dyd_file  = os.path.join(results_folder ,'TestIIDM_launch-' + contingency_id + '.dyd')
+        par_file  = os.path.join(results_folder ,'TestIIDM_launch-' + contingency_id + '.par')
+        timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.log')
+        finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
 
-        if os.path.isdir(os.path.join(results_folder , id)):
+        if os.path.isdir(os.path.join(results_folder , contingency_id)):
             # This is a valid contingency, check that every file exists and
             # conforms to what we expect
-            for elm in elms:
-                elm_id = elm[0]
+            for element in contingency_elements:
                 # Let's check them ahead, so that 'and' doesn't shortcut
-                c_dyd  = check_file_with(check_dyd,   "Dyd",  dyd_file, elm_id, id)
-                c_par  = check_file_with(check_par,   "Par",  par_file, elm_id, id)
-                c_log  = check_file_with(check_log,   "Log",  log_file, elm_id, id)
-                c_iidm = check_file_with(check_iidm, "IIDM", iidm_file, elm_id, id)
-
-                all_ok = all_ok and c_dyd and c_par and c_log and c_iidm
+                c_dyd        = check_file_with(check_dyd,                     "Dyd",        dyd_file, element, contingency_id)
+                c_par        = check_file_with(check_par,                     "Par",        par_file, element, contingency_id)
+                c_timeline   = check_file_with(check_timeline,           "Timeline",   timeline_file, element, contingency_id)
+                c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
+                all_ok = all_ok and c_dyd and c_par and c_timeline and c_finalState
         else:
             # This is an invalid contingency, check that actually no file
             # related to it exists, we only need to worry about DYD and PAR files
@@ -52,51 +51,55 @@ def check_contingencies(cont_file, results_folder):
     else:
         return 1 # We had some problems
 
-def load_contingencies(cont_file):
+def load_contingencies(contingencies_file):
     """Returns a list like: list(id, list(elements))  with one item
        per contingency"""
-    with open(cont_file) as f:
+    with open(contingencies_file) as f:
         j_data = json.load(f)
-        def extract_id_types(cont):
-            return (cont['id'], list(map(lambda el: (el['id'], el['type']), cont['elements'])))
+        def extract_id_types(contingency):
+            return (contingency['id'], list(map(lambda element: (element['id'], element['type']), contingency['elements'])))
         return list(map(extract_id_types, j_data['contingencies']))
 
-
-def check_dyd(dyd_file, elm_id):
-    el = xml_find(dyd_file,
+def check_dyd(dyd_file, element):
+    element_id = element[0]
+    e = xml_find(dyd_file,
         "{http://www.rte-france.com/dynawo}blackBoxModel[@id=\"" +
-        "Disconnect_" + elm_id +
+        "Disconnect_" + element_id +
         "\"]")
+    return e is not None
 
-    return el is not None
-
-
-def check_par(par_file, elm_id):
-    el = xml_find(par_file,
+def check_par(par_file, element):
+    element_id = element[0]
+    e = xml_find(par_file,
         "{http://www.rte-france.com/dynawo}set[@id=\"" +
-        "Disconnect_" + elm_id +
+        "Disconnect_" + element_id +
         "\"]")
+    return e is not None
 
-    return el is not None
-
-def check_log(log_file, elm_id):
-    with open(log_file) as f:
+def check_timeline(timeline_log_file, element):
+    (element_id, element_type) = element
+    with open(timeline_log_file) as f:
         content = f.read()
-        for find in element_log_reg.finditer(content):
-            if find.group(1) == elm_id:
+        for find in timeline_log_regex.finditer(content):
+            # For busbar sections, if we find a disconnected calculated bus it is ok
+            if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in find.group(1):
+                return True
+            # For the rest of element types we must find exactly the element identifier in the timeline log
+            if find.group(1) == element_id:
                 return True
         else:
-            print("Check log '" + log_file + "' failed:")
-            print("  Element: " + elm_id)
+            print("Check log '" + timeline_log_file + "' failed:")
+            print("  Element: " + element_id)
             print("  Log: \n" + content)
             return False
 
-def check_iidm(iidm_file, elm_id):
-    el = xml_find(iidm_file,
+def check_finalState(iidm_file, element):
+    (element_id, element_type) = element
+    e = xml_find(iidm_file,
         # Look for an element with our id at any level
-        ".//*[@id=\"" + elm_id + "\"]")
+        ".//*[@id=\"" + element_id + "\"]")
 
-    if el is None:
+    if e is None:
         return False
 
     def check_attrs(el, a_n, a_v):
@@ -104,6 +107,7 @@ def check_iidm(iidm_file, elm_id):
         for n in a_n:
             check =((n in el.attrib) and el.attrib[n] in a_v)
             if not check:
+                print("Check fails for attr " + n + ", value = " + el.attrib[n])
                 return False
         return True
 
@@ -114,13 +118,22 @@ def check_iidm(iidm_file, elm_id):
                 return True
         return False
 
-    # There are cases where they don't have p nor q (in busbar_section), cases
-    # where instead of p and q, we have p1, p2, q1 and q2, and cases where
-    # instead of '0' we have '-0', for some reason
-    return ((not has_any_attrs(el,['p','q','p1','p2','q1','q2'])) or
-            check_attrs(el, ['p','q'], ['0','-0']) or
-            check_attrs(el, ['p1','p2', 'q1', 'q2'], ['0','-0'])
-        )
+    if element_type in ['BUSBAR_SECTION', 'HVDC_LINE']:
+        return not has_any_attrs(e, ['p','q','p1','p2','q1','q2'])
+
+    p_q = ['p', 'q']
+    p12_q12 = ['p1','p2','q1','q2']
+    attrs_to_check = {
+        'LOAD': p_q,
+        'GENERATOR': p_q,
+        'DANGLING_LINE': p_q,
+        'BRANCH': p12_q12,
+        'LINE': p12_q12,
+        'TWO_WINDINGS_TRANSFORMER': p12_q12,
+        'SHUNT_COMPENSATOR': ['q'],
+        'STATIC_VAR_COMPENSATOR': ['q']}
+    allowed_values = ['0', '-0']
+    return check_attrs(e, attrs_to_check[element_type], allowed_values)
 
 def check_file_with(checker, name, file, elm_id, id):
     if os.path.isfile(file):
