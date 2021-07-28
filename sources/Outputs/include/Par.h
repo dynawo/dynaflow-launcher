@@ -21,6 +21,7 @@
 #include "Configuration.h"
 #include "DynamicDataBaseManager.h"
 
+#include <DYNLineInterface.h>
 #include <PARParametersSet.h>
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
@@ -53,12 +54,14 @@ class Par {
      * @param dynamicDataBaseManager dynamic database manager to use
      * @param counters the counters definitions to use
      * @param models list of dynamic models definitions
+     * @param dataInterface the data interface to use
      */
     ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models) :
+                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
+                  const boost::shared_ptr<DYN::DataInterface>& dataInterface) :
         basename(base),
         dirname(dir),
         filepath(filename),
@@ -68,7 +71,8 @@ class Par {
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
         shuntCounters(counters),
-        dynamicModelsDefinitions(models) {}
+        dynamicModelsDefinitions(models),
+        dataInterface_(dataInterface) {}
 
     std::string basename;                                                         ///< basename
     boost::filesystem::path dirname;                                              ///< Dirname of output file relative to execution dir
@@ -80,6 +84,7 @@ class Par {
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
     const algo::ShuntCounterDefinitions& shuntCounters;                           ///< Shunt counters to use
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
+    const boost::shared_ptr<DYN::DataInterface> dataInterface_;                   ///< data interface to use
   };
 
   /**
@@ -93,6 +98,10 @@ class Par {
    * @brief Export PAR file
    */
   void write();
+
+ private:
+  /// @brief Alias for map of line interfaces
+  using LineInterfaceMap = std::unordered_map<std::string, boost::shared_ptr<DYN::LineInterface>>;
 
  private:
   /**
@@ -168,13 +177,13 @@ class Par {
    * @param assemblingDoc the corresponding assembling document handler
    * @param counters the counters to use
    * @param models the models definitions to use
+   * @param linesById Dynawo lines by id to use
    *
    * @returns the parameter set to add
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set,
-                                                                                    const inputs::AssemblingXmlDocument& assemblingDoc,
-                                                                                    const algo::ShuntCounterDefinitions& counters,
-                                                                                    const algo::DynamicModelDefinitions& models);
+  static boost::shared_ptr<parameters::ParametersSet>
+  writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
+                                const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const LineInterfaceMap& linesById);
 
   /**
    * @brief Retrieves the first component connected through the dynamic model to a transformer
@@ -184,10 +193,21 @@ class Par {
    */
   static boost::optional<std::string> getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef);
 
+  /**
+   * @brief Retrieve active season
+   *
+   * @param ref the Ref XML element referencing the active season
+   * @param linesById Dynawo lines by id to use
+   * @param assemblingDoc the assembling document containing the association referenced
+   */
+  static boost::optional<std::string> getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const LineInterfaceMap& linesById,
+                                                      const inputs::AssemblingXmlDocument& assemblingDoc);
+
  private:
   static constexpr double kGoverNullValue_ = 0.;        ///< KGover null value
   static constexpr double kGoverDefaultValue_ = 1.;     ///< KGover default value
   static const std::string componentTransformerIdTag_;  ///< TFO special tag for component id
+  static const std::string seasonTag_;                  ///< Season special tag
 
  private:
   ParDefinition def_;  ///< PAR file definition

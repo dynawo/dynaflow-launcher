@@ -165,7 +165,8 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLines_, config_.getActivePowerCompensation(),
-                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_));
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_,
+                                                     networkManager_.dataInterface()));
   parWriter.write();
 
   // Diagram
