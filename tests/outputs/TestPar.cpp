@@ -43,7 +43,7 @@ TEST(TestPar, write) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}, manager, {}, {}, nullptr));
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}, manager, {}, {}, {}));
 
   parWriter.write();
 
@@ -85,7 +85,7 @@ TEST(TestPar, writeRemote) {
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation,
-                                                               busesWithDynamicModel, manager, {}, {}, nullptr));
+                                                               busesWithDynamicModel, manager, {}, {}, {}));
 
   parWriter.write();
 
@@ -121,7 +121,7 @@ TEST(TestPar, writeHdvc) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}, manager, {}, {}, nullptr));
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}, manager, {}, {}, {}));
 
   parWriter.write();
 
@@ -168,7 +168,7 @@ TEST(TestPar, DynModel) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
-                                                               manager, counters, defs, nullptr));
+                                                               manager, counters, defs, {}));
 
   parWriter.write();
 

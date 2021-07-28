@@ -527,5 +527,22 @@ ShuntCounterAlgorithm::operator()(const NodePtr& node) {
   shuntCounterDefs_.nbShunts[vl->id] += node->shunts.size();
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
+LinesByIdAlgorithm::LinesByIdAlgorithm(LinesByIdDefinitions& linesByIdDefinition) : linesByIdDefinition_(linesByIdDefinition) {}
+
+void
+LinesByIdAlgorithm::operator()(const NodePtr& node) {
+  const auto& lines = node->lines;
+  for (const auto& line_ptr : lines) {
+    auto line = line_ptr.lock();
+    if (linesByIdDefinition_.linesMap.count(line->id) > 0) {
+      continue;
+    }
+
+    linesByIdDefinition_.linesMap.insert({line->id, *line});
+  }
+}
+
 }  // namespace algo
 }  // namespace dfl

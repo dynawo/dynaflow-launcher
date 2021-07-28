@@ -71,8 +71,8 @@ VoltageLevel::VoltageLevel(const VoltageLevelId& vlid) : id(vlid) {}
 /////////////////////////////////////////////////
 
 std::shared_ptr<Line>
-Line::build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) {
-  auto ret = std::shared_ptr<Line>(new Line(lineId, node1, node2));
+Line::build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season) {
+  auto ret = std::shared_ptr<Line>(new Line(lineId, node1, node2, season));
 
   // Nodes existence is checked outside the builder
   assert(node1);
@@ -86,7 +86,10 @@ Line::build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std:
   return ret;
 }
 
-Line::Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) : id(lineId), nodes{node1, node2} {}
+Line::Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season) :
+    id(lineId),
+    activeSeason(season),
+    nodes{node1, node2} {}
 
 ///////////////////////////////////////////////////
 
