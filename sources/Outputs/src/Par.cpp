@@ -22,6 +22,8 @@
 #include "Message.hpp"
 
 #include <DYNCommon.h>
+#include <DYNDataInterface.h>
+#include <DYNNetworkInterface.h>
 #include <PARParameter.h>
 #include <PARParameterFactory.h>
 #include <PARParametersSetCollection.h>
@@ -160,6 +162,7 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
 }  // namespace helper
 
 const std::string Par::componentTransformerIdTag_("@TFO@");
+const std::string Par::seasonTag_("@SAISON@");
 
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
 
@@ -197,9 +200,18 @@ Par::write() {
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
   }
 
+  // build lines by ids to improve performance to find referenced lines during processing of "ref" XML elements
+  LineInterfaceMap linesById;
+  if (def_.dataInterface_ && def_.dataInterface_->getNetwork()) {
+    const auto& lines = def_.dataInterface_->getNetwork()->getLines();
+    std::transform(lines.begin(), lines.end(), std::inserter(linesById, linesById.begin()),
+                   [](const boost::shared_ptr<DYN::LineInterface>& line) { return std::make_pair(line->getID(), line); });
+  }
+
   const auto& sets = def_.dynamicDataBaseManager.settingDocument().sets();
   for (const auto& set : sets) {
-    auto new_set = writeDynamicModelParameterSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.shuntCounters, def_.dynamicModelsDefinitions);
+    auto new_set =
+        writeDynamicModelParameterSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.shuntCounters, def_.dynamicModelsDefinitions, linesById);
     if (new_set) {
       dynamicModelsToConnect->addParametersSet(new_set);
     }
@@ -221,7 +233,8 @@ Par::getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef) 
 
 boost::shared_ptr<parameters::ParametersSet>
 Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
-                                   const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models) {
+                                   const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
+                                   const LineInterfaceMap& linesById) {
   if (models.models.count(set.id) == 0) {
     // model is not connected : ignore corresponding set
     return nullptr;
@@ -275,11 +288,44 @@ Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, c
   }
 
   for (const auto& ref : set.refs) {
-    // TODO(lecourtoisflo) extensions ?
-    new_set->addParameter(helper::buildParameter(ref.name, std::string("UNDEFINED")));
+    if (ref.tag == seasonTag_) {
+      auto seasonOpt = getActiveSeason(ref, linesById, assemblingDoc);
+      if (!seasonOpt) {
+        continue;
+      }
+      new_set->addParameter(helper::buildParameter(ref.name, *seasonOpt));
+    } else {
+      // Unsupported case
+      LOG(warn) << MESS(RefUnsupportedTag, ref.name, ref.tag) << LOG_ENDL;
+    }
   }
 
   return new_set;
+}
+
+boost::optional<std::string>
+Par::getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const LineInterfaceMap& linesById, const inputs::AssemblingXmlDocument& assemblingDoc) {
+  const auto& singleAssocations = assemblingDoc.singleAssociations();
+
+  // the ref element references the single association to use
+  auto foundAsso = std::find_if(singleAssocations.begin(), singleAssocations.end(),
+                                [&ref](const inputs::AssemblingXmlDocument::SingleAssociation& asso) { return asso.id == ref.id; });
+  if (foundAsso == singleAssocations.end()) {
+    LOG(warn) << MESS(SingleAssociationRefNotFound, ref.name, ref.id) << LOG_ENDL;
+    return boost::none;
+  }
+  if (!foundAsso->line) {
+    LOG(warn) << MESS(SingleAssociationRefNotALine, ref.name, ref.id) << LOG_ENDL;
+    return boost::none;
+  }
+  const auto& lineId = foundAsso->line->name;
+  auto foundLine = linesById.find(lineId);
+  if (foundLine == linesById.end()) {
+    LOG(warn) << MESS(RefLineNotFound, ref.name, ref.id, lineId) << LOG_ENDL;
+    return boost::none;
+  }
+
+  return foundLine->second->getActiveSeason();
 }
 
 boost::shared_ptr<parameters::ParametersSet>
