@@ -94,6 +94,9 @@ def check_timeline(timeline_log_file, element):
             return False
 
 def check_finalState(iidm_file, element):
+    """Check that in the final state output IIDM file the element of the contingency
+       has no injection (p,q == 0) or flows if it is a branch (p1, q1, p2, q2 == 0)
+    """
     (element_id, element_type) = element
     e = xml_find(iidm_file,
         # Look for an element with our id at any level
