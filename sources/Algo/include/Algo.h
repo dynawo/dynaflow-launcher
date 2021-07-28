@@ -29,6 +29,7 @@
 #include <functional>
 #include <map>
 #include <set>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -692,6 +693,37 @@ class ShuntCounterAlgorithm : public NodeAlgorithm {
 
  private:
   ShuntCounterDefinitions& shuntCounterDefs_;  ///< the counter definitions to update
+};
+
+/**
+ * @brief Lines by ids definitions
+ */
+struct LinesByIdDefinitions {
+  std::unordered_map<inputs::Line::LineId, inputs::Line> linesMap;  ///< map of the input lines by line id
+};
+
+/**
+ * @brief Algorithm to sort lines by ids
+ */
+class LinesByIdAlgorithm : public NodeAlgorithm {
+ public:
+  /**
+   * @brief Constructor
+   * @param linesByIdDefinition lines by id definitions to update
+   */
+  explicit LinesByIdAlgorithm(LinesByIdDefinitions& linesByIdDefinition);
+
+  /**
+   * @brief Performs the algorithm
+   *
+   * The algorithm extracts the lines of the node and put them into the map
+   *
+   * @param node the node to process
+   */
+  void operator()(const NodePtr& node);
+
+ private:
+  LinesByIdDefinitions& linesByIdDefinition_;  ///< lines by id definitions to update
 };
 
 }  // namespace algo

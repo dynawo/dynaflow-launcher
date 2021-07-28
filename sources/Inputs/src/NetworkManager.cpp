@@ -155,7 +155,8 @@ NetworkManager::buildTree() {
       assert(nodes_.count(bus2->getID()) > 0);
 #endif
       LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << line->getID() << LOG_ENDL;
-      auto new_line = Line::build(line->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
+      auto season = line->getActiveSeason();
+      auto new_line = Line::build(line->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), season);
       lines_.push_back(new_line);
     }
   }

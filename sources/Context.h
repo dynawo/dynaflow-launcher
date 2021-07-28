@@ -148,6 +148,7 @@ class Context {
   algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
   algo::DynamicModelDefinitions dynamicModels_;                          ///< model definitions
   algo::ShuntCounterDefinitions counters_;                               ///< shunt counters definitions
+  algo::LinesByIdDefinitions linesById_;                                 ///< Lines by ids definition
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };

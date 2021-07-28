@@ -37,8 +37,8 @@ TEST(TestNode, line) {
   auto node1 = dfl::inputs::Node::build("1", vl, 10., shunts1);
   auto node2 = dfl::inputs::Node::build("2", vl, 4.5, shunts2);
 
-  auto line = dfl::inputs::Line::build("LINE", node0, node1);
-  auto line2 = dfl::inputs::Line::build("LINE", node1, node2);
+  auto line = dfl::inputs::Line::build("LINE", node0, node1, "ETE");
+  auto line2 = dfl::inputs::Line::build("LINE", node1, node2, "UNDEFINED");
   ASSERT_EQ(node0->shunts.size(), 0);
   ASSERT_EQ(node1->shunts.size(), 1);
   ASSERT_EQ(node2->shunts.size(), 2);

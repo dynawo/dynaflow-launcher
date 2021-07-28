@@ -62,11 +62,13 @@ class Line {
    * @param lineId the line id
    * @param node1 the origin of the line
    * @param node2 the extremity of the line
+   * @param season active season of the line
    * @returns the built line
    */
-  static std::shared_ptr<Line> build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+  static std::shared_ptr<Line> build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season);
 
   const LineId id;                                   ///< line id
+  const std::string activeSeason;                    ///< active season associated with the line
   const std::array<std::shared_ptr<Node>, 2> nodes;  ///< nodes of the line
 
  private:
@@ -76,8 +78,9 @@ class Line {
    * @param lineId the line id
    * @param node1 the origin of the line
    * @param node2 the extremity of the line
+   * @param season the active season of the line
    */
-  Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+  Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season);
 };
 
 /**

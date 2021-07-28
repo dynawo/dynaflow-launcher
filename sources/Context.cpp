@@ -67,6 +67,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
   networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_));
   networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
+  networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
 }
 
 bool
@@ -165,8 +166,7 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLines_, config_.getActivePowerCompensation(),
-                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_,
-                                                     networkManager_.dataInterface()));
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_, linesById_));
   parWriter.write();
 
   // Diagram
