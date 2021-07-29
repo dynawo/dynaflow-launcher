@@ -107,6 +107,11 @@ class Job {
   boost::shared_ptr<job::OutputsEntry> writeOutputs();
 
  private:
+  static constexpr bool useStandardModels_ = true;  ///< use standard models in job entry and file
+  static constexpr bool exportIIDMFile_ = true;     ///< export IIDM file in job entry and file
+  static constexpr bool exportDumpFile_ = false;    ///< export dump file in job entry and file
+
+ private:
   JobDefinition def_;  ///< the job definition to use
 };
 

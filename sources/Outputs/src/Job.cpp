@@ -94,7 +94,7 @@ Job::writeModeler() {
   modeler->setNetworkEntry(network);
 
   auto premodels = job::ModelsDirEntryFactory::newInstance();
-  premodels->setUseStandardModels(true);
+  premodels->setUseStandardModels(useStandardModels_);
   modeler->setPreCompiledModelsDirEntry(premodels);
   modeler->setModelicaModelsDirEntry(premodels);
 
@@ -125,16 +125,15 @@ Job::writeOutputs() {
   output->setLogsEntry(log);
 
   auto final_state = job::FinalStateEntryFactory::newInstance();
-  final_state->setExportIIDMFile(true);
-  final_state->setExportDumpFile(false);
+  final_state->setExportIIDMFile(exportIIDMFile_);
+  final_state->setExportDumpFile(exportDumpFile_);
   output->setFinalStateEntry(final_state);
 
   return output;
 }
 
 void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& networkFileEntry,
-    const std::string& outputDir) {
+Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& networkFileEntry, const std::string& outputDir) {
   boost::filesystem::path path(outputDir);
 
   if (!boost::filesystem::is_directory(path)) {
@@ -195,7 +194,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   attrs.clear();
   formatter->endElement();  // precompiledModels
 
-  attrs.add("useStandardModels", true);
+  attrs.add("useStandardModels", useStandardModels_);
   formatter->startElement("dyn", "modelicaModels", attrs);
   attrs.clear();
   formatter->endElement();  // precompiledModels
@@ -230,6 +229,15 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   }
 
   formatter->endElement();  // logs
+
+  // final state
+
+  auto finalState = outputs->getFinalStateEntry();
+  attrs.add("exportIIDMFile", exportIIDMFile_);
+  attrs.add("exportDumpFile", exportDumpFile_);
+  formatter->startElement("dyn", "finalState", attrs);
+  attrs.clear();
+  formatter->endElement();  // finalState
 
   formatter->endElement();  // outputs
 
