@@ -219,10 +219,10 @@ class Context {
     /// @brief Transforms a set of model descriptions or components into a cache to check if an ID exists in it
     /// @param nodes A vector of shared_ptrs to the models, I needs to have a method called getID that returns an std::string
     template<typename I> static
-    std::unordered_map<std::string, boost::shared_ptr<I>> makeCacheOf(const std::vector<boost::shared_ptr<I>>& nodes) {
+    std::unordered_map<std::string, boost::shared_ptr<I>> makeCacheOf(const std::vector<boost::shared_ptr<I>>& models) {
       std::unordered_map<std::string, boost::shared_ptr<I>> result;
-      for (auto n : nodes) {
-        result.insert(std::make_pair(n->getID(), n));
+      for (auto m : models) {
+        result.insert(std::make_pair(m->getID(), m));
       }
 
       return result;
