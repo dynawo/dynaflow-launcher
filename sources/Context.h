@@ -177,35 +177,35 @@ class Context {
 
   /// A small struct to to hold all the sets that serve as check caches
   struct Caches {
-    ///< Find fast which ids which ids are in the main
     std::unordered_set<std::string> mainConnexIds;
+    ///< Find fast which ids which ids are in the main
 
-    ///< Each generator associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::GeneratorInterface>> generators;
+    ///< Each generator associated with its ID
 
-    ///< Each line associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::LineInterface>> lines;
+    ///< Each line associated with its ID
 
-    ///< Each two winding transformer associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::TwoWTransformerInterface>> twoWTransformers;
+    ///< Each two winding transformer associated with its ID
 
-    ///< Each shunt compensator associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::ShuntCompensatorInterface>> shuntCompensators;
+    ///< Each shunt compensator associated with its ID
 
-    ///< Each load associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::LoadInterface>> loads;
+    ///< Each load associated with its ID
 
-    ///< Each danglingline associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::DanglingLineInterface>> danglingLines;
+    ///< Each danglingline associated with its ID
 
-    ///< Each hvdcline associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::HvdcLineInterface>> hvdcLines;
+    ///< Each hvdcline associated with its ID
 
-    ///< Each satic var compensator associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::StaticVarCompensatorInterface>> staticVarComps;
+    ///< Each satic var compensator associated with its ID
 
-    /// Each bus bar section associated with its ID
     std::unordered_map<std::string, boost::shared_ptr<DYN::BusInterface>> busBarSections;
+    ///< Each bus bar section associated with its ID
 
     /**
      * @brief Initializes all the caches with the nodes from the network
@@ -217,7 +217,7 @@ class Context {
       const boost::shared_ptr<DYN::NetworkInterface> &network);
 
     /// @brief Transforms a set of model descriptions or components into a cache to check if an ID exists in it
-    /// @param nodes A vector of shared_ptrs to the models, I needs to have a method called getID that returns an std::string
+    /// @param models A vector of shared_ptrs to the models, I needs to have a method called getID that returns an std::string
     template<typename I> static
     std::unordered_map<std::string, boost::shared_ptr<I>> makeCacheOf(const std::vector<boost::shared_ptr<I>>& models) {
       std::unordered_map<std::string, boost::shared_ptr<I>> result;
@@ -273,7 +273,7 @@ class Context {
   /// @param compensatorId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkStaticVarCompensator(const std::string& compensatorId) const;
-    /// @brief Check if network has a valid component interface for a bus bar section
+  /// @brief Check if network has a valid component interface for a bus bar section
   /// @param busBarId static identifier of branch
   /// @return Empty if ok, otherwise returns why no valid component interface is found
   boost::optional<dfl::inputs::Contingencies::ElementInvalidReason> checkBusBarSection(const std::string& busBarId) const;
