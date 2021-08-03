@@ -57,7 +57,10 @@ ElementInvalid                =     Element %1% (%2%) is invalid, reason: %3%
 ElementTypeUnknown            =     %1% has a unknown type "%2%"
 
 //-------------- Contingencies -----------------------
+ContingenciesReadingFrom      =     Reading contingencies from %1% ...
 ContingenciesReadError        =     Error while reading contingencies file %1%: %2%
+ContingenciesRead             =     List of contingencies read:
+ContingenciesEInvalidRErr     =     Got an unexpected value for element invalid reason
 GeneratorNotFound             =     not found as generator
 TwoWTransformerNotFound       =     not found as two-windings transfomer
 BranchNotFound                =     not found as line or two-windings transformer

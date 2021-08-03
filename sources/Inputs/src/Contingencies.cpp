@@ -56,7 +56,7 @@ Contingencies::Contingencies(const std::string& filepath) {
      * }
      */
 
-    LOG(debug) << "Reading contingencies from " << filepath << " ..." << LOG_ENDL;
+    LOG(debug) << MESS(ContingenciesReadingFrom, filepath) << LOG_ENDL;
     for (const boost::property_tree::ptree::value_type& v : tree.get_child("contingencies")) {
       const boost::property_tree::ptree& ptcontingency = v.second;
       LOG(debug) << ptcontingency.get<std::string>("id") << LOG_ENDL;
@@ -93,7 +93,7 @@ Contingencies::Contingencies(const std::string& filepath) {
 
 void
 Contingencies::log() {
-    LOG(info) << "Contingencies" << LOG_ENDL;
+    LOG(info) << MESS(ContingenciesRead) << LOG_ENDL;
     for (auto c = contingencies_.begin(); c != contingencies_.end(); ++c) {
       LOG(info) << (*c)->id << LOG_ENDL;
       for (auto e = (*c)->elements.begin(); e != (*c)->elements.end(); ++e) {
@@ -166,7 +166,7 @@ Contingencies::toString(ElementInvalidReason reason) {
       return MESS(NotInMainConnectedComponent);
 
     default:
-      throw std::logic_error("Gotten an unexpected error (or a corrupted value)");
+      throw std::logic_error(MESS(ContingenciesEInvalidRErr));
   }
 }
 
