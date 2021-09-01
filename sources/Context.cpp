@@ -127,6 +127,7 @@ Context::filterPartiallyConnectedDynamicModels() {
       if (found == modelDef.nodeConnections.end()) {
         LOG(debug) << "Dynamic model " << automaton.id << " is only partially connected to network so it is removed from exported models" << LOG_ENDL;
         dynamicModels_.models.erase(automaton.id);
+        break;  // element doesn't exist any more, go to next automaton
       }
     }
   }
