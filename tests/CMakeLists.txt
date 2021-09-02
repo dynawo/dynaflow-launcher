@@ -7,11 +7,38 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.14)
 
+include(FetchContent)
 
 ## Googletest dependency
-find_package(GTest REQUIRED)
+set(GTEST_ROOT ${DYNAWO_HOME} CACHE PATH "Path where a GoogleTest installation already exists")
+find_package(GTest)
+find_package(GMock)
+if (NOT GTEST_FOUND OR NOT GMOCK_FOUND)
+  message(STATUS "GTest or GMock not found : they will be downloaded")
+
+  set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build shared libraries")
+  set(gtest_force_shared_crt ON CACHE INTERNAL "Force shared crt")
+  FetchContent_Declare(
+    googletest
+
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        release-1.8.1
+    GIT_PROGRESS   TRUE
+    GIT_SHALLOW    TRUE
+  )
+
+  FetchContent_GetProperties(googletest)
+  if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
+    # we do not want googletest to be installed with the rest of DFL as googletest is used only for unit tests
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
+  endif()
+  add_library(GTest::gtest_main ALIAS gtest_main)
+  add_library(GTest::gmock_main ALIAS gmock_main)
+endif()
+
 if(NOT TARGET GTest::gtest AND TARGET GTest::GTest)
   add_library(GTest::gtest UNKNOWN IMPORTED)
   if(EXISTS "${GTEST_LIBRARY}")
@@ -26,7 +53,6 @@ if(NOT TARGET GTest::gtest_main AND TARGET GTest::Main)
             IMPORTED_LOCATION "${GTEST_MAIN_LIBRARY}")
   endif()
 endif()
-find_package(GMock REQUIRED)
 add_library(DynaFlowLauncherTest INTERFACE)
 target_link_libraries(DynaFlowLauncherTest INTERFACE
   GTest::gmock_main
