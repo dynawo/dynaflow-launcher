@@ -43,6 +43,7 @@ ConnexityError                =     Slack node of id %1% not present in main con
 ConnexityErrorReCompute       =     Slack node of id %1% not present in main connex component: compute slack node only in main connex component
 SimulateInfo                  =     Initializing %1% simulation
 NetworkFileNotFound           =     Network file %1% does not exist
+NetworkHasNoGenerator         =     Network file %1% has no generator regulating voltage in the main connex component
 ContextProcessError           =     Processing of the network %1% failed
 SimulationEnded               =     Simulation %1% ended successfully (wall-time: %2%s)
 DFLEnded                      =     DynaFlowLauncher %1% ended successfully (wall-time: %2%s)
