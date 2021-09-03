@@ -108,6 +108,12 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
   walkNodesMain();
 
+  if (generators_.empty()) {
+    // no generator is regulating the voltage in the main connex component : do not simulate
+    LOG(error) << MESS(NetworkHasNoGenerator, def_.networkFilepath) << LOG_ENDL;
+    return false;
+  }
+
   return true;
 }
 
