@@ -73,5 +73,5 @@ DEFINE_LAUNCH_TEST(special_characters)
 DEFINE_LAUNCH_TEST(phase_shifter)
 
 DEFINE_LAUNCH_TEST(launch_fail_generators)
-## Expected to fail because no generator regulates
+## Expected to fail because no generator regulates the voltage in the main connected component
 set_tests_properties(MAIN.launch_fail_generators PROPERTIES WILL_FAIL TRUE)

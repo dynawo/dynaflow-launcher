@@ -110,7 +110,7 @@ Context::process() {
 
   if (generators_.empty()) {
     // no generator is regulating the voltage in the main connex component : do not simulate
-    LOG(error) << MESS(NetworkHasNoGenerator, def_.networkFilepath) << LOG_ENDL;
+    LOG(error) << MESS(NetworkHasNoRegulatingGenerator, def_.networkFilepath) << LOG_ENDL;
     return false;
   }
 
