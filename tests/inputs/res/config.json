@@ -5,8 +5,6 @@
     "SVCRegulationOn": "false",
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",
-    "VSCAsGenerators": "true",
-    "LCCAsLoads": "true",
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
     "ActivePowerCompensation": "P",
