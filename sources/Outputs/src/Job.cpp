@@ -56,7 +56,7 @@ const std::string Job::solverParId_ = "SimplifiedSolver";
 Job::Job(JobDefinition&& def) : def_{std::forward<JobDefinition>(def)} {}
 
 boost::shared_ptr<job::JobEntry>
-Job::write() {
+Job::write() const {
   auto job = job::JobEntryFactory::newInstance();
   job->setName(def_.filename);
 
@@ -69,7 +69,7 @@ Job::write() {
 }
 
 boost::shared_ptr<job::SolverEntry>
-Job::writeSolver() {
+Job::writeSolver() const {
   auto solver = job::SolverEntryFactory::newInstance();
   solver->setLib(solverName_);
   solver->setParametersFile(solverFilename_);
@@ -79,7 +79,7 @@ Job::writeSolver() {
 }
 
 boost::shared_ptr<job::ModelerEntry>
-Job::writeModeler() {
+Job::writeModeler() const {
   auto modeler = job::ModelerEntryFactory::newInstance();
   modeler->setCompileDir("outputs/compilation");
 
@@ -102,7 +102,7 @@ Job::writeModeler() {
 }
 
 boost::shared_ptr<job::SimulationEntry>
-Job::writeSimulation() {
+Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(timeStart_.count());
   simu->setStopTime((timeStart_ + durationSimu_).count());
@@ -111,7 +111,7 @@ Job::writeSimulation() {
 }
 
 boost::shared_ptr<job::OutputsEntry>
-Job::writeOutputs() {
+Job::writeOutputs() const {
   auto output = job::OutputsEntryFactory::newInstance();
   output->setOutputsDirectory("outputs");
 

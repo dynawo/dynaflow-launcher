@@ -121,7 +121,7 @@ class Context {
   /**
    * @brief Walk through all nodes in main connex components and apply callbacks
    */
-  void walkNodesMain();
+  void walkNodesMain() const;
 
   /**
    * @brief Filter partially connected dynamic models

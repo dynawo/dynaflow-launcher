@@ -201,10 +201,10 @@ Context::execute() {
 }
 
 void
-Context::walkNodesMain() {
-  for (auto it = mainConnexNodes_.begin(); it != mainConnexNodes_.end(); ++it) {
-    for (auto it_c = callbacksMainConnexComponent_.begin(); it_c != callbacksMainConnexComponent_.end(); ++it_c) {
-      (*it_c)(*it);
+Context::walkNodesMain() const {
+  for (const auto& node : mainConnexNodes_) {
+    for (const auto& cbk : callbacksMainConnexComponent_) {
+      cbk(node);
     }
   }
 }

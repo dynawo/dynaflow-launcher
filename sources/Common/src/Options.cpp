@@ -75,7 +75,7 @@ validate(boost::any& v, const std::vector<std::string>& values, ParsedLogLevel*,
 std::string
 Options::basename(const std::string& filepath) {
   boost::filesystem::path path(filepath);
-  return path.filename().generic_string();
+  return path.filename().replace_extension().generic_string();
 }
 
 Options::Options() : desc_{}, config_{"", "", "", defaultLogLevel_} {

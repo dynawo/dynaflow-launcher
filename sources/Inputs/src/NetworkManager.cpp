@@ -221,10 +221,10 @@ NetworkManager::buildTree() {
 }
 
 void
-NetworkManager::walkNodes() {
-  for (auto it = nodes_.begin(); it != nodes_.end(); ++it) {
-    for (auto it_c = nodesCallbacks_.begin(); it_c != nodesCallbacks_.end(); ++it_c) {
-      (*it_c)(it->second);
+NetworkManager::walkNodes() const {
+  for (const auto& node : nodes_) {
+    for (const auto& cbk : nodesCallbacks_) {
+      cbk(node.second);
     }
   }
 }

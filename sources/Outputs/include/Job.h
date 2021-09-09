@@ -68,7 +68,7 @@ class Job {
    *
    * @returns a job entry
    */
-  boost::shared_ptr<job::JobEntry> write();
+  boost::shared_ptr<job::JobEntry> write() const;
 
  private:
   static const std::chrono::seconds timeStart_;     ///< The constant start time of the simulation of the job
@@ -83,28 +83,28 @@ class Job {
    *
    * @returns solver entry to add to the job entry
    */
-  boost::shared_ptr<job::SolverEntry> writeSolver();
+  boost::shared_ptr<job::SolverEntry> writeSolver() const;
 
   /**
    * @brief Write the modeler element of the job file in formatter
    *
    * @returns modeler entry to add to the job
    */
-  boost::shared_ptr<job::ModelerEntry> writeModeler();
+  boost::shared_ptr<job::ModelerEntry> writeModeler() const;
 
   /**
    * @brief Write the simulation element of the job file in formatter
    *
    * @returns simulation entry to add to the job
    */
-  boost::shared_ptr<job::SimulationEntry> writeSimulation();
+  boost::shared_ptr<job::SimulationEntry> writeSimulation() const;
 
   /**
    * @brief Write the outputs element of the job file in formatter
    *
    * @returns outputs entry to add to the job
    */
-  boost::shared_ptr<job::OutputsEntry> writeOutputs();
+  boost::shared_ptr<job::OutputsEntry> writeOutputs() const;
 
  private:
   static constexpr bool useStandardModels_ = true;  ///< use standard models in job entry and file

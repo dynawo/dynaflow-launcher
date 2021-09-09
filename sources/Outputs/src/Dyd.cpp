@@ -63,31 +63,31 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
 Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
 
 void
-Dyd::write() {
+Dyd::write() const {
   dynamicdata::XmlExporter exporter;
   const auto& assemblingDoc = def_.dynamicDataBaseManager.assemblingDocument();
 
   auto dynamicModelsToConnect = dynamicdata::DynamicModelsCollectionFactory::newCollection();
 
   // macros connectors
-  auto macro_connectors = writeMacroConnectors();
-  for (auto it = macro_connectors.begin(); it != macro_connectors.end(); ++it) {
-    dynamicModelsToConnect->addMacroConnector(*it);
+  auto macroConnectors = writeMacroConnectors();
+  for (const auto& macroConnector : macroConnectors) {
+    dynamicModelsToConnect->addMacroConnector(macroConnector);
   }
 
   std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection> macrosById;
   std::transform(assemblingDoc.macroConnections().begin(), assemblingDoc.macroConnections().end(), std::inserter(macrosById, macrosById.begin()),
                  [](const inputs::AssemblingXmlDocument::MacroConnection& macro) { return std::make_pair(macro.id, macro); });
 
-  macro_connectors = writeDynamicModelMacroConnectors(def_.dynamicModelsDefinitions.usedMacroConnections, macrosById);
-  for (auto it = macro_connectors.begin(); it != macro_connectors.end(); ++it) {
-    dynamicModelsToConnect->addMacroConnector(*it);
+  macroConnectors = writeDynamicModelMacroConnectors(def_.dynamicModelsDefinitions.usedMacroConnections, macrosById);
+  for (const auto& macroConnector : macroConnectors) {
+    dynamicModelsToConnect->addMacroConnector(macroConnector);
   }
 
   // macro static refs
-  auto macro_static_ref = writeMacroStaticRef();
-  for (auto it = macro_static_ref.begin(); it != macro_static_ref.end(); ++it) {
-    dynamicModelsToConnect->addMacroStaticReference(*it);
+  auto macroStaticRefs = writeMacroStaticRef();
+  for (const auto& macroStaticRef : macroStaticRefs) {
+    dynamicModelsToConnect->addMacroStaticReference(macroStaticRef);
   }
 
   // models and connections
@@ -120,11 +120,11 @@ Dyd::write() {
 
   dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", "NETWORK", def_.slackNode->id + "_phi");
 
-  for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
+  for (auto it = def_.generators.cbegin(); it != def_.generators.cend(); ++it) {
     writeGenConnect(dynamicModelsToConnect, *it);
-    auto connections = writeGenMacroConnect(*it, static_cast<unsigned int>(it - def_.generators.begin()));
-    for (auto it_c = connections.begin(); it_c != connections.end(); ++it_c) {
-      dynamicModelsToConnect->addMacroConnect(*it_c);
+    auto connections = writeGenMacroConnect(*it, static_cast<unsigned int>(it - def_.generators.cbegin()));
+    for (const auto& connection : connections) {
+      dynamicModelsToConnect->addMacroConnect(connection);
     }
   }
 

@@ -96,7 +96,7 @@ class Par {
   /**
    * @brief Export PAR file
    */
-  void write();
+  void write() const;
 
  private:
   /**
