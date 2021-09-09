@@ -49,11 +49,11 @@ MainConnexComponentAlgorithm::MainConnexComponentAlgorithm(ConnexGroup& mainConn
 
 void
 MainConnexComponentAlgorithm::updateConnexGroup(ConnexGroup& group, const std::vector<NodePtr>& nodes) {
-  for (auto it = nodes.begin(); it != nodes.end(); ++it) {
-    if (markedNodes_.count(*it) == 0) {
-      markedNodes_.insert(*it);
-      group.push_back(*it);
-      updateConnexGroup(group, (*it)->neighbours);
+  for (const auto& node : nodes) {
+    if (markedNodes_.count(node) == 0) {
+      markedNodes_.insert(node);
+      group.push_back(node);
+      updateConnexGroup(group, (node)->neighbours);
     }
   }
 }
@@ -212,8 +212,8 @@ LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
     return;
   }
 
-  for (auto it = node->loads.begin(); it != node->loads.end(); ++it) {
-    loads_.emplace_back(it->id, node->id);
+  for (const auto& load : node->loads) {
+    loads_.emplace_back(load.id, node->id);
   }
 }
 /////////////////////////////////////////////////////////////////

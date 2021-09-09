@@ -71,7 +71,7 @@ class NetworkManager {
    *
    * This will call all registered callbacks for nodes
    */
-  void walkNodes();
+  void walkNodes() const;
 
   /**
    * @brief Retrieve the slack node if it is given in the network file
@@ -96,7 +96,7 @@ class NetworkManager {
    *
    * @returns hvdc line
    */
-  const std::vector<std::shared_ptr<HvdcLine>>& getHvdcLine() {
+  const std::vector<std::shared_ptr<HvdcLine>>& getHvdcLine() const {
     return hvdcLines_;
   }
 
@@ -105,7 +105,7 @@ class NetworkManager {
    *
    * @returns map of bus id to nbOfRegulatingGenerators
    */
-  const BusMapRegulating& getMapBusId() {
+  const BusMapRegulating& getMapBusId() const {
     return mapBusId_;
   }
 

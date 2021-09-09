@@ -117,7 +117,7 @@ class Dyd {
   /**
    * @brief Write the dyd file
    */
-  void write();
+  void write() const;
 
  private:
   /**

@@ -167,29 +167,32 @@ const std::string Par::seasonTag_("@SAISON@");
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
 
 void
-Par::write() {
+Par::write() const {
   parameters::XmlExporter exporter;
 
   auto dynamicModelsToConnect = parameters::ParametersSetCollectionFactory::newCollection();
   // adding load constant parameter set
   dynamicModelsToConnect->addParametersSet(writeConstantLoadsSet());
   // loop on generators
-  for (auto it = def_.generators.begin(); it != def_.generators.end(); ++it) {
+  for (const auto& generator : def_.generators) {
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
-    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(it->model, DYN::doubleIsZero(it->targetP))) && it->isUsingDiagram()) {
-      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(it->model, def_.activePowerCompensation, DYN::doubleIsZero(it->targetP)));
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP))) &&
+        generator.isUsingDiagram()) {
+      dynamicModelsToConnect->addMacroParameterSet(
+          helper::buildMacroParameterSet(generator.model, def_.activePowerCompensation, DYN::doubleIsZero(generator.targetP)));
     }
     // if generator is not using infinite diagrams, no need to create constant sets
-    if (it->isUsingDiagram()) {
-      dynamicModelsToConnect->addParametersSet(writeGenerator(*it, def_.basename, def_.dirname));
+    if (generator.isUsingDiagram()) {
+      dynamicModelsToConnect->addParametersSet(writeGenerator(generator, def_.basename, def_.dirname));
     } else {
-      if (!dynamicModelsToConnect->hasParametersSet(helper::getGeneratorParameterSetId(it->model, DYN::doubleIsZero(it->targetP)))) {
-        dynamicModelsToConnect->addParametersSet(writeConstantGeneratorsSets(def_.activePowerCompensation, it->model, DYN::doubleIsZero(it->targetP)));
+      if (!dynamicModelsToConnect->hasParametersSet(helper::getGeneratorParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP)))) {
+        dynamicModelsToConnect->addParametersSet(
+            writeConstantGeneratorsSets(def_.activePowerCompensation, generator.model, DYN::doubleIsZero(generator.targetP)));
       }
     }
   }
-  for (auto it = def_.hvdcLines.begin(); it != def_.hvdcLines.end(); ++it) {
-    dynamicModelsToConnect->addParametersSet(writeHdvcLine(it->second));
+  for (const auto& hvdcLine : def_.hvdcLines) {
+    dynamicModelsToConnect->addParametersSet(writeHdvcLine(hvdcLine.second));
   }
   // adding parameters sets related with remote voltage control or multiple generator regulating same bus
   for (const auto& keyValue : def_.busesWithDynamicModel) {
