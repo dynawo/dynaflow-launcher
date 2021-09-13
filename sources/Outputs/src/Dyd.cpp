@@ -367,7 +367,7 @@ Dyd::writeMacroStaticRef() {
 
   ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
   ref->addStaticRef("SVarC_PInjPu", "p");
-  ref->addStaticRef("SVarC_PInjPu", "q");
+  ref->addStaticRef("SVarC_QInjPu", "q");
   ref->addStaticRef("SVarC_state", "state");
   ref->addStaticRef("SVarC_modeHandling_mode_value", "regulatingMode");
   ret.push_back(ref);
