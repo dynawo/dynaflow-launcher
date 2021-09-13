@@ -219,13 +219,13 @@ class Par {
   static boost::shared_ptr<parameters::MacroParameterSet> writeMacroParameterSetStaticVarCompensators();
 
   /**
-   * @brief Computes b in PU unit
+   * @brief Computes the susceptance value in PU unit
    *
    * bMaxPU = B * Vnom² / Sb
    *
-   * @param b the b to convert
+   * @param b the susceptance value to convert
    * @param VNom the nominal voltage of the corresponding SVarC
-   * @returns the converted B
+   * @returns the converted susceptance value
    */
   static double computeBPU(double b, double VNom) {
     return b * VNom * VNom / Sb_;

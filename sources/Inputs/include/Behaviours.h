@@ -131,16 +131,16 @@ struct StaticVarCompensator {
    * @brief Constructor
    *
    * @param id the id of the SVarC
-   * @param bMin the minimum b of the SVarC
-   * @param bMax the maximum b of the SVarC
+   * @param bMin the minimum susceptance value of the SVarC
+   * @param bMax the maximum susceptance value of the SVarC
    * @param voltageSetPoint the voltage set point of the SVarC
    * @param VNom the nominal voltage of the bus of the SVarC
-   * @param UMinActivation the low voltage threshold of the SVarC
-   * @param UMaxActivation the high voltage threshold of the SVarC
+   * @param UMinActivation the low voltage activation threshold of the SVarC
+   * @param UMaxActivation the high voltage activation threshold of the SVarC
    * @param USetPointMin the low voltage set point of the SVarC
    * @param USetPointMax the high voltage set point of the SVarC
    * @param b0 the initial b of the SVarC
-   * @param slope the slope of the SVarC
+   * @param slope the slope (kV/MVar) of the SVarC
    */
   StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double VNom, double UMinActivation, double UMaxActivation,
                        double USetPointMin, double USetPointMax, double b0, double slope) :
@@ -157,16 +157,16 @@ struct StaticVarCompensator {
       slope(slope) {}
 
   const SVarCid id;              ///< the id of the SVarC
-  const double bMin;             ///< the minimum b of the SVarC
-  const double bMax;             ///< the maximum b of the SVarC
+  const double bMin;             ///< the minimum susceptance value of the SVarC
+  const double bMax;             ///< the maximum susceptance value of the SVarC
   const double voltageSetPoint;  ///< the voltage set point of the SVarC
   const double VNom;             ///< the nominal voltage of the bus of the SVarC
-  const double UMinActivation;   ///< the low voltage threshold of the SVarC
-  const double UMaxActivation;   ///< the high voltage threshold of the SVarC
+  const double UMinActivation;   ///< the low voltage activation threshold of the SVarC
+  const double UMaxActivation;   ///< the high voltage activation threshold of the SVarC
   const double USetPointMin;     ///< the low voltage set point of the SVarC
   const double USetPointMax;     ///< the high voltage set point of the SVarC
-  const double b0;               ///< the initial b of the SVarC
-  const double slope;            ///< the slope of the SVarC
+  const double b0;               ///< the initial susceptance value of the SVarC
+  const double slope;            ///< the slope (kV/MVar) of the SVarC
 };
 
 }  // namespace inputs
