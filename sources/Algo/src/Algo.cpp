@@ -248,7 +248,7 @@ HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hv
     auto found2 = mapBusVSCConvertersBusId_.find(hvdcLine.converter2->busId);
     if ((found != mapBusVSCConvertersBusId_.end() && found->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES) ||
         (found2 != mapBusVSCConvertersBusId_.end() && found2->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES)) {
-      // always put both converters even if only one has multiple VSC
+      // always put both converters of the hvdc link even if only one of them is connected to a bus regulated by several VSC
       ret.push_back(std::make_pair(hvdcLine.converter1->busId, hvdcLine.converter1->converterId));
       ret.push_back(std::make_pair(hvdcLine.converter2->busId, hvdcLine.converter2->converterId));
     }
@@ -262,12 +262,13 @@ HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hv
 }
 
 auto
-HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, HVDCDefinition::HVDCModel plusVSCInfiniteReactive,
-                                         HVDCDefinition::HVDCModel plusVSCFiniteReactive, HVDCDefinition::HVDCModel oneVSCInfiniteReactive,
-                                         HVDCDefinition::HVDCModel oneVSCFiniteReactive) const -> HVDCModelDefinition {
+HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position,
+                                         HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
+                                         HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive) const
+    -> HVDCModelDefinition {
   auto vscBusIdsWithMultipleRegulation = getBusRegulatedByMultipleVSC(hvdcline, position);
   if (vscBusIdsWithMultipleRegulation.size() > 0) {
-    return HVDCModelDefinition{infiniteReactiveLimits_ ? plusVSCInfiniteReactive : plusVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
+    return HVDCModelDefinition{infiniteReactiveLimits_ ? multipleVSCInfiniteReactive : multipleVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
   } else {
     return HVDCModelDefinition{infiniteReactiveLimits_ ? oneVSCInfiniteReactive : oneVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
   }
@@ -290,7 +291,7 @@ HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine& hvdcline, HVDCDefi
       }
     }
   } else {
-    // case only one of them is in the main connex
+    // case only one of them is in the main connex component
     if (type == inputs::HvdcLine::ConverterType::LCC) {
       return HVDCModelDefinition{
           infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhiDangling : HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ, {}};
@@ -312,6 +313,8 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
     std::array<double, 2> powerFactors{0., 0.};
     boost::optional<VSCDefinition> def1;
     boost::optional<VSCDefinition> def2;
+    boost::optional<bool> voltageRegulation1;
+    boost::optional<bool> voltageRegulation2;
     if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
       auto converterLCC1 = std::dynamic_pointer_cast<inputs::LCCConverter>(hvdcLine.converter1);
       auto converterLCC2 = std::dynamic_pointer_cast<inputs::LCCConverter>(hvdcLine.converter2);
@@ -322,13 +325,15 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
       auto converterVSC2 = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcLine.converter2);
       def1 = VSCDefinition(converterVSC1->converterId, converterVSC1->qMax, converterVSC1->qMin, hvdcLine.pMax, converterVSC1->points);
       def2 = VSCDefinition(converterVSC2->converterId, converterVSC2->qMax, converterVSC2->qMin, hvdcLine.pMax, converterVSC2->points);
+      voltageRegulation1 = converterVSC1->voltageRegulationOn;
+      voltageRegulation2 = converterVSC2->voltageRegulationOn;
     }
 
     boost::optional<double> droop = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->droop : boost::optional<double>();
-    HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId,
-                                   hvdcLine.converter1->isVoltageRegulationOn(), hvdcLine.converter2->converterId, hvdcLine.converter2->busId,
-                                   hvdcLine.converter2->isVoltageRegulationOn(), HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                   HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1, def2, droop);
+    HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId, voltageRegulation1,
+                                   hvdcLine.converter2->converterId, hvdcLine.converter2->busId, voltageRegulation2,
+                                   HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1,
+                                   def2, droop);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }
@@ -359,7 +364,7 @@ HVDCDefinitionAlgorithm::operator()(const NodePtr& node) {
     hvdcLineDefinition.model = modelDef.model;
 
     // If VSC bus definitions map is defined, it means that the converter is a VSC and we can cast it. If not defined, the dynamic cast
-    // returns a null pointer and the transform has no effect since th eap is empty
+    // returns a null pointer and the transform has no effect since the bus map is empty
     auto vscConverter = std::dynamic_pointer_cast<inputs::VSCConverter>(converter);
     std::transform(modelDef.vscBusIdsMultipleRegulated.begin(), modelDef.vscBusIdsMultipleRegulated.end(),
                    std::inserter(hvdcLinesDefinitions_.vscBusVSCDefinitionsMap, hvdcLinesDefinitions_.vscBusVSCDefinitionsMap.end()),

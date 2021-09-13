@@ -40,11 +40,11 @@ hash(const std::string& str) {
 /**
  * @brief Computes Qmax
  *
- * Pow = P^2 / sqrt(P^2 + Q^2) => Q = P * sqrt(1/pow^2 - 1)
+ * powerFactor = PMax^2 / sqrt(PMax^2 + QMax^2) => QMax = PMax * sqrt(1/powerFactor^2 - 1)
  *
- * @param powerFactor the power factor Pow to use
- * @param pMax the P to use
- * @returns the corresponding Q value
+ * @param powerFactor the power factor to use
+ * @param pMax the PMax to use
+ * @returns the corresponding QMax value
  */
 static inline double
 computeQmax(double powerFactor, double pMax) {
@@ -67,8 +67,8 @@ const std::string signalNGeneratorParId{"signalNGenerator"};                    
 const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};          ///< PAR id for generators using signal N with fixed P
 const std::string propSignalNGeneratorParId{"propSignalNGenerator"};              ///< PAR id for generators using prop signal N
 const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};  ///< PAR id for generators using prop signal N with fixed P
-const std::string remoteSignalNParId{"remoteSignalN"};                            ///< PAR id for using remote signal N
-const std::string remoteSignalNFixedPParId{"remoteSignalNFixedP"};                ///< PAR id for using remote signal N with fixed P
+const std::string remoteVControlParId{"remoteVControl"};                          ///< PAR id for using remote voltage control
+const std::string remoteSignalNGeneratorFixedP{"remoteSignalNFixedP"};            ///< PAR id for using remote signal N with fixed P
 const std::string xmlEncoding{"UTF-8"};                                           ///< Default encoding for XML outputs files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite

@@ -108,15 +108,6 @@ struct Converter {
   /// @brief Destructor
   virtual ~Converter() {}
 
-  /**
-   * @brief Determines if voltage regulation is enabled
-   * @returns true if enabled, false if not
-   */
-  virtual bool isVoltageRegulationOn() const {
-    // By default, no voltage regulation
-    return false;
-  }
-
   const ConverterId converterId;  ///< converter id
   const BusId busId;              ///< bus id
   // not const to allow further connection after construction
@@ -141,11 +132,9 @@ struct LCCConverter : public Converter {
 };
 
 /// @brief VSC converter
-class VSCConverter : public Converter {
- public:
+struct VSCConverter : public Converter {
   using ReactiveCurvePoint = DYN::VscConverterInterface::ReactiveCurvePoint;  ///< alias for point type
 
- public:
   /**
    * @brief Constructor
    *
@@ -153,8 +142,8 @@ class VSCConverter : public Converter {
    * @param busId the id of the bus
    * @param hvdcLine the hvdc line this converter is contained into
    * @param voltageRegulationOn optional boolean for the voltage regulation parameter, only used for VSC converters
-   * @param qMax maximum reactive energy of the converter
-   * @param qMin minimum reactive energy of the converter
+   * @param qMax maximum reactive power of the converter
+   * @param qMin minimum reactive power of the converter
    * @param points the reactive curve points
    */
   VSCConverter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine, bool voltageRegulationOn, double qMax, double qMin,
@@ -163,19 +152,12 @@ class VSCConverter : public Converter {
       qMax{qMax},
       qMin{qMin},
       points(points),
-      voltageRegulationOn_{voltageRegulationOn} {}
-
-  /// @copydoc Converter::isVoltageRegulationOn() const
-  bool isVoltageRegulationOn() const final {
-    return voltageRegulationOn_;
-  }
+      voltageRegulationOn{voltageRegulationOn} {}
 
   const double qMax;                             ///< maximum q of the converter
   const double qMin;                             ///< minimum q of the converter
   const std::vector<ReactiveCurvePoint> points;  ///< reactive points
-
- private:
-  bool voltageRegulationOn_;  ///< determines if voltage regulation is enabled
+  const bool voltageRegulationOn;                ///< determines if voltage regulation is enabled
 };
 
 /// @brief Static var compensator (SVarC) behaviour

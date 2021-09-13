@@ -238,8 +238,8 @@ class Par {
   /**
    * @brief Computes KAC emulation parameter
    *
-   * @param droop droop data, in MW.h/deg
-   * @returns KAC, in 100MW.h/rad
+   * @param droop droop data, in MW/deg
+   * @returns KAC, in p.u/rad (base SnRef=100MW)
    */
   static inline constexpr double computeKAC(double droop) {
     return droop * 1.8 / pi_;

@@ -101,7 +101,7 @@ class NetworkManager {
   }
 
   /**
-   * @brief Retrieve the mapping of busId and the number of generators that regulates them
+   * @brief Retrieve the mapping of busId and the number of generators that regulate them
    *
    * @returns map of bus id to nbOfRegulatingGenerators
    */
@@ -141,8 +141,8 @@ class NetworkManager {
   std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
   std::vector<std::shared_ptr<Line>> lines_;                  ///< List of the lines
   std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transformers
-  BusMapRegulating mapBusGeneratorsBusId_;                    ///< mapping of busId and the number of generators that regulates them
-  BusMapRegulating mapBusVSCConvertersBusId_;                 ///< mapping of busId and the number of VSC converters that regulates them
+  BusMapRegulating mapBusGeneratorsBusId_;                    ///< mapping of busId and the number of generators that regulate them
+  BusMapRegulating mapBusVSCConvertersBusId_;                 ///< mapping of busId and the number of VSC converters that regulate them
 };
 
 }  // namespace inputs
