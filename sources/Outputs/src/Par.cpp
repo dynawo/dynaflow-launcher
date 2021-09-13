@@ -526,7 +526,7 @@ Par::writeMacroParameterSetStaticVarCompensators() {
   macro->addReference(helper::buildReference("SVarC_P0Pu", "p_pu", "DOUBLE"));
   macro->addReference(helper::buildReference("SVarC_Q0Pu", "q_pu", "DOUBLE"));
   macro->addReference(helper::buildReference("SVarC_U0Pu", "v_pu", "DOUBLE"));
-  macro->addReference(helper::buildReference("SVarC_UPhase0", "v_pu", "DOUBLE"));
+  macro->addReference(helper::buildReference("SVarC_UPhase0", "angle_pu", "DOUBLE"));
 
   // May be completed in the future by using an external database
   macro->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));

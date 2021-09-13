@@ -5,7 +5,7 @@
     <reference type="DOUBLE" name="SVarC_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="SVarC_Q0Pu" origData="IIDM" origName="q_pu"/>
     <reference type="DOUBLE" name="SVarC_U0Pu" origData="IIDM" origName="v_pu"/>
-    <reference type="DOUBLE" name="SVarC_UPhase0" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="SVarC_UPhase0" origData="IIDM" origName="angle_pu"/>
     <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
     <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
   </macroParameterSet>
