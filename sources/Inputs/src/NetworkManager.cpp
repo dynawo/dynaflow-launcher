@@ -31,6 +31,7 @@
 #include <DYNLoadInterface.h>
 #include <DYNNetworkInterface.h>
 #include <DYNShuntCompensatorInterface.h>
+#include <DYNStaticVarCompensatorInterface.h>
 #include <DYNSwitchInterface.h>
 #include <DYNThreeWTransformerInterface.h>
 #include <DYNTwoWTransformerInterface.h>
@@ -141,6 +142,26 @@ NetworkManager::buildTree() {
         nodes_[bus2->getID()]->neighbours.push_back(nodes_.at(bus1->getID()));
         LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by switch " << sw->getID() << LOG_ENDL;
       }
+    }
+
+    const auto& svarcs = networkVL->getStaticVarCompensators();
+    for (const auto& svarc : svarcs) {
+      if (!svarc->getInitialConnected()) {
+        continue;
+      }
+      if (!svarc->hasStandbyAutomaton()) {
+        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "standByAutomaton", svarc->getID());
+        continue;
+      }
+      if (!svarc->hasVoltagePerReactivePowerControl()) {
+        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "voltagePerReactivePowerControl", svarc->getID());
+        continue;
+      }
+      auto nodeid = svarc->getBusInterface()->getID();
+      nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), svarc->getBMin(), svarc->getBMax(), svarc->getVSetPoint(), svarc->getVNom(),
+                                          svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
+                                          svarc->getB0(), svarc->getSlope());
+      LOG(debug) << "Node " << nodeid << " contains static var compensator " << svarc->getID() << LOG_ENDL;
     }
   }
 

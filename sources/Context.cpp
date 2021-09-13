@@ -106,6 +106,7 @@ Context::process() {
                                                                  config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
+  onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(svarcsDefinitions_));
   walkNodesMain();
 
   if (generators_.empty()) {
@@ -157,7 +158,7 @@ Context::exportOutputs() {
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
   outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_, busesWithDynamicModel_,
-                                                     dynamicDataBaseManager_, dynamicModels_));
+                                                     dynamicDataBaseManager_, dynamicModels_, svarcsDefinitions_));
   dydWriter.write();
 
   // Par
@@ -173,7 +174,8 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLines_, config_.getActivePowerCompensation(),
-                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_, linesById_));
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_, linesById_,
+                                                     svarcsDefinitions_));
   parWriter.write();
 
   // Diagram

@@ -20,6 +20,7 @@ testing::Environment* const env = initXmlEnvironment();
 TEST(TestPar, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
+  using dfl::inputs::StaticVarCompensator;
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
@@ -39,11 +40,19 @@ TEST(TestPar, write) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+  std::vector<StaticVarCompensator> svarcs{
+      StaticVarCompensator("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
+      StaticVarCompensator("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 0., 10.),
+      StaticVarCompensator("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
+      StaticVarCompensator("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
+  };
+  dfl::algo::StaticVarCompensatorDefinitions svarcDefs;
+  std::transform(svarcs.begin(), svarcs.end(), std::back_inserter(svarcDefs.svarcs), [](const StaticVarCompensator& svarc) { return std::ref(svarc); });
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {}, manager, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
+                                                               manager, {}, {}, {}, svarcDefs));
 
   parWriter.write();
 
@@ -85,7 +94,7 @@ TEST(TestPar, writeRemote) {
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation,
-                                                               busesWithDynamicModel, manager, {}, {}, {}));
+                                                               busesWithDynamicModel, manager, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -121,7 +130,7 @@ TEST(TestPar, writeHdvc) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}, manager, {}, {}, {}));
+      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcLines, activePowerCompensation, {}, manager, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -168,7 +177,7 @@ TEST(TestPar, DynModel) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
-                                                               manager, counters, defs, {}));
+                                                               manager, counters, defs, {}, {}));
 
   parWriter.write();
 

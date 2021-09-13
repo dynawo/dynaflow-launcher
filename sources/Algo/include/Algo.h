@@ -726,5 +726,32 @@ class LinesByIdAlgorithm : public NodeAlgorithm {
   LinesByIdDefinitions& linesByIdDefinition_;  ///< lines by id definitions to update
 };
 
+/// @brief Static var compensator definitions
+struct StaticVarCompensatorDefinitions {
+  std::vector<std::reference_wrapper<const inputs::StaticVarCompensator>> svarcs;  ///< List of static var compensators
+};
+
+/// @brief Static var compensator algorithm
+class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
+ public:
+  /**
+   * @brief Constructor
+   * @param svarcsDefinitions the static var compensator definitions to update
+   */
+  explicit StaticVarCompensatorAlgorithm(StaticVarCompensatorDefinitions& svarcsDefinitions);
+
+  /**
+   * @brief Performs the algorithm
+   *
+   * the algorithm extracts all static var compensators connected to the node and add them to the definitions
+   *
+   * @param node the node to process
+   */
+  void operator()(const NodePtr& node);
+
+ private:
+  StaticVarCompensatorDefinitions& svarcsDefinitions_;  ///< the static var compensator definitions to update
+};
+
 }  // namespace algo
 }  // namespace dfl

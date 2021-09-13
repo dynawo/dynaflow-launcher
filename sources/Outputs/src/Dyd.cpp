@@ -50,6 +50,8 @@ const std::string Dyd::networkModelName_("NETWORK");
 const std::string Dyd::macroConnectorGenSignalNName_("GEN_SIGNALN_CONNECTOR");
 const std::string Dyd::signalNModelName_("Model_Signal_N");
 const std::string Dyd::macroStaticRefSignalNGeneratorName_("GeneratorStaticRef");
+const std::string Dyd::macroStaticRefSVarCName_("StaticVarCompensatorStaticRef");
+const std::string Dyd::macroConnectorSVarCName_("StaticVarCompensatorMacroConnector");
 const std::string Dyd::macroStaticRefLoadName_("LoadRef");
 
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
@@ -116,6 +118,11 @@ Dyd::write() const {
     for (const auto& connect : macroConnects) {
       dynamicModelsToConnect->addMacroConnect(connect);
     }
+  }
+  for (const auto& svarcRef : def_.svarcsDefinitions.svarcs) {
+    const auto& svarc = svarcRef.get();
+    dynamicModelsToConnect->addModel(writeSVarC(svarc, def_.basename));
+    dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarc));
   }
 
   dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", "NETWORK", def_.slackNode->id + "_phi");
@@ -290,6 +297,19 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   return model;
 }
 
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+Dyd::writeSVarC(const inputs::StaticVarCompensator& svarc, const std::string& basename) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(svarc.id);
+
+  model->setStaticId(svarc.id);
+  model->setLib("StaticVarCompensatorPV");
+  model->setParFile(basename + ".par");
+  model->setParId(svarc.id);
+  model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSVarCName_));
+
+  return model;
+}
+
 std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>>
 Dyd::writeConstantsModel() {
   std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> ret;
@@ -322,6 +342,10 @@ Dyd::writeMacroConnectors() {
   connector->addConnect("switchOff1_value", "@STATIC_ID@@NODE@_switchOff_value");
   ret.push_back(connector);
 
+  connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorSVarCName_);
+  connector->addConnect("SVarC_terminal", "@STATIC_ID@@NODE@_ACPIN");
+  ret.push_back(connector);
+
   return ret;
 }
 
@@ -341,6 +365,13 @@ Dyd::writeMacroStaticRef() {
   ref->addStaticRef("state_value", "state");
   ret.push_back(ref);
 
+  ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
+  ref->addStaticRef("SVarC_PInjPu", "p");
+  ref->addStaticRef("SVarC_PInjPu", "q");
+  ref->addStaticRef("SVarC_state", "state");
+  ref->addStaticRef("SVarC_modeHandling_mode_value", "regulatingMode");
+  ret.push_back(ref);
+
   return ret;
 }
 
@@ -355,6 +386,11 @@ Dyd::writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int ind
   auto signal = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenSignalNName_, def.id, signalNModelName_);
   signal->setIndex2(std::to_string(index));
   return {connection, signal};
+}
+
+boost::shared_ptr<dynamicdata::MacroConnect>
+Dyd::writeSVarCMacroConnect(const inputs::StaticVarCompensator& svarc) {
+  return dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, networkModelName_);
 }
 
 void

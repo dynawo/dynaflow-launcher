@@ -110,7 +110,7 @@ struct ConverterInterface {
    * @brief Determines if two converter interfaces are equal
    *
    * @param other the other converter to be compared against
-   * 
+   *
    * @return status of the comparison
    */
   bool operator==(const ConverterInterface& other) const {
@@ -122,5 +122,52 @@ struct ConverterInterface {
   boost::optional<bool> voltageRegulationOn;  ///< voltage regulation parameter, for VSC converters only
   std::shared_ptr<HvdcLine> hvdcLine;         ///< hvdc line this converter is contained into
 };
+
+/// @brief Static var compensator (SVarC) behaviour
+struct StaticVarCompensator {
+  using SVarCid = std::string;  ///< alias for static var compensator id
+
+  /**
+   * @brief Constructor
+   *
+   * @param id the id of the SVarC
+   * @param bMin the minimum b of the SVarC
+   * @param bMax the maximum b of the SVarC
+   * @param voltageSetPoint the voltage set point of the SVarC
+   * @param VNom the nominal voltage of the bus of the SVarC
+   * @param UMinActivation the low voltage threshold of the SVarC
+   * @param UMaxActivation the high voltage threshold of the SVarC
+   * @param USetPointMin the low voltage set point of the SVarC
+   * @param USetPointMax the high voltage set point of the SVarC
+   * @param b0 the initial b of the SVarC
+   * @param slope the slope of the SVarC
+   */
+  StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double VNom, double UMinActivation, double UMaxActivation,
+                       double USetPointMin, double USetPointMax, double b0, double slope) :
+      id(id),
+      bMin(bMin),
+      bMax(bMax),
+      voltageSetPoint(voltageSetPoint),
+      VNom(VNom),
+      UMinActivation(UMinActivation),
+      UMaxActivation(UMaxActivation),
+      USetPointMin(USetPointMin),
+      USetPointMax(USetPointMax),
+      b0(b0),
+      slope(slope) {}
+
+  const SVarCid id;              ///< the id of the SVarC
+  const double bMin;             ///< the minimum b of the SVarC
+  const double bMax;             ///< the maximum b of the SVarC
+  const double voltageSetPoint;  ///< the voltage set point of the SVarC
+  const double VNom;             ///< the nominal voltage of the bus of the SVarC
+  const double UMinActivation;   ///< the low voltage threshold of the SVarC
+  const double UMaxActivation;   ///< the high voltage threshold of the SVarC
+  const double USetPointMin;     ///< the low voltage set point of the SVarC
+  const double USetPointMax;     ///< the high voltage set point of the SVarC
+  const double b0;               ///< the initial b of the SVarC
+  const double slope;            ///< the slope of the SVarC
+};
+
 }  // namespace inputs
 }  // namespace dfl

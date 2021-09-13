@@ -24,6 +24,7 @@
 #include <DYNBusInterface.h>
 #include <algorithm>
 #include <boost/make_shared.hpp>
+#include <boost/optional.hpp>
 #include <map>
 #include <set>
 #include <tuple>
@@ -614,4 +615,45 @@ TEST(LinesByIds, base) {
   ASSERT_EQ(def.linesMap.at("2").activeSeason, "HIVER");
   ASSERT_EQ(def.linesMap.at("3").id, "3");
   ASSERT_EQ(def.linesMap.at("3").activeSeason, "UNDEFINED");
+}
+
+TEST(SVARC, base) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
+      dfl::inputs::Node::build("0", vl, 0.0, {}),  dfl::inputs::Node::build("1", vl, 1.0, {}),  dfl::inputs::Node::build("2", vl, 2.0, {}),
+      dfl::inputs::Node::build("3", vl, 3.0, {}),  dfl::inputs::Node::build("4", vl2, 5.0, {}), dfl::inputs::Node::build("5", vl2, 5.0, {}),
+      dfl::inputs::Node::build("6", vl2, 0.0, {}),
+  };
+
+  nodes[0]->svarcs.emplace_back("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
+  nodes[0]->svarcs.emplace_back("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 10., 10.);
+  nodes[2]->svarcs.emplace_back("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
+  nodes[5]->svarcs.emplace_back("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
+
+  dfl::algo::StaticVarCompensatorDefinitions def;
+  dfl::algo::StaticVarCompensatorAlgorithm algo(def);
+
+  std::for_each(nodes.begin(), nodes.end(), algo);
+
+  auto find = [&def](const dfl::inputs::StaticVarCompensator::SVarCid& id) {
+    auto found = std::find_if(def.svarcs.begin(), def.svarcs.end(), [&id](const std::reference_wrapper<const dfl::inputs::StaticVarCompensator>& reference) {
+      const auto& svarc = reference.get();
+      return svarc.id == id;
+    });
+    return (found != def.svarcs.end()) ? boost::optional<dfl::inputs::StaticVarCompensator>(*found) : boost::none;
+  };
+
+  ASSERT_EQ(def.svarcs.size(), 4);
+  auto optSVarC0 = find("SVARC0");
+  ASSERT_TRUE(optSVarC0);
+  ASSERT_EQ(optSVarC0->id, "SVARC0");
+  ASSERT_EQ(optSVarC0->bMax, 10.);
+
+  auto optSVarCn = find("SVARCN");
+  ASSERT_FALSE(optSVarCn);
+
+  auto optSVarC2 = find("SVARC2");
+  ASSERT_EQ(optSVarC2->id, "SVARC2");
+  ASSERT_EQ(optSVarC2->bMax, 10.);
 }

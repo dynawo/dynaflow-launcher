@@ -544,5 +544,16 @@ LinesByIdAlgorithm::operator()(const NodePtr& node) {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+
+StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(StaticVarCompensatorDefinitions& svarcsDefinitions) : svarcsDefinitions_(svarcsDefinitions) {}
+
+void
+StaticVarCompensatorAlgorithm::operator()(const NodePtr& node) {
+  const auto& svarcs = node->svarcs;
+  std::transform(svarcs.begin(), svarcs.end(), std::back_inserter(svarcsDefinitions_.svarcs),
+                 [](const inputs::StaticVarCompensator& svarc) { return std::ref(svarc); });
+}
+
 }  // namespace algo
 }  // namespace dfl
