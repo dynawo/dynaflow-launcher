@@ -64,22 +64,22 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, macroConnectorGenName_)};
 
 const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string> Dyd::hvdcModelsNames_ = {
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhi, "HvdcPTanPhi"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, "HvdcPTanPhiDangling"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ, "HvdcPTanPhiDanglingDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling, "HvdcPQPropDangling"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ, "HvdcPQPropDanglingDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDangling, "HvdcPVDangling"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, "HvdcPVDanglingDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhi, "HvdcPTanPhi"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ, "HvdcPTanPhiDiagramPQ"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQProp, "HvdcPQProp"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling, "HvdcPQPropDangling"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ, "HvdcPQPropDanglingDiagramPQ"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, "HvdcPQPropDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPV, "HvdcPV"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, "HvdcPVDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulation, "HvdcPQPropEmulation"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation, "HvdcPQPropDiagramPQEmulation"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVEmulation, "HvdcPVEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulation, "HvdcPQPropEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPV, "HvdcPV"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDangling, "HvdcPVDangling"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, "HvdcPVDanglingDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, "HvdcPVDiagramPQ"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation, "HvdcPVDiagramPQEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVEmulation, "HvdcPVEmulation"),
 };
 
 Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
@@ -291,7 +291,7 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
     parId = constants::propSignalNGeneratorParId;
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
-    parId = constants::remoteSignalNParId;
+    parId = constants::remoteVControlParId;
     break;
   default:
     std::size_t hashId = constants::hash(def.id);
@@ -429,7 +429,7 @@ Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsColl
     dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
     dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
   }
-  if (hvdcDefinition.hasPropModel()) {
+  if (hvdcDefinition.hasPQPropModel()) {
     const auto& busId1 =
         (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2BusId : hvdcDefinition.converter1BusId;
     dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ1_value", modelSignalNQprefix_ + busId1, vrremoteNqValue);

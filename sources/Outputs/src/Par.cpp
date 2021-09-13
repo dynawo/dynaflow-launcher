@@ -77,7 +77,7 @@ getMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixe
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? getMacroParameterSetId(constants::remoteSignalNFixedPParId) : getMacroParameterSetId(constants::remoteSignalNParId);
+    id = fixedP ? getMacroParameterSetId(constants::remoteSignalNGeneratorFixedP) : getMacroParameterSetId(constants::remoteVControlParId);
     break;
   default:
     id = fixedP ? getMacroParameterSetId(constants::signalNGeneratorFixedPParId) : getMacroParameterSetId(constants::signalNGeneratorParId);
@@ -96,7 +96,7 @@ getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool 
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? constants::remoteSignalNFixedPParId : constants::remoteSignalNParId;
+    id = fixedP ? constants::remoteSignalNGeneratorFixedP : constants::remoteVControlParId;
     break;
   default:
     id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
@@ -109,7 +109,7 @@ static boost::shared_ptr<parameters::MacroParameterSet>
 buildMacroParameterSet(const std::string& modelType) {
   boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
       boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
-  if (modelType == getMacroParameterSetId(constants::remoteSignalNParId + "_vr")) {
+  if (modelType == getMacroParameterSetId(constants::remoteVControlParId + "_vr")) {
     macroParameterSet->addParameter(helper::buildParameter("vrremote_Gain", 1.));
     macroParameterSet->addParameter(helper::buildParameter("vrremote_tIntegral", 1.));
   }
@@ -205,17 +205,17 @@ Par::write() const {
   for (const auto& hvdcLine : def_.hvdcDefinitions.hvdcLines) {
     dynamicModelsToConnect->addParametersSet(writeHdvcLine(hvdcLine.second, def_.basename, def_.dirname));
   }
-  // adding parameters sets related with remote voltage control or multiple generator regulating same bus
+  // adding parameters sets related to remote voltage control or multiple generator regulating same bus
   for (const auto& keyValue : def_.busesWithDynamicModel) {
-    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr"))) {
-      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr")));
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
+      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
     }
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
   }
-  // adding parameters sets related with remote voltage control or multiple VSC regulating same bus
+  // adding parameters sets related to remote voltage control or multiple VSC regulating same bus
   for (const auto& keyValue : def_.hvdcDefinitions.vscBusVSCDefinitionsMap) {
-    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr"))) {
-      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr")));
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
+      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
     }
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second.id));
   }
@@ -368,7 +368,7 @@ Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configurati
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-  if (modelId == constants::remoteSignalNParId) {
+  if (modelId == constants::remoteVControlParId) {
     set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
   } else if (modelId != constants::propSignalNGeneratorParId) {
     set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
@@ -417,7 +417,7 @@ Par::writeVRRemote(const std::string& busId, const std::string& elementId) {
   set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", elementId));
   set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", elementId));
   set->addMacroParSet(
-      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr"))));
+      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))));
   return set;
 }
 
@@ -441,13 +441,13 @@ Par::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string
     set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
     if (hvdcDefinition.converterType == algo::HVDCDefinition::ConverterType::VSC) {
       const auto& vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
-      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", vscDefinition.qmin / factorPU));
-      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", vscDefinition.qmax / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (vscDefinition.qmin - 1) / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", (vscDefinition.qmax + 1) / factorPU));
     } else {
       // assuming that converterNumber is 1 or 2 (pre-condition)
       auto qMax = constants::computeQmax(hvdcDefinition.powerFactors.at(converterNumber - 1), hvdcDefinition.pMax);
-      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", -qMax / factorPU));
-      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", qMax / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (-qMax - 1) / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", (qMax + 1) / factorPU));
     }
   };
 
@@ -489,14 +489,14 @@ Par::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string
 
   if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
     if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter2VoltageRegulationOn));
-      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter1VoltageRegulationOn));
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter2VoltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter1VoltageRegulationOn.value()));
     } else {
-      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter1VoltageRegulationOn));
-      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter2VoltageRegulationOn));
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter1VoltageRegulationOn.value()));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter2VoltageRegulationOn.value()));
     }
   }
-  if (hvdcDefinition.hasPropModel()) {
+  if (hvdcDefinition.hasPQPropModel()) {
     switch (hvdcDefinition.position) {
     case dfl::algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT:
       set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter1Id));

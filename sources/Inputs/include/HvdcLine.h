@@ -78,7 +78,7 @@ class HvdcLine {
   const ConverterType converterType;                             ///< type of converter
   const std::shared_ptr<Converter> converter1;                   ///< first converter
   const std::shared_ptr<Converter> converter2;                   ///< second converter
-  const boost::optional<ActivePowerControl> activePowerControl;  ///< Active power control information
+  const boost::optional<ActivePowerControl> activePowerControl;  ///< active power control information
   const double pMax;                                             ///< maximum p
 
  private:

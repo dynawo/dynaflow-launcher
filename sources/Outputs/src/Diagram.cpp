@@ -113,7 +113,7 @@ Diagram::writeConverters() const {
       continue;
     }
 
-    // The presence of vscDefinitionx and the relevance of powerFactors array is garranteed according the type of HVDC line
+    // The presence of vscDefinitions and the relevance of powerFactors array is guaranteed according the type of HVDC line
 
     switch (hvdcDef.position) {
     case algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT: {

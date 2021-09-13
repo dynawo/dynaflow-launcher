@@ -294,8 +294,8 @@ class Dyd {
   static const std::string macroConnectorSVarCName_;             ///< Name of macro connector element for SVarC
   static const std::string macroStaticRefLoadName_;              ///< Name for the static ref macro for loads
   static const std::string networkModelName_;                    ///< name of the model corresponding to network
-  static const std::string signalNModelName_;                    ///< Name of the SignaN model
-  static const std::string modelSignalNQprefix_;                 ///< Prefix for signal N models
+  static const std::string signalNModelName_;                    ///< Name of the SignalN model
+  static const std::string modelSignalNQprefix_;                 ///< Prefix for SignalN models
 
  private:
   DydDefinition def_;  ///< Dyd file information
