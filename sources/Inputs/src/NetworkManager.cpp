@@ -150,11 +150,11 @@ NetworkManager::buildTree() {
         continue;
       }
       if (!svarc->hasStandbyAutomaton()) {
-        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "standByAutomaton", svarc->getID());
+        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "standByAutomaton", svarc->getID()) << LOG_ENDL;
         continue;
       }
       if (!svarc->hasVoltagePerReactivePowerControl()) {
-        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "voltagePerReactivePowerControl", svarc->getID());
+        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "voltagePerReactivePowerControl", svarc->getID()) << LOG_ENDL;
         continue;
       }
       auto nodeid = svarc->getBusInterface()->getID();
