@@ -53,6 +53,7 @@ const std::string Dyd::macroStaticRefSignalNGeneratorName_("GeneratorStaticRef")
 const std::string Dyd::macroStaticRefSVarCName_("StaticVarCompensatorStaticRef");
 const std::string Dyd::macroConnectorSVarCName_("StaticVarCompensatorMacroConnector");
 const std::string Dyd::macroStaticRefLoadName_("LoadRef");
+const std::string Dyd::modelSignalNQprefix_("Model_Signal_NQ_");
 
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd::correspondence_macro_connector_ = {
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, macroConnectorGenName_),
@@ -61,6 +62,25 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, macroConnectorGenName_),
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN, macroConnectorGenName_),
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, macroConnectorGenName_)};
+
+const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string> Dyd::hvdcModelsNames_ = {
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, "HvdcPTanPhiDangling"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ, "HvdcPTanPhiDanglingDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling, "HvdcPQPropDangling"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ, "HvdcPQPropDanglingDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDangling, "HvdcPVDangling"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, "HvdcPVDanglingDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhi, "HvdcPTanPhi"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ, "HvdcPTanPhiDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQProp, "HvdcPQProp"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, "HvdcPQPropDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPV, "HvdcPV"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, "HvdcPVDiagramPQ"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulation, "HvdcPQPropEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation, "HvdcPQPropDiagramPQEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVEmulation, "HvdcPVEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation, "HvdcPVDiagramPQEmulation"),
+};
 
 Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
 
@@ -104,11 +124,15 @@ Dyd::write() const {
   for (const auto& generator : def_.generators) {
     dynamicModelsToConnect->addModel(writeGenerator(generator, def_.basename));
   }
-  for (const auto& keyValue : def_.hvdcLines) {
+  for (const auto& keyValue : def_.hvdcDefinitions.hvdcLines) {
     dynamicModelsToConnect->addModel(writeHvdcLine(keyValue.second, def_.basename));
     writeHvdcLineConnect(dynamicModelsToConnect, keyValue.second);
   }
   for (const auto& keyValue : def_.busesWithDynamicModel) {
+    dynamicModelsToConnect->addModel(writeVRRemote(keyValue.first, def_.basename));
+    writeVRRemoteConnect(dynamicModelsToConnect, keyValue.first);
+  }
+  for (const auto& keyValue : def_.hvdcDefinitions.vscBusVSCDefinitionsMap) {
     dynamicModelsToConnect->addModel(writeVRRemote(keyValue.first, def_.basename));
     writeVRRemoteConnect(dynamicModelsToConnect, keyValue.first);
   }
@@ -206,7 +230,7 @@ Dyd::writeDynamicModelMacroConnect(const algo::DynamicModelDefinition& dynModel)
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeVRRemote(const std::string& busId, const std::string& basename) {
-  std::string id = "Model_Signal_NQ_" + busId;
+  std::string id = modelSignalNQprefix_ + busId;
   auto model = dynamicdata::BlackBoxModelFactory::newModel(id);
   model->setLib("VRRemote");
   model->setParFile(basename + ".par");
@@ -215,33 +239,14 @@ Dyd::writeVRRemote(const std::string& busId, const std::string& basename) {
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
-Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& basename) {
+Dyd::writeHvdcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(hvdcLine.id);
 
   model->setStaticId(hvdcLine.id);
-  if (hvdcLine.position == algo::HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
-    if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
-      // TODO set lib
-    } else {
-      // TODO set lib
-    }
-  } else {
-    if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
-      model->setLib("HvdcPTanPhiDangling");
-    } else {
-      model->setLib("HvdcPVDangling");
-    }
-  }
+  model->setLib(hvdcModelsNames_.at(hvdcLine.model));
   model->setParFile(basename + ".par");
   model->setParId(hvdcLine.id);
-  if (hvdcLine.position == algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
-    model->addStaticRef("hvdc_PInj1Pu", "p1");
-    model->addStaticRef("hvdc_QInj1Pu", "q1");
-    model->addStaticRef("hvdc_state", "state1");
-    model->addStaticRef("hvdc_PInj2Pu", "p2");
-    model->addStaticRef("hvdc_QInj2Pu", "q2");
-    model->addStaticRef("hvdc_state", "state2");
-  } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+  if (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
     model->addStaticRef("hvdc_PInj1Pu", "p2");
     model->addStaticRef("hvdc_QInj1Pu", "q2");
     model->addStaticRef("hvdc_state", "state2");
@@ -249,7 +254,13 @@ Dyd::writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& 
     model->addStaticRef("hvdc_QInj2Pu", "q1");
     model->addStaticRef("hvdc_state", "state1");
   } else {
-    // TODO when we will handle the case were both converters are in the main connex component
+    // terminal 1 on 1 in case both are in main connex component
+    model->addStaticRef("hvdc_PInj1Pu", "p1");
+    model->addStaticRef("hvdc_QInj1Pu", "q1");
+    model->addStaticRef("hvdc_state", "state1");
+    model->addStaticRef("hvdc_PInj2Pu", "p2");
+    model->addStaticRef("hvdc_QInj2Pu", "q2");
+    model->addStaticRef("hvdc_state", "state2");
   }
 
   return model;
@@ -280,7 +291,7 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
     parId = constants::propSignalNGeneratorParId;
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
-    parId = constants::remoteSignalNGeneratorParId;
+    parId = constants::remoteSignalNParId;
     break;
   default:
     std::size_t hashId = constants::hash(def.id);
@@ -398,25 +409,33 @@ Dyd::writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollectio
   if (def.model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN) {
     dynamicModelsToConnect->addConnect(def.id, "generator_URegulated", "NETWORK", def.regulatedBusId + "_U_value");
   } else if (def.model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) {
-    dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", "Model_Signal_NQ_" + def.regulatedBusId, "vrremote_NQ");
+    dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", modelSignalNQprefix_ + def.regulatedBusId, "vrremote_NQ");
   }
 }
 
 void
 Dyd::writeVRRemoteConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& busId) {
-  dynamicModelsToConnect->addConnect("Model_Signal_NQ_" + busId, "vrremote_URegulated", "NETWORK", busId + "_U_value");
+  dynamicModelsToConnect->addConnect(modelSignalNQprefix_ + busId, "vrremote_URegulated", "NETWORK", busId + "_U_value");
 }
 
 void
-Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HvdcLineDefinition& hvdcLine) {
-  if (hvdcLine.position == algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
-  } else if (hvdcLine.position == algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter1_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcLine.converter2_busId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
+Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HVDCDefinition& hvdcDefinition) {
+  const std::string vrremoteNqValue("vrremote_NQ");
+  if (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
   } else {
-    // TODO when we will handle the case were both converters are in the main connex component
+    // case both : 1 <-> 1 and 2 <-> 2
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
+    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
+  }
+  if (hvdcDefinition.hasPropModel()) {
+    const auto& busId1 =
+        (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2BusId : hvdcDefinition.converter1BusId;
+    dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ1_value", modelSignalNQprefix_ + busId1, vrremoteNqValue);
+    if (hvdcDefinition.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
+      dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ2_value", modelSignalNQprefix_ + hvdcDefinition.converter2BusId, vrremoteNqValue);
+    }
   }
 }  // namespace outputs
 }  // namespace outputs

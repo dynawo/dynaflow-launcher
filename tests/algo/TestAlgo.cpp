@@ -306,9 +306,9 @@ TEST(Generators, base) {
 
   nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5, 0, bus3, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::MULTIPLES},
-                                                          {bus2, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE},
-                                                          {bus3, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE}};
+  dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
+                                                          {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
+                                                          {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
 
@@ -370,9 +370,9 @@ TEST(Generators, SwitchConnexity) {
 
   nodes[4]->generators.emplace_back("04", points, -5, 5, -5, 5, 5, bus3, bus3);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE},
-                                                          {bus2, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE},
-                                                          {bus3, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE}};
+  dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
+                                                          {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
+                                                          {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
 
@@ -418,11 +418,13 @@ TEST(Loads, base) {
 }
 
 static bool
-hvdcLineDefinitionEqual(const dfl::algo::HvdcLineDefinition& lhs, const dfl::algo::HvdcLineDefinition& rhs) {
-  return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.converter1_id == rhs.converter1_id && lhs.converter1_busId == rhs.converter1_busId &&
-         lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn && lhs.converter2_id == rhs.converter2_id &&
-         lhs.converter2_busId == rhs.converter2_busId && lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn &&
-         lhs.position == rhs.position;
+hvdcLineDefinitionEqual(const dfl::algo::HVDCDefinition& lhs, const dfl::algo::HVDCDefinition& rhs) {
+  // we do not check the model here as a dedicated test will check the compliance
+  return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.converter1Id == rhs.converter1Id && lhs.converter1BusId == rhs.converter1BusId &&
+         lhs.converter2VoltageRegulationOn == rhs.converter2VoltageRegulationOn && lhs.converter2Id == rhs.converter2Id &&
+         lhs.converter2BusId == rhs.converter2BusId && lhs.converter2VoltageRegulationOn == rhs.converter2VoltageRegulationOn && lhs.position == rhs.position &&
+         lhs.pMax == rhs.pMax && lhs.powerFactors == rhs.powerFactors && boost::equal_pointees(lhs.vscDefinition1, rhs.vscDefinition1) &&
+         boost::equal_pointees(lhs.vscDefinition2, rhs.vscDefinition2);
 }
 
 TEST(HvdcLine, base) {
@@ -432,48 +434,183 @@ TEST(HvdcLine, base) {
       dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
       dfl::inputs::Node::build("6", vl, 0.0, {}),
   };
-  auto lccStation1 = dfl::inputs::ConverterInterface("LCCStation1", "_BUS___11_TN");
-  auto vscStation2 = dfl::inputs::ConverterInterface("VSCStation2", "_BUS___11_TN", false);
-  auto lccStationMain1 = dfl::inputs::ConverterInterface("LCCStationMain1", "_BUS__11_TN");
+  auto dummyStation = std::make_shared<dfl::inputs::LCCConverter>("StationN", "_BUS___99_TN", nullptr, 99.);
+  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0.,
+                                                                     std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  auto lccStation1 = std::make_shared<dfl::inputs::LCCConverter>("LCCStation1", "_BUS___11_TN", nullptr, 1.);
+  auto vscStation2 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation2", "_BUS___11_TN", nullptr, false, 0., 0.,
+                                                                 std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  auto lccStationMain1 = std::make_shared<dfl::inputs::LCCConverter>("LCCStationMain1", "_BUS__11_TN", nullptr, 1.);
 
-  auto lccStationMain2 = dfl::inputs::ConverterInterface("LCCStationMain2", "_BUS__11_TN");
+  auto lccStationMain2 = std::make_shared<dfl::inputs::LCCConverter>("LCCStationMain2", "_BUS__11_TN", nullptr, 2.);
 
-  auto hvdcLineLCC = std::make_shared<dfl::inputs::HvdcLine>("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN",
-                                                             boost::optional<bool>(), "LCCStation2", "_BUS___10_TN", boost::optional<bool>());
-  auto hvdcLineVSC = std::make_shared<dfl::inputs::HvdcLine>("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true,
-                                                             "VSCStation2", "_BUS___11_TN", false);
+  auto hvdcLineLCC = dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, dummyStation, boost::none, 0.0);
+  auto hvdcLineVSC = dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, vscStation2, boost::none, 10.);
   auto hvdcLineBothInMainComponent =
-      std::make_shared<dfl::inputs::HvdcLine>("HVDCLineBothInMain", dfl::inputs::HvdcLine::ConverterType::VSC, "LCCStationMain1", "_BUS__11_TN",
-                                              boost::optional<bool>(), "LCCStationMain2", "_BUS__11_TN", boost::optional<bool>());
+      dfl::inputs::HvdcLine::build("HVDCLineBothInMain", dfl::inputs::HvdcLine::ConverterType::LCC, lccStationMain1, lccStationMain2, boost::none, 20.);
 
-  lccStation1.hvdcLine = hvdcLineLCC;
-  vscStation2.hvdcLine = hvdcLineVSC;
-  lccStationMain2.hvdcLine = hvdcLineBothInMainComponent;
-  lccStationMain1.hvdcLine = hvdcLineBothInMainComponent;
+  // model not checked in this test : see the dedicated test
+  std::vector<dfl::algo::HVDCDefinition> expected_hvdcLines = {
+      dfl::algo::HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "StationN", "_BUS___99_TN",
+                                false, dfl::algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling,
+                                {1., 99.}, 0., boost::none, boost::none, boost::none),
+      dfl::algo::HVDCDefinition(
+          "HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "StationN", "_BUS___99_TN", false, "VSCStation2", "_BUS___11_TN", false,
+          dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {0., 0.}, 10.,
+          dfl::algo::VSCDefinition(dummyStationVSC->converterId, dummyStationVSC->qMax, dummyStationVSC->qMin, 10., dummyStationVSC->points),
+          dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, 10., vscStation2->points), boost::none),
+      dfl::algo::HVDCDefinition("HVDCLineBothInMain", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStationMain1", "_BUS__11_TN", false, "LCCStationMain2",
+                                "_BUS__11_TN", false, dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
+                                dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 2.}, 20., boost::none, boost::none, boost::none),
+  };
 
-  dfl::algo::HvdcLineDefinition::HvdcLines expected_hvdcLines = {
-      dfl::algo::HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
-                                    "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT),
-      dfl::algo::HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
-                                    "_BUS___11_TN", false, dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT)};
+  nodes[0]->converters.emplace_back(lccStation1);
+  nodes[2]->converters.emplace_back(lccStationMain1);
+  nodes[0]->converters.emplace_back(lccStationMain2);
+  nodes[4]->converters.emplace_back(vscStation2);
 
-  nodes[0]->converterInterfaces.emplace_back(lccStation1);
-  nodes[2]->converterInterfaces.emplace_back(lccStationMain1);
-  nodes[0]->converterInterfaces.emplace_back(lccStationMain2);
-  nodes[4]->converterInterfaces.emplace_back(vscStation2);
-
-  dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;
-  dfl::algo::ControllerInterfaceDefinitionAlgorithm algo(hvdcLines);
+  dfl::algo::HVDCLineDefinitions hvdcDefs;
+  constexpr bool useReactiveLimits = true;
+  dfl::inputs::NetworkManager::BusMapRegulating map;
+  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, map);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
-  ASSERT_EQ(2, hvdcLines.size());
+  const auto& hvdcLines = hvdcDefs.hvdcLines;
+  ASSERT_EQ(3, hvdcLines.size());
   size_t index = 0;
   for (const auto& expected_hvdcLine : expected_hvdcLines) {
     auto it = hvdcLines.find(expected_hvdcLine.id);
     ASSERT_NE(hvdcLines.end(), it);
-    ASSERT_TRUE(hvdcLineDefinitionEqual(expected_hvdcLine, it->second));
+    ASSERT_TRUE(hvdcLineDefinitionEqual(expected_hvdcLine, it->second)) << " Fail for " << expected_hvdcLine.id;
   }
+  ASSERT_EQ(hvdcDefs.vscBusVSCDefinitionsMap.size(), 0);
+}
+
+static bool
+compareVSCDefinition(const dfl::algo::VSCDefinition& lhs, const dfl::algo::VSCDefinition& rhs) {
+  return lhs.id == rhs.id && lhs.qmax == rhs.qmax && lhs.qmin == rhs.qmin && lhs.points.size() == rhs.points.size() &&
+         std::equal(lhs.points.begin(), lhs.points.end(), rhs.points.begin(),
+                    [](const dfl::algo::VSCDefinition::ReactiveCurvePoint& lhs, const dfl::algo::VSCDefinition::ReactiveCurvePoint& rhs) {
+                      return lhs.p == rhs.p && lhs.qmax == rhs.qmax && lhs.qmin == rhs.qmin;
+                    });
+}
+
+static void
+checkVSCIds(const dfl::algo::HVDCLineDefinitions& hvdcDefs) {
+  static const dfl::algo::HVDCLineDefinitions::BusVSCMap expectedMap = {
+      std::make_pair("2", dfl::algo::VSCDefinition("VSCStation2", 2.1, 2., 2., {})),
+      std::make_pair("7", dfl::algo::VSCDefinition("VSCStation7", 7.1, 7., 2.7, {})),
+      std::make_pair("8", dfl::algo::VSCDefinition("VSCStation8", 8.1, 8., 2.8, {})),
+  };
+  ASSERT_EQ(hvdcDefs.vscBusVSCDefinitionsMap.size(), expectedMap.size());
+  for (const auto& pair : expectedMap) {
+    ASSERT_GT(hvdcDefs.vscBusVSCDefinitionsMap.count(pair.first), 0);
+    ASSERT_TRUE(compareVSCDefinition(hvdcDefs.vscBusVSCDefinitionsMap.at(pair.first), pair.second));
+  }
+}
+
+TEST(hvdcLine, models) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
+      dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
+      dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
+      dfl::inputs::Node::build("6", vl, 0.0, {}),  dfl::inputs::Node::build("7", vl, 0.0, {}),   dfl::inputs::Node::build("8", vl, 0.0, {}),
+      dfl::inputs::Node::build("9", vl, 0.0, {}),  dfl::inputs::Node::build("10", vl, 0.0, {}),
+  };
+  std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint> emptyPoints{};
+
+  auto activeControl = boost::optional<dfl::inputs::HvdcLine::ActivePowerControl>(dfl::inputs::HvdcLine::ActivePowerControl(10., 5.));
+
+  auto dummyStation = std::make_shared<dfl::inputs::LCCConverter>("StationN", "_BUS___99_TN", nullptr, 1.);
+  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0., emptyPoints);
+  auto lccStation1 = std::make_shared<dfl::inputs::LCCConverter>("LCCStation1", "0", nullptr, 1.);
+  auto lccStation3 = std::make_shared<dfl::inputs::LCCConverter>("LCCStation3", "3", nullptr, 1.);
+  auto lccStation4 = std::make_shared<dfl::inputs::LCCConverter>("LCCStation4", "4", nullptr, 1.);
+  auto vscStation1 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation1", "1", nullptr, false, 1.1, 1., emptyPoints);
+  auto vscStation2 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation2", "2", nullptr, true, 2.1, 2., emptyPoints);
+  auto vscStation21 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation21", "2", nullptr, true, 2.1, 2., emptyPoints);
+  auto vscStation22 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation22", "2", nullptr, true, 2.1, 2., emptyPoints);
+  auto vscStation23 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation23", "2", nullptr, true, 2.1, 2., emptyPoints);
+  auto vscStation5 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation5", "5", nullptr, true, 5.1, 5., emptyPoints);
+  auto vscStation6 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation6", "6", nullptr, true, 6.1, 6., emptyPoints);
+  auto vscStation7 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation7", "7", nullptr, true, 7.1, 7., emptyPoints);
+  auto vscStation8 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation8", "8", nullptr, true, 8.1, 8., emptyPoints);
+  auto vscStation9 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation9", "9", nullptr, true, 9.1, 9., emptyPoints);
+  auto vscStation10 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation10", "10", nullptr, true, 10.1, 10., emptyPoints);
+  auto hvdcLineLCC = dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, dummyStation, boost::none,
+                                                  0);  // first is in main cc
+  auto hvdcLineVSC = dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, dummyStationVSC, boost::none,
+                                                  1);  // first in main cc
+  auto hvdcLineVSC2 = dfl::inputs::HvdcLine::build("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, vscStation2, boost::none,
+                                                   2);  // second in main cc
+  auto hvdcLineVSC3 = dfl::inputs::HvdcLine::build("HVDCVSCLine3", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation21, dummyStationVSC, boost::none,
+                                                   2);  // first in main cc
+  auto hvdcLineBothInMainComponent = dfl::inputs::HvdcLine::build("HVDCLineBothInMain1", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation3, lccStation4,
+                                                                  boost::none, 3.4);  // both in man cc
+  auto hvdcLineBothInMainComponent2 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain2", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation5, vscStation6,
+                                                                   activeControl, 5.6);  // both in man cc
+  auto hvdcLineBothInMainComponent3 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain3", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation22, vscStation7,
+                                                                   activeControl, 2.7);  // both in man cc
+  auto hvdcLineBothInMainComponent4 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain4", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation9, vscStation10,
+                                                                   boost::none, 9.10);  // both in man cc
+  auto hvdcLineBothInMainComponent5 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain5", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation23, vscStation8,
+                                                                   boost::none, 2.8);  // both in man cc
+  nodes[0]->converters.push_back(lccStation1);
+  nodes[1]->converters.push_back(vscStation1);
+  nodes[2]->converters.push_back(vscStation2);
+  nodes[2]->converters.push_back(vscStation21);
+  nodes[2]->converters.push_back(vscStation22);
+  nodes[2]->converters.push_back(vscStation23);
+  nodes[3]->converters.push_back(lccStation3);
+  nodes[4]->converters.push_back(lccStation4);
+  nodes[5]->converters.push_back(vscStation5);
+  nodes[6]->converters.push_back(vscStation6);
+  nodes[7]->converters.push_back(vscStation7);
+  nodes[8]->converters.push_back(vscStation8);
+  nodes[9]->converters.push_back(vscStation9);
+  nodes[10]->converters.push_back(vscStation10);
+
+  dfl::inputs::NetworkManager::BusMapRegulating busMap{std::make_pair("2", dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)};
+
+  dfl::algo::HVDCLineDefinitions hvdcDefs;
+  bool useReactiveLimits = true;
+  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, busMap);
+
+  std::for_each(nodes.begin(), nodes.end(), algo);
+
+  auto& hvdcLines = hvdcDefs.hvdcLines;
+  ASSERT_EQ(hvdcLines.size(), 9);
+  ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhi);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulation);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulation);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain4").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPV);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain5").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQProp);
+
+  checkVSCIds(hvdcDefs);
+
+  hvdcLines.clear();
+  hvdcDefs.vscBusVSCDefinitionsMap.clear();
+  // case diagrams
+  useReactiveLimits = false;
+  dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, busMap);
+  std::for_each(nodes.begin(), nodes.end(), algo2);
+  ASSERT_EQ(hvdcLines.size(), 9);
+  ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain4").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain5").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ);
+
+  checkVSCIds(hvdcDefs);
 }
 
 static void
@@ -487,7 +624,7 @@ testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> poin
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {});
 
-  const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE}};
+  const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
 

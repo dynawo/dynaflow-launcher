@@ -50,6 +50,19 @@ NetworkManager::NetworkManager(const boost::filesystem::path& filepath) :
   buildTree();
 }
 
+auto
+NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface)
+    -> BusId {
+  auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(elementId)->getID();
+  auto it = map.find(regulatedBus);
+  if (it == map.end()) {
+    map.insert({regulatedBus, NbOfRegulating::ONE});
+  } else {
+    it->second = NbOfRegulating::MULTIPLES;
+  }
+  return regulatedBus;
+}
+
 void
 NetworkManager::buildTree() {
   auto network = interface_->getNetwork();
@@ -114,14 +127,7 @@ NetworkManager::buildTree() {
       if (generator->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) &&
           (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
         // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
-        auto regulated_bus = interface_->getServiceManager()->getRegulatedBus(generator->getID())->getID();
-        auto it = mapBusId_.find(regulated_bus);
-        if (it == mapBusId_.end()) {
-          mapBusId_.insert({regulated_bus, NbOfRegulatingGenerators::ONE});
-        } else {
-          it->second = NbOfRegulatingGenerators::MULTIPLES;
-        }
-
+        auto regulated_bus = updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
         nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin,
                                                 pmax, targetP, regulated_bus, nodeid);
         LOG(debug) << "Node " << nodeid << " contains generator " << generator->getID() << LOG_ENDL;
@@ -209,33 +215,50 @@ NetworkManager::buildTree() {
 
   const auto& hvdcLines = network->getHvdcLines();
   for (const auto& hvdcLine : hvdcLines) {
-    const auto& converter_dyn_1 = hvdcLine->getConverter1();
-    const auto& converter_dyn_2 = hvdcLine->getConverter2();
-    if (!converter_dyn_1->getInitialConnected() || !converter_dyn_2->getInitialConnected()) {
+    const auto& converterDyn1 = hvdcLine->getConverter1();
+    const auto& converterDyn2 = hvdcLine->getConverter2();
+    if (!converterDyn1->getInitialConnected() || !converterDyn2->getInitialConnected()) {
       continue;
     }
-    auto converter_1 = ConverterInterface(converter_dyn_1->getID(), converter_dyn_1->getBusInterface()->getID());
-    auto converter_2 = ConverterInterface(converter_dyn_2->getID(), converter_dyn_2->getBusInterface()->getID());
+    std::shared_ptr<Converter> converter1;
+    std::shared_ptr<Converter> converter2;
 
     HvdcLine::ConverterType converterType;
-    if (converter_dyn_1->getConverterType() == DYN::ConverterInterface::ConverterType_t::VSC_CONVERTER) {
+    if (converterDyn1->getConverterType() == DYN::ConverterInterface::ConverterType_t::VSC_CONVERTER) {
       converterType = HvdcLine::ConverterType::VSC;
-      auto vsc_converter_dyn_1 = boost::static_pointer_cast<DYN::VscConverterInterface>(converter_dyn_1);
-      converter_1.voltageRegulationOn = vsc_converter_dyn_1->getVoltageRegulatorOn();
+      auto vscConverterDyn1 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn1);
+      bool voltageRegulationOn = vscConverterDyn1->getVoltageRegulatorOn();
+      converter1 = std::make_shared<VSCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, voltageRegulationOn,
+                                                  vscConverterDyn1->getQMax(), vscConverterDyn1->getQMin(), vscConverterDyn1->getReactiveCurvesPoints());
+      updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn1->getID(), interface_);
 
-      auto vsc_converter_dyn_2 = boost::static_pointer_cast<DYN::VscConverterInterface>(converter_dyn_2);
-      converter_2.voltageRegulationOn = vsc_converter_dyn_2->getVoltageRegulatorOn();
+      auto vscConverterDyn2 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn2);
+      voltageRegulationOn = vscConverterDyn2->getVoltageRegulatorOn();
+      converter2 = std::make_shared<VSCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, voltageRegulationOn,
+                                                  vscConverterDyn2->getQMax(), vscConverterDyn2->getQMin(), vscConverterDyn2->getReactiveCurvesPoints());
+      updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn2->getID(), interface_);
     } else {
       converterType = HvdcLine::ConverterType::LCC;
+      auto lccConverterDyn1 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn1);
+      converter1 =
+          std::make_shared<LCCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, lccConverterDyn1->getPowerFactor());
+
+      auto lccConverterDyn2 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn2);
+      converter2 =
+          std::make_shared<LCCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, lccConverterDyn2->getPowerFactor());
     }
-    auto hvdcLineCreated =
-        std::make_shared<dfl::inputs::HvdcLine>(hvdcLine->getID(), converterType, converter_1.converterId, converter_1.busId, converter_1.voltageRegulationOn,
-                                                converter_2.converterId, converter_2.busId, converter_2.voltageRegulationOn);
+
+    // active power control external IIDM extension
+    const bool activePowerEnabled = hvdcLine->isActivePowerControlEnabled().get_value_or(false);
+    auto activePowerControl =
+        activePowerEnabled
+            ? boost::optional<HvdcLine::ActivePowerControl>(HvdcLine::ActivePowerControl(hvdcLine->getDroop().value(), hvdcLine->getP0().value()))
+            : boost::none;
+
+    auto hvdcLineCreated = HvdcLine::build(hvdcLine->getID(), converterType, converter1, converter2, activePowerControl, hvdcLine->getPmax());
     hvdcLines_.emplace_back(hvdcLineCreated);
-    converter_1.hvdcLine = hvdcLineCreated;
-    converter_2.hvdcLine = hvdcLineCreated;
-    nodes_[converter_dyn_1->getBusInterface()->getID()]->converterInterfaces.push_back(converter_1);
-    nodes_[converter_dyn_2->getBusInterface()->getID()]->converterInterfaces.push_back(converter_2);
+    nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
+    nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);
     LOG(debug) << "Network contains hvdcLine " << hvdcLine->getID() << " with converterStation " << hvdcLine->getIdConverter1() << " and converterStation "
                << hvdcLine->getIdConverter2() << LOG_ENDL;
   }

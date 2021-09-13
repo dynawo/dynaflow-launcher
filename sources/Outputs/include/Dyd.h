@@ -76,7 +76,7 @@ class Dyd {
      * @param gens generators definition coming from algorithms
      * @param loaddefs load definitions coming from algorithms
      * @param slacknode the slack node to use
-     * @param hvdcLines hvdc definition coming from algorithms
+     * @param hvdcDefinitions hvdc definitions coming from algorithms
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager the database manager to use
      * @param models the list of dynamic models to use
@@ -84,15 +84,15 @@ class Dyd {
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
-                  const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::DynamicModelDefinitions& models, const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
+                  const algo::HVDCLineDefinitions& hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
+                  const inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::DynamicModelDefinitions& models,
+                  const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
         basename(base),
         filename(filepath),
         generators(gens),
         loads(loaddefs),
         slackNode(slacknode),
-        hvdcLines(hvdcLines),
+        hvdcDefinitions(hvdcDefinitions),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
         dynamicModelsDefinitions(models),
@@ -103,7 +103,7 @@ class Dyd {
     std::vector<algo::GeneratorDefinition> generators;                           ///< generators found
     std::vector<algo::LoadDefinition> loads;                                     ///< list of loads
     std::shared_ptr<inputs::Node> slackNode;                                     ///< slack node to use
-    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;         ///< list of hvdc lines
+    const algo::HVDCLineDefinitions& hvdcDefinitions;                            ///< list of hvdc definitions
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                ///< dynamic database manager
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;               ///< the list of dynamic models to export
@@ -161,7 +161,7 @@ class Dyd {
    *
    * @returns black box model for hvdc line
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeHvdcLine(const algo::HvdcLineDefinition& hvdcLine, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeHvdcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename);
 
   /**
    * @brief Create constant models
@@ -236,8 +236,7 @@ class Dyd {
    * @param dynamicModelsToConnect the collection where the connections will be added
    * @param hvdcLine the hvdc line definition to process
    */
-  static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                                   const algo::HvdcLineDefinition& hvdcLine);
+  static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HVDCDefinition& hvdcLine);
 
   /**
    * @brief Write list of macro connectors for models
@@ -284,7 +283,9 @@ class Dyd {
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_lib_;  ///< Correspondance between generator model type and library name in dyd file
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
-      correspondence_macro_connector_;                           ///< Correspondence between generator model type and macro connector name in dyd file
+      correspondence_macro_connector_;  ///< Correspondence between generator model type and macro connector name in dyd file
+  static const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string>
+      hvdcModelsNames_;                                          ///< Correspondence between HVDC model and their librayr name in dyd file
   static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads
   static const std::string macroConnectorGenName_;               ///< name for the macro connector for generators
   static const std::string macroConnectorGenSignalNName_;        ///< Name for the macro connector for SignalN
@@ -294,6 +295,7 @@ class Dyd {
   static const std::string macroStaticRefLoadName_;              ///< Name for the static ref macro for loads
   static const std::string networkModelName_;                    ///< name of the model corresponding to network
   static const std::string signalNModelName_;                    ///< Name of the SignaN model
+  static const std::string modelSignalNQprefix_;                 ///< Prefix for signal N models
 
  private:
   DydDefinition def_;  ///< Dyd file information

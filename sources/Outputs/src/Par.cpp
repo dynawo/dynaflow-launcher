@@ -77,7 +77,7 @@ getMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixe
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? getMacroParameterSetId(constants::remoteSignalNGeneratorFixedPParId) : getMacroParameterSetId(constants::remoteSignalNGeneratorParId);
+    id = fixedP ? getMacroParameterSetId(constants::remoteSignalNFixedPParId) : getMacroParameterSetId(constants::remoteSignalNParId);
     break;
   default:
     id = fixedP ? getMacroParameterSetId(constants::signalNGeneratorFixedPParId) : getMacroParameterSetId(constants::signalNGeneratorParId);
@@ -96,7 +96,7 @@ getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool 
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? constants::remoteSignalNGeneratorFixedPParId : constants::remoteSignalNGeneratorParId;
+    id = fixedP ? constants::remoteSignalNFixedPParId : constants::remoteSignalNParId;
     break;
   default:
     id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
@@ -109,7 +109,7 @@ static boost::shared_ptr<parameters::MacroParameterSet>
 buildMacroParameterSet(const std::string& modelType) {
   boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
       boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
-  if (modelType == getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")) {
+  if (modelType == getMacroParameterSetId(constants::remoteSignalNParId + "_vr")) {
     macroParameterSet->addParameter(helper::buildParameter("vrremote_Gain", 1.));
     macroParameterSet->addParameter(helper::buildParameter("vrremote_tIntegral", 1.));
   }
@@ -202,16 +202,22 @@ Par::write() const {
     dynamicModelsToConnect->addParametersSet(writeStaticVarCompensator(svarc));
   }
 
-  for (const auto& hvdcLine : def_.hvdcLines) {
-    dynamicModelsToConnect->addParametersSet(writeHdvcLine(hvdcLine.second));
+  for (const auto& hvdcLine : def_.hvdcDefinitions.hvdcLines) {
+    dynamicModelsToConnect->addParametersSet(writeHdvcLine(hvdcLine.second, def_.basename, def_.dirname));
   }
   // adding parameters sets related with remote voltage control or multiple generator regulating same bus
   for (const auto& keyValue : def_.busesWithDynamicModel) {
-    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))) {
-      dynamicModelsToConnect->addMacroParameterSet(
-          helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr")));
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr"))) {
+      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr")));
     }
     dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second));
+  }
+  // adding parameters sets related with remote voltage control or multiple VSC regulating same bus
+  for (const auto& keyValue : def_.hvdcDefinitions.vscBusVSCDefinitionsMap) {
+    if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr"))) {
+      dynamicModelsToConnect->addMacroParameterSet(helper::buildMacroParameterSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr")));
+    }
+    dynamicModelsToConnect->addParametersSet(writeVRRemote(keyValue.first, keyValue.second.id));
   }
 
   const auto& sets = def_.dynamicDataBaseManager.settingDocument().sets();
@@ -362,7 +368,7 @@ Par::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configurati
   set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-  if (modelId == constants::remoteSignalNGeneratorParId) {
+  if (modelId == constants::remoteSignalNParId) {
     set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
   } else if (modelId != constants::propSignalNGeneratorParId) {
     set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
@@ -406,25 +412,51 @@ Par::writeConstantLoadsSet() {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeVRRemote(const std::string& busId, const std::string& genId) {
+Par::writeVRRemote(const std::string& busId, const std::string& elementId) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
-  set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", genId));
-  set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", genId));
+  set->addReference(helper::buildReference("vrremote_U0", "targetV", "DOUBLE", elementId));
+  set->addReference(helper::buildReference("vrremote_URef0", "targetV", "DOUBLE", elementId));
   set->addMacroParSet(
-      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteSignalNGeneratorParId + "_vr"))));
+      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(helper::getMacroParameterSetId(constants::remoteSignalNParId + "_vr"))));
   return set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hvdcLine.id));
+Par::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string& basename, const boost::filesystem::path& dirname) {
+  auto dirnameDiagram = dirname;
+  dirnameDiagram.append(basename + constants::diagramDirectorySuffix);
+
+  // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable
+  auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram](boost::shared_ptr<parameters::ParametersSet> set,
+                                                             const algo::HVDCDefinition::ConverterId& converterId, unsigned int converterNumber,
+                                                             unsigned int parameterNumber) {
+    constexpr double factorPU = 100;
+    std::size_t hashId = constants::hash(converterId);
+    std::string hashIdStr = std::to_string(hashId);
+    auto dirnameDiagramLocal = dirnameDiagram;
+    dirnameDiagramLocal.append(constants::diagramFilename(converterId));
+    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MinTableFile", dirnameDiagramLocal.generic_string()));
+    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MinTableName", hashIdStr + constants::diagramMinTableSuffix));
+    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableFile", dirnameDiagramLocal.generic_string()));
+    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
+    if (hvdcDefinition.converterType == algo::HVDCDefinition::ConverterType::VSC) {
+      const auto& vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", vscDefinition.qmin / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", vscDefinition.qmax / factorPU));
+    } else {
+      // assuming that converterNumber is 1 or 2 (pre-condition)
+      auto qMax = constants::computeQmax(hvdcDefinition.powerFactors.at(converterNumber - 1), hvdcDefinition.pMax);
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", -qMax / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", qMax / factorPU));
+    }
+  };
+
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hvdcDefinition.id));
   std::string first = "1";
   std::string second = "2";
-  if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+  if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
     first = "2";
     second = "1";
-  } else if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
-    // TODO when we will handle the case were both converters are in the main connex component
   }
   set->addReference(helper::buildReference("hvdc_P10Pu", "p" + first + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_Q10Pu", "q" + first + "_pu", "DOUBLE"));
@@ -435,23 +467,59 @@ Par::writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine) {
   set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_PMaxPu", "pMax_pu", "DOUBLE"));
-
-  set->addParameter(helper::buildParameter("hvdc_Q1MinPu", std::numeric_limits<double>::lowest()));
-  set->addParameter(helper::buildParameter("hvdc_Q1MaxPu", std::numeric_limits<double>::max()));
-  set->addParameter(helper::buildParameter("hvdc_Q2MinPu", std::numeric_limits<double>::lowest()));
-  set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
   set->addParameter(helper::buildParameter("hvdc_KLosses", 1.0));
 
-  if (hvdcLine.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
-    if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
-      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter1_voltageRegulationOn.value()));
-      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter2_voltageRegulationOn.value()));
-    } else if (hvdcLine.position == dfl::algo::HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcLine.converter2_voltageRegulationOn.value()));
-      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcLine.converter1_voltageRegulationOn.value()));
-    } else {
-      // TODO when we will handle the case were both converters are in the main connex component
+  if (!hvdcDefinition.hasDiagramModel()) {
+    set->addParameter(helper::buildParameter("hvdc_Q1MinPu", std::numeric_limits<double>::lowest()));
+    set->addParameter(helper::buildParameter("hvdc_Q1MaxPu", std::numeric_limits<double>::max()));
+    set->addParameter(helper::buildParameter("hvdc_Q2MinPu", std::numeric_limits<double>::lowest()));
+    set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
+  } else {
+    const auto& hvdcConverterIdMain =
+        (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2Id : hvdcDefinition.converter1Id;
+    size_t converterNumber = (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? 2 : 1;
+    constexpr size_t parameterMainNumber = 1;
+    updateHVDCParams(set, hvdcConverterIdMain, converterNumber, parameterMainNumber);
+
+    if (hvdcDefinition.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
+      // always converter 2 on parameter number 2 to add in that case
+      updateHVDCParams(set, hvdcDefinition.converter2Id, 2, 2);
     }
+  }
+
+  if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
+    if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter2VoltageRegulationOn));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter1VoltageRegulationOn));
+    } else {
+      set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter1VoltageRegulationOn));
+      set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter2VoltageRegulationOn));
+    }
+  }
+  if (hvdcDefinition.hasPropModel()) {
+    switch (hvdcDefinition.position) {
+    case dfl::algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT:
+      set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter1Id));
+      break;
+    case dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT:
+      set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      break;
+    case dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT:
+      set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter1Id));
+      set->addReference(helper::buildReference("hvdc_QPercent2", "qMax_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      break;
+    }
+  }
+  if (!hvdcDefinition.hasDanglingModel()) {
+    set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
+  }
+  if (hvdcDefinition.hasDiagramModel()) {
+    set->addParameter(helper::buildParameter("hvdc_tFilter", 0.001));
+  }
+  if (hvdcDefinition.hasEmulationModel()) {
+    set->addParameter(helper::buildParameter("acemulation_tFilter", 50.));
+    auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)
+    set->addParameter(helper::buildParameter("acemulation_KACEmulation", kac));
   }
   return set;
 }
@@ -474,7 +542,7 @@ Par::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
   auto dirname_diagram = dirname;
-  dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(def));
+  dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
 
   set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
   set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));

@@ -26,6 +26,7 @@
 #include <PARParametersSet.h>
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
+#include <cmath>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -49,7 +50,7 @@ class Par {
      * @param dir the dirname of the output PAR file
      * @param filename file path for output PAR file (corresponds to basename)
      * @param gens list of the generators taken into account
-     * @param hvdcLines list of hdvc lines taken into account
+     * @param hvdcDefinitions HVDC lines definitions
      * @param activePowerCompensation the type of active power compensation
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager dynamic database manager to use
@@ -59,7 +60,7 @@ class Par {
      * @param svarcsDefinitions the SVarC definitions to use
      */
     ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
-                  const std::vector<algo::GeneratorDefinition>& gens, const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
+                  const std::vector<algo::GeneratorDefinition>& gens, const algo::HVDCLineDefinitions& hvdcDefinitions,
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                   const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
@@ -68,7 +69,7 @@ class Par {
         dirname(dir),
         filepath(filename),
         generators(gens),
-        hvdcLines(hvdcLines),
+        hvdcDefinitions(hvdcDefinitions),
         activePowerCompensation(activePowerCompensation),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
@@ -81,7 +82,7 @@ class Par {
     boost::filesystem::path dirname;                                              ///< Dirname of output file relative to execution dir
     boost::filesystem::path filepath;                                             ///< file path of the output file to write
     std::vector<algo::GeneratorDefinition> generators;                            ///< list of generators
-    algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines;          ///< list of hvdc lines
+    const algo::HVDCLineDefinitions& hvdcDefinitions;                             ///< HVDC definitions
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
@@ -155,20 +156,23 @@ class Par {
    * @brief Write hvdc line parameter set
    *
    * @param hvdcLine the hvdc line definition to use
+   * @param basename the basename for the simulation
+   * @param dirname the dirname of the output directory
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HvdcLineDefinition& hvdcLine);
+  static boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename,
+                                                                    const boost::filesystem::path& dirname);
 
   /**
    * @brief Write remote voltage regulators parameter set
    *
    * @param busId the bus id to use
-   * @param genId the generator id to use
+   * @param elementId the element id to use (generator or VSC converter)
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string& busId, const std::string& genId);
+  static boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string& busId, const std::string& elementId);
 
   /**
    * @brief Write setting set for dynamic models
@@ -231,9 +235,20 @@ class Par {
     return b * VNom * VNom / Sb_;
   }
 
+  /**
+   * @brief Computes KAC emulation parameter
+   *
+   * @param droop droop data, in MW.h/deg
+   * @returns KAC, in 100MW.h/rad
+   */
+  static inline constexpr double computeKAC(double droop) {
+    return droop * 1.8 / pi_;
+  }
+
  private:
   static constexpr double kGoverNullValue_ = 0.;                 ///< KGover null value
   static constexpr double kGoverDefaultValue_ = 1.;              ///< KGover default value
+  static constexpr double pi_ = M_PI;                            ///< PI value
   static constexpr double svarcThresholdDown_ = 0.;              ///< time threshold down for SVarC
   static constexpr double svarcThresholdUp_ = 60.;               ///< time threshold up for SVarC
   static constexpr double Sb_ = 100;                             ///< Sb value

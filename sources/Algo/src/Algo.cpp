@@ -109,14 +109,14 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
       }
     } else {
       switch (nbOfRegulatingGenerators) {
-      case dfl::inputs::NetworkManager::NbOfRegulatingGenerators::ONE:
+      case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
         if (generator.regulatedBusId == generator.connectedBusId) {
           model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::SIGNALN : GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
         } else {
           model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::REMOTE_SIGNALN : GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
         }
         break;
-      case dfl::inputs::NetworkManager::NbOfRegulatingGenerators::MULTIPLES:
+      case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
         model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
         if (!isModelWithInvalidDiagram(model, generator)) {
           busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
@@ -218,35 +218,155 @@ LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
 }
 /////////////////////////////////////////////////////////////////
 
-ControllerInterfaceDefinitionAlgorithm::ControllerInterfaceDefinitionAlgorithm(HvdcLineMap& hvdcLines) : hvdcLines_(hvdcLines) {}
+HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
+                                                 const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId) :
+    hvdcLinesDefinitions_(hvdcLinesDefinitions),
+    infiniteReactiveLimits_(infiniteReactiveLimits),
+    mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId) {}
 
-void
-ControllerInterfaceDefinitionAlgorithm::operator()(const NodePtr& node) {
-  for (const auto& converter : node->converterInterfaces) {
-    const auto& hvdcLine = converter.hvdcLine;
-    HvdcLineDefinition createdHvdcLine = HvdcLineDefinition(hvdcLine->id, hvdcLine->converterType, hvdcLine->converter1_id, hvdcLine->converter1_busId,
-                                                            hvdcLine->converter1_voltageRegulationOn, hvdcLine->converter2_id, hvdcLine->converter2_busId,
-                                                            hvdcLine->converter2_voltageRegulationOn, HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT);
-    auto it = hvdcLines_.find(hvdcLine->id);
-    bool alreadyInserted = it != hvdcLines_.end();
-    if (alreadyInserted) {
-      it->second.position = HvdcLineDefinition::Position::BOTH_IN_MAIN_COMPONENT;
-      // Once we want to use the hvdcLine with both converters in main component, we should remove the line that erase the hvdcLine
-      // from the hvdcLines_ map.
-      hvdcLines_.erase(it);
-      continue;
+auto
+HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hvdcLine, HVDCDefinition::Position position) const
+    -> std::vector<HVDCModelDefinition::VSCBusPair> {
+  std::vector<HVDCModelDefinition::VSCBusPair> ret;
+  switch (position) {
+  case HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT: {
+    auto found = mapBusVSCConvertersBusId_.find(hvdcLine.converter1->busId);
+    if (found != mapBusVSCConvertersBusId_.end() && found->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
+      ret.push_back(std::make_pair(hvdcLine.converter1->busId, hvdcLine.converter1->converterId));
+    }
+    break;
+  }
+  case HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT: {
+    auto found = mapBusVSCConvertersBusId_.find(hvdcLine.converter2->busId);
+    if (found != mapBusVSCConvertersBusId_.end() && found->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
+      ret.push_back(std::make_pair(hvdcLine.converter2->busId, hvdcLine.converter2->converterId));
+    }
+    break;
+  }
+  case HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT: {
+    auto found = mapBusVSCConvertersBusId_.find(hvdcLine.converter1->busId);
+    auto found2 = mapBusVSCConvertersBusId_.find(hvdcLine.converter2->busId);
+    if ((found != mapBusVSCConvertersBusId_.end() && found->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES) ||
+        (found2 != mapBusVSCConvertersBusId_.end() && found2->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES)) {
+      // always put both converters even if only one has multiple VSC
+      ret.push_back(std::make_pair(hvdcLine.converter1->busId, hvdcLine.converter1->converterId));
+      ret.push_back(std::make_pair(hvdcLine.converter2->busId, hvdcLine.converter2->converterId));
+    }
+    break;
+  }
+  default:  // impossible case by definition of the enum
+    break;
+  }
+
+  return ret;
+}
+
+auto
+HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, HVDCDefinition::HVDCModel plusVSCInfiniteReactive,
+                                         HVDCDefinition::HVDCModel plusVSCFiniteReactive, HVDCDefinition::HVDCModel oneVSCInfiniteReactive,
+                                         HVDCDefinition::HVDCModel oneVSCFiniteReactive) const -> HVDCModelDefinition {
+  auto vscBusIdsWithMultipleRegulation = getBusRegulatedByMultipleVSC(hvdcline, position);
+  if (vscBusIdsWithMultipleRegulation.size() > 0) {
+    return HVDCModelDefinition{infiniteReactiveLimits_ ? plusVSCInfiniteReactive : plusVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
+  } else {
+    return HVDCModelDefinition{infiniteReactiveLimits_ ? oneVSCInfiniteReactive : oneVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
+  }
+}
+
+auto
+HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type) const
+    -> HVDCModelDefinition {
+  if (position == HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
+    if (type == inputs::HvdcLine::ConverterType::LCC) {
+      return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhi : HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ, {}};
+    } else {
+      const bool hvdcAngleDroopActivePowerControlIsEnabled = hvdcline.activePowerControl.has_value();
+      if (!hvdcAngleDroopActivePowerControlIsEnabled) {
+        return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
+                               HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
+      } else {
+        return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulation, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation,
+                               HVDCDefinition::HVDCModel::HvdcPVEmulation, HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation);
+      }
+    }
+  } else {
+    // case only one of them is in the main connex
+    if (type == inputs::HvdcLine::ConverterType::LCC) {
+      return HVDCModelDefinition{
+          infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhiDangling : HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ, {}};
+    } else {
+      return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropDangling, HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ,
+                             HVDCDefinition::HVDCModel::HvdcPVDangling, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
+    }
+  }
+}
+
+std::pair<std::reference_wrapper<HVDCDefinition>, bool>
+HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& hvdcLine) {
+  auto& hvdcLines = hvdcLinesDefinitions_.hvdcLines;
+  auto it = hvdcLines.find(hvdcLine.id);
+  bool alreadyInserted = it != hvdcLines.end();
+  if (alreadyInserted) {
+    return {std::ref(it->second), alreadyInserted};
+  } else {
+    std::array<double, 2> powerFactors{0., 0.};
+    boost::optional<VSCDefinition> def1;
+    boost::optional<VSCDefinition> def2;
+    if (hvdcLine.converterType == inputs::HvdcLine::ConverterType::LCC) {
+      auto converterLCC1 = std::dynamic_pointer_cast<inputs::LCCConverter>(hvdcLine.converter1);
+      auto converterLCC2 = std::dynamic_pointer_cast<inputs::LCCConverter>(hvdcLine.converter2);
+      powerFactors.at(0) = converterLCC1->powerFactor;
+      powerFactors.at(1) = converterLCC2->powerFactor;
+    } else {
+      auto converterVSC1 = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcLine.converter1);
+      auto converterVSC2 = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcLine.converter2);
+      def1 = VSCDefinition(converterVSC1->converterId, converterVSC1->qMax, converterVSC1->qMin, hvdcLine.pMax, converterVSC1->points);
+      def2 = VSCDefinition(converterVSC2->converterId, converterVSC2->qMax, converterVSC2->qMin, hvdcLine.pMax, converterVSC2->points);
     }
 
-    if (converter.converterId == hvdcLine->converter1_id) {
-      createdHvdcLine.position = HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT;
-    } else if (converter.converterId == hvdcLine->converter2_id) {
-      createdHvdcLine.position = HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT;
+    boost::optional<double> droop = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->droop : boost::optional<double>();
+    HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId,
+                                   hvdcLine.converter1->isVoltageRegulationOn(), hvdcLine.converter2->converterId, hvdcLine.converter2->busId,
+                                   hvdcLine.converter2->isVoltageRegulationOn(), HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
+                                   HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1, def2, droop);
+    auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
+    return {std::ref(pair.first->second), alreadyInserted};
+  }
+}
+
+void
+HVDCDefinitionAlgorithm::operator()(const NodePtr& node) {
+  for (const auto& converterPtr : node->converters) {
+    auto converter = converterPtr.lock();
+    const auto& hvdcLine = converter->hvdcLine;
+    auto hvdcLineDefPair = getOrCreateHvdcLineDefinition(*hvdcLine);
+    auto& hvdcLineDefinition = hvdcLineDefPair.first.get();
+
+    if (hvdcLineDefPair.second) {
+      // If we meet twice the same HVDC line with two different converters in nodes, it means that both extremities are
+      // in the component: it is assumed that the algorithm is performed on main connex component
+      hvdcLineDefinition.position = HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT;
+    } else if (converter->converterId == hvdcLine->converter1->converterId) {
+      hvdcLineDefinition.position = HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT;
+    } else if (converter->converterId == hvdcLine->converter2->converterId) {
+      hvdcLineDefinition.position = HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
       LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
       continue;
     }
 
-    hvdcLines_.emplace(hvdcLine->id, createdHvdcLine);
+    auto modelDef = computeModel(*hvdcLine, hvdcLineDefinition.position, hvdcLineDefinition.converterType);
+    hvdcLineDefinition.model = modelDef.model;
+
+    // If VSC bus definitions map is defined, it means that the converter is a VSC and we can cast it. If not defined, the dynamic cast
+    // returns a null pointer and the transform has no effect since th eap is empty
+    auto vscConverter = std::dynamic_pointer_cast<inputs::VSCConverter>(converter);
+    std::transform(modelDef.vscBusIdsMultipleRegulated.begin(), modelDef.vscBusIdsMultipleRegulated.end(),
+                   std::inserter(hvdcLinesDefinitions_.vscBusVSCDefinitionsMap, hvdcLinesDefinitions_.vscBusVSCDefinitionsMap.end()),
+                   [&vscConverter, &hvdcLine](const HVDCModelDefinition::VSCBusPair& pair) {
+                     return std::make_pair(pair.first,
+                                           VSCDefinition(pair.second, vscConverter->qMax, vscConverter->qMin, hvdcLine->pMax, vscConverter->points));
+                   });
   }
 }
 

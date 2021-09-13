@@ -28,7 +28,8 @@ namespace inputs {
 /**
  * @brief Hvdc Line structure
  */
-struct HvdcLine {
+class HvdcLine {
+ public:
   using HvdcLineId = std::string;   ///< HvdcLine id definition
   using ConverterId = std::string;  ///< alias for converter id
   using BusId = std::string;        ///< alias for bus id
@@ -40,29 +41,59 @@ struct HvdcLine {
   };
 
   /**
+   * @brief HVDC Active power control information
+   */
+  struct ActivePowerControl {
+    /**
+     * @brief Constructor
+     *
+     * @param droop the droop value
+     * @param p0 the p0 value
+     */
+    ActivePowerControl(double droop, double p0) : droop(droop), p0(p0) {}
+
+    double droop;  ///< Droop value
+    double p0;     ///< p0 value
+  };
+
+ public:
+  /**
+   * @brief Build a HVDC line object
+   *
+   * the builder builds the HVDC line object and performs the connections to converters
+   *
+   * @param id the hvdc line id
+   * @param converterType type of converter of the hvdc line
+   * @param converter1 the first converter
+   * @param converter2 the second converter
+   * @param activePowerControl the active power control information, when present in the network
+   * @param pMax the maximum p
+   */
+  static std::shared_ptr<HvdcLine> build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
+                                         const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl,
+                                         double pMax);
+
+ public:
+  const HvdcLineId id;                                           ///< HvdcLine id
+  const ConverterType converterType;                             ///< type of converter
+  const std::shared_ptr<Converter> converter1;                   ///< first converter
+  const std::shared_ptr<Converter> converter2;                   ///< second converter
+  const boost::optional<ActivePowerControl> activePowerControl;  ///< Active power control information
+  const double pMax;                                             ///< maximum p
+
+ private:
+  /**
    * @brief Constructor
    *
    * @param id the hvdc line id
-   * @param converterType type of converter of the hvdc line  
-   * @param converter1_id first converter id 
-   * @param converter1_busId first converter bus id
-   * @param converter1_voltageRegulationOn firt converter voltage regulation parameter, for VSC converters only
-   * @param converter2_id second converter id 
-   * @param converter2_busId second converter bus id
-   * @param converter2_voltageRegulationOn second converter voltage regulation parameter, for VSC converters only
+   * @param converterType type of converter of the hvdc line
+   * @param converter1 the first converter
+   * @param converter2 the second converter
+   * @param activePowerControl the active power control information, when present in the network
+   * @param pMax the maximum p
    */
-  HvdcLine(const std::string& id, const ConverterType converterType, const ConverterId& converter1_id, const BusId& converter1_busId,
-           const boost::optional<bool>& converter1_voltageRegulationOn, const ConverterId& converter2_id, const BusId& converter2_busId,
-           const boost::optional<bool>& converter2_voltageRegulationOn);
-
-  const HvdcLineId id;                                         ///< HvdcLine id
-  const ConverterType converterType;                           ///< type of converter
-  const ConverterId converter1_id;                             ///< first converter id
-  const BusId converter1_busId;                                ///< first converter bus id
-  const boost::optional<bool> converter1_voltageRegulationOn;  ///< firt converter voltage regulation parameter, for VSC converters only
-  const ConverterId converter2_id;                             ///< second converter id
-  const BusId converter2_busId;                                ///< second converter bus id
-  const boost::optional<bool> converter2_voltageRegulationOn;  ///< second converter voltage regulation parameter, for VSC converters only
+  HvdcLine(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1, const std::shared_ptr<Converter>& converter2,
+           const boost::optional<ActivePowerControl>& activePowerControl, double pMax);
 };
 }  // namespace inputs
 }  // namespace dfl

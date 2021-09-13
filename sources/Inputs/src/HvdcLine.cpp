@@ -18,16 +18,40 @@
 #include "HvdcLine.h"
 namespace dfl {
 namespace inputs {
-HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const ConverterId& converter1_id, const BusId& converter1_busId,
-                   const boost::optional<bool>& converter1_voltageRegulationOn, const ConverterId& converter2_id, const BusId& converter2_busId,
-                   const boost::optional<bool>& converter2_voltageRegulationOn) :
+HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
+                   const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax) :
     id{id},
     converterType{converterType},
-    converter1_id{converter1_id},
-    converter1_busId{converter1_busId},
-    converter1_voltageRegulationOn{converter1_voltageRegulationOn},
-    converter2_id{converter2_id},
-    converter2_busId{converter2_busId},
-    converter2_voltageRegulationOn{converter2_voltageRegulationOn} {}
+    converter1(converter1),
+    converter2(converter2),
+    activePowerControl{activePowerControl},
+    pMax{pMax} {
+  // converters are required
+  assert(converter1);
+  assert(converter2);
+  // The converters must have the same type as the HVDC line
+  switch (converterType) {
+  case ConverterType::LCC:
+    assert(std::dynamic_pointer_cast<LCCConverter>(converter1));
+    assert(std::dynamic_pointer_cast<LCCConverter>(converter2));
+    break;
+  case ConverterType::VSC:
+    assert(std::dynamic_pointer_cast<VSCConverter>(converter1));
+    assert(std::dynamic_pointer_cast<VSCConverter>(converter2));
+    break;
+  default:  // impossible case by definition of the enum
+    break;
+  }
+}
+
+std::shared_ptr<HvdcLine>
+HvdcLine::build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
+                const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax) {
+  auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id, converterType, converter1, converter2, activePowerControl, pMax));
+  converter1->hvdcLine = hvdcLineCreated;
+  converter2->hvdcLine = hvdcLineCreated;
+  return hvdcLineCreated;
+}
+
 }  // namespace inputs
 }  // namespace dfl

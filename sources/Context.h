@@ -144,7 +144,7 @@ class Context {
   std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;           ///< main connex component
   std::vector<algo::GeneratorDefinition> generators_;                    ///< generators found
   std::vector<algo::LoadDefinition> loads_;                              ///< loads found
-  algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines_;  ///< hvdc lines found
+  algo::HVDCLineDefinitions hvdcLineDefinitions_;                        ///< hvdc definitions
   algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
   algo::DynamicModelDefinitions dynamicModels_;                          ///< model definitions
   algo::ShuntCounterDefinitions counters_;                               ///< shunt counters definitions

@@ -38,16 +38,16 @@ namespace inputs {
 class NetworkManager {
  public:
   /**
-  * @brief Enum representing the number of regulating generators for one bus
+  * @brief Enum representing the number of regulating elements for one bus
   */
-  enum class NbOfRegulatingGenerators {
-    ONE = 0,   ///< There is one generator regulating the bus
-    MULTIPLES  ///< There are more than one generator regulating the bus
+  enum class NbOfRegulating {
+    ONE = 0,   ///< There is one element regulating the bus
+    MULTIPLES  ///< There are more than one element regulating the bus
   };
 
   using ProcessNodeCallback = std::function<void(const std::shared_ptr<Node>&)>;  ///< Callback for node algorithm
   using BusId = std::string;                                                      ///< alias of BusId
-  using BusMapRegulating = std::unordered_map<BusId, NbOfRegulatingGenerators>;   ///< alias for the bus map
+  using BusMapRegulating = std::unordered_map<BusId, NbOfRegulating>;             ///< alias for the bus map
 
  public:
   /**
@@ -105,8 +105,16 @@ class NetworkManager {
    *
    * @returns map of bus id to nbOfRegulatingGenerators
    */
-  const BusMapRegulating& getMapBusId() const {
-    return mapBusId_;
+  const BusMapRegulating& getMapBusGeneratorsBusId() const {
+    return mapBusGeneratorsBusId_;
+  }
+
+  /**
+   * @brief Rerieve the mapping of busId and the number of VSC converters that regulate it
+   * @returns map of bus id to nbOfRegulatingGenerators
+   */
+  const BusMapRegulating& getMapBusVSCConvertersBusId() const {
+    return mapBusVSCConvertersBusId_;
   }
 
  private:
@@ -114,6 +122,15 @@ class NetworkManager {
    * @brief Build node tree from data interface
    */
   void buildTree();
+
+  /**
+   * @brief Update a bus regulating map according to internal interface
+   * @param map the mapping to update
+   * @param elementId the element id to add to the map
+   * @param dataInterface the data interface to use
+   * @returns the regulated bus id
+   */
+  static BusId updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
 
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface
@@ -124,7 +141,8 @@ class NetworkManager {
   std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
   std::vector<std::shared_ptr<Line>> lines_;                  ///< List of the lines
   std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transformers
-  BusMapRegulating mapBusId_;                                 ///< mapping of busId and the number of generators that regulates them
+  BusMapRegulating mapBusGeneratorsBusId_;                    ///< mapping of busId and the number of generators that regulates them
+  BusMapRegulating mapBusVSCConvertersBusId_;                 ///< mapping of busId and the number of VSC converters that regulates them
 };
 
 }  // namespace inputs

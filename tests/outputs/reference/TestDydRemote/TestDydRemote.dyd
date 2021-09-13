@@ -33,7 +33,7 @@
     <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:staticRef var="SVarC_state" staticVar="state"/>
   </dyn:macroStaticReference>
-  <dyn:blackBoxModel id="G0" staticId="G0" lib="GeneratorPVRemoteSignalN" parFile="TestDydRemote.par" parId="remoteSignalNGenerator">
+  <dyn:blackBoxModel id="G0" staticId="G0" lib="GeneratorPVRemoteSignalN" parFile="TestDydRemote.par" parId="remoteSignalN">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="G1" staticId="G1" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">

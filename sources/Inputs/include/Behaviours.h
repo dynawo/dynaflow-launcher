@@ -18,6 +18,7 @@
 #pragma once
 
 #include <DYNGeneratorInterface.h>
+#include <DYNVscConverterInterface.h>
 #include <boost/optional.hpp>
 #include <string>
 
@@ -86,41 +87,95 @@ struct Generator {
 
 class HvdcLine;
 /**
- * @brief Converter interface behaviour
+ * @brief Converter behaviour
  */
-struct ConverterInterface {
-  using ConverterInterfaceId = std::string;  ///< alias for id
-  using BusId = std::string;                 ///< alias for bus id
+struct Converter {
+  using ConverterId = std::string;  ///< alias for id
+  using BusId = std::string;        ///< alias for bus id
 
   /**
    * @brief Constructor
    *
    * @param converterId the id of the converter
    * @param busId the id of the bus
-   * @param voltageRegulationOn optional boolean for the voltage regulation parameter, only used for VSC converters
    * @param hvdcLine the hvdc line this converter is contained into
    */
-  explicit ConverterInterface(const ConverterInterfaceId& converterId, BusId busId, boost::optional<bool> voltageRegulationOn = {},
-                              std::shared_ptr<HvdcLine> hvdcLine = nullptr) :
+  Converter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine) :
       converterId{converterId},
       busId{busId},
-      voltageRegulationOn{voltageRegulationOn},
       hvdcLine{hvdcLine} {}
+
+  /// @brief Destructor
+  virtual ~Converter() {}
+
   /**
-   * @brief Determines if two converter interfaces are equal
-   *
-   * @param other the other converter to be compared against
-   *
-   * @return status of the comparison
+   * @brief Determines if voltage regulation is enabled
+   * @returns true if enabled, false if not
    */
-  bool operator==(const ConverterInterface& other) const {
-    return converterId == other.converterId && busId == other.busId && voltageRegulationOn == other.voltageRegulationOn && hvdcLine == other.hvdcLine;
+  virtual bool isVoltageRegulationOn() const {
+    // By default, no voltage regulation
+    return false;
   }
 
-  ConverterInterfaceId converterId;           ///< converter id
-  BusId busId;                                ///< bus id
-  boost::optional<bool> voltageRegulationOn;  ///< voltage regulation parameter, for VSC converters only
-  std::shared_ptr<HvdcLine> hvdcLine;         ///< hvdc line this converter is contained into
+  const ConverterId converterId;  ///< converter id
+  const BusId busId;              ///< bus id
+  // not const to allow further connection after construction
+  std::shared_ptr<HvdcLine> hvdcLine;  ///< hvdc line this converter is contained into
+};
+
+/// @brief LCC converter
+struct LCCConverter : public Converter {
+  /**
+   * @brief Constructor
+   *
+   * @param converterId the id of the converter
+   * @param busId the id of the bus
+   * @param hvdcLine the hvdc line this converter is contained into
+   * @param powerFactor the power factor of the LCC converter
+   */
+  LCCConverter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine, double powerFactor) :
+      Converter(converterId, busId, hvdcLine),
+      powerFactor{powerFactor} {}
+
+  const double powerFactor;  ///< power factor
+};
+
+/// @brief VSC converter
+class VSCConverter : public Converter {
+ public:
+  using ReactiveCurvePoint = DYN::VscConverterInterface::ReactiveCurvePoint;  ///< alias for point type
+
+ public:
+  /**
+   * @brief Constructor
+   *
+   * @param converterId the id of the converter
+   * @param busId the id of the bus
+   * @param hvdcLine the hvdc line this converter is contained into
+   * @param voltageRegulationOn optional boolean for the voltage regulation parameter, only used for VSC converters
+   * @param qMax maximum reactive energy of the converter
+   * @param qMin minimum reactive energy of the converter
+   * @param points the reactive curve points
+   */
+  VSCConverter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine, bool voltageRegulationOn, double qMax, double qMin,
+               const std::vector<ReactiveCurvePoint>& points) :
+      Converter(converterId, busId, hvdcLine),
+      qMax{qMax},
+      qMin{qMin},
+      points(points),
+      voltageRegulationOn_{voltageRegulationOn} {}
+
+  /// @copydoc Converter::isVoltageRegulationOn() const
+  bool isVoltageRegulationOn() const final {
+    return voltageRegulationOn_;
+  }
+
+  const double qMax;                             ///< maximum q of the converter
+  const double qMin;                             ///< minimum q of the converter
+  const std::vector<ReactiveCurvePoint> points;  ///< reactive points
+
+ private:
+  bool voltageRegulationOn_;  ///< determines if voltage regulation is enabled
 };
 
 /// @brief Static var compensator (SVarC) behaviour
