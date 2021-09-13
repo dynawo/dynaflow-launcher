@@ -24,12 +24,12 @@ namespace outputs {
 namespace constants {
 
 std::string
-diagramFilename(const dfl::algo::GeneratorDefinition& generator) {
+diagramFilename(const std::string& id) {
   // Remove '/' and '\' characters from id and replace it with '_' to avoid mistakes when parsing the path
-  auto id = generator.id;
-  std::replace(id.begin(), id.end(), '/', '_');
-  std::replace(id.begin(), id.end(), '\\', '_');
-  return id + "_Diagram.txt";
+  auto idCpy = id;
+  std::replace(idCpy.begin(), idCpy.end(), '/', '_');
+  std::replace(idCpy.begin(), idCpy.end(), '\\', '_');
+  return idCpy + "_Diagram.txt";
 }
 
 }  // namespace constants

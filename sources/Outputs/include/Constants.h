@@ -38,26 +38,38 @@ hash(const std::string& str) {
 }
 
 /**
+ * @brief Computes Qmax
+ *
+ * Pow = P^2 / sqrt(P^2 + Q^2) => Q = P * sqrt(1/pow^2 - 1)
+ *
+ * @param powerFactor the power factor Pow to use
+ * @param pMax the P to use
+ * @returns the corresponding Q value
+ */
+static inline double
+computeQmax(double powerFactor, double pMax) {
+  return pMax * std::sqrt((1. / (powerFactor * powerFactor) - 1));
+}
+
+/**
  * @brief Return the filename of a diagram file
- * 
- * The generator from which the id will be extracted, processed to avoid issues with path definition and appended to the result
- * 
- * @param generator the generator definition associated with the diagram name
+ *
+ * @param id the element id with the diagram name
  * @return The string filename of the diagram file
  */
-std::string diagramFilename(const dfl::algo::GeneratorDefinition& generator);
+std::string diagramFilename(const std::string& id);
 
-const std::string loadParId{"GenericRestorativeLoad"};                                ///< PAR id common to all loads
-const std::string diagramDirectorySuffix{"_Diagram"};                                 ///< Suffix for the diagram directory
-const std::string diagramMaxTableSuffix{"_tableqmax"};                                ///< Suffix for the table name for qmax in diagram file
-const std::string diagramMinTableSuffix{"_tableqmin"};                                ///< Suffix for the table name for qmin in diagram file
-const std::string signalNGeneratorParId{"signalNGenerator"};                          ///< PAR id for generators using signal N
-const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};              ///< PAR id for generators using signal N with fixed P
-const std::string propSignalNGeneratorParId{"propSignalNGenerator"};                  ///< PAR id for generators using prop signal N
-const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};      ///< PAR id for generators using prop signal N with fixed P
-const std::string remoteSignalNGeneratorParId{"remoteSignalNGenerator"};              ///< PAR id for generators using remote signal N
-const std::string remoteSignalNGeneratorFixedPParId{"remoteSignalNGeneratorFixedP"};  ///< PAR id for generators using remote signal N with fixed P
-const std::string xmlEncoding{"UTF-8"};                                               ///< Default encoding for XML outputs files
+const std::string loadParId{"GenericRestorativeLoad"};                            ///< PAR id common to all loads
+const std::string diagramDirectorySuffix{"_Diagram"};                             ///< Suffix for the diagram directory
+const std::string diagramMaxTableSuffix{"_tableqmax"};                            ///< Suffix for the table name for qmax in diagram file
+const std::string diagramMinTableSuffix{"_tableqmin"};                            ///< Suffix for the table name for qmin in diagram file
+const std::string signalNGeneratorParId{"signalNGenerator"};                      ///< PAR id for generators using signal N
+const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};          ///< PAR id for generators using signal N with fixed P
+const std::string propSignalNGeneratorParId{"propSignalNGenerator"};              ///< PAR id for generators using prop signal N
+const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};  ///< PAR id for generators using prop signal N with fixed P
+const std::string remoteSignalNParId{"remoteSignalN"};                            ///< PAR id for using remote signal N
+const std::string remoteSignalNFixedPParId{"remoteSignalNFixedP"};                ///< PAR id for using remote signal N with fixed P
+const std::string xmlEncoding{"UTF-8"};                                           ///< Default encoding for XML outputs files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 

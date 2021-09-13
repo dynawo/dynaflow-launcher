@@ -61,10 +61,18 @@ DEFINE_LAUNCH_TEST(node_breaker)
 set_tests_properties(MAIN.node_breaker PROPERTIES WILL_FAIL TRUE)
 
 DEFINE_LAUNCH_TEST(hvdc_line_normal)
-
 DEFINE_LAUNCH_TEST(hvdc_dangling)
-
 DEFINE_LAUNCH_TEST(hvdc)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPQProp)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPQPropDangling)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPV_HvdcPTanPhi)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPVDangling_HvdcPTanPhiDangling)
+DEFINE_LAUNCH_TEST(hvdc_diagrams)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPQProp_diagrams)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPQPropDangling_diagrams)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPV_HvdcPTanPhi_diagrams)
+DEFINE_LAUNCH_TEST(hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams)
+
 DEFINE_LAUNCH_TEST(distant_regulation)
 
 

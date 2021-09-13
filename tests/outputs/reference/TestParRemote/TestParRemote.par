@@ -14,7 +14,7 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
-  <macroParameterSet id="macro_remoteSignalNGenerator">
+  <macroParameterSet id="macro_remoteSignalN">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
     <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
@@ -27,7 +27,7 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
-  <macroParameterSet id="macro_remoteSignalNGenerator_vr">
+  <macroParameterSet id="macro_remoteSignalN_vr">
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
     <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
@@ -47,7 +47,7 @@
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="results/TestParRemote_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
-    <macroParSet id="macro_remoteSignalNGenerator"/>
+    <macroParSet id="macro_remoteSignalN"/>
   </set>
   <set id="GenericRestorativeLoad">
     <par name="load_Alpha" type="DOUBLE" value="1.5"/>
@@ -64,12 +64,12 @@
   <set id="Model_Signal_NQ_BUS_1">
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G1"/>
-    <macroParSet id="macro_remoteSignalNGenerator_vr"/>
+    <macroParSet id="macro_remoteSignalN_vr"/>
   </set>
   <set id="Model_Signal_NQ_BUS_2">
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
-    <macroParSet id="macro_remoteSignalNGenerator_vr"/>
+    <macroParSet id="macro_remoteSignalN_vr"/>
   </set>
   <set id="propSignalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
@@ -86,7 +86,7 @@
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
-  <set id="remoteSignalNGenerator">
+  <set id="remoteSignalN">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>

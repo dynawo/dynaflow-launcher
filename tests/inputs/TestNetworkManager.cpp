@@ -50,33 +50,32 @@ TEST(NetworkManager, walk) {
 
 static bool
 hvdcLineEqual(const dfl::inputs::HvdcLine& lhs, const dfl::inputs::HvdcLine& rhs) {
-  return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.converter1_id == rhs.converter1_id && lhs.converter1_busId == rhs.converter1_busId &&
-         lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn && lhs.converter2_id == rhs.converter2_id &&
-         lhs.converter2_busId == rhs.converter2_busId && lhs.converter2_voltageRegulationOn == rhs.converter2_voltageRegulationOn;
+  return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.pMax == rhs.pMax;
 }
 
 TEST(NetworkManager, hvdcLines) {
   using dfl::inputs::NetworkManager;
-  std::vector<dfl::inputs::HvdcLine> expected_hvdcLines = {
-      dfl::inputs::HvdcLine("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___10_TN", boost::optional<bool>(), "LCCStation2",
-                            "_BUS___11_TN", boost::optional<bool>()),
-      dfl::inputs::HvdcLine("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", false, "VSCStation1", "_BUS___10_TN",
-                            true)};
+  auto dummyStation = std::make_shared<dfl::inputs::LCCConverter>("StationN", "_BUS___99_TN", nullptr, 99.);
+  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0.,
+                                                                     std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  std::vector<std::shared_ptr<dfl::inputs::HvdcLine>> expected_hvdcLines = {
+      dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, dummyStation, dummyStation, boost::none, 2000),
+      dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, dummyStationVSC, boost::none, 2000)};
 
   NetworkManager manager("res/HvdcDangling.iidm");
   const auto& hvdcLines = manager.getHvdcLine();
   for (int index = 0; index < 2; ++index) {
-    ASSERT_TRUE(hvdcLineEqual(*hvdcLines[index], expected_hvdcLines[index]));
+    ASSERT_TRUE(hvdcLineEqual(*hvdcLines[index], *expected_hvdcLines[index]));
   }
 }
 
 TEST(NetworkManager, generators) {
   using dfl::inputs::NetworkManager;
   NetworkManager manager("res/Generators.iidm");
-  NetworkManager::BusMapRegulating expected_busMap = {{"_BUS____1_TN", NetworkManager::NbOfRegulatingGenerators::ONE},
-                                                      {"_BUS____5_TN", NetworkManager::NbOfRegulatingGenerators::MULTIPLES},
-                                                      {"_BUS___10_TN", NetworkManager::NbOfRegulatingGenerators::ONE}};
-  auto busMapId = manager.getMapBusId();
+  NetworkManager::BusMapRegulating expected_busMap = {{"_BUS____1_TN", NetworkManager::NbOfRegulating::ONE},
+                                                      {"_BUS____5_TN", NetworkManager::NbOfRegulating::MULTIPLES},
+                                                      {"_BUS___10_TN", NetworkManager::NbOfRegulating::ONE}};
+  auto busMapId = manager.getMapBusGeneratorsBusId();
   for (auto it_expected : expected_busMap) {
     auto it_map = busMapId.find(it_expected.first);
     ASSERT_FALSE(it_map == busMapId.end());

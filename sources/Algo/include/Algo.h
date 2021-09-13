@@ -24,6 +24,7 @@
 
 #include <DYNGeneratorInterface.h>
 #include <DYNServiceManagerInterface.h>
+#include <array>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <functional>
@@ -313,14 +314,65 @@ class LoadDefinitionAlgorithm : public NodeAlgorithm {
   double dsoVoltageLevel_;  ///< Minimum voltage level of the load to be taken into account
 };
 
+/// @brief VSC definition
+class VSCDefinition {
+ public:
+  using VSCId = std::string;                                            ///< Alias for VSC component id
+  using ReactiveCurvePoint = inputs::VSCConverter::ReactiveCurvePoint;  ///< point type
+
+  /**
+   * @brief Constructor
+   * @param id the id of the converter
+   * @param qMax the maximum q of the converter
+   * @param qMin the minimum q of the converter
+   * @param pMax the maximum p of the converter
+   * @param points the reactive curve points of the converters, if any
+   */
+  VSCDefinition(const VSCId& id, double qMax, double qMin, double pMax, const std::vector<ReactiveCurvePoint>& points) :
+      id(id),
+      qmax{qMax},
+      qmin{qMin},
+      pmax(pMax),
+      pmin(-pMax),
+      points(points) {}
+
+  /**
+   * @brief Equality operator for VSCDefinition
+   * @param other the element to compare to
+   * @returns true if current definition equals to @a other, false if not
+   */
+  bool operator==(const dfl::algo::VSCDefinition& other) const {
+    return id == other.id && pmax == other.pmax && pmin == other.pmin && points.size() == other.points.size() &&
+           std::equal(points.begin(), points.end(), other.points.begin(), comparePoints) && qmax == other.qmax && qmin == other.qmin;
+  }
+
+  VSCId id;                                ///< id of the converter
+  double qmax;                             ///< maximum q
+  double qmin;                             ///< minimum q
+  double pmax;                             ///< maximum p
+  double pmin;                             ///< minimum p, equals to -pmax
+  std::vector<ReactiveCurvePoint> points;  ///< reactive curve points
+
+ private:
+  /**
+   * @brief Compare function for reactive curve points
+   * @param lhs first element
+   * @param rhs second element
+   * @returns true iof lhs == rhs, false if not
+   */
+  static bool comparePoints(const ReactiveCurvePoint& lhs, const ReactiveCurvePoint& rhs) {
+    return lhs.p == rhs.p && lhs.qmax == rhs.qmax && lhs.qmin == rhs.qmin;
+  }
+};
+
 /**
  * @brief Hvdc line definition for algorithms
  */
-struct HvdcLineDefinition {
-  using HvdcLines = std::vector<HvdcLineDefinition>;  ///< alias for list of hvdcLines
-  using ConverterId = std::string;                    ///< alias for converter id
-  using BusId = std::string;                          ///< alias for bus id
-  using HvdcLineId = std::string;                     ///< HvdcLine id definition
+struct HVDCDefinition {
+  using ConverterId = std::string;                        ///< alias for converter id
+  using BusId = std::string;                              ///< alias for bus id
+  using HvdcLineId = std::string;                         ///< HvdcLine id definition
+  using ConverterType = inputs::HvdcLine::ConverterType;  ///< Alias for type of converter
 
   /** @brief Enum Position that indicates how the converters of this hvdcLine are positioned.
    *
@@ -328,62 +380,159 @@ struct HvdcLineDefinition {
    * and their position compared to the main connex component.
    */
   enum class Position {
-    FIRST_IN_MAIN_COMPONENT,   ///< the first converter of this hvdc line is in the main connex component
-    SECOND_IN_MAIN_COMPONENT,  ///< the second converter of this hvdc line is in the main connex component
-    BOTH_IN_MAIN_COMPONENT     ///< both converters of this hvdc line are in the main connex component
+    FIRST_IN_MAIN_COMPONENT = 0,  ///< the first converter of this hvdc line is in the main connex component
+    SECOND_IN_MAIN_COMPONENT,     ///< the second converter of this hvdc line is in the main connex component
+    BOTH_IN_MAIN_COMPONENT        ///< both converters of this hvdc line are in the main connex component
   };
+
+  /// @brief HVDC possible models
+  enum class HVDCModel {
+    HvdcPTanPhiDangling = 0,
+    HvdcPTanPhiDanglingDiagramPQ,
+    HvdcPQPropDangling,
+    HvdcPQPropDanglingDiagramPQ,
+    HvdcPVDangling,
+    HvdcPVDanglingDiagramPQ,
+    HvdcPTanPhi,
+    HvdcPTanPhiDiagramPQ,
+    HvdcPQProp,
+    HvdcPQPropDiagramPQ,
+    HvdcPV,
+    HvdcPVDiagramPQ,
+    HvdcPQPropEmulation,
+    HvdcPQPropDiagramPQEmulation,
+    HvdcPVEmulation,
+    HvdcPVDiagramPQEmulation
+  };
+
+  /**
+   * @brief Check if the HVDC definition has a diagram model
+   *
+   * @returns true if HVDC definition is using a model with diagrams, false if not
+   */
+  bool hasDiagramModel() const {
+    return model == HVDCModel::HvdcPTanPhiDanglingDiagramPQ || model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDanglingDiagramPQ ||
+           model == HVDCModel::HvdcPTanPhiDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQEmulation ||
+           model == HVDCModel::HvdcPVDiagramPQ || model == HVDCModel::HvdcPVDiagramPQEmulation;
+  }
+
+  /**
+   * @brief Check if the HVDC definition has an emulation model
+   * @returns true if HVDC definition is using an emulation model, false if not
+   */
+  bool hasEmulationModel() const {
+    return model == HVDCModel::HvdcPQPropEmulation || model == HVDCModel::HvdcPQPropDiagramPQEmulation || model == HVDCModel::HvdcPVEmulation ||
+           model == HVDCModel::HvdcPVDiagramPQEmulation;
+  }
+
+  /**
+   * @brief Check if the HVDC definition has a prop model
+   *
+   * @returns true if HVDC definition is using a model with prop, false if not
+   */
+  bool hasPropModel() const {
+    return model == HVDCModel::HvdcPQPropDangling || model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPQProp ||
+           model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropEmulation || model == HVDCModel::HvdcPQPropDiagramPQEmulation;
+  }
+
+  /**
+   * @brief Check if the HVDC definition has a dangling model
+   * @returns true if HVDC definition is using a model with dangling, false if not
+   */
+  bool hasDanglingModel() const {
+    return model == HVDCModel::HvdcPTanPhiDangling || model == HVDCModel::HvdcPTanPhiDanglingDiagramPQ || model == HVDCModel::HvdcPQPropDangling ||
+           model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDangling || model == HVDCModel::HvdcPVDanglingDiagramPQ;
+  }
 
   /**
    * @brief Constructor
    *
    * @param id the HvdcLine id
    * @param converterType type of converter of the hvdc line
-   * @param converter1_id first converter id
-   * @param converter1_busId first converter bus id
-   * @param converter1_voltageRegulationOn firt converter voltage regulation parameter, for VSC converters only
-   * @param converter2_id second converter id
-   * @param converter2_busId second converter bus id
-   * @param converter2_voltageRegulationOn second converter voltage regulation parameter, for VSC converters only
+   * @param converter1Id first converter id
+   * @param converter1BusId first converter bus id
+   * @param converter1VoltageRegulationOn first converter voltage regulation parameter
+   * @param converter2Id second converter id
+   * @param converter2BusId second converter bus id
+   * @param converter2VoltageRegulationOn second converter voltage regulation parameter
    * @param position position of the converters of this hvdc line compared to the main connex component
+   * @param model HVDC model to use for HVDC line
+   * @param powerFactors the power factors for both converters, relevant only for LCC converters
+   * @param pMax the maximum p
+   * @param vscDefinition1 the definition of the first VSC, if present
+   * @param vscDefinition2 the definition of the second VSC, if present
+   * @param droop the droop value, if the value exists
    */
-  explicit HvdcLineDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const ConverterId& converter1_id,
-                              const BusId& converter1_busId, const boost::optional<bool>& converter1_voltageRegulationOn, const ConverterId& converter2_id,
-                              const BusId& converter2_busId, const boost::optional<bool>& converter2_voltageRegulationOn, const Position position) :
+  explicit HVDCDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const ConverterId& converter1Id,
+                          const BusId& converter1BusId, bool converter1VoltageRegulationOn, const ConverterId& converter2Id, const BusId& converter2BusId,
+                          bool converter2VoltageRegulationOn, const Position position, const HVDCModel& model, const std::array<double, 2>& powerFactors,
+                          double pMax, const boost::optional<VSCDefinition>& vscDefinition1, const boost::optional<VSCDefinition>& vscDefinition2,
+                          const boost::optional<double>& droop) :
       id{id},
       converterType{converterType},
-      converter1_id{converter1_id},
-      converter1_busId{converter1_busId},
-      converter1_voltageRegulationOn{converter1_voltageRegulationOn},
-      converter2_id{converter2_id},
-      converter2_busId{converter2_busId},
-      converter2_voltageRegulationOn{converter2_voltageRegulationOn},
-      position{position} {}
+      converter1Id{converter1Id},
+      converter1BusId{converter1BusId},
+      converter1VoltageRegulationOn{converter1VoltageRegulationOn},
+      converter2Id{converter2Id},
+      converter2BusId{converter2BusId},
+      converter2VoltageRegulationOn{converter2VoltageRegulationOn},
+      position{position},
+      model{model},
+      powerFactors(powerFactors),
+      pMax{pMax},
+      vscDefinition1(vscDefinition1),
+      vscDefinition2(vscDefinition2),
+      droop(droop) {}
 
-  const HvdcLineId id;                                         ///< HvdcLine id
-  const inputs::HvdcLine::ConverterType converterType;         ///< type of converter of the hvdc line
-  const ConverterId converter1_id;                             ///< first converter id
-  const BusId converter1_busId;                                ///< first converter bus id
-  const boost::optional<bool> converter1_voltageRegulationOn;  ///< firt converter voltage regulation parameter, for VSC converters only
-  const ConverterId converter2_id;                             ///< second converter id
-  const BusId converter2_busId;                                ///< second converter bus id
-  const boost::optional<bool> converter2_voltageRegulationOn;  ///< second converter voltage regulation parameter, for VSC converters only
-  Position position;                                           ///< position of the converters of this hvdc line compared to the main connex component
+  const HvdcLineId id;                                  ///< HvdcLine id
+  const ConverterType converterType;                    ///< type of converter of the hvdc line
+  const ConverterId converter1Id;                       ///< first converter id
+  const BusId converter1BusId;                          ///< first converter bus id
+  const bool converter1VoltageRegulationOn;             ///< first converter voltage regulation parameter, for VSC converters only
+  const ConverterId converter2Id;                       ///< second converter id
+  const BusId converter2BusId;                          ///< second converter bus id
+  const bool converter2VoltageRegulationOn;             ///< second converter voltage regulation parameter, for VSC converters only
+  Position position;                                    ///< position of the converters of this hvdc line compared to the main connex component
+  HVDCModel model;                                      ///< HVDC model to use
+  const std::array<double, 2> powerFactors;             ///< power factors for converters 1 and 2, irrelevant if type is not LCC
+  const double pMax;                                    ///< maximum p
+  const boost::optional<VSCDefinition> vscDefinition1;  ///< underlying VSC converter 1, irrelevant if type is not VSC
+  const boost::optional<VSCDefinition> vscDefinition2;  ///< underlying VSC converter 2, irrelevant if type is not VSC
+  const boost::optional<double> droop;                  ///< droop value, if it exists
+};
+
+/// @brief HVDC line definitions
+struct HVDCLineDefinitions {
+  using HvdcLineId = std::string;  ///< HvdcLine id definition
+
+  using HvdcLineMap = std::unordered_map<HvdcLineId, HVDCDefinition>;  ///< Alias for map of hvdc line definition
+
+  /**
+   * @brief Alias for VSC map to their regulated bus
+   *
+   * We keep only one of the VSC definitions connected to a regulated bus as only one is required
+   * to export the parameters
+   */
+  using BusVSCMap = std::unordered_map<HVDCDefinition::BusId, VSCDefinition>;
+
+  HvdcLineMap hvdcLines;              ///< the set of hvdc lines
+  BusVSCMap vscBusVSCDefinitionsMap;  ///< mapping of buses and VSC that require a VRRemote model (multiple HVDC lines on the same station)
 };
 
 /**
  * @brief the controller interface definition algorithm
  */
-class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
+class HVDCDefinitionAlgorithm : public NodeAlgorithm {
  public:
-  using HvdcLineId = std::string;                                ///< HvdcLine id definition
-  using HvdcLineMap = std::map<HvdcLineId, HvdcLineDefinition>;  ///< Alias for map of hvdc line definition
-
   /**
    * @brief Constructor
    *
-   * @param hvdcLines the list of hvdc lines to update
+   * @param hvdcLinesDefinitions the HVDC line definitionts to update
+   * @param infiniteReactiveLimits the configuration data of whether we use infinite reactive limits
+   * @param mapBusVSCConvertersBusId the mapping of buses and their number of VSC converters regulating them
    */
-  explicit ControllerInterfaceDefinitionAlgorithm(HvdcLineMap& hvdcLines);
+  HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
+                          const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId);
 
   /**
    * @brief Perform the algorithm
@@ -397,7 +546,59 @@ class ControllerInterfaceDefinitionAlgorithm : public NodeAlgorithm {
   void operator()(const NodePtr& node);
 
  private:
-  HvdcLineMap& hvdcLines_;  ///< the set of hvdc line, to know if we have already encountered this hvdc line
+  /// @brief HVDC model definition
+  struct HVDCModelDefinition {
+    using VSCBusPair = std::pair<HVDCDefinition::BusId, VSCDefinition::VSCId>;  ///< Alias for pair of bus id and VSC id
+
+    HVDCDefinition::HVDCModel model;                     ///< the model to use
+    std::vector<VSCBusPair> vscBusIdsMultipleRegulated;  ///< the VSCs and their bus that are involved in multiple VSC regulations
+  };
+
+ private:
+  /**
+   * @brief Compute the model definition
+   * @param hvdcline the HVDC line to process
+   * @param position the position of the extremities
+   * @param type the converter type (VSC or LCC)
+   * @returns the model definition to use
+   */
+  HVDCModelDefinition computeModel(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type) const;
+
+  /**
+   * @brief Compute the model definition for VSC converters
+   * @param hvdcline the HVDC line to process
+   * @param position the position of the extremities
+   * @param plusVSCInfiniteReactive model to use in case of multiple VSC and infinite reactive limits used
+   * @param plusVSCFiniteReactive model to use in case of multiple VSC and finite reactive limits used
+   * @param oneVSCInfiniteReactive model to use in case of only one VSC and infinite reactive limits used
+   * @param oneVSCFiniteReactive model to use in case of only one VSC and finite reactive limits used
+   * @returns the model definition to use
+   */
+  HVDCModelDefinition computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, HVDCDefinition::HVDCModel plusVSCInfiniteReactive,
+                                      HVDCDefinition::HVDCModel plusVSCFiniteReactive, HVDCDefinition::HVDCModel oneVSCInfiniteReactive,
+                                      HVDCDefinition::HVDCModel oneVSCFiniteReactive) const;
+
+  /**
+   * @brief Get the list of buses regulated by multiple VSC
+   * @param hvdcline the hvdc line to process
+   * @param position the position of the extremities
+   * @returns the list of pairs (bus, VSC) involved in multiple VSC regulation
+   */
+  std::vector<HVDCModelDefinition::VSCBusPair> getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position) const;
+
+  /**
+   * @brief Get or create HVDC line definition
+   *
+   * Creates the element if not already existing
+   * @param hvdcLine the HVDC line to process
+   * @returns the pair of the element and the status of already inserted before (true) or not (false)
+   */
+  std::pair<std::reference_wrapper<HVDCDefinition>, bool> getOrCreateHvdcLineDefinition(const inputs::HvdcLine& hvdcLine);
+
+ private:
+  HVDCLineDefinitions& hvdcLinesDefinitions_;                                 ///< The HVDC lines definitions to update
+  const bool infiniteReactiveLimits_;                                         ///< whether we use infinite reactive limits
+  const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId_;  ///< the map of buses and the number of VSC converters regulating them
 };
 
 /**

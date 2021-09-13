@@ -102,10 +102,11 @@ Context::process() {
     }
   }
 
-  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusId(),
+  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
                                                                  config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
-  onNodeOnMainConnexComponent(algo::ControllerInterfaceDefinitionAlgorithm(hvdcLines_));
+  onNodeOnMainConnexComponent(
+      algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.getMapBusVSCConvertersBusId()));
   onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(svarcsDefinitions_));
   walkNodesMain();
 
@@ -157,8 +158,8 @@ Context::exportOutputs() {
   // Dyd
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
-  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLines_, busesWithDynamicModel_,
-                                                     dynamicDataBaseManager_, dynamicModels_, svarcsDefinitions_));
+  outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLineDefinitions_,
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, dynamicModels_, svarcsDefinitions_));
   dydWriter.write();
 
   // Par
@@ -173,15 +174,15 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLines_, config_.getActivePowerCompensation(),
-                                                     busesWithDynamicModel_, dynamicDataBaseManager_, counters_, dynamicModels_, linesById_,
-                                                     svarcsDefinitions_));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLineDefinitions_,
+                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_, dynamicDataBaseManager_, counters_,
+                                                     dynamicModels_, linesById_, svarcsDefinitions_));
   parWriter.write();
 
   // Diagram
   file::path diagramDirectory(config_.outputDir());
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
-  outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_));
+  outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_));
   diagramWriter.write();
 }
 

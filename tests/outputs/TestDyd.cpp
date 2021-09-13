@@ -109,7 +109,7 @@ TEST(Dyd, writeRemote) {
 }
 
 TEST(Dyd, writeHvdc) {
-  using dfl::algo::HvdcLineDefinition;
+  using dfl::algo::HVDCDefinition;
 
   std::string basename = "TestDydHvdc";
   std::string filename = basename + ".dyd";
@@ -122,20 +122,25 @@ TEST(Dyd, writeHvdc) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  auto hvdcLineLCC = HvdcLineDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::optional<bool>(),
-                                        "LCCStation2", "_BUS___10_TN", boost::optional<bool>(), HvdcLineDefinition::Position::FIRST_IN_MAIN_COMPONENT);
-  auto hvdcLineVSC = HvdcLineDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
-                                        "_BUS___11_TN", false, HvdcLineDefinition::Position::SECOND_IN_MAIN_COMPONENT);
+  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation2",
+                                    "_BUS___10_TN", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
+                                    {}, 0., boost::none, boost::none, boost::none);
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
+                                    "_BUS___11_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
+                                    0., boost::none, boost::none, boost::none);
   //  maybe watch out but you can't access the hdvLine from the converterInterface
-  dfl::algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC),
-                                                                              std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
+  dfl::algo::HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
+  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
+      std::make_pair("_BUS___10_TN", dfl::algo::VSCDefinition("VSCStation1", 0., 0., 0., {})),
+  };
+  dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcLines, {}, manager, {}, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, {}, manager, {}, {}));
 
   dydWriter.write();
 

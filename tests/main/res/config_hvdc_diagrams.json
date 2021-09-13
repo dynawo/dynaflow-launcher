@@ -1,0 +1,6 @@
+{
+    "dfl-config": {
+      "OutputDir": "results/hvdc_diagrams",
+      "DsoVoltageLevel": 600
+    }
+  }
