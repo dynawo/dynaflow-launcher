@@ -14,6 +14,9 @@
     <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
+  <dyn:macroConnector id="StaticVarCompensatorMacroConnector">
+    <dyn:connect var1="SVarC_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+  </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
     <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
@@ -23,6 +26,12 @@
     <dyn:staticRef var="PPu_value" staticVar="p"/>
     <dyn:staticRef var="QPu_value" staticVar="q"/>
     <dyn:staticRef var="state_value" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="StaticVarCompensatorStaticRef">
+    <dyn:staticRef var="SVarC_PInjPu" staticVar="p"/>
+    <dyn:staticRef var="SVarC_PInjPu" staticVar="q"/>
+    <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
+    <dyn:staticRef var="SVarC_state" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:blackBoxModel id="HVDCLCCLine" staticId="HVDCLCCLine" lib="HvdcPTanPhiDangling" parFile="TestDydHvdc.par" parId="HVDCLCCLine">
     <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>

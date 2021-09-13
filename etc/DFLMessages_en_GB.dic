@@ -16,6 +16,7 @@ UnsupportedCountName          =     Unsupported count name %1% for setting set
 UnsupportedDataTypeReference  =     Unsupported data type %1% for reference %2% in setting file
 UnsupportedOrigDataReference  =     Unsupported data origin %1% for reference %2% in setting file
 UnsupportedParameterDataType  =     Unsupported set parameter type %1% in setting file
+SVarCIIDMExtensionNotFound    =     IIDM extension %1% not found for static var compensator %2% : it will be ignored
 
 //------------------ Algo ---------------------------
 InvalidDiagramAllPEqual       =     The diagram of the generator %1% is invalid, all reactive curve points have the same p. The default model will be used for this generator

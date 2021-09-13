@@ -149,6 +149,7 @@ class Context {
   algo::DynamicModelDefinitions dynamicModels_;                          ///< model definitions
   algo::ShuntCounterDefinitions counters_;                               ///< shunt counters definitions
   algo::LinesByIdDefinitions linesById_;                                 ///< Lines by ids definition
+  algo::StaticVarCompensatorDefinitions svarcsDefinitions_;              ///< Static var compensators definitions to use
 
   boost::shared_ptr<job::JobEntry> jobEntry_;  ///< Dynawo job entry
 };

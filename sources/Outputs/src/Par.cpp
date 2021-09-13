@@ -32,6 +32,8 @@
 #include <PARReferenceFactory.h>
 #include <PARXmlExporter.h>
 #include <boost/filesystem.hpp>
+#include <boost/make_shared.hpp>
+#include <type_traits>
 
 namespace dfl {
 namespace outputs {
@@ -163,6 +165,7 @@ buildMacroParameterSet(algo::GeneratorDefinition::ModelType modelType, inputs::C
 
 const std::string Par::componentTransformerIdTag_("@TFO@");
 const std::string Par::seasonTag_("@SAISON@");
+const std::string Par::macroParameterSetStaticCompensator_("MacroParameterSetStaticCompensator");
 
 Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
 
@@ -191,6 +194,14 @@ Par::write() const {
       }
     }
   }
+
+  if (!def_.svarcsDefinitions.svarcs.empty()) {
+    dynamicModelsToConnect->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators());
+  }
+  for (const auto& svarc : def_.svarcsDefinitions.svarcs) {
+    dynamicModelsToConnect->addParametersSet(writeStaticVarCompensator(svarc));
+  }
+
   for (const auto& hvdcLine : def_.hvdcLines) {
     dynamicModelsToConnect->addParametersSet(writeHdvcLine(hvdcLine.second));
   }
@@ -478,5 +489,51 @@ Par::updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set) {
   set->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_QPercent", "qMax_pu", "DOUBLE"));
 }
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(svarc.id));
+
+  set->addMacroParSet(boost::make_shared<parameters::MacroParSet>(macroParameterSetStaticCompensator_));
+
+  double value = computeBPU(svarc.bMax, svarc.VNom);
+  set->addParameter(helper::buildParameter("SVarC_BMaxPu", value));
+
+  value = computeBPU(svarc.bMin, svarc.VNom);
+  set->addParameter(helper::buildParameter("SVarC_BMinPu", value));
+
+  value = computeBPU(svarc.b0, svarc.VNom);
+  set->addParameter(helper::buildParameter("SVarC_BShuntPu", value));
+
+  value = svarc.slope * Sb_ / svarc.VNom;
+  set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
+
+  set->addParameter(helper::buildParameter("SVarC_UNom", svarc.VNom));
+  set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
+  set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
+  set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
+  set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
+  set->addParameter(helper::buildParameter("URef_ValueIn", svarc.voltageSetPoint));
+
+  return set;
+}
+
+boost::shared_ptr<parameters::MacroParameterSet>
+Par::writeMacroParameterSetStaticVarCompensators() {
+  auto macro = boost::make_shared<parameters::MacroParameterSet>(macroParameterSetStaticCompensator_);
+
+  macro->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
+  macro->addReference(helper::buildReference("SVarC_P0Pu", "p_pu", "DOUBLE"));
+  macro->addReference(helper::buildReference("SVarC_Q0Pu", "q_pu", "DOUBLE"));
+  macro->addReference(helper::buildReference("SVarC_U0Pu", "v_pu", "DOUBLE"));
+  macro->addReference(helper::buildReference("SVarC_UPhase0", "v_pu", "DOUBLE"));
+
+  // May be completed in the future by using an external database
+  macro->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));
+  macro->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
+
+  return macro;
+}
+
 }  // namespace outputs
 }  // namespace dfl

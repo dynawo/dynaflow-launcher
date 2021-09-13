@@ -185,6 +185,7 @@ class Node {
   std::vector<Load> loads;                              ///< list of loads associated to this node
   std::vector<Generator> generators;                    ///< list of generators associated to this node
   std::vector<ConverterInterface> converterInterfaces;  ///< list of converter associated to this node
+  std::vector<StaticVarCompensator> svarcs;             ///< List of static var compensators
 
  private:
   /**

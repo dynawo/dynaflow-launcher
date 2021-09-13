@@ -22,6 +22,7 @@
 #include "DynamicDataBaseManager.h"
 
 #include <DYNLineInterface.h>
+#include <PARMacroParameterSet.h>
 #include <PARParametersSet.h>
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
@@ -55,12 +56,14 @@ class Par {
      * @param counters the counters definitions to use
      * @param models list of dynamic models definitions
      * @param linesById the lines to use
+     * @param svarcsDefinitions the SVarC definitions to use
      */
     ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::ControllerInterfaceDefinitionAlgorithm::HvdcLineMap& hvdcLines,
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById) :
+                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
+                  const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
         basename(base),
         dirname(dir),
         filepath(filename),
@@ -71,7 +74,8 @@ class Par {
         dynamicDataBaseManager(dynamicDataBaseManager),
         shuntCounters(counters),
         dynamicModelsDefinitions(models),
-        linesByIdDefinitions(linesById) {}
+        linesByIdDefinitions(linesById),
+        svarcsDefinitions(svarcsDefinitions) {}
 
     std::string basename;                                                         ///< basename
     boost::filesystem::path dirname;                                              ///< Dirname of output file relative to execution dir
@@ -84,6 +88,7 @@ class Par {
     const algo::ShuntCounterDefinitions& shuntCounters;                           ///< Shunt counters to use
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
     const algo::LinesByIdDefinitions& linesByIdDefinitions;                       ///< lines by id to use
+    algo::StaticVarCompensatorDefinitions svarcsDefinitions;                      ///< the SVarC definitions to use
   };
 
   /**
@@ -200,11 +205,41 @@ class Par {
   static boost::optional<std::string> getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const algo::LinesByIdDefinitions& linesById,
                                                       const inputs::AssemblingXmlDocument& assemblingDoc);
 
+  /**
+   * @brief Write parameter set for static var compensator
+   * @param svarc the static var compensator to use
+   * @returns the parameter set to add to the exported file
+   */
+  static boost::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc);
+
+  /**
+   * @brief Write the macro parameter set used for static var compensators
+   * @returns the macro parameter set for SVarC
+   */
+  static boost::shared_ptr<parameters::MacroParameterSet> writeMacroParameterSetStaticVarCompensators();
+
+  /**
+   * @brief Computes b in PU unit
+   *
+   * bMaxPU = B * Vnom² / Sb
+   *
+   * @param b the b to convert
+   * @param VNom the nominal voltage of the corresponding SVarC
+   * @returns the converted B
+   */
+  static double computeBPU(double b, double VNom) {
+    return b * VNom * VNom / Sb_;
+  }
+
  private:
-  static constexpr double kGoverNullValue_ = 0.;        ///< KGover null value
-  static constexpr double kGoverDefaultValue_ = 1.;     ///< KGover default value
-  static const std::string componentTransformerIdTag_;  ///< TFO special tag for component id
-  static const std::string seasonTag_;                  ///< Season special tag
+  static constexpr double kGoverNullValue_ = 0.;                 ///< KGover null value
+  static constexpr double kGoverDefaultValue_ = 1.;              ///< KGover default value
+  static constexpr double svarcThresholdDown_ = 0.;              ///< time threshold down for SVarC
+  static constexpr double svarcThresholdUp_ = 60.;               ///< time threshold up for SVarC
+  static constexpr double Sb_ = 100;                             ///< Sb value
+  static const std::string componentTransformerIdTag_;           ///< TFO special tag for component id
+  static const std::string seasonTag_;                           ///< Season special tag
+  static const std::string macroParameterSetStaticCompensator_;  ///< Name of the macro parameter set for static var compensator
 
  private:
   ParDefinition def_;  ///< PAR file definition
