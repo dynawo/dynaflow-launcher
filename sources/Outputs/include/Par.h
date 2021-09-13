@@ -88,7 +88,7 @@ class Par {
     const algo::ShuntCounterDefinitions& shuntCounters;                           ///< Shunt counters to use
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
     const algo::LinesByIdDefinitions& linesByIdDefinitions;                       ///< lines by id to use
-    algo::StaticVarCompensatorDefinitions svarcsDefinitions;                      ///< the SVarC definitions to use
+    const algo::StaticVarCompensatorDefinitions& svarcsDefinitions;               ///< the SVarC definitions to use
   };
 
   /**
