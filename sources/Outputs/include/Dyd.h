@@ -107,7 +107,7 @@ class Dyd {
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                ///< dynamic database manager
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;               ///< the list of dynamic models to export
-    algo::StaticVarCompensatorDefinitions svarcsDefinitions;                     ///< the SVarC definitions to use
+    const algo::StaticVarCompensatorDefinitions& svarcsDefinitions;              ///< the SVarC definitions to use
   };
 
   /**
