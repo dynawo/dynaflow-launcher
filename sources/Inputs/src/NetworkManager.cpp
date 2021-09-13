@@ -150,17 +150,19 @@ NetworkManager::buildTree() {
         continue;
       }
       if (!svarc->hasStandbyAutomaton()) {
-        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "standByAutomaton", svarc->getID()) << LOG_ENDL;
+        LOG(warn) << MESS(SVarCSAIIDMExtensionNotFound, svarc->getID()) << LOG_ENDL;
         continue;
       }
+      boost::optional<double> slope;
       if (!svarc->hasVoltagePerReactivePowerControl()) {
-        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "voltagePerReactivePowerControl", svarc->getID()) << LOG_ENDL;
-        continue;
+        LOG(warn) << MESS(SVarCVPRPIIDMExtensionNotFound, svarc->getID()) << LOG_ENDL;
+      } else {
+        slope = svarc->getSlope();
       }
       auto nodeid = svarc->getBusInterface()->getID();
       nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), svarc->getBMin(), svarc->getBMax(), svarc->getVSetPoint(), svarc->getVNom(),
                                           svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
-                                          svarc->getB0(), svarc->getSlope());
+                                          svarc->getB0(), slope);
       LOG(debug) << "Node " << nodeid << " contains static var compensator " << svarc->getID() << LOG_ENDL;
     }
   }

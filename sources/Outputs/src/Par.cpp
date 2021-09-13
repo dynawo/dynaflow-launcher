@@ -505,7 +505,7 @@ Par::writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc) {
   value = computeBPU(svarc.b0, svarc.VNom);
   set->addParameter(helper::buildParameter("SVarC_BShuntPu", value));
 
-  value = svarc.slope * Sb_ / svarc.VNom;
+  value = (svarc.slope) ? (*svarc.slope * Sb_ / svarc.VNom) : defaultLambda_;
   set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
 
   set->addParameter(helper::buildParameter("SVarC_UNom", svarc.VNom));

@@ -237,6 +237,7 @@ class Par {
   static constexpr double svarcThresholdDown_ = 0.;              ///< time threshold down for SVarC
   static constexpr double svarcThresholdUp_ = 60.;               ///< time threshold up for SVarC
   static constexpr double Sb_ = 100;                             ///< Sb value
+  static constexpr double defaultLambda_ = 0.004;                ///< Default value for lambda parameter
   static const std::string componentTransformerIdTag_;           ///< TFO special tag for component id
   static const std::string seasonTag_;                           ///< Season special tag
   static const std::string macroParameterSetStaticCompensator_;  ///< Name of the macro parameter set for static var compensator
