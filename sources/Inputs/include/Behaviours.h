@@ -139,7 +139,7 @@ struct StaticVarCompensator {
    * @param UMaxActivation the high voltage activation threshold of the SVarC
    * @param USetPointMin the low voltage set point of the SVarC
    * @param USetPointMax the high voltage set point of the SVarC
-   * @param b0 the initial b of the SVarC
+   * @param b0 the initial susceptance value  of the SVarC
    * @param slope the slope (kV/MVar) of the SVarC
    */
   StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double VNom, double UMinActivation, double UMaxActivation,
