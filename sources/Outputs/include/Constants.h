@@ -40,7 +40,7 @@ hash(const std::string& str) {
 /**
  * @brief Computes Qmax
  *
- * powerFactor = PMax^2 / sqrt(PMax^2 + QMax^2) => QMax = PMax * sqrt(1/powerFactor^2 - 1)
+ * powerFactor = PMax / sqrt(PMax^2 + QMax^2) => QMax = PMax * sqrt(1/powerFactor^2 - 1)
  *
  * @param powerFactor the power factor to use
  * @param pMax the PMax to use
