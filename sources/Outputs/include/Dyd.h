@@ -285,7 +285,7 @@ class Dyd {
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_macro_connector_;  ///< Correspondence between generator model type and macro connector name in dyd file
   static const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string>
-      hvdcModelsNames_;                                          ///< Correspondence between HVDC model and their librayr name in dyd file
+      hvdcModelsNames_;                                          ///< Correspondence between HVDC model and their library name in dyd file
   static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads
   static const std::string macroConnectorGenName_;               ///< name for the macro connector for generators
   static const std::string macroConnectorGenSignalNName_;        ///< Name for the macro connector for SignalN

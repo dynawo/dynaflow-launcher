@@ -323,9 +323,9 @@ class VSCDefinition {
   /**
    * @brief Constructor
    * @param id the id of the converter
-   * @param qMax the maximum q of the converter
-   * @param qMin the minimum q of the converter
-   * @param pMax the maximum p of the converter
+   * @param qMax the maximum reactive power capability value of the converter
+   * @param qMin the minimum reactive power capability value of the converter
+   * @param pMax the maximum active power capability value of the converter
    * @param points the reactive curve points of the converter, if any
    */
   VSCDefinition(const VSCId& id, double qMax, double qMin, double pMax, const std::vector<ReactiveCurvePoint>& points) :
@@ -347,10 +347,10 @@ class VSCDefinition {
   }
 
   VSCId id;                                ///< id of the converter
-  double qmax;                             ///< maximum q
-  double qmin;                             ///< minimum q
-  double pmax;                             ///< maximum p
-  double pmin;                             ///< minimum p, equals to -pmax
+  double qmax;                             ///< maximum reactive power capability value
+  double qmin;                             ///< minimum reactive power capability value
+  double pmax;                             ///< maximum active power capability value
+  double pmin;                             ///< minimum active power capability value, equals to -pmax
   std::vector<ReactiveCurvePoint> points;  ///< reactive curve points
 
  private:
@@ -385,7 +385,7 @@ struct HVDCDefinition {
     BOTH_IN_MAIN_COMPONENT        ///< both converters of this hvdc line are in the main connex component
   };
 
-  /// @brief HVDC possible models
+  /// @brief HVDC available models
   enum class HVDCModel {
     HvdcPTanPhi = 0,
     HvdcPTanPhiDangling,
@@ -416,8 +416,8 @@ struct HVDCDefinition {
   }
 
   /**
-   * @brief Check if the HVDC definition has an emulation model
-   * @returns true if HVDC definition is using an emulation model, false if not
+   * @brief Check if the HVDC definition has an AC emulation model
+   * @returns true if HVDC definition is using an AC emulation model, false if not
    */
   bool hasEmulationModel() const {
     return model == HVDCModel::HvdcPQPropEmulation || model == HVDCModel::HvdcPQPropDiagramPQEmulation || model == HVDCModel::HvdcPVEmulation ||
