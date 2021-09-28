@@ -19,21 +19,29 @@
 
 #include "Algo.h"
 #include "Constants.h"
+#include "Contingencies.h"
 #include "Diagram.h"
 #include "Dyd.h"
+#include "DydEvent.h"
 #include "Job.h"
 #include "Log.h"
 #include "Message.hpp"
 #include "Par.h"
+#include "ParEvent.h"
 
+#include <DYNMultipleJobsFactory.h>
+#include <DYNScenario.h>
+#include <DYNScenarios.h>
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
+#include <DYNSystematicAnalysisLauncher.h>
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
 #include <tuple>
 
 namespace file = boost::filesystem;
+using dfl::inputs::Contingencies;
 
 namespace dfl {
 Context::Context(const ContextDef& def, const inputs::Configuration& config) :
@@ -41,12 +49,14 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     networkManager_(def.networkFilepath),
     dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
     config_(config),
+    contingencies_(),
     basename_{},
     slackNode_{},
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
     generators_{},
     loads_{},
-    jobEntry_{} {
+    jobEntry_{},
+    jobsEvents_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
@@ -68,6 +78,10 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_));
   networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
+
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    contingencies_ = dfl::inputs::Contingencies(def_.contingenciesFilepath);
+  }
 }
 
 bool
@@ -102,6 +116,9 @@ Context::process() {
     }
   }
 
+  if (!contingencies_.definitions().empty()) {
+    onNodeOnMainConnexComponent(algo::ContingencyValidationAlgorithm(contingencies_));
+  }
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
                                                                  config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
@@ -147,13 +164,20 @@ Context::exportOutputs() {
 
   // create output directory
   file::path outputDir(config_.outputDir());
+  outputs::Job::setStartAndDuration(config_.getStartTime(), config_.getStopTime() - config_.getStartTime());
 
   // Job
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel));
   jobEntry_ = jobWriter.write();
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    // For security analysis always write the main jobs file, as dynawo-algorithms will need it
+    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
+  } else {
+    // For the rest of simulations, only write jobs file when in DEBUG mode
 #if _DEBUG_
-  outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath.generic_string()), config_.outputDir().generic_string());
+    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
 #endif
+  }
 
   // Dyd
   file::path dydOutput(config_.outputDir());
@@ -184,6 +208,49 @@ Context::exportOutputs() {
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_));
   diagramWriter.write();
+
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    exportOutputsContingencies();
+  }
+}
+
+void
+Context::exportOutputsContingencies() {
+  for (const auto& c : contingencies_.definitions()) {
+    if (contingencies_.isValidForSimulation(*c)) {
+      exportOutputsContingency(c);
+    }
+  }
+}
+
+void
+Context::exportOutputsContingency(const std::shared_ptr<inputs::Contingencies::ContingencyDefinition>& c) {
+  // Prepare a DYD, PAR and JOBS for every contingency
+  // The DYD and PAR contain the definition of the events of the contingency
+  const std::string& contingencyId = c->id;
+
+  // Basename of event-related DYD, PAR and JOBS files
+  const auto& basenameEvent = basename_ + "-" + contingencyId;
+
+  // Specific DYD for contingency
+  file::path dydEvent(config_.outputDir());
+  dydEvent.append(basenameEvent + ".dyd");
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), c));
+  dydEventWriter.write();
+
+  // Specific PAR for contingency
+  file::path parEvent(config_.outputDir());
+  parEvent.append(basenameEvent + ".par");
+  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), c, config_.getTimeOfEvent()));
+  parEventWriter.write();
+
+#if _DEBUG_
+  // A JOBS file for every contingency is produced only in DEBUG mode
+  outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawoLogLevel, contingencyId, basename_));
+  boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
+  jobsEvents_.emplace_back(jobEvent);
+  outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_.outputDir());
+#endif
 }
 
 void
@@ -202,11 +269,49 @@ Context::execute() {
   // Since DFL traces are persistent, they can be re-used after simulation is performed outside this function
   LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
 
-  auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
-  simu->init();
-  simu->simulate();
-  simu->terminate();
-  simu->clean();
+  if (def_.simulationKind == SimulationKind::STEADY_STATE_CALCULATION) {
+    // For a power flow calcualtion it is ok to directly run here a single simulation
+    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+    simu->init();
+    simu->simulate();
+    simu->terminate();
+    simu->clean();
+  } else if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    executeSecurityAnalysis();
+  }
+}
+
+void
+Context::executeSecurityAnalysis() {
+  // For security analysis we run multiple simulations using dynawo-algorithms
+  // Create one scenario for the base case and one scenario for each contingency
+  auto scenarios = boost::make_shared<DYNAlgorithms::Scenarios>();
+  scenarios->setJobsFile(jobEntry_->getName() + ".jobs");
+  auto baseCase = boost::make_shared<DYNAlgorithms::Scenario>();
+  baseCase->setId("BaseCase");
+  scenarios->addScenario(baseCase);
+  for (const auto& c : contingencies_.definitions()) {
+    if (contingencies_.isValidForSimulation(*c)) {
+      auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
+      scenario->setId(c->id);
+      scenario->setDydFile(basename_ + "-" + c->id + ".dyd");
+      scenarios->addScenario(scenario);
+      LOG(info) << MESS(ContingencySimulationDefined, c->id) << LOG_ENDL;
+    }
+  }
+  // Use dynawo-algorithms Systematic Analysis Launcher to simulate all the scenarios
+  auto multipleJobs = multipleJobs::MultipleJobsFactory::newInstance();
+  multipleJobs->setScenarios(scenarios);
+  auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
+  saLauncher->setMultipleJobs(multipleJobs);
+  saLauncher->setOutputFile("sa.zip");
+  saLauncher->setDirectory(config_.outputDir().native());
+  saLauncher->setNbThreads(config_.getNumberOfThreads());
+  saLauncher->init();
+  saLauncher->launch();
+#if _DEBUG_
+  saLauncher->writeResults();
+#endif
 }
 
 void

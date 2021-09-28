@@ -680,5 +680,52 @@ StaticVarCompensatorAlgorithm::operator()(const NodePtr& node) {
                  [](const inputs::StaticVarCompensator& svarc) { return std::ref(svarc); });
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+
+ContingencyValidationAlgorithm::ContingencyValidationAlgorithm(inputs::Contingencies& contingencies) : contingencies_(contingencies) {}
+
+void
+ContingencyValidationAlgorithm::operator()(const NodePtr& node) {
+  using Type = inputs::Contingencies::ElementType;
+
+  for (auto line : node->lines) {
+    contingencies_.markElementValid(line.lock()->id, Type::LINE);
+  }
+  for (auto trans_ptr : node->tfos) {
+    auto trans = trans_ptr.lock();
+    switch (trans->nodes.size()) {
+    case 2:
+      contingencies_.markElementValid(trans->id, Type::TWO_WINDINGS_TRANSFORMER);
+      break;
+    case 3:
+      contingencies_.markElementValid(trans->id, Type::TWO_WINDINGS_TRANSFORMER);
+      break;
+    default:
+      throw std::logic_error("Unexpected size of transformer");
+    }
+  }
+  for (auto converter : node->converters) {
+    contingencies_.markElementValid(converter.lock()->hvdcLine->id, Type::HVDC_LINE);
+  }
+  for (auto load : node->loads) {
+    contingencies_.markElementValid(load.id, Type::LOAD);
+  }
+  for (auto generator : node->generators) {
+    contingencies_.markElementValid(generator.id, Type::GENERATOR);
+  }
+  for (auto shunt : node->shunts) {
+    contingencies_.markElementValid(shunt.id, Type::SHUNT_COMPENSATOR);
+  }
+  for (auto dline : node->danglingLines) {
+    contingencies_.markElementValid(dline.id, Type::DANGLING_LINE);
+  }
+  for (auto staticVarComp : node->svarcs) {
+    contingencies_.markElementValid(staticVarComp.id, Type::STATIC_VAR_COMPENSATOR);
+  }
+  for (auto busbarsection : node->busBarSections) {
+    contingencies_.markElementValid(busbarsection.id, Type::BUSBAR_SECTION);
+  }
+}
+
 }  // namespace algo
 }  // namespace dfl

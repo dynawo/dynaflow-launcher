@@ -95,6 +95,13 @@ list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
 
+# Dynawo algorithms
+check_env_var(DYNAWO_ALGORITHMS_HOME) # Correspond to deploy installation
+get_filename_component(DYNAWO_ALGORITHMS_HOME ${DYNAWO_ALGORITHMS_HOME} ABSOLUTE)
+list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_ALGORITHMS_HOME}")
+list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_ALGORITHMS_HOME}/share")
+list(APPEND CMAKE_MODULE_PATH "${DYNAWO_ALGORITHMS_HOME}/share")
+
 # ZLIB
 find_package(ZLIB 1.2.3 REQUIRED)
 set_property(TARGET ZLIB::ZLIB APPEND PROPERTY
@@ -129,9 +136,11 @@ add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
+install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
 
 ## Dynawo
 find_package(Dynawo 1.3.0 REQUIRED)
+find_package(DynawoAlgorithms 1.3.0 REQUIRED)
 
 ## Python
 find_package (Python COMPONENTS Interpreter)

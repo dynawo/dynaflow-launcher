@@ -99,6 +99,42 @@ class Configuration {
   }
 
   /**
+   * @brief Get the Time at which the simulation will start
+   *
+   * @returns the start time value
+   */
+  float getStartTime() const {
+    return startTime_;
+  }
+
+  /**
+   * @brief Get the Time at which the simulation will end
+   *
+   * @returns the stop time value
+   */
+  float getStopTime() const {
+    return stopTime_;
+  }
+
+  /**
+   * @brief Retrieves the Time at which the events related to each contingency will be simulated
+   *
+   * @returns the time of event value
+   */
+  float getTimeOfEvent() const {
+    return timeOfEvent_;
+  }
+
+  /**
+   * @brief Retrieves the number of threads used by dynaflow launcher
+   *
+   * @returns the number of threads
+   */
+  int getNumberOfThreads() const {
+    return numberOfThreads_;
+  }
+
+  /**
    * @brief type of active power compensation for generator
    */
   enum class ActivePowerCompensation {
@@ -143,6 +179,11 @@ class Configuration {
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
   boost::filesystem::path settingFilePath_;                                          ///< setting file path
   boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
+  float startTime_ = 0;                                                              ///< Moment (in seconds) at which starts the simulation
+  float stopTime_ = 100;                                                             ///< Moment (in seconds) at which ends the simulation
+  // Security Analysis only
+  double timeOfEvent_ = 80.0;  ///< Moment (in seconds) at which the contingencies are simulated
+  int numberOfThreads_ = 4;    ///< The number of threads used to simulate
 };
 
 }  // namespace inputs

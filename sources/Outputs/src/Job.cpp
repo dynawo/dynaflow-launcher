@@ -39,6 +39,7 @@
 #include <JOBSimulationEntryFactory.h>
 #include <JOBSolverEntry.h>
 #include <JOBSolverEntryFactory.h>
+#include <JOBTimelineEntry.h>
 #include <boost/make_shared.hpp>
 #include <fstream>
 #include <xml/sax/formatter/AttributeList.h>
@@ -47,8 +48,8 @@
 namespace dfl {
 namespace outputs {
 
-const std::chrono::seconds Job::timeStart_{0};
-const std::chrono::seconds Job::durationSimu_{100};
+double Job::timeStart_{0};
+double Job::durationSimu_{100};
 const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
@@ -81,11 +82,20 @@ Job::writeSolver() const {
 boost::shared_ptr<job::ModelerEntry>
 Job::writeModeler() const {
   auto modeler = job::ModelerEntryFactory::newInstance();
-  modeler->setCompileDir("outputs/compilation");
+  if (def_.contingencyId.empty()) {
+    modeler->setCompileDir("outputs/compilation");
+  } else {
+    modeler->setCompileDir("outputs-" + def_.contingencyId + "/compilation");
+  }
 
   auto models = job::DynModelsEntryFactory::newInstance();
   models->setDydFile(def_.filename + ".dyd");
   modeler->addDynModelsEntry(models);
+  if (!def_.contingencyId.empty()) {
+    auto modelsBase = job::DynModelsEntryFactory::newInstance();
+    modelsBase->setDydFile(def_.baseFilename + ".dyd");
+    modeler->addDynModelsEntry(modelsBase);
+  }
 
   auto network = job::NetworkEntryFactory::newInstance();
   network->setIidmFile("");  // not providing IIDM file here as data interface will be provided to simulation
@@ -104,8 +114,8 @@ Job::writeModeler() const {
 boost::shared_ptr<job::SimulationEntry>
 Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
-  simu->setStartTime(timeStart_.count());
-  simu->setStopTime((timeStart_ + durationSimu_).count());
+  simu->setStartTime(timeStart_);
+  simu->setStopTime(timeStart_ + durationSimu_);
 
   return simu;
 }
@@ -113,7 +123,11 @@ Job::writeSimulation() const {
 boost::shared_ptr<job::OutputsEntry>
 Job::writeOutputs() const {
   auto output = job::OutputsEntryFactory::newInstance();
-  output->setOutputsDirectory("outputs");
+  if (def_.contingencyId.empty()) {
+    output->setOutputsDirectory("outputs");
+  } else {
+    output->setOutputsDirectory("outputs-" + def_.contingencyId);
+  }
 
   auto log = job::LogsEntryFactory::newInstance();
   auto appender = job::AppenderEntryFactory::newInstance();
@@ -129,11 +143,20 @@ Job::writeOutputs() const {
   final_state->setExportDumpFile(exportDumpFile_);
   output->setFinalStateEntry(final_state);
 
+#if _DEBUG_
+  auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
+  timeline->setExportMode("TXT");
+  output->setTimelineEntry(timeline);
+  auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
+  constraints->setExportMode("XML");
+  output->setConstraintsEntry(constraints);
+#endif
+
   return output;
 }
 
 void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& networkFileEntry, const std::string& outputDir) {
+Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry, const boost::filesystem::path& outputDir) {
   boost::filesystem::path path(outputDir);
 
   if (!boost::filesystem::is_directory(path)) {
@@ -173,7 +196,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   attrs.clear();
 
   auto network = modeler->getNetworkEntry();
-  attrs.add("iidmFile", networkFileEntry);
+  attrs.add("iidmFile", networkFileEntry.generic_string());
   attrs.add("parFile", network->getNetworkParFile());
   attrs.add("parId", network->getNetworkParId());
   formatter->startElement("dyn", "network", attrs);
@@ -227,7 +250,6 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
     attrs.clear();
     formatter->endElement();  // appender
   }
-
   formatter->endElement();  // logs
 
   // final state
@@ -238,6 +260,22 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();
   formatter->endElement();  // finalState
+
+  auto timeline = outputs->getTimelineEntry();
+  if (timeline) {
+    attrs.add("exportMode", timeline->getExportMode());
+    formatter->startElement("dyn", "timeline", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
+
+  auto constraints = outputs->getConstraintsEntry();
+  if (constraints) {
+    attrs.add("exportMode", constraints->getExportMode());
+    formatter->startElement("dyn", "constraints", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
 
   formatter->endElement();  // outputs
 

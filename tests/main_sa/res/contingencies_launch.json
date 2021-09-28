@@ -1,0 +1,177 @@
+{
+  "version": "1.0",
+  "name": "list",
+  "contingencies": [
+    {
+      "id": "load_contingency",
+      "elements": [
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008",
+          "type": "LOAD"
+        }
+      ]
+    },
+    {
+      "id": "load_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "LOAD"
+        }
+      ]
+    },
+    {
+      "id": "generator_contingency",
+      "elements": [
+        {
+          "id": "_046c3ee7-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "generator_disconnected_contingency",
+      "elements": [
+        {
+          "id": "_047f0391-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "generator_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "shunt_compensator_contingency",
+      "elements": [
+        {
+          "id": "_0449e9d5-c766-11e1-8775-005056c00008",
+          "type": "SHUNT_COMPENSATOR"
+        }
+      ]
+    },
+    {
+      "id": "shunt_compensator_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "SHUNT_COMPENSATOR"
+        }
+      ]
+    },
+    {
+      "id": "branch_contingency",
+      "elements": [
+        {
+          "id": "_044cd006-c766-11e1-8775-005056c00008",
+          "type": "BRANCH"
+        }
+      ]
+    },
+    {
+      "id": "branch_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "BRANCH"
+        }
+      ]
+    },
+    {
+      "id": "hvdcline_contingency",
+      "elements": [
+        {
+          "id": "_11d10c55-94cc-47e4-8e24-bc5ac4d026c0",
+          "type": "HVDC_LINE"
+        }
+      ]
+    },
+    {
+      "id": "hvdcline_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "HVDC_LINE"
+        }
+      ]
+    },
+    {
+      "id": "busbarsection_contingency",
+      "elements": [
+        {
+          "id": "_1d9c9c35-b7b6-432a-b3ed-3d747111008c",
+          "type": "BUSBAR_SECTION"
+        }
+      ]
+    },
+    {
+      "id": "busbar_section_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "BUSBAR_SECTION"
+        }
+      ]
+    },
+    {
+      "id": "dangling_line_contingency",
+      "elements": [
+        {
+          "id": "_0482fb33-c766-11e1-8775-005056c00008",
+          "type": "DANGLING_LINE"
+        }
+      ]
+    },
+    {
+      "id": "line_contingency",
+      "elements": [
+        {
+          "id": "_044cd006-c766-11e1-8775-005056c00008",
+          "type": "LINE"
+        }
+      ]
+    },
+    {
+      "id": "two_windings_transformer_contingency",
+      "elements": [
+        {
+          "id": "_045cae83-c766-11e1-8775-005056c00008",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
+      "id": "two_windings_transformer_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
+      "id": "contingency_bad_type",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "THIS_TYPE_DOES_NOT_EXIST"
+        }
+      ]
+    },
+    {
+      "id" : "static_var_compensator_contingency",
+      "elements" : [
+        {
+          "id" : "_047fc6e6-c766-11e1-8775-005056c00008",
+          "type" : "STATIC_VAR_COMPENSATOR"
+        }
+      ]
+    }
+  ]
+}
