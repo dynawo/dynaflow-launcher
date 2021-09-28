@@ -119,24 +119,28 @@ define_options() {
 
 where [option] can be:
         =========== Build
-        build-user                              build DynaFlow Launcher
-        clean-build-all                         Clean and rebuild DynaFlow Launcher
-        build-tests-coverage                    build DynaFlow Launcher and run coverage
+        build-user                                build DynaFlow Launcher
+        clean-build-all                           Clean and rebuild DynaFlow Launcher
+        build-tests-coverage                      build DynaFlow Launcher and run coverage
 
         =========== Tests
-        tests                                   launch DynaFlow Launcher unit tests
-        update-references                       update MAIN tests references
+        tests                                     launch DynaFlow Launcher unit tests
+        update-references                         update MAIN tests references
 
         =========== Launch
-        launch [network] [config]               launch DynaFlow Launcher:
-                                                - network: filepath (only IIDM is supported)
-                                                - config: filepath (JSON configuration file)
+        launch [network] [config]                 launch DynaFlow Launcher:
+                                                  - network: filepath (only IIDM is supported)
+                                                  - config: filepath (JSON configuration file)
+        launch [network] [config] [contingencies] launch DynaFlow Launcher to run a Security Analysis:
+                                                  - network: filepath (only IIDM is supported)
+                                                  - config: filepath (JSON configuration file)
+                                                  - contingencies: filepath (JSON file)
 
         =========== Others
-        help                                    show all available options
-        format                                  format modified git files using clang-format
-        version                                 show DynaFlow Launcher version
-        reset-environment                       reset all environment variables set by DynaFlow Launcher
+        help                                      show all available options
+        format                                    format modified git files using clang-format
+        version                                   show DynaFlow Launcher version
+        reset-environment                         reset all environment variables set by DynaFlow Launcher
 "
 }
 
@@ -214,6 +218,8 @@ reset_environment_variables() {
     unset DYNAWO_IIDM_EXTENSION
     unset DYNAWO_LIBIIDM_EXTENSIONS
     unset IIDM_XML_XSD_PATH
+
+    unset DYNAWO_ALGORITHMS_HOME
 }
 
 clean() {
@@ -229,6 +235,7 @@ cmake_configure() {
         -DCMAKE_BUILD_TYPE:STRING=$DYNAFLOW_LAUNCHER_BUILD_TYPE \
         -DCMAKE_INSTALL_PREFIX:STRING=$DYNAFLOW_LAUNCHER_INSTALL_DIR \
         -DDYNAWO_HOME:STRING=$DYNAWO_HOME \
+        -DDYNAWO_ALGORITHMS_HOME:STRING=$DYNAWO_ALGORITHMS_HOME \
         -DBOOST_ROOT:STRING=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
         -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
@@ -252,6 +259,7 @@ cmake_coverage() {
     ctest \
         -S cmake/CTestScript.cmake \
         -DDYNAWO_HOME=$DYNAWO_HOME \
+        -DDYNAWO_ALGORITHMS_HOME=$DYNAWO_ALGORITHMS_HOME \
         -DBOOST_ROOT=$DYNAWO_HOME \
         -VV
 }
@@ -282,6 +290,23 @@ launch() {
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $1 \
     --config $2
+}
+
+launch_sa() {
+    if [ ! -f $1 ]; then
+        error_exit "IIDM network file $1 doesn't exist"
+    fi
+    if [ ! -f $2 ]; then
+        error_exit "DFL configuration file $2 doesn't exist"
+    fi
+    if [ ! -f $3 ]; then
+        error_exit "Security Analysis contingencies file $3 doesn't exist"
+    fi
+    $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $1 \
+    --config $2 \
+    --contingencies $3
 }
 
 version() {
@@ -339,6 +364,9 @@ case $1 in
         ;;
     launch)
         launch $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
+        ;;
+    launch-sa)
+        launch_sa $2 $3 $4 || error_exit "Failed to perform launch-sa with network=$2, config=$3, contingencies=$4"
         ;;
     reset-environment)
         reset_environment_variables || error_exit "Failed to reset environment variables"

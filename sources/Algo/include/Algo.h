@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Contingencies.h"
 #include "DynamicDataBaseManager.h"
 #include "HvdcLine.h"
 #include "NetworkManager.h"
@@ -950,6 +951,28 @@ class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
 
  private:
   StaticVarCompensatorDefinitions& svarcsDefinitions_;  ///< the static var compensator definitions to update
+};
+
+/// @brief Validation of contingency definitions
+class ContingencyValidationAlgorithm : public NodeAlgorithm {
+ public:
+  /**
+   * @brief Constructor
+   * @param checker The contingencies that will be updated with valid elements found in the network
+   */
+  explicit ContingencyValidationAlgorithm(inputs::Contingencies& contingencies);
+
+  /**
+   * @brief Application operator.
+   *
+   * Visits the elements in the node and reports them as valid for contingencies
+   *
+   * @param node the node to process
+   */
+  void operator()(const NodePtr& node);
+
+ private:
+  inputs::Contingencies& contingencies_;  ///< Reference to the contingency definitions
 };
 
 }  // namespace algo

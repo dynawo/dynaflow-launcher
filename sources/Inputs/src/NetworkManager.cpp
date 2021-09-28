@@ -23,6 +23,7 @@
 #include <DYNBusInterface.h>
 #include <DYNCommon.h>
 #include <DYNConverterInterface.h>
+#include <DYNDanglingLineInterface.h>
 #include <DYNDataInterfaceFactory.h>
 #include <DYNGeneratorInterface.h>
 #include <DYNHvdcLineInterface.h>
@@ -94,6 +95,11 @@ NetworkManager::buildTree() {
       if (opt_id && *opt_id == nodeId) {
         LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
         slackNode_ = nodes_[nodeId];
+      }
+
+      const auto bbss = bus->getBusBarSectionIdentifiers();
+      for (const auto& bbs : bbss) {
+        nodes_[bus->getID()]->busBarSections.emplace_back(bbs);
       }
     }
 
@@ -168,6 +174,11 @@ NetworkManager::buildTree() {
                                           svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
                                           svarc->getB0(), svarc->getSlope());
       LOG(debug) << "Node " << nodeid << " contains static var compensator " << svarc->getID() << LOG_ENDL;
+    }
+
+    const auto& dangling_lines = networkVL->getDanglingLines();
+    for (const auto& dline : dangling_lines) {
+      nodes_[dline->getBusInterface()->getID()]->danglingLines.emplace_back(dline->getID());
     }
   }
 

@@ -9,6 +9,7 @@
 
 #include "Configuration.h"
 #include "Context.h"
+#include "Contingencies.h"
 #include "Dico.h"
 #include "Log.h"
 #include "Message.hpp"
@@ -19,6 +20,8 @@
 #include <DYNInitXml.h>
 #include <DYNIoDico.h>
 #include <boost/filesystem.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <chrono>
 #include <cstdlib>
 #include <sstream>
@@ -51,6 +54,15 @@ static inline double
 elapsed(const std::chrono::steady_clock::time_point& timePoint) {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - timePoint);
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
+}
+
+dfl::Context::SimulationKind
+getSimulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
+  if (runtimeConfig.contingenciesFilePath.empty()) {
+    return dfl::Context::SimulationKind::STEADY_STATE_CALCULATION;
+  } else {
+    return dfl::Context::SimulationKind::SECURITY_ANALYSIS;
+  }
 }
 
 int
@@ -99,16 +111,37 @@ main(int argc, char* argv[]) {
       LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
       return EXIT_FAILURE;
     }
+    if (!runtimeConfig.contingenciesFilePath.empty() && !boost::filesystem::exists(boost::filesystem::path(runtimeConfig.contingenciesFilePath))) {
+      LOG(error) << MESS(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath) << LOG_ENDL;
+      return EXIT_FAILURE;
+    }
     DYN::InitXerces xerces;
     DYN::InitLibXml2 libxml2;
 
-    LOG(info) << MESS(InputsInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
+    dfl::Context::SimulationKind simulationKind = getSimulationKind(runtimeConfig);
+    switch (simulationKind) {
+    case dfl::Context::SimulationKind::STEADY_STATE_CALCULATION:
+      LOG(info) << MESS(InputsSteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
+      break;
+    case dfl::Context::SimulationKind::SECURITY_ANALYSIS:
+      LOG(info) << MESS(InputsSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath) << LOG_ENDL;
+      break;
+    default:
+      LOG(error) << MESS(SimulationKindUnknown, "") << LOG_ENDL;
+    }
 
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
-    dfl::Context::ContextDef def{
-        runtimeConfig.networkFilePath, config.settingFilePath(), config.assemblingFilePath(), runtimeConfig.dynawoLogLevel, parFilesDir, res, locale};
+    dfl::Context::ContextDef def{simulationKind,
+                                 runtimeConfig.networkFilePath,
+                                 config.settingFilePath(),
+                                 config.assemblingFilePath(),
+                                 runtimeConfig.contingenciesFilePath,
+                                 runtimeConfig.dynawoLogLevel,
+                                 parFilesDir,
+                                 res,
+                                 locale};
     dfl::Context context(def, config);
 
     if (!context.process()) {

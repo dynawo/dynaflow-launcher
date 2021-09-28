@@ -37,13 +37,28 @@ class Job {
     /**
      * @brief Constructor
      *
-     * @param filepath output filename
+     * @param filename output filename
      * @param lvl dynawo log level
      */
-    JobDefinition(const std::string& filepath, const std::string& lvl) : filename(filepath), dynawoLogLevel(lvl) {}
+    JobDefinition(const std::string& filename, const std::string& lvl) : filename(filename), dynawoLogLevel(lvl), contingencyId{}, baseFilename{} {}
 
+    /**
+     * @brief Constructor with a reference to a contingency
+     *
+     * @param filename output filename
+     * @param lvl dynawo log level
+     * @param contingencyId contingency identifier
+     * @param baseFilename filename of base case
+     */
+    JobDefinition(const std::string& filename, const std::string& lvl, const std::string& contingencyId, const std::string& baseFilename) :
+        filename(filename),
+        dynawoLogLevel(lvl),
+        contingencyId(contingencyId),
+        baseFilename(baseFilename) {}
     std::string filename;        ///< filename of the job output file
     std::string dynawoLogLevel;  ///< Dynawo log level, in string representation
+    std::string contingencyId;   ///< Identifier of referred contingency
+    std::string baseFilename;    ///< Name for base case filename if we are defining a jobs file for a contingency
   };
 
  public:
@@ -54,7 +69,8 @@ class Job {
   * @param networkFileEntry path to the input network file
   * @param outputDir the output directory
   */
-  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::string& networkFileEntry, const std::string& outputDir);
+  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry,
+                        const boost::filesystem::path& outputDir);
 
   /**
    * @brief Constructor
@@ -70,12 +86,20 @@ class Job {
    */
   boost::shared_ptr<job::JobEntry> write() const;
 
+  /**
+   * Sets the start and duration time of all jobs
+   */
+  static void setStartAndDuration(double startTime, double durationTime) {
+    timeStart_ = startTime;
+    durationSimu_ = durationTime;
+  }
+
  private:
-  static const std::chrono::seconds timeStart_;     ///< The constant start time of the simulation of the job
-  static const std::chrono::seconds durationSimu_;  ///< the constant duration of the simulation in the job
-  static const std::string solverName_;             ///< The solver name used during the simulation
-  static const std::string solverFilename_;         ///< The solver filename
-  static const std::string solverParId_;            ///< The parameter id in the .par file corresponding to the solver parameters
+  static double timeStart_;                  ///< The start time of the simulation of the job
+  static double durationSimu_;               ///< the duration of the simulation in the job
+  static const std::string solverName_;      ///< The solver name used during the simulation
+  static const std::string solverFilename_;  ///< The solver filename
+  static const std::string solverParId_;     ///< The parameter id in the .par file corresponding to the solver parameters
 
  private:
   /**

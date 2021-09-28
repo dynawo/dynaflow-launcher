@@ -152,6 +152,34 @@ struct Shunt {
   const ShuntId id;  ///< Shunt id
 };
 
+/// @brief Topological dangling line
+struct DanglingLine {
+  using DanglingLineId = std::string;  ///< alias for dangling line id
+
+  /**
+   * @brief Constructor
+   *
+   * @param id the dangling line id
+   */
+  explicit DanglingLine(const DanglingLineId& id) : id(id) {}
+
+  const DanglingLineId id;  ///< Dangling line id
+};
+
+/// @brief Topological Bus bar section
+struct BusBarSection {
+  using BusBarSectionId = std::string;  ///< alias for bus bar section id
+
+  /**
+   * @brief Constructor
+   *
+   * @param id the bus bar section id
+   */
+  explicit BusBarSection(const BusBarSectionId& id) : id(id) {}
+
+  const BusBarSectionId id;  ///< Bus bar section id
+};
+
 /**
  * @brief topological node structure
  *
@@ -185,7 +213,9 @@ class Node {
   std::vector<Load> loads;                           ///< list of loads associated to this node
   std::vector<Generator> generators;                 ///< list of generators associated to this node
   std::vector<std::weak_ptr<Converter>> converters;  ///< list of converter associated to this node
-  std::vector<StaticVarCompensator> svarcs;             ///< List of static var compensators
+  std::vector<StaticVarCompensator> svarcs;          ///< List of static var compensators
+  std::vector<DanglingLine> danglingLines;           ///< List of dangling lines
+  std::vector<BusBarSection> busBarSections;         ///< List of bus bar sections
 
  private:
   /**
