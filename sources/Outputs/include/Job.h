@@ -17,7 +17,10 @@
 
 #pragma once
 
+#include "Configuration.h"
+
 #include <JOBJobEntry.h>
+#include <boost/optional.hpp>
 #include <chrono>
 #include <string>
 
@@ -34,31 +37,62 @@ class Job {
    * @brief Job definition on DFL point of view
    */
   struct JobDefinition {
+    using Seconds = std::chrono::seconds;  ///< Alias for seconds
+
     /**
      * @brief Constructor
      *
      * @param filename output filename
      * @param lvl dynawo log level
      */
-    JobDefinition(const std::string& filename, const std::string& lvl) : filename(filename), dynawoLogLevel(lvl), contingencyId{}, baseFilename{} {}
+    JobDefinition(const std::string& filename, const std::string& lvl) : filename(filename), dynawoLogLevel(lvl) {}
+
+    /**
+     * @brief Constructor
+     *
+     * @param filename output filename
+     * @param lvl dynawo log level
+     * @param config configuration
+     */
+    JobDefinition(const std::string& filename, const std::string& lvl, const dfl::inputs::Configuration& config) : filename(filename), dynawoLogLevel(lvl) {
+      initFromConfig(config);
+    }
 
     /**
      * @brief Constructor with a reference to a contingency
      *
      * @param filename output filename
      * @param lvl dynawo log level
+     * @param config configuration
      * @param contingencyId contingency identifier
      * @param baseFilename filename of base case
      */
-    JobDefinition(const std::string& filename, const std::string& lvl, const std::string& contingencyId, const std::string& baseFilename) :
+    JobDefinition(const std::string& filename, const std::string& lvl, const dfl::inputs::Configuration& config, const std::string& contingencyId,
+                  const std::string& baseFilename) :
         filename(filename),
         dynawoLogLevel(lvl),
         contingencyId(contingencyId),
-        baseFilename(baseFilename) {}
-    std::string filename;        ///< filename of the job output file
-    std::string dynawoLogLevel;  ///< Dynawo log level, in string representation
-    std::string contingencyId;   ///< Identifier of referred contingency
-    std::string baseFilename;    ///< Name for base case filename if we are defining a jobs file for a contingency
+        baseFilename(baseFilename) {
+      initFromConfig(config);
+    }
+
+    std::string filename;                        ///< filename of the job output file
+    std::string dynawoLogLevel;                  ///< Dynawo log level, in string representation
+    Seconds startTime = Seconds(0);              ///< The start time of the simulation
+    Seconds stopTime = Seconds(100);             ///< the constant duration of the simulation in the job
+    boost::optional<std::string> contingencyId;  ///< Identifier of referred contingency, only for security analysis jobs
+    boost::optional<std::string> baseFilename;   ///< Name for base case filename if we are defining a jobs file for a contingency
+
+   private:
+    /**
+     * @brief Initialize additional attributes from configuration
+     *
+     * @param config configuration
+     */
+    void initFromConfig(const dfl::inputs::Configuration& config) {
+      startTime = config.getStartTime();
+      stopTime = config.getStopTime();
+    }
   };
 
  public:
@@ -86,17 +120,7 @@ class Job {
    */
   boost::shared_ptr<job::JobEntry> write() const;
 
-  /**
-   * Sets the start and duration time of all jobs
-   */
-  static void setStartAndDuration(double startTime, double durationTime) {
-    timeStart_ = startTime;
-    durationSimu_ = durationTime;
-  }
-
  private:
-  static double timeStart_;                  ///< The start time of the simulation of the job
-  static double durationSimu_;               ///< the duration of the simulation in the job
   static const std::string solverName_;      ///< The solver name used during the simulation
   static const std::string solverFilename_;  ///< The solver filename
   static const std::string solverParId_;     ///< The parameter id in the .par file corresponding to the solver parameters

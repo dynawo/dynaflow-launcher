@@ -59,10 +59,17 @@ TEST(Job, write) {
   auto outputs = jobEntry->getOutputsEntry();
   ASSERT_EQ("outputs", outputs->getOutputsDirectory());
 #if _DEBUG_
-  // On debug we always ask for a timeline
+  // On debug we always ask for a timeline and a constraints output
   ASSERT_NE(nullptr, outputs->getTimelineEntry());
+  ASSERT_EQ("TXT", outputs->getTimelineEntry()->getExportMode());
+  ASSERT_EQ("", outputs->getTimelineEntry()->getOutputFile());
+  ASSERT_EQ(true, outputs->getTimelineEntry()->getExportWithTime());
+  ASSERT_NE(nullptr, outputs->getConstraintsEntry());
+  ASSERT_EQ("XML", outputs->getConstraintsEntry()->getExportMode());
+  ASSERT_EQ("", outputs->getConstraintsEntry()->getOutputFile());
 #else
   ASSERT_EQ(nullptr, outputs->getTimelineEntry());
+  ASSERT_EQ(nullptr, outputs->getConstraintsEntry());
 #endif
   ASSERT_EQ(nullptr, outputs->getInitValuesEntry());
   auto appenders = outputs->getLogsEntry()->getAppenderEntries();

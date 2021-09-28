@@ -97,9 +97,8 @@ NetworkManager::buildTree() {
         slackNode_ = nodes_[nodeId];
       }
 
-      const auto bbss = bus->getBusBarSectionIdentifiers();
-      for (const auto& bbs : bbss) {
-        nodes_[bus->getID()]->busBarSections.emplace_back(bbs);
+      for (const auto& busBarSection : bus->getBusBarSectionIdentifiers()) {
+        nodes_[bus->getID()]->busBarSections.emplace_back(busBarSection);
       }
     }
 

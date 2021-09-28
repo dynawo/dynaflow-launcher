@@ -22,6 +22,7 @@
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <limits>
 
 namespace dfl {
 namespace inputs {
@@ -64,6 +65,22 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
     LOG(warn) << MESS(BadActivePowerCompensation, apcString) << LOG_ENDL;
   }
 }
+
+/**
+ * @brief Helper function to update a std::chrono::seconds value
+ *
+ * @param seconds the value to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ */
+static void
+updateSeconds(std::chrono::seconds& seconds, const boost::property_tree::ptree& tree, const std::string& key) {
+  unsigned int scount = std::numeric_limits<unsigned int>::max();
+  helper::updateValue(scount, tree, key);
+  if (scount != std::numeric_limits<unsigned int>::max()) {
+    seconds = std::chrono::seconds(scount);
+  }
+}
 }  // namespace helper
 
 Configuration::Configuration(const boost::filesystem::path& filepath) {
@@ -76,9 +93,15 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
      * "dfl-config":  {
      *  "name": "value"
      *  ...
+     *  "sa": {
+     *   "name": "value"
+     *   ...
+     *  }
      * }
      *
      * where name is the name of the parameter and value its value. If not present, we use its hard-coded default value
+     *
+     * Parameters that are used only in security analysis are expected inside the block named "sa"
      */
 
     auto config = tree.get_child("dfl-config");
@@ -92,9 +115,9 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateValue(settingFilePath_, config, "SettingPath");
     helper::updateValue(assemblingFilePath_, config, "AssemblyPath");
-    helper::updateValue(startTime_, config, "StartTime");
-    helper::updateValue(stopTime_, config, "StopTime");
-    helper::updateValue(timeOfEvent_, config, "sa.TimeOfEvent");
+    helper::updateSeconds(startTime_, config, "StartTime");
+    helper::updateSeconds(stopTime_, config, "StopTime");
+    helper::updateSeconds(timeOfEvent_, config, "sa.TimeOfEvent");
     helper::updateValue(numberOfThreads_, config, "sa.NumberOfThreads");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {

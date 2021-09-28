@@ -80,9 +80,7 @@ def check_timeline(timeline_log_file, element):
     (element_id, element_type) = element
     with open(timeline_log_file) as f:
         content = f.read()
-        print("luma timeline " + timeline_log_file);
         for find in timeline_log_regex.finditer(content):
-            print("luma find.group(1) == " + find.group(1));
             # For busbar sections, if we find a disconnected calculated bus it is ok
             if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in find.group(1):
                 return True

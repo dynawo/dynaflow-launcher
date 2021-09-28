@@ -23,6 +23,7 @@
 
 #include <DYNLineInterface.h>
 #include <PARMacroParameterSet.h>
+#include <PARParameterFactory.h>
 #include <PARParametersSet.h>
 #include <boost/filesystem.hpp>
 #include <boost/shared_ptr.hpp>
