@@ -10,7 +10,6 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-# import iidmDiff
 import os
 import sys
 import argparse
@@ -27,13 +26,13 @@ def get_argparser():
 
     return parser
 
-def compare_file(options, file_name):
+def compare_file(options, contingency_folder):
     """ Will compare a reference file and a result file"""
 
     result_path = full_path(
-        options.root, "results", options.testdir, file_name ,"outputs/finalState/outputIIDM.xml")
+        options.root, "results", options.testdir, contingency_folder, "outputs/finalState/outputIIDM.xml")
     reference_path = full_path(
-        options.root, "reference", options.testdir, file_name, "outputIIDM.xml")
+        options.root, "reference", options.testdir, contingency_folder, "outputIIDM.xml")
 
     # A reference file that does not exist is only a problem if there's a result
     # file, there are cases where the file itself should not exist
@@ -51,9 +50,9 @@ def compare_file(options, file_name):
     (nb_differences, msg) = iidmDiff.OutputIIDMCloseEnough(
         result_path, reference_path)
     if nb_differences > 0:
-        print(file_name + ": " + msg)
+        print(contingency_folder + ": " + msg)
     elif options.verbose:
-        print(file_name + ": No differences")
+        print(contingency_folder + ": No differences")
     return nb_differences
 
 def full_path(a, *paths):

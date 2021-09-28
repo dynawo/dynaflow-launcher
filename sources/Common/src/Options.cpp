@@ -83,7 +83,7 @@ Options::Options() : desc_{}, config_{"", "", "", "", defaultLogLevel_} {
       "log-level", po::value<ParsedLogLevel>(),
       (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())(
       "network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
-      "contingencies", po::value<std::string>(&config_.contingenciesFilePath)->default_value(""), "Contingencies file path to process (Security Analysis)")(
+      "contingencies", po::value<std::string>(&config_.contingenciesFilePath), "Contingencies file path to process (Security Analysis)")(
       "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version");
 }
 

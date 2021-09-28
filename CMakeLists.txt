@@ -136,7 +136,7 @@ add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
-install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
+install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/external/dynawo-algorithms)
 
 ## Dynawo
 find_package(Dynawo 1.3.0 REQUIRED)

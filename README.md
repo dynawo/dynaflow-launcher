@@ -1,7 +1,7 @@
 # DynaFlow Launcher
 
 Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dyna&omega;o](https://github.com/dynawo/dynawo)
-and [dynawo algorithms](https://github.com/dynawo/dynawo/dynawo-algorithms)
+and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo/dynawo-algorithms)
 
 ## Build
 To build DynaFlow launcher, you must first deploy the Dyna&omega;o library with **c++11 enabled**.

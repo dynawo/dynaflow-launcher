@@ -953,14 +953,64 @@ class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
   StaticVarCompensatorDefinitions& svarcsDefinitions_;  ///< the static var compensator definitions to update
 };
 
-/// @brief Validation of contingency definitions
+/**
+ * @brief Contingencies valid for simulation
+ */
+class ValidContingencies {
+ public:
+  using ContingencyId = std::string;                                         ///< Alias for contingency identifier
+  using ElementId = std::string;                                             ///< Alias for element identifier in contingency
+  using ContingencyRef = std::reference_wrapper<const inputs::Contingency>;  ///< Alias for reference to contingency
+
+  /**
+   * @brief Constructor
+   * @param contingencies The list of contingencies given in the inputs
+   */
+  explicit ValidContingencies(const std::vector<inputs::Contingency>& contingencies);
+
+  /**
+   * @brief Mark the element given by id and type as valid in all contingencies where it is referred
+   *
+   * @param id the id of the element found in the network
+   * @param type the type of the element as it has been found in the network
+   */
+  void markElementValid(const ElementId& id, inputs::ContingencyElement::Type type);
+
+  /**
+   * @brief Keep as valid contingencies only the ones that have all elements marked as valid
+   */
+  void keepContingenciesWithAllElementsValid();
+
+  /**
+   * @brief All valid contigencies
+   * @return valid contingencies
+   */
+  const std::vector<ContingencyRef>& get() {
+    return validContingencies_;
+  }
+
+ private:
+  using ContingenciesRef = std::reference_wrapper<const std::vector<inputs::Contingency>>;     ///< Alias for a reference to the list of contingencies
+  using ElementContingenciesMap = std::unordered_map<ElementId, std::vector<ContingencyRef>>;  ///< Alias for map of element contingencies
+  using ElementIds = std::unordered_set<ElementId>;                                            ///< Alias for set of element ids
+  using ValidatingContingenciesMap = std::unordered_map<ContingencyId, ElementIds>;            ///< Alias for map of contingencies with valid elements found
+
+  ContingenciesRef contingencies_;                      ///< Contingencies requested in the inputs
+  ElementContingenciesMap elementContingencies_;        ///< For each element identifier, all the contingencies where it is referenced
+  ValidatingContingenciesMap validatingContingencies_;  ///< All contingencies with valid elements found, indexed by contingencyId
+  std::vector<ContingencyRef> validContingencies_;      ///< Only valid contingencies
+};
+
+/**
+ * @brief Validation of contingencies requested in the inputs
+ */
 class ContingencyValidationAlgorithm : public NodeAlgorithm {
  public:
   /**
    * @brief Constructor
-   * @param checker The contingencies that will be updated with valid elements found in the network
+   * @param validContingencies The class keeping track of valid contingencies
    */
-  explicit ContingencyValidationAlgorithm(inputs::Contingencies& contingencies);
+  explicit ContingencyValidationAlgorithm(ValidContingencies& validContingencies) : validContingencies_(validContingencies) {}
 
   /**
    * @brief Application operator.
@@ -972,7 +1022,7 @@ class ContingencyValidationAlgorithm : public NodeAlgorithm {
   void operator()(const NodePtr& node);
 
  private:
-  inputs::Contingencies& contingencies_;  ///< Reference to the contingency definitions
+  ValidContingencies& validContingencies_;  ///< the contingencies being validated by the algorithm
 };
 
 }  // namespace algo

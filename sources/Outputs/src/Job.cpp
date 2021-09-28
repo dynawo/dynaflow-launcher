@@ -48,8 +48,6 @@
 namespace dfl {
 namespace outputs {
 
-double Job::timeStart_{0};
-double Job::durationSimu_{100};
 const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
@@ -82,18 +80,18 @@ Job::writeSolver() const {
 boost::shared_ptr<job::ModelerEntry>
 Job::writeModeler() const {
   auto modeler = job::ModelerEntryFactory::newInstance();
-  if (def_.contingencyId.empty()) {
-    modeler->setCompileDir("outputs/compilation");
+  if (def_.contingencyId) {
+    modeler->setCompileDir("outputs-" + def_.contingencyId.get() + "/compilation");
   } else {
-    modeler->setCompileDir("outputs-" + def_.contingencyId + "/compilation");
+    modeler->setCompileDir("outputs/compilation");
   }
 
   auto models = job::DynModelsEntryFactory::newInstance();
   models->setDydFile(def_.filename + ".dyd");
   modeler->addDynModelsEntry(models);
-  if (!def_.contingencyId.empty()) {
+  if (def_.baseFilename) {
     auto modelsBase = job::DynModelsEntryFactory::newInstance();
-    modelsBase->setDydFile(def_.baseFilename + ".dyd");
+    modelsBase->setDydFile(def_.baseFilename.get() + ".dyd");
     modeler->addDynModelsEntry(modelsBase);
   }
 
@@ -114,8 +112,8 @@ Job::writeModeler() const {
 boost::shared_ptr<job::SimulationEntry>
 Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
-  simu->setStartTime(timeStart_);
-  simu->setStopTime(timeStart_ + durationSimu_);
+  simu->setStartTime(def_.startTime.count());
+  simu->setStopTime(def_.stopTime.count());
 
   return simu;
 }
@@ -123,10 +121,10 @@ Job::writeSimulation() const {
 boost::shared_ptr<job::OutputsEntry>
 Job::writeOutputs() const {
   auto output = job::OutputsEntryFactory::newInstance();
-  if (def_.contingencyId.empty()) {
-    output->setOutputsDirectory("outputs");
+  if (def_.contingencyId) {
+    output->setOutputsDirectory("outputs-" + def_.contingencyId.get());
   } else {
-    output->setOutputsDirectory("outputs-" + def_.contingencyId);
+    output->setOutputsDirectory("outputs");
   }
 
   auto log = job::LogsEntryFactory::newInstance();

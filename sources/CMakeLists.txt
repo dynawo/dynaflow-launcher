@@ -48,7 +48,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})
 # It will then need a call to `install(EXPORT)`
 install(
     TARGETS
-    DynaFlowLauncher # We can install executables
+        DynaFlowLauncher # We can install executables
     EXPORT ${PROJECT_NAME}_Targets
 # Following is only needed pre-cmake3.14
    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

@@ -46,7 +46,6 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> Dyd:
 
 const std::string Dyd::macroConnectorLoadName_("LOAD_NETWORK_CONNECTOR");
 const std::string Dyd::macroConnectorGenName_("GEN_NETWORK_CONNECTOR");
-const std::string Dyd::networkModelName_("NETWORK");
 const std::string Dyd::macroConnectorGenSignalNName_("GEN_SIGNALN_CONNECTOR");
 const std::string Dyd::signalNModelName_("Model_Signal_N");
 const std::string Dyd::macroStaticRefSignalNGeneratorName_("GeneratorStaticRef");
@@ -149,7 +148,7 @@ Dyd::write() const {
     dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarc));
   }
 
-  dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", "NETWORK", def_.slackNode->id + "_phi");
+  dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi");
 
   for (auto it = def_.generators.cbegin(); it != def_.generators.cend(); ++it) {
     writeGenConnect(dynamicModelsToConnect, *it);
@@ -214,7 +213,7 @@ Dyd::writeDynamicModelMacroConnect(const algo::DynamicModelDefinition& dynModel)
   }
 
   for (const auto& connection : connections) {
-    auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, networkModelName_);
+    auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, constants::networkModelName);
     macroConnect->setName2(connection.connectedElementId);
 #if _DEBUG_
     assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
@@ -388,12 +387,12 @@ Dyd::writeMacroStaticRef() {
 
 boost::shared_ptr<dynamicdata::MacroConnect>
 Dyd::writeLoadConnect(const algo::LoadDefinition& loaddef) {
-  return dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorLoadName_, loaddef.id, networkModelName_);
+  return dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorLoadName_, loaddef.id, constants::networkModelName);
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnect>>
 Dyd::writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int index) {
-  auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(correspondence_macro_connector_.at(def.model), def.id, networkModelName_);
+  auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(correspondence_macro_connector_.at(def.model), def.id, constants::networkModelName);
   auto signal = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenSignalNName_, def.id, signalNModelName_);
   signal->setIndex2(std::to_string(index));
   return {connection, signal};
@@ -401,13 +400,13 @@ Dyd::writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int ind
 
 boost::shared_ptr<dynamicdata::MacroConnect>
 Dyd::writeSVarCMacroConnect(const inputs::StaticVarCompensator& svarc) {
-  return dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, networkModelName_);
+  return dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, constants::networkModelName);
 }
 
 void
 Dyd::writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::GeneratorDefinition& def) {
   if (def.model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN) {
-    dynamicModelsToConnect->addConnect(def.id, "generator_URegulated", "NETWORK", def.regulatedBusId + "_U_value");
+    dynamicModelsToConnect->addConnect(def.id, "generator_URegulated", constants::networkModelName, def.regulatedBusId + "_U_value");
   } else if (def.model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) {
     dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", modelSignalNQprefix_ + def.regulatedBusId, "vrremote_NQ");
   }
@@ -415,19 +414,19 @@ Dyd::writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollectio
 
 void
 Dyd::writeVRRemoteConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& busId) {
-  dynamicModelsToConnect->addConnect(modelSignalNQprefix_ + busId, "vrremote_URegulated", "NETWORK", busId + "_U_value");
+  dynamicModelsToConnect->addConnect(modelSignalNQprefix_ + busId, "vrremote_URegulated", constants::networkModelName, busId + "_U_value");
 }
 
 void
 Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HVDCDefinition& hvdcDefinition) {
   const std::string vrremoteNqValue("vrremote_NQ");
   if (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
+    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
+    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
   } else {
     // case both : 1 <-> 1 and 2 <-> 2
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
-    dynamicModelsToConnect->addConnect("NETWORK", hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
+    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcDefinition.converter1BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal1");
+    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcDefinition.converter2BusId + "_ACPIN", hvdcDefinition.id, "hvdc_terminal2");
   }
   if (hvdcDefinition.hasPQPropModel()) {
     const auto& busId1 =

@@ -23,6 +23,7 @@
 
 #include <PARParametersSet.h>
 #include <boost/shared_ptr.hpp>
+#include <chrono>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -45,20 +46,18 @@ class ParEvent {
      * @param base basename for current simulation
      * @param filename file path for output PAR file (corresponds to basename)
      * @param contingency contingency definition for the event parameters
-     * @param timeEvent time of event
+     * @param timeOfEvent time of event
      */
-    ParEventDefinition(const std::string& base, const std::string& filename,
-            std::shared_ptr<inputs::Contingencies::ContingencyDefinition> contingency,
-            double timeEvent) :
+    ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency, const std::chrono::seconds& timeOfEvent) :
         basename(base),
         filename(filename),
         contingency(contingency),
-        timeEvent(timeEvent) {}
+        timeOfEvent(timeOfEvent) {}
 
-    std::string basename;                                      ///< basename
-    std::string filename;                                      ///< filename of the output file to write
-    std::shared_ptr<inputs::Contingencies::ContingencyDefinition> contingency;  ///< contingency definition for the event parameters
-    double timeEvent;                                          ///< Time of event
+    std::string basename;                    ///< basename
+    std::string filename;                    ///< filename of the output file to write
+    const inputs::Contingency& contingency;  ///< contingency definition for the event parameters
+    std::chrono::seconds timeOfEvent;        ///< time of event
   };
 
   /**
@@ -78,31 +77,33 @@ class ParEvent {
    * @brief Build branch disconnection parameter set
    *
    * @param branchId the identifier of the branch
-   * @param timeEvent time of event
+   * @param timeOfEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string& branchId, double timeEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string& branchId, const std::chrono::seconds& timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventSetPointBoolean dynamic model
    *
    * @param elementId the identifier of the element
-   * @param timeEvent time of event
+   * @param timeOfEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string& elementId, double timeEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string& elementId,
+                                                                                             const std::chrono::seconds& timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventSetPointReal dynamic model
    *
    * @param elementId the identifier of the element
-   * @param timeEvent time of event
+   * @param timeOfEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId, double timeEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId,
+                                                                                          const std::chrono::seconds& timeOfEvent);
 
  private:
   ParEventDefinition def_;  ///< PAR event file definition

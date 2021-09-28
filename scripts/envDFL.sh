@@ -131,7 +131,7 @@ where [option] can be:
         launch [network] [config]                 launch DynaFlow Launcher:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
-        launch [network] [config] [contingencies] launch DynaFlow Launcher to run a Security Analysis:
+        launch-sa [network] [config] [contingencies] launch DynaFlow Launcher to run a Security Analysis:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
@@ -168,6 +168,10 @@ set_environment() {
     # dynawo vars that can be extended by external
     export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
     export DYNAWO_RESOURCES_DIR=$DYNAWO_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd:$DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR
+
+    # dynawo algorithms
+    # Use same locale of dynaflow launcher
+    export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
     # global vars
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
@@ -281,10 +285,10 @@ build_tests_coverage() {
 
 launch() {
     if [ ! -f $1 ]; then
-        error_exit "IIDM network file $1 doesn't exist"
+        error_exit "IIDM network file $network doesn't exist"
     fi
     if [ ! -f $2 ]; then
-        error_exit "DFL configuration file $2 doesn't exist"
+        error_exit "DFL configuration file $config doesn't exist"
     fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \

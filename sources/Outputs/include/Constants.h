@@ -59,6 +59,7 @@ computeQmax(double powerFactor, double pMax) {
  */
 std::string diagramFilename(const std::string& id);
 
+const std::string networkModelName{"NETWORK"};                                    ///< Name of the model corresponding to network
 const std::string loadParId{"GenericRestorativeLoad"};                            ///< PAR id common to all loads
 const std::string diagramDirectorySuffix{"_Diagram"};                             ///< Suffix for the diagram directory
 const std::string diagramMaxTableSuffix{"_tableqmax"};                            ///< Suffix for the table name for qmax in diagram file

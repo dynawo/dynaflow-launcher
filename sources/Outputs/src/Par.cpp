@@ -20,12 +20,11 @@
 #include "Constants.h"
 #include "Log.h"
 #include "Message.hpp"
+#include "ParCommon.hpp"
 
 #include <DYNCommon.h>
 #include <DYNDataInterface.h>
 #include <DYNNetworkInterface.h>
-#include <PARParameter.h>
-#include <PARParameterFactory.h>
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
 #include <PARReference.h>
@@ -42,12 +41,6 @@ namespace helper {
 
 static constexpr double kGoverNullValue_ = 0.;     ///< KGover null value
 static constexpr double kGoverDefaultValue_ = 1.;  ///< KGover default value
-
-template<class T>
-static boost::shared_ptr<parameters::Parameter>
-buildParameter(const std::string& name, const T& value) {
-  return parameters::ParameterFactory::newParameter(name, value);
-}
 
 static boost::shared_ptr<parameters::Reference>
 buildReference(const std::string& name, const std::string& origName, const std::string& type, const boost::optional<std::string>& componentId = {}) {
