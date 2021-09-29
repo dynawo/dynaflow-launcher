@@ -273,10 +273,10 @@ build_tests_coverage() {
 
 launch() {
     if [ ! -f $1 ]; then
-        error_exit "IIDM network file $network doesn't exist"
+        error_exit "IIDM network file $1 doesn't exist"
     fi
     if [ ! -f $2 ]; then
-        error_exit "DFL configuration file $config doesn't exist"
+        error_exit "DFL configuration file $2 doesn't exist"
     fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
