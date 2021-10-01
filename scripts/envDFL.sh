@@ -261,7 +261,9 @@ cmake_build() {
 cmake_tests() {
     pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     ctest -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED --output-on-failure
+    RETURN_CODE=$?
     popd > /dev/null
+    return ${RETURN_CODE}
 }
 
 cmake_coverage() {

@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  # Trigger the workflow on push or pull request events on the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  # Allow running the workflow manually from the Actions tab of the user interface
+  workflow_dispatch:
+
+jobs:
+  fedora:
+    name: Linux Fedora (Debug, GCC, cxx11)
+    runs-on: ubuntu-latest
+    container: dynawo/dynawo-ci:latest
+    strategy:
+      fail-fast: false
+    env:
+      #TODO(Luma) avoid knowing the exact version in advance
+      DYNAWO_VERSION: 1.3.0
+      DYNAFLOW_LAUNCHER_BUILD_TYPE: Debug
+      DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
+      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
+      DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
+      GH_API: ${{ github.api_url }}/repos/${{ github.repository }}
+      GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
+      GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
+      CURL_JSON: 'curl --silent --header "Content-Type": "application/json"'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Fetch Dynawo and Dynawo algorithms
+        run: |
+          source .github/workflows/tools.sh
+
+          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
+
+      - name: Unzip Dynawo and Dynawo algorithms
+        run: |
+          unzip -qq "Dynawo_headers_V${DYNAWO_VERSION}.zip"
+          unzip -qq "DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip"
+
+      - name: Build
+        run: |
+          export DYNAWO_HOME=$(pwd)/dynawo
+          export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+          export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+          scripts/envDFL.sh build-user
+
+      - name: Test
+        run: |
+          export DYNAWO_HOME=$(pwd)/dynawo
+          export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+          export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+          scripts/envDFL.sh tests
+
+      - name: Coverage (disabled)
+        run: |
+          export DYNAWO_HOME=$(pwd)/dynawo
+          export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+          export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+          #TODO(Luma) fix coverage complaining about errors that seem related to boost:
+          #   Cannot open file: exceptions.hpp.gcov
+          #   Error(s) while accumulating results:
+          #     Looks like there are more lines in the file: /work/dynaflow-launcher/dynawo/include/boost/program_options/parsers.hpp
+          #     Looks like there are more lines in the file: /work/dynaflow-launcher/dynawo/include/boost/program_options/value_semantic.hpp
+          #     Failed to perform coverage
+          # scripts/envDFL.sh build-tests-coverage
+          echo "Disabled until coverage errors are fixed"
