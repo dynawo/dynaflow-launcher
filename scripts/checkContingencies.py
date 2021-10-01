@@ -27,6 +27,7 @@ def check_contingencies(contingencies_file, results_folder):
         timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.log')
         finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
 
+        print("Checking contingency " + contingency_id);
         if os.path.isdir(os.path.join(results_folder , contingency_id)):
             # This is a valid contingency, check that every file exists and
             # conforms to what we expect
@@ -36,6 +37,10 @@ def check_contingencies(contingencies_file, results_folder):
                 c_par        = check_file_with(check_par,                     "Par",        par_file, element, contingency_id)
                 c_timeline   = check_file_with(check_timeline,           "Timeline",   timeline_file, element, contingency_id)
                 c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
+                print("  check dyd         : {}".format(c_dyd))
+                print("  check par         : {}".format(c_par))
+                print("  check timeline    : {}".format(c_timeline))
+                print("  check final state : {}".format(c_finalState))
                 all_ok = all_ok and c_dyd and c_par and c_timeline and c_finalState
         else:
             # This is an invalid contingency, check that actually no file
@@ -44,6 +49,7 @@ def check_contingencies(contingencies_file, results_folder):
                     not os.path.isfile(dyd_file) and
                     not os.path.isfile(par_file)
             )
+            print("  declared invalid, check is ok : {}".format(all_ok))
 
     # Returns for the OS
     if all_ok:
