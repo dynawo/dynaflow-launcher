@@ -753,8 +753,9 @@ class DynModelAlgorithm : public NodeAlgorithm {
    *
    * @param models the models to update
    * @param manager the dynamic data base manager to use
+   * @param shuntRegulationOn determines if shunt regulation is on (true) or off (false)
    */
-  DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager);
+  DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager, bool shuntRegulationOn);
 
   /**
    * @brief Perform the algorithm
@@ -832,8 +833,11 @@ class DynModelAlgorithm : public NodeAlgorithm {
   static boost::optional<boost::filesystem::path> findLibraryPath(const std::string& lib);
 
  private:
-  /// @brief Extract models from configuration before processing the nodes
-  void extractDynModels();
+  /**
+   * @brief Extract models from configuration before processing the nodes
+   * @param shuntRegulationOn determines if shunt regulation is on (true) or off (false)
+   */
+  void extractDynModels(bool shuntRegulationOn);
 
   /**
    * @brief Process single association from configuration

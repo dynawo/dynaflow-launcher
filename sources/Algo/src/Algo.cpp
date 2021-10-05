@@ -438,10 +438,10 @@ HVDCDefinitionAlgorithm::operator()(const NodePtr& node) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-DynModelAlgorithm::DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager) :
+DynModelAlgorithm::DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager, bool shuntRegulationOn) :
     dynamicModels_(models),
     manager_(manager) {
-  extractDynModels();
+  extractDynModels(shuntRegulationOn);
 }
 
 boost::optional<boost::filesystem::path>
@@ -514,7 +514,7 @@ DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingXmlDocum
 }
 
 void
-DynModelAlgorithm::extractDynModels() {
+DynModelAlgorithm::extractDynModels(bool shuntRegulationOn) {
   using inputs::AssemblingXmlDocument;
 
   const auto& automatons = manager_.assemblingDocument().dynamicAutomatons();
@@ -527,8 +527,12 @@ DynModelAlgorithm::extractDynModels() {
     singleAssociationsMap[asso.id] = asso;
   }
   std::unordered_map<std::string, AssemblingXmlDocument::MultipleAssociation> multiAssociationsMap;
-  for (const auto& asso : multiAssociations) {
-    multiAssociationsMap[asso.id] = asso;
+  if (shuntRegulationOn) {
+    // In case shunt regulation is off, no shunt is processed, including shunt associations (i.e. multi associations)
+    // defined in inputs files : this will lead to partially connected dynamic models that must be filtered in upper layer
+    for (const auto& asso : multiAssociations) {
+      multiAssociationsMap[asso.id] = asso;
+    }
   }
 
   for (const auto& automaton : automatons) {

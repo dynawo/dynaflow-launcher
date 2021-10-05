@@ -74,8 +74,13 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
-  networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_));
-  networkManager_.onNode(algo::ShuntDefinitionAlgorithm(shuntDefinitions_, dynamicDataBaseManager_));
+  networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_, config_.isShuntRegulationOn()));
+  if (config_.isShuntRegulationOn()) {
+    // no need to extract shunt informations from network if shunt regulation is disabled:
+    // - in case of shunts in dynamic models, they are filtered in DynModelAlgorithm and will not be exported
+    // - in case of centralized shunt regulation, an empty output map is equivalent to no shunt in network
+    networkManager_.onNode(algo::ShuntDefinitionAlgorithm(shuntDefinitions_, dynamicDataBaseManager_));
+  }
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
 }
 
@@ -92,6 +97,9 @@ Context::process() {
   networkManager_.walkNodes();
 
   // Check models generated with algorithm
+  // This filters:
+  // - dynamic models which have only one part connected in network
+  // - models that are using multiple associations (shunts) in case shunt regulation is off
   filterPartiallyConnectedDynamicModels();
 
   LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
@@ -117,7 +125,10 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
                                                             networkManager_.getMapBusVSCConvertersBusId(),
                                                             networkManager_.dataInterface()->getServiceManager()));
-  onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(svarcsDefinitions_));
+  if (config_.isSVCRegulationOn()) {
+    onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(svarcsDefinitions_));
+  }
+
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     const auto& contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
