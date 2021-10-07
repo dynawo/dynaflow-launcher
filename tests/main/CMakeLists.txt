@@ -51,6 +51,7 @@ macro(DEFINE_LAUNCH_TEST _name)
 endmacro()
 
 DEFINE_LAUNCH_TEST(launch)
+DEFINE_LAUNCH_TEST(launch_slack)
 
 DEFINE_LAUNCH_TEST(launch_P)
 
