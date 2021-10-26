@@ -83,7 +83,8 @@ TEST(Job, write) {
   ASSERT_EQ(true, appender->getShowLevelTag());
   ASSERT_EQ("dynawo.log", appender->getFilePath());
 
-  auto finalstate = outputs->getFinalStateEntry();
-  ASSERT_EQ(true, finalstate->getExportIIDMFile());
-  ASSERT_EQ(false, finalstate->getExportDumpFile());
+  auto finalstates = outputs->getFinalStateEntries();
+  ASSERT_EQ(finalstates.size(), 1);
+  ASSERT_EQ(true, finalstates.front()->getExportIIDMFile());
+  ASSERT_EQ(false, finalstates.front()->getExportDumpFile());
 }

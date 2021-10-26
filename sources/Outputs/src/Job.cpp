@@ -139,7 +139,7 @@ Job::writeOutputs() const {
   auto final_state = job::FinalStateEntryFactory::newInstance();
   final_state->setExportIIDMFile(exportIIDMFile_);
   final_state->setExportDumpFile(exportDumpFile_);
-  output->setFinalStateEntry(final_state);
+  output->addFinalStateEntry(final_state);
 
 #if _DEBUG_
   auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
@@ -252,7 +252,6 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
 
   // final state
 
-  auto finalState = outputs->getFinalStateEntry();
   attrs.add("exportIIDMFile", exportIIDMFile_);
   attrs.add("exportDumpFile", exportDumpFile_);
   formatter->startElement("dyn", "finalState", attrs);
