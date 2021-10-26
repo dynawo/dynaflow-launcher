@@ -127,7 +127,7 @@ Job::writeOutputs() const {
   auto final_state = job::FinalStateEntryFactory::newInstance();
   final_state->setExportIIDMFile(exportIIDMFile_);
   final_state->setExportDumpFile(exportDumpFile_);
-  output->setFinalStateEntry(final_state);
+  output->addFinalStateEntry(final_state);
 
   return output;
 }
@@ -232,7 +232,6 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const std::stri
 
   // final state
 
-  auto finalState = outputs->getFinalStateEntry();
   attrs.add("exportIIDMFile", exportIIDMFile_);
   attrs.add("exportDumpFile", exportDumpFile_);
   formatter->startElement("dyn", "finalState", attrs);
