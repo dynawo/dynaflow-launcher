@@ -67,6 +67,8 @@ option(DYNAFLOW_LAUNCHER_USE_ADDITIONAL_SOURCEFILE "Use the additional source fi
 
 option(DYNAFLOW_LAUNCHER_SHARED_LIB "Compile shared library" OFF)
 
+option(DYNAFLOW_LAUNCHER_USE_LOCAL_DYNAWO "Use local external dependencies instead of downloadingthem" OFF)
+
 # Use your own option for tests, in case people use your library through add_subdirectory
 cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "Enable ${PROJECT_NAME} project tests targets" ON # By default we want tests if CTest is enabled
@@ -85,6 +87,8 @@ set_optimization()
 
 
 ## External dependencies
+add_subdirectory(external)
+
 ## Dynawo and sub-dependencies
 check_env_var(DYNAWO_HOME) # Correspond to deploy installation
 get_filename_component(DYNAWO_HOME ${DYNAWO_HOME} ABSOLUTE)
@@ -135,7 +139,7 @@ endif()
 add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
 
-install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
+install(DIRECTORY ${DYNAWO_HOME}/. DESTINATION ${CMAKE_INSTALL_PREFIX}/external/dynawo)
 install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/external/dynawo-algorithms)
 
 ## Dynawo
