@@ -197,6 +197,22 @@ class Node {
    * @param id the node id
    * @param vl the voltage level element containing the node
    * @param nominalVoltage the nominal voltage of the node
+   * @param fictitious the flag to mark the node is fictitious
+   * @param shunts the list of the shunts connectable to this node
+   *
+   * @returns the built node
+   */
+  static std::shared_ptr<Node> build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, bool fictitious,
+                                     const std::vector<Shunt>& shunts);
+
+  /**
+   * @brief Builder for node
+   *
+   * This builder will perform connections for voltage level element
+   *
+   * @param id the node id
+   * @param vl the voltage level element containing the node
+   * @param nominalVoltage the nominal voltage of the node
    * @param shunts the list of the shunts connectable to this node
    *
    * @returns the built node
@@ -206,6 +222,7 @@ class Node {
   const NodeId id;                                   ///< node id
   const std::weak_ptr<VoltageLevel> voltageLevel;    ///< voltage level containing the node
   const double nominalVoltage;                       ///< Nominal voltage of the node
+  const bool fictitious;                             ///< Flag to mark the node is fictitious
   const std::vector<Shunt> shunts;                   ///< Shunts connectable to the node
   std::vector<std::weak_ptr<Line>> lines;            ///< Lines connected to this node
   std::vector<std::weak_ptr<Tfo>> tfos;              ///< Transformers connected to this node
@@ -226,9 +243,10 @@ class Node {
    * @param id the node id
    * @param vl the voltage level element containing the node
    * @param nominalVoltage the voltage level associated with the node
+   * @param fictitious the flag to mark if node is fictitious
    * @param shunts the list of the shunts connectable to this node
    */
-  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, const std::vector<Shunt>& shunts);
+  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, bool fictitious, const std::vector<Shunt>& shunts);
 };
 
 /**

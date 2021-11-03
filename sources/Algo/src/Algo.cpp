@@ -33,6 +33,9 @@ SlackNodeAlgorithm::SlackNodeAlgorithm(NodePtr& slackNode) : NodeAlgorithm(), sl
 
 void
 SlackNodeAlgorithm::operator()(const NodePtr& node) {
+  if (node->fictitious) {
+    return;
+  }
   if (!slackNode_) {
     slackNode_ = node;
   } else {
