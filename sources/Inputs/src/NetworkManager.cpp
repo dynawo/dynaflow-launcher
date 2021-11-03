@@ -90,8 +90,8 @@ NetworkManager::buildTree() {
       assert(nodes_.count(nodeId) == 0);
 #endif
       auto found = shuntsMap.find(nodeId);
-      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{});
-      LOG(debug) << "Node " << nodeId << " created" << LOG_ENDL;
+      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), bus->isFictitious(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{});
+      LOG(debug) << "Node " << nodeId << " created" << (bus->isFictitious() ? " (fictitious)" : "") << LOG_ENDL;
       if (opt_id && *opt_id == nodeId) {
         LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
         slackNode_ = nodes_[nodeId];
