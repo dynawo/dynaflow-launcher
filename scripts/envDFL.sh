@@ -88,6 +88,29 @@ export_var_env_dynawo_with_default() {
   export_var_env_force_dynawo $1=$2
 }
 
+export_preload() {
+  lib="tcmalloc"
+  # uncomment to activate tcmalloc in debug when build is in debug
+  # if [ $DYNAWO_BUILD_TYPE == "Debug" ]; then
+  #   lib=$lib"_debug"
+  # fi
+  lib=$lib".so"
+
+  externalTcMallocLib=$(find $DYNAWO_HOME/lib -iname *$lib)
+  if [ -n "$externalTcMallocLib" ]; then
+    echo "Use downloaded tcmalloc library $externalTcMallocLib"
+    export LD_PRELOAD=$externalTcMallocLib
+    return
+  fi
+
+  nativeTcMallocLib=$(ldconfig -p | grep -e $lib$ | cut -d ' ' -f4)
+  if [ -n "$nativeTcMallocLib" ]; then
+    echo "Use native tcmalloc library $nativeTcMallocLib"
+    export LD_PRELOAD=$nativeTcMallocLib
+    return
+  fi
+}
+
 ld_library_path_remove() {
   export LD_LIBRARY_PATH=`echo -n $LD_LIBRARY_PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`;
 }
@@ -222,7 +245,7 @@ reset_environment_variables() {
     unset DYNAWO_IIDM_EXTENSION
     unset DYNAWO_LIBIIDM_EXTENSIONS
     unset IIDM_XML_XSD_PATH
-
+    unset LD_PRELOAD
     unset DYNAWO_ALGORITHMS_HOME
 }
 
@@ -254,12 +277,14 @@ cmake_build() {
 }
 
 cmake_tests() {
+    export_preload
     pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     ctest -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED --output-on-failure
     popd > /dev/null
 }
 
 cmake_coverage() {
+    export_preload
     ctest \
         -S cmake/CTestScript.cmake \
         -DDYNAWO_HOME=$DYNAWO_HOME \
@@ -284,6 +309,7 @@ build_tests_coverage() {
 }
 
 launch() {
+    export_preload
     if [ ! -f $1 ]; then
         error_exit "IIDM network file $network doesn't exist"
     fi
@@ -297,6 +323,7 @@ launch() {
 }
 
 launch_sa() {
+    export_preload
     if [ ! -f $1 ]; then
         error_exit "IIDM network file $1 doesn't exist"
     fi
