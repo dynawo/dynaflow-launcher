@@ -40,11 +40,14 @@ TEST(TestPar, write) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+  bool defineModel = true;
   std::vector<StaticVarCompensator> svarcs{
-      StaticVarCompensator("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-      StaticVarCompensator("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 0., 10.),
-      StaticVarCompensator("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-      StaticVarCompensator("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
+      StaticVarCompensator("SVARC_NO_MODEL_0", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., false),
+      StaticVarCompensator("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., defineModel),
+      StaticVarCompensator("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 0., 10., defineModel),
+      StaticVarCompensator("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., defineModel),
+      StaticVarCompensator("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., defineModel),
+      StaticVarCompensator("SVARC_NO_MODEL_1", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., false),
   };
   dfl::algo::StaticVarCompensatorDefinitions svarcDefs;
   std::transform(svarcs.begin(), svarcs.end(), std::back_inserter(svarcDefs.svarcs), [](const StaticVarCompensator& svarc) { return std::ref(svarc); });

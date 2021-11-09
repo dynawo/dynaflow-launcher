@@ -61,9 +61,10 @@ struct Generator {
    * @param targetP target active power of the generator
    * @param regulatedBusId the Bus Id this generator is regulating
    * @param connectedBusId the Bus Id this generator is connected to
+   * @param defineModel true if a dynamic model has to be defined for the generator
    */
   explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
-                     double targetP, const BusId& regulatedBusId, const BusId& connectedBusId) :
+                     double targetP, const boost::optional<BusId>& regulatedBusId, const BusId& connectedBusId, bool defineModel) :
       id{genId},
       points(curvePoints),
       qmin{qmin},
@@ -72,17 +73,19 @@ struct Generator {
       pmax{pmax},
       targetP{targetP},
       regulatedBusId{regulatedBusId},
-      connectedBusId{connectedBusId} {}
+      connectedBusId{connectedBusId},
+      defineModel(defineModel) {}
 
-  GeneratorId id;                          ///< generator id
-  std::vector<ReactiveCurvePoint> points;  ///< reactive points
-  double qmin;                             ///< minimum reactive power
-  double qmax;                             ///< maximum reactive power
-  double pmin;                             ///< minimum active power
-  double pmax;                             ///< maximum active power
-  double targetP;                          ///< target active power of the generator
-  const BusId regulatedBusId;              ///< regulated Bus Id
-  const BusId connectedBusId;              ///< connected Bus Id
+  GeneratorId id;                               ///< generator id
+  std::vector<ReactiveCurvePoint> points;       ///< reactive points
+  double qmin;                                  ///< minimum reactive power
+  double qmax;                                  ///< maximum reactive power
+  double pmin;                                  ///< minimum active power
+  double pmax;                                  ///< maximum active power
+  double targetP;                               ///< target active power of the generator
+  const boost::optional<BusId> regulatedBusId;  ///< regulated Bus Id (not defined if regulation disabled)
+  const BusId connectedBusId;                   ///< connected Bus Id
+  const bool defineModel;                       ///< true if a dynamic model must be defined for the generator
 };
 
 class HvdcLine;
@@ -178,9 +181,10 @@ struct StaticVarCompensator {
    * @param USetPointMax the high voltage set point of the SVarC
    * @param b0 the initial susceptance value  of the SVarC
    * @param slope the slope (kV/MVar) of the SVarC
+   * @param defineModel true if dynamic model has to be defined for SVarC
    */
   StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double VNom, double UMinActivation, double UMaxActivation,
-                       double USetPointMin, double USetPointMax, double b0, double slope) :
+                       double USetPointMin, double USetPointMax, double b0, double slope, bool defineModel) :
       id(id),
       bMin(bMin),
       bMax(bMax),
@@ -191,7 +195,8 @@ struct StaticVarCompensator {
       USetPointMin(USetPointMin),
       USetPointMax(USetPointMax),
       b0(b0),
-      slope(slope) {}
+      slope(slope),
+      defineModel(defineModel) {}
 
   const SVarCid id;              ///< the id of the SVarC
   const double bMin;             ///< the minimum susceptance value of the SVarC
@@ -204,6 +209,7 @@ struct StaticVarCompensator {
   const double USetPointMax;     ///< the high voltage set point of the SVarC
   const double b0;               ///< the initial susceptance value of the SVarC
   const double slope;            ///< the slope (kV/MVar) of the SVarC
+  const bool defineModel;        ///< true if dynamic model has to be defined for the SVarC
 };
 
 }  // namespace inputs

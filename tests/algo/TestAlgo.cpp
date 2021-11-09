@@ -325,12 +325,13 @@ TEST(Generators, base) {
       dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3),
   };
 
-  nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", points, -1, 1, -1, 1, 0, bus1, bus3);
-
-  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 0, bus2, bus2);
-
-  nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5, 0, bus3, bus2);
+  nodes[0]->generators.emplace_back("NO_MODEL_00", points0, 0, 0, 0, 0, 0, boost::make_optional(bus1), bus1, false);
+  nodes[0]->generators.emplace_back("NO_MODEL_01", points0, 0, 0, 0, 0, 0, boost::none, bus1, false);
+  nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0, 0, boost::make_optional(bus1), bus1, true);
+  nodes[0]->generators.emplace_back("01", points, -1, 1, -1, 1, 0, boost::make_optional(bus1), bus3, true);
+  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 0, boost::make_optional(bus2), bus2, true);
+  nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5, 0, boost::make_optional(bus3), bus2, true);
+  nodes[0]->generators.emplace_back("NO_MODEL_02", points0, 0, 0, 0, 0, 0, boost::none, bus2, false);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
@@ -390,11 +391,11 @@ TEST(Generators, SwitchConnexity) {
       dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5, 5, bus3),
   };
 
-  nodes[0]->generators.emplace_back("00", points0, -1, 1, -1, 1, 1, bus1, bus1);
+  nodes[0]->generators.emplace_back("00", points0, -1, 1, -1, 1, 1, boost::make_optional(bus1), bus1, true);
 
-  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 2, bus2, bus2);
+  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 2, boost::make_optional(bus2), bus2, true);
 
-  nodes[4]->generators.emplace_back("04", points, -5, 5, -5, 5, 5, bus3, bus3);
+  nodes[4]->generators.emplace_back("04", points, -5, 5, -5, 5, 5, boost::make_optional(bus3), bus3, true);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
@@ -671,7 +672,7 @@ testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> poin
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
-  Generator generator("G1", points, 3., 30., 33., 330., 100, bus1, bus2);
+  Generator generator("G1", points, 3., 30., 33., 330., 100, boost::make_optional(bus1), bus2, true);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {});
@@ -815,10 +816,11 @@ TEST(SVARC, base) {
       dfl::inputs::Node::build("6", vl2, 0.0, {}),
   };
 
-  nodes[0]->svarcs.emplace_back("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
-  nodes[0]->svarcs.emplace_back("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 10., 10.);
-  nodes[2]->svarcs.emplace_back("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
-  nodes[5]->svarcs.emplace_back("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
+  bool useDefaultModel = false;
+  nodes[0]->svarcs.emplace_back("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., useDefaultModel);
+  nodes[0]->svarcs.emplace_back("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 10., 10., useDefaultModel);
+  nodes[2]->svarcs.emplace_back("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., useDefaultModel);
+  nodes[5]->svarcs.emplace_back("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., useDefaultModel);
 
   dfl::algo::StaticVarCompensatorDefinitions def;
   dfl::algo::StaticVarCompensatorAlgorithm algo(def);

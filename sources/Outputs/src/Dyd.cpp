@@ -144,8 +144,10 @@ Dyd::write() const {
   }
   for (const auto& svarcRef : def_.svarcsDefinitions.svarcs) {
     const auto& svarc = svarcRef.get();
-    dynamicModelsToConnect->addModel(writeSVarC(svarc, def_.basename));
-    dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarc));
+    if (svarc.defineModel) {
+      dynamicModelsToConnect->addModel(writeSVarC(svarc, def_.basename));
+      dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarc));
+    }
   }
 
   dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi");

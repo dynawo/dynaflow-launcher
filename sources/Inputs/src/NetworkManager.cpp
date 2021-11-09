@@ -129,14 +129,19 @@ NetworkManager::buildTree() {
       auto targetP = generator->getTargetP();
       auto pmin = generator->getPMin();
       auto pmax = generator->getPMax();
+      bool defineGeneratorModel = false;
+      boost::optional<BusId> regulated_bus;
       if (generator->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) &&
           (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
         // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
-        auto regulated_bus = updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
-        nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin,
-                                                pmax, targetP, regulated_bus, nodeid);
-        LOG(debug) << "Node " << nodeid << " contains generator " << generator->getID() << LOG_ENDL;
+        regulated_bus = boost::make_optional(updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_));
+        defineGeneratorModel = true;
+      } else {
+        LOG(warn) << MESS(GeneratorVRegDisabledOrBadP, generator->getID()) << LOG_ENDL;
       }
+      nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin, pmax,
+                                              targetP, regulated_bus, nodeid, defineGeneratorModel);
+      LOG(debug) << "Node " << nodeid << " contains generator " << generator->getID() << LOG_ENDL;
     }
 
     const auto& switches = networkVL->getSwitches();
@@ -157,21 +162,21 @@ NetworkManager::buildTree() {
 
     const auto& svarcs = networkVL->getStaticVarCompensators();
     for (const auto& svarc : svarcs) {
+      bool defineSvarcModel = true;
       if (!svarc->getInitialConnected()) {
-        continue;
-      }
-      if (!svarc->hasStandbyAutomaton()) {
+        LOG(warn) << MESS(SVarCInitiallyDisconnected, svarc->getID()) << LOG_ENDL;
+        defineSvarcModel = false;
+      } else if (!svarc->hasStandbyAutomaton()) {
         LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "standByAutomaton", svarc->getID()) << LOG_ENDL;
-        continue;
-      }
-      if (!svarc->hasVoltagePerReactivePowerControl()) {
+        defineSvarcModel = false;
+      } else if (!svarc->hasVoltagePerReactivePowerControl()) {
         LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "voltagePerReactivePowerControl", svarc->getID()) << LOG_ENDL;
-        continue;
+        defineSvarcModel = false;
       }
       auto nodeid = svarc->getBusInterface()->getID();
       nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), svarc->getBMin(), svarc->getBMax(), svarc->getVSetPoint(), svarc->getVNom(),
                                           svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
-                                          svarc->getB0(), svarc->getSlope());
+                                          svarc->getB0(), svarc->getSlope(), defineSvarcModel);
       LOG(debug) << "Node " << nodeid << " contains static var compensator " << svarc->getID() << LOG_ENDL;
     }
 

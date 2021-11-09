@@ -101,14 +101,17 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
   };
 
   for (const auto& generator : node_generators) {
-    auto it = busMap_.find(generator.regulatedBusId);
+    if (!generator.defineModel || !generator.regulatedBusId) {
+      continue;
+    }
+    auto it = busMap_.find(*generator.regulatedBusId);
     assert(it != busMap_.end());
     auto nbOfRegulatingGenerators = it->second;
     GeneratorDefinition::ModelType model = GeneratorDefinition::ModelType::SIGNALN;
     if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
       model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
       if (!isModelWithInvalidDiagram(model, generator)) {
-        busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+        busesWithDynamicModel_.insert({*generator.regulatedBusId, generator.id});
       }
     } else {
       switch (nbOfRegulatingGenerators) {
@@ -122,7 +125,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
       case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
         model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
         if (!isModelWithInvalidDiagram(model, generator)) {
-          busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+          busesWithDynamicModel_.insert({*generator.regulatedBusId, generator.id});
         }
         break;
       default:  //  impossible by definition of the enum
@@ -133,7 +136,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node) {
       continue;
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
-                             generator.regulatedBusId);
+                             *generator.regulatedBusId);
   }
 }
 

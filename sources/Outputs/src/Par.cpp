@@ -192,7 +192,9 @@ Par::write() const {
     dynamicModelsToConnect->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators());
   }
   for (const auto& svarc : def_.svarcsDefinitions.svarcs) {
-    dynamicModelsToConnect->addParametersSet(writeStaticVarCompensator(svarc));
+    if (svarc.get().defineModel) {
+      dynamicModelsToConnect->addParametersSet(writeStaticVarCompensator(svarc));
+    }
   }
 
   for (const auto& hvdcLine : def_.hvdcDefinitions.hvdcLines) {
