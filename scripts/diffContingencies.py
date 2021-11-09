@@ -63,14 +63,26 @@ if __name__ == "__main__":
     options = parser.parse_args()
     total_diffs = 0
 
+    reference_root = full_path(options.root, "reference", options.testdir)
     results_root = full_path(options.root, "results", options.testdir)
 
+    # Check that all references have a result file
+    # FIXME(Luma): allow this code to execute when Static Var Compensators are allowed in contingencies
+    if False:
+        for folder in os.listdir(reference_root):
+            reference_path = full_path(options.root, "reference", options.testdir, folder, "outputIIDM.xml")
+            if os.path.exists(reference_path):
+                result_path = full_path(options.root, "results", options.testdir, folder, "outputs/finalState/outputIIDM.xml")
+                if not os.path.exists(result_path):
+                    print(folder + ": Reference exists but no results produced")
+                    total_diffs += 1
+
+    # Check that all result files are equal to the corresponding reference
     print(results_root)
     for folder in os.listdir(results_root):
-
         if os.path.isdir(os.path.join(results_root, folder)):
             nb_differences = compare_file(options, folder)
-
             total_diffs += nb_differences
+
 
     sys.exit(total_diffs)

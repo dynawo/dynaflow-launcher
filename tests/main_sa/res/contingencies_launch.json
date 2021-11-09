@@ -138,10 +138,37 @@
       ]
     },
     {
+      "id": "dangling_line_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "DANGLING_LINE"
+        }
+      ]
+    },
+    {
       "id": "line_contingency",
       "elements": [
         {
           "id": "_044cd006-c766-11e1-8775-005056c00008",
+          "type": "LINE"
+        }
+      ]
+    },
+    {
+      "id": "line_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "LINE"
+        }
+      ]
+    },
+    {
+      "id": "line_contingency_open_ended",
+      "elements": [
+        {
+          "id": "_044c5ada-c766-11e1-8775-005056c00008-1",
           "type": "LINE"
         }
       ]
@@ -165,6 +192,15 @@
       ]
     },
     {
+      "id": "two_windings_transformer_open_ended",
+      "elements": [
+        {
+          "id": "_045e3525-c766-11e1-8775-005056c00008-1",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
       "id": "contingency_bad_type",
       "elements": [
         {
@@ -181,6 +217,16 @@
           "type" : "STATIC_VAR_COMPENSATOR"
         }
       ]
+    },
+    {
+      "id": "three_windings_transformer_contingency",
+      "elements": [
+          {
+            "id": "_86d83c7d-7826-4c16-b161-4ce17174e77f-1",
+            "type": "THREE_WINDINGS_TRANSFORMER"
+          }
+      ]
     }
   ]
 }
+

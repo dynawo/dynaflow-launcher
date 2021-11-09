@@ -186,7 +186,7 @@ NetworkManager::buildTree() {
   for (const auto& line : lines) {
     auto bus1 = line->getBusInterface1();
     auto bus2 = line->getBusInterface2();
-    if (line->getInitialConnected1() && line->getInitialConnected2()) {
+    if (line->getInitialConnected1() || line->getInitialConnected2()) {
 #if _DEBUG_
       assert(nodes_.count(bus1->getID()) > 0);
       assert(nodes_.count(bus2->getID()) > 0);
@@ -202,7 +202,7 @@ NetworkManager::buildTree() {
   for (const auto& transfo : transfos) {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
-    if (transfo->getInitialConnected1() && transfo->getInitialConnected2()) {
+    if (transfo->getInitialConnected1() || transfo->getInitialConnected2()) {
       auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
       tfos_.push_back(tfo);
 
@@ -215,7 +215,7 @@ NetworkManager::buildTree() {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
     auto bus3 = transfo->getBusInterface3();
-    if (transfo->getInitialConnected1() && transfo->getInitialConnected2() && transfo->getInitialConnected3()) {
+    if (transfo->getInitialConnected1() || transfo->getInitialConnected2() || transfo->getInitialConnected3()) {
       auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()));
       tfos_.push_back(tfo);
 

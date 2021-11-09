@@ -3,8 +3,8 @@
 import argparse
 import json
 import os
-import sys
 import re
+import sys
 import xml.etree.ElementTree as ET
 
 ### Regexes ####################################################################
@@ -31,12 +31,7 @@ def check_contingencies(contingencies_file, results_folder):
             # This is a valid contingency, check that every file exists and
             # conforms to what we expect
             for element in contingency_elements:
-                # Let's check them ahead, so that 'and' doesn't shortcut
-                c_dyd        = check_file_with(check_dyd,                     "Dyd",        dyd_file, element, contingency_id)
-                c_par        = check_file_with(check_par,                     "Par",        par_file, element, contingency_id)
-                c_timeline   = check_file_with(check_timeline,           "Timeline",   timeline_file, element, contingency_id)
-                c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
-                all_ok = all_ok and c_dyd and c_par and c_timeline and c_finalState
+                all_ok = all_ok and check_element(element, contingency_id, dyd_file, par_file, timeline_file, finalState_file)
         else:
             # This is an invalid contingency, check that actually no file
             # related to it exists, we only need to worry about DYD and PAR files
@@ -50,6 +45,29 @@ def check_contingencies(contingencies_file, results_folder):
         return 0 # All went OK
     else:
         return 1 # We had some problems
+
+def check_element(element, contingency_id, dyd_file, par_file, timeline_file, finalState_file):
+    c_inputs_and_timeline = False
+    (element_id, element_type) = element
+    # The dynawo input files DYD, PAR and the timeline has references to the three two-winding transformers
+    # that dynawo uses to model the three-winding transformers
+    # But the final state contains the original element as a three-winding transformer
+    if element_type == 'THREE_WINDINGS_TRANSFORMER':
+        c1 = check_element_inputs_and_timeline((element_id + '_1', 'TWO_WINDINGS_TRANSFORMER'), contingency_id, dyd_file, par_file, timeline_file)
+        c2 = check_element_inputs_and_timeline((element_id + '_2', 'TWO_WINDINGS_TRANSFORMER'), contingency_id, dyd_file, par_file, timeline_file)
+        c3 = check_element_inputs_and_timeline((element_id + '_3', 'TWO_WINDINGS_TRANSFORMER'), contingency_id, dyd_file, par_file, timeline_file)
+        c_inputs_and_timeline = c1 and c2 and c3
+    else:
+        c_inputs_and_timeline = check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_file, timeline_file)
+    c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
+    return c_inputs_and_timeline and c_finalState
+
+def check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_file, timeline_file):
+    # Let's check them ahead, so that 'and' doesn't shortcut
+    c_dyd      = check_file_with(check_dyd,           "Dyd", dyd_file, element, contingency_id)
+    c_par      = check_file_with(check_par,           "Par", par_file, element, contingency_id)
+    c_timeline = check_file_with(check_timeline, "Timeline", timeline_file, element, contingency_id)
+    return c_dyd and c_par and c_timeline
 
 def load_contingencies(contingencies_file):
     """Returns a list like: list(id, list(elements))  with one item
@@ -108,7 +126,7 @@ def check_finalState(iidm_file, element):
     def check_attrs(el, a_n, a_v):
         """Checks all of the attribs in a_n are in the array a_v"""
         for n in a_n:
-            check =((n in el.attrib) and el.attrib[n] in a_v)
+            check = ((n in el.attrib) and el.attrib[n] in a_v)
             if not check:
                 print("Check fails for attr " + n + ", value = " + el.attrib[n])
                 return False
@@ -126,6 +144,7 @@ def check_finalState(iidm_file, element):
 
     p_q = ['p', 'q']
     p12_q12 = ['p1','p2','q1','q2']
+    p123_q123 = ['p1','p2','p3','q1','q2','q3']
     attrs_to_check = {
         'LOAD': p_q,
         'GENERATOR': p_q,
@@ -133,6 +152,7 @@ def check_finalState(iidm_file, element):
         'BRANCH': p12_q12,
         'LINE': p12_q12,
         'TWO_WINDINGS_TRANSFORMER': p12_q12,
+        'THREE_WINDINGS_TRANSFORMER': p123_q123,
         'SHUNT_COMPENSATOR': ['q'],
         'STATIC_VAR_COMPENSATOR': ['q']}
     allowed_values = ['0', '-0']
@@ -155,7 +175,7 @@ def xml_find(file, path):
 def get_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument("root", type=str, help="Root directory to process")
-    parser.add_argument("test", type=str, help="Root directory to process")
+    parser.add_argument("test", type=str, help="Test directory to process")
 
     return parser
 
