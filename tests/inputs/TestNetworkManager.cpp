@@ -67,6 +67,15 @@ TEST(NetworkManager, hvdcLines) {
   for (int index = 0; index < 2; ++index) {
     ASSERT_TRUE(hvdcLineEqual(*hvdcLines[index], *expected_hvdcLines[index]));
   }
+
+  auto converters = manager.computeVSCConverters();
+  ASSERT_EQ(converters.size(), 2);
+  std::vector<dfl::inputs::Converter::ConverterId> ids;
+  std::transform(converters.begin(), converters.end(), std::back_inserter(ids),
+                 [](const std::shared_ptr<dfl::inputs::Converter>& converter) { return converter->converterId; });
+  std::sort(ids.begin(), ids.end());
+  ASSERT_EQ(ids.at(0), "VSCStation1");
+  ASSERT_EQ(ids.at(1), "VSCStation2");
 }
 
 TEST(NetworkManager, generators) {

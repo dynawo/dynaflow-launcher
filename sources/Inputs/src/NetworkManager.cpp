@@ -283,5 +283,18 @@ NetworkManager::walkNodes() const {
   }
 }
 
+std::unordered_set<std::shared_ptr<Converter>>
+NetworkManager::computeVSCConverters() const {
+  std::unordered_set<std::shared_ptr<Converter>> ret;
+  for (const auto& hvdcLine : hvdcLines_) {
+    if (hvdcLine->converterType != HvdcLine::ConverterType::VSC) {
+      continue;
+    }
+    ret.insert(hvdcLine->converter1);
+    ret.insert(hvdcLine->converter2);
+  }
+  return ret;
+}
+
 }  // namespace inputs
 }  // namespace dfl

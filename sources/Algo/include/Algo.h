@@ -528,10 +528,14 @@ class HVDCDefinitionAlgorithm : public NodeAlgorithm {
    *
    * @param hvdcLinesDefinitions the HVDC line definitions to update
    * @param infiniteReactiveLimits the configuration data of whether we use infinite reactive limits
+   * @param vscConverters list of VSC converters
    * @param mapBusVSCConvertersBusId the mapping of buses and their number of VSC converters regulating them
+   * @param serviceManager the dynawo service manager to use
    */
   HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
-                          const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId);
+                          const std::unordered_set<std::shared_ptr<inputs::Converter>>& vscConverters,
+                          const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId,
+                          const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager);
 
   /**
    * @brief Perform the algorithm
@@ -548,9 +552,20 @@ class HVDCDefinitionAlgorithm : public NodeAlgorithm {
   /// @brief HVDC model definition
   struct HVDCModelDefinition {
     using VSCBusPair = std::pair<HVDCDefinition::BusId, VSCDefinition::VSCId>;  ///< Alias for pair of bus id and VSC id
+    /// @brief Hash structure for VSCBusPair
+    struct VSCBusPairHash {
+      /**
+       * @brief Operator to retrieve hash value
+       *
+       * @param pair the VSCBusPair to hash
+       * @return the computed hash
+       */
+      std::size_t operator()(const VSCBusPair& pair) const noexcept;
+    };
+    using VSCBusPairSet = std::unordered_set<VSCBusPair, VSCBusPairHash>;  ///< Alias for set of VSCBusPair
 
-    HVDCDefinition::HVDCModel model;                     ///< the model to use
-    std::vector<VSCBusPair> vscBusIdsMultipleRegulated;  ///< the VSCs and their bus that are involved in multiple VSC regulations
+    HVDCDefinition::HVDCModel model;           ///< the model to use
+    VSCBusPairSet vscBusIdsMultipleRegulated;  ///< the VSCs and their bus that are involved in multiple VSC regulations
   };
 
  private:
@@ -559,9 +574,11 @@ class HVDCDefinitionAlgorithm : public NodeAlgorithm {
    * @param hvdcline the HVDC line to process
    * @param position the position of the extremities
    * @param type the converter type (VSC or LCC)
+   * @param node the node currently processed (one of the ends of the HVDC line)
    * @returns the model definition to use
    */
-  HVDCModelDefinition computeModel(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type) const;
+  HVDCModelDefinition computeModel(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type,
+                                   const NodePtr& node) const;
 
   /**
    * @brief Compute the model definition for VSC converters
@@ -571,11 +588,33 @@ class HVDCDefinitionAlgorithm : public NodeAlgorithm {
    * @param multipleVSCFiniteReactive model to use in case of multiple VSC and finite reactive limits used
    * @param oneVSCInfiniteReactive model to use in case of only one VSC and infinite reactive limits used
    * @param oneVSCFiniteReactive model to use in case of only one VSC and finite reactive limits used
+   * @param node the node currently processed
    * @returns the model definition to use
    */
   HVDCModelDefinition computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position,
                                       HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
-                                      HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive) const;
+                                      HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive,
+                                      const NodePtr& node) const;
+
+  /**
+   * @brief Get the VSC converters Connected By Switches
+   *
+   * @param hvdcline the HVDC line to process
+   * @param position the position of the extremities
+   * @param node the node currently processed
+   *
+   * @return The set, if relevant, of VSC bus pair listing the VSC converters connected by switch on current line and node
+   */
+  HVDCModelDefinition::VSCBusPairSet getVSCConnectedBySwitches(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, const NodePtr& node) const;
+
+  /**
+   * @brief Get the Buses By Position
+   *
+   * @param hvdcline the HVDC line to process
+   * @param position the position of the extremities
+   * @return The set of VSC bus pair according to the position
+   */
+  HVDCModelDefinition::VSCBusPairSet getBusesByPosition(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position) const;
 
   /**
    * @brief Get the list of buses regulated by multiple VSC
@@ -583,7 +622,7 @@ class HVDCDefinitionAlgorithm : public NodeAlgorithm {
    * @param position the position of the extremities
    * @returns the list of pairs (bus, VSC) involved in multiple VSC regulation
    */
-  std::vector<HVDCModelDefinition::VSCBusPair> getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position) const;
+  HVDCModelDefinition::VSCBusPairSet getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position) const;
 
   /**
    * @brief Get or create HVDC line definition
@@ -598,6 +637,8 @@ class HVDCDefinitionAlgorithm : public NodeAlgorithm {
   HVDCLineDefinitions& hvdcLinesDefinitions_;                                 ///< The HVDC lines definitions to update
   const bool infiniteReactiveLimits_;                                         ///< whether we use infinite reactive limits
   const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId_;  ///< the map of buses and the number of VSC converters regulating them
+  boost::shared_ptr<DYN::ServiceManagerInterface> serviceManager_;            ///< Service manager to use
+  std::unordered_map<inputs::Converter::ConverterId, std::shared_ptr<inputs::Converter>> vscConverters_;  ///< List of VSC converters to use
 };
 
 /**
