@@ -27,6 +27,7 @@
 #include <map>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 namespace dfl {
 namespace inputs {
 
@@ -99,6 +100,13 @@ class NetworkManager {
   const std::vector<std::shared_ptr<HvdcLine>>& getHvdcLine() const {
     return hvdcLines_;
   }
+
+  /**
+   * @brief Computes total list of VSC converters accross all HVDClines
+   *
+   * @return list of the converters
+   */
+  std::unordered_set<std::shared_ptr<Converter>> computeVSCConverters() const;
 
   /**
    * @brief Retrieve the mapping of busId and the number of generators that regulate them

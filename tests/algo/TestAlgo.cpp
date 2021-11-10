@@ -428,6 +428,7 @@ hvdcLineDefinitionEqual(const dfl::algo::HVDCDefinition& lhs, const dfl::algo::H
 }
 
 TEST(HvdcLine, base) {
+  auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
@@ -472,7 +473,8 @@ TEST(HvdcLine, base) {
   dfl::algo::HVDCLineDefinitions hvdcDefs;
   constexpr bool useReactiveLimits = true;
   dfl::inputs::NetworkManager::BusMapRegulating map;
-  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, map);
+  std::unordered_set<std::shared_ptr<dfl::inputs::Converter>> set{vscStation2};
+  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, map, testServiceManager);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
@@ -502,6 +504,8 @@ checkVSCIds(const dfl::algo::HVDCLineDefinitions& hvdcDefs) {
       std::make_pair("2", dfl::algo::VSCDefinition("VSCStation2", 2.1, 2., 2., {})),
       std::make_pair("7", dfl::algo::VSCDefinition("VSCStation7", 7.1, 7., 2.7, {})),
       std::make_pair("8", dfl::algo::VSCDefinition("VSCStation8", 8.1, 8., 2.8, {})),
+      std::make_pair("11", dfl::algo::VSCDefinition("VSCStation11", 11.1, 11., 11., {})),
+      std::make_pair("12", dfl::algo::VSCDefinition("VSCStation12", 12.1, 12., 12., {})),
   };
   ASSERT_EQ(hvdcDefs.vscBusVSCDefinitionsMap.size(), expectedMap.size());
   for (const auto& pair : expectedMap) {
@@ -511,12 +515,14 @@ checkVSCIds(const dfl::algo::HVDCLineDefinitions& hvdcDefs) {
 }
 
 TEST(hvdcLine, models) {
+  auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
       dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
       dfl::inputs::Node::build("6", vl, 0.0, {}),  dfl::inputs::Node::build("7", vl, 0.0, {}),   dfl::inputs::Node::build("8", vl, 0.0, {}),
-      dfl::inputs::Node::build("9", vl, 0.0, {}),  dfl::inputs::Node::build("10", vl, 0.0, {}),
+      dfl::inputs::Node::build("9", vl, 0.0, {}),  dfl::inputs::Node::build("10", vl, 0.0, {}),  dfl::inputs::Node::build("11", vl, 0.0, {}),
+      dfl::inputs::Node::build("12", vl, 0.0, {}),
   };
   std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint> emptyPoints{};
 
@@ -538,6 +544,8 @@ TEST(hvdcLine, models) {
   auto vscStation8 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation8", "8", nullptr, true, 8.1, 8., emptyPoints);
   auto vscStation9 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation9", "9", nullptr, true, 9.1, 9., emptyPoints);
   auto vscStation10 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation10", "10", nullptr, true, 10.1, 10., emptyPoints);
+  auto vscStation11 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation11", "11", nullptr, true, 11.1, 11., emptyPoints);
+  auto vscStation12 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation12", "12", nullptr, true, 12.1, 12., emptyPoints);
   auto hvdcLineLCC = dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, dummyStation, boost::none,
                                                   0);  // first is in main cc
   auto hvdcLineVSC = dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, dummyStationVSC, boost::none,
@@ -556,6 +564,12 @@ TEST(hvdcLine, models) {
                                                                    boost::none, 9.10);  // both in main cc
   auto hvdcLineBothInMainComponent5 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain5", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation23, vscStation8,
                                                                    boost::none, 2.8);  // both in main cc
+  auto hvdcLineVSCSwitch1 =
+      dfl::inputs::HvdcLine::build("HVDCVSCLineSwitch1", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation11, dummyStationVSC, boost::none,
+                                   11);  // first in main cc
+  auto hvdcLineVSCSwitch2 =
+      dfl::inputs::HvdcLine::build("HVDCVSCLineSwitch2", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation12, dummyStationVSC, boost::none,
+                                   12);  // first in main cc
   nodes[0]->converters.push_back(lccStation1);
   nodes[1]->converters.push_back(vscStation1);
   nodes[2]->converters.push_back(vscStation2);
@@ -570,17 +584,25 @@ TEST(hvdcLine, models) {
   nodes[8]->converters.push_back(vscStation8);
   nodes[9]->converters.push_back(vscStation9);
   nodes[10]->converters.push_back(vscStation10);
+  nodes[11]->converters.push_back(vscStation11);
+  nodes[12]->converters.push_back(vscStation12);
+
+  testServiceManager->add("11", vl->id, "12");
 
   dfl::inputs::NetworkManager::BusMapRegulating busMap{std::make_pair("2", dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)};
 
   dfl::algo::HVDCLineDefinitions hvdcDefs;
   bool useReactiveLimits = true;
-  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, busMap);
+  std::unordered_set<std::shared_ptr<dfl::inputs::Converter>> set{
+      vscStation1, vscStation2, vscStation21, vscStation22, vscStation23, vscStation5,  vscStation6,
+      vscStation7, vscStation8, vscStation9,  vscStation10, vscStation11, vscStation12,
+  };
+  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, busMap, testServiceManager);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
   auto& hvdcLines = hvdcDefs.hvdcLines;
-  ASSERT_EQ(hvdcLines.size(), 9);
+  ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling);
@@ -590,6 +612,8 @@ TEST(hvdcLine, models) {
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulation);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain4").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPV);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain5").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQProp);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLineSwitch1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLineSwitch2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling);
 
   checkVSCIds(hvdcDefs);
 
@@ -597,9 +621,9 @@ TEST(hvdcLine, models) {
   hvdcDefs.vscBusVSCDefinitionsMap.clear();
   // case diagrams
   useReactiveLimits = false;
-  dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, busMap);
+  dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, set, busMap, testServiceManager);
   std::for_each(nodes.begin(), nodes.end(), algo2);
-  ASSERT_EQ(hvdcLines.size(), 9);
+  ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ);
@@ -609,6 +633,8 @@ TEST(hvdcLine, models) {
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain4").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain5").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLineSwitch1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLineSwitch2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ);
 
   checkVSCIds(hvdcDefs);
 }

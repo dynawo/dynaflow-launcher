@@ -114,8 +114,9 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
                                                                  config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
-  onNodeOnMainConnexComponent(
-      algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.getMapBusVSCConvertersBusId()));
+  onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
+                                                            networkManager_.getMapBusVSCConvertersBusId(),
+                                                            networkManager_.dataInterface()->getServiceManager()));
   onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(svarcsDefinitions_));
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     const auto& contingencies = contingenciesManager_.get();
