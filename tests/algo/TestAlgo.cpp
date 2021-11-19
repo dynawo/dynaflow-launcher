@@ -139,7 +139,7 @@ TEST(SlackNodeAlgo, BaseNonFictitious) {
   bool fictitious = true;
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("0", vl, 0.0, {}), dfl::inputs::Node::build("1", vl, 1.0, {}), dfl::inputs::Node::build("2", vl, 2.0, {}),
-      dfl::inputs::Node::build("3", vl, 3.0, {}), dfl::inputs::Node::build("4", vl, 4.0, {}), dfl::inputs::Node::build("5", vl, 5.0, fictitious, {}),
+      dfl::inputs::Node::build("3", vl, 3.0, {}), dfl::inputs::Node::build("4", vl, 4.0, {}), dfl::inputs::Node::build("5", vl, 5.0, {}, fictitious),
       dfl::inputs::Node::build("6", vl, 0.0, {}),
   };
 
