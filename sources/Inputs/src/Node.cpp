@@ -21,26 +21,18 @@ namespace dfl {
 namespace inputs {
 
 std::shared_ptr<Node>
-Node::build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, const std::vector<Shunt>& shunts) {
-  bool fictitious = false;
-  auto ret = std::shared_ptr<Node>(new Node(id, vl, nominalVoltage, fictitious, shunts));
+Node::build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, const std::vector<Shunt>& shunts, bool fictitious) {
+  auto ret = std::shared_ptr<Node>(new Node(id, vl, nominalVoltage, shunts, fictitious));
   vl->nodes.push_back(ret);
   return ret;
 }
 
-std::shared_ptr<Node>
-Node::build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, bool fictitious, const std::vector<Shunt>& shunts) {
-  auto ret = std::shared_ptr<Node>(new Node(id, vl, nominalVoltage, fictitious, shunts));
-  vl->nodes.push_back(ret);
-  return ret;
-}
-
-Node::Node(const NodeId& idNode, const std::shared_ptr<VoltageLevel> vl, double nominalVoltageNode, bool fictitious, const std::vector<Shunt>& shunts) :
+Node::Node(const NodeId& idNode, const std::shared_ptr<VoltageLevel> vl, double nominalVoltageNode, const std::vector<Shunt>& shunts, bool fictitious) :
     id(idNode),
     voltageLevel(vl),
     nominalVoltage{nominalVoltageNode},
-    fictitious(fictitious),
     shunts(shunts),
+    fictitious(fictitious),
     neighbours{} {}
 
 bool
