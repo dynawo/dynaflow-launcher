@@ -252,6 +252,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
 
   // final state
 
+  auto finalState = outputs->getFinalStateEntries().front();
   attrs.add("exportIIDMFile", exportIIDMFile_);
   attrs.add("exportDumpFile", exportDumpFile_);
   formatter->startElement("dyn", "finalState", attrs);

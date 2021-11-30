@@ -816,11 +816,11 @@ TEST(SVARC, base) {
       dfl::inputs::Node::build("6", vl2, 0.0, {}),
   };
 
-  bool useDefaultModel = false;
-  nodes[0]->svarcs.emplace_back("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., useDefaultModel);
-  nodes[0]->svarcs.emplace_back("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 10., 10., useDefaultModel);
-  nodes[2]->svarcs.emplace_back("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., useDefaultModel);
-  nodes[5]->svarcs.emplace_back("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., useDefaultModel);
+  bool defineModel = true;
+  nodes[0]->svarcs.emplace_back("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., defineModel);
+  nodes[0]->svarcs.emplace_back("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 10., 10., defineModel);
+  nodes[2]->svarcs.emplace_back("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., defineModel);
+  nodes[5]->svarcs.emplace_back("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., defineModel);
 
   dfl::algo::StaticVarCompensatorDefinitions def;
   dfl::algo::StaticVarCompensatorAlgorithm algo(def);
@@ -876,8 +876,9 @@ TEST(ContingencyValidation, base) {
   nodes[3]->loads.emplace_back("LOAD");
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
       {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
-  nodes[4]->generators.emplace_back("GENERATOR", points, 0, 0, 0, 0, 0, "4", "4");
-  nodes[6]->svarcs.emplace_back("SVARC", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10.);
+  const std::string bus4 = "4";
+  nodes[4]->generators.emplace_back("GENERATOR", points, 0, 0, 0, 0, 0, boost::make_optional(bus4), bus4, true);
+  nodes[6]->svarcs.emplace_back("SVARC", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true);
   nodes[7]->danglingLines.emplace_back("DANGLINGLINE");
   nodes[8]->busBarSections.emplace_back("BUSBAR");
 
