@@ -32,10 +32,17 @@ if __name__ == "__main__":
                 continue
             filepath = os.path.join(root, file)
             root_filetest = root.split("results")[0]
-            testname = root.split("results")[1].split(
-                "/")[1]  # First element after "results" : the splitted string starts with '/'
+            splittedPath = root.split("results")[1].split("/")
+            # First element after "results" : the splitted string starts with '/'
+            testname = splittedPath[1]
             filepathreference = os.path.join(
                 root_filetest, "reference", testname, file)
+
+            if len(splittedPath) and splittedPath[2] != "outputs":
+                # case main SA
+                filepathreference = os.path.join(
+                    root_filetest, "reference", testname, splittedPath[2], file)
+
             if not os.path.exists(filepathreference):
                 # No reference : ignore
                 continue
