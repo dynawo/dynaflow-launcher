@@ -120,6 +120,7 @@ define_options() {
 where [option] can be:
         =========== Build
         build-user                                build DynaFlow Launcher
+        clean                                     clean DynaFlow Launcher
         clean-build-all                           Clean and rebuild DynaFlow Launcher
         build-tests-coverage                      build DynaFlow Launcher and run coverage
 
@@ -230,6 +231,9 @@ reset_environment_variables() {
 clean() {
     rm -rf $DYNAFLOW_LAUNCHER_BUILD_DIR
     rm -rf $DYNAFLOW_LAUNCHER_INSTALL_DIR
+    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/outputs/results
+    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/main/results
+    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/main_sa/results
 }
 
 cmake_configure() {
@@ -360,6 +364,9 @@ case $1 in
         ;;
     build-tests-coverage)
         build_tests_coverage || error_exit "Failed to perform coverage"
+        ;;
+    clean)
+        clean || error_exit "Failed to clean DFL"
         ;;
     clean-build-all)
         clean_build_all || error_exit "Failed to clean build DFL"
