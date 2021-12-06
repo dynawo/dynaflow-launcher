@@ -14,6 +14,10 @@
     <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
+  <dyn:macroConnector id="ShuntMacroConnector">
+    <dyn:connect var1="shunt_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="shunt_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
   <dyn:macroConnector id="StaticVarCompensatorMacroConnector">
     <dyn:connect var1="SVarC_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
   </dyn:macroConnector>
@@ -34,6 +38,11 @@
     <dyn:staticRef var="PPu_value" staticVar="p"/>
     <dyn:staticRef var="QPu_value" staticVar="q"/>
     <dyn:staticRef var="state_value" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="ShuntStaticRef">
+    <dyn:staticRef var="shunt_QPu" staticVar="q"/>
+    <dyn:staticRef var="shunt_section_value" staticVar="currentSection"/>
+    <dyn:staticRef var="shunt_state" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:macroStaticReference id="StaticVarCompensatorStaticRef">
     <dyn:staticRef var="SVarC_PInjPu" staticVar="p"/>

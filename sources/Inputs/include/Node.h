@@ -141,15 +141,44 @@ class Tfo {
 /// @brief Topological shunt
 struct Shunt {
   using ShuntId = std::string;  ///< alias for shunt id
+  using BusId = std::string;    ///< Alias for bus id regulated by the shunt
 
   /**
-   * @brief Constructor
+   * @brief Construct a new Shunt
    *
    * @param id the shunt id
+   * @param busId the bus regulated by the shunt
+   * @param targetV the target voltage of the shunt
+   * @param voltageRegulationOn whether voltage regulation is enabled for the shunt
+   * @param bs the vector of the susceptance values for the shunt
+   * @param sectionNumber initial section index
    */
-  explicit Shunt(const ShuntId& id) : id(id) {}
+  Shunt(const ShuntId& id, const BusId& busId, double targetV, bool voltageRegulationOn, const std::vector<double>& bs, unsigned int sectionNumber) :
+      id(id),
+      busId(busId),
+      targetV(targetV),
+      voltageRegulationOn(voltageRegulationOn),
+      bSections(bs),
+      sectionNumber(sectionNumber) {}
 
-  const ShuntId id;  ///< Shunt id
+  /**
+   * @brief Equality operator
+   *
+   * comparing the ids
+   *
+   * @param other the shunt to compare to
+   * @return @b true if the shunts are equal, @b false if not
+   */
+  bool operator==(const Shunt& other) const {
+    return id == other.id;
+  }
+
+  const ShuntId id;                     ///< Shunt id
+  const BusId busId;                    ///< the connected bus of the shunt
+  const double targetV;                 ///< the target V of the shunt
+  const bool voltageRegulationOn;       ///< whether voltage regulation is enabled for the shunt
+  const std::vector<double> bSections;  ///< the vector of the B values for the shunt
+  const unsigned int sectionNumber;     ///< initial section index in sections
 };
 
 /// @brief Topological dangling line

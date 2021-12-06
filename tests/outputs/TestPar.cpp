@@ -186,9 +186,14 @@ TEST(TestPar, DynModel) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  dfl::algo::ShuntCounterDefinitions counters;
-  counters.nbShunts["VL"] = 2;
-  counters.nbShunts["VL2"] = 1;
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
+  shuntsDefinitions.shunts["VL"].dynamicModelAssociated = false;
+  shuntsDefinitions.shunts["VL"].shunts = {
+      dfl::inputs::Shunt("1", "01", 0., false, {0., 1., 2.}, 2),
+      dfl::inputs::Shunt("1.1", "01", 0., false, {0., 1.}, 0),
+  };
+  shuntsDefinitions.shunts["VL2"].dynamicModelAssociated = false;
+  shuntsDefinitions.shunts["VL2"].shunts = {dfl::inputs::Shunt("2", "02", 0., false, {0., 1.}, 0)};
 
   dfl::algo::DynamicModelDefinitions defs;
   dfl::algo::DynamicModelDefinition dynModel("DM_VL61", "DummyLib");
@@ -205,7 +210,52 @@ TEST(TestPar, DynModel) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
-                                                               manager, counters, defs, {}, {}));
+                                                               manager, shuntsDefinitions, defs, {}, {}));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(TestPar, ShuntRegulation) {
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::LoadDefinition;
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  std::string basename = "TestParShunts";
+  std::string dirname = "results";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
+  shuntsDefinitions.shunts["VL"].dynamicModelAssociated = false;
+  shuntsDefinitions.shunts["VL"].shunts = {
+      dfl::inputs::Shunt("1", "01", 1., true, {0., 1., 2.}, 1),
+      dfl::inputs::Shunt("1.1", "01", 1., true, {0., -1.}, 1),
+  };
+  shuntsDefinitions.shunts["VL2"].dynamicModelAssociated = false;
+  shuntsDefinitions.shunts["VL2"].shunts = {dfl::inputs::Shunt("2", "02", 2., true, {0., 1.}, 0)};
+  shuntsDefinitions.shunts["VL3"].dynamicModelAssociated = true;
+  shuntsDefinitions.shunts["VL3"].shunts = {
+      dfl::inputs::Shunt("3", "03", 3., true, {0., 1.}, 0),
+      dfl::inputs::Shunt("3.1", "03", 3., true, {0., 1.}, 0),
+  };
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, {}, activePowerCompensation, {}, manager,
+                                                               shuntsDefinitions, {}, {}, {}));
 
   parWriter.write();
 

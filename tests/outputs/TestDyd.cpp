@@ -55,7 +55,8 @@ TEST(Dyd, write) {
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}, svarcDefs));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}, svarcDefs, {}));
 
   dydWriter.write();
 
@@ -97,7 +98,7 @@ TEST(Dyd, writeRemote) {
   outputPath.append(filename);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::outputs::Dyd dydWriter(
-      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel, manager, {}, {}));
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel, manager, {}, {}, {}));
 
   dydWriter.write();
 
@@ -140,7 +141,7 @@ TEST(Dyd, writeHvdc) {
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, {}, manager, {}, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, {}, manager, {}, {}, {}));
 
   dydWriter.write();
 
@@ -193,7 +194,53 @@ TEST(Dyd, writeDynamicModel) {
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, models, {}));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, models, {}, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Dyd, writeShunts) {
+  std::string basename = "TestDydShunts";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  dfl::algo::ShuntDefinitions shuntDefs;
+  shuntDefs.shunts["VL"].dynamicModelAssociated = false;
+  shuntDefs.shunts["VL"].shunts = {
+      dfl::inputs::Shunt("1.1", "1", 0., true, {}, 0),
+      dfl::inputs::Shunt("1.2", "1", 0., true, {}, 0),
+  };
+  shuntDefs.shunts["VL2"].dynamicModelAssociated = true;
+  shuntDefs.shunts["VL2"].shunts = {
+      dfl::inputs::Shunt("2.1", "2", 0., true, {}, 0),
+      dfl::inputs::Shunt("2.2", "2", 0., true, {}, 0),
+  };
+  shuntDefs.shunts["VL3"].dynamicModelAssociated = false;
+  shuntDefs.shunts["VL3"].shunts = {
+      dfl::inputs::Shunt("3.1", "3", 0., true, {}, 0),
+      dfl::inputs::Shunt("3.2", "3", 0., true, {}, 0),
+  };
+
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, {}, {}, manager, {}, {}, shuntDefs));
 
   dydWriter.write();
 

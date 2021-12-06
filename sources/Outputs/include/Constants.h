@@ -18,14 +18,21 @@
 #pragma once
 
 #include "Algo.h"
+#include "Node.h"
 
+#include <functional>
 #include <limits>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace dfl {
 namespace outputs {
 /// @brief Namespace for constant variables common to all writers
 namespace constants {
+
+/// @brief Alias for map of references to shunts by regulated bus id
+using RefShuntsByIdMap = std::unordered_map<inputs::Shunt::BusId, std::vector<std::reference_wrapper<const inputs::Shunt>>>;
 
 /**
  * @brief Return a hash number from a string as input
@@ -59,6 +66,25 @@ computeQmax(double powerFactor, double pMax) {
  */
 std::string diagramFilename(const std::string& id);
 
+/**
+ * @brief Retrieve the shunt regulation id
+ *
+ * @param busId the bus id to which the shunt is connected
+ * @return the computed shunt regulation id
+ */
+static inline std::string
+computeShuntRegulationId(const std::string& busId) {
+  return "ShuntRegulation_" + busId;
+}
+
+/**
+ * @brief Compute the list of shunts, sorting by regulated bus id
+ *
+ * @param shuntDefinitions the shund definitions to use
+ * @return the sorted list of shunts
+ */
+RefShuntsByIdMap computeFilteredShuntsByIds(const algo::ShuntDefinitions& shuntDefinitions);
+
 const std::string networkModelName{"NETWORK"};                                    ///< Name of the model corresponding to network
 const std::string loadParId{"GenericRestorativeLoad"};                            ///< PAR id common to all loads
 const std::string diagramDirectorySuffix{"_Diagram"};                             ///< Suffix for the diagram directory
@@ -71,6 +97,7 @@ const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};
 const std::string remoteVControlParId{"remoteVControl"};                          ///< PAR id for using remote voltage control
 const std::string remoteSignalNGeneratorFixedP{"remoteSignalNFixedP"};            ///< PAR id for using remote signal N with fixed P
 const std::string xmlEncoding{"UTF-8"};                                           ///< Default encoding for XML outputs files
+const std::string diagramTableBPu{"tableBPu"};                                    ///< Name of the table in b sections diagram files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 

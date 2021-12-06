@@ -64,8 +64,10 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                      3., 30., 33., 330., 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
 
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
+  dfl::outputs::Diagram DiagramWriter(
+      dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs, shuntsDefinitions));
 
   DiagramWriter.write();
   testMultiplesFilesEquality(generators, outputDirectory, basename, prefixDir);
@@ -110,7 +112,9 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                                                                      3., 30., 33., 330., 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
+  dfl::outputs::Diagram DiagramWriter(
+      dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs, shuntsDefinitions));
 
   DiagramWriter.write();
   testMultiplesFilesEquality(generators, outputDirectory, basename, prefixDir);
@@ -136,7 +140,9 @@ TEST(Diagram, writeEmpty) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "04", {}, -20., -2., 22., 220., 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
+  dfl::outputs::Diagram DiagramWriter(
+      dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs, shuntsDefinitions));
 
   DiagramWriter.write();
   std::string directoryPath = outputDirectory.generic_string();
@@ -185,8 +191,10 @@ TEST(Diagram, writeVSC) {
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
   dfl::algo::HVDCLineDefinitions defs{map, vscIds};
   std::vector<dfl::algo::GeneratorDefinition> generators;
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
 
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
+  dfl::outputs::Diagram DiagramWriter(
+      dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs, shuntsDefinitions));
 
   DiagramWriter.write();
 
@@ -232,8 +240,10 @@ TEST(Diagram, writeLCC) {
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
   dfl::algo::HVDCLineDefinitions defs{map, vscIds};
   std::vector<dfl::algo::GeneratorDefinition> generators;
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
 
-  dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
+  dfl::outputs::Diagram DiagramWriter(
+      dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs, shuntsDefinitions));
 
   DiagramWriter.write();
 
@@ -242,6 +252,57 @@ TEST(Diagram, writeLCC) {
   reference.append(basename);
   reference.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
   for (const auto& id : lccIds) {
+    boost::filesystem::path ref(reference);
+    boost::filesystem::path outputDir(outputDirectory);
+    dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(id)).generic_string(),
+                               ref.append(dfl::outputs::constants::diagramFilename(id)).generic_string());
+  }
+}
+
+TEST(Diagram, TestShunts) {
+  std::string basename = "TestDiagram";
+  std::string prefixDir = "Shunts";
+  boost::filesystem::path outputDirectory("results");
+  outputDirectory.append(basename);
+
+  if (!boost::filesystem::exists(outputDirectory)) {
+    boost::filesystem::create_directories(outputDirectory);
+  }
+  outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+
+  const std::vector<std::string> shuntsIds = {"1", "2", "3", "5"};
+
+  std::vector<dfl::inputs::Shunt> shuntsDummy = {dfl::inputs::Shunt("0.1", "5", 0., true, {0., 10.}, 0), dfl::inputs::Shunt("0.2", "5", 0., true, {0., 20.}, 0),
+                                                 dfl::inputs::Shunt("0.3", "5", 0., true, {0., 30.}, 0), dfl::inputs::Shunt("0.4", "5", 0., true, {0., 40.}, 0),
+                                                 dfl::inputs::Shunt("0.5", "5", 0., true, {0., 50.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts = {dfl::inputs::Shunt("1", "5", 0., true, {0., 10., 20., 30., 40.}, 3),
+                                            dfl::inputs::Shunt("2", "5", 0., true, {0., 20.}, 0),
+                                            dfl::inputs::Shunt("3", "5", 0., true, {0., 13., 23., 33.}, 1),
+                                            dfl::inputs::Shunt("4", "5", 0., false, {0., 40., 80.}, 0), dfl::inputs::Shunt("5", "5", 0., true, {0., 50.}, 1)};
+  dfl::algo::ShuntDefinitions shuntsDefinitions;
+  shuntsDefinitions.shunts["VL1"].dynamicModelAssociated = true;
+  shuntsDefinitions.shunts["VL1"].shunts.insert(shuntsDummy.begin(), shuntsDummy.end());
+  shuntsDefinitions.shunts["VL2"].shunts.insert(shunts.begin(), shunts.end());
+  dfl::algo::HVDCLineDefinitions::HvdcLineMap map;
+  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
+  dfl::algo::HVDCLineDefinitions defs{map, vscIds};
+  std::vector<dfl::algo::GeneratorDefinition> generators;
+
+  dfl::outputs::Diagram DiagramWriter(
+      dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs, shuntsDefinitions));
+
+  DiagramWriter.write();
+
+  // check reference
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  auto nbFilesReference = std::count_if(boost::filesystem::directory_iterator(reference), boost::filesystem::directory_iterator(),
+                                        static_cast<bool (*)(const boost::filesystem::path&)>(boost::filesystem::is_regular_file));
+  auto nbFiles = std::count_if(boost::filesystem::directory_iterator(outputDirectory), boost::filesystem::directory_iterator(),
+                               static_cast<bool (*)(const boost::filesystem::path&)>(boost::filesystem::is_regular_file));
+  ASSERT_EQ(nbFiles, nbFilesReference);
+  for (const auto& id : shuntsIds) {
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);
     dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(id)).generic_string(),

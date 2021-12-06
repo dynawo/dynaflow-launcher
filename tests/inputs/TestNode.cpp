@@ -31,8 +31,8 @@ TEST(TestNode, base) {
 
 TEST(TestNode, line) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1")};
-  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1"), dfl::inputs::Shunt("2.2")};
+  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1", "1", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1", "2", 0., false, {0.}, 0), dfl::inputs::Shunt("2.2", "2", 0., false, {0.}, 0)};
   auto node0 = dfl::inputs::Node::build("0", vl, 0.0, {});
   auto node1 = dfl::inputs::Node::build("1", vl, 10., shunts1);
   auto node2 = dfl::inputs::Node::build("2", vl, 4.5, shunts2);
@@ -49,8 +49,6 @@ TEST(TestNode, line) {
 
 TEST(TestNode, Tfo) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1")};
-  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1"), dfl::inputs::Shunt("2.2")};
   auto node0 = dfl::inputs::Node::build("0", vl, 0.0, {});
   auto node1 = dfl::inputs::Node::build("1", vl, 10., {});
 

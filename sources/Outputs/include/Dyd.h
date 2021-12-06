@@ -104,12 +104,13 @@ class Dyd {
      * @param dynamicDataBaseManager the database manager to use
      * @param models the list of dynamic models to use
      * @param svarcsDefinitions the SVarC definitions to use
+     * @param shuntsDefinitions the shuntsDefinitions to use
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
                   const algo::HVDCLineDefinitions& hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
                   const inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::DynamicModelDefinitions& models,
-                  const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
+                  const algo::StaticVarCompensatorDefinitions& svarcsDefinitions, const algo::ShuntDefinitions& shuntsDefinitions) :
         basename(base),
         filename(filepath),
         generators(gens),
@@ -119,7 +120,8 @@ class Dyd {
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
         dynamicModelsDefinitions(models),
-        svarcsDefinitions(svarcsDefinitions) {}
+        svarcsDefinitions(svarcsDefinitions),
+        shuntsDefinitions(shuntsDefinitions) {}
 
     std::string basename;                                                        ///< basename for file
     std::string filename;                                                        ///< filepath for file to write
@@ -131,6 +133,7 @@ class Dyd {
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                ///< dynamic database manager
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;               ///< the list of dynamic models to export
     const algo::StaticVarCompensatorDefinitions& svarcsDefinitions;              ///< the SVarC definitions to use
+    const algo::ShuntDefinitions& shuntsDefinitions;                             ///< the shuntsDefinitions to use
   };
 
   /**
@@ -185,6 +188,24 @@ class Dyd {
    * @returns black box model for hvdc line
    */
   static boost::shared_ptr<dynamicdata::BlackBoxModel> writeHvdcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename);
+
+  /**
+   * @brief Write the black box model for shunt regulation
+   *
+   * @param busId the bus id to use
+   * @param basename the basename of the writer
+   * @return the model of the shunt regulation
+   */
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeShuntRegulation(const inputs::Shunt::BusId& busId, const std::string& basename);
+
+  /**
+   * @brief Write model for shunt with sections
+   *
+   * @param shunt the shunt to define the mode for
+   * @param basename the basename of the writer
+   * @return the model of the shunt with section
+   */
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeShuntBSections(const inputs::Shunt& shunt, const std::string& basename);
 
   /**
    * @brief Create constant models
@@ -302,6 +323,16 @@ class Dyd {
    */
   static boost::shared_ptr<dynamicdata::MacroConnect> writeSVarCMacroConnect(const inputs::StaticVarCompensator& svarc);
 
+  /**
+   * @brief Write connection for shunt
+   *
+   * @param dynamicModelsToConnect the list of connections to update
+   * @param shunt the shunt to connect
+   * @param index the index of the shunts in the list of shunts by bus
+   */
+  static void writeShuntConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const inputs::Shunt& shunt,
+                                unsigned int index);
+
  private:
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_lib_;  ///< Correspondance between generator model type and library name in dyd file
@@ -318,6 +349,8 @@ class Dyd {
   static const std::string macroStaticRefLoadName_;              ///< Name for the static ref macro for loads
   static const std::string signalNModelName_;                    ///< Name of the SignalN model
   static const std::string modelSignalNQprefix_;                 ///< Prefix for SignalN models
+  static const std::string macroStaticRefShuntName_;             ///< Static ref macro element name for shunt definition
+  static const std::string macroConnectorShuntName_;             ///< macro connector name for shunt deifnition
 
  private:
   DydDefinition def_;  ///< Dyd file information

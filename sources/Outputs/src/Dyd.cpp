@@ -51,6 +51,8 @@ const std::string Dyd::signalNModelName_("Model_Signal_N");
 const std::string Dyd::macroStaticRefSignalNGeneratorName_("GeneratorStaticRef");
 const std::string Dyd::macroStaticRefSVarCName_("StaticVarCompensatorStaticRef");
 const std::string Dyd::macroConnectorSVarCName_("StaticVarCompensatorMacroConnector");
+const std::string Dyd::macroStaticRefShuntName_("ShuntStaticRef");
+const std::string Dyd::macroConnectorShuntName_("ShuntMacroConnector");
 const std::string Dyd::macroStaticRefLoadName_("LoadRef");
 const std::string Dyd::modelSignalNQprefix_("Model_Signal_NQ_");
 
@@ -146,6 +148,18 @@ Dyd::write() const {
     const auto& svarc = svarcRef.get();
     dynamicModelsToConnect->addModel(writeSVarC(svarc, def_.basename));
     dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarc));
+  }
+
+  auto shuntsByBusId = constants::computeFilteredShuntsByIds(def_.shuntsDefinitions);
+  for (const auto& shuntPair : shuntsByBusId) {
+    dynamicModelsToConnect->addModel(writeShuntRegulation(shuntPair.first, def_.basename));
+    auto modelId = constants::computeShuntRegulationId(shuntPair.first);
+    dynamicModelsToConnect->addConnect(modelId, "UMonitoredPu_value", constants::networkModelName, shuntPair.first + "_U_value");
+    for (auto it = shuntPair.second.begin(); it != shuntPair.second.end(); ++it) {
+      dynamicModelsToConnect->addModel(writeShuntBSections(*it, def_.basename));
+      unsigned int i = static_cast<unsigned int>(it - shuntPair.second.begin());
+      writeShuntConnect(dynamicModelsToConnect, *it, i);
+    }
   }
 
   dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi");
@@ -266,6 +280,29 @@ Dyd::writeHvdcLine(const algo::HVDCDefinition& hvdcLine, const std::string& base
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
+Dyd::writeShuntRegulation(const inputs::Shunt::BusId& busId, const std::string& basename) {
+  auto id = constants::computeShuntRegulationId(busId);
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(id);
+  model->setLib("DYNModelCentralizedShuntsSectionControl");
+  model->setParFile(basename + ".par");
+  model->setParId(id);
+
+  return model;
+}
+
+boost::shared_ptr<dynamicdata::BlackBoxModel>
+Dyd::writeShuntBSections(const inputs::Shunt& shunt, const std::string& basename) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(shunt.id);
+  model->setStaticId(shunt.id);
+  model->setLib("ShuntBWithSections");
+  model->setParFile(basename + ".par");
+  model->setParId(shunt.id);
+  model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefShuntName_));
+
+  return model;
+}
+
+boost::shared_ptr<dynamicdata::BlackBoxModel>
 Dyd::writeLoad(const algo::LoadDefinition& load, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(load.id);
 
@@ -356,6 +393,11 @@ Dyd::writeMacroConnectors() {
   connector->addConnect("SVarC_terminal", "@STATIC_ID@@NODE@_ACPIN");
   ret.push_back(connector);
 
+  connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorShuntName_);
+  connector->addConnect("shunt_terminal", "@STATIC_ID@@NODE@_ACPIN");
+  connector->addConnect("shunt_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
+  ret.push_back(connector);
+
   return ret;
 }
 
@@ -380,6 +422,12 @@ Dyd::writeMacroStaticRef() {
   ref->addStaticRef("SVarC_QInjPu", "q");
   ref->addStaticRef("SVarC_state", "state");
   ref->addStaticRef("SVarC_modeHandling_mode_value", "regulatingMode");
+  ret.push_back(ref);
+
+  ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefShuntName_);
+  ref->addStaticRef("shunt_section_value", "currentSection");
+  ref->addStaticRef("shunt_QPu", "q");
+  ref->addStaticRef("shunt_state", "state");
   ret.push_back(ref);
 
   return ret;
@@ -436,6 +484,16 @@ Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsColl
       dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ2_value", modelSignalNQprefix_ + hvdcDefinition.converter2BusId, vrremoteNqValue);
     }
   }
-}  // namespace outputs
+}
+
+void
+Dyd::writeShuntConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const inputs::Shunt& shunt, unsigned int index) {
+  auto modelId = constants::computeShuntRegulationId(shunt.busId);
+  dynamicModelsToConnect->addConnect(modelId, "section_" + std::to_string(index) + "_value", shunt.id, "shunt_section_value");
+
+  auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorShuntName_, shunt.id, constants::networkModelName);
+  dynamicModelsToConnect->addMacroConnect(macroConnect);
+}
+
 }  // namespace outputs
 }  // namespace dfl

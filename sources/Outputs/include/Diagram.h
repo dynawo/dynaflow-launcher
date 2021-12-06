@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "Constants.h"
 
 #include <string>
 #include <vector>
@@ -39,20 +40,24 @@ class Diagram {
      * @param base the basename for current file (corresponds to filepath basename)
      * @param directoryPath the directory path of the diagram files to write
      * @param gens generators definition coming from algorithms
-     * @param hvdcDefinitions the HVDC definitions to used
+     * @param hvdcDefinitions the HVDC definitions to use
+     * @param shuntDefinitions shunt definitions to use
      */
     DiagramDefinition(const std::string& base, const std::string& directoryPath, const std::vector<algo::GeneratorDefinition>& gens,
-                      const algo::HVDCLineDefinitions& hvdcDefinitions) :
+                      const algo::HVDCLineDefinitions& hvdcDefinitions, const algo::ShuntDefinitions& shuntDefinitions) :
         basename(base),
         directoryPath(directoryPath),
         generators(gens),
-        hvdcDefinitions(hvdcDefinitions) {}
+        hvdcDefinitions(hvdcDefinitions),
+        shuntDefinitions(shuntDefinitions) {}
 
     const std::string basename;       ///< basename for file
     const std::string directoryPath;  ///< directory path for files to write
     // non const copies instead of const references because we need to modify them before use
     std::vector<algo::GeneratorDefinition> generators;  ///< generators found
     algo::HVDCLineDefinitions hvdcDefinitions;          ///< HVDC definitions
+    //
+    const algo::ShuntDefinitions& shuntDefinitions;  ///< Shunt definitions
   };
 
   /**
@@ -106,6 +111,8 @@ class Diagram {
   void writeGenerators() const;
   /// @brief Write VSC converters diagrams
   void writeConverters() const;
+  /// @brief Write shunt diagrams
+  void writeShunts() const;
 
   /**
    * @brief Write VSC converter diagram
@@ -121,8 +128,16 @@ class Diagram {
    */
   void writeLCC(const algo::HVDCDefinition::ConverterId& converterId, double powerFactor, double pMax) const;
 
+  /**
+   * @brief Write Shunt diagram
+   *
+   * @param shunt the shunt to export
+   */
+  void writeShunt(const inputs::Shunt& shunt) const;
+
  private:
   DiagramDefinition def_;  ///< Diagram file information
+  constants::RefShuntsByIdMap shuntsByBusId_;
 };
 }  // namespace outputs
 }  // namespace dfl

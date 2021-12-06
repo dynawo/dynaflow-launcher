@@ -75,7 +75,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
   networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_));
-  networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
+  networkManager_.onNode(algo::ShuntDefinitionAlgorithm(shuntDefinitions_, dynamicDataBaseManager_));
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
 }
 
@@ -175,7 +175,7 @@ Context::exportOutputs() {
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
   outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLineDefinitions_,
-                                                     busesWithDynamicModel_, dynamicDataBaseManager_, dynamicModels_, svarcsDefinitions_));
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, dynamicModels_, svarcsDefinitions_, shuntDefinitions_));
   dydWriter.write();
 
   // Par
@@ -191,14 +191,15 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLineDefinitions_,
-                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_, dynamicDataBaseManager_, counters_,
+                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_, dynamicDataBaseManager_, shuntDefinitions_,
                                                      dynamicModels_, linesById_, svarcsDefinitions_));
   parWriter.write();
 
   // Diagram
   file::path diagramDirectory(config_.outputDir());
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
-  outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_));
+  outputs::Diagram diagramWriter(
+      outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_, shuntDefinitions_));
   diagramWriter.write();
 
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {

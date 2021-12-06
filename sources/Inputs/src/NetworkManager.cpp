@@ -75,8 +75,14 @@ NetworkManager::buildTree() {
     const auto& shunts = networkVL->getShuntCompensators();
     std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
     for (const auto& shunt : shunts) {
+      std::size_t nbSections = shunt->getMaximumSection() + 1;  // We add the first section at 0
+      std::vector<double> bs(nbSections);
+      unsigned int i = 0;
+      std::generate(bs.begin(), bs.end(), [&shunt, &i]() { return shunt->getB(i++); });
       // We take into account even disconnected shunts as dynamic models may aim to connect them
-      (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));
+      (shuntsMap[shunt->getBusInterface()->getID()])
+          .push_back(std::move(
+              Shunt(shunt->getID(), shunt->getBusInterface()->getID(), shunt->getTargetV(), shunt->isVoltageRegulationOn(), bs, shunt->getCurrentSection())));
     }
 
     auto vl = std::make_shared<VoltageLevel>(networkVL->getID());

@@ -170,7 +170,7 @@ class Context {
   algo::HVDCLineDefinitions hvdcLineDefinitions_;                        ///< hvdc definitions
   algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
   algo::DynamicModelDefinitions dynamicModels_;                          ///< model definitions
-  algo::ShuntCounterDefinitions counters_;                               ///< shunt counters definitions
+  algo::ShuntDefinitions shuntDefinitions_;                              ///< shunt definitions
   algo::LinesByIdDefinitions linesById_;                                 ///< Lines by ids definition
   algo::StaticVarCompensatorDefinitions svarcsDefinitions_;              ///< Static var compensators definitions to use
   boost::optional<algo::ValidContingencies> validContingencies_;         ///< contingencies accepted for simulation in a Security Analyasis

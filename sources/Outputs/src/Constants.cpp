@@ -32,6 +32,27 @@ diagramFilename(const std::string& id) {
   return idCpy + "_Diagram.txt";
 }
 
+RefShuntsByIdMap
+computeFilteredShuntsByIds(const algo::ShuntDefinitions& shuntDefinitions) {
+  RefShuntsByIdMap ret;
+
+  for (const auto& shuntDefPair : shuntDefinitions.shunts) {
+    const auto& shuntDef = shuntDefPair.second;
+    if (shuntDef.dynamicModelAssociated) {
+      continue;
+    }
+    for (const auto& shunt : shuntDef.shunts) {
+      if (!shunt.voltageRegulationOn) {
+        continue;
+      }
+      // Only the shunts with no dynamic model associated and voltage regulation on are added
+      ret[shunt.busId].push_back(std::ref(shunt));
+    }
+  }
+
+  return ret;
+}
+
 }  // namespace constants
 }  // namespace outputs
 }  // namespace dfl

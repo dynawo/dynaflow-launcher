@@ -42,28 +42,30 @@
     <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:staticRef var="SVarC_state" staticVar="state"/>
   </dyn:macroStaticReference>
-  <dyn:blackBoxModel id="HVDCLCCLine" staticId="HVDCLCCLine" lib="HvdcPTanPhiDangling" parFile="TestDydHvdc.par" parId="HVDCLCCLine">
-    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
-    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
-    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q1"/>
-    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q2"/>
-    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
-    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  <dyn:blackBoxModel id="1.1" staticId="1.1" lib="ShuntBWithSections" parFile="TestDydShunts.par" parId="1.1">
+    <dyn:macroStaticRef id="ShuntStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="HVDCVSCLine" staticId="HVDCVSCLine" lib="HvdcPVDangling" parFile="TestDydHvdc.par" parId="HVDCVSCLine">
-    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p2"/>
-    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p1"/>
-    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q2"/>
-    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q1"/>
-    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
-    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  <dyn:blackBoxModel id="1.2" staticId="1.2" lib="ShuntBWithSections" parFile="TestDydShunts.par" parId="1.2">
+    <dyn:macroStaticRef id="ShuntStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="3.1" staticId="3.1" lib="ShuntBWithSections" parFile="TestDydShunts.par" parId="3.1">
+    <dyn:macroStaticRef id="ShuntStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="3.2" staticId="3.2" lib="ShuntBWithSections" parFile="TestDydShunts.par" parId="3.2">
+    <dyn:macroStaticRef id="ShuntStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
-  <dyn:blackBoxModel id="Model_Signal_NQ__BUS___10_TN" lib="VRRemote" parFile="TestDydHvdc.par" parId="Model_Signal_NQ__BUS___10_TN"/>
-  <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal1"/>
-  <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
-  <dyn:connect id1="Model_Signal_NQ__BUS___10_TN" var1="vrremote_URegulated" id2="NETWORK" var2="_BUS___10_TN_U_value"/>
+  <dyn:blackBoxModel id="ShuntRegulation_1" lib="DYNModelCentralizedShuntsSectionControl" parFile="TestDydShunts.par" parId="ShuntRegulation_1"/>
+  <dyn:blackBoxModel id="ShuntRegulation_3" lib="DYNModelCentralizedShuntsSectionControl" parFile="TestDydShunts.par" parId="ShuntRegulation_3"/>
+  <dyn:macroConnect connector="ShuntMacroConnector" id1="1.2" id2="NETWORK"/>
+  <dyn:macroConnect connector="ShuntMacroConnector" id1="1.1" id2="NETWORK"/>
+  <dyn:macroConnect connector="ShuntMacroConnector" id1="3.2" id2="NETWORK"/>
+  <dyn:macroConnect connector="ShuntMacroConnector" id1="3.1" id2="NETWORK"/>
+  <dyn:connect id1="ShuntRegulation_1" var1="UMonitoredPu_value" id2="NETWORK" var2="1_U_value"/>
+  <dyn:connect id1="ShuntRegulation_1" var1="section_0_value" id2="1.2" var2="shunt_section_value"/>
+  <dyn:connect id1="ShuntRegulation_1" var1="section_1_value" id2="1.1" var2="shunt_section_value"/>
+  <dyn:connect id1="ShuntRegulation_3" var1="UMonitoredPu_value" id2="NETWORK" var2="3_U_value"/>
+  <dyn:connect id1="ShuntRegulation_3" var1="section_0_value" id2="3.2" var2="shunt_section_value"/>
+  <dyn:connect id1="ShuntRegulation_3" var1="section_1_value" id2="3.1" var2="shunt_section_value"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi"/>
 </dyn:dynamicModelsArchitecture>

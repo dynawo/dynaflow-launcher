@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-DEFINE_TEST(TestAlgo ALGO)
+DEFINE_TEST_XML(TestAlgo ALGO)
 target_link_libraries(TestAlgo DynaFlowLauncher::algo)
 
 # Dummy Library for algo test

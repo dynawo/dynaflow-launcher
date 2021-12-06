@@ -215,10 +215,18 @@ Par::write() const {
 
   const auto& sets = def_.dynamicDataBaseManager.settingDocument().sets();
   for (const auto& set : sets) {
-    auto new_set = writeDynamicModelParameterSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.shuntCounters, def_.dynamicModelsDefinitions,
+    auto new_set = writeDynamicModelParameterSet(set, def_.dynamicDataBaseManager.assemblingDocument(), def_.shuntsDefinitions, def_.dynamicModelsDefinitions,
                                                  def_.linesByIdDefinitions);
     if (new_set) {
       dynamicModelsToConnect->addParametersSet(new_set);
+    }
+  }
+
+  auto shuntsByIds = constants::computeFilteredShuntsByIds(def_.shuntsDefinitions);
+  for (const auto& shuntDefPair : shuntsByIds) {
+    dynamicModelsToConnect->addParametersSet(writeShuntRegulation(shuntDefPair.first, shuntDefPair.second));
+    for (const auto& shunt : shuntDefPair.second) {
+      dynamicModelsToConnect->addParametersSet(writeShuntBSection(shunt, def_.basename, def_.dirname));
     }
   }
 
@@ -238,7 +246,7 @@ Par::getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef) 
 
 boost::shared_ptr<parameters::ParametersSet>
 Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
-                                   const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
+                                   const algo::ShuntDefinitions& shuntDefinitions, const algo::DynamicModelDefinitions& models,
                                    const algo::LinesByIdDefinitions& linesById) {
   if (models.models.count(set.id) == 0) {
     // model is not connected : ignore corresponding set
@@ -256,11 +264,12 @@ Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, c
       LOG(debug) << "Count id " << count.id << " not found as a multiple association in assembling: Configuration error" << LOG_ENDL;
       continue;
     }
-    if (counters.nbShunts.count(found->second.shunt.voltageLevel) == 0) {
+    if (shuntDefinitions.shunts.count(found->second.shunt.voltageLevel) == 0) {
       // case voltage level not in network, skip
       continue;
     }
-    new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(found->second.shunt.voltageLevel))));
+    const auto& shuntsSet = shuntDefinitions.shunts.at(found->second.shunt.voltageLevel).shunts;
+    new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(shuntsSet.size())));
   }
 
   for (const auto& param : set.boolParameters) {
@@ -514,6 +523,51 @@ Par::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string
     auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)
     set->addParameter(helper::buildParameter("acemulation_KACEmulation", kac));
   }
+  return set;
+}
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeShuntRegulation(const inputs::Shunt::BusId& busId, const std::vector<std::reference_wrapper<const dfl::inputs::Shunt>>& shunts) {
+  auto modelId = constants::computeShuntRegulationId(busId);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(modelId));
+
+  set->addParameter(helper::buildParameter("nbShunts", static_cast<int>(shunts.size())));
+  set->addParameter(helper::buildParameter("tNext", 10.));
+  set->addParameter(helper::buildParameter("URef0Pu", shunts.front().get().targetV));  // All target V for shunts regulated on same bus are the same
+  for (auto it = shunts.begin(); it != shunts.end(); ++it) {
+    const auto& shunt = it->get();
+    unsigned int index = it - shunts.begin();
+    auto indexStr = std::to_string(index);
+
+    // self if B goes to negative direction : it is assumed that the b sections are build progressively, in only one direction and starting from 0
+    set->addParameter(helper::buildParameter("isSelf_" + indexStr, (*shunt.bSections.rbegin() < 0)));
+
+    set->addParameter(helper::buildParameter("section0_" + indexStr, static_cast<int>(shunt.sectionNumber)));
+    set->addParameter(helper::buildParameter("sectionMin_" + indexStr, 0));
+
+    // we added one element when we created the bSections vector (see network manager)
+    set->addParameter(helper::buildParameter("sectionMax_" + indexStr, static_cast<int>(shunt.bSections.size() - 1)));
+
+    set->addParameter(helper::buildParameter("deadBandUPu_" + indexStr, 0.01));
+  }
+
+  return set;
+}
+
+boost::shared_ptr<parameters::ParametersSet>
+Par::writeShuntBSection(const inputs::Shunt& shunt, const std::string& basename, const boost::filesystem::path& dirname) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(shunt.id));
+
+  auto tableFilename = dirname;
+  tableFilename.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(shunt.id));
+
+  set->addParameter(helper::buildParameter("shunt_Section0", static_cast<double>(shunt.sectionNumber)));
+  set->addParameter(helper::buildParameter("shunt_TableBPuName", constants::diagramTableBPu));
+  set->addParameter(helper::buildParameter("shunt_TableBPuFile", tableFilename.generic_string()));
+  set->addParameter(helper::buildParameter("shunt_Q0Pu", 0.));
+  set->addReference(helper::buildReference("shunt_U0Pu", "Upu", "DOUBLE", shunt.busId));
+  set->addReference(helper::buildReference("shunt_UPhase0", "Teta", "DOUBLE", shunt.busId));
+
   return set;
 }
 

@@ -17,8 +17,6 @@
 
 #include "Diagram.h"
 
-#include "Constants.h"
-
 #include <boost/filesystem.hpp>
 #include <fstream>
 
@@ -35,12 +33,14 @@ Diagram::Diagram(DiagramDefinition&& def) : def_{std::forward<DiagramDefinition>
     std::sort(points.begin(), points.end(),
               [](const algo::VSCDefinition::ReactiveCurvePoint& lhs, const algo::VSCDefinition::ReactiveCurvePoint& rhs) { return lhs.p < rhs.p; });
   }
+  shuntsByBusId_ = constants::computeFilteredShuntsByIds(def_.shuntDefinitions);
 }
 
 void
 Diagram::write() const {
   writeGenerators();
   writeConverters();
+  writeShunts();
 }
 
 void
@@ -100,6 +100,37 @@ Diagram::writeLCC(const algo::HVDCDefinition::ConverterId& converterId, double p
   writeTable(lccDefinition, buffer, Tables::TABLE_QMAX);
   boost::filesystem::path dir(def_.directoryPath);
   std::string filename = dir.append(outputs::constants::diagramFilename(converterId)).generic_string();
+  std::ofstream ofs(filename, std::ofstream::out);
+  ofs << buffer.str();
+  ofs.close();
+}
+
+void
+Diagram::writeShunts() const {
+  for (const auto& shuntPair : shuntsByBusId_) {
+    for (const auto& shuntRef : shuntPair.second) {
+      writeShunt(shuntRef.get());
+    }
+  }
+}
+
+void
+Diagram::writeShunt(const inputs::Shunt& shunt) const {
+  if (!boost::filesystem::exists(def_.directoryPath)) {
+    boost::filesystem::create_directories(def_.directoryPath);
+  }
+  std::stringstream buffer;
+  //  Modelica requires this file to start with "#1", if it is not present, problems occurs
+  buffer << "#1" << std::endl;
+  buffer << "double " << constants::diagramTableBPu << "(" << shunt.bSections.size() << ", 2)" << std::endl;
+
+  for (auto it = shunt.bSections.begin(); it != shunt.bSections.end(); ++it) {
+    unsigned int index = it - shunt.bSections.begin();
+    buffer << index << " " << *it << std::endl;
+  }
+
+  boost::filesystem::path dir(def_.directoryPath);
+  std::string filename = dir.append(outputs::constants::diagramFilename(shunt.id)).generic_string();
   std::ofstream ofs(filename, std::ofstream::out);
   ofs << buffer.str();
   ofs.close();

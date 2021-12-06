@@ -705,12 +705,23 @@ DynModelAlgorithm::MacroConnectHash::operator()(const MacroConnect& connect) con
 
 /////////////////////////////////////////////////////////////////////////////////
 
-ShuntCounterAlgorithm::ShuntCounterAlgorithm(ShuntCounterDefinitions& defs) : shuntCounterDefs_(defs) {}
+ShuntDefinitionAlgorithm::ShuntDefinitionAlgorithm(ShuntDefinitions& defs, const inputs::DynamicDataBaseManager& manager) : shuntDefs_(defs) {
+  const auto& multiAssociations = manager.assemblingDocument().multipleAssociations();
+  std::transform(multiAssociations.begin(), multiAssociations.end(), std::inserter(voltageLevelsWithAssociation_, voltageLevelsWithAssociation_.begin()),
+                 [](const inputs::AssemblingXmlDocument::MultipleAssociation& association) { return association.shunt.voltageLevel; });
+}
 
 void
-ShuntCounterAlgorithm::operator()(const NodePtr& node) {
+ShuntDefinitionAlgorithm::operator()(const NodePtr& node) {
   auto vl = node->voltageLevel.lock();
-  shuntCounterDefs_.nbShunts[vl->id] += node->shunts.size();
+  auto& map = shuntDefs_.shunts[vl->id];
+  std::copy(node->shunts.begin(), node->shunts.end(), std::inserter(map.shunts, map.shunts.end()));
+  map.dynamicModelAssociated |= (voltageLevelsWithAssociation_.count(vl->id) > 0);
+}
+
+size_t
+VLShuntsDefinition::ShuntHash::operator()(const inputs::Shunt& shunt) const noexcept {
+  return std::hash<inputs::Shunt::ShuntId>{}(shunt.id);
 }
 
 //////////////////////////////////////////////////////////////////////////////////

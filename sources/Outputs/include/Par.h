@@ -55,7 +55,7 @@ class Par {
      * @param activePowerCompensation the type of active power compensation
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager dynamic database manager to use
-     * @param counters the counters definitions to use
+     * @param shunts the shunts definitions to use
      * @param models list of dynamic models definitions
      * @param linesById the lines to use
      * @param svarcsDefinitions the SVarC definitions to use
@@ -64,7 +64,7 @@ class Par {
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::HVDCLineDefinitions& hvdcDefinitions,
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
+                  const algo::ShuntDefinitions& shunts, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
                   const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
         basename(base),
         dirname(dir),
@@ -74,7 +74,7 @@ class Par {
         activePowerCompensation(activePowerCompensation),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
-        shuntCounters(counters),
+        shuntsDefinitions(shunts),
         dynamicModelsDefinitions(models),
         linesByIdDefinitions(linesById),
         svarcsDefinitions(svarcsDefinitions) {}
@@ -87,7 +87,7 @@ class Par {
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation;  ///< the type of active power compensation
     const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
-    const algo::ShuntCounterDefinitions& shuntCounters;                           ///< Shunt counters to use
+    const algo::ShuntDefinitions& shuntsDefinitions;                              ///< Shunt shunts to use
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
     const algo::LinesByIdDefinitions& linesByIdDefinitions;                       ///< lines by id to use
     const algo::StaticVarCompensatorDefinitions& svarcsDefinitions;               ///< the SVarC definitions to use
@@ -166,6 +166,27 @@ class Par {
                                                                     const boost::filesystem::path& dirname);
 
   /**
+   * @brief Write the parameters for a shunt regulation set
+   *
+   * @param busId the bus id of the shunt regulation
+   * @param shunts the list of the shunts for the bus
+   * @return the parameter set of the shunt regulation
+   */
+  static boost::shared_ptr<parameters::ParametersSet> writeShuntRegulation(const inputs::Shunt::BusId& busId,
+                                                                           const std::vector<std::reference_wrapper<const dfl::inputs::Shunt>>& shunts);
+
+  /**
+   * @brief Write parameter set for shunt with sections
+   *
+   * @param shunt the shunt to use
+   * @param basename the basename of the writer
+   * @param dirname the base dirname for writing files
+   * @return boost::shared_ptr<parameters::ParametersSet>
+   */
+  static boost::shared_ptr<parameters::ParametersSet> writeShuntBSection(const inputs::Shunt& shunt, const std::string& basename,
+                                                                         const boost::filesystem::path& dirname);
+
+  /**
    * @brief Write remote voltage regulators parameter set
    *
    * @param busId the bus id to use
@@ -180,17 +201,15 @@ class Par {
    *
    * @param set the configuration set to write
    * @param assemblingDoc the corresponding assembling document handler
-   * @param counters the counters to use
+   * @param shunts the shunts to use
    * @param models the models definitions to use
    * @param linesById lines by id to use
    *
    * @returns the parameter set to add
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set,
-                                                                                    const inputs::AssemblingXmlDocument& assemblingDoc,
-                                                                                    const algo::ShuntCounterDefinitions& counters,
-                                                                                    const algo::DynamicModelDefinitions& models,
-                                                                                    const algo::LinesByIdDefinitions& linesById);
+  static boost::shared_ptr<parameters::ParametersSet>
+  writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
+                                const algo::ShuntDefinitions& shunts, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById);
 
   /**
    * @brief Retrieves the first component connected through the dynamic model to a transformer

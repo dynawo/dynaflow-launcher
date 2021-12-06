@@ -905,23 +905,42 @@ class DynModelAlgorithm : public NodeAlgorithm {
   const inputs::DynamicDataBaseManager& manager_;  ///< dynamic database config manager
 };
 
+/// @brief Shunts definition for a voltage level
+struct VLShuntsDefinition {
+  /// @brief Hash for shunts definition
+  struct ShuntHash {
+    /**
+     * @brief Retrieve the hash value
+     *
+     * @param shunt the shunt to hash
+     * @return the hash value
+     */
+    size_t operator()(const inputs::Shunt& shunt) const noexcept;
+  };
+  using ShuntsSet = std::unordered_set<inputs::Shunt, ShuntHash>;  ///< Alias for set of shunts
+
+  ShuntsSet shunts;                     ///< Set of shunts for current voltage level
+  bool dynamicModelAssociated = false;  ///< determines if the current voltage level is associated with a dynamic model
+};
+
 /**
- * @brief Shunt counter definition
+ * @brief Shunt definitions
  */
-struct ShuntCounterDefinitions {
-  std::unordered_map<inputs::VoltageLevel::VoltageLevelId, unsigned int> nbShunts;  ///< Number of shunts by voltage level
+struct ShuntDefinitions {
+  std::unordered_map<inputs::VoltageLevel::VoltageLevelId, VLShuntsDefinition> shunts;  ///< Shunt definitions by voltage level
 };
 
 /**
  * @brief Counter of shunts by voltage levels
  */
-class ShuntCounterAlgorithm : public NodeAlgorithm {
+class ShuntDefinitionAlgorithm : public NodeAlgorithm {
  public:
   /**
    * @brief Constructor
    * @param shuntCounterDefs the counter definitions to update
+   * @param manager dynamic data base manager
    */
-  explicit ShuntCounterAlgorithm(ShuntCounterDefinitions& shuntCounterDefs);
+  ShuntDefinitionAlgorithm(ShuntDefinitions& shuntCounterDefs, const inputs::DynamicDataBaseManager& manager);
 
   /**
    * @brief Performs the algorithm
@@ -933,7 +952,8 @@ class ShuntCounterAlgorithm : public NodeAlgorithm {
   void operator()(const NodePtr& node);
 
  private:
-  ShuntCounterDefinitions& shuntCounterDefs_;  ///< the counter definitions to update
+  ShuntDefinitions& shuntDefs_;                                                            ///< the counter definitions to update
+  std::unordered_set<inputs::VoltageLevel::VoltageLevelId> voltageLevelsWithAssociation_;  ///< dynamic data base manager
 };
 
 /**

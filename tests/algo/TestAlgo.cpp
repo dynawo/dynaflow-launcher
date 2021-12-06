@@ -30,6 +30,11 @@
 #include <tuple>
 #include <vector>
 
+// Required for testing unit tests
+testing::Environment* initXmlEnvironment();
+
+testing::Environment* const env = initXmlEnvironment();
+
 namespace test {
 
 /**
@@ -742,44 +747,55 @@ TEST(Generators, oneReactiveCurvePoint) {
   testDiagramValidity(points, isDiagramValid);
 }
 
-TEST(Counter, base) {
+TEST(Shunts, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
   auto vl3 = std::make_shared<dfl::inputs::VoltageLevel>("VL3");
-  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1")};
-  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1"), dfl::inputs::Shunt("2.2")};
-  std::vector<dfl::inputs::Shunt> shunts3 = {dfl::inputs::Shunt("3.1"), dfl::inputs::Shunt("3.2"), dfl::inputs::Shunt("3.3")};
-  std::vector<dfl::inputs::Shunt> shunts4 = {dfl::inputs::Shunt("4.1"), dfl::inputs::Shunt("4.2"), dfl::inputs::Shunt("4.3"), dfl::inputs::Shunt("4.4")};
-  std::vector<dfl::inputs::Shunt> shunts5 = {dfl::inputs::Shunt("5.1"), dfl::inputs::Shunt("5.2"), dfl::inputs::Shunt("5.3"), dfl::inputs::Shunt("5.4"),
-                                             dfl::inputs::Shunt("5.5")};
-  std::vector<dfl::inputs::Shunt> shunts6 = {dfl::inputs::Shunt("6.1"), dfl::inputs::Shunt("6.2"), dfl::inputs::Shunt("6.3"),
-                                             dfl::inputs::Shunt("6.4"), dfl::inputs::Shunt("6.5"), dfl::inputs::Shunt("6.6")};
+  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1", "1", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1", "2", 0., false, {0.}, 0), dfl::inputs::Shunt("2.2", "2", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts3 = {dfl::inputs::Shunt("3.1", "3", 0., false, {0.}, 0), dfl::inputs::Shunt("3.2", "3", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("3.3", "3", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts4 = {dfl::inputs::Shunt("4.1", "4", 0., false, {0.}, 0), dfl::inputs::Shunt("4.2", "4", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("4.3", "4", 0., false, {0.}, 0), dfl::inputs::Shunt("4.4", "4", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts5 = {dfl::inputs::Shunt("5.1", "5", 0., false, {0.}, 0), dfl::inputs::Shunt("5.2", "5", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("5.3", "5", 0., false, {0.}, 0), dfl::inputs::Shunt("5.4", "5", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("5.5", "5", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts6 = {dfl::inputs::Shunt("6.1", "6", 0., false, {0.}, 0), dfl::inputs::Shunt("6.2", "6", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("6.3", "6", 0., false, {0.}, 0), dfl::inputs::Shunt("6.4", "6", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("6.5", "6", 0., false, {0.}, 0), dfl::inputs::Shunt("6.6", "6", 0., false, {0.}, 0)};
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("0", vl3, 0.0, {}),      dfl::inputs::Node::build("1", vl, 1.0, shunts1),  dfl::inputs::Node::build("2", vl, 2.0, shunts2),
       dfl::inputs::Node::build("3", vl, 3.0, shunts3),  dfl::inputs::Node::build("4", vl2, 5.0, shunts4), dfl::inputs::Node::build("5", vl2, 5.0, shunts5),
       dfl::inputs::Node::build("6", vl2, 0.0, shunts6),
   };
 
-  dfl::algo::ShuntCounterDefinitions defs;
-  dfl::algo::ShuntCounterAlgorithm algo(defs);
+  dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+  dfl::algo::ShuntDefinitions defs;
+  dfl::algo::ShuntDefinitionAlgorithm algo(defs, manager);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
-  ASSERT_EQ(defs.nbShunts.size(), 3);
-  ASSERT_EQ(defs.nbShunts.at("VL"), 6);
-  ASSERT_EQ(defs.nbShunts.at("VL2"), 15);
-  ASSERT_EQ(defs.nbShunts.at("VL3"), 0);
+  ASSERT_EQ(defs.shunts.size(), 3);
+  ASSERT_EQ(defs.shunts.at("VL").shunts.size(), 6);
+  ASSERT_EQ(defs.shunts.at("VL").dynamicModelAssociated, true);
+  ASSERT_EQ(defs.shunts.at("VL2").shunts.size(), 15);
+  ASSERT_EQ(defs.shunts.at("VL2").dynamicModelAssociated, false);
+  ASSERT_EQ(defs.shunts.at("VL3").shunts.size(), 0);
+  ASSERT_EQ(defs.shunts.at("VL3").dynamicModelAssociated, false);
 }
 
 TEST(LinesByIds, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VLb");
-  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1")};
-  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1"), dfl::inputs::Shunt("2.2")};
-  std::vector<dfl::inputs::Shunt> shunts3 = {dfl::inputs::Shunt("3.1"), dfl::inputs::Shunt("3.2"), dfl::inputs::Shunt("3.3")};
-  std::vector<dfl::inputs::Shunt> shunts4 = {dfl::inputs::Shunt("4.1"), dfl::inputs::Shunt("4.2"), dfl::inputs::Shunt("4.3"), dfl::inputs::Shunt("4.4")};
-  std::vector<dfl::inputs::Shunt> shunts5 = {dfl::inputs::Shunt("5.1"), dfl::inputs::Shunt("5.2"), dfl::inputs::Shunt("5.3"), dfl::inputs::Shunt("5.4"),
-                                             dfl::inputs::Shunt("5.5")};
+  std::vector<dfl::inputs::Shunt> shunts1 = {dfl::inputs::Shunt("1.1", "1", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts2 = {dfl::inputs::Shunt("2.1", "2", 0., false, {0.}, 0), dfl::inputs::Shunt("2.2", "2", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts3 = {dfl::inputs::Shunt("3.1", "3", 0., false, {0.}, 0), dfl::inputs::Shunt("3.2", "3", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("3.3", "3", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts4 = {dfl::inputs::Shunt("4.1", "4", 0., false, {0.}, 0), dfl::inputs::Shunt("4.2", "4", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("4.3", "4", 0., false, {0.}, 0), dfl::inputs::Shunt("4.4", "4", 0., false, {0.}, 0)};
+  std::vector<dfl::inputs::Shunt> shunts5 = {dfl::inputs::Shunt("5.1", "5", 0., false, {0.}, 0), dfl::inputs::Shunt("5.2", "5", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("5.3", "5", 0., false, {0.}, 0), dfl::inputs::Shunt("5.4", "5", 0., false, {0.}, 0),
+                                             dfl::inputs::Shunt("5.5", "5", 0., false, {0.}, 0)};
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("VL0", vl2, 0.0, {}),     dfl::inputs::Node::build("VL1", vl, 1.0, shunts1), dfl::inputs::Node::build("VL2", vl, 2.0, shunts2),
       dfl::inputs::Node::build("VL3", vl, 3.0, shunts3), dfl::inputs::Node::build("VL4", vl, 4.0, shunts4), dfl::inputs::Node::build("VL5", vl, 5.0, shunts5),
@@ -860,7 +876,7 @@ TEST(ContingencyValidation, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      dfl::inputs::Node::build("0", vl, 110.0, {dfl::inputs::Shunt("SHUNT")}),
+      dfl::inputs::Node::build("0", vl, 110.0, {dfl::inputs::Shunt("SHUNT", "0", 0., false, {0.}, 0)}),
       dfl::inputs::Node::build("1", vl, 110.0, {}),
       dfl::inputs::Node::build("2", vl, 110.0, {}),
       dfl::inputs::Node::build("3", vl, 110.0, {}),
