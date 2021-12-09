@@ -260,14 +260,14 @@
         <bus id="AJAXP7_S_VL7_TN1" v="409.73005742585076" angle="28.102009542188398"/>
       </busBreakerTopology>
       <load id="AJAXP7_AJAX5" name="AJAXP7_AJAX5" loadType="UNDEFINED" p0="0" q0="0" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="0" q="0"/>
-      <vscConverterStation id="AJAXP7_AJAX_TER_1" name="AJAX_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.69479904042555" reactivePowerSetpoint="-170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170">
+      <vscConverterStation id="AJAXP7_AJAX_TER_1" name="AJAX_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <vscConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.69479904042555" reactivePowerSetpoint="-170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170">
+      <vscConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
@@ -284,14 +284,14 @@
         <switch id="HERAP7_S_VL7_SWITCH" open="false" kind="BREAKER" retained="true" bus1="HERAP7_S_VL7_TN1" bus2="HERAP7_S_VL7_TN2"/>
       </busBreakerTopology>
       <load id="HERAP7_HERA5" name="HERAP7_HERA5" loadType="UNDEFINED" p0="0" q0="0" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="0" q="0"/>
-      <vscConverterStation id="HERAP7_HERA_TER_1" name="HERA_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="404.13002038680287" reactivePowerSetpoint="-270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270">
+      <vscConverterStation id="HERAP7_HERA_TER_1" name="HERA_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="404.13002038680287" reactivePowerSetpoint="-270" bus="HERAP7_S_VL7_TN2" connectableBus="HERAP7_S_VL7_TN2" p="800" q="-270">
+      <vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN2" connectableBus="HERAP7_S_VL7_TN2" p="800" q="-270">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
