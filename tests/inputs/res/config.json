@@ -14,8 +14,7 @@
     "StopTime": 120,
     "Precision": 1e-3,
     "sa": {
-      "TimeOfEvent": 50,
-      "NumberOfThreads": 6
+      "TimeOfEvent": 50
     }
   }
 }

@@ -101,7 +101,7 @@ You can use the script myEnvDFL.sh with the "tests" option. DynaFlow Launcher mu
 $> ./myEnvDFL.sh tests
 ```
 
-For MAIN unit tests, which are composed of complete Dyna&omega;o simulations, reference tests can be updated using the script myEnvDFL.sh.
+For MAIN and MAIN_SA unit tests, which are composed of complete Dyna&omega;o simulations, reference tests can be updated using the script myEnvDFL.sh
 ```bash
 $> ./myEnvDFL.sh update-references
 ```

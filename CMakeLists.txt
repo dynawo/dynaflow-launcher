@@ -142,6 +142,16 @@ find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system 
 install(DIRECTORY ${DYNAWO_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
 install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
 
+# MPI (required by algorithms)
+set(MPI_HOME ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich)
+find_package(MPI REQUIRED)
+if(MPI_FOUND)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MPI_CXX_FLAGS}")
+endif()
+find_program(MPI_RUN mpirun PATHS ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich/bin REQUIRED NO_CMAKE_PATH)
+message(STATUS "mpirun found: " ${MPI_RUN})
+
 ## Dynawo
 find_package(Dynawo 1.3.0 REQUIRED)
 find_package(DynawoAlgorithms 1.3.0 REQUIRED)

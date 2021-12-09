@@ -46,6 +46,10 @@ jobs:
 
       - name: Build
         run: |
+          source /etc/profile.d/00-modulepath.sh
+          source /etc/profile.d/modules.sh
+          source /usr/share/lmod/lmod/init/bash
+          module load mpi/mpich-x86_64
           export DYNAWO_HOME=$(pwd)/dynawo
           export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
           export DYNAFLOW_LAUNCHER_HOME=$(pwd)
@@ -107,6 +111,10 @@ jobs:
         env:
           CONTAINER_WORKSPACE: ${{ runner.workspace }}
         run: |
+          source /etc/profile.d/00-modulepath.sh
+          source /etc/profile.d/modules.sh
+          source /usr/share/lmod/lmod/init/bash
+          module load mpi/mpich-x86_64
           export DYNAWO_HOME=$(pwd)/dynawo
           export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
           export DYNAFLOW_LAUNCHER_HOME=$(pwd)
