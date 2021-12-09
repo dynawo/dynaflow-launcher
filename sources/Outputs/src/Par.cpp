@@ -533,7 +533,7 @@ Par::writeShuntRegulation(const inputs::Shunt::BusId& busId, const std::vector<s
 
   set->addParameter(helper::buildParameter("nbShunts", static_cast<int>(shunts.size())));
   set->addParameter(helper::buildParameter("tNext", 10.));
-  set->addParameter(helper::buildParameter("URef0Pu", shunts.front().get().targetV));  // All target V for shunts regulated on same bus are the same
+  set->addParameter(helper::buildParameter("URef0Pu", shunts.front().get().targetV));  // All target V for shunts connected on same bus are the same
   for (auto it = shunts.begin(); it != shunts.end(); ++it) {
     const auto& shunt = it->get();
     unsigned int index = it - shunts.begin();

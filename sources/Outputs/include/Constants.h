@@ -31,7 +31,7 @@ namespace outputs {
 /// @brief Namespace for constant variables common to all writers
 namespace constants {
 
-/// @brief Alias for map of references to shunts by regulated bus id
+/// @brief Alias for map of references to shunts by connected bus id
 using RefShuntsByIdMap = std::unordered_map<inputs::Shunt::BusId, std::vector<std::reference_wrapper<const inputs::Shunt>>>;
 
 /**
@@ -69,7 +69,7 @@ std::string diagramFilename(const std::string& id);
 /**
  * @brief Retrieve the shunt regulation id
  *
- * @param busId the bus id to which the shunt is connected
+ * @param busId the connected bus id of the shunt
  * @return the computed shunt regulation id
  */
 static inline std::string
@@ -78,7 +78,7 @@ computeShuntRegulationId(const std::string& busId) {
 }
 
 /**
- * @brief Compute the list of shunts, sorting by regulated bus id
+ * @brief Compute the list of shunts, sorting by connected bus id
  *
  * @param shuntDefinitions the shund definitions to use
  * @return the sorted list of shunts
@@ -97,7 +97,7 @@ const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};
 const std::string remoteVControlParId{"remoteVControl"};                          ///< PAR id for using remote voltage control
 const std::string remoteSignalNGeneratorFixedP{"remoteSignalNFixedP"};            ///< PAR id for using remote signal N with fixed P
 const std::string xmlEncoding{"UTF-8"};                                           ///< Default encoding for XML outputs files
-const std::string diagramTableBPu{"tableBPu"};                                    ///< Name of the table in b sections diagram files
+const std::string diagramTableBPu{"tableBPu"};                                    ///< Name of the table in susceptance sections diagram files
 
 constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
 

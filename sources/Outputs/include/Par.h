@@ -168,7 +168,7 @@ class Par {
   /**
    * @brief Write the parameters for a shunt regulation set
    *
-   * @param busId the bus id of the shunt regulation
+   * @param busId the connected bus id of the shunt regulation
    * @param shunts the list of the shunts for the bus
    * @return the parameter set of the shunt regulation
    */

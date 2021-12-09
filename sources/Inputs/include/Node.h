@@ -141,13 +141,13 @@ class Tfo {
 /// @brief Topological shunt
 struct Shunt {
   using ShuntId = std::string;  ///< alias for shunt id
-  using BusId = std::string;    ///< Alias for bus id regulated by the shunt
+  using BusId = std::string;    ///< Alias for bus id connected to the shunt
 
   /**
    * @brief Construct a new Shunt
    *
    * @param id the shunt id
-   * @param busId the bus regulated by the shunt
+   * @param busId the connected bus id
    * @param targetV the target voltage of the shunt
    * @param voltageRegulationOn whether voltage regulation is enabled for the shunt
    * @param bs the vector of the susceptance values for the shunt
@@ -177,7 +177,7 @@ struct Shunt {
   const BusId busId;                    ///< the connected bus of the shunt
   const double targetV;                 ///< the target V of the shunt
   const bool voltageRegulationOn;       ///< whether voltage regulation is enabled for the shunt
-  const std::vector<double> bSections;  ///< the vector of the B values for the shunt
+  const std::vector<double> bSections;  ///< the vector of the susceptance values for the shunt
   const unsigned int sectionNumber;     ///< initial section index in sections
 };
 
