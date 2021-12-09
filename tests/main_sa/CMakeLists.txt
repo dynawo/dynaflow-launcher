@@ -38,7 +38,7 @@ macro(DEFINE_LAUNCH_TEST_SA _name)
   add_test(
     # Use some per-module/project prefix so that it is easier to run only tests for this module
     NAME MAIN_SA.${_name}
-    COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:DynaFlowLauncher> -DTEST_NAME=${_name} -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diffContingencies.py -DCHECK_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/checkContingencies.py -P ${CMAKE_SOURCE_DIR}/cmake/TestMainSA.cmake
+    COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:DynaFlowLauncher> -DMPI_RUN=${MPI_RUN} -DTEST_NAME=${_name} -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diffContingencies.py -DCHECK_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/checkContingencies.py -P ${CMAKE_SOURCE_DIR}/cmake/TestMainSA.cmake
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
   set_property(TEST MAIN_SA.${_name} PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH=${DYNAWO_HOME}/share/iidm/xsd/)

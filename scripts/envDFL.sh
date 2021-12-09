@@ -12,6 +12,8 @@
 # This file aimes to encapsulate processing for users to compiler and use DFL
 
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+MPIRUN_PATH=$(which mpirun 2> /dev/null)
+NBPROCS=1
 
 error_exit() {
     echo "${1:-"Unknown Error"}" 1>&2
@@ -157,17 +159,28 @@ where [option] can be:
         launch [network] [config]                 launch DynaFlow Launcher:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
-        launch-sa [network] [config] [contingencies] launch DynaFlow Launcher to run a Security Analysis:
+
+        launch-sa [network] [config] [contingencies] --nbThreads [nbprocs]
+                                                  launch DynaFlow Launcher to run a Security Analysis:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
+                                                  - nbprocs: number of MPI processes to use for SA (default 1)
+
         launch-gdb [network] [config]             launch DynaFlow Launcher with debugger:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
 
+        launch-sa-gdb [network] [config] [contingencies] --nbThreads [nbprocs]
+                                                  launch DynaFlow Launcher in gdb to run a Security Analysis:
+                                                  - network: filepath (only IIDM is supported)
+                                                  - config: filepath (JSON configuration file)
+                                                  - contingencies: filepath (JSON file)
+                                                  - nbprocs: number of MPI processes to use for SA (default 1)
+
         =========== Documentation
-        build-doxygen-doc                     build all doxygen documentation
-        doxygen-doc                           open DynaFlow Launcher's Doxygen documentation into chosen browser
+        build-doxygen-doc                         build all doxygen documentation
+        doxygen-doc                               open DynaFlow Launcher's Doxygen documentation into chosen browser
 
         =========== Others
         help                                      show all available options
@@ -199,7 +212,11 @@ set_environment() {
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
 
     # dynawo vars that can be replaced by external
-    export_var_env_dynawo_with_default DYNAWO_DDB_DIR $DYNAFLOW_LAUNCHER_EXTERNAL_DDB $DYNAWO_INSTALL_DIR/ddb
+    if [ ! -z "$DYNAFLOW_LAUNCHER_EXTERNAL_DDB" ]; then
+      export_var_env_dynawo_with_default DYNAWO_DDB_DIR $DYNAFLOW_LAUNCHER_EXTERNAL_DDB
+    else
+      export_var_env_dynawo_with_default DYNAWO_DDB_DIR $DYNAWO_INSTALL_DIR/ddb
+    fi
 
     # DYNAWO_IIDM_EXTENSION is used only in case of external IIDM extensions.
     # Empty string is equivalent to not set for Dynawo
@@ -216,14 +233,20 @@ set_environment() {
         error_exit "Your python interpreter \"${DYNAFLOW_LAUNCHER_PYTHON_COMMAND}\" does not work. Use export DYNAFLOW_LAUNCHER_PYTHON_COMMAND=<Python Interpreter> in your myEnvDFL.sh."
     fi
 
-    # global vars
-    ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
-    ld_library_path_prepend $DYNAWO_ALGORITHMS_HOME/lib     # For Dynawo-algorithms library
-    ld_library_path_prepend $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES # To add external model libraries loaded during simulation
-
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
     export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+
+    #3rd party
+    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR=$DYNAFLOW_LAUNCHER_BUILD_DIR/3rdParty
+    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/3rdParty
+    export_var_env_force DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR=$DYNAFLOW_LAUNCHER_HOME/3rdParty
+
+    # global vars
+    ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
+    ld_library_path_prepend $DYNAWO_ALGORITHMS_HOME/lib     # For Dynawo-algorithms library
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR/mpich/lib     # For mpich library
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES # To add external model libraries loaded during simulation
 
     # dynawo vars that can be extended by external
     export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
@@ -245,6 +268,11 @@ set_environment() {
         export_var_env_force DYNAFLOW_LAUNCHER_LIBRARIES=$DYNAWO_DDB_DIR # same as dynawo
         export_var_env_force DYNAFLOW_LAUNCHER_XSD=$DYNAFLOW_LAUNCHER_INSTALL_DIR/etc/xsd
         export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
+    fi
+
+    if [ -z "$MPIRUN_PATH" ]
+    then
+        MPIRUN_PATH="$DYNAWO_ALGORITHMS_HOME/bin/mpirun"
     fi
 
     # python
@@ -296,17 +324,45 @@ cmake_configure() {
         -DCMAKE_INSTALL_PREFIX:STRING=$DYNAFLOW_LAUNCHER_INSTALL_DIR \
         -DDYNAWO_HOME:STRING=$DYNAWO_HOME \
         -DDYNAWO_ALGORITHMS_HOME:STRING=$DYNAWO_ALGORITHMS_HOME \
+        -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
         -DBOOST_ROOT:STRING=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
         -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
         -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS \
         $CMAKE_OPTIONAL
+    RETURN_CODE=$?
     popd > /dev/null
+    return ${RETURN_CODE}
+}
+
+cmake_configure_3rdParty() {
+  if [ ! -d "$DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR" ]; then
+    mkdir -p $DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR
+  fi
+  pushd $DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR > /dev/null
+  cmake \
+    -G "$DYNAFLOW_LAUNCHER_CMAKE_GENERATOR" \
+    -DCMAKE_BUILD_TYPE:STRING=$DYNAFLOW_LAUNCHER_BUILD_TYPE \
+    -DCMAKE_INSTALL_PREFIX=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
+    $DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR
+  RETURN_CODE=$?
+  popd > /dev/null
+  return ${RETURN_CODE}
+}
+
+cmake_build_3rdParty() {
+  pushd $DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR > /dev/null
+  cmake --build .
+  RETURN_CODE=$?
+  popd > /dev/null
+  return ${RETURN_CODE}
 }
 
 cmake_build() {
     apply_clang_format
     cmake --build $DYNAFLOW_LAUNCHER_BUILD_DIR --target install -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED
+    RETURN_CODE=$?
+    return ${RETURN_CODE}
 }
 
 cmake_tests() {
@@ -359,14 +415,18 @@ clean_build_all() {
 }
 
 build_user() {
-    cmake_configure
-    cmake_build
+    cmake_configure_3rdParty || error_exit "Error during 3rd party cmake configuration."
+    cmake_build_3rdParty || error_exit "Error during 3rd party cmake build."
+    cmake_configure || error_exit "Error during cmake configuration."
+    cmake_build || error_exit "Error during cmake build."
     build_test_doxygen_doc || error_exit "Error during build_test_doxygen_doc."
 }
 
 build_tests_coverage() {
     rm -rf $DYNAFLOW_LAUNCHER_HOME/buildCoverage
-    cmake_coverage
+    cmake_configure_3rdParty || error_exit "Error during 3rd party cmake configuration."
+    cmake_build_3rdParty || error_exit "Error during 3rd party cmake build."
+    cmake_coverage || error_exit "Error during coverage."
     if [ "$DYNAFLOW_LAUNCHER_BROWSER_SHOW" = true ] ; then
         verify_browser
         $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
@@ -374,47 +434,66 @@ build_tests_coverage() {
 }
 
 launch() {
-    if [ ! -f $1 ]; then
-        error_exit "IIDM network file $network doesn't exist"
+    if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $1 doesn't exist"
     fi
-    if [ ! -f $2 ]; then
-        error_exit "DFL configuration file $config doesn't exist"
+    if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $2 doesn't exist"
     fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $1 \
-    --config $2
+    --network $2 \
+    --config $3
 }
 
 launch_gdb() {
-    if [ ! -f $1 ]; then
-        error_exit "IIDM network file $network doesn't exist"
+    if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $1 doesn't exist"
     fi
-    if [ ! -f $2 ]; then
-        error_exit "DFL configuration file $config doesn't exist"
+    if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $2 doesn't exist"
     fi
     gdb --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $1 \
-    --config $2
+    --network $2 \
+    --config $3
 }
 
 launch_sa() {
-    if [ ! -f $1 ]; then
-        error_exit "IIDM network file $1 doesn't exist"
+    if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $2 doesn't exist"
     fi
-    if [ ! -f $2 ]; then
-        error_exit "DFL configuration file $2 doesn't exist"
+    if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $3 doesn't exist"
     fi
-    if [ ! -f $3 ]; then
-        error_exit "Security Analysis contingencies file $3 doesn't exist"
+    if [ ! -f "$4" ]; then
+        error_exit "Security Analysis contingencies file $4 doesn't exist"
     fi
     export_preload
-    $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $1 \
-    --config $2 \
-    --contingencies $3
+    --network $2 \
+    --config $3 \
+    --contingencies $4
+    unset LD_PRELOAD
+}
+
+launch_sa_gdb() {
+    if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $2 doesn't exist"
+    fi
+    if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $3 doesn't exist"
+    fi
+    if [ ! -f "$4" ]; then
+        error_exit "Security Analysis contingencies file $4 doesn't exist"
+    fi
+    export_preload
+    "$MPIRUN_PATH" -np $NBPROCS xterm -e gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $2 \
+    --config $3 \
+    --contingencies $4
     unset LD_PRELOAD
 }
 
@@ -492,7 +571,8 @@ open_doxygen_doc() {
 #################################
 
 MODE=0 # normal
-case $1 in
+CMD="$1"
+case "$1" in
     tests)
         # environment used for unit tests is defined only in cmakelist
         MODE=1
@@ -504,9 +584,25 @@ case $1 in
     *)
         ;;
 esac
+
+# Nb Threads
+ARGS=""
+while (($#)); do
+    key="$1"
+    case "$key" in
+        --nbThreads|-np)
+        NBPROCS=$2
+        shift 2 # pass argument and value
+        ;;
+    *)
+        shift # pass argument
+        ARGS="$ARGS $key"
+        ;;
+    esac
+done
 set_environment $MODE
 
-case $1 in
+case $CMD in
     build-user)
         build_user || error_exit "Failed to build DFL"
         ;;
@@ -523,13 +619,16 @@ case $1 in
         help
         ;;
     launch)
-        launch $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
+        launch $ARGS || error_exit "Failed to perform launch"
         ;;
     launch-gdb)
-        launch_gdb $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
+        launch_gdb $ARGS || error_exit "Failed to perform launch with network=$2, config=$3"
         ;;
     launch-sa)
-        launch_sa $2 $3 $4 || error_exit "Failed to perform launch-sa with network=$2, config=$3, contingencies=$4"
+        launch_sa $ARGS || error_exit "Failed to perform launch-sa"
+        ;;
+    launch-sa-gdb)
+        launch_sa_gdb $ARGS || error_exit "Failed to perform launch-sa-gdb"
         ;;
     reset-environment)
         reset_environment_variables || error_exit "Failed to reset environment variables"
@@ -553,7 +652,7 @@ case $1 in
         version
         ;;
     *)
-        echo "$1 is an invalid option"
+        echo "$CMD is an invalid option"
         help
         exit 1
         ;;

@@ -139,15 +139,6 @@ class Configuration {
   }
 
   /**
-   * @brief Retrieves the number of threads used by dynaflow launcher
-   *
-   * @returns the number of threads
-   */
-  unsigned int getNumberOfThreads() const {
-    return numberOfThreads_;
-  }
-
-  /**
    * @brief type of active power compensation for generator
    */
   enum class ActivePowerCompensation {
@@ -197,7 +188,6 @@ class Configuration {
   boost::optional<double> precision_;                                                ///< Precision of the simulation
 
   Seconds timeOfEvent_ = Seconds(80);  ///< time for contingency simulation (security analysis only)
-  unsigned int numberOfThreads_ = 4;   ///< The number of threads used in security analysis simulation
 };
 
 }  // namespace inputs

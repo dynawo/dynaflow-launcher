@@ -27,6 +27,7 @@
 #include "Par.h"
 #include "ParEvent.h"
 
+#include <DYNMPIContext.h>
 #include <DYNMultipleJobsFactory.h>
 #include <DYNScenario.h>
 #include <DYNScenarios.h>
@@ -180,6 +181,11 @@ Context::exportOutputs() {
   // Job
   exportOutputJob();
 
+  // Only the root process is allowed to export files
+  auto& mpiContext = DYNAlgorithms::mpi::context();
+  if (!mpiContext.isRootProc())
+    return;
+
   // Dyd
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
@@ -219,6 +225,11 @@ void
 Context::exportOutputJob() {
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel, config_));
   jobEntry_ = jobWriter.write();
+
+  auto& mpiContext = DYNAlgorithms::mpi::context();
+  // Only the root process is allowed to export files
+  if (!mpiContext.isRootProc())
+    return;
 
   switch (def_.simulationKind) {
   case SimulationKind::SECURITY_ANALYSIS:
@@ -331,7 +342,6 @@ Context::executeSecurityAnalysis() {
   saLauncher->setMultipleJobs(multipleJobs);
   saLauncher->setOutputFile("sa.zip");
   saLauncher->setDirectory(config_.outputDir().generic_string());
-  saLauncher->setNbThreads(config_.getNumberOfThreads());
   saLauncher->init();
   saLauncher->launch();
   // Aggregated results could be obtained requesting writeResults method of saLauncher

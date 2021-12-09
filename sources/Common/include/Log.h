@@ -20,6 +20,7 @@
 #include "Options.h"
 
 #include <DYNError.h>
+#include <DYNMPIContext.h>
 #include <DYNMessage.h>
 #include <DYNTrace.h>
 
@@ -56,8 +57,8 @@ class Log {
  * @param level the level of the log: must be "error", "warn", "info" or "debug"
  * @param key the log key from the dictionary
  */
-#define LOG(level, key, ...)                                  \
-  DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag) \
+#define LOG(level, key, ...)                                                                                                      \
+  (DYNAlgorithms::mpi::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag) : DYN::TraceStream()) \
       << (DYN::Message("DFLLOG", dfl::KeyLog_t::names(dfl::KeyLog_t::key)), ##__VA_ARGS__) << DYN::Trace::endline
 
 /**
