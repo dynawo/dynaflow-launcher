@@ -5924,11 +5924,11 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:bus v="237.937683" angle="3.31435657" nodes="11,15,37,43"/>
                 <iidm:bus v="226.194672" angle="-16.4464359" nodes="12,16,38,42"/>
             </iidm:nodeBreakerTopology>
-            <iidm:vscConverterStation id="_b46bfb8e-7af6-459e-acf3-53a42c943a7c" name="VSC2" voltageRegulatorOn="true" lossFactor="0.32362458" voltageSetpoint="218.47" reactivePowerSetpoint="0.0" node="42" p="0.0" q="0.0">
+            <iidm:vscConverterStation id="_b46bfb8e-7af6-459e-acf3-53a42c943a7c" name="VSC2" voltageRegulatorOn="true" lossFactor="0.32362458" voltageSetpoint="226.194672" reactivePowerSetpoint="0.0" node="42" p="0.0" q="0.0">
                 <iidm:alias>_a168e701-bd48-4f66-8f0b-0f69b2545530</iidm:alias>
                 <iidm:minMaxReactiveLimits minQ="-1.7976931348623157E308" maxQ="1.7976931348623157E308"/>
             </iidm:vscConverterStation>
-            <iidm:vscConverterStation id="_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd" name="VSC1" voltageRegulatorOn="true" lossFactor="0.32467532" voltageSetpoint="213.54" reactivePowerSetpoint="0.0" node="43" p="-153.5" q="0.0">
+            <iidm:vscConverterStation id="_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd" name="VSC1" voltageRegulatorOn="true" lossFactor="0.32467532" voltageSetpoint="237.937683" reactivePowerSetpoint="0.0" node="43" p="-153.5" q="0.0">
                 <iidm:alias>_071bb138-ff00-4874-8acc-a884aa5cf4a9</iidm:alias>
                 <iidm:minMaxReactiveLimits minQ="-1.7976931348623157E308" maxQ="1.7976931348623157E308"/>
             </iidm:vscConverterStation>
