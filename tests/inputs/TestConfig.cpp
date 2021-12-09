@@ -27,7 +27,6 @@ TEST(Config, Nominal) {
   ASSERT_EQ(10, config.getStartTime().count());
   ASSERT_EQ(120, config.getStopTime().count());
   ASSERT_EQ(50, config.getTimeOfEvent().count());
-  ASSERT_EQ(6, config.getNumberOfThreads());
 }
 
 TEST(Config, Default) {
@@ -44,5 +43,4 @@ TEST(Config, Default) {
   ASSERT_EQ(45.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());
   ASSERT_EQ(80, config.getTimeOfEvent().count());
-  ASSERT_EQ(4, config.getNumberOfThreads());
 }

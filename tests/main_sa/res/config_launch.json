@@ -3,9 +3,6 @@
       "InfiniteReactiveLimits": "true",
       "AutomaticSlackBusOn": "true",
       "OutputDir": "results/launch",
-      "DsoVoltageLevel": 3.0,
-      "sa": {
-          "NumberOfThreads": 6
-      }
+      "DsoVoltageLevel": 3.0
   }
 }
