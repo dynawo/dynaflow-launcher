@@ -1,3 +1,13 @@
+//
+// Copyright (c) 2021, RTE (http://www.rte-france.com)
+// See AUTHORS.txt
+// All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, you can obtain one at http://mozilla.org/MPL/2.0/.
+// SPDX-License-Identifier: MPL-2.0
+//
+
 #include "DydEvent.h"
 #include "Tests.h"
 
@@ -28,7 +38,8 @@ TEST(TestDydEvent, write) {
   contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                 // signal: "generator_switchOffSignal2"
   contingency.elements.emplace_back("TestLoad", ElementType::LOAD);                           // signal: "switchOff2"
   contingency.elements.emplace_back("TestHvdcLine", ElementType::HVDC_LINE);                  // signal: "hvdc_switchOffSignal2"
-  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);  // buildNetworkStateDisconnection (general case)
+  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);  // signal: "shunt_switchOffSignal2"
+  contingency.elements.emplace_back("TestLine", ElementType::LINE);                           // general case
 
   outputPath.append(filename);
   dfl::outputs::DydEvent dyd(dfl::outputs::DydEvent::DydEventDefinition(basename, outputPath.generic_string(), contingency));

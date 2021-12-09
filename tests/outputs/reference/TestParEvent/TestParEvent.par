@@ -9,8 +9,13 @@
     <par name="event_stateEvent1" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
+  <set id="Disconnect_TestLine">
+    <par name="event_disconnectExtremity" type="BOOL" value="true"/>
+    <par name="event_disconnectOrigin" type="BOOL" value="true"/>
+    <par name="event_tEvent" type="DOUBLE" value="80"/>
+  </set>
   <set id="Disconnect_TestShuntCompensator">
-    <par name="event_stateEvent1" type="DOUBLE" value="1"/>
+    <par name="event_stateEvent1" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
 </parametersSet>
