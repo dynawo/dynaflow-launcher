@@ -321,7 +321,6 @@ Context::executeSecurityAnalysis() {
   saLauncher->setMultipleJobs(multipleJobs);
   saLauncher->setOutputFile("sa.zip");
   saLauncher->setDirectory(config_.outputDir().generic_string());
-  saLauncher->setNbThreads(config_.getNumberOfThreads());
   saLauncher->init();
   saLauncher->launch();
   // Aggregated results could be obtained requesting writeResults method of saLauncher

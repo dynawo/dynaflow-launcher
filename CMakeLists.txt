@@ -138,6 +138,9 @@ find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system 
 install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
 install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/external/dynawo-algorithms)
 
+# MPI (required by algorithms)
+find_package(MPI REQUIRED)
+
 ## Dynawo
 find_package(Dynawo 1.3.0 REQUIRED)
 find_package(DynawoAlgorithms 1.3.0 REQUIRED)
