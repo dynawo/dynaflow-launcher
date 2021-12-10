@@ -228,15 +228,21 @@ Context::exportOutputJob() {
 
 void
 Context::exportOutputsContingencies() {
+  auto map = outputs::constants::computeFilteredShuntsByIds(shuntDefinitions_);
+  outputs::constants::ShuntsRefSet shuntsWithSections;
+  for (const auto& pair : map) {
+    shuntsWithSections.insert(pair.second.begin(), pair.second.end());
+  }
+
   if (validContingencies_) {
     for (const auto& contingency : validContingencies_->get()) {
-      exportOutputsContingency(contingency);
+      exportOutputsContingency(contingency, shuntsWithSections);
     }
   }
 }
 
 void
-Context::exportOutputsContingency(const inputs::Contingency& contingency) {
+Context::exportOutputsContingency(const inputs::Contingency& contingency, const outputs::constants::ShuntsRefSet& shuntsWithSections) {
   // Prepare a DYD, PAR and JOBS for every contingency
   // The DYD and PAR contain the definition of the events of the contingency
 
@@ -246,13 +252,14 @@ Context::exportOutputsContingency(const inputs::Contingency& contingency) {
   // Specific DYD for contingency
   file::path dydEvent(config_.outputDir());
   dydEvent.append(basenameEvent + ".dyd");
-  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), contingency));
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), contingency, shuntsWithSections));
   dydEventWriter.write();
 
   // Specific PAR for contingency
   file::path parEvent(config_.outputDir());
   parEvent.append(basenameEvent + ".par");
-  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), contingency, config_.getTimeOfEvent()));
+  outputs::ParEvent parEventWriter(
+      outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), contingency, shuntsWithSections, config_.getTimeOfEvent()));
   parEventWriter.write();
 
 #if _DEBUG_

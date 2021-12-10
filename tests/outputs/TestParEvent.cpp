@@ -35,13 +35,19 @@ TEST(TestParEvent, write) {
 
   auto contingency = dfl::inputs::Contingency("TestContingency");
   // We need the three of them to check the three cases that can be generated
-  contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                       // buildBranchDisconnection (branch case)
-  contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                 // buildEventSetPointBooleanDisconnection
-  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);  // buildEventSetPointBooleanDisconnection
-  contingency.elements.emplace_back("TestLine", ElementType::LINE);                           // buildEventSetPointRealDisconnection (general case)
+  contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                        // buildBranchDisconnection (branch case)
+  contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                  // buildEventSetPointBooleanDisconnection
+  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);   // buildEventSetPointBooleanDisconnection
+  contingency.elements.emplace_back("TestShuntCompensator2", ElementType::SHUNT_COMPENSATOR);  // buildEventSetPointRealDisconnection (general case)
+  contingency.elements.emplace_back("TestLine", ElementType::LINE);                            // buildEventSetPointRealDisconnection (general case)
 
   outputPath.append(filename);
-  dfl::outputs::ParEvent par(dfl::outputs::ParEvent::ParEventDefinition(basename, outputPath.generic_string(), contingency, std::chrono::seconds(80)));
+  // other than the shunt id are irrelevant for the search
+  dfl::inputs::Shunt shuntWithSections("TestShuntCompensator", "", 0., true, {}, 0);
+  dfl::outputs::constants::ShuntsRefSet shuntRefSet = {std::ref(shuntWithSections)};
+
+  dfl::outputs::ParEvent par(
+      dfl::outputs::ParEvent::ParEventDefinition(basename, outputPath.generic_string(), contingency, shuntRefSet, std::chrono::seconds(80)));
   par.write();
 
   boost::filesystem::path reference("reference");

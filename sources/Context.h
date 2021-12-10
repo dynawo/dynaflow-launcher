@@ -19,6 +19,7 @@
 
 #include "Algo.h"
 #include "Configuration.h"
+#include "Constants.h"
 #include "ContingenciesManager.h"
 #include "DynamicDataBaseManager.h"
 #include "NetworkManager.h"
@@ -148,9 +149,13 @@ class Context {
   /// @brief Prepare the output files required to simulate the valid contingencies
   void exportOutputsContingencies();
 
-  /// @brief Prepare the output files required to simulate a given contingency
-  /// @param contingency the contingency
-  void exportOutputsContingency(const inputs::Contingency& contingency);
+  /**
+   * @brief Prepare the output files required to simulate a given contingency
+   *
+   * @param contingency the contingency
+   * @param shuntsWithSections set of shunts with sections
+   */
+  void exportOutputsContingency(const inputs::Contingency& contingency, const outputs::constants::ShuntsRefSet& shuntsWithSections);
 
  private:
   ContextDef def_;                                         ///< context definition

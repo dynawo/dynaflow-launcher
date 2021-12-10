@@ -48,9 +48,17 @@ ParEvent::write() {
     case Type::LOAD:
     case Type::GENERATOR:
     case Type::HVDC_LINE:
-    case Type::SHUNT_COMPENSATOR:
       parametersSets->addParametersSet(buildEventSetPointBooleanDisconnection(element.id, def_.timeOfEvent));
       break;
+    case Type::SHUNT_COMPENSATOR: {
+      inputs::Shunt searchedShunt(element.id, "", 0., true, {}, 0);  // other than the shunt id are irrelevant for the search
+      if (def_.shuntsWithSections.count(std::ref(searchedShunt)) > 0) {
+        parametersSets->addParametersSet(buildEventSetPointBooleanDisconnection(element.id, def_.timeOfEvent));
+      } else {
+        // general case
+        parametersSets->addParametersSet(buildEventSetPointRealDisconnection(element.id, def_.timeOfEvent));
+      }
+    } break;
     default:
       parametersSets->addParametersSet(buildEventSetPointRealDisconnection(element.id, def_.timeOfEvent));
     }

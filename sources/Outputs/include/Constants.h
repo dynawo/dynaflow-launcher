@@ -34,6 +34,34 @@ namespace constants {
 /// @brief Alias for map of references to shunts by connected bus id
 using RefShuntsByIdMap = std::unordered_map<inputs::Shunt::BusId, std::vector<std::reference_wrapper<const inputs::Shunt>>>;
 
+/// @brief Alias for reference on const shunt
+using ConstShuntRef = std::reference_wrapper<const inputs::Shunt>;
+/// @brief Hash for shunts references
+struct ShuntRefHash {
+  /**
+     * @brief Retrieve the hash value
+     *
+     * @param shunt the shunt to hash
+     * @return the hash value
+     */
+  size_t operator()(const ConstShuntRef& shunt) const noexcept;
+};
+/// @brief Operator equal definition for shunt references
+struct ShuntRefEqual {
+  /**
+     * @brief Determine if two references to a shunt are the same
+     *
+     * They are equal if the embedded shunts are equal
+     *
+     * @param lhs left comparee
+     * @param rhs right comparee
+     * @return true if both referenced shunts are equal, false if not
+     */
+  bool operator()(const ConstShuntRef& lhs, const ConstShuntRef& rhs) const;
+};
+/// @brief Alias for set of references to shunt
+using ShuntsRefSet = std::unordered_set<ConstShuntRef, ShuntRefHash, ShuntRefEqual>;  ///< Alias for set of reference to shunts
+
 /**
  * @brief Return a hash number from a string as input
  * @param str The string that will serve as input for the hash function

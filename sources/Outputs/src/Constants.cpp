@@ -53,6 +53,16 @@ computeFilteredShuntsByIds(const algo::ShuntDefinitions& shuntDefinitions) {
   return ret;
 }
 
+size_t
+ShuntRefHash::operator()(const ConstShuntRef& shunt) const noexcept {
+  return std::hash<inputs::Shunt::ShuntId>{}(shunt.get().id);
+}
+
+bool
+ShuntRefEqual::operator()(const ConstShuntRef& lhs, const ConstShuntRef& rhs) const {
+  return lhs.get() == rhs.get();
+}
+
 }  // namespace constants
 }  // namespace outputs
 }  // namespace dfl

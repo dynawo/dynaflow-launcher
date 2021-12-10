@@ -18,4 +18,8 @@
     <par name="event_stateEvent1" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
+  <set id="Disconnect_TestShuntCompensator2">
+    <par name="event_stateEvent1" type="DOUBLE" value="1"/>
+    <par name="event_tEvent" type="DOUBLE" value="80"/>
+  </set>
 </parametersSet>

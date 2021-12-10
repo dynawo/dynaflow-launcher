@@ -71,10 +71,17 @@ DydEvent::write() const {
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2");
       break;
-    case Type::SHUNT_COMPENSATOR:
-      dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
-      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "shunt_switchOffSignal2");
-      break;
+    case Type::SHUNT_COMPENSATOR: {
+      inputs::Shunt searchedShunt(element.id, "", 0., true, {}, 0);  // other than the shunt id are irrelevant for the search
+      if (def_.shuntsWithSections.count(std::ref(searchedShunt)) > 0) {
+        dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
+        addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "shunt_switchOffSignal2");
+      } else {
+        // general case
+        dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
+        addNetworkStateDisconnectionConnect(dynamicModels, element.id);
+      }
+    } break;
     default:
       dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
       addNetworkStateDisconnectionConnect(dynamicModels, element.id);

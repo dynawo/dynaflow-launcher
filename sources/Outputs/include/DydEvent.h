@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Algo.h"
+#include "Constants.h"
 #include "Contingencies.h"
 
 #include <DYDBlackBoxModel.h>
@@ -49,15 +50,19 @@ class DydEvent {
      * @param base the basename for current file (corresponds to filepath basename)
      * @param filepath the filepath of the dyd file to write
      * @param contingency definition of the contingency for which we have to create a DYD file
+     * @param shuntsWithSections set of shunts with sections
      */
-    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingency& contingency) :
+    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingency& contingency,
+                       const outputs::constants::ShuntsRefSet& shuntsWithSections) :
         basename(base),
         filename(filepath),
-        contingency(contingency) {}
+        contingency(contingency),
+        shuntsWithSections(shuntsWithSections) {}
 
-    std::string basename;                    ///< basename for file
-    std::string filename;                    ///< filepath for file to write
-    const inputs::Contingency& contingency;  ///< the contingency for which event dynamic models will be built
+    std::string basename;                                        ///< basename for file
+    std::string filename;                                        ///< filepath for file to write
+    const inputs::Contingency& contingency;                      ///< the contingency for which event dynamic models will be built
+    const outputs::constants::ShuntsRefSet& shuntsWithSections;  ///< set of shunts with sections
   };
 
   /**

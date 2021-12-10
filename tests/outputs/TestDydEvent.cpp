@@ -34,15 +34,20 @@ TEST(TestDydEvent, write) {
 
   auto contingency = dfl::inputs::Contingency("TestContingency");
   // We need one element per case handled in DydEvent
-  contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                       // buildBranchDisconnection (branch case)
-  contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                 // signal: "generator_switchOffSignal2"
-  contingency.elements.emplace_back("TestLoad", ElementType::LOAD);                           // signal: "switchOff2"
-  contingency.elements.emplace_back("TestHvdcLine", ElementType::HVDC_LINE);                  // signal: "hvdc_switchOffSignal2"
-  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);  // signal: "shunt_switchOffSignal2"
-  contingency.elements.emplace_back("TestLine", ElementType::LINE);                           // general case
+  contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                        // buildBranchDisconnection (branch case)
+  contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                  // signal: "generator_switchOffSignal2"
+  contingency.elements.emplace_back("TestLoad", ElementType::LOAD);                            // signal: "switchOff2"
+  contingency.elements.emplace_back("TestHvdcLine", ElementType::HVDC_LINE);                   // signal: "hvdc_switchOffSignal2"
+  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);   // signal: "shunt_switchOffSignal2"
+  contingency.elements.emplace_back("TestShuntCompensator2", ElementType::SHUNT_COMPENSATOR);  // general case
+  contingency.elements.emplace_back("TestLine", ElementType::LINE);                            // general case
 
   outputPath.append(filename);
-  dfl::outputs::DydEvent dyd(dfl::outputs::DydEvent::DydEventDefinition(basename, outputPath.generic_string(), contingency));
+  // other than the shunt id are irrelevant for the search
+  dfl::inputs::Shunt shuntWithSections("TestShuntCompensator", "", 0., true, {}, 0);
+  dfl::outputs::constants::ShuntsRefSet shuntRefSet = {std::ref(shuntWithSections)};
+
+  dfl::outputs::DydEvent dyd(dfl::outputs::DydEvent::DydEventDefinition(basename, outputPath.generic_string(), contingency, shuntRefSet));
   dyd.write();
 
   boost::filesystem::path reference("reference");

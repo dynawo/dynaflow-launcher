@@ -19,6 +19,7 @@
 
 #include "Algo.h"
 #include "Configuration.h"
+#include "Constants.h"
 #include "Contingencies.h"
 
 #include <PARParametersSet.h>
@@ -45,19 +46,23 @@ class ParEvent {
      *
      * @param base basename for current simulation
      * @param filename file path for output PAR file (corresponds to basename)
-     * @param contingency contingency definition for the event parameters
+     * @param contingency contingency dfinition for the event parameters
+     * @param shuntsWithSections set of shunts with sections
      * @param timeOfEvent time of event
      */
-    ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency, const std::chrono::seconds& timeOfEvent) :
+    ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency,
+                       const outputs::constants::ShuntsRefSet& shuntsWithSections, const std::chrono::seconds& timeOfEvent) :
         basename(base),
         filename(filename),
         contingency(contingency),
+        shuntsWithSections(shuntsWithSections),
         timeOfEvent(timeOfEvent) {}
 
-    std::string basename;                    ///< basename
-    std::string filename;                    ///< filename of the output file to write
-    const inputs::Contingency& contingency;  ///< contingency definition for the event parameters
-    std::chrono::seconds timeOfEvent;        ///< time of event
+    std::string basename;                                        ///< basename
+    std::string filename;                                        ///< filename of the output file to write
+    const inputs::Contingency& contingency;                      ///< contingency definition for the event parameters
+    const outputs::constants::ShuntsRefSet& shuntsWithSections;  ///< set of shunts with sections
+    std::chrono::seconds timeOfEvent;                            ///< time of event
   };
 
   /**
