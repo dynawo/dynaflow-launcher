@@ -1,10 +1,13 @@
 # DynaFlow Launcher
 
 Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dyna&omega;o](https://github.com/dynawo/dynawo)
-and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo/dynawo-algorithms)
+and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo-algorithms).
 
 ## Build
-To build DynaFlow launcher, you must first deploy the Dyna&omega;o library with **c++11 enabled**.
+
+### Dyna&omega;o deploy
+
+To build DynaFlow launcher, you must first deploy the [Dyna&omega;o library](https://github.com/dynawo/dynawo) with **c++11 enabled**.
 
 ``` bash
 $> ./myEnvDynawo.sh build-all
@@ -17,12 +20,21 @@ The path to dynawo deploy is then the path to the subdirectory `dynawo` in the d
 ``` bash
 PATH_TO_DYNAWO_DEPLOY=${DYNAWO_HOME}/deploy/gcc8/shared/dynawo/
 ```
+### Dyna&omega;o Algorithms deploy
 
-Also, Dyna&omega;o Algorithms library must be deployed:
+The [Dyna&omega;o Algorithms library](https://github.com/dynawo/dynawo-algorithms) must also be deployed:
 ``` bash
 $> ./myEnvDynawoAlgorithms.sh build
 $> ./myEnvDynawoAlgorithms.sh deploy
 ```
+
+The latter command creates a deploy folder in ${DYNAWO_ALGORITHMS_HOME}.
+The path to dynawo-algorithms deploy is then the path to the subdirectory `dynawo-algorithms` in the deploy folder. It is generally similar to:
+
+``` bash
+PATH_TO_DYNAWO_ALGORITHMS_DEPLOY=${DYNAWO_ALGORITHMS_HOME}/deploy/gcc8/dynawo-algorithms/
+```
+### Dynaflow Launcher
 
 To build DynaFlow Launcher you need to clone the repository and launch the following commands in the source code directory, it will create a `myEnvDFL.sh` file that will be your personal entrypoint to launch DFL and configure some options.
 
@@ -58,7 +70,7 @@ $DYNAFLOW_LAUNCHER_HOME/scripts/envDFL.sh $@' > myEnvDFL.sh
 $> chmod +x myEnvDFL.sh
 ```
 
-Then update the path "PATH_TO_DYNAWO_DEPLOY" in the file to your deployed installation of Dyna&omega;o and launch the following command:
+Then update the path "PATH_TO_DYNAWO_DEPLOY" in the file to your deployed installation of Dyna&omega;o, as well as the path "PATH_TO_DYNAWO_ALGORITHMS_DEPLOY", and then launch the following command:
 ``` bash
 $> ./myEnvDFL.sh build-user
 ```
@@ -68,24 +80,23 @@ All commands described in the rest of this README are accessible throught this s
 $> ./myEnvDFL.sh help
 ```
 
-
 ## Run
 To run DynaFlow launcher, you can use the script myEnvDFL.sh with the "launch" or "launch-dir" option:
 ```bash
 $> ./myEnvDFL.sh launch <network> <config>
 ```
-where network is the path to the network file (IIDM) and config the path to the configuration file
+where network is the path to the network file (IIDM) and config the path to the configuration file.
 
 ## Testing
 DynaFlow Launcher testing relies on cmake tests.
 
-You can use the script myEnvDFL.sh with the "tests" option. DynaFlow Launcher must be compiled
+You can use the script myEnvDFL.sh with the "tests" option. DynaFlow Launcher must be compiled.
 
 ```bash
 $> ./myEnvDFL.sh tests
 ```
 
-For MAIN unit tests, which are composed of complete Dyna&omega;o simulations, reference tests can be updated using the script myEnvDFL.sh
+For MAIN unit tests, which are composed of complete Dyna&omega;o simulations, reference tests can be updated using the script myEnvDFL.sh.
 ```bash
 $> ./myEnvDFL.sh update-references
 ```
@@ -106,7 +117,7 @@ The check style, based on Dynawo's, is based on a [clang-format file](https://cl
 
 The check style is checked:
 - before commiting. This check is performed by hooks. This hook is installed automatically when using the script myEnvDFL.sh with any option. The commit will be refused if formatting was not applied to the commited file.
-- at compilation: coding style is applied on all modified files (git POV)
+- at compilation: coding style is applied on all modified files (git POV).
 
 ### SCM
 git commits have a standard pattern, similar to the one in Dynawo core. This pattern can be checked by hooks.
