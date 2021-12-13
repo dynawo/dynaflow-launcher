@@ -79,7 +79,6 @@ endif()
 message(STATUS "Compile internal libraries in " ${LINK_TYPE})
 
 set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_=1")
-set(CMAKE_CXX_FLAGS "-DLANG_CXX11")
 if(FORCE_CXX11_ABI)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=1")
 endif()
