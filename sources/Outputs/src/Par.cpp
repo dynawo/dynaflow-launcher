@@ -574,7 +574,9 @@ Par::writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc) {
   set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
   set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
   set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
-  set->addParameter(helper::buildParameter("URef_ValueIn", svarc.voltageSetPoint));
+
+  value = svarc.voltageSetPoint / svarc.VNom;
+  set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
 
   return set;
 }
