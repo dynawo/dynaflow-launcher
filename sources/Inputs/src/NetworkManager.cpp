@@ -160,18 +160,16 @@ NetworkManager::buildTree() {
       if (!svarc->getInitialConnected()) {
         continue;
       }
-      if (!svarc->hasStandbyAutomaton()) {
-        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "standByAutomaton", svarc->getID()) << LOG_ENDL;
-        continue;
-      }
-      if (!svarc->hasVoltagePerReactivePowerControl()) {
-        LOG(warn) << MESS(SVarCIIDMExtensionNotFound, "voltagePerReactivePowerControl", svarc->getID()) << LOG_ENDL;
+      if (svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::OFF ||
+          svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q) {
         continue;
       }
       auto nodeid = svarc->getBusInterface()->getID();
+      auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(svarc->getID());
       nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), svarc->getBMin(), svarc->getBMax(), svarc->getVSetPoint(), svarc->getVNom(),
                                           svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
-                                          svarc->getB0(), svarc->getSlope());
+                                          svarc->getB0(), svarc->getSlope(), svarc->hasStandbyAutomaton(), svarc->hasVoltagePerReactivePowerControl(),
+                                          regulatedBus->getID(), nodeid, regulatedBus->getVNom());
       LOG(debug) << "Node " << nodeid << " contains static var compensator " << svarc->getID() << LOG_ENDL;
     }
 
