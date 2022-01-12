@@ -20,7 +20,6 @@ testing::Environment* const env = initXmlEnvironment();
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
-  using dfl::inputs::StaticVarCompensator;
 
   std::string basename = "TestDyd";
   std::string filename = basename + ".dyd";
@@ -41,21 +40,13 @@ TEST(Dyd, write) {
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
-  std::vector<StaticVarCompensator> svarcs{
-      StaticVarCompensator("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-      StaticVarCompensator("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 0., 10.),
-      StaticVarCompensator("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-      StaticVarCompensator("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-  };
-  dfl::algo::StaticVarCompensatorDefinitions svarcDefs;
-  std::transform(svarcs.begin(), svarcs.end(), std::back_inserter(svarcDefs.svarcs), [](const StaticVarCompensator& svarc) { return std::ref(svarc); });
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   outputPath.append(filename);
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}, svarcDefs));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}, {}));
 
   dydWriter.write();
 
@@ -194,6 +185,55 @@ TEST(Dyd, writeDynamicModel) {
   outputPath.append(filename);
 
   dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, models, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Dyd, writeStaticVarCompensator) {
+  using dfl::algo::StaticVarCompensatorDefinition;
+
+  std::string basename = "TestDydSVarC";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  std::vector<StaticVarCompensatorDefinition> svarcs{
+      StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
+  };
+
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, {}, {}, manager, {}, svarcs));
 
   dydWriter.write();
 

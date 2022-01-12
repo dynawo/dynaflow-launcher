@@ -71,6 +71,10 @@ DydEvent::write() const {
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2");
       break;
+    case Type::STATIC_VAR_COMPENSATOR:
+      dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
+      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "SVarC_switchOffSignal2");
+      break;
     default:
       dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
       addNetworkStateDisconnectionConnect(dynamicModels, element.id);

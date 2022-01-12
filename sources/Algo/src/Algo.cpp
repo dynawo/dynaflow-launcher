@@ -732,13 +732,28 @@ LinesByIdAlgorithm::operator()(const NodePtr& node) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(StaticVarCompensatorDefinitions& svarcsDefinitions) : svarcsDefinitions_(svarcsDefinitions) {}
+StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(SVarCs& svarcs) : svarcs_(svarcs) {}
 
 void
 StaticVarCompensatorAlgorithm::operator()(const NodePtr& node) {
   const auto& svarcs = node->svarcs;
-  std::transform(svarcs.begin(), svarcs.end(), std::back_inserter(svarcsDefinitions_.svarcs),
-                 [](const inputs::StaticVarCompensator& svarc) { return std::ref(svarc); });
+  for (const auto& svarc : svarcs) {
+    modelType model = modelType::SVARCPV;
+    auto hasRemoteRegulation = (svarc.connectedBusId != svarc.regulatedBusId);
+    if (svarc.hasStandByAutomaton) {
+      model = hasRemoteRegulation ? modelType::SVARCPVREMOTEMODEHANDLING : modelType::SVARCPVMODEHANDLING;
+      if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
+        model = hasRemoteRegulation ? modelType::SVARCPVPROPREMOTEMODEHANDLING : modelType::SVARCPVPROPMODEHANDLING;
+      }
+    } else {
+      model = hasRemoteRegulation ? modelType::SVARCPVREMOTE : modelType::SVARCPV;
+      if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
+        model = hasRemoteRegulation ? modelType::SVARCPVPROPREMOTE : modelType::SVARCPVPROP;
+      }
+    }
+    svarcs_.emplace_back(svarc.id, model, svarc.bMin, svarc.bMax, svarc.voltageSetPoint, svarc.VNom, svarc.UMinActivation, svarc.UMaxActivation,
+                        svarc.USetPointMin, svarc.USetPointMax, svarc.b0, svarc.slope, svarc.UNomRemote);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

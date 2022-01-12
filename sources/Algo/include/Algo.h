@@ -967,32 +967,97 @@ class LinesByIdAlgorithm : public NodeAlgorithm {
   LinesByIdDefinitions& linesByIdDefinition_;  ///< lines by id definitions to update
 };
 
-/// @brief Static var compensator definitions
-struct StaticVarCompensatorDefinitions {
-  std::vector<std::reference_wrapper<const inputs::StaticVarCompensator>> svarcs;  ///< List of static var compensators
-};
-
-/// @brief Static var compensator algorithm
-class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
- public:
+/**
+ * @brief StaticVarCompensator definition for algorithm
+ */
+struct StaticVarCompensatorDefinition {
+  /**
+   * @brief StaticVarCompensator model type
+   */
+  enum class ModelType {
+    SVARCPV = 0,
+    SVARCPVMODEHANDLING,
+    SVARCPVREMOTE,
+    SVARCPVREMOTEMODEHANDLING,
+    SVARCPVPROP,
+    SVARCPVPROPMODEHANDLING,
+    SVARCPVPROPREMOTE,
+    SVARCPVPROPREMOTEMODEHANDLING
+  };
   /**
    * @brief Constructor
-   * @param svarcsDefinitions the static var compensator definitions to update
+   *
+   * @param svcId the id of the SVarC
+   * @param modelType SVarC model type
+   * @param bMin the minimum susceptance value of the SVarC
+   * @param bMax the maximum susceptance value of the SVarC
+   * @param voltageSetPoint the voltage set point of the SVarC
+   * @param VNom the nominal voltage of the bus of the SVarC
+   * @param UMinActivation the low voltage activation threshold of the SVarC
+   * @param UMaxActivation the high voltage activation threshold of the SVarC
+   * @param USetPointMin the low voltage set point of the SVarC
+   * @param USetPointMax the high voltage set point of the SVarC
+   * @param b0 the initial susceptance value  of the SVarC
+   * @param slope the slope (kV/MVar) of the SVarC
+   * @param UNomRemote the nominal voltage of regulated bus
    */
-  explicit StaticVarCompensatorAlgorithm(StaticVarCompensatorDefinitions& svarcsDefinitions);
+  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& svcId, ModelType modelType,
+                                const double bMin, const double bMax, const double voltageSetPoint,
+                                const double VNom, const double UMinActivation, const double UMaxActivation,
+                                const double USetPointMin, const double USetPointMax, const double b0,
+                                const double slope, const double UNomRemote) :
+      id{svcId},
+      model{modelType},
+      bMin{bMin},
+      bMax{bMax},
+      voltageSetPoint{voltageSetPoint},
+      VNom{VNom},
+      UMinActivation{UMinActivation},
+      UMaxActivation{UMaxActivation},
+      USetPointMin{USetPointMin},
+      USetPointMax{USetPointMax},
+      b0{b0},
+      slope{slope},
+      UNomRemote{UNomRemote} {}
+
+  inputs::StaticVarCompensator::SVarCid id;  ///< the id of the SVarC
+  ModelType model;               ///< SVarC model type
+  const double bMin;             ///< the minimum susceptance value of the SVarC
+  const double bMax;             ///< the maximum susceptance value of the SVarC
+  const double voltageSetPoint;  ///< the voltage set point of the SVarC
+  const double VNom;             ///< the nominal voltage of the bus of the SVarC
+  const double UMinActivation;   ///< the low voltage activation threshold of the SVarC
+  const double UMaxActivation;   ///< the high voltage activation threshold of the SVarC
+  const double USetPointMin;     ///< the low voltage set point of the SVarC
+  const double USetPointMax;     ///< the high voltage set point of the SVarC
+  const double b0;               ///< the initial susceptance value of the SVarC
+  const double slope;            ///< the slope (kV/MVar) of the SVarC
+  const double UNomRemote;       ///< the nominal voltage of regulated bus
+};
+
+class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
+ public:
+  using SVarCs = std::vector<StaticVarCompensatorDefinition>;
+  using modelType = StaticVarCompensatorDefinition::ModelType;
 
   /**
-   * @brief Performs the algorithm
-   *
-   * the algorithm extracts all static var compensators connected to the node and add them to the definitions
-   *
+   * @brief Constructor
+   * @param svarcs the list of SVarCs to update
+   */
+  explicit StaticVarCompensatorAlgorithm(SVarCs& svarcs);
+
+  /**
+   * @brief Perform algorithm
+   * Add the SVarCs of the nodes and deducing the model to use.
    * @param node the node to process
    */
   void operator()(const NodePtr& node);
 
  private:
-  StaticVarCompensatorDefinitions& svarcsDefinitions_;  ///< the static var compensator definitions to update
+  SVarCs& svarcs_;  ///< the list of SVarCs to update
 };
+
+
 
 /**
  * @brief Contingencies valid for simulation

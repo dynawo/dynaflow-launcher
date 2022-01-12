@@ -48,6 +48,7 @@ ParEvent::write() {
     case Type::LOAD:
     case Type::GENERATOR:
     case Type::HVDC_LINE:
+    case Type::STATIC_VAR_COMPENSATOR:
       parametersSets->addParametersSet(buildEventSetPointBooleanDisconnection(element.id, def_.timeOfEvent));
       break;
     default:

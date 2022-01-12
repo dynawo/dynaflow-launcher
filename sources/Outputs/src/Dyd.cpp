@@ -81,6 +81,17 @@ const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string> Dyd::hvdc
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVEmulation, "HvdcPVEmulation"),
 };
 
+const std::unordered_map<algo::StaticVarCompensatorDefinition::ModelType, std::string> Dyd::svarcModelsNames_ = {
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPV, "StaticVarCompensatorPV"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING, "StaticVarCompensatorPVModeHandling"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROP, "StaticVarCompensatorPVProp"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING, "StaticVarCompensatorPVPropModeHandling"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE, "StaticVarCompensatorPVPropRemote"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING, "StaticVarCompensatorPVPropRemoteModeHandling"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE, "StaticVarCompensatorPVRemote"),
+  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, "StaticVarCompensatorPVRemoteModeHandling")
+  };
+
 Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
 
 void
@@ -142,10 +153,9 @@ Dyd::write() const {
       dynamicModelsToConnect->addMacroConnect(connect);
     }
   }
-  for (const auto& svarcRef : def_.svarcsDefinitions.svarcs) {
-    const auto& svarc = svarcRef.get();
-    dynamicModelsToConnect->addModel(writeSVarC(svarc, def_.basename));
-    dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarc));
+  for (const auto& svarcRef : def_.svarcsDef) {
+    dynamicModelsToConnect->addModel(writeSVarC(svarcRef, def_.basename));
+    dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarcRef));
   }
 
   dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi");
@@ -308,14 +318,27 @@ Dyd::writeGenerator(const algo::GeneratorDefinition& def, const std::string& bas
 }
 
 boost::shared_ptr<dynamicdata::BlackBoxModel>
-Dyd::writeSVarC(const inputs::StaticVarCompensator& svarc, const std::string& basename) {
+Dyd::writeSVarC(const algo::StaticVarCompensatorDefinition& svarc, const std::string& basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(svarc.id);
-
+  std::string parId;
+  std::size_t hashId = constants::hash(svarc.id);
+  std::string hashIdStr = std::to_string(hashId);
+  parId = hashIdStr;
   model->setStaticId(svarc.id);
-  model->setLib("StaticVarCompensatorPVPropModeHandling");
+  model->setLib(svarcModelsNames_.at(svarc.model));
   model->setParFile(basename + ".par");
-  model->setParId(svarc.id);
+  model->setParId(parId);
   model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSVarCName_));
+  switch (svarc.model) {
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING:
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING:
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING:
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING:
+    model->addStaticRef("SVarC_modeHandling_mode_value", "regulatingMode");
+    break;
+  default:
+    break;
+  }
 
   return model;
 }
@@ -379,7 +402,6 @@ Dyd::writeMacroStaticRef() {
   ref->addStaticRef("SVarC_PInjPu", "p");
   ref->addStaticRef("SVarC_QInjPu", "q");
   ref->addStaticRef("SVarC_state", "state");
-  ref->addStaticRef("SVarC_modeHandling_mode_value", "regulatingMode");
   ret.push_back(ref);
 
   return ret;
@@ -399,7 +421,7 @@ Dyd::writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int ind
 }
 
 boost::shared_ptr<dynamicdata::MacroConnect>
-Dyd::writeSVarCMacroConnect(const inputs::StaticVarCompensator& svarc) {
+Dyd::writeSVarCMacroConnect(const algo::StaticVarCompensatorDefinition& svarc) {
   return dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, constants::networkModelName);
 }
 
