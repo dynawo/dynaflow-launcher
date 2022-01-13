@@ -69,5 +69,5 @@
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="SVARC5" id2="NETWORK"/>
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="SVARC6" id2="NETWORK"/>
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="SVARC7" id2="NETWORK"/>
-  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
 </dyn:dynamicModelsArchitecture>
