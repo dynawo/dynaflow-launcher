@@ -1,5 +1,10 @@
 # DynaFlow Launcher
 
+[![Build Status](https://github.com/dynawo/dynaflow-launcher/workflows/CI/badge.svg)](https://github.com/dynawo/dynaflow-launcher/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dynawo_dynaflow-launcher&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dynawo_dynaflow-launcher)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dynawo_dynaflow-launcher&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dynawo_dynaflow-launcher)
+[![MPL-2.0 License](https://img.shields.io/badge/license-MPL_2.0-blue.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
+
 Dynawflow Launcher (DFL) depends on the [core dynawo libraries of Dyna&omega;o](https://github.com/dynawo/dynawo)
 and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo-algorithms).
 
