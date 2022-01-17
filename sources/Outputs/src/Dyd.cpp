@@ -153,7 +153,7 @@ Dyd::write() const {
       dynamicModelsToConnect->addMacroConnect(connect);
     }
   }
-  for (const auto& svarcRef : def_.svarcsDef) {
+  for (const auto& svarcRef : def_.svarcsDefs) {
     dynamicModelsToConnect->addModel(writeSVarC(svarcRef, def_.basename));
     dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarcRef));
   }

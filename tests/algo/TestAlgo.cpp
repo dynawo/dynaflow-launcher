@@ -825,7 +825,7 @@ TEST(SVARC, base) {
   nodes[0]->svarcs.emplace_back("SVARC7", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, false, "0", "1", 1.);
 
   using modelType = dfl::algo::StaticVarCompensatorDefinition::ModelType;
-  dfl::algo::StaticVarCompensatorAlgorithm::SVarCs expected_svarcs = {
+  dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions expected_svarcs = {
       dfl::algo::StaticVarCompensatorDefinition("SVARC0", modelType::SVARCPV,
       0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
       dfl::algo::StaticVarCompensatorDefinition("SVARC1", modelType::SVARCPVMODEHANDLING,
@@ -844,7 +844,7 @@ TEST(SVARC, base) {
       0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
   };
 
-  dfl::algo::StaticVarCompensatorAlgorithm::SVarCs svarcs;
+  dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions svarcs;
   dfl::algo::StaticVarCompensatorAlgorithm algo(svarcs);
 
   std::for_each(nodes.begin(), nodes.end(), algo);

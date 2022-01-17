@@ -568,14 +568,14 @@ Par::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc
   set->addMacroParSet(boost::make_shared<parameters::MacroParSet>(macroParameterSetStaticCompensator_));
   double value;
 
-  value = svarc.voltageSetPoint / svarc.VNom;
+  value = svarc.voltageSetPoint / svarc.UNom;
   set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
-  set->addParameter(helper::buildParameter("SVarC_UNom", svarc.VNom));
-  value = computeBPU(svarc.b0, svarc.VNom);
+  set->addParameter(helper::buildParameter("SVarC_UNom", svarc.UNom));
+  value = computeBPU(svarc.b0, svarc.UNom);
   set->addParameter(helper::buildParameter("SVarC_BShuntPu", value));
-  value = computeBPU(svarc.bMax, svarc.VNom);
+  value = computeBPU(svarc.bMax, svarc.UNom);
   set->addParameter(helper::buildParameter("SVarC_BMaxPu", value));
-  value = computeBPU(svarc.bMin, svarc.VNom);
+  value = computeBPU(svarc.bMin, svarc.UNom);
   set->addParameter(helper::buildParameter("SVarC_BMinPu", value));
   switch (svarc.model) {
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING:
@@ -601,11 +601,11 @@ Par::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc
     set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
     break;
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROP:
-    value = svarc.slope * Sb_ / svarc.VNom;
+    value = svarc.slope * Sb_ / svarc.UNom;
     set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
     break;
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING:
-    value = svarc.slope * Sb_ / svarc.VNom;
+    value = svarc.slope * Sb_ / svarc.UNom;
     set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
     set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
     set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
@@ -616,12 +616,12 @@ Par::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc
     set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
     break;
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE:
-    value = svarc.slope * Sb_ / svarc.VNom;
+    value = svarc.slope * Sb_ / svarc.UNom;
     set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
     set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
     break;
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING:
-    value = svarc.slope * Sb_ / svarc.VNom;
+    value = svarc.slope * Sb_ / svarc.UNom;
     set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
     set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
     set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
