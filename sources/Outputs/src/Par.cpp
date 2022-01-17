@@ -188,10 +188,10 @@ Par::write() const {
     }
   }
 
-  if (!def_.svarcsDefinitions.svarcs.empty()) {
+  if (!def_.svarcsDefinitions.empty()) {
     dynamicModelsToConnect->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators());
   }
-  for (const auto& svarc : def_.svarcsDefinitions.svarcs) {
+  for (const auto& svarc : def_.svarcsDefinitions) {
     dynamicModelsToConnect->addParametersSet(writeStaticVarCompensator(svarc));
   }
 
@@ -560,31 +560,81 @@ Par::updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set) {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-Par::writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc) {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(svarc.id));
+Par::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc) {
+  std::size_t hashId = constants::hash(svarc.id);
+  std::string hashIdStr = std::to_string(hashId);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
 
   set->addMacroParSet(boost::make_shared<parameters::MacroParSet>(macroParameterSetStaticCompensator_));
+  double value;
 
-  double value = computeBPU(svarc.bMax, svarc.VNom);
-  set->addParameter(helper::buildParameter("SVarC_BMaxPu", value));
-
-  value = computeBPU(svarc.bMin, svarc.VNom);
-  set->addParameter(helper::buildParameter("SVarC_BMinPu", value));
-
-  value = computeBPU(svarc.b0, svarc.VNom);
-  set->addParameter(helper::buildParameter("SVarC_BShuntPu", value));
-
-  value = svarc.slope * Sb_ / svarc.VNom;
-  set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
-
-  set->addParameter(helper::buildParameter("SVarC_UNom", svarc.VNom));
-  set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
-  set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
-  set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
-  set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
-
-  value = svarc.voltageSetPoint / svarc.VNom;
+  value = svarc.voltageSetPoint / svarc.UNom;
   set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
+  set->addParameter(helper::buildParameter("SVarC_UNom", svarc.UNom));
+  value = computeBPU(svarc.b0, svarc.UNom);
+  set->addParameter(helper::buildParameter("SVarC_BShuntPu", value));
+  value = computeBPU(svarc.bMax, svarc.UNom);
+  set->addParameter(helper::buildParameter("SVarC_BMaxPu", value));
+  value = computeBPU(svarc.bMin, svarc.UNom);
+  set->addParameter(helper::buildParameter("SVarC_BMinPu", value));
+  switch (svarc.model) {
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING:
+    set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
+    set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
+    set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
+    break;
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE:
+    set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
+    break;
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING:
+    set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
+    set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
+    set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
+    set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
+    break;
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROP:
+    value = svarc.slope * Sb_ / svarc.UNom;
+    set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
+    break;
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING:
+    value = svarc.slope * Sb_ / svarc.UNom;
+    set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
+    set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
+    set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
+    set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
+    break;
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE:
+    value = svarc.slope * Sb_ / svarc.UNom;
+    set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
+    set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
+    break;
+  case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING:
+    value = svarc.slope * Sb_ / svarc.UNom;
+    set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
+    set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
+    set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
+    set->addParameter(helper::buildParameter("SVarC_URefDown", svarc.USetPointMin));
+    set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
+    set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));
+    set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
+    break;
+  default:
+    break;
+  }
 
   return set;
 }
@@ -593,15 +643,10 @@ boost::shared_ptr<parameters::MacroParameterSet>
 Par::writeMacroParameterSetStaticVarCompensators() {
   auto macro = boost::make_shared<parameters::MacroParameterSet>(macroParameterSetStaticCompensator_);
 
-  macro->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
   macro->addReference(helper::buildReference("SVarC_P0Pu", "p_pu", "DOUBLE"));
   macro->addReference(helper::buildReference("SVarC_Q0Pu", "q_pu", "DOUBLE"));
   macro->addReference(helper::buildReference("SVarC_U0Pu", "v_pu", "DOUBLE"));
   macro->addReference(helper::buildReference("SVarC_UPhase0", "angle_pu", "DOUBLE"));
-
-  // May be completed in the future by using an external database
-  macro->addParameter(helper::buildParameter("SVarC_tThresholdDown", static_cast<double>(svarcThresholdDown_)));
-  macro->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
 
   return macro;
 }

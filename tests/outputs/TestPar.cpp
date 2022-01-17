@@ -20,7 +20,6 @@ testing::Environment* const env = initXmlEnvironment();
 TEST(TestPar, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
-  using dfl::inputs::StaticVarCompensator;
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
@@ -40,19 +39,11 @@ TEST(TestPar, write) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
-  std::vector<StaticVarCompensator> svarcs{
-      StaticVarCompensator("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-      StaticVarCompensator("SVARC01", 10, 100., 1000, 2300, 2150, 2300, 2350, 2450, 0., 10.),
-      StaticVarCompensator("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-      StaticVarCompensator("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.),
-  };
-  dfl::algo::StaticVarCompensatorDefinitions svarcDefs;
-  std::transform(svarcs.begin(), svarcs.end(), std::back_inserter(svarcDefs.svarcs), [](const StaticVarCompensator& svarc) { return std::ref(svarc); });
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
-                                                               manager, {}, {}, {}, svarcDefs));
+                                                               manager, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -206,6 +197,54 @@ TEST(TestPar, DynModel) {
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
                                                                manager, counters, defs, {}, {}));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(TestPar, writeStaticVarCompensator) {
+  using dfl::algo::StaticVarCompensatorDefinition;
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  std::string basename = "TestParSVarC";
+  std::string dirname = "results";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  std::vector<StaticVarCompensatorDefinition> svarcs{
+      StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
+  };
+  outputPath.append(filename);
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
+                                                               manager, {}, {}, {}, svarcs));
 
   parWriter.write();
 
