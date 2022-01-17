@@ -988,7 +988,7 @@ struct StaticVarCompensatorDefinition {
    * @brief Constructor
    *
    * @param svcId the id of the SVarC
-   * @param ModelType SVarC model type
+   * @param modelType SVarC model type
    * @param bMin the minimum susceptance value for the variable susceptance of the SVarC
    * @param bMax the maximum susceptance value for the variable susceptance of the SVarC
    * @param voltageSetPoint the voltage set point of the SVarC
