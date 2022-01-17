@@ -273,6 +273,7 @@ cmake_tests() {
 }
 
 cmake_coverage() {
+    export GTEST_COLOR=1
     ctest \
         -S cmake/CTestScript.cmake \
         -DDYNAWO_HOME=$DYNAWO_HOME \
