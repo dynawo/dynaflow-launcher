@@ -131,7 +131,7 @@ TEST(SlackNodeAlgo, Base) {
   std::for_each(nodes.begin(), nodes.end(), algo);
 
   ASSERT_NE(nullptr, slack_node);
-  ASSERT_EQ("5", slack_node->id);
+  ASSERT_EQ("8", slack_node->id);
 }
 
 TEST(SlackNodeAlgo, BaseNonFictitious) {

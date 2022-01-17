@@ -34,7 +34,7 @@ getMandatoryEnvVar(const std::string& key) {
   } else {
     // we cannot use dictionnary errors since they may not be initialized yet
     LOG(error) << "Cannot find environnement variable " << key << " : please check runtime environement" << LOG_ENDL;
-    std::exit(EXIT_FAILURE);
+    std::exit(EXIT_FAILURE)
   }
 }
 
