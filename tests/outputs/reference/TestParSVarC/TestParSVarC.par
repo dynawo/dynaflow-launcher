@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="MacroParameterSetStaticCompensator">
+    <reference type="DOUBLE" name="SVarC_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="SVarC_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="SVarC_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="SVarC_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </macroParameterSet>
+  <set id="11623643470094518027">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="12385967634981995552">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="14713165357655296201">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="17518669012454548346">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="17998079684596356712">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="2927585780575238260">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="533408261430783114">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="9422148340964418421">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="GenericRestorativeLoad">
+    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
+    <par name="load_Beta" type="DOUBLE" value="2.5"/>
+    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
+    <par name="load_tFilter" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+</parametersSet>

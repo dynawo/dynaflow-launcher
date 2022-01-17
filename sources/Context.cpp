@@ -54,6 +54,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
     generators_{},
     loads_{},
+    staticVarCompensators_{},
     jobEntry_{},
     jobsEvents_{} {
   file::path path(def.networkFilepath);
@@ -117,7 +118,7 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
                                                             networkManager_.getMapBusVSCConvertersBusId(),
                                                             networkManager_.dataInterface()->getServiceManager()));
-  onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(svarcsDefinitions_));
+  onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     const auto& contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
@@ -175,7 +176,7 @@ Context::exportOutputs() {
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
   outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLineDefinitions_,
-                                                     busesWithDynamicModel_, dynamicDataBaseManager_, dynamicModels_, svarcsDefinitions_));
+                                                     busesWithDynamicModel_, dynamicDataBaseManager_, dynamicModels_, staticVarCompensators_));
   dydWriter.write();
 
   // Par
@@ -192,7 +193,7 @@ Context::exportOutputs() {
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLineDefinitions_,
                                                      config_.getActivePowerCompensation(), busesWithDynamicModel_, dynamicDataBaseManager_, counters_,
-                                                     dynamicModels_, linesById_, svarcsDefinitions_));
+                                                     dynamicModels_, linesById_, staticVarCompensators_));
   parWriter.write();
 
   // Diagram

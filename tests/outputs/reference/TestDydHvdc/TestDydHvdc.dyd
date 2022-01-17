@@ -30,7 +30,6 @@
   <dyn:macroStaticReference id="StaticVarCompensatorStaticRef">
     <dyn:staticRef var="SVarC_PInjPu" staticVar="p"/>
     <dyn:staticRef var="SVarC_QInjPu" staticVar="q"/>
-    <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:staticRef var="SVarC_state" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:blackBoxModel id="HVDCLCCLine" staticId="HVDCLCCLine" lib="HvdcPTanPhiDangling" parFile="TestDydHvdc.par" parId="HVDCLCCLine">

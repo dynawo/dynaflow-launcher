@@ -103,34 +103,34 @@ class Dyd {
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager the database manager to use
      * @param models the list of dynamic models to use
-     * @param svarcsDefinitions the SVarC definitions to use
+     * @param svarcsDefs the SVarC definitions to use
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
                   const algo::HVDCLineDefinitions& hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
                   const inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::DynamicModelDefinitions& models,
-                  const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
+                  const std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs) :
         basename(base),
         filename(filepath),
         generators(gens),
         loads(loaddefs),
+        svarcsDefs(svarcsDefs),
         slackNode(slacknode),
         hvdcDefinitions(hvdcDefinitions),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
-        dynamicModelsDefinitions(models),
-        svarcsDefinitions(svarcsDefinitions) {}
+        dynamicModelsDefinitions(models) {}
 
-    std::string basename;                                                        ///< basename for file
-    std::string filename;                                                        ///< filepath for file to write
-    std::vector<algo::GeneratorDefinition> generators;                           ///< generators found
-    std::vector<algo::LoadDefinition> loads;                                     ///< list of loads
-    std::shared_ptr<inputs::Node> slackNode;                                     ///< slack node to use
-    const algo::HVDCLineDefinitions& hvdcDefinitions;                            ///< list of hvdc definitions
-    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
-    const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                ///< dynamic database manager
-    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;               ///< the list of dynamic models to export
-    const algo::StaticVarCompensatorDefinitions& svarcsDefinitions;              ///< the SVarC definitions to use
+    std::string basename;                                                         ///< basename for file
+    std::string filename;                                                         ///< filepath for file to write
+    std::vector<algo::GeneratorDefinition> generators;                            ///< generators found
+    std::vector<algo::LoadDefinition> loads;                                      ///< list of loads
+    std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs;                 ///< list of svarcs
+    std::shared_ptr<inputs::Node> slackNode;                                      ///< slack node to use
+    const algo::HVDCLineDefinitions& hvdcDefinitions;                             ///< list of hvdc definitions
+    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
+    const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
+    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< the list of dynamic models to export
   };
 
   /**
@@ -293,14 +293,14 @@ class Dyd {
    * @param basename basename for file
    * @returns black box model corresponding to SVarC
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeSVarC(const inputs::StaticVarCompensator& svarc, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeSVarC(const algo::StaticVarCompensatorDefinition& svarc, const std::string& basename);
 
   /**
    * @brief Write macro connect corresponding to SVarC
    * @param svarc the static var compensator to use
    * @returns the macro connection to add to exported file
    */
-  static boost::shared_ptr<dynamicdata::MacroConnect> writeSVarCMacroConnect(const inputs::StaticVarCompensator& svarc);
+  static boost::shared_ptr<dynamicdata::MacroConnect> writeSVarCMacroConnect(const algo::StaticVarCompensatorDefinition& svarc);
 
  private:
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
@@ -309,6 +309,8 @@ class Dyd {
       correspondence_macro_connector_;  ///< Correspondence between generator model type and macro connector name in dyd file
   static const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string>
       hvdcModelsNames_;                                          ///< Correspondence between HVDC model and their library name in dyd file
+  static const std::unordered_map<algo::StaticVarCompensatorDefinition::ModelType, std::string>
+      svarcModelsNames_;  ///< Correspondance between svarcs model type and library name in dyd file
   static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads
   static const std::string macroConnectorGenName_;               ///< name for the macro connector for generators
   static const std::string macroConnectorGenSignalNName_;        ///< Name for the macro connector for SignalN

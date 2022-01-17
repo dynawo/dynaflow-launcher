@@ -65,7 +65,7 @@ class Par {
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                   const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
-                  const algo::StaticVarCompensatorDefinitions& svarcsDefinitions) :
+                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions) :
         basename(base),
         dirname(dir),
         filepath(filename),
@@ -90,7 +90,7 @@ class Par {
     const algo::ShuntCounterDefinitions& shuntCounters;                           ///< Shunt counters to use
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
     const algo::LinesByIdDefinitions& linesByIdDefinitions;                       ///< lines by id to use
-    const algo::StaticVarCompensatorDefinitions& svarcsDefinitions;               ///< the SVarC definitions to use
+    std::vector<algo::StaticVarCompensatorDefinition> svarcsDefinitions;          ///< list of static var compensator definitions
   };
 
   /**
@@ -215,7 +215,7 @@ class Par {
    * @param svarc the static var compensator to use
    * @returns the parameter set to add to the exported file
    */
-  static boost::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc);
+  static boost::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc);
 
   /**
    * @brief Write the macro parameter set used for static var compensators
