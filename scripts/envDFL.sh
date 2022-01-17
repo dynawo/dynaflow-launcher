@@ -280,6 +280,11 @@ cmake_coverage() {
         -DBOOST_ROOT=$DYNAWO_HOME \
         -VV
 
+    RETURN_CODE=$?
+    if [ ${RETURN_CODE} -ne 0 ]; then
+        exit ${RETURN_CODE}
+    fi
+
     mkdir -p $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar || error_exit "Impossible to create $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar."
     cd $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar
     for file in $(find $DYNAFLOW_LAUNCHER_HOME/buildCoverage -name "*.gcno" | grep -v "/tests/"); do
