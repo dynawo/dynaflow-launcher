@@ -163,36 +163,36 @@ struct VSCConverter : public Converter {
 /// @brief Static var compensator (SVarC) behaviour
 struct StaticVarCompensator {
   using SVarCid = std::string;  ///< alias for static var compensator id
-  using BusId = std::string;  ///< alias for bus id
+  using BusId = std::string;    ///< alias for a bus id
 
   /**
    * @brief Constructor
    *
    * @param id the id of the SVarC
-   * @param bMin the minimum susceptance value of the SVarC
-   * @param bMax the maximum susceptance value of the SVarC
+   * @param bMin the minimum susceptance value for the variable susceptance of the SVarC
+   * @param bMax the maximum susceptance value for the variable susceptance of the SVarC
    * @param voltageSetPoint the voltage set point of the SVarC
-   * @param VNom the nominal voltage of the bus of the SVarC
+   * @param UNom the nominal voltage of the connection bus of the SVarC
    * @param UMinActivation the low voltage activation threshold of the SVarC
    * @param UMaxActivation the high voltage activation threshold of the SVarC
    * @param USetPointMin the low voltage set point of the SVarC
    * @param USetPointMax the high voltage set point of the SVarC
    * @param b0 the initial susceptance value  of the SVarC
-   * @param slope the slope (kV/MVar) of the SVarC
+   * @param slope the slope (kV/MVar) of the SVarC voltage regulation
    * @param hasStandByAutomaton whether the SVarC has the StandByAutomaton extension
    * @param hasVoltagePerReactivePowerControl whether the SVarC has voltage per reactive power control information
    * @param regulatedBusId regulated Bus Id
    * @param connectedBusId connected Bus Id
-   * @param UNomRemote the nominal voltage of regulated bus
+   * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
-  StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double VNom, double UMinActivation, double UMaxActivation,
+  StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double UNom, double UMinActivation, double UMaxActivation,
                        double USetPointMin, double USetPointMax, double b0, double slope, bool hasStandByAutomaton, bool hasVoltagePerReactivePowerControl,
                        const BusId& regulatedBusId, const BusId& connectedBusId, double UNomRemote) :
       id(id),
       bMin(bMin),
       bMax(bMax),
       voltageSetPoint(voltageSetPoint),
-      VNom(VNom),
+      UNom(UNom),
       UMinActivation(UMinActivation),
       UMaxActivation(UMaxActivation),
       USetPointMin(USetPointMin),
@@ -205,22 +205,22 @@ struct StaticVarCompensator {
       connectedBusId(connectedBusId),
       UNomRemote(UNomRemote) {}
 
-  const SVarCid id;              ///< the id of the SVarC
-  const double bMin;             ///< the minimum susceptance value of the SVarC
-  const double bMax;             ///< the maximum susceptance value of the SVarC
-  const double voltageSetPoint;  ///< the voltage set point of the SVarC
-  const double VNom;             ///< the nominal voltage of the bus of the SVarC
-  const double UMinActivation;   ///< the low voltage activation threshold of the SVarC
-  const double UMaxActivation;   ///< the high voltage activation threshold of the SVarC
-  const double USetPointMin;     ///< the low voltage set point of the SVarC
-  const double USetPointMax;     ///< the high voltage set point of the SVarC
-  const double b0;               ///< the initial susceptance value of the SVarC
-  const double slope;            ///< the slope (kV/MVar) of the SVarC
-  const bool hasStandByAutomaton;  ///< whether the SVarC has the StandByAutomaton extension
+  const SVarCid id;                              ///< the id of the SVarC
+  const double bMin;                             ///< the minimum susceptance value for the variable susceptance of the SVarC
+  const double bMax;                             ///< the maximum susceptance value for the variable susceptance of the SVarC
+  const double voltageSetPoint;                  ///< the voltage set point of the SVarC
+  const double UNom;                             ///< the nominal voltage of the connection bus of the SVarC
+  const double UMinActivation;                   ///< the low voltage activation threshold of the SVarC
+  const double UMaxActivation;                   ///< the high voltage activation threshold of the SVarC
+  const double USetPointMin;                     ///< the low voltage set point of the SVarC
+  const double USetPointMax;                     ///< the high voltage set point of the SVarC
+  const double b0;                               ///< the initial susceptance value of the SVarC
+  const double slope;                            ///< the slope (kV/MVar) of the SVarC voltage regulation
+  const bool hasStandByAutomaton;                ///< whether the SVarC has the StandByAutomaton extension
   const bool hasVoltagePerReactivePowerControl;  ///< whether the SVarC has voltage per reactive power control information
-  const BusId regulatedBusId;    ///< regulated Bus Id
-  const BusId connectedBusId;    ///< connected Bus Id
-  const double UNomRemote;       ///< the nominal voltage of regulated bus
+  const BusId regulatedBusId;                    ///< regulated Bus Id
+  const BusId connectedBusId;                    ///< connected Bus Id
+  const double UNomRemote;                       ///< the nominal voltage of the remotely regulated bus
 };
 
 }  // namespace inputs

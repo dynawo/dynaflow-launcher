@@ -732,26 +732,26 @@ LinesByIdAlgorithm::operator()(const NodePtr& node) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(SVarCs& svarcs) : svarcs_(svarcs) {}
+StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(SVarCDefinitions& svarcs) : svarcs_(svarcs) {}
 
 void
 StaticVarCompensatorAlgorithm::operator()(const NodePtr& node) {
   const auto& svarcs = node->svarcs;
   for (const auto& svarc : svarcs) {
-    modelType model = modelType::SVARCPV;
+    ModelType model = ModelType::SVARCPV;
     auto hasRemoteRegulation = (svarc.connectedBusId != svarc.regulatedBusId);
     if (svarc.hasStandByAutomaton) {
-      model = hasRemoteRegulation ? modelType::SVARCPVREMOTEMODEHANDLING : modelType::SVARCPVMODEHANDLING;
+      model = hasRemoteRegulation ? ModelType::SVARCPVREMOTEMODEHANDLING : ModelType::SVARCPVMODEHANDLING;
       if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
-        model = hasRemoteRegulation ? modelType::SVARCPVPROPREMOTEMODEHANDLING : modelType::SVARCPVPROPMODEHANDLING;
+        model = hasRemoteRegulation ? ModelType::SVARCPVPROPREMOTEMODEHANDLING : ModelType::SVARCPVPROPMODEHANDLING;
       }
     } else {
-      model = hasRemoteRegulation ? modelType::SVARCPVREMOTE : modelType::SVARCPV;
+      model = hasRemoteRegulation ? ModelType::SVARCPVREMOTE : ModelType::SVARCPV;
       if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
-        model = hasRemoteRegulation ? modelType::SVARCPVPROPREMOTE : modelType::SVARCPVPROP;
+        model = hasRemoteRegulation ? ModelType::SVARCPVPROPREMOTE : ModelType::SVARCPVPROP;
       }
     }
-    svarcs_.emplace_back(svarc.id, model, svarc.bMin, svarc.bMax, svarc.voltageSetPoint, svarc.VNom, svarc.UMinActivation, svarc.UMaxActivation,
+    svarcs_.emplace_back(svarc.id, model, svarc.bMin, svarc.bMax, svarc.voltageSetPoint, svarc.UNom, svarc.UMinActivation, svarc.UMaxActivation,
                         svarc.USetPointMin, svarc.USetPointMax, svarc.b0, svarc.slope, svarc.UNomRemote);
   }
 }

@@ -103,34 +103,34 @@ class Dyd {
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager the database manager to use
      * @param models the list of dynamic models to use
-     * @param svarcsDef the SVarC definitions to use
+     * @param svarcsDefs the SVarC definitions to use
      */
     DydDefinition(const std::string& base, const std::string& filepath, const std::vector<algo::GeneratorDefinition>& gens,
                   const std::vector<algo::LoadDefinition>& loaddefs, const std::shared_ptr<inputs::Node>& slacknode,
                   const algo::HVDCLineDefinitions& hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
                   const inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::DynamicModelDefinitions& models,
-                  const std::vector<algo::StaticVarCompensatorDefinition> svarcsDef) :
+                  const std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs) :
         basename(base),
         filename(filepath),
         generators(gens),
         loads(loaddefs),
-        svarcsDef(svarcsDef),
+        svarcsDefs(svarcsDefs),
         slackNode(slacknode),
         hvdcDefinitions(hvdcDefinitions),
         busesWithDynamicModel(busesWithDynamicModel),
         dynamicDataBaseManager(dynamicDataBaseManager),
         dynamicModelsDefinitions(models) {}
 
-    std::string basename;                                                        ///< basename for file
-    std::string filename;                                                        ///< filepath for file to write
-    std::vector<algo::GeneratorDefinition> generators;                           ///< generators found
-    std::vector<algo::LoadDefinition> loads;                                     ///< list of loads
-    std::vector<algo::StaticVarCompensatorDefinition> svarcsDef;                 ///< list of svarcs
-    std::shared_ptr<inputs::Node> slackNode;                                     ///< slack node to use
-    const algo::HVDCLineDefinitions& hvdcDefinitions;                            ///< list of hvdc definitions
-    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;  ///< map of bus ids to a generator that regulates them
-    const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                ///< dynamic database manager
-    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;               ///< the list of dynamic models to export
+    std::string basename;                                                         ///< basename for file
+    std::string filename;                                                         ///< filepath for file to write
+    std::vector<algo::GeneratorDefinition> generators;                            ///< generators found
+    std::vector<algo::LoadDefinition> loads;                                      ///< list of loads
+    std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs;                 ///< list of svarcs
+    std::shared_ptr<inputs::Node> slackNode;                                      ///< slack node to use
+    const algo::HVDCLineDefinitions& hvdcDefinitions;                             ///< list of hvdc definitions
+    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
+    const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
+    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< the list of dynamic models to export
   };
 
   /**

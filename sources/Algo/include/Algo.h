@@ -988,22 +988,22 @@ struct StaticVarCompensatorDefinition {
    * @brief Constructor
    *
    * @param svcId the id of the SVarC
-   * @param modelType SVarC model type
-   * @param bMin the minimum susceptance value of the SVarC
-   * @param bMax the maximum susceptance value of the SVarC
+   * @param ModelType SVarC model type
+   * @param bMin the minimum susceptance value for the variable susceptance of the SVarC
+   * @param bMax the maximum susceptance value for the variable susceptance of the SVarC
    * @param voltageSetPoint the voltage set point of the SVarC
-   * @param VNom the nominal voltage of the bus of the SVarC
+   * @param UNom the nominal voltage of the connection bus of the SVarC
    * @param UMinActivation the low voltage activation threshold of the SVarC
    * @param UMaxActivation the high voltage activation threshold of the SVarC
    * @param USetPointMin the low voltage set point of the SVarC
    * @param USetPointMax the high voltage set point of the SVarC
    * @param b0 the initial susceptance value  of the SVarC
-   * @param slope the slope (kV/MVar) of the SVarC
-   * @param UNomRemote the nominal voltage of regulated bus
+   * @param slope the slope (kV/MVar) of the SVarC voltage regulation
+   * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
   StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& svcId, ModelType modelType,
                                 const double bMin, const double bMax, const double voltageSetPoint,
-                                const double VNom, const double UMinActivation, const double UMaxActivation,
+                                const double UNom, const double UMinActivation, const double UMaxActivation,
                                 const double USetPointMin, const double USetPointMax, const double b0,
                                 const double slope, const double UNomRemote) :
       id{svcId},
@@ -1011,7 +1011,7 @@ struct StaticVarCompensatorDefinition {
       bMin{bMin},
       bMax{bMax},
       voltageSetPoint{voltageSetPoint},
-      VNom{VNom},
+      UNom{UNom},
       UMinActivation{UMinActivation},
       UMaxActivation{UMaxActivation},
       USetPointMin{USetPointMin},
@@ -1022,29 +1022,30 @@ struct StaticVarCompensatorDefinition {
 
   inputs::StaticVarCompensator::SVarCid id;  ///< the id of the SVarC
   ModelType model;               ///< SVarC model type
-  const double bMin;             ///< the minimum susceptance value of the SVarC
-  const double bMax;             ///< the maximum susceptance value of the SVarC
+  const double bMin;             ///< the minimum susceptance value for the variable susceptance of the SVarC
+  const double bMax;             ///< the maximum susceptance value for the variable susceptance of the SVarC
   const double voltageSetPoint;  ///< the voltage set point of the SVarC
-  const double VNom;             ///< the nominal voltage of the bus of the SVarC
+  const double UNom;             ///< the nominal voltage of the connection bus of the SVarC
   const double UMinActivation;   ///< the low voltage activation threshold of the SVarC
   const double UMaxActivation;   ///< the high voltage activation threshold of the SVarC
   const double USetPointMin;     ///< the low voltage set point of the SVarC
   const double USetPointMax;     ///< the high voltage set point of the SVarC
   const double b0;               ///< the initial susceptance value of the SVarC
-  const double slope;            ///< the slope (kV/MVar) of the SVarC
-  const double UNomRemote;       ///< the nominal voltage of regulated bus
+  const double slope;            ///< the slope (kV/MVar) of the SVarC voltage regulation
+  const double UNomRemote;       ///< the nominal voltage of the remotely regulated bus
 };
 
+/// @brief Static var compensator algorithm
 class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
  public:
-  using SVarCs = std::vector<StaticVarCompensatorDefinition>;
-  using modelType = StaticVarCompensatorDefinition::ModelType;
+  using SVarCDefinitions = std::vector<StaticVarCompensatorDefinition>;
+  using ModelType = StaticVarCompensatorDefinition::ModelType;
 
   /**
    * @brief Constructor
    * @param svarcs the list of SVarCs to update
    */
-  explicit StaticVarCompensatorAlgorithm(SVarCs& svarcs);
+  explicit StaticVarCompensatorAlgorithm(SVarCDefinitions& svarcs);
 
   /**
    * @brief Perform algorithm
@@ -1054,7 +1055,7 @@ class StaticVarCompensatorAlgorithm : public NodeAlgorithm {
   void operator()(const NodePtr& node);
 
  private:
-  SVarCs& svarcs_;  ///< the list of SVarCs to update
+  SVarCDefinitions& svarcs_;  ///< the list of SVarCs to update
 };
 
 
