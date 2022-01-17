@@ -279,6 +279,15 @@ cmake_coverage() {
         -DDYNAWO_ALGORITHMS_HOME=$DYNAWO_ALGORITHMS_HOME \
         -DBOOST_ROOT=$DYNAWO_HOME \
         -VV
+
+    mkdir -p $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar || error_exit "Impossible to create $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar."
+    cd $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar
+    for file in $(find $DYNAFLOW_LAUNCHER_HOME/buildCoverage -name "*.gcno" | grep -v "/tests/"); do
+        cpp_file_name=$(basename $file .gcno)
+        cpp_file=$(find $DYNAFLOW_LAUNCHER_HOME/sources -name "$cpp_file_name" 2> /dev/null)
+        gcov -pb $cpp_file -o $file > /dev/null
+    done
+    find $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar -type f -not -name "*dynaflow-launcher*" -exec rm -f {} \;
 }
 
 clean_build_all() {
