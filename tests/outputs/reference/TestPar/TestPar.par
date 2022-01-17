@@ -71,11 +71,11 @@
     <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
     <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
     <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
     <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
     <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
     <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
     <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
-    <par name="URef_ValueIn" type="DOUBLE" value="100"/>
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="SVARC01">
@@ -84,11 +84,11 @@
     <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
     <par name="SVarC_LambdaPu" type="DOUBLE" value="0.43478260869565216"/>
     <par name="SVarC_UNom" type="DOUBLE" value="2300"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
     <par name="SVarC_URefDown" type="DOUBLE" value="2350"/>
     <par name="SVarC_URefUp" type="DOUBLE" value="2450"/>
     <par name="SVarC_UThresholdDown" type="DOUBLE" value="2150"/>
     <par name="SVarC_UThresholdUp" type="DOUBLE" value="2300"/>
-    <par name="URef_ValueIn" type="DOUBLE" value="1000"/>
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="SVARC2">
@@ -97,11 +97,11 @@
     <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
     <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
     <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
     <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
     <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
     <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
     <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
-    <par name="URef_ValueIn" type="DOUBLE" value="100"/>
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="SVARC5">
@@ -110,11 +110,11 @@
     <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
     <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
     <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
     <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
     <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
     <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
     <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
-    <par name="URef_ValueIn" type="DOUBLE" value="100"/>
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="signalNGenerator">

@@ -312,7 +312,7 @@ Dyd::writeSVarC(const inputs::StaticVarCompensator& svarc, const std::string& ba
   auto model = dynamicdata::BlackBoxModelFactory::newModel(svarc.id);
 
   model->setStaticId(svarc.id);
-  model->setLib("StaticVarCompensatorPV");
+  model->setLib("StaticVarCompensatorPVPropModeHandling");
   model->setParFile(basename + ".par");
   model->setParId(svarc.id);
   model->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSVarCName_));

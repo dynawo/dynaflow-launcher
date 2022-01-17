@@ -55,16 +55,16 @@
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
-  <dyn:blackBoxModel id="SVARC0" staticId="SVARC0" lib="StaticVarCompensatorPV" parFile="TestDyd.par" parId="SVARC0">
+  <dyn:blackBoxModel id="SVARC0" staticId="SVARC0" lib="StaticVarCompensatorPVPropModeHandling" parFile="TestDyd.par" parId="SVARC0">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC01" staticId="SVARC01" lib="StaticVarCompensatorPV" parFile="TestDyd.par" parId="SVARC01">
+  <dyn:blackBoxModel id="SVARC01" staticId="SVARC01" lib="StaticVarCompensatorPVPropModeHandling" parFile="TestDyd.par" parId="SVARC01">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC2" staticId="SVARC2" lib="StaticVarCompensatorPV" parFile="TestDyd.par" parId="SVARC2">
+  <dyn:blackBoxModel id="SVARC2" staticId="SVARC2" lib="StaticVarCompensatorPVPropModeHandling" parFile="TestDyd.par" parId="SVARC2">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC5" staticId="SVARC5" lib="StaticVarCompensatorPV" parFile="TestDyd.par" parId="SVARC5">
+  <dyn:blackBoxModel id="SVARC5" staticId="SVARC5" lib="StaticVarCompensatorPVPropModeHandling" parFile="TestDyd.par" parId="SVARC5">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>

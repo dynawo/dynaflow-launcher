@@ -60,6 +60,7 @@ policy(CMP0075 NEW) # honor CMAKE_REQUIRED_LIBRARIES in the include file check m
 # When modifying compile flags for example, if they are not mandatory, provide an option.
 
 set(DYNAFLOW_LAUNCHER_LOCALE "en_GB" CACHE STRING "Localization for dictionnaries")
+set(FORCE_CXX11_ABI OFF CACHE BOOL "Choose either ON or OFF.")
 
 option(DYNAFLOW_LAUNCHER_USE_DOXYGEN "Add a doxygen target to generate the documentation" ON)
 
@@ -81,6 +82,9 @@ message(STATUS "Compile internal libraries in " ${LINK_TYPE})
 
 set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_=1")
 set(CMAKE_CXX_FLAGS "-DLANG_CXX11")
+if(FORCE_CXX11_ABI)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=1")
+endif()
 set_optimization()
 
 
@@ -135,8 +139,8 @@ endif()
 add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
 
-install(DIRECTORY ${DYNAWO_HOME} DESTINATION ${CMAKE_INSTALL_PREFIX}/external)
-install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/external/dynawo-algorithms)
+install(DIRECTORY ${DYNAWO_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/)
+install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/)
 
 ## Dynawo
 find_package(Dynawo 1.3.0 REQUIRED)

@@ -484,9 +484,17 @@ Par::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string
     if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
       set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter2VoltageRegulationOn.value()));
       set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter1VoltageRegulationOn.value()));
+      set->addReference(helper::buildReference("hvdc_Q1Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      set->addReference(helper::buildReference("hvdc_Q2Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter1Id));
+      set->addReference(helper::buildReference("hvdc_U1Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      set->addReference(helper::buildReference("hvdc_U2Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter1Id));
     } else {
       set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter1VoltageRegulationOn.value()));
       set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter2VoltageRegulationOn.value()));
+      set->addReference(helper::buildReference("hvdc_Q1Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter1Id));
+      set->addReference(helper::buildReference("hvdc_Q2Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      set->addReference(helper::buildReference("hvdc_U1Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter1Id));
+      set->addReference(helper::buildReference("hvdc_U2Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter2Id));
     }
   }
   if (hvdcDefinition.hasPQPropModel()) {
@@ -574,7 +582,9 @@ Par::writeStaticVarCompensator(const inputs::StaticVarCompensator& svarc) {
   set->addParameter(helper::buildParameter("SVarC_URefUp", svarc.USetPointMax));
   set->addParameter(helper::buildParameter("SVarC_UThresholdDown", svarc.UMinActivation));
   set->addParameter(helper::buildParameter("SVarC_UThresholdUp", svarc.UMaxActivation));
-  set->addParameter(helper::buildParameter("URef_ValueIn", svarc.voltageSetPoint));
+
+  value = svarc.voltageSetPoint / svarc.VNom;
+  set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
 
   return set;
 }

@@ -143,6 +143,7 @@ define_options() {
 where [option] can be:
         =========== Build
         build-user                                build DynaFlow Launcher
+        clean                                     clean DynaFlow Launcher
         clean-build-all                           Clean and rebuild DynaFlow Launcher
         build-tests-coverage                      build DynaFlow Launcher and run coverage
 
@@ -198,18 +199,20 @@ set_environment() {
 
     # global vars
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
+    ld_library_path_prepend $DYNAWO_ALGORITHMS_HOME/lib     # For Dynawo-algorithms library
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_HOME/lib64   # For local DFL libraries, used only at runtime in case we compile in shared
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES # To add external model libraries loaded during simulation
 
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
-    export_var_env_force DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+    export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
 
     export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_USE_DOXYGEN=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_CMAKE_GENERATOR="Unix Makefiles"
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
+    export_var_env DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI="false"
 
     # Run
     if [ $1 -ne 1 ]
@@ -252,9 +255,16 @@ reset_environment_variables() {
 clean() {
     rm -rf $DYNAFLOW_LAUNCHER_BUILD_DIR
     rm -rf $DYNAFLOW_LAUNCHER_INSTALL_DIR
+    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/outputs/results
+    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/main/results
+    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/main_sa/results
 }
 
 cmake_configure() {
+    CMAKE_OPTIONAL=""
+    if [ $DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI = true ]; then
+        CMAKE_OPTIONAL="$CMAKE_OPTIONAL -DFORCE_CXX11_ABI=$DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI"
+    fi
     mkdir -p $DYNAFLOW_LAUNCHER_BUILD_DIR
     pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     cmake $DYNAFLOW_LAUNCHER_HOME \
@@ -267,7 +277,8 @@ cmake_configure() {
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
         -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
         -DDYNAFLOW_LAUNCHER_USE_DOXYGEN:BOOL=$DYNAFLOW_LAUNCHER_USE_DOXYGEN \
-        -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS
+        -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS \
+        $CMAKE_OPTIONAL
     popd > /dev/null
 }
 
@@ -280,7 +291,9 @@ cmake_tests() {
     export_preload
     pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     ctest -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED --output-on-failure
+    RETURN_CODE=$?
     popd > /dev/null
+    return ${RETURN_CODE}
 }
 
 cmake_coverage() {
@@ -291,6 +304,15 @@ cmake_coverage() {
         -DDYNAWO_ALGORITHMS_HOME=$DYNAWO_ALGORITHMS_HOME \
         -DBOOST_ROOT=$DYNAWO_HOME \
         -VV
+
+    mkdir -p $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar || error_exit "Impossible to create $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar."
+    cd $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar
+    for file in $(find $DYNAFLOW_LAUNCHER_HOME/buildCoverage -name "*.gcno" | grep -v "/tests/"); do
+        cpp_file_name=$(basename $file .gcno)
+        cpp_file=$(find $DYNAFLOW_LAUNCHER_HOME/sources -name "$cpp_file_name" 2> /dev/null)
+        gcov -pb $cpp_file -o $file > /dev/null
+    done
+    find $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar -type f -not -name "*dynaflow-launcher*" -exec rm -f {} \;
 }
 
 clean_build_all() {
@@ -386,6 +408,9 @@ case $1 in
         ;;
     build-tests-coverage)
         build_tests_coverage || error_exit "Failed to perform coverage"
+        ;;
+    clean)
+        clean || error_exit "Failed to clean DFL"
         ;;
     clean-build-all)
         clean_build_all || error_exit "Failed to clean build DFL"
