@@ -1,38 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
-  <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
-    <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
-    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
-  </dyn:macroConnector>
-  <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
-    <dyn:connect var1="generator_N" var2="signalN_N"/>
-  </dyn:macroConnector>
-  <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
-    <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
-    <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
-    <dyn:connect var1="Ii_value" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
-    <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
-    <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
-  </dyn:macroConnector>
   <dyn:macroConnector id="StaticVarCompensatorMacroConnector">
     <dyn:connect var1="SVarC_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
   </dyn:macroConnector>
-  <dyn:macroStaticReference id="GeneratorStaticRef">
-    <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
-    <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
-    <dyn:staticRef var="generator_state" staticVar="state"/>
-  </dyn:macroStaticReference>
-  <dyn:macroStaticReference id="LoadRef">
-    <dyn:staticRef var="PPu_value" staticVar="p"/>
-    <dyn:staticRef var="QPu_value" staticVar="q"/>
-    <dyn:staticRef var="state_value" staticVar="state"/>
-  </dyn:macroStaticReference>
   <dyn:macroStaticReference id="StaticVarCompensatorStaticRef">
     <dyn:staticRef var="SVarC_PInjPu" staticVar="p"/>
     <dyn:staticRef var="SVarC_QInjPu" staticVar="q"/>
     <dyn:staticRef var="SVarC_state" staticVar="state"/>
   </dyn:macroStaticReference>
-  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:blackBoxModel id="SVARC0" staticId="SVARC0" lib="StaticVarCompensatorPV" parFile="TestDydSVarC.par" parId="11623643470094518027">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
@@ -69,5 +44,4 @@
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="SVARC5" id2="NETWORK"/>
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="SVARC6" id2="NETWORK"/>
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="SVARC7" id2="NETWORK"/>
-  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
 </dyn:dynamicModelsArchitecture>
