@@ -1,0 +1,57 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron:  '0 2 * * 1-5'
+
+jobs:
+  fedora:
+    name: Linux Fedora (${{ matrix.build-type }})
+    runs-on: ubuntu-latest
+    container: dynawo/dynawo-ci-nightly-fedora:latest
+    strategy:
+      matrix:
+        build-type: [Release, Debug]
+      fail-fast: false
+    env:
+      DYNAWO_VERSION: 1.3.0
+      DYNAFLOW_LAUNCHER_BUILD_TYPE: ${{ matrix.build-type }}
+      DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
+      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
+      DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
+      DYNAFLOW_LAUNCHER_USE_DOXYGEN: "ON"
+      DYNAFLOW_LAUNCHER_BUILD_TESTS: "ON"
+      GH_API: ${{ github.api_url }}/repos/${{ github.repository }}
+      GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
+      GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
+      CURL_JSON: 'curl --silent --header "Content-Type": "application/json"'
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Fetch Dynawo
+        run: |
+          source .github/workflows/tools.sh
+          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
+
+      - name: Unzip Dynawo and Dynawo algorithms
+        run: |
+          unzip "Dynawo_headers_V${DYNAWO_VERSION}.zip"
+          unzip -qq "DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip"
+
+      - name: Build
+        run: |
+          export DYNAWO_HOME=$(pwd)/dynawo
+          export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+          export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+          scripts/envDFL.sh build-user
+
+      - name: Tests
+        if: ${{ matrix.build-type == 'Debug' }}
+        run: |
+          export DYNAWO_HOME=$(pwd)/dynawo
+          export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+          export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+          scripts/envDFL.sh tests
