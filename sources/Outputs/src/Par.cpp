@@ -168,7 +168,9 @@ Par::write() const {
 
   auto dynamicModelsToConnect = parameters::ParametersSetCollectionFactory::newCollection();
   // adding load constant parameter set
-  dynamicModelsToConnect->addParametersSet(writeConstantLoadsSet());
+  if (!def_.loadsDefinitions.empty()) {
+    dynamicModelsToConnect->addParametersSet(writeConstantLoadsSet());
+  }
   // loop on generators
   for (const auto& generator : def_.generators) {
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one

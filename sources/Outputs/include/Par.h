@@ -59,13 +59,15 @@ class Par {
      * @param models list of dynamic models definitions
      * @param linesById the lines to use
      * @param svarcsDefinitions the SVarC definitions to use
+     * @param loadsDefinitions the loads definitions to use
      */
     ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::HVDCLineDefinitions& hvdcDefinitions,
                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                   const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
-                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions) :
+                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions,
+                  const std::vector<algo::LoadDefinition>& loadsDefinitions) :
         basename(base),
         dirname(dir),
         filepath(filename),
@@ -77,7 +79,8 @@ class Par {
         shuntCounters(counters),
         dynamicModelsDefinitions(models),
         linesByIdDefinitions(linesById),
-        svarcsDefinitions(svarcsDefinitions) {}
+        svarcsDefinitions(svarcsDefinitions),
+        loadsDefinitions(loadsDefinitions) {}
 
     std::string basename;                                                         ///< basename
     boost::filesystem::path dirname;                                              ///< Dirname of output file relative to execution dir
@@ -91,6 +94,7 @@ class Par {
     const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< list of defined dynamic models
     const algo::LinesByIdDefinitions& linesByIdDefinitions;                       ///< lines by id to use
     std::vector<algo::StaticVarCompensatorDefinition> svarcsDefinitions;          ///< list of static var compensator definitions
+    std::vector<algo::LoadDefinition> loadsDefinitions;                           ///< list of loads definitions
   };
 
   /**
