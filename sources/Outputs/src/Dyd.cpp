@@ -158,7 +158,7 @@ Dyd::write() const {
     dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarcRef));
   }
 
-  dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi");
+  dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi_value");
 
   for (auto it = def_.generators.cbegin(); it != def_.generators.cend(); ++it) {
     writeGenConnect(dynamicModelsToConnect, *it);
@@ -430,7 +430,7 @@ Dyd::writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollectio
   if (def.model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN) {
     dynamicModelsToConnect->addConnect(def.id, "generator_URegulated", constants::networkModelName, def.regulatedBusId + "_U_value");
   } else if (def.model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN || def.model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) {
-    dynamicModelsToConnect->addConnect(def.id, "generator_NQ_value", modelSignalNQprefix_ + def.regulatedBusId, "vrremote_NQ");
+    dynamicModelsToConnect->addConnect(def.id, "generator_NQ", modelSignalNQprefix_ + def.regulatedBusId, "vrremote_NQ");
   }
 }
 
@@ -453,9 +453,9 @@ Dyd::writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsColl
   if (hvdcDefinition.hasPQPropModel()) {
     const auto& busId1 =
         (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2BusId : hvdcDefinition.converter1BusId;
-    dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ1_value", modelSignalNQprefix_ + busId1, vrremoteNqValue);
+    dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ1", modelSignalNQprefix_ + busId1, vrremoteNqValue);
     if (hvdcDefinition.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
-      dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ2_value", modelSignalNQprefix_ + hvdcDefinition.converter2BusId, vrremoteNqValue);
+      dynamicModelsToConnect->addConnect(hvdcDefinition.id, "hvdc_NQ2", modelSignalNQprefix_ + hvdcDefinition.converter2BusId, vrremoteNqValue);
     }
   }
 }  // namespace outputs
