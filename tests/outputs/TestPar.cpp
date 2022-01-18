@@ -254,3 +254,42 @@ TEST(TestPar, writeStaticVarCompensator) {
 
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
+
+TEST(Dyd, writeLoad) {
+  using dfl::algo::LoadDefinition;
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  std::string basename = "TestParLoad";
+  std::string dirname = "results";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(dirname);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  std::vector<LoadDefinition> loads {
+    LoadDefinition("LOAD1", "Slack"),
+    LoadDefinition("LOAD2", "Slack")
+  };
+
+
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
+                                                               manager, {}, {}, {}, {}, loads));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}

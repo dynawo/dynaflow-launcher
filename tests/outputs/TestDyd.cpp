@@ -243,3 +243,39 @@ TEST(Dyd, writeStaticVarCompensator) {
 
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
+
+TEST(Dyd, writeLoad) {
+  using dfl::algo::StaticVarCompensatorDefinition;
+  using dfl::algo::LoadDefinition;
+  std::string basename = "TestDydLoad";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath("results");
+  outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  std::vector<LoadDefinition> loads {
+    LoadDefinition("LOAD1", "Slack"),
+    LoadDefinition("LOAD2", "Slack")
+  };
+
+
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
+  outputPath.append(filename);
+
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, loads, node, {}, {}, manager, {}, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}

@@ -346,9 +346,9 @@ Dyd::writeSVarC(const algo::StaticVarCompensatorDefinition& svarc, const std::st
 }
 
 std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>>
-Dyd::writeConstantsModel(const DydDefinition& def_) {
+Dyd::writeConstantsModel(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> ret;
-  if (!def_.generators.empty()) {
+  if (!def.generators.empty()) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
   model->setLib("SignalN");
   ret.push_back(model);
@@ -358,10 +358,10 @@ Dyd::writeConstantsModel(const DydDefinition& def_) {
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
-Dyd::writeMacroConnectors(const DydDefinition& def_) {
+Dyd::writeMacroConnectors(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> ret;
 
-  if (!def_.generators.empty()) {
+  if (!def.generators.empty()) {
     auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
     connector->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
     connector->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
@@ -372,7 +372,7 @@ Dyd::writeMacroConnectors(const DydDefinition& def_) {
     ret.push_back(connector);
   }
 
-  if (!def_.loads.empty()) {
+  if (!def.loads.empty()) {
     auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorLoadName_);
     connector->addConnect("Ur_value", "@STATIC_ID@@NODE@_ACPIN_V_re");
     connector->addConnect("Ui_value", "@STATIC_ID@@NODE@_ACPIN_V_im");
@@ -382,7 +382,7 @@ Dyd::writeMacroConnectors(const DydDefinition& def_) {
     ret.push_back(connector);
   }
 
-  if (!def_.svarcsDefs.empty()) {
+  if (!def.svarcsDefs.empty()) {
     auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorSVarCName_);
     connector->addConnect("SVarC_terminal", "@STATIC_ID@@NODE@_ACPIN");
     ret.push_back(connector);
@@ -392,10 +392,10 @@ Dyd::writeMacroConnectors(const DydDefinition& def_) {
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>>
-Dyd::writeMacroStaticRef(const DydDefinition& def_) {
+Dyd::writeMacroStaticRef(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>> ret;
 
-  if (!def_.generators.empty()) {
+  if (!def.generators.empty()) {
     auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
     ref->addStaticRef("generator_PGenPu", "p");
     ref->addStaticRef("generator_QGenPu", "q");
@@ -403,7 +403,7 @@ Dyd::writeMacroStaticRef(const DydDefinition& def_) {
     ret.push_back(ref);
   }
 
-  if (!def_.loads.empty()) {
+  if (!def.loads.empty()) {
     auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefLoadName_);
     ref->addStaticRef("PPu_value", "p");
     ref->addStaticRef("QPu_value", "q");
@@ -411,7 +411,7 @@ Dyd::writeMacroStaticRef(const DydDefinition& def_) {
     ret.push_back(ref);
   }
 
-  if (!def_.svarcsDefs.empty()) {
+  if (!def.svarcsDefs.empty()) {
     auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
     ref->addStaticRef("SVarC_PInjPu", "p");
     ref->addStaticRef("SVarC_QInjPu", "q");
