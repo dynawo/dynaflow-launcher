@@ -32,49 +32,49 @@
 
 include(CMakeDependentOption)
 
-set(COVERAGE_COMPILER_FLAGS  "-g -O0 --coverage -fprofile-arcs -ftest-coverage" CACHE INTERNAL "")
+set(COVERAGE_COMPILER_FLAGS  "-g -O0 --coverage -fprofile-arcs -ftest-coverage -D_DEBUG_=1" CACHE INTERNAL "")
 set(COVERAGE_LINKER_FLAGS    "--coverage"        CACHE INTERNAL "")
 
 get_property(ENABLED_LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 
 foreach(_LANG IN LISTS ENABLED_LANGUAGES)
-	include(Check${_LANG}CompilerFlag OPTIONAL)
-	set(CMAKE_REQUIRED_LIBRARIES ${COVERAGE_LINKER_FLAGS}) # This is ugly, but better than rewriting/fixing check_<LANG>_compiler_flag
+  include(Check${_LANG}CompilerFlag OPTIONAL)
+  set(CMAKE_REQUIRED_LIBRARIES ${COVERAGE_LINKER_FLAGS}) # This is ugly, but better than rewriting/fixing check_<LANG>_compiler_flag
 
-	if(_LANG STREQUAL "C")
-		check_c_compiler_flag("--coverage" ${_LANG}_COVERAGE_SUPPORTED)
-	elseif(_LANG STREQUAL "CXX")
-		check_cxx_compiler_flag("--coverage" ${_LANG}_COVERAGE_SUPPORTED)
-	else()
-		if(DEFINED ${_LANG}_COVERAGE_SUPPORTED)
-			message(STATUS "Skipping ${_LANG}, not supported by Coverage.cmake script")
-		endif()
-		set(${_LANG}_COVERAGE_SUPPORTED FALSE)
-		continue()
-	endif()
-	if(${_LANG}_COVERAGE_SUPPORTED)
-		set(CMAKE_${_LANG}_FLAGS_COVERAGE
-			${COVERAGE_COMPILER_FLAGS}
-			CACHE STRING "Flags used by the ${_LANG} compiler during coverage builds." FORCE
-		)
-		mark_as_advanced(CMAKE_${_LANG}_FLAGS_COVERAGE)
-		set(COVERAGE_SUPPORTED TRUE CACHE INTERNAL "Whether or not coverage is supported by at least one compiler.")
-	endif()
+  if(_LANG STREQUAL "C")
+    check_c_compiler_flag("--coverage" ${_LANG}_COVERAGE_SUPPORTED)
+  elseif(_LANG STREQUAL "CXX")
+    check_cxx_compiler_flag("--coverage" ${_LANG}_COVERAGE_SUPPORTED)
+  else()
+    if(DEFINED ${_LANG}_COVERAGE_SUPPORTED)
+      message(STATUS "Skipping ${_LANG}, not supported by Coverage.cmake script")
+    endif()
+    set(${_LANG}_COVERAGE_SUPPORTED FALSE)
+    continue()
+  endif()
+  if(${_LANG}_COVERAGE_SUPPORTED)
+    set(CMAKE_${_LANG}_FLAGS_COVERAGE
+      ${COVERAGE_COMPILER_FLAGS}
+      CACHE STRING "Flags used by the ${_LANG} compiler during coverage builds." FORCE
+    )
+    mark_as_advanced(CMAKE_${_LANG}_FLAGS_COVERAGE)
+    set(COVERAGE_SUPPORTED TRUE CACHE INTERNAL "Whether or not coverage is supported by at least one compiler.")
+  endif()
 endforeach()
 
 if(COVERAGE_SUPPORTED)
-	set(CMAKE_EXE_LINKER_FLAGS_COVERAGE
-		"${COVERAGE_LINKER_FLAGS}"
-		CACHE STRING "Flags used for linking binaries during coverage builds."
-	)
-	set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
-		"${COVERAGE_LINKER_FLAGS}"
-		CACHE STRING "Flags used by the shared libraries linker during coverage builds."
-	)
-	mark_as_advanced(
-		CMAKE_EXE_LINKER_FLAGS_COVERAGE
-		CMAKE_SHARED_LINKER_FLAGS_COVERAGE
-	)
+  set(CMAKE_EXE_LINKER_FLAGS_COVERAGE
+    "${COVERAGE_LINKER_FLAGS}"
+    CACHE STRING "Flags used for linking binaries during coverage builds."
+  )
+  set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
+    "${COVERAGE_LINKER_FLAGS}"
+    CACHE STRING "Flags used by the shared libraries linker during coverage builds."
+  )
+  mark_as_advanced(
+    CMAKE_EXE_LINKER_FLAGS_COVERAGE
+    CMAKE_SHARED_LINKER_FLAGS_COVERAGE
+  )
 endif()
 
 
@@ -84,27 +84,27 @@ cmake_dependent_option(COVERAGE_IN_CONFIGURATION_TYPES
 )
 
 if(COVERAGE_IN_CONFIGURATION_TYPES)
-	# Modify this only if using a multi-config generator, some modules rely on this variable to detect those generators.
-	if(CMAKE_CONFIGURATION_TYPES AND COVERAGE_SUPPORTED)
-		list(APPEND CMAKE_CONFIGURATION_TYPES Coverage)
-		list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
-		set(CMAKE_CONFIGURATION_TYPES
-			"${CMAKE_CONFIGURATION_TYPES}"
-			CACHE STRING
-			"Semicolon separated list of supported configuration types, only supports ${CMAKE_CONFIGURATION_TYPES} anything else will be ignored."
-			FORCE
-		)
-	endif()
+  # Modify this only if using a multi-config generator, some modules rely on this variable to detect those generators.
+  if(CMAKE_CONFIGURATION_TYPES AND COVERAGE_SUPPORTED)
+    list(APPEND CMAKE_CONFIGURATION_TYPES Coverage)
+    list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES
+      "${CMAKE_CONFIGURATION_TYPES}"
+      CACHE STRING
+      "Semicolon separated list of supported configuration types, only supports ${CMAKE_CONFIGURATION_TYPES} anything else will be ignored."
+      FORCE
+    )
+  endif()
 else()
-	if(Coverage IN_LIST CMAKE_CONFIGURATION_TYPES)
-		message(STATUS "Removing Coverage configuration type (COVERAGE_IN_CONFIGURATION_TYPES is OFF)")
-		list(REMOVE_ITEM CMAKE_CONFIGURATION_TYPES Coverage)
-		list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
-		set(CMAKE_CONFIGURATION_TYPES
-			"${CMAKE_CONFIGURATION_TYPES}"
-			CACHE STRING
-			"Semicolon separated list of supported configuration types, only supports ${CMAKE_CONFIGURATION_TYPES} anything else will be ignored."
-			FORCE
-		)
-	endif()
+  if(Coverage IN_LIST CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "Removing Coverage configuration type (COVERAGE_IN_CONFIGURATION_TYPES is OFF)")
+    list(REMOVE_ITEM CMAKE_CONFIGURATION_TYPES Coverage)
+    list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES
+      "${CMAKE_CONFIGURATION_TYPES}"
+      CACHE STRING
+      "Semicolon separated list of supported configuration types, only supports ${CMAKE_CONFIGURATION_TYPES} anything else will be ignored."
+      FORCE
+    )
+  endif()
 endif()

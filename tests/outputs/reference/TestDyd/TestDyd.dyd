@@ -64,5 +64,5 @@
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N" index2="1"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G4" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="2"/>
-  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
 </dyn:dynamicModelsArchitecture>
