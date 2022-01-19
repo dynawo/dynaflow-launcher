@@ -39,6 +39,11 @@ jobs:
           unzip -qq "Dynawo_headers_V${DYNAWO_VERSION}.zip"
           unzip -qq "DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip"
 
+      - name: Dynawo and Dynawo algorithms versions
+        run: |
+          ./dynawo/dynawo.sh version
+          ./dynawo-algorithms/bin/execDynawoAlgorithms.sh --version
+
       - name: Build
         run: |
           export DYNAWO_HOME=$(pwd)/dynawo

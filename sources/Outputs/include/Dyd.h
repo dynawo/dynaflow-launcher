@@ -56,6 +56,29 @@ struct hash<dfl::algo::GeneratorDefinition::ModelType> {
 };
 
 /**
+ * @brief specialization hash for StaticVarCompensator model types
+ *
+ * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
+ * see https://en.cppreference.com/w/cpp/utility/hash for template definition
+ */
+template<>
+struct hash<dfl::algo::StaticVarCompensatorDefinition::ModelType> {
+  /// @brief Constructor
+  hash() {}
+  /**
+   * @brief Action operator
+   *
+   * Performs hash by relying on integer cast for enum class
+   *
+   * @param key the key to hash
+   * @returns the hash value
+   */
+  size_t operator()(const dfl::algo::StaticVarCompensatorDefinition::ModelType& key) const {
+    return hash<unsigned int>{}(static_cast<unsigned int>(key));
+  }
+};
+
+/**
  * @brief specialization hash for HVDC models types
  *
  * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
