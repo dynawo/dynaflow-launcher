@@ -214,27 +214,33 @@ class Dyd {
    *
    * Create Model signal N model
    *
+   * @param def the dyd definition
+   *
    * @returns black box models
    */
-  static std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> writeConstantsModel();
+  static std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> writeConstantsModel(const DydDefinition& def);
 
   /**
    * @brief Write macro connectors
    *
-   * Create maro connectors elements for generators and loads
+   * Create macro connectors elements for generators and loads
+   *
+   * @param def the dyd definition
    *
    * @returns list of macro connectors
    */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> writeMacroConnectors();
+  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> writeMacroConnectors(const DydDefinition& def);
 
   /**
    * @brief Write macro static references
    *
    * Create macro static reference elements for generators and loads
    *
+   * @param def the dyd definition
+   *
    * @returns list of macro connectors
    */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>> writeMacroStaticRef();
+  static std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>> writeMacroStaticRef(const DydDefinition& def);
 
   /**
    * @brief Write connections for loads

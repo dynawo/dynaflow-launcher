@@ -193,7 +193,7 @@ Context::exportOutputs() {
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLineDefinitions_,
                                                      config_.getActivePowerCompensation(), busesWithDynamicModel_, dynamicDataBaseManager_, counters_,
-                                                     dynamicModels_, linesById_, staticVarCompensators_));
+                                                     dynamicModels_, linesById_, staticVarCompensators_, loads_));
   parWriter.write();
 
   // Diagram

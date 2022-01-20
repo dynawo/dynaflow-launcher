@@ -44,18 +44,6 @@
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>
-  <set id="GenericRestorativeLoad">
-    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
-    <par name="load_Beta" type="DOUBLE" value="2.5"/>
-    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
-    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
-    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
-    <par name="load_tFilter" type="DOUBLE" value="10"/>
-    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
-    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
-    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
-    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
-  </set>
   <set id="signalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>

@@ -102,7 +102,7 @@ Dyd::write() const {
   auto dynamicModelsToConnect = dynamicdata::DynamicModelsCollectionFactory::newCollection();
 
   // macros connectors
-  auto macroConnectors = writeMacroConnectors();
+  auto macroConnectors = writeMacroConnectors(def_);
   for (const auto& macroConnector : macroConnectors) {
     dynamicModelsToConnect->addMacroConnector(macroConnector);
   }
@@ -117,7 +117,7 @@ Dyd::write() const {
   }
 
   // macro static refs
-  auto macroStaticRefs = writeMacroStaticRef();
+  auto macroStaticRefs = writeMacroStaticRef(def_);
   for (const auto& macroStaticRef : macroStaticRefs) {
     dynamicModelsToConnect->addMacroStaticReference(macroStaticRef);
   }
@@ -127,7 +127,7 @@ Dyd::write() const {
     dynamicModelsToConnect->addModel(writeLoad(load, def_.basename));
     dynamicModelsToConnect->addMacroConnect(writeLoadConnect(load));
   }
-  auto const_models = writeConstantsModel();
+  auto const_models = writeConstantsModel(def_);
   for (const auto& const_model : const_models) {
     dynamicModelsToConnect->addModel(const_model);
   }
@@ -158,7 +158,9 @@ Dyd::write() const {
     dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarcRef));
   }
 
-  dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi_value");
+  if (!def_.generators.empty()) {
+    dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, def_.slackNode->id + "_phi_value");
+  }
 
   for (auto it = def_.generators.cbegin(); it != def_.generators.cend(); ++it) {
     writeGenConnect(dynamicModelsToConnect, *it);
@@ -344,65 +346,78 @@ Dyd::writeSVarC(const algo::StaticVarCompensatorDefinition& svarc, const std::st
 }
 
 std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>>
-Dyd::writeConstantsModel() {
+Dyd::writeConstantsModel(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> ret;
+  if (!def.generators.empty()) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
   model->setLib("SignalN");
-
   ret.push_back(model);
+  }
 
   return ret;
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
-Dyd::writeMacroConnectors() {
+Dyd::writeMacroConnectors(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> ret;
 
-  auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
-  connector->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
-  connector->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
-  ret.push_back(connector);
+  if (!def.generators.empty()) {
+    auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
+    connector->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
+    connector->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
+    ret.push_back(connector);
 
-  connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
-  connector->addConnect("generator_N", "signalN_N");
-  ret.push_back(connector);
+    connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
+    connector->addConnect("generator_N", "signalN_N");
+    ret.push_back(connector);
+  }
 
-  connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorLoadName_);
-  connector->addConnect("Ur_value", "@STATIC_ID@@NODE@_ACPIN_V_re");
-  connector->addConnect("Ui_value", "@STATIC_ID@@NODE@_ACPIN_V_im");
-  connector->addConnect("Ir_value", "@STATIC_ID@@NODE@_ACPIN_i_re");
-  connector->addConnect("Ii_value", "@STATIC_ID@@NODE@_ACPIN_i_im");
-  connector->addConnect("switchOff1_value", "@STATIC_ID@@NODE@_switchOff_value");
-  ret.push_back(connector);
+  if (!def.loads.empty()) {
+    auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorLoadName_);
+    connector->addConnect("Ur_value", "@STATIC_ID@@NODE@_ACPIN_V_re");
+    connector->addConnect("Ui_value", "@STATIC_ID@@NODE@_ACPIN_V_im");
+    connector->addConnect("Ir_value", "@STATIC_ID@@NODE@_ACPIN_i_re");
+    connector->addConnect("Ii_value", "@STATIC_ID@@NODE@_ACPIN_i_im");
+    connector->addConnect("switchOff1_value", "@STATIC_ID@@NODE@_switchOff_value");
+    ret.push_back(connector);
+  }
 
-  connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorSVarCName_);
-  connector->addConnect("SVarC_terminal", "@STATIC_ID@@NODE@_ACPIN");
-  ret.push_back(connector);
+  if (!def.svarcsDefs.empty()) {
+    auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorSVarCName_);
+    connector->addConnect("SVarC_terminal", "@STATIC_ID@@NODE@_ACPIN");
+    ret.push_back(connector);
+  }
 
   return ret;
 }
 
 std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>>
-Dyd::writeMacroStaticRef() {
+Dyd::writeMacroStaticRef(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>> ret;
 
-  auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
-  ref->addStaticRef("generator_PGenPu", "p");
-  ref->addStaticRef("generator_QGenPu", "q");
-  ref->addStaticRef("generator_state", "state");
-  ret.push_back(ref);
+  if (!def.generators.empty()) {
+    auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
+    ref->addStaticRef("generator_PGenPu", "p");
+    ref->addStaticRef("generator_QGenPu", "q");
+    ref->addStaticRef("generator_state", "state");
+    ret.push_back(ref);
+  }
 
-  ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefLoadName_);
-  ref->addStaticRef("PPu_value", "p");
-  ref->addStaticRef("QPu_value", "q");
-  ref->addStaticRef("state_value", "state");
-  ret.push_back(ref);
+  if (!def.loads.empty()) {
+    auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefLoadName_);
+    ref->addStaticRef("PPu_value", "p");
+    ref->addStaticRef("QPu_value", "q");
+    ref->addStaticRef("state_value", "state");
+    ret.push_back(ref);
+  }
 
-  ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
-  ref->addStaticRef("SVarC_PInjPu", "p");
-  ref->addStaticRef("SVarC_QInjPu", "q");
-  ref->addStaticRef("SVarC_state", "state");
-  ret.push_back(ref);
+  if (!def.svarcsDefs.empty()) {
+    auto ref = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
+    ref->addStaticRef("SVarC_PInjPu", "p");
+    ref->addStaticRef("SVarC_QInjPu", "q");
+    ref->addStaticRef("SVarC_state", "state");
+    ret.push_back(ref);
+  }
 
   return ret;
 }
