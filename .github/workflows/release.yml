@@ -37,6 +37,8 @@ jobs:
           unzip -qq "DynawoAlgorithms_Linux_headers_v${DYNAWO_VERSION}.zip"
 
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export DYNAWO_HOME=$(pwd)/dynawo
           export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
