@@ -177,12 +177,13 @@ set_environment() {
     # global vars
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
     ld_library_path_prepend $DYNAWO_ALGORITHMS_HOME/lib     # For Dynawo-algorithms library
-    ld_library_path_prepend $DYNAFLOW_LAUNCHER_HOME/lib64   # For local DFL libraries, used only at runtime in case we compile in shared
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES # To add external model libraries loaded during simulation
 
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
     export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
 
     export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_USE_DOXYGEN=ON # same default value as cmakelist
