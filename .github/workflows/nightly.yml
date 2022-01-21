@@ -45,7 +45,7 @@ jobs:
       - name: Dynawo and Dynawo algorithms versions
         run: |
           ./dynawo/dynawo.sh version
-          ./dynawo-algorithms/bin/execDynawoAlgorithms.sh --version
+          ./dynawo-algorithms/dynawo-algorithms.sh --version
 
       - name: Build
         run: |
