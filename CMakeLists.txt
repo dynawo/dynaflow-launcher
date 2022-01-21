@@ -17,7 +17,7 @@ endif()
 # More information https://cmake.org/cmake/help/latest/command/project.html
 project(
     "DynaFlowLauncher" # This will exposed as the variable PROJECT_NAME.
-    VERSION 0.1.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
+    VERSION 1.3.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
 
