@@ -23,16 +23,16 @@
   <set id="HVDCLCCLine2">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="results/TestParHvdc_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="12914068690953704580_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="results/TestParHvdc_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="12914068690953704580_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="results/TestParHvdc_Diagram/LCCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/LCCStation2_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="7531727525973966584_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="results/TestParHvdc_Diagram/LCCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/LCCStation2_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="7531727525973966584_tableqmin"/>
     <par name="hvdc_tFilter" type="DOUBLE" value="0.001"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
@@ -73,10 +73,10 @@
   <set id="HVDCVSCLine2">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="results/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="results/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="4391011292660086723_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="false"/>
     <par name="hvdc_modeU20" type="BOOL" value="true"/>
@@ -100,16 +100,16 @@
   <set id="HVDCVSCLine3">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="results/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="results/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="4391011292660086723_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.040000000000000001"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="results/TestParHvdc_Diagram/VSCStation3_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/VSCStation3_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="8374048307509032961_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.040000000000000001"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="results/TestParHvdc_Diagram/VSCStation3_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdc_Diagram/VSCStation3_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="8374048307509032961_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
     <par name="hvdc_modeU20" type="BOOL" value="false"/>

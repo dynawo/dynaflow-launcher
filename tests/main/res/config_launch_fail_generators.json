@@ -1,5 +1,5 @@
 {
   "dfl-config": {
-    "OutputDir": "results/launch_fail_generators"
+    "OutputDir": "resultsTestsTmp/launch_fail_generators"
   }
 }

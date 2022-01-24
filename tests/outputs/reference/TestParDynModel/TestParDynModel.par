@@ -28,19 +28,19 @@
   </macroParameterSet>
   <set id="2751660957840315519">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="results/TestParDynModel_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G4_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="2751660957840315519_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
-    <par name="generator_QMinTableFile" type="STRING" value="results/TestParDynModel_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G4_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="2751660957840315519_tableqmin"/>
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="6320417593396202500">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="results/TestParDynModel_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
-    <par name="generator_QMinTableFile" type="STRING" value="results/TestParDynModel_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>

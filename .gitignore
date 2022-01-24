@@ -8,7 +8,7 @@ version.h
 *.log
 *.orig
 DicoKeys.*
-tests/**/results/**
+tests/**/resultsTestsTmp/**
 results/
 myEnvDFL.sh
 

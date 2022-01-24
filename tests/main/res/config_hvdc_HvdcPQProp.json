@@ -1,6 +1,6 @@
 {
     "dfl-config": {
-      "OutputDir": "results/hvdc_HvdcPQProp",
+      "OutputDir": "resultsTestsTmp/hvdc_HvdcPQProp",
       "DsoVoltageLevel": 600,
       "InfiniteReactiveLimits": true
     }

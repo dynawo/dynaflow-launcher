@@ -23,7 +23,7 @@ TEST(Dyd, write) {
 
   std::string basename = "TestDyd";
   std::string filename = basename + ".dyd";
-  boost::filesystem::path outputPath("results");
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
@@ -63,7 +63,7 @@ TEST(Dyd, writeRemote) {
 
   std::string basename = "TestDydRemote";
   std::string filename = basename + ".dyd";
-  boost::filesystem::path outputPath("results");
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
@@ -104,7 +104,7 @@ TEST(Dyd, writeHvdc) {
 
   std::string basename = "TestDydHvdc";
   std::string filename = basename + ".dyd";
-  boost::filesystem::path outputPath("results");
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
@@ -148,7 +148,7 @@ TEST(Dyd, writeDynamicModel) {
 
   std::string basename = "TestDydDynModel";
   std::string filename = basename + ".dyd";
-  boost::filesystem::path outputPath("results");
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
@@ -200,7 +200,7 @@ TEST(Dyd, writeStaticVarCompensator) {
 
   std::string basename = "TestDydSVarC";
   std::string filename = basename + ".dyd";
-  boost::filesystem::path outputPath("results");
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
@@ -249,7 +249,7 @@ TEST(Dyd, writeLoad) {
   using dfl::algo::LoadDefinition;
   std::string basename = "TestDydLoad";
   std::string filename = basename + ".dyd";
-  boost::filesystem::path outputPath("results");
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   dfl::inputs::DynamicDataBaseManager manager("", "");

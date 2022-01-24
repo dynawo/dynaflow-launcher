@@ -13,7 +13,7 @@ timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-
 
 ### Code #######################################################################
 def check_test_contingencies(tests_path, test_name):
-    results_folder = os.path.join(tests_path, 'results', test_name)
+    results_folder = os.path.join(tests_path, 'resultsTestsTmp', test_name)
     contingencies_file = os.path.join(tests_path, 'res/contingencies_' + test_name + '.json')
 
     return check_contingencies(contingencies_file, results_folder)

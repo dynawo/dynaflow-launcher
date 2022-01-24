@@ -32,7 +32,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
 
     result_path = os.path.realpath(os.path.join(
-        options.root, "results", options.testdir, "outputs/finalState/outputIIDM.xml"))
+        options.root, "resultsTestsTmp", options.testdir, "outputs/finalState/outputIIDM.xml"))
     reference_path = os.path.realpath(os.path.join(
         options.root, "reference", options.testdir, "outputIIDM.xml"))
 

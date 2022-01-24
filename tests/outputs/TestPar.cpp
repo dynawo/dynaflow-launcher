@@ -24,10 +24,9 @@ TEST(TestPar, write) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestPar";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
@@ -42,8 +41,8 @@ TEST(TestPar, write) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
-                                                               manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators,
+                                                              {}, activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -61,10 +60,9 @@ TEST(TestPar, writeRemote) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestParRemote";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
@@ -84,8 +82,8 @@ TEST(TestPar, writeRemote) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation,
-                                                               busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators,
+                                                              {}, activePowerCompensation, busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -99,12 +97,11 @@ TEST(TestPar, writeRemote) {
 TEST(TestPar, writeHdvc) {
   using dfl::algo::HVDCDefinition;
   std::string basename = "TestParHvdc";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
@@ -149,7 +146,8 @@ TEST(TestPar, writeHdvc) {
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, hvdcDefs, activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
+      dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {},
+                                  hvdcDefs, activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -167,10 +165,9 @@ TEST(TestPar, DynModel) {
   dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
 
   std::string basename = "TestParDynModel";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
@@ -195,8 +192,8 @@ TEST(TestPar, DynModel) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), generators, {}, activePowerCompensation, {},
-                                                               manager, counters, defs, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators,
+                                                              {}, activePowerCompensation, {}, manager, counters, defs, {}, {}, {}));
 
   parWriter.write();
 
@@ -213,10 +210,9 @@ TEST(TestPar, writeStaticVarCompensator) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestParSVarC";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
@@ -243,7 +239,7 @@ TEST(TestPar, writeStaticVarCompensator) {
   };
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
                                                                manager, {}, {}, {}, svarcs, {}));
 
   parWriter.write();
@@ -261,10 +257,9 @@ TEST(Dyd, writeLoad) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestParLoad";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
@@ -282,7 +277,7 @@ TEST(Dyd, writeLoad) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, dirname, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
                                                                manager, {}, {}, {}, {}, loads));
 
   parWriter.write();

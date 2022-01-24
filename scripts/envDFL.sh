@@ -232,9 +232,9 @@ reset_environment_variables() {
 clean() {
     rm -rf $DYNAFLOW_LAUNCHER_BUILD_DIR
     rm -rf $DYNAFLOW_LAUNCHER_INSTALL_DIR
-    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/outputs/results
-    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/main/results
-    rm -rf $DYNAFLOW_LAUNCHER_HOME/tests/main_sa/results
+    pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
+    find tests -type d -name "resultsTestsTmp" -prune -exec rm -rf {} \;
+    popd > /dev/null
 }
 
 cmake_configure() {
@@ -266,7 +266,7 @@ cmake_build() {
 
 cmake_tests() {
     pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
-    find tests -type d -name "results" -prune -exec rm -rf {} \;
+    find tests -type d -name "resultsTestsTmp" -prune -exec rm -rf {} \;
     popd > /dev/null
     pushd $DYNAFLOW_LAUNCHER_BUILD_DIR > /dev/null
     ctest -j $DYNAFLOW_LAUNCHER_PROCESSORS_USED --output-on-failure
