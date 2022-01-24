@@ -37,7 +37,7 @@ TEST(Diagram, writeWithCurvePoint) {
 
   std::string basename = "TestDiagram";
   std::string prefixDir = "WithCurvePoint";
-  boost::filesystem::path outputDirectory("results");
+  boost::filesystem::path outputDirectory(outputPathResults);
   outputDirectory.append(basename);
 
   if (!boost::filesystem::exists(outputDirectory)) {
@@ -76,7 +76,7 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
 
   std::string basename = "TestDiagram";
   std::string prefixDir = "Mixed";
-  boost::filesystem::path outputDirectory("results");
+  boost::filesystem::path outputDirectory(outputPathResults);
   outputDirectory.append(basename);
 
   if (!boost::filesystem::exists(outputDirectory)) {
@@ -121,7 +121,7 @@ TEST(Diagram, writeEmpty) {
 
   std::string basename = "TestDiagram";
   std::string prefixDir = "Empty";
-  boost::filesystem::path outputDirectory("results");
+  boost::filesystem::path outputDirectory(outputPathResults);
   outputDirectory.append(basename);
 
   if (!boost::filesystem::exists(outputDirectory)) {
@@ -153,7 +153,7 @@ TEST(Diagram, writeVSC) {
 
   std::string basename = "TestDiagram";
   std::string prefixDir = "VSC";
-  boost::filesystem::path outputDirectory("results");
+  boost::filesystem::path outputDirectory(outputPathResults);
   outputDirectory.append(basename);
 
   if (!boost::filesystem::exists(outputDirectory)) {
@@ -207,7 +207,7 @@ TEST(Diagram, writeLCC) {
 
   std::string basename = "TestDiagram";
   std::string prefixDir = "LCC";
-  boost::filesystem::path outputDirectory("results");
+  boost::filesystem::path outputDirectory(outputPathResults);
   outputDirectory.append(basename);
 
   if (!boost::filesystem::exists(outputDirectory)) {

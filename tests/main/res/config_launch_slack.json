@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "results/launch_slack",
+    "OutputDir": "resultsTestsTmp/launch_slack",
     "AutomaticSlackBusOn": false
   }
 }

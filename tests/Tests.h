@@ -13,6 +13,8 @@
 #include <gtest/gtest.h>
 #include <string>
 
+static const std::string outputPathResults("resultsTestsTmp");
+
 namespace dfl {
 namespace test {
 void checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath);

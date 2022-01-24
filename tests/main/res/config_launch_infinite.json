@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "results/launch_infinite",
+    "OutputDir": "resultsTestsTmp/launch_infinite",
     "InfiniteReactiveLimits": true
   }
 }

@@ -30,7 +30,7 @@ def compare_file(options, contingency_folder):
     """ Will compare a reference file and a result file"""
 
     result_path = full_path(
-        options.root, "results", options.testdir, contingency_folder, "outputs/finalState/outputIIDM.xml")
+        options.root, "resultsTestsTmp", options.testdir, contingency_folder, "outputs/finalState/outputIIDM.xml")
     reference_path = full_path(
         options.root, "reference", options.testdir, contingency_folder, "outputIIDM.xml")
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
     total_diffs = 0
 
-    results_root = full_path(options.root, "results", options.testdir)
+    results_root = full_path(options.root, "resultsTestsTmp", options.testdir)
 
     print(results_root)
     for folder in os.listdir(results_root):

@@ -1,3 +1,12 @@
+//
+// Copyright (c) 2021, RTE (http://www.rte-france.com)
+// See AUTHORS.txt
+// All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, you can obtain one at http://mozilla.org/MPL/2.0/.
+// SPDX-License-Identifier: MPL-2.0
+//
 #include "Contingencies.h"
 #include "ParEvent.h"
 #include "Tests.h"
@@ -13,14 +22,13 @@ TEST(TestParEvent, write) {
   using ElementType = dfl::inputs::ContingencyElement::Type;
 
   std::string basename = "TestParEvent";
-  std::string dirname = "results";
   std::string filename = basename + ".par";
 
-  boost::filesystem::path outputPath(dirname);
+  boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
   if (!boost::filesystem::exists(outputPath)) {
-    boost::filesystem::create_directory(outputPath);
+    boost::filesystem::create_directories(outputPath);
   }
 
   auto contingency = dfl::inputs::Contingency("TestContingency");
