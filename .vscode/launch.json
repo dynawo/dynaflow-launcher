@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch DynaFlowLauncher",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build-code/Install/dynaflow-launcher/bin/DynaFlowLauncher",
+            "args": [ "--network", "${workspaceFolder}/tests/main/res/TestIIDM_launch.iidm", "--config", "${workspaceFolder}/tests/main/res/config_launch.json" ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [
+                { "name": "DYNAWO_HOME", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher" },
+                { "name": "DYNAWO_ALGORITHMS_HOME", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher" },
+                { "name": "IIDM_XML_XSD_PATH", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher/share/iidm/xsd" },
+                { "name": "DYNAFLOW_LAUNCHER_LOCALE", "value" : "en_GB" },
+                { "name": "DYNAFLOW_LAUNCHER_INSTALL", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher" },
+                { "name": "DYNAWO_RESOURCES_DIR", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher/share:${workspaceFolder}/build-code/Install/dynaflow-launcher/share/xsd" },
+                { "name": "DYNAWO_DDB_DIR", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher/ddb" },
+                { "name": "DYNAWO_IIDM_EXTENSION", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher/lib/libdynawo_DataInterfaceIIDMExtension.so" },
+                { "name": "DYNAWO_LIBIIDM_EXTENSIONS", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher/lib" },
+                { "name": "DYNAWO_INSTALL_DIR", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher" },
+                { "name": "DYNAFLOW_LAUNCHER_XSD", "value" : "$INSTALL/etc/xsd" },
+                { "name": "DYNAFLOW_LAUNCHER_LIBRARIES", "value" : "$DYNAWO_DDB_DIR" },
+                { "name": "DYNAWO_ALGORITHMS_LOCALE", "value" : "$DYNAFLOW_LAUNCHER_LOCALE" },
+                { "name": "LD_LIBRARY_PATH", "value" : "${LD_LIBRARY_PATH}:${workspaceFolder}/build-code/Install/dynaflow-launcher/lib64:${workspaceFolder}/build-code/Install/dynaflow-launcher/lib" }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Activer l'impression en mode Pretty pour gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Définir la version désassemblage sur Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
