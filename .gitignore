@@ -1,4 +1,5 @@
 build/
+build-code/
 buildCoverage/
 buildLinux/
 Install/
