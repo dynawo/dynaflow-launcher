@@ -23,5 +23,11 @@
 
     "files.exclude": {
         "build-code": true,
-    }
+    },
+
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "build-code": true
+      }
 }

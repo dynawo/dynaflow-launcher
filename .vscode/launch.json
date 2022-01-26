@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/build-code/Install/dynaflow-launcher/bin/DynaFlowLauncher",
             "args": [ "--network", "${workspaceFolder}/tests/main/res/TestIIDM_launch.iidm", "--config", "${workspaceFolder}/tests/main/res/config_launch.json" ],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [
                 { "name": "DYNAWO_HOME", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher" },
                 { "name": "DYNAWO_ALGORITHMS_HOME", "value" : "${workspaceFolder}/build-code/Install/dynaflow-launcher" },
@@ -26,7 +26,7 @@
                 { "name": "DYNAFLOW_LAUNCHER_XSD", "value" : "$INSTALL/etc/xsd" },
                 { "name": "DYNAFLOW_LAUNCHER_LIBRARIES", "value" : "$DYNAWO_DDB_DIR" },
                 { "name": "DYNAWO_ALGORITHMS_LOCALE", "value" : "$DYNAFLOW_LAUNCHER_LOCALE" },
-                { "name": "LD_LIBRARY_PATH", "value" : "${LD_LIBRARY_PATH}:${workspaceFolder}/build-code/Install/dynaflow-launcher/lib64:${workspaceFolder}/build-code/Install/dynaflow-launcher/lib" }
+                { "name": "LD_LIBRARY_PATH", "value" : "${env:LD_LIBRARY_PATH}:${workspaceFolder}/build-code/Install/dynaflow-launcher/lib64:${workspaceFolder}/build-code/Install/dynaflow-launcher/lib" }
             ],
             "externalConsole": false,
             "MIMode": "gdb",
