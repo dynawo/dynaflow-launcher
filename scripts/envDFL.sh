@@ -24,7 +24,9 @@ export_var_env() {
     local value="${var#*=}"
 
     if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
-      error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
+        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" ]; then
+            error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
+        fi
     fi
 
     if eval "[ \"\$$name\" ]"; then
@@ -155,7 +157,12 @@ set_commit_hook() {
 }
 
 set_environment() {
+    export_var_env DYNAFLOW_LAUNCHER_HOME=UNDEFINED
+    export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
+    export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
+
     # dynawo vars
+    export_var_env DYNAWO_HOME=UNDEFINED
     export DYNAWO_INSTALL_DIR=$DYNAWO_HOME
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
 
@@ -171,6 +178,7 @@ set_environment() {
     export DYNAWO_RESOURCES_DIR=$DYNAWO_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd:$DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR
 
     # dynawo algorithms
+    export_var_env DYNAWO_ALGORITHMS_HOME=UNDEFINED
     # Use same locale of dynaflow launcher
     export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
