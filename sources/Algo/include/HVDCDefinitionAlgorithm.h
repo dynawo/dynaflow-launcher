@@ -21,6 +21,8 @@
 #include "NetworkManager.h"
 #include "Node.h"
 
+#include <DYNCommon.h>
+
 namespace dfl {
 
 using NodePtr = std::shared_ptr<inputs::Node>;  ///< Alias for pointer to node
@@ -54,8 +56,9 @@ class VSCDefinition {
    * @returns true if current definition equals to @a other, false if not
    */
   bool operator==(const dfl::algo::VSCDefinition& other) const {
-    return id == other.id && pmax == other.pmax && pmin == other.pmin && points.size() == other.points.size() &&
-           std::equal(points.begin(), points.end(), other.points.begin(), comparePoints) && qmax == other.qmax && qmin == other.qmin;
+    return id == other.id && DYN::doubleEquals(pmax, other.pmax) && DYN::doubleEquals(pmin, other.pmin) && points.size() == other.points.size() &&
+           std::equal(points.begin(), points.end(), other.points.begin(), comparePoints) &&
+           DYN::doubleEquals(qmax, other.qmax) && DYN::doubleEquals(qmin, other.qmin);
   }
 
   VSCId id;                                ///< id of the converter
@@ -73,7 +76,7 @@ class VSCDefinition {
    * @returns true of lhs == rhs, false if not
    */
   static bool comparePoints(const ReactiveCurvePoint& lhs, const ReactiveCurvePoint& rhs) {
-    return lhs.p == rhs.p && lhs.qmax == rhs.qmax && lhs.qmin == rhs.qmin;
+    return DYN::doubleEquals(lhs.p, rhs.p) && DYN::doubleEquals(lhs.qmax, rhs.qmax) && DYN::doubleEquals(lhs.qmin, rhs.qmin);
   }
 };
 

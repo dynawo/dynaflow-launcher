@@ -99,8 +99,8 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   bool allPEqual = true;
   auto it = generator.points.begin();
   while ((allQminEqualQmax || allPEqual) && it != generator.points.end()) {
-    allQminEqualQmax = allQminEqualQmax && it->qmin == it->qmax;
-    allPEqual = allPEqual && it->p == firstP;
+    allQminEqualQmax = allQminEqualQmax && DYN::doubleEquals(it->qmin, it->qmax);
+    allPEqual = allPEqual && DYN::doubleEquals(it->p, firstP);
     ++it;
   }
   bool valid = !allQminEqualQmax && !allPEqual;
