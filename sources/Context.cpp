@@ -17,7 +17,6 @@
 
 #include "Context.h"
 
-#include "Algo.h"
 #include "Constants.h"
 #include "Contingencies.h"
 #include "Diagram.h"

@@ -17,9 +17,17 @@
 
 #pragma once
 
-#include "Algo.h"
 #include "Configuration.h"
+#include "DynModelDefinitionAlgorithm.h"
 #include "DynamicDataBaseManager.h"
+#include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
+#include "LineDefinitionAlgorithm.h"
+#include "LoadDefinitionAlgorithm.h"
+#include "MainConnexComponentAlgorithm.h"
+#include "SVarCDefinitionAlgorithm.h"
+#include "ShuntDefinitionAlgorithm.h"
+#include "SlackNodeAlgorithm.h"
 
 #include <DYNLineInterface.h>
 #include <PARMacroParameterSet.h>

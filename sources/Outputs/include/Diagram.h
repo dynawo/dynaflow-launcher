@@ -17,7 +17,8 @@
 
 #pragma once
 
-#include "Algo.h"
+#include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
 
 #include <string>
 #include <vector>
