@@ -17,11 +17,20 @@
 
 #pragma once
 
-#include "Algo.h"
 #include "Configuration.h"
 #include "ContingenciesManager.h"
+#include "ContingencyValidationAlgorithm.h"
+#include "DynModelDefinitionAlgorithm.h"
 #include "DynamicDataBaseManager.h"
+#include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
+#include "LineDefinitionAlgorithm.h"
+#include "LoadDefinitionAlgorithm.h"
+#include "MainConnexComponentAlgorithm.h"
 #include "NetworkManager.h"
+#include "SVarCDefinitionAlgorithm.h"
+#include "ShuntDefinitionAlgorithm.h"
+#include "SlackNodeAlgorithm.h"
 
 #include <JOBJobEntry.h>
 #include <boost/filesystem.hpp>

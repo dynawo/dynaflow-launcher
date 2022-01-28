@@ -15,10 +15,18 @@
  *
  */
 
-#include "Algo.h"
 #include "Configuration.h"
+#include "ContingencyValidationAlgorithm.h"
 #include "Dico.h"
+#include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
+#include "LineDefinitionAlgorithm.h"
+#include "LoadDefinitionAlgorithm.h"
+#include "MainConnexComponentAlgorithm.h"
 #include "NetworkManager.h"
+#include "SVarCDefinitionAlgorithm.h"
+#include "ShuntDefinitionAlgorithm.h"
+#include "SlackNodeAlgorithm.h"
 #include "Tests.h"
 
 #include <DYNBusInterface.h>

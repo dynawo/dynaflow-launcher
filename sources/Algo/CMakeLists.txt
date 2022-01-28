@@ -1,4 +1,4 @@
-# Copyright (c) 2020, RTE (http://www.rte-france.com)
+# Copyright (c) 2020-2022, RTE (http://www.rte-france.com)
 # See AUTHORS.txt
 # All rights reserved.
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -8,7 +8,16 @@
 #
 
 set(SOURCES
-src/Algo.cpp
+src/ContingencyValidationAlgorithm.cpp
+src/DynModelDefinitionAlgorithm.cpp
+src/GeneratorDefinitionAlgorithm.cpp
+src/HVDCDefinitionAlgorithm.cpp
+src/LineDefinitionAlgorithm.cpp
+src/LoadDefinitionAlgorithm.cpp
+src/MainConnexComponentAlgorithm.cpp
+src/SVarCDefinitionAlgorithm.cpp
+src/ShuntDefinitionAlgorithm.cpp
+src/SlackNodeAlgorithm.cpp
 )
 
 add_library(algo ${LINK_TYPE} ${SOURCES})

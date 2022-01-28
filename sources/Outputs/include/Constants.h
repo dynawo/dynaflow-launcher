@@ -17,8 +17,7 @@
 
 #pragma once
 
-#include "Algo.h"
-
+#include <math.h>
 #include <limits>
 #include <string>
 
