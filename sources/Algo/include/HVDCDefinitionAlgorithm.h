@@ -83,7 +83,8 @@ class VSCDefinition {
 /**
  * @brief Hvdc line definition for algorithms
  */
-struct HVDCDefinition {
+class HVDCDefinition {
+ public:
   using ConverterId = std::string;                        ///< alias for converter id
   using BusId = std::string;                              ///< alias for bus id
   using HvdcLineId = std::string;                         ///< HvdcLine id definition
