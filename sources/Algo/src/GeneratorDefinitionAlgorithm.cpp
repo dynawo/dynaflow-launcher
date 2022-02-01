@@ -127,7 +127,7 @@ GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr&
   }
 
   for (const auto& id : buses) {
-    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& node) { return node->id == id; });
+    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
 #ifdef _DEBUG_
     // shouldn't happen by construction of the elements
     assert(found != vl->nodes.end());

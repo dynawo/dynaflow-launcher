@@ -29,7 +29,8 @@ namespace algo {
 /**
  * @brief Generation definition for algorithm
  */
-struct GeneratorDefinition {
+class GeneratorDefinition {
+ public:
   /**
    * @brief Generator model type
    */

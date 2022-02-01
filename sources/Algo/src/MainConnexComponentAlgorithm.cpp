@@ -21,7 +21,7 @@ MainConnexComponentAlgorithm::updateConnexGroup(ConnexGroup& group, const std::v
     if (markedNodes_.count(node) == 0) {
       markedNodes_.insert(node);
       group.push_back(node);
-      updateConnexGroup(group, (node)->neighbours);
+      updateConnexGroup(group, node->neighbours);
     }
   }
 }

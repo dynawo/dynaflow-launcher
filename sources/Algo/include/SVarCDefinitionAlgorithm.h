@@ -95,8 +95,8 @@ struct StaticVarCompensatorDefinition {
 /// @brief Static var compensator algorithm
 class StaticVarCompensatorAlgorithm {
  public:
-  using SVarCDefinitions = std::vector<StaticVarCompensatorDefinition>;
-  using ModelType = StaticVarCompensatorDefinition::ModelType;
+  using SVarCDefinitions = std::vector<StaticVarCompensatorDefinition>;  ///< Alias for vector of SVC definitions
+  using ModelType = StaticVarCompensatorDefinition::ModelType;  ///< Alias for SVC model type
 
   /**
    * @brief Constructor

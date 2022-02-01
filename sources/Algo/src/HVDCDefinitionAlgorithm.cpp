@@ -95,7 +95,7 @@ HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine& hvdcl
   auto buses = serviceManager_->getBusesConnectedBySwitch(node->id, vl->id);
   HVDCModelDefinition::VSCBusPairSet ret;
   for (const auto& id : buses) {
-    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& node) { return node->id == id; });
+    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
     assert(found != vl->nodes.end());
     for (const auto& converter_ptr : (*found)->converters) {
       auto converter = converter_ptr.lock();
