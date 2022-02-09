@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "Configuration.h"
 #include "ContingenciesManager.h"
 #include "ContingencyValidationAlgorithm.h"
@@ -47,6 +48,8 @@ namespace dfl {
  */
 class Context {
  public:
+  using ProcessNodeCallBackMainComponent = std::function<void(const std::shared_ptr<inputs::Node>&,
+                              std::shared_ptr<dfl::algo::AlgorithmsResults>&)>;  ///< Callback for node algorithm on main topological island
   /// @brief The kind of simulation that is requested
   enum class SimulationKind {
     STEADY_STATE_CALCULATION = 0,  ///< A steady-state calculation
@@ -128,18 +131,18 @@ class Context {
   bool checkConnexity() const;
 
   /**
-   * @brief Register a callback to call at each node
+   * @brief Register a callback to call at each node of the main topological island
    *
    * @param cbk the callback to register
    */
-  void onNodeOnMainConnexComponent(inputs::NetworkManager::ProcessNodeCallback&& cbk) {
-    callbacksMainConnexComponent_.push_back(std::forward<inputs::NetworkManager::ProcessNodeCallback>(cbk));
+  void onNodeOnMainConnexComponent(ProcessNodeCallBackMainComponent&& cbk) {
+    callbacksMainConnexComponent_.push_back(std::forward<ProcessNodeCallBackMainComponent>(cbk));
   }
 
   /**
    * @brief Walk through all nodes in main connex components and apply callbacks
    */
-  void walkNodesMain() const;
+  void walkNodesMain();
 
   /**
    * @brief Filter partially connected dynamic models
@@ -159,7 +162,8 @@ class Context {
 
   /// @brief Prepare the output files required to simulate a given contingency
   /// @param contingency the contingency
-  void exportOutputsContingency(const inputs::Contingency& contingency);
+  void exportOutputsContingency(const inputs::Contingency& contingency,
+                              const std::unordered_set<std::string>& elementsNetworkType);
 
  private:
   ContextDef def_;                                         ///< context definition
@@ -169,7 +173,7 @@ class Context {
   const inputs::Configuration& config_;                    ///< configuration
 
   std::string basename_;                                                                   ///< basename for all files
-  std::vector<inputs::NetworkManager::ProcessNodeCallback> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
+  std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
 
   std::shared_ptr<inputs::Node> slackNode_;                                  ///< computed slack node
   SlackNodeOrigin slackNodeOrigin_;                                          ///< slack node origin
@@ -183,6 +187,7 @@ class Context {
   algo::ShuntCounterDefinitions counters_;                                   ///< shunt counters definitions
   algo::LinesByIdDefinitions linesById_;                                     ///< Lines by ids definition
   boost::optional<algo::ValidContingencies> validContingencies_;             ///< contingencies accepted for simulation in a Security Analyasis
+  std::shared_ptr<algo::AlgorithmsResults> algoResults_;                     ///< reference to algorithms results class
 
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies

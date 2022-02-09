@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "NetworkManager.h"
 #include "Node.h"
 
@@ -28,16 +29,39 @@ namespace algo {
 /**
  * @brief Load definition for algorithms
  */
-struct LoadDefinition {
+class LoadDefinition {
+ public:
   /**
-   * @brief Constructor
+   * @brief model type
+   *
+   */
+  enum class ModelType {
+    NETWORK = 0,               ///< Use network model
+    LOADRESTORATIVEWITHLIMITS  ///< Use load restorative model
+  };
+  /**
+   * @brief Construct a new Load Definition object
    *
    * @param loadId the load id
+   * @param modelType type of model used
    * @param nodeId the node id connected to the load
    */
-  explicit LoadDefinition(const inputs::Load::LoadId& loadId, const inputs::Node::NodeId& nodeId) : id{loadId}, nodeId{nodeId} {}
+  explicit LoadDefinition(const inputs::Load::LoadId& loadId, ModelType modelType, const inputs::Node::NodeId& nodeId) :
+      id{loadId},
+      modelType{modelType},
+      nodeId{nodeId} {}
+
+  /**
+   * @brief determines if the load model type is network
+   *
+   * @return true when model type is network
+   */
+  bool isNetwork() const {
+    return modelType == ModelType::NETWORK;
+  }
 
   inputs::Load::LoadId id;      ///< load id
+  ModelType modelType;          ///< model type
   inputs::Node::NodeId nodeId;  ///< connected node id
 };
 
@@ -63,8 +87,9 @@ class LoadDefinitionAlgorithm {
    * superior to dsoVoltageLevel, otherwise the load is ignored and is handled by the default dynawo behavior
    *
    * @param node the node to process
+   * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node);
+  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
 
  private:
   Loads& loads_;            ///< the loads to update

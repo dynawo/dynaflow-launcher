@@ -197,7 +197,7 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
 }
 
 void
-HVDCDefinitionAlgorithm::operator()(const NodePtr& node) {
+HVDCDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
   for (const auto& converterPtr : node->converters) {
     auto converter = converterPtr.lock();
     const auto& hvdcLine = converter->hvdcLine;

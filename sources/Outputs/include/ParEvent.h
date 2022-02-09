@@ -50,23 +50,27 @@ class ParEvent {
    */
   struct ParEventDefinition {
     /**
-     * @brief Constructor
+     * @brief Construct a new Par Event Definition object
      *
      * @param base basename for current simulation
      * @param filename file path for output PAR file (corresponds to basename)
      * @param contingency contingency definition for the event parameters
+     * @param networkElements set of contingency elements ids using network model
      * @param timeOfEvent time of event
      */
-    ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency, const std::chrono::seconds& timeOfEvent) :
+    ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency,
+                       const std::unordered_set<std::string>& networkElements, const std::chrono::seconds& timeOfEvent) :
         basename(base),
         filename(filename),
         contingency(contingency),
+        networkElements_(networkElements),
         timeOfEvent(timeOfEvent) {}
 
-    std::string basename;                    ///< basename
-    std::string filename;                    ///< filename of the output file to write
-    const inputs::Contingency& contingency;  ///< contingency definition for the event parameters
-    std::chrono::seconds timeOfEvent;        ///< time of event
+    std::string basename;                                    ///< basename
+    std::string filename;                                    ///< filename of the output file to write
+    const inputs::Contingency& contingency;                  ///< contingency definition for the event parameters
+    const std::unordered_set<std::string> networkElements_;  ///< set of contingency elements ids using network model
+    std::chrono::seconds timeOfEvent;                        ///< time of event
   };
 
   /**
@@ -113,6 +117,15 @@ class ParEvent {
    */
   static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId,
                                                                                           const std::chrono::seconds& timeOfEvent);
+
+  /**
+   * @brief Determines if contingency element is using a network cpp model
+   *
+   * @param elementId static identifier of the equipment
+   *
+   * @returns true if contingency element is using a network cpp model
+   */
+  bool isNetwork(const std::string& elementId) const;
 
  private:
   ParEventDefinition def_;  ///< PAR event file definition

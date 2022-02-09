@@ -50,9 +50,8 @@ NetworkManager::NetworkManager(const boost::filesystem::path& filepath) :
   buildTree();
 }
 
-auto
-NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface)
-    -> BusId {
+void
+NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface) {
   auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(elementId)->getID();
   auto it = map.find(regulatedBus);
   if (it == map.end()) {
@@ -60,7 +59,6 @@ NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::strin
   } else {
     it->second = NbOfRegulating::MULTIPLES;
   }
-  return regulatedBus;
 }
 
 void
@@ -131,14 +129,18 @@ NetworkManager::buildTree() {
       auto targetP = generator->getTargetP();
       auto pmin = generator->getPMin();
       auto pmax = generator->getPMax();
-      if (generator->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) &&
-          (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
-        // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
-        auto regulated_bus = updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
-        nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin,
-                                                pmax, targetP, regulated_bus, nodeid);
-        LOG(debug, NodeContainsGen, nodeid, generator->getID());
+      auto regulated_bus = interface_->getServiceManager()->getRegulatedBus(generator->getID())->getID();
+      // we verify here that the generators is in voltage regulation to properly fill the map mapBusGeneratorBusId_.
+      // This test is done also on algorithms.
+      // The reason it is checked also here is to avoid to go through all the nodes later on
+      if (generator->isVoltageRegulationOn()) {
+        // We don't use dynamic models for generators with voltage regulation disabled
+        updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
       }
+      nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
+                                                generator->getQMin(), generator->getQMax(), pmin,
+                                                pmax, targetP, regulated_bus, nodeid);
+      LOG(debug, NodeContainsGen, nodeid, generator->getID());
     }
 
     const auto& switches = networkVL->getSwitches();
@@ -162,13 +164,12 @@ NetworkManager::buildTree() {
       if (!svarc->getInitialConnected()) {
         continue;
       }
-      if (svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::OFF ||
-          svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q) {
-        continue;
-      }
       auto nodeid = svarc->getBusInterface()->getID();
+      const bool isRegulatingVoltage = (svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::OFF ||
+          svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q) ? false : true;
       auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(svarc->getID());
-      nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), svarc->getBMin(), svarc->getBMax(), svarc->getVSetPoint(), svarc->getVNom(),
+      const double voltageSetPoint = isRegulatingVoltage ? svarc->getVSetPoint() : 0.;
+      nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), isRegulatingVoltage, svarc->getBMin(), svarc->getBMax(), voltageSetPoint, svarc->getVNom(),
                                           svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
                                           svarc->getB0(), svarc->getSlope(), svarc->hasStandbyAutomaton(), svarc->hasVoltagePerReactivePowerControl(),
                                           regulatedBus->getID(), nodeid, regulatedBus->getVNom());

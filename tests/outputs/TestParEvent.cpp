@@ -36,9 +36,18 @@ TEST(TestParEvent, write) {
   contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                       // buildBranchDisconnection (branch case)
   contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                 // buildEventSetPointBooleanDisconnection
   contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);  // buildEventSetPointRealDisconnection (general case)
+  contingency.elements.emplace_back("TestGeneratorNetwork", ElementType::GENERATOR);          // network disconnection
+  contingency.elements.emplace_back("TestLoadNetwork", ElementType::LOAD);                    // network disconnection
+  contingency.elements.emplace_back("TestStaticVarCompensatorNetwork", ElementType::STATIC_VAR_COMPENSATOR);  // network disconnection
+
+  std::unordered_set<std::string> networkElements;
+  networkElements.insert("TestGeneratorNetwork");
+  networkElements.insert("TestLoadNetwork");
+  networkElements.insert("TestStaticVarCompensatorNetwork");
 
   outputPath.append(filename);
-  dfl::outputs::ParEvent par(dfl::outputs::ParEvent::ParEventDefinition(basename, outputPath.generic_string(), contingency, std::chrono::seconds(80)));
+  dfl::outputs::ParEvent par(
+      dfl::outputs::ParEvent::ParEventDefinition(basename, outputPath.generic_string(), contingency, networkElements, std::chrono::seconds(80)));
   par.write();
 
   boost::filesystem::path reference("reference");

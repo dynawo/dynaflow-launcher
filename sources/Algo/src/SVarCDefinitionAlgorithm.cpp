@@ -18,24 +18,27 @@ namespace algo {
 StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(SVarCDefinitions& svarcs) : svarcs_(svarcs) {}
 
 void
-StaticVarCompensatorAlgorithm::operator()(const NodePtr& node) {
+StaticVarCompensatorAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
   const auto& svarcs = node->svarcs;
   for (const auto& svarc : svarcs) {
-    ModelType model = ModelType::SVARCPV;
-    auto hasRemoteRegulation = (svarc.connectedBusId != svarc.regulatedBusId);
-    if (svarc.hasStandByAutomaton) {
-      model = hasRemoteRegulation ? ModelType::SVARCPVREMOTEMODEHANDLING : ModelType::SVARCPVMODEHANDLING;
-      if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
-        model = hasRemoteRegulation ? ModelType::SVARCPVPROPREMOTEMODEHANDLING : ModelType::SVARCPVPROPMODEHANDLING;
-      }
-    } else {
-      model = hasRemoteRegulation ? ModelType::SVARCPVREMOTE : ModelType::SVARCPV;
-      if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
-        model = hasRemoteRegulation ? ModelType::SVARCPVPROPREMOTE : ModelType::SVARCPVPROP;
+    ModelType model = ModelType::NETWORK;
+    if (svarc.isRegulatingVoltage) {
+      model = ModelType::SVARCPV;
+      bool hasRemoteRegulation = (svarc.connectedBusId != svarc.regulatedBusId);
+      if (svarc.hasStandByAutomaton) {
+        model = hasRemoteRegulation ? ModelType::SVARCPVREMOTEMODEHANDLING : ModelType::SVARCPVMODEHANDLING;
+        if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
+          model = hasRemoteRegulation ? ModelType::SVARCPVPROPREMOTEMODEHANDLING : ModelType::SVARCPVPROPMODEHANDLING;
+        }
+      } else {
+        model = hasRemoteRegulation ? ModelType::SVARCPVREMOTE : ModelType::SVARCPV;
+        if (svarc.hasVoltagePerReactivePowerControl && !DYN::doubleIsZero(svarc.slope)) {
+          model = hasRemoteRegulation ? ModelType::SVARCPVPROPREMOTE : ModelType::SVARCPVPROP;
+        }
       }
     }
     svarcs_.emplace_back(svarc.id, model, svarc.bMin, svarc.bMax, svarc.voltageSetPoint, svarc.UNom, svarc.UMinActivation, svarc.UMaxActivation,
-                        svarc.USetPointMin, svarc.USetPointMax, svarc.b0, svarc.slope, svarc.UNomRemote);
+                         svarc.USetPointMin, svarc.USetPointMax, svarc.b0, svarc.slope, svarc.UNomRemote);
   }
 }
 

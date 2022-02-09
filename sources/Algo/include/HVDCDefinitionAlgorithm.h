@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "HvdcLine.h"
 #include "NetworkManager.h"
 #include "Node.h"
@@ -260,8 +261,9 @@ class HVDCDefinitionAlgorithm {
    * Pre-condition: the nodes used as parameter of this operator should be nodes of the main connex component only
    *
    * @param node the node to process
+   * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node);
+  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
 
  private:
   /// @brief HVDC model definition

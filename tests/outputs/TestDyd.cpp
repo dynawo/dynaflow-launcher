@@ -20,7 +20,6 @@ testing::Environment* const env = initXmlEnvironment();
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;
-
   std::string basename = "TestDyd";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -32,13 +31,17 @@ TEST(Dyd, write) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  std::vector<LoadDefinition> loads = {LoadDefinition("L0", "00"), LoadDefinition("L1", "01"), LoadDefinition("L2", "02"), LoadDefinition("L3", "03")};
+  std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
+                                       LoadDefinition("L1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "01"),
+                                       LoadDefinition("L2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "02"),
+                                       LoadDefinition("L3", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "03")};
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
@@ -171,7 +174,10 @@ TEST(Dyd, writeDynamicModel) {
       dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
 
-  std::vector<LoadDefinition> loads = {LoadDefinition("L0", "00"), LoadDefinition("L1", "01"), LoadDefinition("L2", "02"), LoadDefinition("L3", "03")};
+  std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
+                                       LoadDefinition("L1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "01"),
+                                       LoadDefinition("L2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "02"),
+                                       LoadDefinition("L3", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "03")};
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
@@ -225,6 +231,8 @@ TEST(Dyd, writeStaticVarCompensator) {
       StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
       0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
       StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK,
       0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
   };
 
@@ -259,8 +267,9 @@ TEST(Dyd, writeLoad) {
   }
 
   std::vector<LoadDefinition> loads {
-    LoadDefinition("LOAD1", "Slack"),
-    LoadDefinition("LOAD2", "Slack")
+    LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+    LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+    LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")
   };
 
 
