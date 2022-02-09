@@ -12,6 +12,9 @@ DicoKeys.*
 tests/**/resultsTestsTmp/**
 results/
 myEnvDFL.sh
+sources/Common/include/*_keys.h
+sources/Common/src/*_keys.cpp
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode

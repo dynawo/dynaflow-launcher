@@ -98,6 +98,8 @@ list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share")
 list(APPEND CMAKE_PREFIX_PATH "${DYNAWO_HOME}/share/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${DYNAWO_HOME}/share/cmake")
+find_path(Dynawo_SBIN_DIR NAME buildChecker.py HINTS ${DYNAWO_HOME}/sbin NO_DEFAULT_PATH)
+mark_as_advanced(Dynawo_SBIN_DIR)
 
 # Dynawo algorithms
 check_env_var(DYNAWO_ALGORITHMS_HOME) # Correspond to deploy installation

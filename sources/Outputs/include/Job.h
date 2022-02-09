@@ -36,7 +36,8 @@ class Job {
   /**
    * @brief Job definition on DFL point of view
    */
-  struct JobDefinition {
+  class JobDefinition {
+   public:
     using Seconds = std::chrono::seconds;  ///< Alias for seconds
 
     /**

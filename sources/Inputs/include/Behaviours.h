@@ -89,7 +89,8 @@ class HvdcLine;
 /**
  * @brief Converter behaviour
  */
-struct Converter {
+class Converter {
+ public:
   using ConverterId = std::string;  ///< alias for id
   using BusId = std::string;        ///< alias for bus id
 
@@ -115,7 +116,8 @@ struct Converter {
 };
 
 /// @brief LCC converter
-struct LCCConverter : public Converter {
+class LCCConverter : public Converter {
+ public:
   /**
    * @brief Constructor
    *
@@ -133,6 +135,7 @@ struct LCCConverter : public Converter {
 
 /// @brief VSC converter
 struct VSCConverter : public Converter {
+ public:
   using ReactiveCurvePoint = DYN::VscConverterInterface::ReactiveCurvePoint;  ///< alias for point type
 
   /**

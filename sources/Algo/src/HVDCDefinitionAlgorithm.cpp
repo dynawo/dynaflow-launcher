@@ -9,8 +9,9 @@
 //
 
 #include "HVDCDefinitionAlgorithm.h"
+
 #include "Log.h"
-#include "Message.hpp"
+
 #include <DYNCommon.h>
 
 namespace dfl {
@@ -212,7 +213,7 @@ HVDCDefinitionAlgorithm::operator()(const NodePtr& node) {
     } else if (converter->converterId == hvdcLine->converter2->converterId) {
       hvdcLineDefinition.position = HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT;
     } else {
-      LOG(error) << MESS(HvdcLineBadInitialization, hvdcLine->id) << LOG_ENDL;
+      LOG(warn, HvdcLineBadInitialization, hvdcLine->id);
       continue;
     }
 

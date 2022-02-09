@@ -18,7 +18,6 @@
 #include "ContingenciesManager.h"
 
 #include "Log.h"
-#include "Message.hpp"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -63,25 +62,23 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
      * }
      */
 
-    LOG(info) << MESS(ContingenciesReadingFrom, filepath) << LOG_ENDL;
+    LOG(info, ContingenciesReadingFrom, filepath.c_str());
     contingencies_.reserve(tree.get_child("contingencies").size());
     for (const auto& contingencyPtree : tree.get_child("contingencies")) {
       const auto& contingencyId = contingencyPtree.second.get<std::string>("id");
-      LOG(debug) << "Contingency " << contingencyId << LOG_ENDL;
 
       Contingency contingency(contingencyId);
       bool valid = true;
       for (const auto& elementPtree : contingencyPtree.second.get_child("elements")) {
         const auto& elementId = elementPtree.second.get<std::string>("id");
         const auto& elementTypeStr = elementPtree.second.get<std::string>("type");
-        LOG(debug) << "Contingency element " << elementId << " (" << elementTypeStr << ")" << LOG_ENDL;
 
         const auto elementType = ContingencyElement::typeFromString(elementTypeStr);
         if (elementType) {
           contingency.elements.emplace_back(elementId, *elementType);
         } else {
           valid = false;
-          LOG(warn) << MESS(ContingencyInvalidBadElemType, contingency.id, elementId, elementTypeStr) << LOG_ENDL;
+          LOG(warn, ContingencyInvalidBadElemType, contingency.id, elementId, elementTypeStr);
         }
       }
       if (valid) {
@@ -89,8 +86,7 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
       }
     }
   } catch (std::exception& e) {
-    LOG(error) << MESS(ContingenciesReadError, filepath, e.what()) << LOG_ENDL;
-    std::exit(EXIT_FAILURE);
+    throw Error(ContingenciesReadError, filepath.c_str(), e.what());
   }
 }
 

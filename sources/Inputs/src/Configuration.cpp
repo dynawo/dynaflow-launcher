@@ -18,7 +18,6 @@
 #include "Configuration.h"
 
 #include "Log.h"
-#include "Message.hpp"
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -62,7 +61,7 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
   if (it != enumResolver.end()) {
     activePowerCompensation = it->second;
   } else if (!apcString.empty()) {
-    LOG(warn) << MESS(BadActivePowerCompensation, apcString) << LOG_ENDL;
+    LOG(warn, BadActivePowerCompensation, apcString);
   }
 }
 
@@ -121,8 +120,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(numberOfThreads_, config, "sa.NumberOfThreads");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
-    LOG(error) << "Error while reading configuration file: " << e.what() << LOG_ENDL;
-    std::exit(EXIT_FAILURE);
+    throw Error(ErrorConfigFileRead, e.what());
   }
 }
 }  // namespace inputs

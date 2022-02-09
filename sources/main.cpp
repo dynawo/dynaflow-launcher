@@ -10,9 +10,7 @@
 #include "Configuration.h"
 #include "Context.h"
 #include "Contingencies.h"
-#include "Dico.h"
 #include "Log.h"
-#include "Message.hpp"
 #include "Options.h"
 #include "version.h"
 
@@ -24,8 +22,6 @@
 #include <cstdlib>
 #include <sstream>
 
-static const char* dictPrefix = "DFLMessages_";
-
 static std::string
 getMandatoryEnvVar(const std::string& key) {
   char* var = getenv(key.c_str());
@@ -33,8 +29,7 @@ getMandatoryEnvVar(const std::string& key) {
     return std::string(var);
   } else {
     // we cannot use dictionnary errors since they may not be initialized yet
-    LOG(error) << "Cannot find environnement variable " << key << " : please check runtime environement" << LOG_ENDL;
-    std::exit(EXIT_FAILURE);
+    throw Error(EnvVariableMissing, key);
   }
 }
 
@@ -46,6 +41,8 @@ initializeDynawo(const std::string& locale) {
   dicos.addDico("TIMELINE", "DYNTimeline", locale);
   dicos.addDico("CONSTRAINT", "DYNConstraint", locale);
   dicos.addDico("LOG", "DYNLog", locale);
+  dicos.addDico("DFLLOG", "DFLLog", locale);
+  dicos.addDico("DFLERROR", "DFLError", locale);
 }
 
 static inline double
@@ -65,64 +62,52 @@ getSimulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfi
 
 int
 main(int argc, char* argv[]) {
+  DYN::InitXerces xerces;
+  DYN::InitLibXml2 libxml2;
+  auto timeStart = std::chrono::steady_clock::now();
+  boost::shared_ptr<dfl::Context> context;
+  DYN::Trace::init();
+  dfl::common::Options options;
+
+  auto parsing_status = options.parse(argc, argv);
+
+  if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
+    DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << options.desc() << DYN::Trace::endline;
+    return EXIT_SUCCESS;
+  }
+  if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
+    DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
+    return EXIT_SUCCESS;
+  }
+
+  auto& runtimeConfig = options.config();
+  dfl::inputs::Configuration config(boost::filesystem::path(runtimeConfig.configPath));
   try {
-    auto timeStart = std::chrono::steady_clock::now();
-    DYN::Trace::init();
-    dfl::common::Options options;
-
-    auto parsing_status = options.parse(argc, argv);
-
-    if (!std::get<0>(parsing_status) || std::get<1>(parsing_status) == dfl::common::Options::Request::HELP) {
-      LOG(info) << options.desc() << LOG_ENDL;
-      return EXIT_SUCCESS;
-    }
-    if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
-      LOG(info) << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
-      return EXIT_SUCCESS;
-    }
-
-    auto& runtimeConfig = options.config();
-    dfl::inputs::Configuration config(boost::filesystem::path(runtimeConfig.configPath));
     dfl::common::Log::init(options, config.outputDir().generic_string());
-    LOG(info) << " ============================================================ " << LOG_ENDL;
-    LOG(info) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << LOG_ENDL;
-    LOG(info) << " ============================================================ " << LOG_ENDL;
+    DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag)
+        << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
+    DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
 
-    auto res = boost::filesystem::path(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
     std::string root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
     std::string locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
-    boost::filesystem::path dictPath(root);
-    dictPath.append("etc");
-    std::string dict = dictPrefix + locale + ".dic";
-    dictPath.append(dict);
-
-    if (!boost::filesystem::is_regular_file(dictPath)) {
-      // we cannot use dictionnary errors since they are not be initialized yet
-      std::cerr << "Dictionary " << dictPath << " not found: check runtime environment" << std::endl;
-      return EXIT_FAILURE;
-    }
-
-    dfl::common::Dico::configure(dictPath.c_str());
+    auto res = boost::filesystem::path(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
     initializeDynawo(locale);
 
     if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
-      LOG(error) << MESS(NetworkFileNotFound, runtimeConfig.networkFilePath) << LOG_ENDL;
-      return EXIT_FAILURE;
+      throw Error(NetworkFileNotFound, runtimeConfig.networkFilePath);
     }
     if (!runtimeConfig.contingenciesFilePath.empty() && !boost::filesystem::exists(boost::filesystem::path(runtimeConfig.contingenciesFilePath))) {
-      LOG(error) << MESS(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath) << LOG_ENDL;
-      return EXIT_FAILURE;
+      throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
-    DYN::InitXerces xerces;
-    DYN::InitLibXml2 libxml2;
 
     auto simulationKind = getSimulationKind(runtimeConfig);
     switch (simulationKind) {
     case dfl::Context::SimulationKind::STEADY_STATE_CALCULATION:
-      LOG(info) << MESS(SteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath) << LOG_ENDL;
+      LOG(info, SteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath);
       break;
     case dfl::Context::SimulationKind::SECURITY_ANALYSIS:
-      LOG(info) << MESS(SecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath) << LOG_ENDL;
+      LOG(info, SecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath);
       break;
     }
 
@@ -138,57 +123,84 @@ main(int argc, char* argv[]) {
                                  parFilesDir,
                                  res,
                                  locale};
-    dfl::Context context(def, config);
+    context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config));
 
-    if (!context.process()) {
-      LOG(info) << MESS(InitEnd, elapsed(timeStart)) << LOG_ENDL;
-      LOG(error) << MESS(ContextProcessError, context.basename()) << LOG_ENDL;
-      return EXIT_FAILURE;
+    if (!context->process()) {
+      LOG(info, InitEnd, elapsed(timeStart));
+      throw Error(ContextProcessError, context->basename());
     }
-    LOG(info) << MESS(InitEnd, elapsed(timeStart)) << LOG_ENDL;
+    LOG(info, InitEnd, elapsed(timeStart));
 
     auto timeFilesStart = std::chrono::steady_clock::now();
-    context.exportOutputs();
-    LOG(info) << MESS(FilesEnd, elapsed(timeFilesStart)) << LOG_ENDL;
+    context->exportOutputs();
+    LOG(info, FilesEnd, elapsed(timeFilesStart));
+  } catch (DYN::Error& e) {
+    std::cerr << "Initialization failed: " << e.what() << std::endl;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    return EXIT_FAILURE;
+  } catch (DYN::MessageError& e) {
+    std::cerr << "Initialization failed: " << e.what() << std::endl;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    return EXIT_FAILURE;
+  } catch (std::exception& e) {
+    std::cerr << "Initialization failed: " << e.what() << std::endl;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    return EXIT_FAILURE;
+  } catch (...) {
+    std::cerr << "Initialization failed" << std::endl;
+    std::cerr << "Unknown error" << std::endl;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Unknown error" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    return EXIT_FAILURE;
+  }
 
+  try {
     auto timeSimuStart = std::chrono::steady_clock::now();
-    context.execute();
+    context->execute();
 
-    LOG(info) << MESS(SimulationEnded, context.basename(), elapsed(timeSimuStart)) << LOG_ENDL;
-    LOG(info) << " ============================================================ " << LOG_ENDL;
-    LOG(info) << MESS(DFLEnded, context.basename(), elapsed(timeStart)) << LOG_ENDL;
+    LOG(info, SimulationEnded, context->basename(), elapsed(timeSimuStart));
+    DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    LOG(info, DFLEnded, context->basename(), elapsed(timeStart));
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Simulation failed" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Dynawo: " << e.what() << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Dynawo: " << e.what() << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << "Dynawo: " << e.what() << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Simulation failed" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Dynawo: " << e.what() << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     return EXIT_FAILURE;
   } catch (std::exception& e) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << e.what() << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << e.what() << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Simulation failed" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << e.what() << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "Simulation failed" << std::endl;
     std::cerr << "Unknown error" << std::endl;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
-    LOG(error) << "Simulation failed" << LOG_ENDL;
-    LOG(error) << "Unknown error" << LOG_ENDL;
-    LOG(error) << " ============================================================ " << LOG_ENDL;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Simulation failed" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << "Unknown error" << DYN::Trace::endline;
+    DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     return EXIT_FAILURE;
   }
 }
