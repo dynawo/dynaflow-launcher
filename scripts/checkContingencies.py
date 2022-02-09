@@ -20,6 +20,7 @@ def check_test_contingencies(tests_path, test_name):
 
 def check_contingencies(contingencies_file, results_folder):
     all_ok = True
+    buildType = os.getenv("DYNAFLOW_LAUNCHER_BUILD_TYPE")
 
     for (contingency_id, contingency_elements) in load_contingencies(contingencies_file):
         dyd_file  = os.path.join(results_folder ,'TestIIDM_launch-' + contingency_id + '.dyd')
@@ -27,7 +28,11 @@ def check_contingencies(contingencies_file, results_folder):
         timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.log')
         finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
 
-        print("Checking contingency " + contingency_id);
+        print("Checking contingency " + contingency_id)
+        c_dyd = True
+        c_par = True
+        c_timeline = True
+        c_finalState = True
         if os.path.isdir(os.path.join(results_folder , contingency_id)):
             # This is a valid contingency, check that every file exists and
             # conforms to what we expect
@@ -35,7 +40,8 @@ def check_contingencies(contingencies_file, results_folder):
                 # Let's check them ahead, so that 'and' doesn't shortcut
                 c_dyd        = check_file_with(check_dyd,                     "Dyd",        dyd_file, element, contingency_id)
                 c_par        = check_file_with(check_par,                     "Par",        par_file, element, contingency_id)
-                c_timeline   = check_file_with(check_timeline,           "Timeline",   timeline_file, element, contingency_id)
+                if buildType == "Debug":
+                    c_timeline   = check_file_with(check_timeline,           "Timeline",   timeline_file, element, contingency_id)
                 c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
                 print("  check dyd         : {}".format(c_dyd))
                 print("  check par         : {}".format(c_par))
@@ -169,5 +175,8 @@ def get_argparser():
 if __name__ == '__main__':
     parser = get_argparser()
     options = parser.parse_args()
+    if os.getenv("DYNAFLOW_LAUNCHER_BUILD_TYPE") is None:
+        print("[ERROR] environment variable DYNAFLOW_LAUNCHER_BUILD_TYPE needs to be defined")
+        exit(1)
 
     sys.exit(check_test_contingencies(options.root, options.test))
