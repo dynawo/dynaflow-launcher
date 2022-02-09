@@ -57,6 +57,15 @@
       ]
     },
     {
+      "id": "generator_network_contingency",
+      "elements": [
+        {
+          "id": "_046bf0c4-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
       "id": "shunt_compensator_contingency",
       "elements": [
         {
@@ -178,6 +187,15 @@
       "elements" : [
         {
           "id" : "_047fc6e6-c766-11e1-8775-005056c00008",
+          "type" : "STATIC_VAR_COMPENSATOR"
+        }
+      ]
+    },
+    {
+      "id" : "static_var_compensator_network_contingency",
+      "elements" : [
+        {
+          "id" : "_svc_network",
           "type" : "STATIC_VAR_COMPENSATOR"
         }
       ]

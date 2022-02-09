@@ -314,14 +314,15 @@ TEST(Generators, base) {
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
   const std::string bus3 = "BUS_3";
+  const std::string bus4 = "BUS_4";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
       dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
       dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "0", points, -1, 1, -1, 1, 0,
                                      bus1),  // multiple generators on the same node
       dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3),
-  };
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
       dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
@@ -329,25 +330,28 @@ TEST(Generators, base) {
       dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points, -1, 1, -1, 1, 0,
                                      bus1),  // multiple generators on the same node
       dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3),
-  };
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "4", points, -5, 5, -5, 5, 0, bus3)};
 
-  nodes[0]->generators.emplace_back("00", points0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", points, -1, 1, -1, 1, 0, bus1, bus3);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, bus1, bus3);
 
-  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 0, bus2, bus2);
-
-  nodes[4]->generators.emplace_back("05", points, -5, 5, -5, 5, 0, bus3, bus2);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, bus2, bus2);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, bus3, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo_infinite(node, algoRes);
+  }
 
-  std::for_each(nodes.begin(), nodes.end(), algo_infinite);
-
-  ASSERT_EQ(4, generators.size());
+  ASSERT_EQ(5, generators.size());
+  ASSERT_TRUE(algoRes->isAtLeastOneGeneratorRegulating);
   for (size_t index = 0; index < generators.size(); ++index) {
     generatorsEquals(expected_gens_infinite[index], generators[index]);
     ASSERT_EQ(expected_gens_infinite[index].targetP, generators[index].targetP);
@@ -357,13 +361,55 @@ TEST(Generators, base) {
   busesWithDynamicModel.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
 
-  std::for_each(nodes.begin(), nodes.end(), algo_finite);
+  for (const auto& node : nodes) {
+    algo_finite(node, algoRes);
+  }
 
-  ASSERT_EQ(4, generators.size());
+  ASSERT_EQ(5, generators.size());
+  ASSERT_TRUE(algoRes->isAtLeastOneGeneratorRegulating);
   for (size_t index = 0; index < generators.size(); ++index) {
     generatorsEquals(expected_gens_finite[index], generators[index]);
     ASSERT_EQ(expected_gens_finite[index].targetP, generators[index].targetP);
   }
+}
+TEST(Generators, noGeneratorRegulating) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("0", vl, 0.0, {})};
+
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
+      {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
+
+  const std::string bus1 = "BUS_1";
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "0", points, 0, 0, 0, 0, 0, bus1)};
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "0", points, 0, 0, 0, 0, 0, bus1)};
+
+  nodes[0]->generators.emplace_back("01", false, points, 0, 0, 0, 0, 0, bus1, bus1);
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
+  dfl::inputs::NetworkManager::BusMapRegulating busMap;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo_infinite(node, algoRes);
+  }
+
+  ASSERT_EQ(1, generators.size());
+  ASSERT_FALSE(algoRes->isAtLeastOneGeneratorRegulating);
+
+  generators.clear();
+  busesWithDynamicModel.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
+
+  for (const auto& node : nodes) {
+    algo_finite(node, algoRes);
+  }
+
+  ASSERT_EQ(1, generators.size());
+  ASSERT_FALSE(algoRes->isAtLeastOneGeneratorRegulating);
 }
 
 TEST(Generators, SwitchConnexity) {
@@ -397,11 +443,11 @@ TEST(Generators, SwitchConnexity) {
       dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, -5, 5, -5, 5, 5, bus3),
   };
 
-  nodes[0]->generators.emplace_back("00", points0, -1, 1, -1, 1, 1, bus1, bus1);
+  nodes[0]->generators.emplace_back("00", true, points0, -1, 1, -1, 1, 1, bus1, bus1);
 
-  nodes[2]->generators.emplace_back("02", points, -2, 2, -2, 2, 2, bus2, bus2);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 2, bus2, bus2);
 
-  nodes[4]->generators.emplace_back("04", points, -5, 5, -5, 5, 5, bus3, bus3);
+  nodes[4]->generators.emplace_back("04", true, points, -5, 5, -5, 5, 5, bus3, bus3);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
@@ -409,7 +455,10 @@ TEST(Generators, SwitchConnexity) {
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
 
-  std::for_each(nodes.begin(), nodes.end(), algo_infinite);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo_infinite(node, algoRes);
+  }
 
   ASSERT_EQ(3, generators.size());
   for (size_t index = 0; index < generators.size(); ++index) {
@@ -419,6 +468,7 @@ TEST(Generators, SwitchConnexity) {
 
 TEST(Loads, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  using dfl::algo::LoadDefinition;
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
       dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
@@ -426,9 +476,10 @@ TEST(Loads, base) {
   };
 
   dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
-      dfl::algo::LoadDefinition("00", "0"),
-      dfl::algo::LoadDefinition("01", "0"),
-      dfl::algo::LoadDefinition("05", "4"),
+      LoadDefinition("00", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
+      LoadDefinition("01", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
+      LoadDefinition("02", LoadDefinition::ModelType::NETWORK, "2"),
+      LoadDefinition("05", LoadDefinition::ModelType::NETWORK, "4"),
   };
 
   nodes[0]->loads.emplace_back("00");
@@ -439,14 +490,18 @@ TEST(Loads, base) {
   nodes[4]->loads.emplace_back("05");
 
   dfl::algo::LoadDefinitionAlgorithm::Loads loads;
-  double dsoVoltageLevel = 45.0;
+  double dsoVoltageLevel = 63.0;
   dfl::algo::LoadDefinitionAlgorithm algo(loads, dsoVoltageLevel);
 
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo(node, algoRes);
+  }
 
-  ASSERT_EQ(3, loads.size());
+  ASSERT_EQ(4, loads.size());
   for (size_t index = 0; index < loads.size(); ++index) {
     ASSERT_EQ(expected_loads[index].id, loads[index].id);
+    ASSERT_EQ(expected_loads[index].modelType, loads[index].modelType);
   }
 }
 
@@ -508,8 +563,10 @@ TEST(HvdcLine, base) {
   dfl::inputs::NetworkManager::BusMapRegulating map;
   std::unordered_set<std::shared_ptr<dfl::inputs::Converter>> set{vscStation2};
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, map, testServiceManager);
-
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo(node, algoRes);
+  }
 
   const auto& hvdcLines = hvdcDefs.hvdcLines;
   ASSERT_EQ(3, hvdcLines.size());
@@ -631,8 +688,10 @@ TEST(hvdcLine, models) {
       vscStation7, vscStation8, vscStation9,  vscStation10, vscStation11, vscStation12,
   };
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, busMap, testServiceManager);
-
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo(node, algoRes);
+  }
 
   auto& hvdcLines = hvdcDefs.hvdcLines;
   ASSERT_EQ(hvdcLines.size(), 11);
@@ -655,7 +714,10 @@ TEST(hvdcLine, models) {
   // case diagrams
   useReactiveLimits = false;
   dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, set, busMap, testServiceManager);
-  std::for_each(nodes.begin(), nodes.end(), algo2);
+  for (const auto& node : nodes) {
+    algo2(node, algoRes);
+  }
+
   ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
@@ -678,21 +740,22 @@ testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> poin
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
-  Generator generator("G1", points, 3., 30., 33., 330., 100, bus1, bus2);
+  Generator generator("G1", true, points, 3., 30., 33., 330., 100, bus1, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {});
 
   const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
 
   node->generators.emplace_back(generator);
-  algo_infinite(node);
-  if (isDiagramValid) {
-    ASSERT_EQ(generators.size(), 1);
-  } else {
-    ASSERT_EQ(generators.size(), 0);
+  algo_infinite(node, algoRes);
+  ASSERT_EQ(generators.size(), 1);
+  if (!isDiagramValid) {
+    ASSERT_TRUE(generators.at(0).isNetwork());
+    ASSERT_EQ(generators.at(0).model, dfl::algo::GeneratorDefinition::ModelType::NETWORK);
   }
 }
 
@@ -822,14 +885,15 @@ TEST(SVARC, base) {
       dfl::inputs::Node::build("6", vl2, 0.0, {}),
   };
 
-  nodes[0]->svarcs.emplace_back("SVARC0", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, false, "0", "0", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC1", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, false, "0", "0", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC2", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, true, "0", "0", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC3", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, true, "0", "0", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC4", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, true, "0", "1", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC5", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, true, "0", "1", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC6", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, false, "0", "1", 1.);
-  nodes[0]->svarcs.emplace_back("SVARC7", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, false, "0", "1", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC0", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, false, "0", "0", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC1", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, false, "0", "0", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC2", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, true, "0", "0", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC3", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, true, "0", "0", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC4", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, true, "0", "1", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC5", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, true, "0", "1", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC6", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., false, false, "0", "1", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC7", true, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, false, "0", "1", 1.);
+  nodes[0]->svarcs.emplace_back("SVARC8", false, 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, false, "0", "1", 1.);
 
   using modelType = dfl::algo::StaticVarCompensatorDefinition::ModelType;
   dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions expected_svarcs = {
@@ -840,13 +904,16 @@ TEST(SVARC, base) {
       dfl::algo::StaticVarCompensatorDefinition("SVARC4", modelType::SVARCPVPROPREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
       dfl::algo::StaticVarCompensatorDefinition("SVARC5", modelType::SVARCPVPROPREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
       dfl::algo::StaticVarCompensatorDefinition("SVARC6", modelType::SVARCPVREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC7", modelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
+      dfl::algo::StaticVarCompensatorDefinition("SVARC7", modelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC8", modelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
 
   dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions svarcs;
   dfl::algo::StaticVarCompensatorAlgorithm algo(svarcs);
-
-  std::for_each(nodes.begin(), nodes.end(), algo);
-  ASSERT_EQ(8, svarcs.size());
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algo(node, algoRes);
+  }
+  ASSERT_EQ(9, svarcs.size());
   for (size_t index = 0; index < svarcs.size(); ++index) {
     ASSERT_EQ(expected_svarcs[index].id, svarcs[index].id);
     ASSERT_EQ(expected_svarcs[index].model, svarcs[index].model);
@@ -877,11 +944,21 @@ TEST(ContingencyValidation, base) {
       dfl::inputs::Node::build("8", vl2, 220.0, {}),
   };
 
-  nodes[3]->loads.emplace_back("LOAD");
+  dfl::algo::LoadDefinitionAlgorithm::Loads loads = {dfl::algo::LoadDefinition("LOAD", dfl::algo::LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "3"),
+                                                     dfl::algo::LoadDefinition("LOADNETWORK", dfl::algo::LoadDefinition::ModelType::NETWORK, "3")};
+
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
       {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
-  nodes[4]->generators.emplace_back("GENERATOR", points, 0, 0, 0, 0, 0, "4", "4");
-  nodes[6]->svarcs.emplace_back("SVARC", 0., 10., 100, 230, 215, 230, 235, 245, 10., 10., true, true, "6", "6", 220.0);
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators generators = {
+      dfl::algo::GeneratorDefinition("GENERATOR", dfl::algo::GeneratorDefinition::ModelType::SIGNALN, "4", points, 0, 0, 0, 0, 0, "4"),
+      dfl::algo::GeneratorDefinition("GENERATORNETWORK", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "4", points, 0, 0, 0, 0, 0, "4")};
+
+  dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions svarcs = {
+      dfl::algo::StaticVarCompensatorDefinition("SVARC", dfl::algo::StaticVarCompensatorDefinition::ModelType::SVARCPV, 0., 10., 230, 230, 215, 230, 235, 245,
+                                                0., 10, 230.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARCNETWORK", dfl::algo::StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 230, 230, 215, 230, 235,
+                                                245, 0., 10, 230.)};
+
   nodes[7]->danglingLines.emplace_back("DANGLINGLINE");
   nodes[8]->busBarSections.emplace_back("BUSBAR");
 
@@ -900,18 +977,21 @@ TEST(ContingencyValidation, base) {
   auto contingencies = std::vector<dfl::inputs::Contingency>();
 
   addContingency(contingencies, "load", "LOAD", Type::LOAD);
+  addContingency(contingencies, "loadnetwork", "LOADNETWORK", Type::LOAD);
   addContingency(contingencies, "load_bad_id", "XXX", Type::LOAD);
   addContingency(contingencies, "load_bad_type", "LOAD", Type::GENERATOR);
   addContingency(contingencies, "load_multiple_elements_one_bad", "LOAD", Type::LOAD);
   contingencies[contingencies.size() - 1].elements.emplace_back("XXX", Type::LINE);
 
   addContingency(contingencies, "generator", "GENERATOR", Type::GENERATOR);
+  addContingency(contingencies, "generatornetwork", "GENERATORNETWORK", Type::GENERATOR);
   addContingency(contingencies, "generator_bad_id", "XXX", Type::GENERATOR);
 
   addContingency(contingencies, "shunt_compensator", "SHUNT", Type::SHUNT_COMPENSATOR);
   addContingency(contingencies, "shunt_compensator_bad_id", "XXX", Type::SHUNT_COMPENSATOR);
 
   addContingency(contingencies, "static_var_compensator", "SVARC", Type::STATIC_VAR_COMPENSATOR);
+  addContingency(contingencies, "static_var_compensator_network", "SVARCNETWORK", Type::STATIC_VAR_COMPENSATOR);
   addContingency(contingencies, "static_var_compensator_bad_id", "XXX", Type::STATIC_VAR_COMPENSATOR);
 
   addContingency(contingencies, "dangling_line", "DANGLINGLINE", Type::DANGLING_LINE);
@@ -937,16 +1017,25 @@ TEST(ContingencyValidation, base) {
   addContingency(contingencies, "hvdcline_bad_id", "XXX", Type::HVDC_LINE);
 
   auto validContingencies = dfl::algo::ValidContingencies(contingencies);
-  auto algo = dfl::algo::ContingencyValidationAlgorithm(validContingencies);
+  auto algoOnInputs = dfl::algo::ContingencyValidationAlgorithmOnNodes(validContingencies);
 
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
+  for (const auto& node : nodes) {
+    algoOnInputs(node, algoRes);
+  }
+  auto algoOnDefs = dfl::algo::ContingencyValidationAlgorithmOnDefs(validContingencies);
+  algoOnDefs.fillValidContingenciesOnDefs(loads, generators, svarcs);
+
   validContingencies.keepContingenciesWithAllElementsValid();
 
   auto expectedValidContingencies = std::set<std::string>();
   expectedValidContingencies.emplace("load");
+  expectedValidContingencies.emplace("loadnetwork");
   expectedValidContingencies.emplace("generator");
+  expectedValidContingencies.emplace("generatornetwork");
   expectedValidContingencies.emplace("shunt_compensator");
   expectedValidContingencies.emplace("static_var_compensator");
+  expectedValidContingencies.emplace("static_var_compensator_network");
   expectedValidContingencies.emplace("dangling_line");
   expectedValidContingencies.emplace("busbarsection");
   expectedValidContingencies.emplace("line");
@@ -963,4 +1052,10 @@ TEST(ContingencyValidation, base) {
   }
 
   ASSERT_TRUE(expectedValidContingencies.empty());
+  auto elementsNetworkType = validContingencies.getNetworkElements();
+  ASSERT_EQ(elementsNetworkType.size(), 3);
+  ASSERT_FALSE(elementsNetworkType.find("LOAD") != elementsNetworkType.end());
+  ASSERT_TRUE(elementsNetworkType.find("LOADNETWORK") != elementsNetworkType.end());
+  ASSERT_TRUE(elementsNetworkType.find("GENERATORNETWORK") != elementsNetworkType.end());
+  ASSERT_TRUE(elementsNetworkType.find("SVARCNETWORK") != elementsNetworkType.end());
 }

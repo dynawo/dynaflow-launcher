@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "NetworkManager.h"
 #include "Node.h"
 
@@ -40,7 +41,8 @@ class GeneratorDefinition {
     REMOTE_SIGNALN,             ///< Use GeneratorPVRemoteSignalN
     REMOTE_DIAGRAM_PQ_SIGNALN,  ///< Use GeneratorPVRemoteDiagramPQSignalN
     PROP_SIGNALN,               ///< Use GeneratorPQPropSignalN
-    PROP_DIAGRAM_PQ_SIGNALN     ///< Use GeneratorPQPropDiagramPQSignalN
+    PROP_DIAGRAM_PQ_SIGNALN,    ///< Use GeneratorPQPropDiagramPQSignalN
+    NETWORK                     ///< Use network cpp model
   };
   using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< Alias for reactive curve point
   using BusId = std::string;                                               ///< alias of BusId
@@ -52,6 +54,15 @@ class GeneratorDefinition {
    */
   bool isUsingDiagram() const {
     return model == ModelType::DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN || model == ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+  }
+
+  /**
+   * @brief determines if the generator model type is network
+   *
+   * @return true when model type is network
+   */
+  bool isNetwork() const {
+    return model == ModelType::NETWORK;
   }
 
   /**
@@ -129,8 +140,9 @@ class GeneratorDefinitionAlgorithm {
    * generators, we fill the busesWithDynamicModel_ map. Each time we found a bus regulated by multiples generators we add in the
    * busesWithDynamicModel_ map an element mapping the regulated bus to a generator id that regulates that bus.
    * @param node the node to process
+   * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node);
+  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
 
  private:
   /**
@@ -151,6 +163,14 @@ class GeneratorDefinitionAlgorithm {
    * @returns @b true if another generator is connected, @b false if not
    */
   bool IsOtherGeneratorConnectedBySwitches(const NodePtr& node) const;
+
+  /**
+   * @brief determine if targetP of generator is initially in diagram
+   *
+   * @param generator reference to inputs generator
+   * @return true if targetP is initially in diagram
+   */
+  bool isTargetPValid(const inputs::Generator& generator) const;
 
   Generators& generators_;                                          ///< the generators list to update
   BusGenMap& busesWithDynamicModel_;                                ///< map of bus ids to a generator that regulates them

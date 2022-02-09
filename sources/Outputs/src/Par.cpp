@@ -172,6 +172,9 @@ Par::write() const {
   }
   // loop on generators
   for (const auto& generator : def_.generators) {
+    if (generator.isNetwork()) {
+      continue;
+    }
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
     if (!dynamicModelsToConnect->hasMacroParametersSet(helper::getMacroParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP))) &&
         generator.isUsingDiagram()) {
@@ -193,6 +196,9 @@ Par::write() const {
     dynamicModelsToConnect->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators());
   }
   for (const auto& svarc : def_.svarcsDefinitions) {
+    if (svarc.isNetwork()) {
+      continue;
+    }
     dynamicModelsToConnect->addParametersSet(writeStaticVarCompensator(svarc));
   }
 
@@ -383,6 +389,7 @@ Par::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensa
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
   case algo::GeneratorDefinition::ModelType::SIGNALN:
   case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::NETWORK:
     break;
   }
   return set;

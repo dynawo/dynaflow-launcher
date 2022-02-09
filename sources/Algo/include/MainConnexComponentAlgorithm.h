@@ -46,7 +46,7 @@ class MainConnexComponentAlgorithm {
    * For each node, we determine, by going through its neighbours, which other nodes are connexs
    * and we mark the ones we already processed to avoid processing them again.
    *
-   *  @brief node the node to process
+   * @brief node the node to process
    */
   void operator()(const NodePtr& node);
 

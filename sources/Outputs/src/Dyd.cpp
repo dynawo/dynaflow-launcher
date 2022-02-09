@@ -122,6 +122,9 @@ Dyd::write() const {
 
   // models and connections
   for (const auto& load : def_.loads) {
+    if (load.isNetwork()) {
+      continue;
+    }
     dynamicModelsToConnect->addModel(writeLoad(load, def_.basename));
     dynamicModelsToConnect->addMacroConnect(writeLoadConnect(load));
   }
@@ -130,6 +133,9 @@ Dyd::write() const {
     dynamicModelsToConnect->addModel(const_model);
   }
   for (const auto& generator : def_.generators) {
+    if (generator.isNetwork()) {
+      continue;
+    }
     dynamicModelsToConnect->addModel(writeGenerator(generator, def_.basename));
   }
   for (const auto& keyValue : def_.hvdcDefinitions.hvdcLines) {
@@ -152,6 +158,9 @@ Dyd::write() const {
     }
   }
   for (const auto& svarcRef : def_.svarcsDefs) {
+    if (svarcRef.isNetwork()) {
+      continue;
+    }
     dynamicModelsToConnect->addModel(writeSVarC(svarcRef, def_.basename));
     dynamicModelsToConnect->addMacroConnect(writeSVarCMacroConnect(svarcRef));
   }
@@ -161,6 +170,9 @@ Dyd::write() const {
   }
 
   for (auto it = def_.generators.cbegin(); it != def_.generators.cend(); ++it) {
+    if (it->isNetwork()) {
+      continue;
+    }
     writeGenConnect(dynamicModelsToConnect, *it);
     auto connections = writeGenMacroConnect(*it, static_cast<unsigned int>(it - def_.generators.cbegin()));
     for (const auto& connection : connections) {

@@ -53,6 +53,7 @@ struct Generator {
    * @brief Constructor
    *
    * @param genId the id of the generator
+   * @param isVoltageRegulationOn determines if generator is regulating voltage or not
    * @param curvePoints the list of reactive capabilities curve points
    * @param qmin minimum reactive power for the generator
    * @param qmax maximum reactive power for the generator
@@ -62,9 +63,11 @@ struct Generator {
    * @param regulatedBusId the Bus Id this generator is regulating
    * @param connectedBusId the Bus Id this generator is connected to
    */
-  explicit Generator(const GeneratorId& genId, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
-                     double targetP, const BusId& regulatedBusId, const BusId& connectedBusId) :
+  explicit Generator(const GeneratorId& genId, const bool isVoltageRegulationOn,
+                    const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
+                    double targetP, const BusId& regulatedBusId, const BusId& connectedBusId) :
       id{genId},
+      isVoltageRegulationOn{isVoltageRegulationOn},
       points(curvePoints),
       qmin{qmin},
       qmax{qmax},
@@ -75,6 +78,7 @@ struct Generator {
       connectedBusId{connectedBusId} {}
 
   GeneratorId id;                          ///< generator id
+  const bool isVoltageRegulationOn;        ///< determines if generator is regulating voltage or not
   std::vector<ReactiveCurvePoint> points;  ///< reactive points
   double qmin;                             ///< minimum reactive power
   double qmax;                             ///< maximum reactive power
@@ -172,6 +176,7 @@ struct StaticVarCompensator {
    * @brief Constructor
    *
    * @param id the id of the SVarC
+   * @param isRegulatingVoltage whether the SVarC is regulating the voltage
    * @param bMin the minimum susceptance value for the variable susceptance of the SVarC
    * @param bMax the maximum susceptance value for the variable susceptance of the SVarC
    * @param voltageSetPoint the voltage set point of the SVarC
@@ -188,10 +193,12 @@ struct StaticVarCompensator {
    * @param connectedBusId connected Bus Id
    * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
-  StaticVarCompensator(const SVarCid& id, double bMin, double bMax, double voltageSetPoint, double UNom, double UMinActivation, double UMaxActivation,
+  StaticVarCompensator(const SVarCid& id, const bool isRegulatingVoltage, double bMin, double bMax, double voltageSetPoint,
+                       double UNom, double UMinActivation, double UMaxActivation,
                        double USetPointMin, double USetPointMax, double b0, double slope, bool hasStandByAutomaton, bool hasVoltagePerReactivePowerControl,
                        const BusId& regulatedBusId, const BusId& connectedBusId, double UNomRemote) :
       id(id),
+      isRegulatingVoltage(isRegulatingVoltage),
       bMin(bMin),
       bMax(bMax),
       voltageSetPoint(voltageSetPoint),
@@ -209,6 +216,7 @@ struct StaticVarCompensator {
       UNomRemote(UNomRemote) {}
 
   const SVarCid id;                              ///< the id of the SVarC
+  const bool isRegulatingVoltage;                ///< whether the SVarC is regulating the voltage
   const double bMin;                             ///< the minimum susceptance value for the variable susceptance of the SVarC
   const double bMax;                             ///< the maximum susceptance value for the variable susceptance of the SVarC
   const double voltageSetPoint;                  ///< the voltage set point of the SVarC

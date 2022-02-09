@@ -3,7 +3,7 @@
       "InfiniteReactiveLimits": "true",
       "AutomaticSlackBusOn": "true",
       "OutputDir": "resultsTestsTmp/launch",
-      "DsoVoltageLevel": 3.0,
+      "DsoVoltageLevel": 133.0,
       "sa": {
           "NumberOfThreads": 6
       }

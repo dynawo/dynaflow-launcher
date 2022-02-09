@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "Node.h"
 
 namespace dfl {
@@ -27,7 +28,8 @@ namespace algo {
 /**
  * @brief StaticVarCompensator definition for algorithm
  */
-struct StaticVarCompensatorDefinition {
+class StaticVarCompensatorDefinition {
+ public:
   /**
    * @brief StaticVarCompensator model type
    */
@@ -39,7 +41,8 @@ struct StaticVarCompensatorDefinition {
     SVARCPVPROP,
     SVARCPVPROPMODEHANDLING,
     SVARCPVPROPREMOTE,
-    SVARCPVPROPREMOTEMODEHANDLING
+    SVARCPVPROPREMOTEMODEHANDLING,
+    NETWORK
   };
   /**
    * @brief Constructor
@@ -58,11 +61,9 @@ struct StaticVarCompensatorDefinition {
    * @param slope the slope (kV/MVar) of the SVarC voltage regulation
    * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
-  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& svcId, ModelType modelType,
-                                const double bMin, const double bMax, const double voltageSetPoint,
-                                const double UNom, const double UMinActivation, const double UMaxActivation,
-                                const double USetPointMin, const double USetPointMax, const double b0,
-                                const double slope, const double UNomRemote) :
+  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& svcId, ModelType modelType, const double bMin, const double bMax,
+                                 const double voltageSetPoint, const double UNom, const double UMinActivation, const double UMaxActivation,
+                                 const double USetPointMin, const double USetPointMax, const double b0, const double slope, const double UNomRemote) :
       id{svcId},
       model{modelType},
       bMin{bMin},
@@ -77,26 +78,35 @@ struct StaticVarCompensatorDefinition {
       slope{slope},
       UNomRemote{UNomRemote} {}
 
+  /**
+   * @brief determines if the svc model type is network
+   *
+   * @return true when model type is network
+   */
+  bool isNetwork() const {
+    return model == ModelType::NETWORK;
+  }
+
   inputs::StaticVarCompensator::SVarCid id;  ///< the id of the SVarC
-  ModelType model;               ///< SVarC model type
-  const double bMin;             ///< the minimum susceptance value for the variable susceptance of the SVarC
-  const double bMax;             ///< the maximum susceptance value for the variable susceptance of the SVarC
-  const double voltageSetPoint;  ///< the voltage set point of the SVarC
-  const double UNom;             ///< the nominal voltage of the connection bus of the SVarC
-  const double UMinActivation;   ///< the low voltage activation threshold of the SVarC
-  const double UMaxActivation;   ///< the high voltage activation threshold of the SVarC
-  const double USetPointMin;     ///< the low voltage set point of the SVarC
-  const double USetPointMax;     ///< the high voltage set point of the SVarC
-  const double b0;               ///< the initial susceptance value of the SVarC
-  const double slope;            ///< the slope (kV/MVar) of the SVarC voltage regulation
-  const double UNomRemote;       ///< the nominal voltage of the remotely regulated bus
+  ModelType model;                           ///< SVarC model type
+  const double bMin;                         ///< the minimum susceptance value for the variable susceptance of the SVarC
+  const double bMax;                         ///< the maximum susceptance value for the variable susceptance of the SVarC
+  const double voltageSetPoint;              ///< the voltage set point of the SVarC
+  const double UNom;                         ///< the nominal voltage of the connection bus of the SVarC
+  const double UMinActivation;               ///< the low voltage activation threshold of the SVarC
+  const double UMaxActivation;               ///< the high voltage activation threshold of the SVarC
+  const double USetPointMin;                 ///< the low voltage set point of the SVarC
+  const double USetPointMax;                 ///< the high voltage set point of the SVarC
+  const double b0;                           ///< the initial susceptance value of the SVarC
+  const double slope;                        ///< the slope (kV/MVar) of the SVarC voltage regulation
+  const double UNomRemote;                   ///< the nominal voltage of the remotely regulated bus
 };
 
 /// @brief Static var compensator algorithm
 class StaticVarCompensatorAlgorithm {
  public:
   using SVarCDefinitions = std::vector<StaticVarCompensatorDefinition>;  ///< Alias for vector of SVC definitions
-  using ModelType = StaticVarCompensatorDefinition::ModelType;  ///< Alias for SVC model type
+  using ModelType = StaticVarCompensatorDefinition::ModelType;           ///< Alias for SVC model type
 
   /**
    * @brief Constructor
@@ -108,8 +118,9 @@ class StaticVarCompensatorAlgorithm {
    * @brief Perform algorithm
    * Add the SVarCs of the nodes and deducing the model to use.
    * @param node the node to process
+   * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node);
+  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
 
  private:
   SVarCDefinitions& svarcs_;  ///< the list of SVarCs to update

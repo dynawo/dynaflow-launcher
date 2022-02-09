@@ -53,20 +53,24 @@ class DydEvent {
    */
   struct DydEventDefinition {
     /**
-     * @brief Constructor
+     * @brief Construct a new Dyd Event Definition object
      *
      * @param base the basename for current file (corresponds to filepath basename)
      * @param filepath the filepath of the dyd file to write
      * @param contingency definition of the contingency for which we have to create a DYD file
+     * @param networkElements set of contingencies elements using network cpp model
      */
-    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingency& contingency) :
+    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingency& contingency,
+                       const std::unordered_set<std::string>& networkElements) :
         basename(base),
         filename(filepath),
-        contingency(contingency) {}
+        contingency(contingency),
+        networkElements_(networkElements) {}
 
-    std::string basename;                    ///< basename for file
-    std::string filename;                    ///< filepath for file to write
-    const inputs::Contingency& contingency;  ///< the contingency for which event dynamic models will be built
+    std::string basename;                                     ///< basename for file
+    std::string filename;                                     ///< filepath for file to write
+    const inputs::Contingency& contingency;                   ///< the contingency for which event dynamic models will be built
+    const std::unordered_set<std::string>& networkElements_;  ///< set of contingencies elements using network cpp model
   };
 
   /**
@@ -151,6 +155,15 @@ class DydEvent {
    *
    */
   static void addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
+
+  /**
+   * @brief Determines if contingency element is using a network cpp model
+   *
+   * @param elementId static identifier of the equipment
+   *
+   * @returns true if contingency element is using a network cpp model
+   */
+  bool isNetwork(const std::string& elementId) const;
 
  private:
   DydEventDefinition def_;  ///< Dyd file information

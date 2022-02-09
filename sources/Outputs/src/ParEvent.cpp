@@ -39,6 +39,10 @@ ParEvent::write() {
 
   auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
   for (const auto& element : def_.contingency.elements) {
+    if (isNetwork(element.id)) {
+      parametersSets->addParametersSet(buildEventSetPointRealDisconnection(element.id, def_.timeOfEvent));
+      continue;
+    }
     switch (element.type) {
     case Type::BRANCH:
     case Type::LINE:
@@ -82,6 +86,11 @@ ParEvent::buildEventSetPointRealDisconnection(const std::string& elementId, cons
   set->addParameter(helper::buildParameter("event_tEvent", static_cast<double>(timeOfEvent.count())));
   set->addParameter(helper::buildParameter("event_stateEvent1", 1.0));
   return set;
+}
+
+bool
+ParEvent::isNetwork(const std::string& elementId) const {
+  return (def_.networkElements_.find(elementId) != def_.networkElements_.end());
 }
 
 }  // namespace outputs

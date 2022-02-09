@@ -37,7 +37,8 @@ TEST(TestPar, write) {
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
@@ -235,6 +236,8 @@ TEST(TestPar, writeStaticVarCompensator) {
       StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
       0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
       StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
+      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK,
       0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
   };
   outputPath.append(filename);
@@ -267,8 +270,9 @@ TEST(Dyd, writeLoad) {
   }
 
   std::vector<LoadDefinition> loads {
-    LoadDefinition("LOAD1", "Slack"),
-    LoadDefinition("LOAD2", "Slack")
+    LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+    LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+    LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")
   };
 
 

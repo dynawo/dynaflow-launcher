@@ -53,6 +53,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     generators_{},
     loads_{},
     staticVarCompensators_{},
+    algoResults_(new algo::AlgorithmsResults()),
     jobEntry_{},
     jobsEvents_{} {
   file::path path(def.networkFilepath);
@@ -120,12 +121,19 @@ Context::process() {
     const auto& contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
       validContingencies_ = boost::make_optional(algo::ValidContingencies(contingencies));
-      onNodeOnMainConnexComponent(algo::ContingencyValidationAlgorithm(*validContingencies_));
+      onNodeOnMainConnexComponent(algo::ContingencyValidationAlgorithmOnNodes(*validContingencies_));
     }
   }
   walkNodesMain();
 
-  if (generators_.empty()) {
+  // the validation of contingencies on algorithm definitions must be done after walking all nodes
+  // on main topological island, because this is where we fill the algorithms definitions
+  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+    auto contValOnDefs = algo::ContingencyValidationAlgorithmOnDefs(*validContingencies_);
+    contValOnDefs.fillValidContingenciesOnDefs(loads_, generators_, staticVarCompensators_);
+  }
+
+  if (!algoResults_->isAtLeastOneGeneratorRegulating) {
     // no generator is regulating the voltage in the main connex component : do not simulate
     throw Error(NetworkHasNoRegulatingGenerator, def_.networkFilepath);
   }
@@ -226,13 +234,13 @@ void
 Context::exportOutputsContingencies() {
   if (validContingencies_) {
     for (const auto& contingency : validContingencies_->get()) {
-      exportOutputsContingency(contingency);
+      exportOutputsContingency(contingency, validContingencies_->getNetworkElements());
     }
   }
 }
 
 void
-Context::exportOutputsContingency(const inputs::Contingency& contingency) {
+Context::exportOutputsContingency(const inputs::Contingency& contingency, const std::unordered_set<std::string>& networkElements) {
   // Prepare a DYD, PAR and JOBS for every contingency
   // The DYD and PAR contain the definition of the events of the contingency
 
@@ -242,13 +250,14 @@ Context::exportOutputsContingency(const inputs::Contingency& contingency) {
   // Specific DYD for contingency
   file::path dydEvent(config_.outputDir());
   dydEvent.append(basenameEvent + ".dyd");
-  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), contingency));
+  outputs::DydEvent dydEventWriter(outputs::DydEvent::DydEventDefinition(basenameEvent, dydEvent.generic_string(), contingency, networkElements));
   dydEventWriter.write();
 
   // Specific PAR for contingency
   file::path parEvent(config_.outputDir());
   parEvent.append(basenameEvent + ".par");
-  outputs::ParEvent parEventWriter(outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), contingency, config_.getTimeOfEvent()));
+  outputs::ParEvent parEventWriter(
+      outputs::ParEvent::ParEventDefinition(basenameEvent, parEvent.generic_string(), contingency, networkElements, config_.getTimeOfEvent()));
   parEventWriter.write();
 
 #if _DEBUG_
@@ -325,10 +334,10 @@ Context::executeSecurityAnalysis() {
 }
 
 void
-Context::walkNodesMain() const {
+Context::walkNodesMain() {
   for (const auto& node : mainConnexNodes_) {
     for (const auto& cbk : callbacksMainConnexComponent_) {
-      cbk(node);
+      cbk(node, algoResults_);
     }
   }
 }

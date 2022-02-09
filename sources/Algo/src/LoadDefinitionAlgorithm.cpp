@@ -17,13 +17,14 @@ namespace algo {
 LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel) : loads_(loads), dsoVoltageLevel_(dsoVoltageLevel) {}
 
 void
-LoadDefinitionAlgorithm::operator()(const NodePtr& node) {
+LoadDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
+  LoadDefinition::ModelType model = LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
   if (DYN::doubleNotEquals(node->nominalVoltage, dsoVoltageLevel_) && node->nominalVoltage < dsoVoltageLevel_) {
-    return;
+    model = LoadDefinition::ModelType::NETWORK;
   }
 
   for (const auto& load : node->loads) {
-    loads_.emplace_back(load.id, node->id);
+    loads_.emplace_back(load.id, model, node->id);
   }
 }
 

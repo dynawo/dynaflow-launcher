@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include "DynamicDataBaseManager.h"
 #include "NetworkManager.h"
 #include "Node.h"
-#include "DynamicDataBaseManager.h"
 
 #include <array>
 #include <boost/filesystem.hpp>
