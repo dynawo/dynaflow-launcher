@@ -18,7 +18,6 @@
 #include "NetworkManager.h"
 
 #include "Log.h"
-#include "Message.hpp"
 
 #include <DYNBusInterface.h>
 #include <DYNCommon.h>
@@ -91,9 +90,12 @@ NetworkManager::buildTree() {
 #endif
       auto found = shuntsMap.find(nodeId);
       nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{}, bus->isFictitious());
-      LOG(debug) << "Node " << nodeId << " created" << (bus->isFictitious() ? " (fictitious)" : "") << LOG_ENDL;
+      if (bus->isFictitious())
+        LOG(debug, FictitiousNodeCreation, nodeId);
+      else
+        LOG(debug, NodeCreation, nodeId);
       if (opt_id && *opt_id == nodeId) {
-        LOG(debug) << "Slack node with id " << *opt_id << " found in network" << LOG_ENDL;
+        LOG(debug, SlackNodeFound, *opt_id);
         slackNode_ = nodes_[nodeId];
       }
 
@@ -113,7 +115,7 @@ NetworkManager::buildTree() {
       assert(nodes_.count(nodeid));
 #endif
       nodes_[nodeid]->loads.emplace_back(load->getID());
-      LOG(debug) << "Node " << nodeid << " contains load " << load->getID() << LOG_ENDL;
+      LOG(debug, NodeContainsLoad, nodeid, load->getID());
     }
 
     const auto& generators = networkVL->getGenerators();
@@ -135,7 +137,7 @@ NetworkManager::buildTree() {
         auto regulated_bus = updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
         nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin,
                                                 pmax, targetP, regulated_bus, nodeid);
-        LOG(debug) << "Node " << nodeid << " contains generator " << generator->getID() << LOG_ENDL;
+        LOG(debug, NodeContainsGen, nodeid, generator->getID());
       }
     }
 
@@ -151,7 +153,7 @@ NetworkManager::buildTree() {
 #endif
         nodes_[bus1->getID()]->neighbours.push_back(nodes_.at(bus2->getID()));
         nodes_[bus2->getID()]->neighbours.push_back(nodes_.at(bus1->getID()));
-        LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by switch " << sw->getID() << LOG_ENDL;
+        LOG(debug, NodeConnectionBySwitch, bus1->getID(), bus2->getID(), sw->getID());
       }
     }
 
@@ -170,7 +172,7 @@ NetworkManager::buildTree() {
                                           svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
                                           svarc->getB0(), svarc->getSlope(), svarc->hasStandbyAutomaton(), svarc->hasVoltagePerReactivePowerControl(),
                                           regulatedBus->getID(), nodeid, regulatedBus->getVNom());
-      LOG(debug) << "Node " << nodeid << " contains static var compensator " << svarc->getID() << LOG_ENDL;
+      LOG(debug, NodeContainsSVC, nodeid, svarc->getID());
     }
 
     const auto& dangling_lines = networkVL->getDanglingLines();
@@ -189,7 +191,7 @@ NetworkManager::buildTree() {
       assert(nodes_.count(bus1->getID()) > 0);
       assert(nodes_.count(bus2->getID()) > 0);
 #endif
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by line " << line->getID() << LOG_ENDL;
+      LOG(debug, NodeConnectionByLine, bus1->getID(), bus2->getID(), line->getID());
       auto season = line->getActiveSeason();
       auto new_line = Line::build(line->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), season);
       lines_.push_back(new_line);
@@ -204,7 +206,7 @@ NetworkManager::buildTree() {
       auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
       tfos_.push_back(tfo);
 
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " by 2W " << transfo->getID() << LOG_ENDL;
+      LOG(debug, NodeConnectionBy2WT, bus1->getID(), bus2->getID(), transfo->getID());
     }
   }
 
@@ -217,7 +219,7 @@ NetworkManager::buildTree() {
       auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()));
       tfos_.push_back(tfo);
 
-      LOG(debug) << "Node " << bus1->getID() << " connected to " << bus2->getID() << " and " << bus3->getID() << " by 3W " << transfo->getID() << LOG_ENDL;
+      LOG(debug, NodeConnectionBy3WT, bus1->getID(), bus2->getID(), bus3->getID(), transfo->getID());
     }
   }
 
@@ -267,8 +269,7 @@ NetworkManager::buildTree() {
     hvdcLines_.emplace_back(hvdcLineCreated);
     nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
     nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);
-    LOG(debug) << "Network contains hvdcLine " << hvdcLine->getID() << " with converterStation " << hvdcLine->getIdConverter1() << " and converterStation "
-               << hvdcLine->getIdConverter2() << LOG_ENDL;
+    LOG(debug, HvdcLineInNetwork, hvdcLine->getID(), hvdcLine->getIdConverter1(), hvdcLine->getIdConverter2());
   }
 }
 

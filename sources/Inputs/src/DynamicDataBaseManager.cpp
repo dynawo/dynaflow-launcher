@@ -18,7 +18,6 @@
 #include "DynamicDataBaseManager.h"
 
 #include "Log.h"
-#include "Message.hpp"
 
 #include <boost/filesystem.hpp>
 #include <fstream>
@@ -80,13 +79,13 @@ parserFile(const boost::filesystem::path& filepath, const parser::ParserFactory&
   std::ifstream in(filepath.c_str());
   if (!in) {
     // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
-    LOG(warn) << MESS(DynModelFileNotFound, filepath.c_str()) << LOG_ENDL;
+    LOG(warn, DynModelFileNotFound, filepath.c_str());
     return;
   }
 
   auto xsd = computeXsdPath<T>(filepath);
   if (xsd.empty()) {
-    LOG(warn) << MESS(DynModelFileXSDNotFound, filepath.c_str()) << LOG_ENDL;
+    LOG(warn, DynModelFileXSDNotFound, filepath.c_str());
     xsdValidation = false;
   } else {
     parser->addXmlSchema(xsd.generic_string());
@@ -95,8 +94,7 @@ parserFile(const boost::filesystem::path& filepath, const parser::ParserFactory&
   try {
     parser->parse(in, element, xsdValidation);
   } catch (const xml::sax::parser::ParserException& e) {
-    LOG(error) << MESS(DynModelFileReadError, filepath, e.what()) << LOG_ENDL;
-    std::exit(EXIT_FAILURE);
+    throw Error(DynModelFileReadError, filepath.c_str(), e.what());
   }
 }
 }  // namespace helper

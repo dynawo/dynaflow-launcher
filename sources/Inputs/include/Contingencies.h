@@ -28,7 +28,8 @@ namespace inputs {
 /**
  * @brief Contingency elements
  */
-struct ContingencyElement {
+class ContingencyElement {
+ public:
   /**
    * @brief Enum with accepted types for the elements in a contingency
    */

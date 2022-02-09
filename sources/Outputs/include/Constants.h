@@ -47,7 +47,7 @@ hash(const std::string& str) {
  */
 static inline double
 computeQmax(double powerFactor, double pMax) {
-  return pMax * std::sqrt((1. / (powerFactor * powerFactor) - 1));
+  return pMax * std::sqrt(1. / (powerFactor * powerFactor) - 1);
 }
 
 /**

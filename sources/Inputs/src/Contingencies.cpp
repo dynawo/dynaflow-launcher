@@ -82,14 +82,10 @@ ContingencyElement::toString(Type type) {
 
 bool
 ContingencyElement::isCompatible(Type type, Type referenceType) {
-  if (type == Type::BRANCH) {
-    if (referenceType == Type::LINE || referenceType == Type::TWO_WINDINGS_TRANSFORMER) {
-      return true;
-    }
-  } else if (referenceType == Type::BRANCH) {
-    if (type == Type::LINE || type == Type::TWO_WINDINGS_TRANSFORMER) {
-      return true;
-    }
+  if (type == Type::BRANCH && (referenceType == Type::LINE || referenceType == Type::TWO_WINDINGS_TRANSFORMER)) {
+    return true;
+  } else if (referenceType == Type::BRANCH && (type == Type::LINE || type == Type::TWO_WINDINGS_TRANSFORMER)) {
+    return true;
   }
   return type == referenceType;
 }

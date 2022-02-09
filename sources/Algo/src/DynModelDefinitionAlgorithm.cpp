@@ -9,8 +9,8 @@
 //
 
 #include "DynModelDefinitionAlgorithm.h"
+
 #include "Log.h"
-#include "Message.hpp"
 
 #include <DYNCommon.h>
 #include <DYNExecUtils.h>
@@ -63,7 +63,7 @@ DynModelAlgorithm::libraryExists(const std::string& lib) {
     static_cast<void>(sharedLib);  // do nothing as we just want to check that the library can be loaded
     return true;
   } catch (const std::exception& e) {
-    LOG(warn) << MESS(CannotLoadLibrary, lib, e.what()) << LOG_ENDL;
+    LOG(warn, CannotLoadLibrary, lib, e.what());
     return false;
   }
 }
@@ -117,7 +117,7 @@ DynModelAlgorithm::extractDynModels() {
   for (const auto& automaton : automatons) {
     // Check that the automaton library is available
     if (!libraryExists(automaton.lib)) {
-      LOG(warn) << MESS(DynModelLibraryNotFound, automaton.lib, automaton.id) << LOG_ENDL;
+      LOG(warn, DynModelLibraryNotFound, automaton.lib, automaton.id);
       continue;
     }
     dynamicAutomatonsById_[automaton.id] = automaton;

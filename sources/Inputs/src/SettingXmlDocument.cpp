@@ -16,7 +16,6 @@
 #include "SettingXmlDocument.h"
 
 #include "Log.h"
-#include "Message.hpp"
 
 #include <vector>
 
@@ -118,7 +117,7 @@ SettingXmlDocument::CountHandler::CountHandler(const elementName_type& root) {
     currentCount->id = attributes["id"].as_string();
     const auto& name = attributes["name"].as_string();
     if (!check(name)) {
-      throw std::runtime_error(MESS(UnsupportedCountName, name));
+      throw Error(UnsupportedCountName, name);
     }
     currentCount->name = name;
   });
@@ -142,7 +141,7 @@ SettingXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type& r
     currentReference->origName = attributes["origName"].as_string();
 
     if (attributes["origData"].as_string() != origData_) {
-      throw std::runtime_error(MESS(UnsupportedOrigDataReference, attributes["origData"].as_string(), currentReference->name));
+      throw Error(UnsupportedOrigDataReference, attributes["origData"].as_string(), currentReference->name);
     }
 
     auto type = attributes["type"].as_string();
@@ -155,7 +154,7 @@ SettingXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type& r
     } else if (type == "STRING") {
       currentReference->dataType = Reference::DataType::STRING;
     } else {
-      throw std::runtime_error(MESS(UnsupportedDataTypeReference, type, currentReference->name));
+      throw Error(UnsupportedDataTypeReference, type, currentReference->name);
     }
   });
 }
@@ -172,7 +171,7 @@ SettingXmlDocument::ParameterHandler::ParameterHandler(const elementName_type& r
     } else if (type == "STRING") {
       createOptionalParameter(currentStringParameter, attributes);
     } else {
-      throw std::runtime_error(MESS(UnsupportedParameterDataType, type));
+      throw Error(UnsupportedParameterDataType, type);
     }
   });
 }

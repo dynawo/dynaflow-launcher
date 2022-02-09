@@ -19,7 +19,6 @@
 
 #include "Constants.h"
 #include "Log.h"
-#include "Message.hpp"
 
 #include <DYDBlackBoxModelFactory.h>
 #include <DYDDynamicModelsCollection.h>
@@ -82,15 +81,14 @@ const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string> Dyd::hvdc
 };
 
 const std::unordered_map<algo::StaticVarCompensatorDefinition::ModelType, std::string> Dyd::svarcModelsNames_ = {
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPV, "StaticVarCompensatorPV"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING, "StaticVarCompensatorPVModeHandling"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROP, "StaticVarCompensatorPVProp"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING, "StaticVarCompensatorPVPropModeHandling"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE, "StaticVarCompensatorPVPropRemote"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING, "StaticVarCompensatorPVPropRemoteModeHandling"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE, "StaticVarCompensatorPVRemote"),
-  std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, "StaticVarCompensatorPVRemoteModeHandling")
-  };
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPV, "StaticVarCompensatorPV"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING, "StaticVarCompensatorPVModeHandling"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROP, "StaticVarCompensatorPVProp"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING, "StaticVarCompensatorPVPropModeHandling"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE, "StaticVarCompensatorPVPropRemote"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING, "StaticVarCompensatorPVPropRemoteModeHandling"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE, "StaticVarCompensatorPVRemote"),
+    std::make_pair(algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, "StaticVarCompensatorPVRemoteModeHandling")};
 
 Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
 
@@ -185,7 +183,7 @@ Dyd::writeDynamicModelMacroConnectors(const std::unordered_set<std::string>& use
 #endif
     if (found == macros.end()) {
       // macro used in dynamic model not defined in configuration:  configuration error
-      LOG(warn) << MESS(DynModelMacroNotDefined, macro) << LOG_ENDL;
+      LOG(warn, DynModelMacroNotDefined, macro);
       continue;
     }
 
@@ -349,9 +347,9 @@ std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>>
 Dyd::writeConstantsModel(const DydDefinition& def) {
   std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> ret;
   if (!def.generators.empty()) {
-  auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
-  model->setLib("SignalN");
-  ret.push_back(model);
+    auto model = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
+    model->setLib("SignalN");
+    ret.push_back(model);
   }
 
   return ret;

@@ -9,8 +9,9 @@
 //
 
 #include "GeneratorDefinitionAlgorithm.h"
+
 #include "Log.h"
-#include "Message.hpp"
+
 #include <DYNCommon.h>
 
 namespace dfl {
@@ -78,11 +79,11 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   // We check the validity of pmin,pmax and qmin,qmax values
   if (generator.points.empty()) {
     if (DYN::doubleEquals(generator.pmin, generator.pmax)) {
-      LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
+      LOG(warn, InvalidDiagramAllPEqual, generator.id);
       return false;
     }
     if (DYN::doubleEquals(generator.qmin, generator.qmax)) {
-      LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
+      LOG(warn, InvalidDiagramQminsEqualQmaxs, generator.id);
       return false;
     }
     return true;
@@ -90,7 +91,7 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
 
   // If there is only one point, the diagram is not valid
   if (generator.points.size() == 1) {
-    LOG(warn) << MESS(InvalidDiagramOnePoint, generator.id) << LOG_ENDL;
+    LOG(warn, InvalidDiagramOnePoint, generator.id);
     return false;
   }
 
@@ -107,11 +108,11 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
 
   if (!valid) {
     if (allQminEqualQmax && allPEqual) {
-      LOG(warn) << MESS(InvalidDiagramBothError, generator.id) << LOG_ENDL;
+      LOG(warn, InvalidDiagramBothError, generator.id);
     } else if (allQminEqualQmax) {
-      LOG(warn) << MESS(InvalidDiagramQminsEqualQmaxs, generator.id) << LOG_ENDL;
+      LOG(warn, InvalidDiagramQminsEqualQmaxs, generator.id);
     } else if (allPEqual) {
-      LOG(warn) << MESS(InvalidDiagramAllPEqual, generator.id) << LOG_ENDL;
+      LOG(warn, InvalidDiagramAllPEqual, generator.id);
     }
   }
   return valid;

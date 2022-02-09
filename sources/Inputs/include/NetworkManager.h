@@ -80,7 +80,7 @@ class NetworkManager {
    * @returns the information of the slack node, if present
    */
   boost::optional<std::shared_ptr<Node>> getSlackNode() const {
-    return (slackNode_) ? boost::make_optional(slackNode_) : boost::none;
+    return slackNode_ ? boost::make_optional(slackNode_) : boost::none;
   }
 
   /**
