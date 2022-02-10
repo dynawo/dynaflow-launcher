@@ -1,4 +1,28 @@
 #!/bin/bash
+
+export_preload() {
+  lib="tcmalloc"
+  # uncomment to activate tcmalloc in debug when build is in debug
+  # if [ $DYNAWO_BUILD_TYPE == "Debug" ]; then
+  #   lib=$lib"_debug"
+  # fi
+  lib=$lib".so"
+
+  externalTcMallocLib=$(find $DYNAWO_ALGORITHMS_HOME/lib -iname *$lib)
+  if [ -n "$externalTcMallocLib" ]; then
+    echo "Use downloaded tcmalloc library $externalTcMallocLib"
+    export LD_PRELOAD=$externalTcMallocLib
+    return
+  fi
+
+  nativeTcMallocLib=$(ldconfig -p | grep -e $lib$ | cut -d ' ' -f4)
+  if [ -n "$nativeTcMallocLib" ]; then
+    echo "Use native tcmalloc library $nativeTcMallocLib"
+    export LD_PRELOAD=$nativeTcMallocLib
+    return
+  fi
+}
+
 INSTALL=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 export DYNAWO_HOME=$INSTALL
 export DYNAWO_ALGORITHMS_HOME=$INSTALL
@@ -16,4 +40,6 @@ export DYNAFLOW_LAUNCHER_LIBRARIES=$DYNAWO_DDB_DIR
 
 export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
+export_preload
 $INSTALL/bin/DynaFlowLauncher $@
+unset LD_PRELOAD

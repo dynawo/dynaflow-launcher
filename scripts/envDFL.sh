@@ -90,6 +90,29 @@ export_var_env_dynawo_with_default() {
   export_var_env_force_dynawo $1=$2
 }
 
+export_preload() {
+  lib="tcmalloc"
+  # uncomment to activate tcmalloc in debug when build is in debug
+  # if [ $DYNAWO_BUILD_TYPE == "Debug" ]; then
+  #   lib=$lib"_debug"
+  # fi
+  lib=$lib".so"
+
+  externalTcMallocLib=$(find $DYNAWO_ALGORITHMS_HOME/lib -iname *$lib)
+  if [ -n "$externalTcMallocLib" ]; then
+    echo "Use downloaded tcmalloc library $externalTcMallocLib"
+    export LD_PRELOAD=$externalTcMallocLib
+    return
+  fi
+
+  nativeTcMallocLib=$(ldconfig -p | grep -e $lib$ | cut -d ' ' -f4)
+  if [ -n "$nativeTcMallocLib" ]; then
+    echo "Use native tcmalloc library $nativeTcMallocLib"
+    export LD_PRELOAD=$nativeTcMallocLib
+    return
+  fi
+}
+
 ld_library_path_remove() {
   export LD_LIBRARY_PATH=`echo -n $LD_LIBRARY_PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`;
 }
@@ -383,11 +406,13 @@ launch_sa() {
     if [ ! -f $3 ]; then
         error_exit "Security Analysis contingencies file $3 doesn't exist"
     fi
+    export_preload
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $1 \
     --config $2 \
     --contingencies $3
+    unset LD_PRELOAD
 }
 
 version() {
