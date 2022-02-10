@@ -164,6 +164,7 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
     export_var_env DYNAFLOW_LAUNCHER_BROWSER=firefox
+    export_var_env DYNAFLOW_LAUNCHER_BROWSER_SHOW=true
 
     # dynawo vars
     export_var_env DYNAWO_HOME=UNDEFINED
@@ -334,8 +335,10 @@ build_user() {
 build_tests_coverage() {
     rm -rf $DYNAFLOW_LAUNCHER_HOME/buildCoverage
     cmake_coverage
-    verify_browser
-    $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
+    if [ "$DYNAFLOW_LAUNCHER_BROWSER_SHOW" = true ] ; then
+        verify_browser
+        $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
+    fi
 }
 
 launch() {
