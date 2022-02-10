@@ -63,7 +63,7 @@ class Log {
 /**
  * @brief Macro description to have a shortcut.
  *  Thanks to this macro, user can only call an error with the type and the key to access
- *  to the message (+ optional arguments if the message need)
+ *  the message (+ optional arguments if the message need)
  *  File error localization and line error localization are added
  *
  * @param key  key of the message description
