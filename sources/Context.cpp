@@ -24,7 +24,6 @@
 #include "DydEvent.h"
 #include "Job.h"
 #include "Log.h"
-#include "Message.hpp"
 #include "Par.h"
 #include "ParEvent.h"
 
@@ -68,7 +67,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     slackNodeOrigin_ = SlackNodeOrigin::ALGORITHM;
     if (!found_slack_node.is_initialized() && !config_.isAutomaticSlackBusOn()) {
       // case slack node is requested to be extracted from IIDM but is not present in IIDM: we will compute it internally but a warning is sent
-      LOG(warn) << MESS(NetworkSlackNodeNotFound, def.networkFilepath) << LOG_ENDL;
+      LOG(warn, NetworkSlackNodeNotFound, def.networkFilepath);
     }
     networkManager_.onNode(algo::SlackNodeAlgorithm(slackNode_));
   }
@@ -94,20 +93,19 @@ Context::process() {
   // Check models generated with algorithm
   filterPartiallyConnectedDynamicModels();
 
-  LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+  LOG(info, SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_));
 
   if (!checkConnexity()) {
     if (slackNodeOrigin_ == SlackNodeOrigin::FILE) {
-      LOG(error) << MESS(ConnexityError, slackNode_->id) << LOG_ENDL;
-      return false;
+      throw Error(ConnexityError, slackNode_->id);
     } else {
-      LOG(warn) << MESS(ConnexityErrorReCompute, slackNode_->id) << LOG_ENDL;
+      LOG(warn, ConnexityErrorReCompute, slackNode_->id);
       // Compute slack node only on main connex component
       slackNode_.reset();
       std::for_each(mainConnexNodes_.begin(), mainConnexNodes_.end(), algo::SlackNodeAlgorithm(slackNode_));
 
       // By construction, the new slack node is in the main connex component
-      LOG(info) << MESS(SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_)) << LOG_ENDL;
+      LOG(info, SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_));
     }
   }
 
@@ -129,8 +127,7 @@ Context::process() {
 
   if (generators_.empty()) {
     // no generator is regulating the voltage in the main connex component : do not simulate
-    LOG(error) << MESS(NetworkHasNoRegulatingGenerator, def_.networkFilepath) << LOG_ENDL;
-    return false;
+    throw Error(NetworkHasNoRegulatingGenerator, def_.networkFilepath);
   }
   if (validContingencies_) {
     validContingencies_->keepContingenciesWithAllElementsValid();
@@ -153,7 +150,7 @@ Context::filterPartiallyConnectedDynamicModels() {
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
           [&macroConnect](const algo::DynamicModelDefinition::MacroConnection& macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
       if (found == modelDef.nodeConnections.end()) {
-        LOG(debug) << "Dynamic model " << automaton.id << " is only partially connected to network so it is removed from exported models" << LOG_ENDL;
+        LOG(debug, ModelPartiallyConnected, automaton.id);
         dynamicModels_.models.erase(automaton.id);
         break;  // element doesn't exist any more, go to next automaton
       }
@@ -163,7 +160,7 @@ Context::filterPartiallyConnectedDynamicModels() {
 
 void
 Context::exportOutputs() {
-  LOG(info) << MESS(ExportInfo, basename_) << LOG_ENDL;
+  LOG(info, ExportInfo, basename_);
 
   // create output directory
   file::path outputDir(config_.outputDir());
@@ -279,7 +276,7 @@ Context::execute() {
     // This shall be the last log performed before building simulation,
     // because simulation constructor will re-initialize traces for Dynawo
     // Since DFL traces are persistent, they can be re-used after simulation is performed outside this function
-    LOG(info) << MESS(SimulateInfo, basename_) << LOG_ENDL;
+    LOG(info, SimulateInfo, basename_);
 
     // For a power flow calculation it is ok to directly run here a single simulation
     auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
@@ -290,7 +287,7 @@ Context::execute() {
     break;
   }
   case SimulationKind::SECURITY_ANALYSIS:
-    LOG(info) << MESS(SecurityAnalysisSimulationInfo, basename_, def_.contingenciesFilePath) << LOG_ENDL;
+    LOG(info, SecurityAnalysisSimulationInfo, basename_, def_.contingenciesFilePath);
     executeSecurityAnalysis();
     break;
   }
@@ -311,7 +308,7 @@ Context::executeSecurityAnalysis() {
       scenario->setId(contingencyRef.get().id);
       scenario->setDydFile(basename_ + "-" + contingencyRef.get().id + ".dyd");
       scenarios->addScenario(scenario);
-      LOG(info) << MESS(ContingencySimulationDefined, contingencyRef.get().id) << LOG_ENDL;
+      LOG(info, ContingencySimulationDefined, contingencyRef.get().id);
     }
   }
   // Use dynawo-algorithms Systematic Analysis Launcher to simulate all the scenarios

@@ -9,9 +9,3 @@
 
 DEFINE_TEST(TestOptions COMMON)
 target_link_libraries(TestOptions DynaFlowLauncher::common)
-
-DEFINE_TEST(TestDico COMMON)
-target_link_libraries(TestDico DynaFlowLauncher::common)
-
-DEFINE_TEST(TestMessage COMMON)
-target_link_libraries(TestMessage DynaFlowLauncher::common)

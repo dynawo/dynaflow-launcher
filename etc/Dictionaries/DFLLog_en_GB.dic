@@ -1,0 +1,63 @@
+// Copyright (c) 2022, RTE (http://www.rte-france.com)
+// See AUTHORS.txt
+// All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, you can obtain one at http://mozilla.org/MPL/2.0/.
+// SPDX-License-Identifier: MPL-2.0
+//
+
+//------------------ Inputs -------------------------
+BadActivePowerCompensation    =     activePowerCompensation was given with the unsupported value %1%. Supported values are: PMAX, P or targetP. Default value PMAX will be used
+DynModelFileNotFound          =     dynModel file %1% cannot be opened
+DynModelFileXSDNotFound       =     xsd file not found to validate %1% : XSD validation is disabled
+SVarCIIDMExtensionNotFound    =     iidm extension %1% not found for static var compensator %2% : it will be ignored
+ContingenciesReadingFrom      =     reading contingencies from %1% ...
+ContingencyInvalidBadElemType =     contingency %1% is invalid: element %2% has an unknown type "%3%"
+NodeCreation                  =     node %1% created
+FictitiousNodeCreation        =     node %1% created (fictitious)
+SlackNodeFound                =     slack node with id %1% found in network
+NodeContainsLoad              =     node %1% contains load %2%
+NodeContainsGen               =     node %1% contains generator %2%
+NodeContainsSVC               =     node %1% contains static var compensator %2%
+NodeConnectionBySwitch        =     node %1% connected to %2% by switch %3%
+NodeConnectionByLine          =     node %1% connected to %2% by line %3%
+NodeConnectionBy2WT           =     node %1% connected to %2% by two windings transformer %3%
+NodeConnectionBy3WT           =     node %1% connected to %2% and %3% by three windings transformer %3%
+HvdcLineInNetwork             =     network contains hvdcLine %1% with converterStation %2% and converterStation %3%
+
+//------------------ Algo ---------------------------
+InvalidDiagramAllPEqual       =     the diagram of the generator %1% is invalid, all reactive curve points have the same p. The default model will be used for this generator
+InvalidDiagramQminsEqualQmaxs =     the diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. The default model will be used for this generator
+InvalidDiagramOnePoint        =     the diagram of the generator %1% is invalid, there was only one reactive curve point provided. The default model will be used for this generator
+InvalidDiagramBothError       =     the diagram of the generator %1% is invalid, each reactive curve point has the same qmin and qmax. Also all reactive curve points have the same p. The default model will be used for this generator
+HvdcLineBadInitialization     =     the hvdcLine %1%'s converters were badly initialized
+CannotLoadLibrary             =     cannot load library %1% : %2%
+DynModelLibraryNotFound       =     library %1% not found : model %2% will be skipped
+ContingencyInvalidForSimulation =     contingency %1% is invalid for simulation. Element %2% is not in main connected component or has an invalid type
+ContingencyInvalidForSimulationNoValidElements =     contingency %1% is invalid for simulation. All elements are invalid (not in main connected component or invalid type)
+
+//------------------ Outputs -----------------------
+DynModelMacroNotDefined       =     macro %1% used in model not defined in assembling file
+TFOComponentNotFound          =     reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
+SingleAssociationRefNotFound  =     settings ref %1% references an undefined single association %2%: it will be ignored
+SingleAssociationRefNotALine  =     settings ref %1% references the single association %2% which is not associated to a line: it will be ignored
+RefLineNotFound               =     settings ref %1% references single association %2% which is associated to the undefined line %3%: it will be ignored
+RefUnsupportedTag             =     settings ref %1% uses a unrecognized tag %2%: it will be ignored
+CountIdNotFound               =     count id %1% not found as a multiple association in assembling: Configuration error
+
+//------------------ Main ---------------------------
+NetworkSlackNodeNotFound      =     network slack node requested but not found in network input file %1%
+SteadyStateInfo               =     processing network input file %1% and config file %2% for steady-state calculation
+SecurityAnalysisInfo          =     processing network input file %1%, contingencies %2% and config file %3% for security analysis
+ExportInfo                    =     exporting outputs files for %1%
+SlackNode                     =     slack node of id %1% found with origin %2% (0=file, 1=algorithm)
+ConnexityErrorReCompute       =     slack node of id %1% not present in main connex component: compute slack node only in main connex component
+SimulateInfo                  =     initializing %1% simulation
+SimulationEnded               =     simulation %1% ended successfully (wall-time: %2%s)
+DFLEnded                      =     dynaFlowLauncher %1% ended successfully (wall-time: %2%s)
+InitEnd                       =     end of initialization (wall-time: %1%s)
+FilesEnd                      =     end of files generation (wall-time: %1%s)
+ContingencySimulationDefined  =     contingency simulation defined for %1%
+SecurityAnalysisSimulationInfo  =     initializing Security Analysis simulation %1% with contingencies %2%
+ModelPartiallyConnected       =     dynamic model %1% is only partially connected to network so it is removed from exported models

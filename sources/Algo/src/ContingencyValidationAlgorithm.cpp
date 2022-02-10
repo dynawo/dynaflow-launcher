@@ -9,8 +9,9 @@
 //
 
 #include "ContingencyValidationAlgorithm.h"
+
 #include "Log.h"
-#include "Message.hpp"
+
 #include <DYNCommon.h>
 
 namespace dfl {
@@ -72,12 +73,12 @@ ValidContingencies::markElementValid(const ElementId& elementId, inputs::Conting
     for (const auto& contingencyRef : elementContingencies->second) {
       const auto& contingency = contingencyRef.get();
       // Find the element inside the input contingency ...
-      auto contingencyElementIt = std::find_if(contingency.elements.begin(), contingency.elements.end(),
-                                             [&elementId](const inputs::ContingencyElement& contingencyElement) { return contingencyElement.id == elementId; });
+      auto contingencyElementIt =
+          std::find_if(contingency.elements.begin(), contingency.elements.end(),
+                       [&elementId](const inputs::ContingencyElement& contingencyElement) { return contingencyElement.id == elementId; });
       // And check it has been given with a valid type,
       // according to the reference type found in the network
-      if (contingencyElementIt != contingency.elements.end() &&
-          inputs::ContingencyElement::isCompatible((*contingencyElementIt).type, elementType)) {
+      if (contingencyElementIt != contingency.elements.end() && inputs::ContingencyElement::isCompatible((*contingencyElementIt).type, elementType)) {
         // If type is compatible, add the element to the list of valid elements found for the contingency
         validatingContingencies_[contingency.id].insert(elementId);
       }
@@ -92,14 +93,14 @@ ValidContingencies::keepContingenciesWithAllElementsValid() {
     auto validatingContingency = validatingContingencies_.find(contingency.id);
     if (validatingContingency == validatingContingencies_.end()) {
       // For this contingency we have not found any valid element
-      LOG(warn) << MESS(ContingencyInvalidForSimulationNoValidElements, contingency.id) << LOG_ENDL;
+      LOG(warn, ContingencyInvalidForSimulationNoValidElements, contingency.id);
     } else {
       bool valid = true;
       // Iterate over all the elements in the input contingency
       for (const auto& element : contingency.elements) {
         // Check that the element has been marked as valid
         if ((*validatingContingency).second.find(element.id) == (*validatingContingency).second.end()) {
-          LOG(warn) << MESS(ContingencyInvalidForSimulation, contingency.id, element.id) << LOG_ENDL;
+          LOG(warn, ContingencyInvalidForSimulation, contingency.id, element.id);
           valid = false;
         }
       }

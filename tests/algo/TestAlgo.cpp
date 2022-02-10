@@ -17,7 +17,6 @@
 
 #include "Configuration.h"
 #include "ContingencyValidationAlgorithm.h"
-#include "Dico.h"
 #include "GeneratorDefinitionAlgorithm.h"
 #include "HVDCDefinitionAlgorithm.h"
 #include "LineDefinitionAlgorithm.h"
@@ -834,23 +833,14 @@ TEST(SVARC, base) {
 
   using modelType = dfl::algo::StaticVarCompensatorDefinition::ModelType;
   dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions expected_svarcs = {
-      dfl::algo::StaticVarCompensatorDefinition("SVARC0", modelType::SVARCPV,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC1", modelType::SVARCPVMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC2", modelType::SVARCPVPROP,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC3", modelType::SVARCPVPROPMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC4", modelType::SVARCPVPROPREMOTE,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC5", modelType::SVARCPVPROPREMOTEMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC6", modelType::SVARCPVREMOTE,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      dfl::algo::StaticVarCompensatorDefinition("SVARC7", modelType::SVARCPVREMOTEMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
-  };
+      dfl::algo::StaticVarCompensatorDefinition("SVARC0", modelType::SVARCPV, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC1", modelType::SVARCPVMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC2", modelType::SVARCPVPROP, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC3", modelType::SVARCPVPROPMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC4", modelType::SVARCPVPROPREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC5", modelType::SVARCPVPROPREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC6", modelType::SVARCPVREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      dfl::algo::StaticVarCompensatorDefinition("SVARC7", modelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
 
   dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions svarcs;
   dfl::algo::StaticVarCompensatorAlgorithm algo(svarcs);

@@ -53,7 +53,8 @@ class SettingXmlDocument : public xml::sax::parser::ComposableDocumentHandler {
   /**
    * @brief Reference XML element
    */
-  struct Reference {
+  class Reference {
+   public:
     /// @brief Type of data in the reference
     enum class DataType {
       DOUBLE = 0,  ///< Double type

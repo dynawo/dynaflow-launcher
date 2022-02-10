@@ -9,10 +9,11 @@
 
 add_test(
     NAME MAIN.varEnv
-    COMMAND DynaFlowLauncher --network=res/TestIIDM_launch_infinite.iidm --config=res/launch_infinite.json
+    COMMAND DynaFlowLauncher --network=res/TestIIDM_launch_infinite.iidm --config=res/config_launch_infinite.json
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
-# Test will fail because environement variables are not set
+# Test will fail because environment variables are not set
+set_property(TEST MAIN.varEnv APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
 set_tests_properties(MAIN.varEnv PROPERTIES WILL_FAIL TRUE)
 
 add_test(
@@ -42,7 +43,7 @@ macro(DEFINE_LAUNCH_TEST _name)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_ALGORITHMS_LOCALE=en_GB)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_INSTALL=${CMAKE_SOURCE_DIR})
-  set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_RESOURCES_DIR=${DYNAWO_HOME}/share:${DYNAWO_HOME}/share/xsd)
+  set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_RESOURCES_DIR=${CMAKE_SOURCE_DIR}/etc/Dictionaries:${DYNAWO_HOME}/share:${DYNAWO_HOME}/share/xsd)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_DDB_DIR=${DYNAWO_HOME}/ddb)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_INSTALL_DIR=${DYNAWO_HOME})
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAWO_LIBIIDM_EXTENSIONS=${DYNAWO_HOME}/lib)

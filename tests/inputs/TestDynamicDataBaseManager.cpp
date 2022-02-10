@@ -9,7 +9,10 @@
 //
 
 #include "DynamicDataBaseManager.h"
+#include "Log.h"
 #include "Tests.h"
+
+#include <gtest_dynawo.h>
 
 testing::Environment* initXmlEnvironment();
 
@@ -52,5 +55,5 @@ TEST(TestDynamicDataBaseManager, wrong_xsd) {
 
   setenv("DYNAFLOW_LAUNCHER_XSD", "res", 1);
 
-  ASSERT_EXIT(createManager(), ::testing::ExitedWithCode(EXIT_FAILURE), "");
+  ASSERT_THROW_DYNAWO(createManager(), DYN::Error::GENERAL, dfl::KeyError_t::DynModelFileReadError);
 }

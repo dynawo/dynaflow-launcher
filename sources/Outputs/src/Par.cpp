@@ -19,7 +19,6 @@
 
 #include "Constants.h"
 #include "Log.h"
-#include "Message.hpp"
 #include "ParCommon.hpp"
 
 #include <DYNCommon.h>
@@ -255,7 +254,7 @@ Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, c
   for (const auto& count : set.counts) {
     auto found = associationsById.find(count.id);
     if (found == associationsById.end()) {
-      LOG(debug) << "Count id " << count.id << " not found as a multiple association in assembling: Configuration error" << LOG_ENDL;
+      LOG(debug, CountIdNotFound, count.id);
       continue;
     }
     if (counters.nbShunts.count(found->second.shunt.voltageLevel) == 0) {
@@ -287,7 +286,7 @@ Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, c
       componentId = getTransformerComponentId(models.models.at(set.id));
       if (!componentId) {
         // Configuration error : references is using a TFO element while no TFO element is connected to the dynamic model
-        LOG(warn) << MESS(TFOComponentNotFound, ref.name, set.id) << LOG_ENDL;
+        LOG(warn, TFOComponentNotFound, ref.name, set.id);
         continue;
       }
     }
@@ -303,7 +302,7 @@ Par::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, c
       new_set->addParameter(helper::buildParameter(ref.name, *seasonOpt));
     } else {
       // Unsupported case
-      LOG(warn) << MESS(RefUnsupportedTag, ref.name, ref.tag) << LOG_ENDL;
+      LOG(warn, RefUnsupportedTag, ref.name, ref.tag);
     }
   }
 
@@ -319,17 +318,17 @@ Par::getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const algo::Lin
   auto foundAsso = std::find_if(singleAssocations.begin(), singleAssocations.end(),
                                 [&ref](const inputs::AssemblingXmlDocument::SingleAssociation& asso) { return asso.id == ref.id; });
   if (foundAsso == singleAssocations.end()) {
-    LOG(warn) << MESS(SingleAssociationRefNotFound, ref.name, ref.id) << LOG_ENDL;
+    LOG(warn, SingleAssociationRefNotFound, ref.name, ref.id);
     return boost::none;
   }
   if (!foundAsso->line) {
-    LOG(warn) << MESS(SingleAssociationRefNotALine, ref.name, ref.id) << LOG_ENDL;
+    LOG(warn, SingleAssociationRefNotALine, ref.name, ref.id);
     return boost::none;
   }
   const auto& lineId = foundAsso->line->name;
   auto foundLine = linesById.linesMap.find(lineId);
   if (foundLine == linesById.linesMap.end()) {
-    LOG(warn) << MESS(RefLineNotFound, ref.name, ref.id, lineId) << LOG_ENDL;
+    LOG(warn, RefLineNotFound, ref.name, ref.id, lineId);
     return boost::none;
   }
 

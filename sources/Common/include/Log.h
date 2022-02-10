@@ -15,8 +15,12 @@
 
 #pragma once
 
+#include "DFLError_keys.h"
+#include "DFLLog_keys.h"
 #include "Options.h"
 
+#include <DYNError.h>
+#include <DYNMessage.h>
 #include <DYNTrace.h>
 
 namespace dfl {
@@ -27,7 +31,7 @@ namespace common {
  */
 class Log {
  public:
-  static const char* dynaflowLauncherLogTag;  ///< Tag for dynaflow launcher
+  static const char* dynaflowLauncherLogTag;  ///< Tag for dynaflow launcher log
 
   /**
    * @brief Initialize log from runtime options
@@ -50,12 +54,22 @@ class Log {
  * This performs a log with the tag relative to dynaflow launcher
  *
  * @param level the level of the log: must be "error", "warn", "info" or "debug"
+ * @param key the log key from the dictionary
  */
-#define LOG(level) DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag)
+#define LOG(level, key, ...)                                  \
+  DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag) \
+      << (DYN::Message("DFLLOG", dfl::KeyLog_t::names(dfl::KeyLog_t::key)), ##__VA_ARGS__) << DYN::Trace::endline
 
 /**
- * @brief Alias of DYN::Trace::endline
+ * @brief Macro description to have a shortcut.
+ *  Thanks to this macro, user can only call an error with the type and the key to access
+ *  the message (+ optional arguments if the message need)
+ *  File error localization and line error localization are added
  *
- * This aims to hide the long namespace expression to help the developer and to hide the using of dynawo library
+ * @param key  key of the message description
+ *
+ * @return an Error
  */
-#define LOG_ENDL DYN::Trace::endline
+#define Error(key, ...)                                                                  \
+  DYN::Error(DYN::Error::GENERAL, dfl::KeyError_t::key, std::string(__FILE__), __LINE__, \
+             (DYN::Message("DFLError", dfl::KeyError_t::names(dfl::KeyError_t::key)), ##__VA_ARGS__))
