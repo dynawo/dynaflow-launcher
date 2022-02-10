@@ -163,6 +163,7 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_HOME=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
+    export_var_env DYNAFLOW_LAUNCHER_BROWSER=firefox
 
     # dynawo vars
     export_var_env DYNAWO_HOME=UNDEFINED
@@ -287,6 +288,12 @@ cmake_tests() {
     return ${RETURN_CODE}
 }
 
+verify_browser() {
+  if [ ! -x "$(command -v $DYNAFLOW_LAUNCHER_BROWSER)" ]; then
+    error_exit "Specified browser DYNAFLOW_LAUNCHER_BROWSER=$DYNAFLOW_LAUNCHER_BROWSER not found."
+  fi
+}
+
 cmake_coverage() {
     pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
     export GTEST_COLOR=1
@@ -327,6 +334,8 @@ build_user() {
 build_tests_coverage() {
     rm -rf $DYNAFLOW_LAUNCHER_HOME/buildCoverage
     cmake_coverage
+    verify_browser
+    $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
 }
 
 launch() {
