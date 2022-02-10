@@ -98,7 +98,6 @@ Context::process() {
   if (!checkConnexity()) {
     if (slackNodeOrigin_ == SlackNodeOrigin::FILE) {
       throw Error(ConnexityError, slackNode_->id);
-      return false;
     } else {
       LOG(warn, ConnexityErrorReCompute, slackNode_->id);
       // Compute slack node only on main connex component
@@ -129,7 +128,6 @@ Context::process() {
   if (generators_.empty()) {
     // no generator is regulating the voltage in the main connex component : do not simulate
     throw Error(NetworkHasNoRegulatingGenerator, def_.networkFilepath);
-    return false;
   }
   if (validContingencies_) {
     validContingencies_->keepContingenciesWithAllElementsValid();
