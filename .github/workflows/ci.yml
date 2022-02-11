@@ -63,6 +63,7 @@ jobs:
       DYNAFLOW_LAUNCHER_SHARED_LIB: "ON"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "ON"
+      DYNAFLOW_LAUNCHER_BROWSER_SHOW: "false"
       GH_API: ${{ github.api_url }}/repos/${{ github.repository }}
       GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
       GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms

@@ -138,6 +138,9 @@ where [option] can be:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
+        launch-gdb [network] [config]             launch DynaFlow Launcher with debugger:
+                                                  - network: filepath (only IIDM is supported)
+                                                  - config: filepath (JSON configuration file)
 
         =========== Others
         help                                      show all available options
@@ -160,6 +163,8 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_HOME=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
+    export_var_env DYNAFLOW_LAUNCHER_BROWSER=firefox
+    export_var_env DYNAFLOW_LAUNCHER_BROWSER_SHOW=true
 
     # dynawo vars
     export_var_env DYNAWO_HOME=UNDEFINED
@@ -172,10 +177,6 @@ set_environment() {
     # DYNAWO_IIDM_EXTENSION is used only in case of external IIDM extensions.
     # Empty string is equivalent to not set for Dynawo
     export_var_env_force_dynawo DYNAWO_IIDM_EXTENSION=$DYNAFLOW_LAUNCHER_EXTERNAL_IIDM_EXTENSION
-
-    # dynawo vars that can be extended by external
-    export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
-    export DYNAWO_RESOURCES_DIR=$DYNAWO_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd:$DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR
 
     # dynawo algorithms
     export_var_env DYNAWO_ALGORITHMS_HOME=UNDEFINED
@@ -190,6 +191,10 @@ set_environment() {
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
     export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+
+    # dynawo vars that can be extended by external
+    export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
+    export DYNAWO_RESOURCES_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd:$DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR
 
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
 
@@ -284,7 +289,14 @@ cmake_tests() {
     return ${RETURN_CODE}
 }
 
+verify_browser() {
+  if [ ! -x "$(command -v $DYNAFLOW_LAUNCHER_BROWSER)" ]; then
+    error_exit "Specified browser DYNAFLOW_LAUNCHER_BROWSER=$DYNAFLOW_LAUNCHER_BROWSER not found."
+  fi
+}
+
 cmake_coverage() {
+    pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
     export GTEST_COLOR=1
     ctest \
         -S cmake/CTestScript.cmake \
@@ -295,6 +307,7 @@ cmake_coverage() {
 
     RETURN_CODE=$?
     if [ ${RETURN_CODE} -ne 0 ]; then
+        popd > /dev/null
         exit ${RETURN_CODE}
     fi
 
@@ -306,6 +319,7 @@ cmake_coverage() {
         gcov -pb $cpp_file -o $file > /dev/null
     done
     find $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar -type f -not -name "*dynaflow-launcher*" -exec rm -f {} \;
+    popd > /dev/null
 }
 
 clean_build_all() {
@@ -321,6 +335,10 @@ build_user() {
 build_tests_coverage() {
     rm -rf $DYNAFLOW_LAUNCHER_HOME/buildCoverage
     cmake_coverage
+    if [ "$DYNAFLOW_LAUNCHER_BROWSER_SHOW" = true ] ; then
+        verify_browser
+        $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
+    fi
 }
 
 launch() {
@@ -331,6 +349,19 @@ launch() {
         error_exit "DFL configuration file $config doesn't exist"
     fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $1 \
+    --config $2
+}
+
+launch_gdb() {
+    if [ ! -f $1 ]; then
+        error_exit "IIDM network file $network doesn't exist"
+    fi
+    if [ ! -f $2 ]; then
+        error_exit "DFL configuration file $config doesn't exist"
+    fi
+    gdb --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $1 \
     --config $2
@@ -411,6 +442,9 @@ case $1 in
         ;;
     launch)
         launch $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
+        ;;
+    launch-gdb)
+        launch_gdb $2 $3 || error_exit "Failed to perform launch with network=$2, config=$3"
         ;;
     launch-sa)
         launch_sa $2 $3 $4 || error_exit "Failed to perform launch-sa with network=$2, config=$3, contingencies=$4"

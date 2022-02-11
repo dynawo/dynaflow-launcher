@@ -1,0 +1,29 @@
+// Copyright (c) 2022, RTE (http://www.rte-france.com)
+// See AUTHORS.txt
+// All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, you can obtain one at http://mozilla.org/MPL/2.0/.
+// SPDX-License-Identifier: MPL-2.0
+//
+
+//------------------ Inputs -------------------------
+ErrorConfigFileRead           =     error while reading configuration file: %1%
+ContingenciesReadError        =     error while reading contingencies file %1%: %2%
+DynModelFileReadError         =     cannot parse %1% : %2%
+UnsupportedCountName          =     unsupported count name %1% for setting set
+UnsupportedDataTypeReference  =     unsupported data type %1% for reference %2% in setting file
+UnsupportedOrigDataReference  =     unsupported data origin %1% for reference %2% in setting file
+UnsupportedParameterDataType  =     unsupported set parameter type %1% in setting file
+
+//------------------ Algo ---------------------------
+
+//------------------ Outputs -----------------------
+
+//------------------ Main ---------------------------
+EnvVariableMissing           =     cannot find environnement variable %1% please check runtime environment
+NetworkFileNotFound          =     network file %1% does not exist
+ContingenciesFileNotFound    =     contingencies file %1% was given but does not exist
+ContextProcessError          =     processing of the network %1% failed
+ConnexityError               =     slack node of id %1% not present in main connex component
+NetworkHasNoRegulatingGenerator         =     network file %1% has no generator regulating voltage in the main connex component
