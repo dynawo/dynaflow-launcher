@@ -11,6 +11,9 @@
 #include "Job.h"
 #include "Tests.h"
 
+#include <DYNExecUtils.h>
+#include <DYNFileSystemUtils.h>
+
 #include <JOBAppenderEntry.h>
 #include <JOBDynModelsEntry.h>
 #include <JOBFinalStateEntry.h>
@@ -109,4 +112,12 @@ TEST(Job, write) {
   outputPath.append(filename);
 
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+  ASSERT_TRUE(hasEnvVar("DYNAFLOW_LAUNCHER_INSTALL_DIR"));
+  std::string xsd_file = getEnvVar("DYNAFLOW_LAUNCHER_INSTALL_DIR") + "/share/xsd/jobs.xsd";
+  ASSERT_TRUE(exists(xsd_file));
+  std::stringstream ssVal;
+  std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
+  executeCommand(command, ssVal);
+  std::string commandRes = "Executing command : " + command +  "\n" + outputPath.generic_string() + " validates\n";
+  ASSERT_EQ(ssVal.str(), commandRes);
 }
