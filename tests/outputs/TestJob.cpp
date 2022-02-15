@@ -11,6 +11,9 @@
 #include "Job.h"
 #include "Tests.h"
 
+#include <DYNExecUtils.h>
+#include <DYNFileSystemUtils.h>
+
 #include <JOBAppenderEntry.h>
 #include <JOBDynModelsEntry.h>
 #include <JOBFinalStateEntry.h>
@@ -87,4 +90,34 @@ TEST(Job, write) {
   ASSERT_EQ(finalstates.size(), 1);
   ASSERT_EQ(true, finalstates.front()->getExportIIDMFile());
   ASSERT_EQ(false, finalstates.front()->getExportDumpFile());
+
+  std::string basename = "TestJob";
+  std::string filename = basename + ".jobs";
+  std::string filename_reference;
+#if _DEBUG_
+  filename_reference = basename + "_debug.jobs";
+#else
+  filename_reference = basename + "_release.jobs";
+#endif
+  boost::filesystem::path outputPath(outputPathResults);
+  outputPath.append(basename);
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+  job.exportJob(jobEntry, "TestIIDM.iidm", outputPath);
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename_reference);
+  outputPath.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+  ASSERT_TRUE(hasEnvVar("DYNAWO_HOME"));
+  std::string xsd_file = getEnvVar("DYNAWO_HOME") + "/share/xsd/jobs.xsd";
+  ASSERT_TRUE(exists(xsd_file));
+  std::stringstream ssVal;
+  std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
+  executeCommand(command, ssVal);
+  std::string commandRes = "Executing command : " + command +  "\n" + outputPath.generic_string() + " validates\n";
+  ASSERT_EQ(ssVal.str(), commandRes);
 }
