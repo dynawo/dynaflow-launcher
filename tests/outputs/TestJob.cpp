@@ -112,8 +112,8 @@ TEST(Job, write) {
   outputPath.append(filename);
 
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
-  ASSERT_TRUE(hasEnvVar("DYNAFLOW_LAUNCHER_INSTALL_DIR"));
-  std::string xsd_file = getEnvVar("DYNAFLOW_LAUNCHER_INSTALL_DIR") + "/share/xsd/jobs.xsd";
+  ASSERT_TRUE(hasEnvVar("DYNAWO_HOME"));
+  std::string xsd_file = getEnvVar("DYNAWO_HOME") + "/share/xsd/jobs.xsd";
   ASSERT_TRUE(exists(xsd_file));
   std::stringstream ssVal;
   std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
