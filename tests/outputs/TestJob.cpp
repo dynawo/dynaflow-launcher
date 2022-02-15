@@ -87,4 +87,26 @@ TEST(Job, write) {
   ASSERT_EQ(finalstates.size(), 1);
   ASSERT_EQ(true, finalstates.front()->getExportIIDMFile());
   ASSERT_EQ(false, finalstates.front()->getExportDumpFile());
+
+  std::string basename = "TestJob";
+  std::string filename = basename + ".jobs";
+  std::string filename_reference;
+#if _DEBUG_
+  filename_reference = basename + "_debug.jobs";
+#else
+  filename_reference = basename + "_release.jobs";
+#endif
+  boost::filesystem::path outputPath(outputPathResults);
+  outputPath.append(basename);
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+  job.exportJob(jobEntry, "TestIIDM.iidm", outputPath);
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename_reference);
+  outputPath.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }

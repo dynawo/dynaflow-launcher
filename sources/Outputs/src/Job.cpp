@@ -237,6 +237,30 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
   formatter->startElement("dyn", "outputs", attrs);
   attrs.clear();
 
+  // final state
+
+  auto constraints = outputs->getConstraintsEntry();
+  if (constraints) {
+    attrs.add("exportMode", constraints->getExportMode());
+    formatter->startElement("dyn", "constraints", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
+
+  auto timeline = outputs->getTimelineEntry();
+  if (timeline) {
+    attrs.add("exportMode", timeline->getExportMode());
+    formatter->startElement("dyn", "timeline", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
+
+  attrs.add("exportIIDMFile", exportIIDMFile_);
+  attrs.add("exportDumpFile", exportDumpFile_);
+  formatter->startElement("dyn", "finalState", attrs);
+  attrs.clear();
+  formatter->endElement();  // finalState
+
   auto logs = outputs->getLogsEntry();
   formatter->startElement("dyn", "logs");
   auto appenders = logs->getAppenderEntries();
@@ -249,30 +273,6 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
     formatter->endElement();  // appender
   }
   formatter->endElement();  // logs
-
-  // final state
-
-  attrs.add("exportIIDMFile", exportIIDMFile_);
-  attrs.add("exportDumpFile", exportDumpFile_);
-  formatter->startElement("dyn", "finalState", attrs);
-  attrs.clear();
-  formatter->endElement();  // finalState
-
-  auto timeline = outputs->getTimelineEntry();
-  if (timeline) {
-    attrs.add("exportMode", timeline->getExportMode());
-    formatter->startElement("dyn", "timeline", attrs);
-    attrs.clear();
-    formatter->endElement();
-  }
-
-  auto constraints = outputs->getConstraintsEntry();
-  if (constraints) {
-    attrs.add("exportMode", constraints->getExportMode());
-    formatter->startElement("dyn", "constraints", attrs);
-    attrs.clear();
-    formatter->endElement();
-  }
 
   formatter->endElement();  // outputs
 
