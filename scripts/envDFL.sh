@@ -183,6 +183,12 @@ set_environment() {
     # Use same locale of dynaflow launcher
     export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
+    # miscellaneous
+    export_var_env DYNAFLOW_LAUNCHER_PYTHON_COMMAND="python"
+    if [ ! -x "$(command -v ${DYNAFLOW_LAUNCHER_PYTHON_COMMAND})" ]; then
+        error_exit "Your python interpreter \"${DYNAFLOW_LAUNCHER_PYTHON_COMMAND}\" does not work. Use export DYNAFLOW_LAUNCHER_PYTHON_COMMAND=<Python Interpreter> in your myEnvDFL.sh."
+    fi
+
     # global vars
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
     ld_library_path_prepend $DYNAWO_ALGORITHMS_HOME/lib     # For Dynawo-algorithms library
@@ -389,7 +395,7 @@ version() {
 }
 
 update_references() {
-    $HERE/updateMainReference.py
+    ${DYNAFLOW_LAUNCHER_PYTHON_COMMAND} $HERE/updateMainReference.py
 }
 
 apply_clang_format() {
