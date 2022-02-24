@@ -11,6 +11,7 @@
   <dyn:macroConnect connector="MC_EventQuadripoleDisconnection" id1="Disconnect_TestBranch" id2="NETWORK" name2="TestBranch"/>
   <dyn:connect id1="Disconnect_TestGenerator" var1="event_state1" id2="TestGenerator" var2="generator_switchOffSignal2"/>
   <dyn:connect id1="Disconnect_TestLoad" var1="event_state1" id2="TestLoad" var2="switchOff2"/>
-  <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2"/>
+  <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2Side1"/>
+  <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2Side2"/>
   <dyn:connect id1="Disconnect_TestShuntCompensator" var1="event_state1" id2="NETWORK" var2="TestShuntCompensator_state"/>
 </dyn:dynamicModelsArchitecture>

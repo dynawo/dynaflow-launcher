@@ -69,7 +69,8 @@ DydEvent::write() const {
       break;
     case Type::HVDC_LINE:
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
-      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2");
+      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2Side1");
+      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2Side2");
       break;
     case Type::STATIC_VAR_COMPENSATOR:
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
