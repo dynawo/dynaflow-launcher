@@ -17,6 +17,7 @@
 #pragma once
 
 #include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
 #include <chrono>
 #include <string>
 
@@ -120,6 +121,15 @@ class Configuration {
   }
 
   /**
+   * @brief Get the precision of the simulation
+   *
+   * @returns the precision value if set, boost::none otherwise
+   */
+  const boost::optional<double> getPrecision() const {
+    return precision_;
+  }
+
+  /**
    * @brief Retrieves the Time at which the events related to each contingency will be simulated
    *
    * @returns the time of event value
@@ -184,6 +194,7 @@ class Configuration {
   boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
   Seconds startTime_ = Seconds(0);                                                   ///< start time of simulation
   Seconds stopTime_ = Seconds(100);                                                  ///< stop time for simulation
+  boost::optional<double> precision_;                                                ///< Precision of the simulation
 
   Seconds timeOfEvent_ = Seconds(80);  ///< time for contingency simulation (security analysis only)
   unsigned int numberOfThreads_ = 4;   ///< The number of threads used in security analysis simulation

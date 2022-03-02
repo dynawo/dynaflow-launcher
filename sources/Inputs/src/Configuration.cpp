@@ -44,6 +44,22 @@ updateValue(T& value, const boost::property_tree::ptree& tree, const std::string
 }
 
 /**
+ * @brief Helper function to update an internal parameter of type boost::optional<double>
+ *
+ * @param value the value to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ */
+template<>
+void
+updateValue(boost::optional<double>& value, const boost::property_tree::ptree& tree, const std::string& key) {
+  auto value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized()) {
+    value = value_opt->get_value<double>();
+  }
+}
+
+/**
  * @brief Helper function to update the active power compensation parameter, if the value of ActivePowerCompensation
  * is not one of the three available, then the function does not update the value of the active power compensation parameter.
  *
@@ -114,6 +130,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateValue(settingFilePath_, config, "SettingPath");
     helper::updateValue(assemblingFilePath_, config, "AssemblyPath");
+    helper::updateValue(precision_, config, "Precision");
     helper::updateSeconds(startTime_, config, "StartTime");
     helper::updateSeconds(stopTime_, config, "StopTime");
     helper::updateSeconds(timeOfEvent_, config, "sa.TimeOfEvent");

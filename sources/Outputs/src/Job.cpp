@@ -114,6 +114,7 @@ Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.startTime.count());
   simu->setStopTime(def_.stopTime.count());
+  simu->setPrecision(def_.precision_.value_or(simu->getPrecision()));
 
   return simu;
 }
@@ -227,6 +228,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
   auto simu = jobEntry->getSimulationEntry();
   attrs.add("startTime", simu->getStartTime());
   attrs.add("stopTime", simu->getStopTime());
+  attrs.add("precision", simu->getPrecision());
   formatter->startElement("dyn", "simulation", attrs);
   attrs.clear();
   formatter->endElement();  // simulation
