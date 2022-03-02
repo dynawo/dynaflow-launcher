@@ -11,6 +11,11 @@
 #include "Configuration.h"
 #include "Tests.h"
 
+#include <gtest_dynawo.h>
+#include <DYNCommon.h>
+
+using DYN::doubleEquals;
+
 TEST(Config, Nominal) {
   dfl::inputs::Configuration config("res/config.json");
 
@@ -26,6 +31,7 @@ TEST(Config, Nominal) {
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::P, config.getActivePowerCompensation());
   ASSERT_EQ(10, config.getStartTime().count());
   ASSERT_EQ(120, config.getStopTime().count());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(1e-3, config.getPrecision().value());
   ASSERT_EQ(50, config.getTimeOfEvent().count());
   ASSERT_EQ(6, config.getNumberOfThreads());
 }
