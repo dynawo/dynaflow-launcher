@@ -116,7 +116,9 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
                                                             networkManager_.getMapBusVSCConvertersBusId(),
                                                             networkManager_.dataInterface()->getServiceManager()));
-  onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
+  if (config_.isSVCRegulationOn()) {
+    onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
+  }
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     const auto& contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
