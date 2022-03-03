@@ -74,8 +74,10 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
-  networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_));
-  networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
+  networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_, config_.isShuntRegulationOn()));
+  if (config_.isShuntRegulationOn()) {
+    networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
+  }
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
 }
 
