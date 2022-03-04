@@ -129,7 +129,11 @@ NetworkManager::buildTree() {
       auto targetP = generator->getTargetP();
       auto pmin = generator->getPMin();
       auto pmax = generator->getPMax();
-      auto regulated_bus = interface_->getServiceManager()->getRegulatedBus(generator->getID())->getID();
+      std::string regulatedBusId = "";
+      auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(generator->getID());
+      if (regulatedBus) {
+        regulatedBusId = regulatedBus->getID();
+      }
       // we verify here that the generators is in voltage regulation to properly fill the map mapBusGeneratorBusId_.
       // This test is done also on algorithms.
       // The reason it is checked also here is to avoid to go through all the nodes later on
@@ -138,8 +142,7 @@ NetworkManager::buildTree() {
         updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
       }
       nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
-                                                generator->getQMin(), generator->getQMax(), pmin,
-                                                pmax, targetP, regulated_bus, nodeid);
+                                              generator->getQMin(), generator->getQMax(), pmin, pmax, targetP, regulatedBusId, nodeid);
       LOG(debug, NodeContainsGen, nodeid, generator->getID());
     }
 
@@ -166,7 +169,9 @@ NetworkManager::buildTree() {
       }
       auto nodeid = svarc->getBusInterface()->getID();
       const bool isRegulatingVoltage = (svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::OFF ||
-          svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q) ? false : true;
+                                        svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q)
+                                           ? false
+                                           : true;
       auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(svarc->getID());
       const double voltageSetPoint = isRegulatingVoltage ? svarc->getVSetPoint() : 0.;
       nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), isRegulatingVoltage, svarc->getBMin(), svarc->getBMax(), voltageSetPoint, svarc->getVNom(),
