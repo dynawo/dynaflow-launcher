@@ -208,7 +208,7 @@ NetworkManager::buildTree() {
   for (const auto& transfo : transfos) {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
-    if (transfo->getInitialConnected1() && transfo->getInitialConnected2()) {
+    if (transfo->getInitialConnected1() || transfo->getInitialConnected2()) {
       auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
       tfos_.push_back(tfo);
 
