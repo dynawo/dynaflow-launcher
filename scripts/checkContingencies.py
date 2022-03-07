@@ -33,6 +33,7 @@ def check_element(element, contingency_id, dyd_file, par_file, timeline_file, fi
     else:
         c_inputs_and_timeline = check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_file, timeline_file)
     c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
+    print("  check final state         : {}".format(c_finalState))
     return c_inputs_and_timeline and c_finalState
 
 def check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_file, timeline_file):
@@ -41,9 +42,12 @@ def check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_fil
     c_par = True
     c_timeline = True
     c_dyd      = check_file_with(check_dyd,           "Dyd", dyd_file, element, contingency_id)
+    print("  check dyd         : {}".format(c_dyd))
     c_par      = check_file_with(check_par,           "Par", par_file, element, contingency_id)
+    print("  check par         : {}".format(c_par))
     if buildType == "Debug":
         c_timeline = check_file_with(check_timeline, "Timeline", timeline_file, element, contingency_id)
+        print("  check timeline         : {}".format(c_timeline))
     return c_dyd and c_par and c_timeline
 
 def check_contingencies(contingencies_file, results_folder):
