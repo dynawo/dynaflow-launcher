@@ -183,6 +183,15 @@
       ]
     },
     {
+      "id": "two_windings_transformer_open_ended",
+      "elements": [
+        {
+          "id": "_045e3525-c766-11e1-8775-005056c00008-1",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
       "id": "contingency_bad_type",
       "elements": [
         {
