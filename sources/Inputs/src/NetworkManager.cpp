@@ -192,7 +192,7 @@ NetworkManager::buildTree() {
   for (const auto& line : lines) {
     auto bus1 = line->getBusInterface1();
     auto bus2 = line->getBusInterface2();
-    if (line->getInitialConnected1() && line->getInitialConnected2()) {
+    if (line->getInitialConnected1() || line->getInitialConnected2()) {
 #if _DEBUG_
       assert(nodes_.count(bus1->getID()) > 0);
       assert(nodes_.count(bus2->getID()) > 0);
