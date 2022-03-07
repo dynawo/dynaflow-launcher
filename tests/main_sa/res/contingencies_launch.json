@@ -156,6 +156,15 @@
       ]
     },
     {
+      "id": "line_contingency_open_ended",
+      "elements": [
+        {
+          "id": "_044c5ada-c766-11e1-8775-005056c00008-1",
+          "type": "LINE"
+        }
+      ]
+    },
+    {
       "id": "two_windings_transformer_contingency",
       "elements": [
         {
