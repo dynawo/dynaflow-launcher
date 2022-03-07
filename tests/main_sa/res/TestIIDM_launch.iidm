@@ -4570,6 +4570,12 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_2b636cdd-aa2f-4a65-92fc-12b4fc392e5f</iidm:alias>
                     <iidm:alias>_c96e50b9-ea15-4421-b6c8-bd9c9158a69a</iidm:alias>
                 </iidm:switch>
+
+                <!-- switches for new threeWindingsTransformer 086d83c7d...-1 end2 -->
+                <iidm:switch id="_e5318967-afcc-4fcc-b0de-d5f2522a95a6-1" name="DISCONNECTOR699-1" kind="DISCONNECTOR" retained="false" open="false" node1="43" node2="44"/>
+                <iidm:switch id="_e9f91b69-a29b-44ea-aa0f-cff86ee80320-1" name="BREAKER350-1" kind="BREAKER" retained="true" open="true" node1="42" node2="43"/>
+                <iidm:switch id="_ad86e83d-6334-4dd8-b642-b4c16d65329a-1" name="DISCONNECTOR700-1" kind="DISCONNECTOR" retained="false" open="false" node1="0" node2="42"/>
+
                 <iidm:internalConnection node1="13" node2="0"/>
                 <iidm:internalConnection node1="14" node2="1"/>
                 <iidm:internalConnection node1="15" node2="2"/>
@@ -4599,7 +4605,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:internalConnection node1="39" node2="9"/>
                 <iidm:internalConnection node1="40" node2="12"/>
                 <iidm:internalConnection node1="41" node2="3"/>
-                <iidm:bus v="215.342422" angle="-11.185832" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41"/>
+                <iidm:bus v="215.342422" angle="-11.185832" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42"/>
             </iidm:nodeBreakerTopology>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="_047bcf46-c766-11e1-8775-005056c00008" name="STN132KV" nominalV="132.0" topologyKind="NODE_BREAKER">
@@ -4679,6 +4685,12 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_e9315b98-af75-40bb-bf8e-05bd03d43db5</iidm:alias>
                     <iidm:alias>_4aab41d6-d1b6-4dbe-a6aa-cb7ccd941912</iidm:alias>
                 </iidm:switch>
+
+                <!-- switches for new threeWindingsTransformer 086d83c7d...-1 end3 -->
+                <iidm:switch id="_b8b0b9a9-af8b-41d2-a4f8-940637e63f70-1" name="DISCONNECTOR701-1" kind="DISCONNECTOR" retained="false" open="false" node1="64" node2="65"/>
+                <iidm:switch id="_0b78ffaa-9859-4658-af17-c8d355633556-1" name="BREAKER351-1" kind="BREAKER" retained="true" open="false" node1="63" node2="64"/>
+                <iidm:switch id="_9dfeeaef-5c49-4c2c-97b1-03876970bee4-1" name="DISCONNECTOR702-1" kind="DISCONNECTOR" retained="false" open="false" node1="0" node2="63"/>
+
                 <iidm:internalConnection node1="19" node2="0"/>
                 <iidm:internalConnection node1="20" node2="0"/>
                 <iidm:internalConnection node1="21" node2="1"/>
@@ -4723,7 +4735,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:internalConnection node1="60" node2="12"/>
                 <iidm:internalConnection node1="61" node2="15"/>
                 <iidm:internalConnection node1="62" node2="18"/>
-                <iidm:bus v="130.402969" angle="-16.17867" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
+                <iidm:bus v="130.402969" angle="-16.17867" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_045dbff4-c766-11e1-8775-005056c00008" name="Sorenson LD" loadType="UNDEFINED" p0="11.0" q0="3.0" node="20" p="11.0" q="3.0">
                 <iidm:alias>_044d4536-c766-11e1-8775-005056c00008</iidm:alias>
@@ -4746,6 +4758,12 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_340082f1-db9c-446d-97df-80e45aa0058b</iidm:alias>
                     <iidm:alias>_90c04b95-703a-4bae-82b8-7edf3075aa24</iidm:alias>
                 </iidm:switch>
+
+                 <!-- switches for new threeWindingsTransformer 086d83c7d...-1 end1 -->
+                <iidm:switch id="_4d08a684-cdcb-484a-a767-03b10f4ada7f-1" name="DISCONNECTOR735-1" kind="DISCONNECTOR" retained="false" open="false" node1="14" node2="15"/>
+                <iidm:switch id="_f468d841-1bf6-470e-85d4-55d34fab8bff-1" name="BREAKER368-1" kind="BREAKER" retained="true" open="false" node1="13" node2="14"/>
+                <iidm:switch id="_f193bd8f-badf-4600-82ac-f212d1f33534-1" name="DISCONNECTOR736-1" kind="DISCONNECTOR" retained="false" open="false" node1="0" node2="13"/>
+
                 <iidm:internalConnection node1="4" node2="0"/>
                 <iidm:internalConnection node1="5" node2="1"/>
                 <iidm:internalConnection node1="6" node2="2"/>
@@ -4755,7 +4773,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:internalConnection node1="10" node2="3"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="0"/>
-                <iidm:bus v="382.187561" angle="-12.6222725" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
+                <iidm:bus v="382.187561" angle="-12.6222725" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"/>
             </iidm:nodeBreakerTopology>
             <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0.0" powerFactor="0.8" node="12" p="10.0" q="6.0">
                 <iidm:alias>_739658a7-e08b-4395-8d79-93e87b7855e3</iidm:alias>
@@ -4800,6 +4818,33 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:temporaryLimit name="_611bb05e-9b9a-469c-b1d1-80a944c3ce2f" acceptableDuration="60" value="1400.0"/>
             </iidm:currentLimits2>
         </iidm:twoWindingsTransformer>
+                <!-- new threeWindingsTransformer 86d83c7d...-1 -->
+        <iidm:threeWindingsTransformer id="_86d83c7d-7826-4c16-b161-4ce17174e77f-1" name="T422" r1="-1.51999998092651" x1="23.2" g1="0.0" b1="0.0" ratedU1="400.0" r2="2.000000063052846" x2="19.999999999999996" g2="0.0" b2="0.0" ratedU2="220.0" r3="1.2000000564689806" x3="12.0" g3="0.0" b3="0.0" ratedU3="132.0" ratedU0="400.0" node1="15" voltageLevelId1="_3bbfa58a-a1ad-4b23-a526-3d76b096c1f4" node2="44" voltageLevelId2="_047b8123-c766-11e1-8775-005056c00008" node3="65" voltageLevelId3="_047bcf46-c766-11e1-8775-005056c00008">
+            <iidm:alias type="CGMES.Terminal2">_ae46e10e-1fbe-4139-b493-ed8e2844ee8d-1</iidm:alias>
+            <iidm:alias type="CGMES.Terminal3">_206474da-93c8-46b1-863f-9a308bfc2117-1</iidm:alias>
+            <iidm:alias type="CGMES.Terminal1">_9ac069ea-557b-4b8c-b12e-f9f2aecc3bf5-1</iidm:alias>
+            <iidm:alias type="CGMES.RatioTapChanger1">_1b2d419c-ac88-4dae-8dfe-2eb92d18c40a-1</iidm:alias>
+            <iidm:ratioTapChanger1 lowTapPosition="1" tapPosition="11" targetDeadband="0.0" loadTapChangingCapabilities="true" regulating="false" targetV="220.0">
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="0.9523809523809523"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="0.9638554216867469"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="0.9756097560975611"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="0.9876543209876544"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.0"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.0126582278481011"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.0256410256410258"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.0389610389610389"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.0526315789473684"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.0666666666666667"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.081081081081081"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.095890410958904"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.1111111111111112"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.1267605633802817"/>
+                <iidm:step r="0.0" x="0.0" g="0.0" b="0.0" rho="1.1428571428571428"/>
+            </iidm:ratioTapChanger1>
+            <iidm:currentLimits1 permanentLimit="500.0">
+                <iidm:temporaryLimit name="_3fd18f6e-749a-4fa7-af1b-b0c2d3952638-1" acceptableDuration="1800" value="533.0"/>
+            </iidm:currentLimits1>
+        </iidm:threeWindingsTransformer>
     </iidm:substation>
     <iidm:substation id="_04642898-c766-11e1-8775-005056c00008" name="Rómenna" country="GB" geographicalTags="_0472a781-c766-11e1-8775-005056c00008">
         <iidm:voltageLevel id="_0457f394-c766-11e1-8775-005056c00008" name="RÓM132KV" nominalV="132.0" topologyKind="NODE_BREAKER">

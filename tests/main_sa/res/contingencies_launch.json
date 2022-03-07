@@ -192,6 +192,15 @@
       ]
     },
     {
+      "id": "three_windings_transformer_contingency",
+      "elements": [
+          {
+            "id": "_86d83c7d-7826-4c16-b161-4ce17174e77f-1",
+            "type": "THREE_WINDINGS_TRANSFORMER"
+          }
+      ]
+    },
+    {
       "id": "contingency_bad_type",
       "elements": [
         {
