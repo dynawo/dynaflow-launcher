@@ -37,14 +37,28 @@ TEST(TestNode, line) {
   auto node1 = dfl::inputs::Node::build("1", vl, 10., shunts1);
   auto node2 = dfl::inputs::Node::build("2", vl, 4.5, shunts2);
 
-  auto line = dfl::inputs::Line::build("LINE", node0, node1, "ETE");
-  auto line2 = dfl::inputs::Line::build("LINE", node1, node2, "UNDEFINED");
+  auto line = dfl::inputs::Line::build("LINE", node0, node1, "ETE", true, true);
+  auto line2 = dfl::inputs::Line::build("LINE", node1, node2, "UNDEFINED", true, true);
   ASSERT_EQ(node0->shunts.size(), 0);
   ASSERT_EQ(node1->shunts.size(), 1);
   ASSERT_EQ(node2->shunts.size(), 2);
   ASSERT_EQ(node0->neighbours.size(), 1);
   ASSERT_EQ(node1->neighbours.size(), 2);
   ASSERT_EQ(node2->neighbours.size(), 1);
+}
+
+TEST(TestNode, linePartiallyConnected) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto node0 = dfl::inputs::Node::build("0", vl, 0.0, {});
+  auto node1 = dfl::inputs::Node::build("1", vl, 10., {});
+  auto node2 = dfl::inputs::Node::build("2", vl, 4.5, {});
+
+  auto line = dfl::inputs::Line::build("LINE", node0, node1, "ETE", true, true);
+  auto line2 = dfl::inputs::Line::build("LINE", node1, node2, "UNDEFINED", true, false);
+
+  ASSERT_EQ(node0->neighbours.size(), 1);
+  ASSERT_EQ(node1->neighbours.size(), 1);
+  ASSERT_EQ(node2->neighbours.size(), 0);
 }
 
 TEST(TestNode, Tfo) {
@@ -58,10 +72,30 @@ TEST(TestNode, Tfo) {
   auto node01 = dfl::inputs::Node::build("1", vl, 10., {});
   auto node02 = dfl::inputs::Node::build("2", vl, 4.5, {});
 
-  auto tfo = dfl::inputs::Tfo::build("TFO", node0, node1);
+  auto tfo = dfl::inputs::Tfo::build("TFO", node0, node1, true, true);
   ASSERT_EQ(node0->neighbours.size(), 1);
-  auto tfo2 = dfl::inputs::Tfo::build("TFO", node00, node01, node02);
+  auto tfo2 = dfl::inputs::Tfo::build("TFO", node00, node01, node02, true, true, true);
   ASSERT_EQ(node00->neighbours.size(), 2);
   ASSERT_EQ(node01->neighbours.size(), 2);
   ASSERT_EQ(node02->neighbours.size(), 2);
+}
+
+TEST(TestNode, TfosPartiallyConnected) {
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+
+  auto node0 = dfl::inputs::Node::build("0", vl, 0.0, {});
+  auto node1 = dfl::inputs::Node::build("1", vl, 10., {});
+  auto node2 = dfl::inputs::Node::build("2", vl, 20., {});
+  auto node3 = dfl::inputs::Node::build("3", vl, 5., {});
+  auto node4 = dfl::inputs::Node::build("4", vl, 15., {});
+
+  auto tfo2W = dfl::inputs::Tfo::build("TFO", node0, node1, true, true);
+  auto tfo2WPartiallyConnected = dfl::inputs::Tfo::build("TFOPC", node1, node4, true, false);
+  auto tfo3WPartiallyConnected = dfl::inputs::Tfo::build("TFO", node1, node2, node3, true, true, false);
+
+  ASSERT_EQ(node0->neighbours.size(), 1);
+  ASSERT_EQ(node1->neighbours.size(), 2);
+  ASSERT_EQ(node2->neighbours.size(), 1);
+  ASSERT_EQ(node3->neighbours.size(), 0);
+  ASSERT_EQ(node4->neighbours.size(), 0);
 }

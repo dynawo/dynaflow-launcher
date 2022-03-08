@@ -856,10 +856,10 @@ TEST(LinesByIds, base) {
       dfl::inputs::Node::build("VL6", vl, 0.0, {}),
   };
   std::vector<std::shared_ptr<dfl::inputs::Line>> lines{
-      dfl::inputs::Line::build("0", nodes[0], nodes[1], "ETE"),   dfl::inputs::Line::build("1", nodes[0], nodes[2], "UNDEFINED"),
-      dfl::inputs::Line::build("2", nodes[0], nodes[3], "HIVER"), dfl::inputs::Line::build("3", nodes[3], nodes[4], "UNDEFINED"),
-      dfl::inputs::Line::build("4", nodes[2], nodes[4], "HIVER"), dfl::inputs::Line::build("5", nodes[1], nodes[4], "UNDEFINED"),
-      dfl::inputs::Line::build("6", nodes[5], nodes[6], "HIVER"),
+      dfl::inputs::Line::build("0", nodes[0], nodes[1], "ETE", true, true),   dfl::inputs::Line::build("1", nodes[0], nodes[2], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("2", nodes[0], nodes[3], "HIVER", true, true), dfl::inputs::Line::build("3", nodes[3], nodes[4], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("4", nodes[2], nodes[4], "HIVER", true, true), dfl::inputs::Line::build("5", nodes[1], nodes[4], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("6", nodes[5], nodes[6], "HIVER", true, true),
   };
 
   dfl::algo::LinesByIdDefinitions def;
@@ -962,9 +962,9 @@ TEST(ContingencyValidation, base) {
   nodes[7]->danglingLines.emplace_back("DANGLINGLINE");
   nodes[8]->busBarSections.emplace_back("BUSBAR");
 
-  std::vector<std::shared_ptr<dfl::inputs::Line>> lines{dfl::inputs::Line::build("LINE", nodes[0], nodes[1], "ETE")};
-  std::vector<std::shared_ptr<dfl::inputs::Tfo>> tfos{dfl::inputs::Tfo::build("TFO", nodes[0], nodes[1]),
-                                                      dfl::inputs::Tfo::build("TFO3", nodes[0], nodes[1], nodes[2])};
+  std::vector<std::shared_ptr<dfl::inputs::Line>> lines{dfl::inputs::Line::build("LINE", nodes[0], nodes[1], "ETE", true, true)};
+  std::vector<std::shared_ptr<dfl::inputs::Tfo>> tfos{dfl::inputs::Tfo::build("TFO", nodes[0], nodes[1], true, true),
+                                                      dfl::inputs::Tfo::build("TFO3", nodes[0], nodes[1], nodes[2], true, true, true)};
 
   auto conv1 = std::make_shared<dfl::inputs::LCCConverter>("LccStation1", "0", nullptr, 1.);
   auto conv2 = std::make_shared<dfl::inputs::LCCConverter>("LccStation2", "1", nullptr, 1.);

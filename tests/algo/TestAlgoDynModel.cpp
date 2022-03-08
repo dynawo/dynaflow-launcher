@@ -55,13 +55,13 @@ TEST(TestAlgoDynModel, base) {
       dfl::inputs::Node::build("VL6", vl, 0.0, {}),
   };
   std::vector<std::shared_ptr<dfl::inputs::Line>> lines{
-      dfl::inputs::Line::build("0", nodes[0], nodes[1], "UNDEFINED"), dfl::inputs::Line::build("1", nodes[0], nodes[2], "UNDEFINED"),
-      dfl::inputs::Line::build("2", nodes[0], nodes[3], "UNDEFINED"), dfl::inputs::Line::build("3", nodes[3], nodes[4], "UNDEFINED"),
-      dfl::inputs::Line::build("4", nodes[2], nodes[4], "UNDEFINED"), dfl::inputs::Line::build("5", nodes[1], nodes[4], "UNDEFINED"),
-      dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED"),
+      dfl::inputs::Line::build("0", nodes[0], nodes[1], "UNDEFINED", true, true), dfl::inputs::Line::build("1", nodes[0], nodes[2], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("2", nodes[0], nodes[3], "UNDEFINED", true, true), dfl::inputs::Line::build("3", nodes[3], nodes[4], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("4", nodes[2], nodes[4], "UNDEFINED", true, true), dfl::inputs::Line::build("5", nodes[1], nodes[4], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED", true, true),
   };
 
-  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3]);
+  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], true, true);
 
   dfl::algo::DynModelAlgorithm algo(defs, manager, true);
 
@@ -148,13 +148,13 @@ TEST(TestAlgoDynModel, noRegulation) {
       dfl::inputs::Node::build("VL6", vl, 0.0, {}),
   };
   std::vector<std::shared_ptr<dfl::inputs::Line>> lines{
-      dfl::inputs::Line::build("0", nodes[0], nodes[1], "UNDEFINED"), dfl::inputs::Line::build("1", nodes[0], nodes[2], "UNDEFINED"),
-      dfl::inputs::Line::build("2", nodes[0], nodes[3], "UNDEFINED"), dfl::inputs::Line::build("3", nodes[3], nodes[4], "UNDEFINED"),
-      dfl::inputs::Line::build("4", nodes[2], nodes[4], "UNDEFINED"), dfl::inputs::Line::build("5", nodes[1], nodes[4], "UNDEFINED"),
-      dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED"),
+      dfl::inputs::Line::build("0", nodes[0], nodes[1], "UNDEFINED", true, true), dfl::inputs::Line::build("1", nodes[0], nodes[2], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("2", nodes[0], nodes[3], "UNDEFINED", true, true), dfl::inputs::Line::build("3", nodes[3], nodes[4], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("4", nodes[2], nodes[4], "UNDEFINED", true, true), dfl::inputs::Line::build("5", nodes[1], nodes[4], "UNDEFINED", true, true),
+      dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED", true, true),
   };
 
-  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3]);
+  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], true, true);
 
   dfl::algo::DynModelAlgorithm algo(defs, manager, false);
 
