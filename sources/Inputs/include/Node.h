@@ -63,6 +63,8 @@ class Line {
    * @param node1 the origin of the line
    * @param node2 the extremity of the line
    * @param season active season of the line
+   * @param isConnectedOnNode1 whether the line is initially connected on node 1
+   * @param isConnectedOnNode2 whether the lien is initially connected on node 2
    * @returns the built line
    */
   static std::shared_ptr<Line> build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season,
