@@ -174,10 +174,15 @@ NetworkManager::buildTree() {
                                            : true;
       auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(svarc->getID());
       const double voltageSetPoint = isRegulatingVoltage ? svarc->getVSetPoint() : 0.;
+      const bool hasStandByAutomaton = svarc->hasStandbyAutomaton();
+      const double b0 = hasStandByAutomaton ? svarc->getB0() : 0.;
+      const double uMinActivation = hasStandByAutomaton ? svarc->getUMinActivation() : 0.;
+      const double uMaxActivation = hasStandByAutomaton ? svarc->getUMaxActivation() : 0.;
+      const double uSetPointMin = hasStandByAutomaton ? svarc->getUSetPointMin() : 0.;
+      const double uSetPointMax = hasStandByAutomaton ? svarc->getUSetPointMax() : 0.;
       nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), isRegulatingVoltage, svarc->getBMin(), svarc->getBMax(), voltageSetPoint, svarc->getVNom(),
-                                          svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
-                                          svarc->getB0(), svarc->getSlope(), svarc->hasStandbyAutomaton(), svarc->hasVoltagePerReactivePowerControl(),
-                                          regulatedBus->getID(), nodeid, regulatedBus->getVNom());
+                                          uMinActivation, uMaxActivation, uSetPointMin, uSetPointMax, b0, svarc->getSlope(), svarc->hasStandbyAutomaton(),
+                                          svarc->hasVoltagePerReactivePowerControl(), regulatedBus->getID(), nodeid, regulatedBus->getVNom());
       LOG(debug, NodeContainsSVC, nodeid, svarc->getID());
     }
 
