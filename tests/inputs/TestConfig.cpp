@@ -11,8 +11,8 @@
 #include "Configuration.h"
 #include "Tests.h"
 
-#include <gtest_dynawo.h>
 #include <DYNCommon.h>
+#include <gtest_dynawo.h>
 
 using DYN::doubleEquals;
 
@@ -20,7 +20,6 @@ TEST(Config, Nominal) {
   dfl::inputs::Configuration config("res/config.json");
 
   ASSERT_TRUE(config.useInfiniteReactiveLimits());
-  ASSERT_FALSE(config.isPSTRegulationOn());
   ASSERT_FALSE(config.isSVCRegulationOn());
   ASSERT_FALSE(config.isShuntRegulationOn());
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
@@ -39,7 +38,6 @@ TEST(Config, Default) {
   dfl::inputs::Configuration config("res/config_default.json");
 
   ASSERT_FALSE(config.useInfiniteReactiveLimits());
-  ASSERT_TRUE(config.isPSTRegulationOn());
   ASSERT_TRUE(config.isSVCRegulationOn());
   ASSERT_TRUE(config.isShuntRegulationOn());
   ASSERT_TRUE(config.isAutomaticSlackBusOn());

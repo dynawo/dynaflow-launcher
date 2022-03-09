@@ -49,15 +49,6 @@ class Configuration {
   }
 
   /**
-   * @brief determines if PST regulation is on
-   *
-   * @returns the parameter value
-   */
-  bool isPSTRegulationOn() const {
-    return isPSTRegulationOn_;
-  }
-
-  /**
    * @brief determines if SVC regulation is on
    *
    * @returns the parameter value
@@ -174,7 +165,6 @@ class Configuration {
 
  private:
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
-  bool isPSTRegulationOn_ = true;                                                    ///< PST regulation on
   bool isSVCRegulationOn_ = true;                                                    ///< SVC regulation on
   bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
   bool isAutomaticSlackBusOn_ = true;                                                ///< automatic slack bus on
