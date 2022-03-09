@@ -84,7 +84,7 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
             contingency.elements.emplace_back(elementId + "_1", ContingencyElement::Type::TWO_WINDINGS_TRANSFORMER);
             contingency.elements.emplace_back(elementId + "_2", ContingencyElement::Type::TWO_WINDINGS_TRANSFORMER);
             contingency.elements.emplace_back(elementId + "_3", ContingencyElement::Type::TWO_WINDINGS_TRANSFORMER);
-            LOG(debug, Contingency2WIsFrom3W);
+            LOG(debug, Contingency2WIsFrom3W, elementId);
             LOG(debug, Contingency2WIsFrom3WLeg, elementId + "_1", "1");
             LOG(debug, Contingency2WIsFrom3WLeg, elementId + "_2", "2");
             LOG(debug, Contingency2WIsFrom3WLeg, elementId + "_3", "3");
