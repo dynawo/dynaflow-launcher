@@ -122,7 +122,6 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     auto config = tree.get_child("dfl-config");
 
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
-    helper::updateValue(isPSTRegulationOn_, config, "PSTRegulationOn");
     helper::updateValue(isSVCRegulationOn_, config, "SVCRegulationOn");
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");

@@ -1,7 +1,6 @@
 {
   "dfl-config": {
     "InfiniteReactiveLimits": "true",
-    "PSTRegulationOn": "false",
     "SVCRegulationOn": "false",
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",
