@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "name": "list",
+  "contingencies": [
+    {
+      "elements": [
+        {
+          "type": "LINE",
+          "id": "MyLineId"
+        }
+      ],
+      "id": "LineContingency"
+    },
+    {
+      "elements": [
+        {
+          "type": "GENERATOR",
+          "id": "MyGeneratorId"
+        },
+        {
+          "type": "LINE",
+          "id": "MyLineId"
+        }
+      ],
+      "id": "GeneratorAndLineContingency"
+    }
+  ]
+}
