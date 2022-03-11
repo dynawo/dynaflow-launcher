@@ -1,0 +1,66 @@
+%% Except where otherwise noted, content in this documentation is Copyright (c)
+%% 2022, RTE (http://www.rte-france.com) and licensed under a
+%% CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+%% license. All rights reserved.
+
+\documentclass[a4paper, 12pt]{report}
+
+% Latex setup
+\input{../latex_setup.tex}
+
+\begin{document}
+
+\title{Dynaflow-launcher Advanced Documentation}
+\date\today
+
+\maketitle
+\tableofcontents
+
+\chapter{Advanced documentation}
+
+This chapter contains documentation on advanced features for readers that would like to have a deep look in Dynaflow-launcher.
+It will explain:
+\begin{itemize}
+\item \Dynawo code organization (\ref{Dynaflow_Launcher_Advanced_Documentation_Code_Organization})
+\end{itemize}
+
+\section{Code organization}
+\label{Dynaflow_Launcher_Advanced_Documentation_Code_Organization}
+
+The Dynaflow-launcher source code \href{https://github.com/dynawo/dynaflow-launcher.git}
+{\underline{repository}} is organized as follows:
+\dirtree{%
+.1 cmake.
+.1 cpplint.
+.1 documentation.
+.1 etc.
+.1 scripts.
+.1 sources.
+.2 Algo.
+.2 Common.
+.2 Inputs.
+.2 Outputs.
+.1 tests.
+}
+\begin{itemize}
+\item the cmake folder contains all the files related to the general
+configuration of the compilation process;
+\item the cpplint directory contains the Python scripts needed to use cpplint;
+\item the documentation directory contains the different latex documents used to
+create this documentation;
+\item the etc folder contains several constant files used during the compilation or at runtime;
+\item the scripts folder contains some utilities script used during compilation or during tests;
+\item the sources directory contains all the code related to Dynaflow-launcher itself. This is the most important directory;
+\item the tests directory contains the testsuite used to check the correct
+behaviour of the tool.
+\end{itemize}
+
+The source code is divided into different subdirectories corresponding to the different parts of the Dynaflow-launcher tool. They are:
+\begin{itemize}
+\item the Algo directory contains the code related to the analysis of the input network to properly generate the inputs for Dynaflow;
+\item the Common directory contains all the code dealing with common feature and methods;
+\item the Inputs directory contains the code related to the analysis of Dynaflow-launcher inputs;
+\item the Outputs directory contains the code related to the generation of Dynaflow input files;
+\end{itemize}
+
+\end{document}

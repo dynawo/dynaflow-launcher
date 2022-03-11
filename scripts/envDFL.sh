@@ -179,8 +179,11 @@ where [option] can be:
                                                   - nbprocs: number of MPI processes to use for SA (default 1)
 
         =========== Documentation
-        build-doxygen-doc                         build all doxygen documentation
+        doc                                       open DynaFlow Launcher documentation
+        build-doc                                 build documentation
+        clean-doc                                 clean documentation
         doxygen-doc                               open DynaFlow Launcher's Doxygen documentation into chosen browser
+        build-doxygen-doc                         build all doxygen documentation
 
         =========== Others
         help                                      show all available options
@@ -213,6 +216,7 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
     export_var_env DYNAFLOW_LAUNCHER_BROWSER=firefox
     export_var_env DYNAFLOW_LAUNCHER_BROWSER_SHOW=true
+    export_var_env DYNAFLOW_LAUNCHER_PDFVIEWER=xdg-open
 
     # dynawo vars
     export_var_env DYNAWO_HOME=UNDEFINED
@@ -287,6 +291,9 @@ reset_environment_variables() {
 
     ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib64
     ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib
+    ld_library_path_remove $DYNAWO_INSTALL_DIR/lib
+    ld_library_path_remove $DYNAWO_ALGORITHMS_HOME/lib
+    ld_library_path_remove $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
 
     pythonpath_remove $DYNAWO_HOME/sbin/nrt/nrt_diff
 
@@ -560,7 +567,49 @@ open_doxygen_doc() {
     echo "... end of doc generation"
   fi
   verify_browser
-  $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/html/index.html
+  $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/html/index.html 
+}
+
+build_doc() {
+  if [ ! -d "$DYNAFLOW_LAUNCHER_HOME/documentation" ]; then
+    error_exit "$DYNAFLOW_LAUNCHER_HOME/documentation does not exist."
+  fi
+  cd $DYNAFLOW_LAUNCHER_HOME/documentation
+  bash dynaflow_launcher_documentation.sh
+}
+
+clean_doc() {
+  if [ ! -d "$DYNAFLOW_LAUNCHER_HOME/documentation" ]; then
+    error_exit "$DYNAFLOW_LAUNCHER_HOME/documentation does not exist."
+  fi
+  cd $DYNAFLOW_LAUNCHER_HOME/documentation
+  bash clean.sh
+}
+
+open_pdf() {
+  if [ -z "$1" ]; then
+    error_exit "You need to specify a pdf file to open."
+  fi
+  reset_environment_variables #conflict zlib
+  if [ ! -z "$DYNAFLOW_LAUNCHER_PDFVIEWER" ]; then
+    if [ -x "$(command -v $DYNAFLOW_LAUNCHER_PDFVIEWER)" ]; then
+      if [ -f "$1" ]; then
+        $DYNAFLOW_LAUNCHER_PDFVIEWER $1
+      else
+        error_exit "Pdf file $1 you try to open does not exist."
+      fi
+    else
+      error_exit "pdfviewer $DYNAFLOW_LAUNCHER_PDFVIEWER seems not to be executable."
+    fi
+  elif [ -x "$(command -v xdg-open)" ]; then
+      xdg-open $1
+  else
+    error_exit "Cannot determine how to open pdf document from command line. Use DYNAFLOW_LAUNCHER_PDFVIEWER environment variable."
+  fi
+}
+
+open_doc() {
+  open_pdf $DYNAFLOW_LAUNCHER_HOME/documentation/dynaflowLauncherDocumentation/DynaflowLauncherDocumentation.pdf
 }
 
 #################################
@@ -629,6 +678,18 @@ case $CMD in
         ;;
     reset-environment)
         reset_environment_variables || error_exit "Failed to reset environment variables"
+        ;;
+    build-doc)
+        build_doc || error_exit "Error during the build of dynawo documentation"
+        ;;
+    clean-doc)
+        clean_doc || error_exit "Error during the clean of Dynawo documentation"
+        ;;
+    doc)
+        open_doc || error_exit "Error during the opening of Dynawo documentation"
+        ;;
+    doxygen-doc)
+        open_doxygen_doc || error_exit "Error during Dynawo Doxygen doc visualisation"
         ;;
     tests)
         cmake_tests || error_exit "Failed to perform tests"
