@@ -1,0 +1,35 @@
+%% Except where otherwise noted, content in this documentation is Copyright (c)
+%% 2022, RTE (http://www.rte-france.com) and licensed under a
+%% CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+%% license. All rights reserved.
+
+\documentclass[a4paper, 12pt]{report}
+
+% Latex setup
+\input{../latex_setup.tex}
+
+\begin{document}
+
+\title{Dynaflow-launcher Functional Documentation}
+\date\today
+
+\maketitle
+\tableofcontents
+
+\chapter{Functional documentation}
+
+\section[Dynaflow-launcher Overview]{Dynaflow-launcher Overview}
+
+\section{Modeling}
+
+TODO
+\section{Solver}
+
+The solver used is the Simplified Solver (SolverSIM) from \Dynawo.
+The Maximum time step value is 10s.
+
+The full configuration used is the following:
+
+\lstinputlisting[language=XML,title=\Dynawo Simplified Solver configuration]{../../etc/solver.par}
+
+\end{document}
