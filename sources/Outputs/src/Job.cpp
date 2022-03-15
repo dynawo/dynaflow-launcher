@@ -114,6 +114,7 @@ Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.startTime.count());
   simu->setStopTime(def_.stopTime.count());
+  simu->setPrecision(def_.precision_.value_or(simu->getPrecision()));
 
   return simu;
 }
@@ -227,6 +228,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
   auto simu = jobEntry->getSimulationEntry();
   attrs.add("startTime", simu->getStartTime());
   attrs.add("stopTime", simu->getStopTime());
+  attrs.add("precision", simu->getPrecision());
   formatter->startElement("dyn", "simulation", attrs);
   attrs.clear();
   formatter->endElement();  // simulation
@@ -236,6 +238,30 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
   attrs.add("directory", outputs->getOutputsDirectory());
   formatter->startElement("dyn", "outputs", attrs);
   attrs.clear();
+
+  // final state
+
+  auto constraints = outputs->getConstraintsEntry();
+  if (constraints) {
+    attrs.add("exportMode", constraints->getExportMode());
+    formatter->startElement("dyn", "constraints", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
+
+  auto timeline = outputs->getTimelineEntry();
+  if (timeline) {
+    attrs.add("exportMode", timeline->getExportMode());
+    formatter->startElement("dyn", "timeline", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
+
+  attrs.add("exportIIDMFile", exportIIDMFile_);
+  attrs.add("exportDumpFile", exportDumpFile_);
+  formatter->startElement("dyn", "finalState", attrs);
+  attrs.clear();
+  formatter->endElement();  // finalState
 
   auto logs = outputs->getLogsEntry();
   formatter->startElement("dyn", "logs");
@@ -249,30 +275,6 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
     formatter->endElement();  // appender
   }
   formatter->endElement();  // logs
-
-  // final state
-
-  attrs.add("exportIIDMFile", exportIIDMFile_);
-  attrs.add("exportDumpFile", exportDumpFile_);
-  formatter->startElement("dyn", "finalState", attrs);
-  attrs.clear();
-  formatter->endElement();  // finalState
-
-  auto timeline = outputs->getTimelineEntry();
-  if (timeline) {
-    attrs.add("exportMode", timeline->getExportMode());
-    formatter->startElement("dyn", "timeline", attrs);
-    attrs.clear();
-    formatter->endElement();
-  }
-
-  auto constraints = outputs->getConstraintsEntry();
-  if (constraints) {
-    attrs.add("exportMode", constraints->getExportMode());
-    formatter->startElement("dyn", "constraints", attrs);
-    attrs.clear();
-    formatter->endElement();
-  }
 
   formatter->endElement();  // outputs
 

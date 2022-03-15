@@ -35,13 +35,13 @@ add_custom_target(dicokeys
 BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/src/DFLLog_keys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/include/DFLLog_keys.h ${CMAKE_CURRENT_SOURCE_DIR}/src/DFLError_keys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/include/DFLError_keys.h
 COMMAND ${Python_EXECUTABLE} ${Dynawo_SBIN_DIR}/validateDictionaries.py
         --inputDir=${CMAKE_SOURCE_DIR}/etc/Dictionaries --outputDir=${CMAKE_CURRENT_SOURCE_DIR} --namespace dfl
-COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/DFLLog_keys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/DFLLog_keys.cpp
+COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DFLLog_keys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/DFLLog_keys.cpp
 COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_SOURCE_DIR}/DFLLog_keys.cpp
-COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/DFLLog_keys.h ${CMAKE_CURRENT_SOURCE_DIR}/include/DFLLog_keys.h
+COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DFLLog_keys.h ${CMAKE_CURRENT_SOURCE_DIR}/include/DFLLog_keys.h
 COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_SOURCE_DIR}/DFLLog_keys.h
-COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/DFLError_keys.cpp
+COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/DFLError_keys.cpp
 COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.cpp
-COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.h ${CMAKE_CURRENT_SOURCE_DIR}/include/DFLError_keys.h
+COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.h ${CMAKE_CURRENT_SOURCE_DIR}/include/DFLError_keys.h
 COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.h
 COMMENT "Generate key files for dictionaries")
 

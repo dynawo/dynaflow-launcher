@@ -136,9 +136,8 @@ class NetworkManager {
    * @param map the mapping to update
    * @param elementId the element id to add to the map
    * @param dataInterface the data interface to use
-   * @returns the regulated bus id
    */
-  static BusId updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
+  static void updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
 
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface

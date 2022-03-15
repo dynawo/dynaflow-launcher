@@ -20,11 +20,20 @@ if (NOT GTEST_FOUND OR NOT GMOCK_FOUND)
 
   set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build shared libraries")
   set(gtest_force_shared_crt ON CACHE INTERNAL "Force shared crt")
+  set(googletest_version   1.8.1)
+  set(googletest_name      googletest-release-${googletest_version}.tar.gz)
+  if(DEFINED ENV{DYNAFLOW_LAUNCHER_GOOGLETEST_DOWNLOAD_URL})
+    set(googletest_prefix_url $ENV{DYNAFLOW_LAUNCHER_GOOGLETEST_DOWNLOAD_URL})
+  else()
+    set(googletest_prefix_url https://github.com/google/googletest/archive)
+  endif()
+  set(googletest_url       ${googletest_prefix_url}/release-${googletest_version}.tar.gz)
+  set(googletest_md5       2E6FBEB6A91310A16EFE181886C59596)
   FetchContent_Declare(
     googletest
 
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        release-1.8.1
+    URL            ${googletest_url}
+    URL_HASH       MD5=${googletest_md5}
     GIT_PROGRESS   TRUE
     GIT_SHALLOW    TRUE
   )

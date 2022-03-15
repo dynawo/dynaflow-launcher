@@ -1,0 +1,6 @@
+{
+  "dfl-config": {
+    "OutputDir": "resultsTestsTmp/no_SVC_regulation",
+    "SVCRegulationOn" : false
+  }
+}

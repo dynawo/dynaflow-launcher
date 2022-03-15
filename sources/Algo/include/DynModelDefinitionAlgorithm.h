@@ -17,9 +17,9 @@
 
 #pragma once
 
+#include "DynamicDataBaseManager.h"
 #include "NetworkManager.h"
 #include "Node.h"
-#include "DynamicDataBaseManager.h"
 
 #include <array>
 #include <boost/filesystem.hpp>
@@ -149,7 +149,7 @@ class DynModelAlgorithm {
    * @param models the models to update
    * @param manager the dynamic data base manager to use
    */
-  DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager);
+  DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager, bool shuntRegulationOn);
 
   /**
    * @brief Perform the algorithm
@@ -228,7 +228,7 @@ class DynModelAlgorithm {
 
  private:
   /// @brief Extract models from configuration before processing the nodes
-  void extractDynModels();
+  void extractDynModels(bool shuntRegulationOn);
 
   /**
    * @brief Process single association from configuration

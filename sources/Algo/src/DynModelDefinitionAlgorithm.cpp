@@ -21,10 +21,10 @@
 namespace dfl {
 namespace algo {
 
-DynModelAlgorithm::DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager) :
+DynModelAlgorithm::DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager, bool shuntRegulationOn) :
     dynamicModels_(models),
     manager_(manager) {
-  extractDynModels();
+  extractDynModels(shuntRegulationOn);
 }
 
 boost::optional<boost::filesystem::path>
@@ -97,7 +97,7 @@ DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingXmlDocum
 }
 
 void
-DynModelAlgorithm::extractDynModels() {
+DynModelAlgorithm::extractDynModels(bool shuntRegulationOn) {
   using inputs::AssemblingXmlDocument;
 
   const auto& automatons = manager_.assemblingDocument().dynamicAutomatons();
@@ -110,8 +110,10 @@ DynModelAlgorithm::extractDynModels() {
     singleAssociationsMap[asso.id] = asso;
   }
   std::unordered_map<std::string, AssemblingXmlDocument::MultipleAssociation> multiAssociationsMap;
-  for (const auto& asso : multiAssociations) {
-    multiAssociationsMap[asso.id] = asso;
+  if (shuntRegulationOn) {
+    for (const auto& asso : multiAssociations) {
+      multiAssociationsMap[asso.id] = asso;
+    }
   }
 
   for (const auto& automaton : automatons) {

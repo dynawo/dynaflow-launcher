@@ -52,6 +52,11 @@ DydEvent::write() const {
 
   // models and connections
   for (const auto& element : def_.contingency.elements) {
+    if (isNetwork(element.id)) {
+      dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
+      addNetworkStateDisconnectionConnect(dynamicModels, element.id);
+      continue;
+    }
     switch (element.type) {
     case Type::BRANCH:
     case Type::LINE:
@@ -69,7 +74,8 @@ DydEvent::write() const {
       break;
     case Type::HVDC_LINE:
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
-      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2");
+      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2Side1");
+      addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2Side2");
       break;
     case Type::STATIC_VAR_COMPENSATOR:
       dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
@@ -133,6 +139,11 @@ void
 DydEvent::addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state1");
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state2");
+}
+
+bool
+DydEvent::isNetwork(const std::string& elementId) const {
+  return (def_.networkElements_.find(elementId) != def_.networkElements_.end());
 }
 
 }  // namespace outputs

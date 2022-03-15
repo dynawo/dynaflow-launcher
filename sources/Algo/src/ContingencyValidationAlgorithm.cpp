@@ -17,43 +17,35 @@
 namespace dfl {
 namespace algo {
 void
-ContingencyValidationAlgorithm::operator()(const NodePtr& node) {
+ContingencyValidationAlgorithmOnNodes::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
   using Type = inputs::ContingencyElement::Type;
+  const bool notInNetwork_ = false;  ///< boolean determining the component is not modelled as network
 
   for (const auto& line : node->lines) {
-    validContingencies_.markElementValid(line.lock()->id, Type::LINE);
+    validContingencies_.markElementValid(line.lock()->id, Type::LINE, notInNetwork_);
   }
   for (const auto& tfoPtr : node->tfos) {
     const auto& tfo = tfoPtr.lock();
     switch (tfo->nodes.size()) {
     case 2:
-      validContingencies_.markElementValid(tfo->id, Type::TWO_WINDINGS_TRANSFORMER);
+      validContingencies_.markElementValid(tfo->id, Type::TWO_WINDINGS_TRANSFORMER, notInNetwork_);
       break;
     case 3:
-      validContingencies_.markElementValid(tfo->id, Type::THREE_WINDINGS_TRANSFORMER);
+      validContingencies_.markElementValid(tfo->id, Type::THREE_WINDINGS_TRANSFORMER, notInNetwork_);
       break;
     }
   }
   for (const auto& converter : node->converters) {
-    validContingencies_.markElementValid(converter.lock()->hvdcLine->id, Type::HVDC_LINE);
-  }
-  for (const auto& load : node->loads) {
-    validContingencies_.markElementValid(load.id, Type::LOAD);
-  }
-  for (const auto& generator : node->generators) {
-    validContingencies_.markElementValid(generator.id, Type::GENERATOR);
+    validContingencies_.markElementValid(converter.lock()->hvdcLine->id, Type::HVDC_LINE, notInNetwork_);
   }
   for (const auto& shunt : node->shunts) {
-    validContingencies_.markElementValid(shunt.id, Type::SHUNT_COMPENSATOR);
+    validContingencies_.markElementValid(shunt.id, Type::SHUNT_COMPENSATOR, notInNetwork_);
   }
   for (const auto& danglingLine : node->danglingLines) {
-    validContingencies_.markElementValid(danglingLine.id, Type::DANGLING_LINE);
-  }
-  for (const auto& svarc : node->svarcs) {
-    validContingencies_.markElementValid(svarc.id, Type::STATIC_VAR_COMPENSATOR);
+    validContingencies_.markElementValid(danglingLine.id, Type::DANGLING_LINE, notInNetwork_);
   }
   for (const auto& busBarSection : node->busBarSections) {
-    validContingencies_.markElementValid(busBarSection.id, Type::BUSBAR_SECTION);
+    validContingencies_.markElementValid(busBarSection.id, Type::BUSBAR_SECTION, notInNetwork_);
   }
 }
 
@@ -66,7 +58,7 @@ ValidContingencies::ValidContingencies(const std::vector<inputs::Contingency>& c
 }
 
 void
-ValidContingencies::markElementValid(const ElementId& elementId, inputs::ContingencyElement::Type elementType) {
+ValidContingencies::markElementValid(const ElementId& elementId, inputs::ContingencyElement::Type elementType, const bool isNetwork) {
   const auto& elementContingencies = elementContingencies_.find(elementId);
   if (elementContingencies != elementContingencies_.end()) {
     // For all contingencies where the element is referred ...
@@ -81,6 +73,9 @@ ValidContingencies::markElementValid(const ElementId& elementId, inputs::Conting
       if (contingencyElementIt != contingency.elements.end() && inputs::ContingencyElement::isCompatible((*contingencyElementIt).type, elementType)) {
         // If type is compatible, add the element to the list of valid elements found for the contingency
         validatingContingencies_[contingency.id].insert(elementId);
+        if (isNetwork) {
+          networkElements_.insert(elementId);
+        }
       }
     }
   }
@@ -108,6 +103,22 @@ ValidContingencies::keepContingenciesWithAllElementsValid() {
         validContingencies_.push_back(contingency);
       }
     }
+  }
+}
+
+void
+ContingencyValidationAlgorithmOnDefs::fillValidContingenciesOnDefs(const std::vector<algo::LoadDefinition>& loads,
+                                                                   const std::vector<algo::GeneratorDefinition>& generators,
+                                                                   const std::vector<algo::StaticVarCompensatorDefinition>& svarcs) {
+  using Type = inputs::ContingencyElement::Type;
+  for (const auto& load : loads) {
+    validContingencies_.markElementValid(load.id, Type::LOAD, load.isNetwork());
+  }
+  for (const auto& generator : generators) {
+    validContingencies_.markElementValid(generator.id, Type::GENERATOR, generator.isNetwork());
+  }
+  for (const auto& svarc : svarcs) {
+    validContingencies_.markElementValid(svarc.id, Type::STATIC_VAR_COMPENSATOR, svarc.isNetwork());
   }
 }
 

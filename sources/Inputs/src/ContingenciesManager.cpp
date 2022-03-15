@@ -75,7 +75,22 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
 
         const auto elementType = ContingencyElement::typeFromString(elementTypeStr);
         if (elementType) {
-          contingency.elements.emplace_back(elementId, *elementType);
+          // We follow the same strategy applied in Dynawo: converting a 3-winding transformer to 3 2-winding transformers.
+          // The 3 2-winding transformers representing each leg will always be connected at least to the fictitious star bus.
+          // If any of the legs is connected to the main connected component, then the star bus will be also in the main cc.
+          // Even if one leg is disconnected, the contingency as a whole will be considered,
+          // because all 3 2-winding transformers will be connected at least at the start bus.
+          if (*elementType == ContingencyElement::Type::THREE_WINDINGS_TRANSFORMER) {
+            contingency.elements.emplace_back(elementId + "_1", ContingencyElement::Type::TWO_WINDINGS_TRANSFORMER);
+            contingency.elements.emplace_back(elementId + "_2", ContingencyElement::Type::TWO_WINDINGS_TRANSFORMER);
+            contingency.elements.emplace_back(elementId + "_3", ContingencyElement::Type::TWO_WINDINGS_TRANSFORMER);
+            LOG(debug, Contingency2WIsFrom3W, elementId);
+            LOG(debug, Contingency2WIsFrom3WLeg, elementId + "_1", "1");
+            LOG(debug, Contingency2WIsFrom3WLeg, elementId + "_2", "2");
+            LOG(debug, Contingency2WIsFrom3WLeg, elementId + "_3", "3");
+          } else {
+            contingency.elements.emplace_back(elementId, *elementType);
+          }
         } else {
           valid = false;
           LOG(warn, ContingencyInvalidBadElemType, contingency.id, elementId, elementTypeStr);

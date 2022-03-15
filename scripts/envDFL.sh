@@ -186,6 +186,8 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_HOME=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
+    export_var_env DYNAFLOW_LAUNCHER_BROWSER=firefox
+    export_var_env DYNAFLOW_LAUNCHER_BROWSER_SHOW=true
 
     # dynawo vars
     export_var_env DYNAWO_HOME=UNDEFINED
@@ -203,6 +205,12 @@ set_environment() {
     export_var_env DYNAWO_ALGORITHMS_HOME=UNDEFINED
     # Use same locale of dynaflow launcher
     export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
+
+    # miscellaneous
+    export_var_env DYNAFLOW_LAUNCHER_PYTHON_COMMAND="python"
+    if [ ! -x "$(command -v ${DYNAFLOW_LAUNCHER_PYTHON_COMMAND})" ]; then
+        error_exit "Your python interpreter \"${DYNAFLOW_LAUNCHER_PYTHON_COMMAND}\" does not work. Use export DYNAFLOW_LAUNCHER_PYTHON_COMMAND=<Python Interpreter> in your myEnvDFL.sh."
+    fi
 
     # global vars
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
@@ -310,6 +318,12 @@ cmake_tests() {
     return ${RETURN_CODE}
 }
 
+verify_browser() {
+  if [ ! -x "$(command -v $DYNAFLOW_LAUNCHER_BROWSER)" ]; then
+    error_exit "Specified browser DYNAFLOW_LAUNCHER_BROWSER=$DYNAFLOW_LAUNCHER_BROWSER not found."
+  fi
+}
+
 cmake_coverage() {
     pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
     export GTEST_COLOR=1
@@ -350,6 +364,10 @@ build_user() {
 build_tests_coverage() {
     rm -rf $DYNAFLOW_LAUNCHER_HOME/buildCoverage
     cmake_coverage
+    if [ "$DYNAFLOW_LAUNCHER_BROWSER_SHOW" = true ] ; then
+        verify_browser
+        $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
+    fi
 }
 
 launch() {
@@ -402,7 +420,7 @@ version() {
 }
 
 update_references() {
-    $HERE/updateMainReference.py
+    ${DYNAFLOW_LAUNCHER_PYTHON_COMMAND} $HERE/updateMainReference.py
 }
 
 apply_clang_format() {

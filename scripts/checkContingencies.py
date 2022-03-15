@@ -18,6 +18,38 @@ def check_test_contingencies(tests_path, test_name):
 
     return check_contingencies(contingencies_file, results_folder)
 
+def check_element(element, contingency_id, dyd_file, par_file, timeline_file, finalState_file):
+    c_inputs_and_timeline = False
+    c_finalState = False
+    (element_id, element_type) = element
+    # The dynawo input files DYD, PAR and the timeline has references to the three two-winding transformers
+    # that dynawo uses to model the three-winding transformers
+    # But the final state contains the original element as a three-winding transformer
+    if element_type == 'THREE_WINDINGS_TRANSFORMER':
+        c1 = check_element_inputs_and_timeline((element_id + '_1', 'TWO_WINDINGS_TRANSFORMER'), contingency_id, dyd_file, par_file, timeline_file)
+        c2 = check_element_inputs_and_timeline((element_id + '_2', 'TWO_WINDINGS_TRANSFORMER'), contingency_id, dyd_file, par_file, timeline_file)
+        c3 = check_element_inputs_and_timeline((element_id + '_3', 'TWO_WINDINGS_TRANSFORMER'), contingency_id, dyd_file, par_file, timeline_file)
+        c_inputs_and_timeline = c1 and c2 and c3
+    else:
+        c_inputs_and_timeline = check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_file, timeline_file)
+    c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
+    print("  check final state         : {}".format(c_finalState))
+    return c_inputs_and_timeline and c_finalState
+
+def check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_file, timeline_file):
+    buildType = os.getenv("DYNAFLOW_LAUNCHER_BUILD_TYPE")
+    c_dyd = True
+    c_par = True
+    c_timeline = True
+    c_dyd      = check_file_with(check_dyd,           "Dyd", dyd_file, element, contingency_id)
+    print("  check dyd         : {}".format(c_dyd))
+    c_par      = check_file_with(check_par,           "Par", par_file, element, contingency_id)
+    print("  check par         : {}".format(c_par))
+    if buildType == "Debug":
+        c_timeline = check_file_with(check_timeline, "Timeline", timeline_file, element, contingency_id)
+        print("  check timeline         : {}".format(c_timeline))
+    return c_dyd and c_par and c_timeline
+
 def check_contingencies(contingencies_file, results_folder):
     all_ok = True
     buildType = os.getenv("DYNAFLOW_LAUNCHER_BUILD_TYPE")
@@ -29,25 +61,11 @@ def check_contingencies(contingencies_file, results_folder):
         finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
 
         print("Checking contingency " + contingency_id)
-        c_dyd = True
-        c_par = True
-        c_timeline = True
-        c_finalState = True
         if os.path.isdir(os.path.join(results_folder , contingency_id)):
             # This is a valid contingency, check that every file exists and
             # conforms to what we expect
             for element in contingency_elements:
-                # Let's check them ahead, so that 'and' doesn't shortcut
-                c_dyd        = check_file_with(check_dyd,                     "Dyd",        dyd_file, element, contingency_id)
-                c_par        = check_file_with(check_par,                     "Par",        par_file, element, contingency_id)
-                if buildType == "Debug":
-                    c_timeline   = check_file_with(check_timeline,           "Timeline",   timeline_file, element, contingency_id)
-                c_finalState = check_file_with(check_finalState, "Final State IIDM", finalState_file, element, contingency_id)
-                print("  check dyd         : {}".format(c_dyd))
-                print("  check par         : {}".format(c_par))
-                print("  check timeline    : {}".format(c_timeline))
-                print("  check final state : {}".format(c_finalState))
-                all_ok = all_ok and c_dyd and c_par and c_timeline and c_finalState
+                all_ok = all_ok and check_element(element, contingency_id, dyd_file, par_file, timeline_file, finalState_file)
         else:
             # This is an invalid contingency, check that actually no file
             # related to it exists, we only need to worry about DYD and PAR files
@@ -138,6 +156,7 @@ def check_finalState(iidm_file, element):
 
     p_q = ['p', 'q']
     p12_q12 = ['p1','p2','q1','q2']
+    p123_q123 = ['p1','p2','p3','q1','q2','q3']
     attrs_to_check = {
         'LOAD': p_q,
         'GENERATOR': p_q,
@@ -145,6 +164,7 @@ def check_finalState(iidm_file, element):
         'BRANCH': p12_q12,
         'LINE': p12_q12,
         'TWO_WINDINGS_TRANSFORMER': p12_q12,
+        'THREE_WINDINGS_TRANSFORMER': p123_q123,
         'SHUNT_COMPENSATOR': ['q'],
         'STATIC_VAR_COMPENSATOR': ['q']}
     allowed_values = ['0', '-0']

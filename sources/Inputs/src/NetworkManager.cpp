@@ -50,9 +50,8 @@ NetworkManager::NetworkManager(const boost::filesystem::path& filepath) :
   buildTree();
 }
 
-auto
-NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface)
-    -> BusId {
+void
+NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface) {
   auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(elementId)->getID();
   auto it = map.find(regulatedBus);
   if (it == map.end()) {
@@ -60,7 +59,6 @@ NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::strin
   } else {
     it->second = NbOfRegulating::MULTIPLES;
   }
-  return regulatedBus;
 }
 
 void
@@ -131,14 +129,21 @@ NetworkManager::buildTree() {
       auto targetP = generator->getTargetP();
       auto pmin = generator->getPMin();
       auto pmax = generator->getPMax();
-      if (generator->isVoltageRegulationOn() && (DYN::doubleEquals(-targetP, pmin) || -targetP > pmin) &&
-          (DYN::doubleEquals(-targetP, pmax) || -targetP < pmax)) {
-        // We don't use dynamic models for generators with voltage regulation disabled and an active power reference outside the generator's PQ diagram
-        auto regulated_bus = updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
-        nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->getReactiveCurvesPoints(), generator->getQMin(), generator->getQMax(), pmin,
-                                                pmax, targetP, regulated_bus, nodeid);
-        LOG(debug, NodeContainsGen, nodeid, generator->getID());
+      std::string regulatedBusId = "";
+      auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(generator->getID());
+      if (regulatedBus) {
+        regulatedBusId = regulatedBus->getID();
       }
+      // we verify here that the generators is in voltage regulation to properly fill the map mapBusGeneratorBusId_.
+      // This test is done also on algorithms.
+      // The reason it is checked also here is to avoid to go through all the nodes later on
+      if (generator->isVoltageRegulationOn()) {
+        // We don't use dynamic models for generators with voltage regulation disabled
+        updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
+      }
+      nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
+                                              generator->getQMin(), generator->getQMax(), pmin, pmax, targetP, regulatedBusId, nodeid);
+      LOG(debug, NodeContainsGen, nodeid, generator->getID());
     }
 
     const auto& switches = networkVL->getSwitches();
@@ -162,16 +167,22 @@ NetworkManager::buildTree() {
       if (!svarc->getInitialConnected()) {
         continue;
       }
-      if (svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::OFF ||
-          svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q) {
-        continue;
-      }
       auto nodeid = svarc->getBusInterface()->getID();
+      const bool isRegulatingVoltage = (svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::OFF ||
+                                        svarc->getRegulationMode() == DYN::StaticVarCompensatorInterface::RegulationMode_t::RUNNING_Q)
+                                           ? false
+                                           : true;
       auto regulatedBus = interface_->getServiceManager()->getRegulatedBus(svarc->getID());
-      nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), svarc->getBMin(), svarc->getBMax(), svarc->getVSetPoint(), svarc->getVNom(),
-                                          svarc->getUMinActivation(), svarc->getUMaxActivation(), svarc->getUSetPointMin(), svarc->getUSetPointMax(),
-                                          svarc->getB0(), svarc->getSlope(), svarc->hasStandbyAutomaton(), svarc->hasVoltagePerReactivePowerControl(),
-                                          regulatedBus->getID(), nodeid, regulatedBus->getVNom());
+      const double voltageSetPoint = isRegulatingVoltage ? svarc->getVSetPoint() : 0.;
+      const bool hasStandByAutomaton = svarc->hasStandbyAutomaton();
+      const double b0 = hasStandByAutomaton ? svarc->getB0() : 0.;
+      const double uMinActivation = hasStandByAutomaton ? svarc->getUMinActivation() : 0.;
+      const double uMaxActivation = hasStandByAutomaton ? svarc->getUMaxActivation() : 0.;
+      const double uSetPointMin = hasStandByAutomaton ? svarc->getUSetPointMin() : 0.;
+      const double uSetPointMax = hasStandByAutomaton ? svarc->getUSetPointMax() : 0.;
+      nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), isRegulatingVoltage, svarc->getBMin(), svarc->getBMax(), voltageSetPoint, svarc->getVNom(),
+                                          uMinActivation, uMaxActivation, uSetPointMin, uSetPointMax, b0, svarc->getSlope(), svarc->hasStandbyAutomaton(),
+                                          svarc->hasVoltagePerReactivePowerControl(), regulatedBus->getID(), nodeid, regulatedBus->getVNom());
       LOG(debug, NodeContainsSVC, nodeid, svarc->getID());
     }
 
@@ -186,14 +197,17 @@ NetworkManager::buildTree() {
   for (const auto& line : lines) {
     auto bus1 = line->getBusInterface1();
     auto bus2 = line->getBusInterface2();
-    if (line->getInitialConnected1() && line->getInitialConnected2()) {
+    if (line->getInitialConnected1() || line->getInitialConnected2()) {
 #if _DEBUG_
       assert(nodes_.count(bus1->getID()) > 0);
       assert(nodes_.count(bus2->getID()) > 0);
 #endif
-      LOG(debug, NodeConnectionByLine, bus1->getID(), bus2->getID(), line->getID());
+      if (line->getInitialConnected1() && line->getInitialConnected2()) {
+        LOG(debug, NodeConnectionByLine, bus1->getID(), bus2->getID(), line->getID());
+      }
       auto season = line->getActiveSeason();
-      auto new_line = Line::build(line->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), season);
+      auto new_line =
+          Line::build(line->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), season, line->getInitialConnected1(), line->getInitialConnected2());
       lines_.push_back(new_line);
     }
   }
@@ -202,11 +216,13 @@ NetworkManager::buildTree() {
   for (const auto& transfo : transfos) {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
-    if (transfo->getInitialConnected1() && transfo->getInitialConnected2()) {
-      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()));
+    if (transfo->getInitialConnected1() || transfo->getInitialConnected2()) {
+      auto tfo =
+          Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), transfo->getInitialConnected1(), transfo->getInitialConnected2());
       tfos_.push_back(tfo);
-
-      LOG(debug, NodeConnectionBy2WT, bus1->getID(), bus2->getID(), transfo->getID());
+      if (transfo->getInitialConnected1() && transfo->getInitialConnected2()) {
+        LOG(debug, NodeConnectionBy2WT, bus1->getID(), bus2->getID(), transfo->getID());
+      }
     }
   }
 
@@ -215,11 +231,13 @@ NetworkManager::buildTree() {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
     auto bus3 = transfo->getBusInterface3();
-    if (transfo->getInitialConnected1() && transfo->getInitialConnected2() && transfo->getInitialConnected3()) {
-      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()));
+    if (transfo->getInitialConnected1() || transfo->getInitialConnected2() || transfo->getInitialConnected3()) {
+      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()), transfo->getInitialConnected1(),
+                            transfo->getInitialConnected2(), transfo->getInitialConnected3());
       tfos_.push_back(tfo);
-
-      LOG(debug, NodeConnectionBy3WT, bus1->getID(), bus2->getID(), bus3->getID(), transfo->getID());
+      if (transfo->getInitialConnected1() && transfo->getInitialConnected2() && transfo->getInitialConnected3()) {
+        LOG(debug, NodeConnectionBy3WT, bus1->getID(), bus2->getID(), bus3->getID(), transfo->getID());
+      }
     }
   }
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<dyn:jobs xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:job name="TestJob">
+    <dyn:solver lib="dynawo_SolverSIM" parFile="solver.par" parId="SimplifiedSolver"/>
+    <dyn:modeler compileDir="outputs/compilation">
+      <dyn:network iidmFile="TestIIDM.iidm" parFile="Network.par" parId="Network"/>
+      <dyn:dynModels dydFile="TestJob.dyd"/>
+      <dyn:precompiledModels useStandardModels="true"/>
+      <dyn:modelicaModels useStandardModels="true"/>
+    </dyn:modeler>
+    <dyn:simulation startTime="0" stopTime="100" precision="9.9999999999999995e-07"/>
+    <dyn:outputs directory="outputs">
+      <dyn:finalState exportIIDMFile="true" exportDumpFile="false"/>
+      <dyn:logs>
+        <dyn:appender tag="" file="dynawo.log" lvlFilter="INFO"/>
+      </dyn:logs>
+    </dyn:outputs>
+  </dyn:job>
+</dyn:jobs>

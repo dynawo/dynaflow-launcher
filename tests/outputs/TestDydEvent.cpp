@@ -33,14 +33,23 @@ TEST(TestDydEvent, write) {
 
   auto contingency = dfl::inputs::Contingency("TestContingency");
   // We need one element per case handled in DydEvent
-  contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                       // buildBranchDisconnection (branch case)
-  contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                 // signal: "generator_switchOffSignal2"
-  contingency.elements.emplace_back("TestLoad", ElementType::LOAD);                           // signal: "switchOff2"
-  contingency.elements.emplace_back("TestHvdcLine", ElementType::HVDC_LINE);                  // signal: "hvdc_switchOffSignal2"
-  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);  // buildNetworkStateDisconnection (general case)
+  contingency.elements.emplace_back("TestBranch", ElementType::BRANCH);                                       // buildBranchDisconnection (branch case)
+  contingency.elements.emplace_back("TestGenerator", ElementType::GENERATOR);                                 // signal: "generator_switchOffSignal2"
+  contingency.elements.emplace_back("TestLoad", ElementType::LOAD);                                           // signal: "switchOff2"
+  contingency.elements.emplace_back("TestHvdcLine", ElementType::HVDC_LINE);                                  // signal: "hvdc_switchOffSignal2"
+  contingency.elements.emplace_back("TestShuntCompensator", ElementType::SHUNT_COMPENSATOR);                  // buildNetworkStateDisconnection (general case)
+  contingency.elements.emplace_back("TestStaticVarCompensator", ElementType::STATIC_VAR_COMPENSATOR);         // buildSwitchOffSignalDisconnection
+  contingency.elements.emplace_back("TestGeneratorNetwork", ElementType::GENERATOR);                          // network disconnection
+  contingency.elements.emplace_back("TestLoadNetwork", ElementType::LOAD);                                    // network disconnection
+  contingency.elements.emplace_back("TestStaticVarCompensatorNetwork", ElementType::STATIC_VAR_COMPENSATOR);  // network disconnection
+
+  std::unordered_set<std::string> networkElements;
+  networkElements.insert("TestGeneratorNetwork");
+  networkElements.insert("TestLoadNetwork");
+  networkElements.insert("TestStaticVarCompensatorNetwork");
 
   outputPath.append(filename);
-  dfl::outputs::DydEvent dyd(dfl::outputs::DydEvent::DydEventDefinition(basename, outputPath.generic_string(), contingency));
+  dfl::outputs::DydEvent dyd(dfl::outputs::DydEvent::DydEventDefinition(basename, outputPath.generic_string(), contingency, networkElements));
   dyd.write();
 
   boost::filesystem::path reference("reference");

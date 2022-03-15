@@ -45,19 +45,14 @@ class Job {
      *
      * @param filename output filename
      * @param lvl dynawo log level
-     */
-    JobDefinition(const std::string& filename, const std::string& lvl) : filename(filename), dynawoLogLevel(lvl) {}
-
-    /**
-     * @brief Constructor
-     *
-     * @param filename output filename
-     * @param lvl dynawo log level
      * @param config configuration
      */
-    JobDefinition(const std::string& filename, const std::string& lvl, const dfl::inputs::Configuration& config) : filename(filename), dynawoLogLevel(lvl) {
-      initFromConfig(config);
-    }
+    JobDefinition(const std::string& filename, const std::string& lvl, const dfl::inputs::Configuration& config) :
+        filename(filename),
+        dynawoLogLevel(lvl),
+        startTime(config.getStartTime()),
+        stopTime(config.getStopTime()),
+        precision_(config.getPrecision()) {}
 
     /**
      * @brief Constructor with a reference to a contingency
@@ -72,28 +67,19 @@ class Job {
                   const std::string& baseFilename) :
         filename(filename),
         dynawoLogLevel(lvl),
+        startTime(config.getStartTime()),
+        stopTime(config.getStopTime()),
         contingencyId(contingencyId),
-        baseFilename(baseFilename) {
-      initFromConfig(config);
-    }
+        baseFilename(baseFilename),
+        precision_(config.getPrecision()) {}
 
     std::string filename;                        ///< filename of the job output file
     std::string dynawoLogLevel;                  ///< Dynawo log level, in string representation
-    Seconds startTime = Seconds(0);              ///< The start time of the simulation
-    Seconds stopTime = Seconds(100);             ///< the constant duration of the simulation in the job
+    Seconds startTime;                           ///< The start time of the simulation
+    Seconds stopTime;                            ///< the constant duration of the simulation in the job
     boost::optional<std::string> contingencyId;  ///< Identifier of referred contingency, only for security analysis jobs
     boost::optional<std::string> baseFilename;   ///< Name for base case filename if we are defining a jobs file for a contingency
-
-   private:
-    /**
-     * @brief Initialize additional attributes from configuration
-     *
-     * @param config configuration
-     */
-    void initFromConfig(const dfl::inputs::Configuration& config) {
-      startTime = config.getStartTime();
-      stopTime = config.getStopTime();
-    }
+    boost::optional<double> precision_;          ///< Precision of the simulation
   };
 
  public:

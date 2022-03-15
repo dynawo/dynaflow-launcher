@@ -62,6 +62,7 @@ export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
 # export DYNAFLOW_LAUNCHER_USE_DOXYGEN=OFF # default ON
 # export DYNAFLOW_LAUNCHER_BUILD_TESTS=OFF # default ON
 # export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
+# export DYNAFLOW_LAUNCHER_BROWER=firefox # browser command used to visualize test coverage. default: firefox
 
 # Optional external links : optional variables used to add other models to DynaFlow simulation
 # DYNAWO_EXTERNAL_HOME=<PATH_TO_EXTERNAL_INSTALL>

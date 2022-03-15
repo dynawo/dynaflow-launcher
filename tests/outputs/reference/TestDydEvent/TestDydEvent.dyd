@@ -5,12 +5,21 @@
   </dyn:macroConnector>
   <dyn:blackBoxModel id="Disconnect_TestBranch" lib="EventQuadripoleDisconnection" parFile="TestDydEvent.par" parId="Disconnect_TestBranch"/>
   <dyn:blackBoxModel id="Disconnect_TestGenerator" lib="EventSetPointBoolean" parFile="TestDydEvent.par" parId="Disconnect_TestGenerator"/>
+  <dyn:blackBoxModel id="Disconnect_TestGeneratorNetwork" lib="EventSetPointReal" parFile="TestDydEvent.par" parId="Disconnect_TestGeneratorNetwork"/>
   <dyn:blackBoxModel id="Disconnect_TestHvdcLine" lib="EventSetPointBoolean" parFile="TestDydEvent.par" parId="Disconnect_TestHvdcLine"/>
   <dyn:blackBoxModel id="Disconnect_TestLoad" lib="EventSetPointBoolean" parFile="TestDydEvent.par" parId="Disconnect_TestLoad"/>
+  <dyn:blackBoxModel id="Disconnect_TestLoadNetwork" lib="EventSetPointReal" parFile="TestDydEvent.par" parId="Disconnect_TestLoadNetwork"/>
   <dyn:blackBoxModel id="Disconnect_TestShuntCompensator" lib="EventSetPointReal" parFile="TestDydEvent.par" parId="Disconnect_TestShuntCompensator"/>
+  <dyn:blackBoxModel id="Disconnect_TestStaticVarCompensator" lib="EventSetPointBoolean" parFile="TestDydEvent.par" parId="Disconnect_TestStaticVarCompensator"/>
+  <dyn:blackBoxModel id="Disconnect_TestStaticVarCompensatorNetwork" lib="EventSetPointReal" parFile="TestDydEvent.par" parId="Disconnect_TestStaticVarCompensatorNetwork"/>
   <dyn:macroConnect connector="MC_EventQuadripoleDisconnection" id1="Disconnect_TestBranch" id2="NETWORK" name2="TestBranch"/>
   <dyn:connect id1="Disconnect_TestGenerator" var1="event_state1" id2="TestGenerator" var2="generator_switchOffSignal2"/>
   <dyn:connect id1="Disconnect_TestLoad" var1="event_state1" id2="TestLoad" var2="switchOff2"/>
-  <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2"/>
+  <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2Side1"/>
+  <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2Side2"/>
   <dyn:connect id1="Disconnect_TestShuntCompensator" var1="event_state1" id2="NETWORK" var2="TestShuntCompensator_state"/>
+  <dyn:connect id1="Disconnect_TestStaticVarCompensator" var1="event_state1" id2="TestStaticVarCompensator" var2="SVarC_switchOffSignal2"/>
+  <dyn:connect id1="Disconnect_TestGeneratorNetwork" var1="event_state1" id2="NETWORK" var2="TestGeneratorNetwork_state"/>
+  <dyn:connect id1="Disconnect_TestLoadNetwork" var1="event_state1" id2="NETWORK" var2="TestLoadNetwork_state"/>
+  <dyn:connect id1="Disconnect_TestStaticVarCompensatorNetwork" var1="event_state1" id2="NETWORK" var2="TestStaticVarCompensatorNetwork_state"/>
 </dyn:dynamicModelsArchitecture>
