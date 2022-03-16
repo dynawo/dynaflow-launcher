@@ -19,7 +19,7 @@
 
 #include "Constants.h"
 #include "Contingencies.h"
-#include "ParCommon.hpp"
+#include "ParCommon.h"
 
 #include <DYNCommon.h>
 #include <PARParametersSetCollection.h>

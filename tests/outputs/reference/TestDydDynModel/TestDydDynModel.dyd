@@ -55,13 +55,13 @@
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="MODELE_1_VL4" lib="DYNModel1" parFile="TestDydDynModel.par" parId="MODELE_1_VL4"/>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
+  <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="1.1"/>
+  <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="1" name2="1.2"/>
+  <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L1" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L3" id2="NETWORK"/>
-  <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="1.1"/>
-  <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="1" name2="1.2"/>
-  <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G0" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G0" id2="Model_Signal_N" index2="0"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G2" id2="NETWORK"/>

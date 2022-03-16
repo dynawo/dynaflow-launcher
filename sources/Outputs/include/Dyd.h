@@ -17,6 +17,11 @@
 
 #pragma once
 
+#include "DydDynModel.h"
+#include "DydGenerator.h"
+#include "DydHvdc.h"
+#include "DydLoads.h"
+#include "DydSVarC.h"
 #include "DynModelDefinitionAlgorithm.h"
 #include "DynamicDataBaseManager.h"
 #include "GeneratorDefinitionAlgorithm.h"
@@ -38,77 +43,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-namespace std {
-/**
- * @brief specialization hash for generators model types
- *
- * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
- * see https://en.cppreference.com/w/cpp/utility/hash for template definition
- */
-template<>
-struct hash<dfl::algo::GeneratorDefinition::ModelType> {
-  /// @brief Constructor
-  hash() {}
-  /**
-   * @brief Action operator
-   *
-   * Performs hash by relying on integer cast for enum class
-   *
-   * @param key the key to hash
-   * @returns the hash value
-   */
-  size_t operator()(const dfl::algo::GeneratorDefinition::ModelType& key) const {
-    return hash<unsigned int>{}(static_cast<unsigned int>(key));
-  }
-};
-
-/**
- * @brief specialization hash for StaticVarCompensator model types
- *
- * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
- * see https://en.cppreference.com/w/cpp/utility/hash for template definition
- */
-template<>
-struct hash<dfl::algo::StaticVarCompensatorDefinition::ModelType> {
-  /// @brief Constructor
-  hash() {}
-  /**
-   * @brief Action operator
-   *
-   * Performs hash by relying on integer cast for enum class
-   *
-   * @param key the key to hash
-   * @returns the hash value
-   */
-  size_t operator()(const dfl::algo::StaticVarCompensatorDefinition::ModelType& key) const {
-    return hash<unsigned int>{}(static_cast<unsigned int>(key));
-  }
-};
-
-/**
- * @brief specialization hash for HVDC models types
- *
- * For old compilers, hashs are not implemented for unordered_map when key is an enum class.
- * see https://en.cppreference.com/w/cpp/utility/hash for template definition
- */
-template<>
-struct hash<dfl::algo::HVDCDefinition::HVDCModel> {
-  /// @brief Constructor
-  hash() {}
-  /**
-   * @brief Action operator
-   *
-   * Performs hash by relying on integer cast for enum class
-   *
-   * @param key the key to hash
-   * @returns the hash value
-   */
-  size_t operator()(const dfl::algo::HVDCDefinition::HVDCModel& key) const {
-    return hash<unsigned int>{}(static_cast<unsigned int>(key));
-  }
-};
-}  // namespace std
 
 namespace dfl {
 namespace outputs {
@@ -141,27 +75,29 @@ class Dyd {
                   const algo::HVDCLineDefinitions& hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
                   const inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::DynamicModelDefinitions& models,
                   const std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs) :
-        basename(base),
-        filename(filepath),
-        generators(gens),
-        loads(loaddefs),
-        svarcsDefs(svarcsDefs),
-        slackNode(slacknode),
-        hvdcDefinitions(hvdcDefinitions),
-        busesWithDynamicModel(busesWithDynamicModel),
-        dynamicDataBaseManager(dynamicDataBaseManager),
-        dynamicModelsDefinitions(models) {}
+        basename_(base),
+        filename_(filepath),
+        slackNode_(slacknode),
+        hvdcDefinitions_(hvdcDefinitions),
+        busesWithDynamicModel_(busesWithDynamicModel),
+        dynamicDataBaseManager_(dynamicDataBaseManager),
+        dydLoads_(new DydLoads(loaddefs)),
+        dydSVarC_(new DydSVarC(svarcsDefs)),
+        dydHvdc_(new DydHvdc(hvdcDefinitions)),
+        dydGenerator_(new DydGenerator(gens)),
+        dydDynModel_(new DydDynModel(models)) {}
 
-    std::string basename;                                                         ///< basename for file
-    std::string filename;                                                         ///< filepath for file to write
-    std::vector<algo::GeneratorDefinition> generators;                            ///< generators found
-    std::vector<algo::LoadDefinition> loads;                                      ///< list of loads
-    std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs;                 ///< list of svarcs
-    std::shared_ptr<inputs::Node> slackNode;                                      ///< slack node to use
-    const algo::HVDCLineDefinitions& hvdcDefinitions;                             ///< list of hvdc definitions
-    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel;   ///< map of bus ids to a generator that regulates them
-    const inputs::DynamicDataBaseManager& dynamicDataBaseManager;                 ///< dynamic database manager
-    const algo::DynamicModelDefinitions& dynamicModelsDefinitions;                ///< the list of dynamic models to export
+    std::string basename_;                                                        ///< basename for file
+    std::string filename_;                                                        ///< filepath for file to write
+    std::shared_ptr<inputs::Node> slackNode_;                                     ///< slack node to use
+    const algo::HVDCLineDefinitions& hvdcDefinitions_;                            ///< list of hvdc definitions
+    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel_;  ///< map of bus ids to a generator that regulates them
+    const inputs::DynamicDataBaseManager& dynamicDataBaseManager_;                ///< dynamic database manager
+    std::shared_ptr<DydLoads> dydLoads_;                                          ///< reference to load dyd writer
+    std::shared_ptr<DydSVarC> dydSVarC_;                                          ///< reference to svarcs dyd writer
+    std::shared_ptr<DydHvdc> dydHvdc_;                                            ///< reference to hvdcs dyd writer
+    std::shared_ptr<DydGenerator> dydGenerator_;                                  ///< reference to generators dyd writer
+    std::shared_ptr<DydDynModel> dydDynModel_;                                    ///< reference to defined dynamic model dyd writer
   };
 
   /**
@@ -175,188 +111,6 @@ class Dyd {
    * @brief Write the dyd file
    */
   void write() const;
-
- private:
-  /**
-   * @brief Create black box model for load
-   *
-   * @param loaddef load definition to use
-   * @param basename basename for file
-   *
-   * @returns black box model for load
-   */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeLoad(const algo::LoadDefinition& loaddef, const std::string& basename);
-
-  /**
-   * @brief Create black box model for generator
-   *
-   * @param def generator definition to use
-   * @param basename basename for file
-   *
-   * @returns black box model for generator
-   */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename);
-
-  /**
-   * @brief Create black box model for remote voltage regulators
-   *
-   * @param busId bus id to use
-   * @param basename basename for file
-   *
-   * @returns black box model for a remote voltage regulator
-   */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeVRRemote(const std::string& busId, const std::string& basename);
-
-  /**
-   * @brief Create black box model for hvdc line
-   *
-   * @param hvdcLine generator definition to use
-   * @param basename basename for file
-   *
-   * @returns black box model for hvdc line
-   */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeHvdcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename);
-
-  /**
-   * @brief Create constant models
-   *
-   * Create Model signal N model
-   *
-   * @param def the dyd definition
-   *
-   * @returns black box models
-   */
-  static std::vector<boost::shared_ptr<dynamicdata::BlackBoxModel>> writeConstantsModel(const DydDefinition& def);
-
-  /**
-   * @brief Write macro connectors
-   *
-   * Create macro connectors elements for generators and loads
-   *
-   * @param def the dyd definition
-   *
-   * @returns list of macro connectors
-   */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>> writeMacroConnectors(const DydDefinition& def);
-
-  /**
-   * @brief Write macro static references
-   *
-   * Create macro static reference elements for generators and loads
-   *
-   * @param def the dyd definition
-   *
-   * @returns list of macro connectors
-   */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroStaticReference>> writeMacroStaticRef(const DydDefinition& def);
-
-  /**
-   * @brief Write connections for loads
-   *
-   * Use macro connection
-   *
-   * @param loaddef the load definition to process
-   *
-   * @returns the macro connection element
-   */
-  static boost::shared_ptr<dynamicdata::MacroConnect> writeLoadConnect(const algo::LoadDefinition& loaddef);
-
-  /**
-   * @brief Write macro connections for generators
-   *
-   * Use macro connection
-   *
-   * @param def the generator definition to process
-   * @param index the index of the generator in the global list of generators
-   *
-   * @returns the macro connection element
-   */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeGenMacroConnect(const algo::GeneratorDefinition& def, unsigned int index);
-
-  /**
-   * @brief Write connection for generators
-   *
-   * @param dynamicModelsToConnect the collection where the connections will be added
-   * @param def the generator definition to process
-   *
-   */
-  static void writeGenConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::GeneratorDefinition& def);
-
-  /**
-   * @brief Write connections for remote voltage regulators
-   *
-   * @param dynamicModelsToConnect the collection where the connections will be added
-   * @param busId the bus id to use
-   */
-  static void writeVRRemoteConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& busId);
-
-  /**
-   * @brief Write connections for hvdc lines
-   *   *
-   * @param dynamicModelsToConnect the collection where the connections will be added
-   * @param hvdcLine the hvdc line definition to process
-   */
-  static void writeHvdcLineConnect(const boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HVDCDefinition& hvdcLine);
-
-  /**
-   * @brief Write list of macro connectors for models
-   *
-   * @param usedMacros macro connectors used in current simulation
-   * @param macros complete list of macro connections defined for dynamic models
-   * @returns list of macro connectors to write
-   */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnector>>
-  writeDynamicModelMacroConnectors(const std::unordered_set<std::string>& usedMacros,
-                                   const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macros);
-
-  /**
-   * @brief Write black box model for dynamic model
-   * @param dynModel dynamic model to export
-   * @param basename basename for file
-   * @returns black box model corresponding to dynamic model
-   */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeDynamicModel(const algo::DynamicModelDefinition& dynModel, const std::string& basename);
-
-  /**
-   * @brief Write macro connect for dynamic model
-   * @param dynModel dynamic model to use
-   * @returns list of macro connect to write
-   */
-  static std::vector<boost::shared_ptr<dynamicdata::MacroConnect>> writeDynamicModelMacroConnect(const algo::DynamicModelDefinition& dynModel);
-
-  /**
-   * @brief Write SVarC black box model
-   * @param svarc the static var compensator to use
-   * @param basename basename for file
-   * @returns black box model corresponding to SVarC
-   */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> writeSVarC(const algo::StaticVarCompensatorDefinition& svarc, const std::string& basename);
-
-  /**
-   * @brief Write macro connect corresponding to SVarC
-   * @param svarc the static var compensator to use
-   * @returns the macro connection to add to exported file
-   */
-  static boost::shared_ptr<dynamicdata::MacroConnect> writeSVarCMacroConnect(const algo::StaticVarCompensatorDefinition& svarc);
-
- private:
-  static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
-      correspondence_lib_;  ///< Correspondance between generator model type and library name in dyd file
-  static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
-      correspondence_macro_connector_;  ///< Correspondence between generator model type and macro connector name in dyd file
-  static const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string>
-      hvdcModelsNames_;                                          ///< Correspondence between HVDC model and their library name in dyd file
-  static const std::unordered_map<algo::StaticVarCompensatorDefinition::ModelType, std::string>
-      svarcModelsNames_;  ///< Correspondance between svarcs model type and library name in dyd file
-  static const std::string macroConnectorLoadName_;              ///< name of the macro connector for loads
-  static const std::string macroConnectorGenName_;               ///< name for the macro connector for generators
-  static const std::string macroConnectorGenSignalNName_;        ///< Name for the macro connector for SignalN
-  static const std::string macroStaticRefSignalNGeneratorName_;  ///< Name for the static ref macro for generators using signalN model
-  static const std::string macroStaticRefSVarCName_;             ///< Name of static ref element for SVarC
-  static const std::string macroConnectorSVarCName_;             ///< Name of macro connector element for SVarC
-  static const std::string macroStaticRefLoadName_;              ///< Name for the static ref macro for loads
-  static const std::string signalNModelName_;                    ///< Name of the SignalN model
-  static const std::string modelSignalNQprefix_;                 ///< Prefix for SignalN models
 
  private:
   DydDefinition def_;  ///< Dyd file information

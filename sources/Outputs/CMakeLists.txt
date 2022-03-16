@@ -8,13 +8,23 @@
 #
 
 set(SOURCES
-src/Job.cpp
-src/Dyd.cpp
-src/DydEvent.cpp
-src/Par.cpp
-src/ParEvent.cpp
-src/Diagram.cpp
 src/Constants.cpp
+src/Diagram.cpp
+src/Dyd.cpp
+src/DydDynModel.cpp
+src/DydEvent.cpp
+src/DydGenerator.cpp
+src/DydHvdc.cpp
+src/DydLoads.cpp
+src/DydSVarC.cpp
+src/Job.cpp
+src/Par.cpp
+src/ParDynModel.cpp
+src/ParEvent.cpp
+src/ParGenerator.cpp
+src/ParHvdc.cpp
+src/ParLoads.cpp
+src/ParSVarC.cpp
 )
 
 add_library(outputs ${LINK_TYPE} ${SOURCES})
