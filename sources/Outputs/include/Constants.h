@@ -70,8 +70,11 @@ const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};
 const std::string remoteVControlParId{"remoteVControl"};                          ///< PAR id for using remote voltage control
 const std::string remoteSignalNGeneratorFixedP{"remoteSignalNFixedP"};            ///< PAR id for using remote signal N with fixed P
 const std::string xmlEncoding{"UTF-8"};                                           ///< Default encoding for XML outputs files
-
-constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maximum value for powers, meaning infinite
+const std::string modelSignalNQprefix_{"Model_Signal_NQ_"};                       ///< Prefix for SignalN models
+constexpr double powerValueMax = std::numeric_limits<double>::max();              ///< Maximum value for powers, meaning infinite
+static constexpr double pi_ = M_PI;                                               ///< PI value
+static constexpr double kGoverNullValue_ = 0.;                                    ///< KGover null value
+static constexpr double kGoverDefaultValue_ = 1.;                                 ///< KGover default value
 
 }  // namespace constants
 }  // namespace outputs

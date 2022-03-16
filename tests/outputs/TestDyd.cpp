@@ -43,7 +43,6 @@ TEST(Dyd, write) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1),
       GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
-
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
@@ -216,25 +215,20 @@ TEST(Dyd, writeStaticVarCompensator) {
   }
 
   std::vector<StaticVarCompensatorDefinition> svarcs{
-      StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
-  };
+      StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.,
+                                     10.),
+      StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0.,
+                                     10., 10.),
+      StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.,
+                                     10.),
+      StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245,
+                                     0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0.,
+                                     10., 10.),
+      StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
@@ -253,8 +247,8 @@ TEST(Dyd, writeStaticVarCompensator) {
 }
 
 TEST(Dyd, writeLoad) {
-  using dfl::algo::StaticVarCompensatorDefinition;
   using dfl::algo::LoadDefinition;
+  using dfl::algo::StaticVarCompensatorDefinition;
   std::string basename = "TestDydLoad";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -266,12 +260,9 @@ TEST(Dyd, writeLoad) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  std::vector<LoadDefinition> loads {
-    LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
-    LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
-    LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")
-  };
-
+  std::vector<LoadDefinition> loads{LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+                                    LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+                                    LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
