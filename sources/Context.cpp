@@ -133,8 +133,10 @@ Context::process() {
   // the validation of contingencies on algorithm definitions must be done after walking all nodes
   // on main topological island, because this is where we fill the algorithms definitions
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
-    auto contValOnDefs = algo::ContingencyValidationAlgorithmOnDefs(*validContingencies_);
-    contValOnDefs.fillValidContingenciesOnDefs(loads_, generators_, staticVarCompensators_);
+    if (validContingencies_) {
+      auto contValOnDefs = algo::ContingencyValidationAlgorithmOnDefs(*validContingencies_);
+      contValOnDefs.fillValidContingenciesOnDefs(loads_, generators_, staticVarCompensators_);
+    }
   }
 
   if (!algoResults_->isAtLeastOneGeneratorRegulating) {

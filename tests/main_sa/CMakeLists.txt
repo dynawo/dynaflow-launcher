@@ -16,6 +16,24 @@ add_test(
 set_property(TEST MAIN_SA.varEnv APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
 set_tests_properties(MAIN_SA.varEnv PROPERTIES WILL_FAIL TRUE)
 
+# specific test for case with contingecies json file with no contingencies specified
+add_test(
+    NAME MAIN_SA.noContingencies
+    COMMAND DynaFlowLauncher --network=res/TestIIDM_launch.iidm --config=res/config_launch.json --contingencies=res/no_contingencies.json
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+set_property(TEST MAIN_SA.noContingencies PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH=${DYNAWO_HOME}/share/iidm/xsd/)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${DYNAWO_ALGORITHMS_HOME}/lib:${LD_LIBRARY_PATH})
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAWO_ALGORITHMS_LOCALE=en_GB)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_INSTALL=${CMAKE_SOURCE_DIR})
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAWO_RESOURCES_DIR=${CMAKE_SOURCE_DIR}/etc/Dictionaries:${DYNAWO_HOME}/share:${DYNAWO_HOME}/share/xsd)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAWO_DDB_DIR=${DYNAWO_HOME}/ddb)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAWO_INSTALL_DIR=${DYNAWO_HOME})
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAWO_IIDM_EXTENSION=${DYNAWO_HOME}/lib/libdynawo_DataInterfaceIIDMExtension.so)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT DYNAWO_LIBIIDM_EXTENSIONS=${DYNAWO_HOME}/lib)
+set_property(TEST MAIN_SA.noContingencies APPEND PROPERTY ENVIRONMENT PYTHONPATH=${DYNAWO_HOME}/sbin/nrt/nrt_diff)
+
 macro(DEFINE_LAUNCH_TEST_SA _name)
   add_test(
     # Use some per-module/project prefix so that it is easier to run only tests for this module
