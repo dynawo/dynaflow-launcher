@@ -36,9 +36,10 @@ struct Load {
    *
    * @param loadId the id of the load
    */
-  explicit Load(const LoadId& loadId) : id{loadId} {}
+  explicit Load(const LoadId& loadId, bool isFictitious) : id{loadId}, isFictitious{isFictitious} {}
 
   LoadId id;  ///< load id
+  bool isFictitious;
 };
 
 /**
@@ -63,9 +64,8 @@ struct Generator {
    * @param regulatedBusId the Bus Id this generator is regulating
    * @param connectedBusId the Bus Id this generator is connected to
    */
-  explicit Generator(const GeneratorId& genId, const bool isVoltageRegulationOn,
-                    const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax,
-                    double targetP, const BusId& regulatedBusId, const BusId& connectedBusId) :
+  explicit Generator(const GeneratorId& genId, const bool isVoltageRegulationOn, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax,
+                     double pmin, double pmax, double targetP, const BusId& regulatedBusId, const BusId& connectedBusId) :
       id{genId},
       isVoltageRegulationOn{isVoltageRegulationOn},
       points(curvePoints),
@@ -193,10 +193,9 @@ struct StaticVarCompensator {
    * @param connectedBusId connected Bus Id
    * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
-  StaticVarCompensator(const SVarCid& id, const bool isRegulatingVoltage, double bMin, double bMax, double voltageSetPoint,
-                       double UNom, double UMinActivation, double UMaxActivation,
-                       double USetPointMin, double USetPointMax, double b0, double slope, bool hasStandByAutomaton, bool hasVoltagePerReactivePowerControl,
-                       const BusId& regulatedBusId, const BusId& connectedBusId, double UNomRemote) :
+  StaticVarCompensator(const SVarCid& id, const bool isRegulatingVoltage, double bMin, double bMax, double voltageSetPoint, double UNom, double UMinActivation,
+                       double UMaxActivation, double USetPointMin, double USetPointMax, double b0, double slope, bool hasStandByAutomaton,
+                       bool hasVoltagePerReactivePowerControl, const BusId& regulatedBusId, const BusId& connectedBusId, double UNomRemote) :
       id(id),
       isRegulatingVoltage(isRegulatingVoltage),
       bMin(bMin),

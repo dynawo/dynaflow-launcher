@@ -19,11 +19,13 @@ LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads, double dsoVoltage
 void
 LoadDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
   LoadDefinition::ModelType model = LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
+  bool isUnderDsoVoltage = false;
   if (DYN::doubleNotEquals(node->nominalVoltage, dsoVoltageLevel_) && node->nominalVoltage < dsoVoltageLevel_) {
-    model = LoadDefinition::ModelType::NETWORK;
+    isUnderDsoVoltage = true;
   }
 
   for (const auto& load : node->loads) {
+    model = load.isFictitious || isUnderDsoVoltage ? LoadDefinition::ModelType::NETWORK : LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
     loads_.emplace_back(load.id, model, node->id);
   }
 }

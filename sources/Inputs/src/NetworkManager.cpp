@@ -112,7 +112,7 @@ NetworkManager::buildTree() {
       // node should exist at this point
       assert(nodes_.count(nodeid));
 #endif
-      nodes_[nodeid]->loads.emplace_back(load->getID());
+      nodes_[nodeid]->loads.emplace_back(load->getID(), load->isFictitious());
       LOG(debug, NodeContainsLoad, nodeid, load->getID());
     }
 
