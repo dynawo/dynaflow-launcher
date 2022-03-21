@@ -469,25 +469,22 @@ TEST(Generators, SwitchConnexity) {
 TEST(Loads, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   using dfl::algo::LoadDefinition;
-  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
-      dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
-      dfl::inputs::Node::build("6", vl, 0.0, {}),
-  };
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}),
+                                                        dfl::inputs::Node::build("2", vl, 24.0, {}), dfl::inputs::Node::build("3", vl, 63.0, {}),
+                                                        dfl::inputs::Node::build("4", vl, 56.0, {}), dfl::inputs::Node::build("5", vl, 46.0, {})};
 
   dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
       LoadDefinition("00", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
-      LoadDefinition("01", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
-      LoadDefinition("02", LoadDefinition::ModelType::NETWORK, "2"),
-      LoadDefinition("05", LoadDefinition::ModelType::NETWORK, "4"),
-  };
+      LoadDefinition("01", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"), LoadDefinition("02", LoadDefinition::ModelType::NETWORK, "0"),
+      LoadDefinition("03", LoadDefinition::ModelType::NETWORK, "2"), LoadDefinition("04", LoadDefinition::ModelType::NETWORK, "4")};
 
-  nodes[0]->loads.emplace_back("00");
-  nodes[0]->loads.emplace_back("01");
+  nodes[0]->loads.emplace_back("00", false);
+  nodes[0]->loads.emplace_back("01", false);
+  nodes[0]->loads.emplace_back("02", true);
 
-  nodes[2]->loads.emplace_back("02");
+  nodes[2]->loads.emplace_back("03", false);
 
-  nodes[4]->loads.emplace_back("05");
+  nodes[4]->loads.emplace_back("04", false);
 
   dfl::algo::LoadDefinitionAlgorithm::Loads loads;
   double dsoVoltageLevel = 63.0;
@@ -498,7 +495,7 @@ TEST(Loads, base) {
     algo(node, algoRes);
   }
 
-  ASSERT_EQ(4, loads.size());
+  ASSERT_EQ(5, loads.size());
   for (size_t index = 0; index < loads.size(); ++index) {
     ASSERT_EQ(expected_loads[index].id, loads[index].id);
     ASSERT_EQ(expected_loads[index].modelType, loads[index].modelType);
