@@ -68,6 +68,8 @@ class HvdcLine {
    * @param converter2 the second converter
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
+   *
+   * @return HVDC line object
    */
   static std::shared_ptr<HvdcLine> build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
                                          const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl,

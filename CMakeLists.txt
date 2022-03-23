@@ -62,8 +62,6 @@ policy(CMP0075 NEW) # honor CMAKE_REQUIRED_LIBRARIES in the include file check m
 set(DYNAFLOW_LAUNCHER_LOCALE "en_GB" CACHE STRING "Localization for dictionnaries")
 set(FORCE_CXX11_ABI OFF CACHE BOOL "Choose either ON or OFF.")
 
-option(DYNAFLOW_LAUNCHER_USE_DOXYGEN "Add a doxygen target to generate the documentation" ON)
-
 option(DYNAFLOW_LAUNCHER_USE_ADDITIONAL_SOURCEFILE "Use the additional source file" ON)
 
 option(DYNAFLOW_LAUNCHER_SHARED_LIB "Compile shared library" OFF)
@@ -212,23 +210,9 @@ endif()
 ## Doxygen ##
 #############
 
-if(DYNAFLOW_LAUNCHER_USE_DOXYGEN AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.9)
-    find_package(Doxygen
-        OPTIONAL_COMPONENTS dot mscgen dia
-    )
-    if(DOXYGEN_FOUND)
-        message(STATUS "Use doxygen")
-        set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
-        set(DOXYGEN_FILE_PATTERNS *.h *.cpp *.hpp)
-        set(DOXYGEN_EXTRACT_PRIVATE YES)
-        doxygen_add_docs(
-            doc ALL
-            README.md sources
-            COMMENT "Generate html documentation"
-        )
-        install(DIRECTORY ${CMAKE_BINARY_DIR}/html DESTINATION doc)
-    endif()
-endif()
+set(DOCDIR_NAME doxygen)
+get_filename_component(docdir ${CMAKE_INSTALL_PREFIX}/${DOCDIR_NAME} ABSOLUTE)
+add_subdirectory(doxygen)
 
 
 ###############

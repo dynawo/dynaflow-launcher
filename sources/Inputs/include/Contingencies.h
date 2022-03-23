@@ -70,6 +70,7 @@ class ContingencyElement {
    *
    * Parses a string into its enum value
    *
+   * @param str target string
    * @return none if not a valid type, otherwise the enum value
    */
   static boost::optional<Type> typeFromString(const std::string& str);
@@ -79,6 +80,7 @@ class ContingencyElement {
    *
    * Transforms a type enum value into its string representation
    *
+   * @param type target type
    * @return string representation of element type
    */
   static std::string toString(Type type);

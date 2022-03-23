@@ -9,7 +9,7 @@
 //
 
 /**
- * @file  ParSvc.h
+ * @file  ParSVarC.h
  *
  * @brief Dynaflow launcher PAR file writer for static var compensators header file
  *
@@ -25,6 +25,9 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief static var compensators PAR file writer
+ */
 class ParSVarC {
  public:
   /**

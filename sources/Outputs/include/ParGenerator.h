@@ -26,6 +26,9 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief generators PAR file writer
+ */
 class ParGenerator {
  public:
   /**
@@ -97,6 +100,8 @@ class ParGenerator {
    * @param modelId the model of the generator
    * @param activePowerCompensation the type of active power compensation
    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+   *
+   * @return result parameter set
    */
   boost::shared_ptr<parameters::ParametersSet> updateSignalNGenerator(const std::string& modelId,
                                                                       dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);

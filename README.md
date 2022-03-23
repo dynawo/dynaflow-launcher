@@ -59,7 +59,6 @@ export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
 # export DYNAFLOW_LAUNCHER_CMAKE_GENERATOR=Ninja # default is Unix Makefiles
 # export DYNAFLOW_LAUNCHER_PROCESSORS_USED=8 # default 1
 # export DYNAFLOW_LAUNCHER_SHARED_LIB=ON # default OFF
-# export DYNAFLOW_LAUNCHER_USE_DOXYGEN=OFF # default ON
 # export DYNAFLOW_LAUNCHER_BUILD_TESTS=OFF # default ON
 # export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
 # export DYNAFLOW_LAUNCHER_BROWER=firefox # browser command used to visualize test coverage. default: firefox

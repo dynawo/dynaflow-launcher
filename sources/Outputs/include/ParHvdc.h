@@ -26,6 +26,9 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief Hvdcs PAR file writer
+ */
 class ParHvdc {
  public:
   /**

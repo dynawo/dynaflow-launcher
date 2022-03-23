@@ -51,6 +51,9 @@ struct hash<dfl::algo::StaticVarCompensatorDefinition::ModelType> {
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief static var compensators DYD file writer
+ */
 class DydSVarC {
  public:
   /**
@@ -86,9 +89,9 @@ class DydSVarC {
  private:
   std::vector<algo::StaticVarCompensatorDefinition> svarcsDefinitions_;  ///< list of SVarCs definitions
   static const std::unordered_map<algo::StaticVarCompensatorDefinition::ModelType, std::string>
-      svarcModelsNames_;  ///< Correspondance between svarcs model type and library name in dyd file
-  const std::string macroConnectorSVarCName_{"StaticVarCompensatorMacroConnector"};
-  const std::string macroStaticRefSVarCName_{"StaticVarCompensatorStaticRef"};
+      svarcModelsNames_;                                                             ///< Correspondance between svarcs model type and library name in dyd file
+  const std::string macroConnectorSVarCName_{"StaticVarCompensatorMacroConnector"};  ///< constants for macro connector ids
+  const std::string macroStaticRefSVarCName_{"StaticVarCompensatorStaticRef"};       ///< constants for static ref ids
 };
 
 }  // namespace outputs

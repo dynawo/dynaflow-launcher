@@ -165,6 +165,10 @@ where [option] can be:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
 
+        =========== Documentation
+        build-doxygen-doc                     build all doxygen documentation
+        doxygen-doc                           open DynaFlow Launcher's Doxygen documentation into chosen browser
+
         =========== Others
         help                                      show all available options
         format                                    format modified git files using clang-format
@@ -228,7 +232,6 @@ set_environment() {
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
 
     export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
-    export_var_env DYNAFLOW_LAUNCHER_USE_DOXYGEN=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_CMAKE_GENERATOR="Unix Makefiles"
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
@@ -296,7 +299,6 @@ cmake_configure() {
         -DBOOST_ROOT:STRING=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
         -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
-        -DDYNAFLOW_LAUNCHER_USE_DOXYGEN:BOOL=$DYNAFLOW_LAUNCHER_USE_DOXYGEN \
         -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS \
         $CMAKE_OPTIONAL
     popd > /dev/null
@@ -359,6 +361,7 @@ clean_build_all() {
 build_user() {
     cmake_configure
     cmake_build
+    build_test_doxygen_doc || error_exit "Error during build_test_doxygen_doc."
 }
 
 build_tests_coverage() {
@@ -436,6 +439,54 @@ apply_clang_format() {
     fi
 }
 
+# Compile Dynaflo Launcher Doxygen doc
+build_test_doxygen_doc() {
+  build_doxygen_doc || error_exit
+  test_doxygen_doc || error_exit
+}
+
+build_doxygen_doc() {
+  if [ ! -d "$DYNAFLOW_LAUNCHER_BUILD_DIR" ]; then
+    error_exit "You need to build Dynaflow launcher first to build doxygen documentation."
+  fi
+  mkdir -p $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/
+  cmake --build $DYNAFLOW_LAUNCHER_BUILD_DIR --target doc
+  RETURN_CODE=$?
+  return ${RETURN_CODE}
+}
+
+test_doxygen_doc() {
+  if [ -f "$DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/warnings.txt"  ] ; then
+    rm -f $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/warnings_filtered.txt
+    # need to filter "return type of member (*) is not documented" as it is a doxygen bug detected on 1.8.17 that will be solved in 1.8.18
+    grep -Fvf $DYNAFLOW_LAUNCHER_HOME/etc/warnings_to_filter.txt $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/warnings.txt > $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/warnings_filtered.txt
+    nb_warnings=$(wc -l $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/warnings_filtered.txt | awk '{print $1}')
+    if [ ${nb_warnings} -ne 0 ]; then
+      echo "===================================="
+      echo "| Result of doxygen doc generation |"
+      echo "===================================="
+      echo " nbWarnings = ${nb_warnings} > 0 => doc is incomplete"
+      echo " edit ${DYNAFLOW_LAUNCHER_INSTALL_DIR}/doxygen/warnings_filtered.txt  to have more details"
+      error_exit "Doxygen doc is not complete"
+    fi
+  fi
+}
+
+open_doxygen_doc() {
+  if [ ! -f "$DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/html/index.html" ]; then
+    echo "Doxygen documentation not yet generated"
+    echo "Generating ..."
+    build_test_doxygen_doc
+    RETURN_CODE=$?
+    if [ ${RETURN_CODE} -ne 0 ]; then
+      exit ${RETURN_CODE}
+    fi
+    echo "... end of doc generation"
+  fi
+  verify_browser
+  $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/html/index.html
+}
+
 #################################
 ########### Main script #########
 #################################
@@ -491,6 +542,12 @@ case $1 in
         ;;
     format)
         apply_clang_format || error_exit "Failed to format files"
+        ;;
+    build-doxygen-doc)
+        build_test_doxygen_doc || error_exit "Error while building doxygen documentation"
+        ;;
+    doxygen-doc)
+        open_doxygen_doc || error_exit "Error during Dynaflow Launcher Doxygen doc visualisation"
         ;;
     version)
         version

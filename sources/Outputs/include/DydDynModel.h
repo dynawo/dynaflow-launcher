@@ -25,6 +25,9 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief dynamic models DYD file writer
+ */
 class DydDynModel {
  public:
   /**

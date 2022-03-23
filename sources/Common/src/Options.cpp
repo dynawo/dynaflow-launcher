@@ -42,7 +42,7 @@ struct ParsedLogLevel {
   /**
    * @brief Constructor
    *
-   * @brief lvl the log level string representation
+   * @param lvl the log level string representation
    */
   explicit ParsedLogLevel(const std::string& lvl) : logLevelDefinition{lvl} {}
 
@@ -55,6 +55,9 @@ struct ParsedLogLevel {
  * Function to validate the case for log level
  *
  * see boost documentation for program options, "how to" chapter, "custom validator" section
+ *
+ * @param v the ParsedLogLevel corresponding to the user inputs
+ * @param values values provided by the user
  */
 static void
 validate(boost::any& v, const std::vector<std::string>& values, ParsedLogLevel*, int) {

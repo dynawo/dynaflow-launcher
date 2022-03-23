@@ -148,6 +148,7 @@ class DynModelAlgorithm {
    *
    * @param models the models to update
    * @param manager the dynamic data base manager to use
+   * @param shuntRegulationOn whether the shunt regulation is activated or not
    */
   DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager, bool shuntRegulationOn);
 
@@ -203,6 +204,8 @@ class DynModelAlgorithm {
   struct MacroConnectHash {
     /**
      * @brief Operator to hash a macro connect
+     *
+     * @param connect target macro connect
      * @returns unique hash
      */
     std::size_t operator()(const MacroConnect& connect) const noexcept;
@@ -228,6 +231,7 @@ class DynModelAlgorithm {
 
  private:
   /// @brief Extract models from configuration before processing the nodes
+  /// @param shuntRegulationOn whether the shunt regulation is activated or not
   void extractDynModels(bool shuntRegulationOn);
 
   /**
