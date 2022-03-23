@@ -28,12 +28,15 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief dynamic models PAR file writer
+ */
 class ParDynModel {
  public:
   /**
    * @brief Construct a new Par Dyn Model object
    *
-   * @param loadsDefinitions reference to the list of defined dynamic models definitions
+   * @param dynamicModelsDefinitions reference to the list of defined dynamic models definitions
    */
   explicit ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions) : dynamicModelsDefinitions_(dynamicModelsDefinitions) {}
 
@@ -41,6 +44,9 @@ class ParDynModel {
    * @brief enrich the parameter set collection for defined dynamic models
    *
    * @param paramSetCollection parameter set collection to enrich
+   * @param dynamicDataBaseManager the dynamic DB manager to use
+   * @param shuntCounters the counters to use
+   * @param linesByIdDefinitions lines by id to use
    */
   void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
              const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions);
@@ -77,6 +83,8 @@ class ParDynModel {
    * @param ref the Ref XML element referencing the active season
    * @param linesById Dynawo lines by id to use
    * @param assemblingDoc the assembling document containing the association referenced
+   *
+   * @return active season value
    */
   boost::optional<std::string> getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const algo::LinesByIdDefinitions& linesById,
                                                const inputs::AssemblingXmlDocument& assemblingDoc);

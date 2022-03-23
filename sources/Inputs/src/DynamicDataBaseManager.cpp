@@ -48,6 +48,12 @@ const std::string XsdTrait<AssemblingXmlDocument>::filename("assembling.xsd");  
 template<>
 const std::string XsdTrait<SettingXmlDocument>::filename("setting.xsd");  ///< XSD filename for setting xml document
 
+/**
+ * @brief retrieve the xsd for a xml file
+ *
+ * @param filepath xml file path
+ * @return the corresponding xsd filepath or an empty path if not found
+ */
 template<class T>
 static file::path
 computeXsdPath(const file::path& filepath) {
@@ -70,6 +76,13 @@ computeXsdPath(const file::path& filepath) {
   return xsdFile;
 }
 
+/**
+ * @brief Parse an xml file and fill the associated element
+ *
+ * @param filepath xml file path
+ * @param factory Parser factory
+ * @param element Element associated to the target file
+ */
 template<class T>
 static void
 parserFile(const boost::filesystem::path& filepath, const parser::ParserFactory& factory, T& element) {

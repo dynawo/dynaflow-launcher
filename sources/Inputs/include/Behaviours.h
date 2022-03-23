@@ -35,11 +35,12 @@ struct Load {
    * @brief Constructor
    *
    * @param loadId the id of the load
+   * @param isFictitious whether the load is fictitious or not
    */
   explicit Load(const LoadId& loadId, bool isFictitious) : id{loadId}, isFictitious{isFictitious} {}
 
-  LoadId id;  ///< load id
-  bool isFictitious;
+  LoadId id;          ///< load id
+  bool isFictitious;  ///< whether the load is fictitious or not
 };
 
 /**

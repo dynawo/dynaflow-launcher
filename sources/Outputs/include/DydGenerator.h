@@ -51,6 +51,9 @@ struct hash<dfl::algo::GeneratorDefinition::ModelType> {
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief generators DYD file writer
+ */
 class DydGenerator {
  public:
   /**

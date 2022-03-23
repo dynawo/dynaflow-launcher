@@ -91,7 +91,7 @@ class ValidContingencies {
 };
 
 /**
- * @brief Validation of contingencies requested in the inputs
+ * @brief Validation of contingencies requested in the inputs based on nodes data
  */
 class ContingencyValidationAlgorithmOnNodes {
  public:
@@ -115,6 +115,9 @@ class ContingencyValidationAlgorithmOnNodes {
   ValidContingencies& validContingencies_;  ///< the contingencies being validated by the algorithm
 };
 
+/**
+ * @brief Validation of contingencies based on definitions data
+ */
 class ContingencyValidationAlgorithmOnDefs {
  public:
   /**

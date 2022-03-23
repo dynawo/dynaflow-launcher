@@ -51,6 +51,9 @@ struct hash<dfl::algo::HVDCDefinition::HVDCModel> {
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief Hvdcs DYD file writer
+ */
 class DydHvdc {
  public:
   /**

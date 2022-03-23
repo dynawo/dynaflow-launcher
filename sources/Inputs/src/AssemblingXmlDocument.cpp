@@ -20,6 +20,9 @@ namespace parser = xml::sax::parser;
 namespace dfl {
 namespace inputs {
 
+/**
+ * @return namespace used to read xml file
+ */
 static parser::namespace_uri ns("");
 
 AssemblingXmlDocument::AssemblingXmlDocument() :

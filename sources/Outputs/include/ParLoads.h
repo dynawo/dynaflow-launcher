@@ -25,6 +25,9 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief loads PAR file writer
+ */
 class ParLoads {
  public:
   /**

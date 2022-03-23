@@ -9,7 +9,7 @@
 //
 
 /**
- * @file  DynCommon.h
+ * @file  DydCommon.h
  *
  * @brief Dynaflow launcher common methods for handling dyd informations
  *

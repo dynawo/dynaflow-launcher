@@ -38,6 +38,8 @@ namespace helper {
  *
  * @param name the parameter name
  * @param value the value of the parameter
+ *
+ * @return Dynawo parameter with this name and value
  */
 template<class T>
 boost::shared_ptr<parameters::Parameter>

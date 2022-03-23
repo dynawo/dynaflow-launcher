@@ -25,6 +25,9 @@
 namespace dfl {
 namespace outputs {
 
+/**
+ * @brief loads DYD file writer
+ */
 class DydLoads {
  public:
   /**

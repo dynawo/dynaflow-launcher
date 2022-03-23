@@ -29,7 +29,7 @@ namespace dfl {
 namespace outputs {
 
 /**
- * @brief Jopb manager
+ * @brief Job manager
  */
 class Job {
  public:
