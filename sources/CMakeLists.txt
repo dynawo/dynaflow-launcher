@@ -21,9 +21,10 @@ set(SOURCES
 
 set(HEADERS
   Context.h
+  gitversion_dfl.h
 )
 
-add_executable(DynaFlowLauncher ${SOURCES} ${HEADERS})
+add_executable(DynaFlowLauncher ${SOURCES})
 
 target_link_libraries(DynaFlowLauncher
   PRIVATE
@@ -41,6 +42,21 @@ target_link_libraries(DynaFlowLauncher
 
   LibXml2::LibXml2
 )
+
+# explicitly say that the executable depends on custom target
+add_dependencies(DynaFlowLauncher revisiontag)
+
+# obtain git revision
+# a custom target that is always built
+add_custom_target(revisiontag ALL)
+
+# creates gitversion_dfl.h using cmake script
+add_custom_command(TARGET revisiontag
+  COMMAND ${CMAKE_COMMAND}
+    -DOUTPUT_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+    -DGIT_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+    -P ${CMAKE_SOURCE_DIR}/cmake/getgitheadrevision.cmake
+  )
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})
 

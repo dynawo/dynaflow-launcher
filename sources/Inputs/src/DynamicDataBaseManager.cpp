@@ -43,10 +43,17 @@ struct XsdTrait {
   static const std::string filename;  ///< filename trait definition, to specialize
 };
 
+/**
+ * XSD filename for assembling xml document
+ */
 template<>
-const std::string XsdTrait<AssemblingXmlDocument>::filename("assembling.xsd");  ///< XSD filename for assembling xml document
+const std::string XsdTrait<AssemblingXmlDocument>::filename("assembling.xsd");
+
+/**
+* XSD filename for setting xml document
+*/
 template<>
-const std::string XsdTrait<SettingXmlDocument>::filename("setting.xsd");  ///< XSD filename for setting xml document
+const std::string XsdTrait<SettingXmlDocument>::filename("setting.xsd");
 
 /**
  * @brief retrieve the xsd for a xml file

@@ -16,6 +16,7 @@ sources/Common/include/*_keys.h
 sources/Common/src/*_keys.cpp
 sources/Common/*_keys.h
 sources/Common/*_keys.cpp
+sources/gitversion_dfl.h*
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode

@@ -124,7 +124,7 @@ find_package(XercesC 3.2.2 REQUIRED)
 # libXML
 find_package(libXML 0.2.4 REQUIRED)
 find_package(LibXml2 "2.9" REQUIRED)
-find_package(LibIIDM "1.2.1" REQUIRED PATHS ${LIBIIDM_HOME})
+find_package(LibIIDM "1.4.0" REQUIRED PATHS ${LIBIIDM_HOME})
 # Boost
 # Use only BOOST_ROOT by default to avoid conflicts between dynawo boost and default install
 option(DYNAFLOW_LAUNCHER_USE_BOOST_DEFAULT "Use default system boost installation" OFF)
