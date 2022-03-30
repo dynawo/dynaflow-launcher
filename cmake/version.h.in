@@ -10,7 +10,7 @@
 
 /**
  * @file version.h
- * @brief geerated version definition file
+ * @brief generated version definition file
  */
 
 #pragma once

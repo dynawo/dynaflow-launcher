@@ -12,6 +12,7 @@
 #include "Contingencies.h"
 #include "Log.h"
 #include "Options.h"
+#include "gitversion_dfl.h"
 #include "version.h"
 
 #include <DYNError.h>
@@ -92,6 +93,9 @@ main(int argc, char* argv[]) {
       DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
       DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag)
           << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag)
+          << " "
+          << " revision " << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << DYN::Trace::endline;
       DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     }
 
