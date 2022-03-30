@@ -323,9 +323,6 @@ Context::executeSecurityAnalysis() {
   // Create one scenario for the base case and one scenario for each contingency
   auto scenarios = boost::make_shared<DYNAlgorithms::Scenarios>();
   scenarios->setJobsFile(jobEntry_->getName() + ".jobs");
-  auto baseCase = boost::make_shared<DYNAlgorithms::Scenario>();
-  baseCase->setId("BaseCase");
-  scenarios->addScenario(baseCase);
   if (validContingencies_) {
     for (const auto& contingencyRef : validContingencies_->get()) {
       auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
@@ -340,11 +337,11 @@ Context::executeSecurityAnalysis() {
   multipleJobs->setScenarios(scenarios);
   auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
   saLauncher->setMultipleJobs(multipleJobs);
-  saLauncher->setOutputFile("sa.zip");
+  saLauncher->setOutputFile("aggregatedResults.xml");
   saLauncher->setDirectory(config_.outputDir().generic_string());
   saLauncher->init();
   saLauncher->launch();
-  // Aggregated results could be obtained requesting writeResults method of saLauncher
+  saLauncher->writeResults();
 }
 
 void
