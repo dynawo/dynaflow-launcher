@@ -25,7 +25,8 @@ LoadDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Algorit
   }
 
   for (const auto& load : node->loads) {
-    model = load.isFictitious || isUnderDsoVoltage ? LoadDefinition::ModelType::NETWORK : LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
+    model = load.isFictitious || isUnderDsoVoltage || load.isNotInjecting ? LoadDefinition::ModelType::NETWORK
+                                                                          : LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
     loads_.emplace_back(load.id, model, node->id);
   }
 }

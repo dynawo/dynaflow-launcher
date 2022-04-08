@@ -473,18 +473,21 @@ TEST(Loads, base) {
                                                         dfl::inputs::Node::build("2", vl, 24.0, {}), dfl::inputs::Node::build("3", vl, 63.0, {}),
                                                         dfl::inputs::Node::build("4", vl, 56.0, {}), dfl::inputs::Node::build("5", vl, 46.0, {})};
 
-  dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {
-      LoadDefinition("00", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
-      LoadDefinition("01", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"), LoadDefinition("02", LoadDefinition::ModelType::NETWORK, "0"),
-      LoadDefinition("03", LoadDefinition::ModelType::NETWORK, "2"), LoadDefinition("04", LoadDefinition::ModelType::NETWORK, "4")};
+  dfl::algo::LoadDefinitionAlgorithm::Loads expected_loads = {LoadDefinition("00", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
+                                                              LoadDefinition("01", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "0"),
+                                                              LoadDefinition("02", LoadDefinition::ModelType::NETWORK, "0"),
+                                                              LoadDefinition("03", LoadDefinition::ModelType::NETWORK, "0"),
+                                                              LoadDefinition("04", LoadDefinition::ModelType::NETWORK, "2"),
+                                                              LoadDefinition("05", LoadDefinition::ModelType::NETWORK, "4")};
 
-  nodes[0]->loads.emplace_back("00", false);
-  nodes[0]->loads.emplace_back("01", false);
-  nodes[0]->loads.emplace_back("02", true);
+  nodes[0]->loads.emplace_back("00", false, false);
+  nodes[0]->loads.emplace_back("01", false, false);
+  nodes[0]->loads.emplace_back("02", true, false);
+  nodes[0]->loads.emplace_back("03", false, true);
 
-  nodes[2]->loads.emplace_back("03", false);
+  nodes[2]->loads.emplace_back("04", false, false);
 
-  nodes[4]->loads.emplace_back("04", false);
+  nodes[4]->loads.emplace_back("05", false, false);
 
   dfl::algo::LoadDefinitionAlgorithm::Loads loads;
   double dsoVoltageLevel = 63.0;
@@ -495,7 +498,7 @@ TEST(Loads, base) {
     algo(node, algoRes);
   }
 
-  ASSERT_EQ(5, loads.size());
+  ASSERT_EQ(6, loads.size());
   for (size_t index = 0; index < loads.size(); ++index) {
     ASSERT_EQ(expected_loads[index].id, loads[index].id);
     ASSERT_EQ(expected_loads[index].modelType, loads[index].modelType);
