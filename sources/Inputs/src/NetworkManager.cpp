@@ -108,11 +108,12 @@ NetworkManager::buildTree() {
       if (!load->getInitialConnected())
         continue;
       auto nodeid = load->getBusInterface()->getID();
+      bool isNotInjecting = (DYN::doubleIsZero(load->getP0()) && DYN::doubleIsZero(load->getQ0()));
 #if _DEBUG_
       // node should exist at this point
       assert(nodes_.count(nodeid));
 #endif
-      nodes_[nodeid]->loads.emplace_back(load->getID(), load->isFictitious());
+      nodes_[nodeid]->loads.emplace_back(load->getID(), load->isFictitious(), isNotInjecting);
       LOG(debug, NodeContainsLoad, nodeid, load->getID());
     }
 
