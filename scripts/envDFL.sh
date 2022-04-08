@@ -26,7 +26,7 @@ export_var_env() {
     local value="${var#*=}"
 
     if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
-        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" ]; then
+        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" -a "$name" != "DYNAWO_DDB_DIR" ]; then
             error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
         fi
     fi
@@ -219,16 +219,7 @@ set_environment() {
     export DYNAWO_INSTALL_DIR=$DYNAWO_HOME
     export IIDM_XML_XSD_PATH=$DYNAWO_INSTALL_DIR/share/iidm/xsd
 
-    # dynawo vars that can be replaced by external
-    if [ ! -z "$DYNAFLOW_LAUNCHER_EXTERNAL_DDB" ]; then
-      export_var_env_dynawo_with_default DYNAWO_DDB_DIR $DYNAFLOW_LAUNCHER_EXTERNAL_DDB
-    else
-      export_var_env_dynawo_with_default DYNAWO_DDB_DIR $DYNAWO_INSTALL_DIR/ddb
-    fi
-
-    # DYNAWO_IIDM_EXTENSION is used only in case of external IIDM extensions.
-    # Empty string is equivalent to not set for Dynawo
-    export_var_env_force_dynawo DYNAWO_IIDM_EXTENSION=$DYNAFLOW_LAUNCHER_EXTERNAL_IIDM_EXTENSION
+    export_var_env DYNAWO_DDB_DIR=$DYNAWO_INSTALL_DIR/ddb
 
     # dynawo algorithms
     export_var_env DYNAWO_ALGORITHMS_HOME=UNDEFINED
@@ -254,11 +245,10 @@ set_environment() {
     ld_library_path_prepend $DYNAWO_INSTALL_DIR/lib         # For Dynawo library
     ld_library_path_prepend $DYNAWO_ALGORITHMS_HOME/lib     # For Dynawo-algorithms library
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR/mpich/lib     # For mpich library
-    ld_library_path_prepend $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES # To add external model libraries loaded during simulation
 
     # dynawo vars that can be extended by external
-    export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib:$DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
-    export DYNAWO_RESOURCES_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd:$DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR
+    export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib
+    export DYNAWO_RESOURCES_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd
 
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
 
@@ -304,7 +294,6 @@ reset_environment_variables() {
     unset DYNAWO_INSTALL_DIR
     unset DYNAWO_RESOURCES_DIR
     unset DYNAWO_DDB_DIR
-    unset DYNAWO_IIDM_EXTENSION
     unset DYNAWO_LIBIIDM_EXTENSIONS
     unset IIDM_XML_XSD_PATH
 

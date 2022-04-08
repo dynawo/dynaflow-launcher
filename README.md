@@ -50,6 +50,7 @@ $> echo '#!/bin/bash
 
 # Required
 export DYNAFLOW_LAUNCHER_HOME=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# Variables used to build Dynaflow-launcher
 export DYNAWO_HOME=<PATH_TO_DYNAWO_DEPLOY>
 export DYNAWO_ALGORITHMS_HOME=<PATH_TO_DYNAWO_ALGORITHMS_DEPLOY>
 export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
@@ -63,12 +64,8 @@ export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
 # export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
 # export DYNAFLOW_LAUNCHER_BROWER=firefox # browser command used to visualize test coverage. default: firefox
 
-# Optional external links : optional variables used to add other models to DynaFlow simulation
-# DYNAWO_EXTERNAL_HOME=<PATH_TO_EXTERNAL_INSTALL>
-# export DYNAFLOW_LAUNCHER_EXTERNAL_DDB=$DYNAWO_EXTERNAL_HOME/ddb
-# export DYNAFLOW_LAUNCHER_EXTERNAL_IIDM_EXTENSION=<PATH_TO_IIDM_EXTENSIONS_LIBRARIES>
-# export DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES=$DYNAWO_EXTERNAL_HOME/lib
-# export DYNAFLOW_LAUNCHER_EXTERNAL_RESOURCES_DIR=$DYNAWO_EXTERNAL_HOME/share:$DYNAWO_EXTERNAL_HOME/share/xsd
+# Optional external links : optional variable used at runtime to use additional iidm extension
+# export DYNAWO_IIDM_EXTENSION=<PATH_TO_IIDM_EXTENSIONS_LIBRARY>
 
 # Run
 $DYNAFLOW_LAUNCHER_HOME/scripts/envDFL.sh $@' > myEnvDFL.sh
