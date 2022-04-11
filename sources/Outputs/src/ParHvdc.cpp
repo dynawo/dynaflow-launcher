@@ -113,6 +113,17 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
       set->addReference(helper::buildReference("hvdc_U2Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter2Id));
     }
   }
+
+  if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::LCC) {
+    if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+      set->addReference(helper::buildReference("hvdc_CosPhi1Ref0", "powerFactor", "DOUBLE", hvdcDefinition.converter2Id));
+      set->addReference(helper::buildReference("hvdc_CosPhi2Ref0", "powerFactor", "DOUBLE", hvdcDefinition.converter1Id));
+    } else {
+      set->addReference(helper::buildReference("hvdc_CosPhi1Ref0", "powerFactor", "DOUBLE", hvdcDefinition.converter1Id));
+      set->addReference(helper::buildReference("hvdc_CosPhi2Ref0", "powerFactor", "DOUBLE", hvdcDefinition.converter2Id));
+    }
+  }
+
   if (hvdcDefinition.hasPQPropModel()) {
     switch (hvdcDefinition.position) {
     case dfl::algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT:

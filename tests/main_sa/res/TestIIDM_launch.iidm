@@ -4775,7 +4775,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:internalConnection node1="12" node2="0"/>
                 <iidm:bus v="382.187561" angle="-12.6222725" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"/>
             </iidm:nodeBreakerTopology>
-            <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0.0" powerFactor="0.8" node="12" p="10.0" q="6.0">
+            <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0.0" powerFactor="0.8574929257" node="12" p="10.0" q="6.0">
                 <iidm:alias>_739658a7-e08b-4395-8d79-93e87b7855e3</iidm:alias>
             </iidm:lccConverterStation>
         </iidm:voltageLevel>
@@ -6425,7 +6425,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:internalConnection node1="12" node2="0"/>
                 <iidm:bus v="370.362854" angle="-11.6009426" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
             </iidm:nodeBreakerTopology>
-            <iidm:lccConverterStation id="_9793118d-5ba1-4a9c-b2e0-db1d15be5913" name="Conv2" lossFactor="0.0" powerFactor="-0.75741" node="12" p="-63.8" q="55.0">
+            <iidm:lccConverterStation id="_9793118d-5ba1-4a9c-b2e0-db1d15be5913" name="Conv2" lossFactor="0.0" powerFactor="-0.7574099616" node="12" p="-63.8" q="55.0">
                 <iidm:alias>_453bdc57-5855-4eb5-8712-d6a0255e0da8</iidm:alias>
             </iidm:lccConverterStation>
         </iidm:voltageLevel>
