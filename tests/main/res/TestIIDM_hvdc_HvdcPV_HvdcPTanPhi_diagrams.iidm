@@ -267,7 +267,7 @@
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <lccConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" lossFactor="0" powerFactor="0.9" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170"/>
+      <lccConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" lossFactor="0" powerFactor="-0.9781588509" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170"/>
     </voltageLevel>
   </substation>
   <substation id="HERAP7_S" name="HERAP7" country="FR" tso="RTE">
@@ -283,7 +283,7 @@
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <lccConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" lossFactor="0" powerFactor="0.9" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270"/>
+      <lccConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" lossFactor="0" powerFactor="0.947492279" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270"/>
     </voltageLevel>
   </substation>
   <line id="AJAXL71HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" voltageLevelId1="HADESP7_S_VL7" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId2="AJAXP7_S_VL7" bus2="AJAXP7_S_VL7_TN1" connectableBus2="AJAXP7_S_VL7_TN1" p1="-1569.180513854946" q1="24.671934724104851" p2="1600.3269658814077" q2="340.52850434525936">
