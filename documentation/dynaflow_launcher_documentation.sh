@@ -57,7 +57,7 @@ done
 
 echo "\begin{appendices}" >> dynaflowLauncherDocumentation/$output_file
 
-licenses_folders=(licenses/dynawo licenses/dynawo-algorithms licenses/dynaflow-launcher licenses/dynaflow-launcher-documentation)
+licenses_folders=(licenses/dynawo licenses/dynawo-algorithms licenses/dynaflow-launcher licenses/dynaflow-launcher-documentation licenses/mpich)
 
 # Latex compile
 for folder in ${licenses_folders[*]}; do
@@ -69,7 +69,7 @@ for folder in ${licenses_folders[*]}; do
   done
 done
 
-license_name=('\Dynawo' '\Dynawo-algorithms' 'Dynaflow-launcher' 'Dynaflow-launcher documentation')
+license_name=('\Dynawo' '\Dynawo-algorithms' 'Dynaflow-launcher' 'Dynaflow-launcher documentation' 'mpich')
 
 i=0
 j=1
