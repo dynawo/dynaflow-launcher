@@ -19,10 +19,52 @@
 \chapter{Functional documentation}
 
 \section[Dynaflow-launcher Overview]{Dynaflow-launcher Overview}
+Dynaflow-launcher creates, for a given .iidm network file and config.json, all the input files needed for a DynaFlow simulation, runs a simulation and collects the results.
+\par In particular, it generates the .dyd file containing all the modelling choices for all the system's elements and the .par file that contains all the parameters for these models.
+\par The next section presents the modelling choices that are made.
 
-\section{Modeling}
+\section{Modelling}
 
-TODO
+\subsection{Loads}
+The models that are used for the loads depend on the parameter DsoVoltageLevel in the config.json file.
+\par Loads that are connected to buses with a voltage level below DsoVoltageLevel are modelled as fixed PQ loads. Nothing is put in the .dyd file as it is the default c++ model in \Dynawo.
+\par Loads that are connected to buses with a voltage level above DsoVoltageLevel are modelled as restorative loads with voltage limits (DYNModelLoadRestorativeWithLimits). After a disturbance, these loads go back to their initial P and Q after a transient, unless the voltage at their bus is outside the voltage limits, in which case they behave as alpha-beta loads (with a voltage-dependent behaviour).
+
+\subsection{Generators}
+First, the parameter InfiniteReactiveLimits in the config.json determines whether the generator models have infinite reactive power limits or PQ diagrams.
+
+\par The second parameter that has an influence is ActivePowerCompensation. It determines whether the generators participate in the active power balancing proportionally to PMax, P or PTarget. These two parameters are chosen by the user.
+
+\par The other choices are made depending on the grid situation and are automatically made by the tool.
+
+\par The generator can regulate the voltage or not. This information is given by the .iidm file. If a generator does not participate in the voltage regulation, it is also considered that it doesn't participate in the active power balancing. Therefore, no model is put in the .dyd and the default PQ c++ model is used.
+
+\par It can participate in the active power balancing or not, depending on its active power reference. Generators with an active power target equal to 0 do not participate in the active power balancing. They can however regulate the voltage.
+
+\par Concerning the voltage regulation:
+
+\begin{itemize}
+\item If a generator regulates the voltage at its connection bus, GeneratorPVDiagramPQSignalN (or GeneratorPVSignalN if infinite reactive limits are used) is used. This model strictly regulates the bus voltage, unless the reactive limits are hit, in which case Q = QMin or Q = QMax. The signal N is used for the active power balancing (it is not considered if the generator does not participate in the active power balancing).
+\item If it regulates the voltage at a distant bus, GeneratorPVRemoteDiagramPQSignalN (or GeneratorPVRemoteSignalN) is used.
+\item If another generator regulates the voltage at the same node (connection node or distant), then GeneratorPQPropDiagramPQSignalN (or GeneratorPQPropSignalN) is used for both generators, along with a VRRemote model associated to this bus to handle the coordinated voltage regulation.
+\end{itemize}
+
+\subsection{HVDC}
+\par Two types of HVDC links are modelled in DynaFlow : LCC with HvdcPTanPhi models and VSC with HvdcPV and HvdcPQProp models. Models with PQ diagrams or infinite reactive power limits are used depending on the choice made in the config.json.
+
+\par For the VSCs, the same logic is applied regarding the voltage regulation to choose between HvdcPV or HvdcPQProp models.
+
+\par For all HVDC links a specific "Dangling" model is used if the HVDC connects two different connected components.
+
+\par For example, for two HVDC VSC links in parallel regulating the same buses with PQ diagram taken into account, the model HvdcPQPropDiagramPQ is used. For an LCC connecting two different connected components, the model HvdcPTanPhiDangling is used.
+
+\par Moreover, for HVDC VSC links, if an AC emulation law is described in the .iidm file with the proper extension, it is taken into account in the model, with the "Emulation" suffix.
+
+\subsection{Static Var Compensators}
+\par For Static Var Compensators, StaticVarCompensatorPV are used if the SVarC strictly regulates the voltage and StaticVarCompensatorPVProp if an U + Lambda*Q control law is used, with a "Remote" suffix if the regulated bus is distant. If a special extension is present in the .iidm describing the control law of the mode of the SVarC, then other models are used, with the "ModeHandling" suffix.
+
+\par For example, an SVarC regulating the voltage at a distant bus with an U + Lambda*Q control law and with the proper extension describing the mode handling in the .iidm, is modelled by StaticVarCompensatorPVPropRemoteModeHandling.
+
 \section{Solver}
 
 The solver used is the Simplified Solver (SolverSIM) from \Dynawo.
