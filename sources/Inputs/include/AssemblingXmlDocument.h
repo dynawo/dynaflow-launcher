@@ -10,7 +10,7 @@
 
 /**
  * @file AssemblingXmlDocument.h
- * @brief Assembly xml document handler header
+ * @brief Assembling xml document handler header
  */
 
 #pragma once
@@ -26,7 +26,7 @@ namespace dfl {
 namespace inputs {
 
 /**
- * @brief Assembly xml document handler
+ * @brief Assembling xml document handler
  *
  * XML document handler for the assembling file for dynamic models
  */

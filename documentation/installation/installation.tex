@@ -97,6 +97,9 @@ export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
 # export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
 # export DYNAFLOW_LAUNCHER_BROWSER=firefox # browser command used to visualize test coverage. default: firefox
 
+# Optional external links : optional variable used at runtime to use additional iidm extension
+# export DYNAWO_IIDM_EXTENSION=<PATH_TO_IIDM_EXTENSIONS_LIBRARY>
+
 # Run
 $DYNAFLOW_LAUNCHER_HOME/scripts/envDFL.sh $@' > myEnvDFL.sh
 $> chmod +x myEnvDFL.sh
@@ -117,6 +120,8 @@ Below is a description of some environment variables that can be modified in the
    \tiny{DYNAFLOW\_LAUNCHER\_LOG\_LEVEL} & \small{Level of Dynaflow-launcher logs} \\
   \hline
    \tiny{DYNAFLOW\_LAUNCHER\_BUILD\_TESTS} & \small{enable tests build} \\
+  \hline
+   \tiny{DYNAWO\_IIDM\_EXTENSION} & \small{Path to iidm extension library} \\
   \hline
 \end{tabular}
 \end{center}

@@ -10,7 +10,7 @@
 
 /**
  * @file AssemblingXmlDocument.cpp
- * @brief Assembly xml document handler implementation
+ * @brief Assembling xml document handler implementation
  */
 
 #include "AssemblingXmlDocument.h"
