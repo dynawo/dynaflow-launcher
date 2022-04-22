@@ -32,7 +32,7 @@ The following section will provide information on:
 To launch Dynaflow, two inputs are required:
 \begin{itemize}
   \item a network description file in IIDM format;
-  \item a configuration file.
+  \item a configuration file in json format.
 \end{itemize}
 
 The command line used to launch Dynaflow is the following:
@@ -56,7 +56,7 @@ The Dynaflow systematic analysis mode can be used to assess the stability of a n
 Three inputs are required:
 \begin{itemize}
   \item a network description file in IIDM format;
-  \item a configuration file;
+  \item a configuration file in json format;
   \item a contingency file in json format.
 \end{itemize}
 
@@ -99,9 +99,9 @@ The parameters are described below:
 \textbf{{Name}} & \textbf{{Type}} & \textbf{{Description}} & \textbf{{Default value}}\\
 \midrule
 \rowcolor{white}
- &  & \small{if true generators reactive limits} & \\
+ &  & \small{if true, use infinite reactive limits,} & \\
 \rowcolor{white}
-\multirow{-2}{*}{\small{InfiniteReactiveLimits}} & \multirow{-2}{*}{\small{boolean}} & \small{will be considered as infinite} & \multirow{-2}{*}{\small{false} } \\
+\multirow{-2}{*}{\small{InfiniteReactiveLimits}} & \multirow{-2}{*}{\small{boolean}} & \small{if false, use diagrams} & \multirow{-2}{*}{\small{false} } \\
 \rowcolor{gray!10}
  &  & \small{Enable static var compensators} &  \\
 \rowcolor{gray!10}
@@ -122,10 +122,6 @@ The parameters are described below:
  & & \small{Active power compensation type:} & \\
 \rowcolor{white}
 \multirow{-2}{*}{\small{ActivePowerCompensation}} & \multirow{-2}{*}{\small{enum}}& \small{P, TARGET\_P or PMAX} & \multirow{-2}{*}{\small{PMAX}} \\
-\rowcolor{gray!10}
-\small{SettingPath} & \small{string} & \small{Path to the settings file} &  \\
-\rowcolor{white}
-\small{AssemblyPath} & \small{string} & \small{Path to the assembly file} & \\
 \rowcolor{gray!10}
 \small{StartTime} & \small{integer} & \small{Simulation start time (in s)} & \small{0} \\
 \rowcolor{white}
