@@ -128,7 +128,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(outputDir_, config, "OutputDir");
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
     helper::updateValue(settingFilePath_, config, "SettingPath");
-    helper::updateValue(assemblingFilePath_, config, "AssemblyPath");
+    helper::updateValue(assemblingFilePath_, config, "AssemblingPath");
     helper::updateValue(precision_, config, "Precision");
     helper::updateSeconds(startTime_, config, "StartTime");
     helper::updateSeconds(stopTime_, config, "StopTime");

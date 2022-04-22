@@ -17,6 +17,17 @@ sources/Common/src/*_keys.cpp
 sources/Common/*_keys.h
 sources/Common/*_keys.cpp
 sources/gitversion_dfl.h*
+documentation/*.aux
+documentation/*.log
+documentation/*.nlo
+documentation/*.out
+documentation/*.pdf
+documentation/licenses/*/*.aux
+documentation/licenses/*/*.log
+documentation/licenses/*/*.nlo
+documentation/licenses/*/*.out
+documentation/licenses/*/*.pdf
+documentation/dynaflowLauncherDocumentation
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode

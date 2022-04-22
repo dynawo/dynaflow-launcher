@@ -7,8 +7,6 @@
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
     "ActivePowerCompensation": "P",
-    "SettingPath": "res/setting.xml",
-    "AssemblyPath": "res/assembling.xml",
     "StartTime": 10,
     "StopTime": 120,
     "sa": {

@@ -8,7 +8,7 @@
     "DsoVoltageLevel": 63.0,
     "ActivePowerCompensation": "P",
     "SettingPath": "res/setting.xml",
-    "AssemblyPath": "res/assembling.xml",
+    "AssemblingPath": "res/assembling.xml",
     "StartTime": 10,
     "StopTime": 120,
     "Precision": 1e-3,
