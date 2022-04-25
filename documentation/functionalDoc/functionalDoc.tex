@@ -25,45 +25,198 @@ Dynaflow-launcher creates, for a given .iidm network file and config.json, all t
 
 \section{Modelling}
 
+The modelling choices are based on two inputs: the configuration file which is defined by the user, and on the network description file (iidm).
+The description of the behavior of the models mentionned below can be found in the \Dynawo documentation.
+
 \subsection{Loads}
-The models that are used for the loads depend on the parameter DsoVoltageLevel in the config.json file.
-\par Loads that are connected to buses with a voltage level below DsoVoltageLevel are modelled as fixed PQ loads. Nothing is put in the .dyd file as it is the default c++ model in \Dynawo.
-\par Loads that are connected to buses with a voltage level above DsoVoltageLevel are modelled as restorative loads with voltage limits (DYNModelLoadRestorativeWithLimits). After a disturbance, these loads go back to their initial P and Q after a transient, unless the voltage at their bus is outside the voltage limits, in which case they behave as alpha-beta loads (with a voltage-dependent behaviour).
+
+The models that are used for the loads depend on the parameter \textit{DsoVoltageLevel} in the config file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
+\begin{table}[h!]
+\center
+\begin{tabular}{ l | c }
+\toprule
+\textbf{{Voltage condition}} & \textbf{{Model}}\\
+\midrule
+ $voltage < DsoVoltageLevel$ &  fixed PQ load \\
+ $voltage \geq DsoVoltageLevel$ &  DYNModelLoadRestorativeWithLimits \\
+\bottomrule
+\end{tabular}
+\caption{Loads modelling}
+\end{table}
 
 \subsection{Generators}
-First, the parameter InfiniteReactiveLimits in the config.json determines whether the generator models have infinite reactive power limits or PQ diagrams.
 
-\par The second parameter that has an influence is ActivePowerCompensation. It determines whether the generators participate in the active power balancing proportionally to PMax, P or PTarget. These two parameters are chosen by the user.
+The following parameters from the configuration file are used for generators modelling (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}):
+\begin{itemize}
+  \item The parameter \textit{InfiniteReactiveLimits} determines whether the generator models have infinite reactive power limits or PQ diagrams;
+  \item The parameter \textit{ActivePowerCompensation} determines whether the generators participate in the active power balancing proportionally to PMax, P or PTarget.
+\end{itemize}
 
-\par The other choices are made depending on the grid situation and are automatically made by the tool.
-
-\par The generator can regulate the voltage or not. This information is given by the .iidm file. If a generator does not participate in the voltage regulation, it is also considered that it doesn't participate in the active power balancing. Therefore, no model is put in the .dyd and the default PQ c++ model is used.
-
-\par It can participate in the active power balancing or not, depending on its active power reference. Generators with an active power target equal to 0 do not participate in the active power balancing. They can however regulate the voltage.
+The information that a generator partipates or not in the voltage regulation is given in the IIDM input file.
 
 \par Concerning the voltage regulation:
 
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c}
+\toprule
+\footnotesize{\textbf{{Voltage regulation}}} & \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \footnotesize{\textbf{{Model}}}\\
+\midrule
+\rowcolor{white}
+ \small{None}  & \small{-} & \footnotesize{fixed PQ generator} \\
+\rowcolor{gray!10}
+ \small{At the connection bus} & \small{false} & \footnotesize{GeneratorPVDiagramPQSignalN} \\
+\rowcolor{white}
+ \small{At the connection bus} & \small{true} & \footnotesize{GeneratorPVSignalN} \\
+\rowcolor{gray!10}
+ \small{At a distant bus} & \small{false} & \footnotesize{GeneratorPVRemoteDiagramPQSignalN} \\
+\rowcolor{white}
+ \small{At a distant bus} & \small{true} & \footnotesize{GeneratorPVRemoteSignalN} \\
+\rowcolor{gray!10}
+\small{Another generator}&  &  \\
+\rowcolor{gray!10}
+\small{regulates the same node} & \multirow{-2}{*}{\small{false}} & \multirow{-2}{*}{\footnotesize{GeneratorPQPropDiagramPQSignalN}} \\
+\rowcolor{white}
+\small{Another generator}&  & \footnotesize{GeneratorPQPropSignalN}  \\
+\rowcolor{white}
+\small{regulates the same node} & \multirow{-2}{*}{\small{true}} & \footnotesize{+ VRRemote model} \\
+\bottomrule
+\end{tabular}
+\caption{Generators modelling}
+\end{table}
+
+\par Concerning the active power balancing:
+
 \begin{itemize}
-\item If a generator regulates the voltage at its connection bus, GeneratorPVDiagramPQSignalN (or GeneratorPVSignalN if infinite reactive limits are used) is used. This model strictly regulates the bus voltage, unless the reactive limits are hit, in which case Q = QMin or Q = QMax. The signal N is used for the active power balancing (it is not considered if the generator does not participate in the active power balancing).
-\item If it regulates the voltage at a distant bus, GeneratorPVRemoteDiagramPQSignalN (or GeneratorPVRemoteSignalN) is used.
-\item If another generator regulates the voltage at the same node (connection node or distant), then GeneratorPQPropDiagramPQSignalN (or GeneratorPQPropSignalN) is used for both generators, along with a VRRemote model associated to this bus to handle the coordinated voltage regulation.
+  \item A generator that does not participate in the voltage regulation cannot participate in the acting power balancing;
+  \item A generator with an active power target equal to 0 does not participate in the active power balancing. It can however regulate the voltage;
+  \item the active power reference of the others generator define if they participate in the active power balancing.
 \end{itemize}
 
 \subsection{HVDC}
-\par Two types of HVDC links are modelled in DynaFlow : LCC with HvdcPTanPhi models and VSC with HvdcPV and HvdcPQProp models. Models with PQ diagrams or infinite reactive power limits are used depending on the choice made in the config.json.
 
-\par For the VSCs, the same logic is applied regarding the voltage regulation to choose between HvdcPV or HvdcPQProp models.
+Two types of HVDC links are modelled in DynaFlow : LCCs and VSCs.
 
-\par For all HVDC links a specific "Dangling" model is used if the HVDC connects two different connected components.
+The parameter \textit{InfiniteReactiveLimits} from the configuration file determines whether the HVDC models have infinite reactive power limits
+or PQ diagrams (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
 
-\par For example, for two HVDC VSC links in parallel regulating the same buses with PQ diagram taken into account, the model HvdcPQPropDiagramPQ is used. For an LCC connecting two different connected components, the model HvdcPTanPhiDangling is used.
+\subsubsection{VSCs}
 
-\par Moreover, for HVDC VSC links, if an AC emulation law is described in the .iidm file with the proper extension, it is taken into account in the model, with the "Emulation" suffix.
+The conditions and models used are given below.
+The information that a HVDC has an AC regulation law is given in the IIDM input file.\\
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c}
+\toprule
+\small{\textbf{{Voltage regulation}}}& \small{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{gray!10}
+ \small{At the connection bus} & \small{false}& \small{HvdcPVDiagramPQ} \\
+\rowcolor{white}
+ \small{At the connection bus} & \small{true}& \small{HvdcPV} \\
+\rowcolor{gray!10}
+ \small{At a distant bus} & \small{false} & \small{HvdcPQPropDiagramPQ} \\
+\rowcolor{white}
+ \small{At a distant bus} & \small{true} & \small{HvdcPQProp} \\
+\bottomrule
+\end{tabular}
+\caption{VSCs modelling (not dangling, no AC emulation law)}
+\end{table}
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c}
+\toprule
+\footnotesize{\textbf{{Voltage regulation}}}& \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{gray!10}
+ \footnotesize{At the connection bus} & \small{false}& \footnotesize{HvdcPVDiagramPQEmulation} \\
+\rowcolor{white}
+ \footnotesize{At the connection bus} & \small{true}& \footnotesize{HvdcPVEmulation} \\
+\rowcolor{gray!10}
+ \footnotesize{At a distant bus} & \small{false} & \footnotesize{HvdcPQPropDiagramPQEmulation} \\
+\rowcolor{white}
+ \footnotesize{At a distant bus} & \small{true} & \footnotesize{HvdcPQPropEmulation} \\
+\bottomrule
+\end{tabular}
+\caption{VSCs modelling (not dangling, AC emulation law)}
+\end{table}
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c }
+\toprule
+\footnotesize{\textbf{{Voltage regulation}}}& \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{gray!10}
+ \footnotesize{At the connection bus} & \small{false}& \footnotesize{HvdcPVDanglingDiagramPQ} \\
+\rowcolor{white}
+ \footnotesize{At the connection bus} & \small{true}& \footnotesize{HvdcPVDangling} \\
+\rowcolor{gray!10}
+ \footnotesize{At a distant bus} & \small{false} & \footnotesize{HvdcPQPropDanglingDiagramPQ} \\
+\rowcolor{white}
+ \footnotesize{At a distant bus} & \small{true} & \footnotesize{HvdcPQPropDangling} \\
+\bottomrule
+\end{tabular}
+\caption{VSCs modelling (dangling)}
+\end{table}
+
+\subsubsection{LCCs}
+
+The conditions and models used are given below.
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c }
+\toprule
+\small{\textbf{{Dangling}}}& \small{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{white}
+ \small{false} & \small{false}  & \small{HvdcPTanPhi} \\
+\rowcolor{gray!10}
+ \small{true} & \small{false}& \small{HvdcPTanPhiDangling} \\
+\rowcolor{white}
+ \small{false} & \small{true}& \small{HvdcPTanPhiDiagramPQ} \\
+\rowcolor{gray!10}
+ \small{true} & \small{true} & \small{HvdcPTanPhiDanglingDiagramPQ} \\
+\bottomrule
+\end{tabular}
+\caption{LCCs modelling}
+\end{table}
 
 \subsection{Static Var Compensators}
-\par For Static Var Compensators, StaticVarCompensatorPV are used if the SVarC strictly regulates the voltage and StaticVarCompensatorPVProp if an U + Lambda*Q control law is used, with a "Remote" suffix if the regulated bus is distant. If a special extension is present in the .iidm describing the control law of the mode of the SVarC, then other models are used, with the "ModeHandling" suffix.
 
-\par For example, an SVarC regulating the voltage at a distant bus with an U + Lambda*Q control law and with the proper extension describing the mode handling in the .iidm, is modelled by StaticVarCompensatorPVPropRemoteModeHandling.
+The conditions and models used are given below.
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c | c}
+\toprule
+& & \scriptsize{\textbf{{Custom mode}}} &  \\
+\scriptsize{\multirow{-2}{*}{\textbf{{Voltage regulation}}}}& \multirow{-2}{*}{\scriptsize{\textbf{{Control law}}}}& \scriptsize{\textbf{{control law}}} & \multirow{-2}{*}{\scriptsize{\textbf{{Model}}}} \\
+\midrule
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{None}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPV} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{None}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVModeHandling} \\
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{U + Lambda*Q}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPVProp} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{U + Lambda*Q}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVModeHandling} \\
+\rowcolor{white}
+ \scriptsize{At a distant bus} & \scriptsize{None}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPVRemote} \\
+\rowcolor{gray!10}
+ \scriptsize{At a distant bus} & \scriptsize{None}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVRemoteModeHandling} \\
+\rowcolor{white}
+ \scriptsize{At a distant bus} & \scriptsize{U + Lambda*Q}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPVPropRemote} \\
+\rowcolor{gray!10}
+ \scriptsize{At a distant bus} & \scriptsize{U + Lambda*Q}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVPropRemoteModeHandling} \\
+\bottomrule
+\end{tabular}
+\caption{Static Var Compensators modelling}
+\end{table}
+
 
 \section{Solver}
 
