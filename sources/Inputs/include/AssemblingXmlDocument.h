@@ -69,6 +69,14 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   };
 
   /**
+   * @brief Model XML element
+   */
+  struct Model {
+    std::string id;  ///< id of the model
+    std::string lib;  ///< lib of the model
+  };
+
+  /**
    * @brief Macro connect XML element defining a macro connection of a dynamic model
    */
   struct MacroConnect {
@@ -101,6 +109,14 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   struct MultipleAssociation {
     std::string id;  ///< unique association id
     Shunt shunt;     ///< Shunt of the association
+  };
+
+  /**
+   * @brief Model association XML element
+   */
+  struct ModelAssociation {
+    std::string id;   ///< model connection id
+    Model model;      ///< model of the association
   };
 
   /**
@@ -138,6 +154,14 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
    */
   const std::vector<MultipleAssociation>& multipleAssociations() const {
     return multipleAssociations_;
+  }
+
+  /**
+   * @brief Retrieve the list of model associations
+   * @returns the list of model associations elements
+   */
+  const std::vector<ModelAssociation>& modelAssociations() const {
+    return modelAssociations_;
   }
 
   /**
@@ -216,6 +240,19 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   };
 
   /**
+   * @brief Model element handler
+   */
+  struct ModelHandler : public xml::sax::parser::ComposableElementHandler {
+    /**
+     * @brief Constructor
+     * @param root the root element to parse
+     */
+    explicit ModelHandler(const elementName_type& root);
+
+    boost::optional<Model> currentModel;  ///< current model element
+  };
+
+  /**
    * @brief Macro connect element handler
    */
   struct MacroConnectHandler : public xml::sax::parser::ComposableElementHandler {
@@ -276,6 +313,21 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   };
 
   /**
+   * @brief Model association element handler
+   */
+  struct ModelAssociationHandler : public xml::sax::parser::ComposableElementHandler {
+    /**
+     * @brief Constructor
+     * @param root the root element to parse
+     */
+    explicit ModelAssociationHandler(const elementName_type& root);
+
+    boost::optional<ModelAssociation> currentModelAssociation;  ///< current model association element
+
+    ModelHandler modelHandler;  ///< model element handler
+  };
+
+  /**
    * @brief Automaton element handler
    */
   struct DynamicAutomatonHandler : public xml::sax::parser::ComposableElementHandler {
@@ -294,11 +346,13 @@ class AssemblingXmlDocument : public xml::sax::parser::ComposableDocumentHandler
   MacroConnectionHandler macroConnectionHandler_;          ///< Macro connection handler
   SingleAssociationHandler singleAssociationHandler_;      ///< Single association handler
   MultipleAssociationHandler multipleAssociationHandler_;  ///< Multi association handler
+  ModelAssociationHandler modelAssociationHandler_;        ///< Model association handler
   DynamicAutomatonHandler dynamicAutomatonHandler_;        ///< Automaton handler
 
   std::vector<MacroConnection> macroConnections_;          ///< list of macro connections
   std::vector<SingleAssociation> singleAssociations_;      ///< list of single associations
   std::vector<MultipleAssociation> multipleAssociations_;  ///< list of multiple associations
+  std::vector<ModelAssociation> modelAssociations_;        ///< list of model associations
   std::vector<DynamicAutomaton> dynamicAutomatons_;        ///< list of dynamic models
 };
 }  // namespace inputs
