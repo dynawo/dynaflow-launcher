@@ -56,7 +56,8 @@ struct DynamicModelDefinition {
       NODE = 0,  ///< Node type
       LINE,      ///< Line type
       TFO,       ///< Transformer type
-      SHUNT      ///< Shunt type
+      SHUNT,     ///< Shunt type
+      MODEL      ///< Model type
     };
 
     /**
@@ -253,6 +254,13 @@ class DynModelAlgorithm {
    */
   void extractMultiAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
                                    const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc);
+
+
+  /**
+   * @brief Process model in case of dynamic automaton model connection
+   * @param macroConnect macro connection to process
+   */
+  void connectMacroConnectionForModel(const dfl::inputs::AssemblingXmlDocument::MacroConnect &macroConnect)
 
   /**
    * @brief Process node in case of dynamic automaton bus connection

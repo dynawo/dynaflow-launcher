@@ -102,12 +102,17 @@ DynModelAlgorithm::extractDynModels(bool shuntRegulationOn) {
 
   const auto& automatons = manager_.assemblingDocument().dynamicAutomatons();
   const auto& singleAssociations = manager_.assemblingDocument().singleAssociations();
+  const auto& modelAssociations = manager_.assemblingDocument().modelAssociations();
   const auto& multiAssociations = manager_.assemblingDocument().multipleAssociations();
 
   // Use map instead of vector to find the associations
   std::unordered_map<std::string, AssemblingXmlDocument::SingleAssociation> singleAssociationsMap;
   for (const auto& asso : singleAssociations) {
     singleAssociationsMap[asso.id] = asso;
+  }
+  std::unordered_map<std::string, AssemblingXmlDocument::ModelAssociation> modelAssociationsMap;
+  for (const auto& asso : modelAssociations) {
+    modelAssociationsMap[asso.id] = asso;
   }
   std::unordered_map<std::string, AssemblingXmlDocument::MultipleAssociation> multiAssociationsMap;
   if (shuntRegulationOn) {
@@ -128,6 +133,12 @@ DynModelAlgorithm::extractDynModels(bool shuntRegulationOn) {
       auto singleassoc = singleAssociationsMap.find(macro.id);
       if (singleassoc != singleAssociationsMap.end()) {
         extractSingleAssociationInfo(automaton, macro, singleassoc->second);
+        continue;
+      }
+
+      auto modelassoc = modelAssociationsMap.find(macro.id);
+      if (modelassoc != modelAssociationsMap.end()) {
+        connectMacroConnectionForModel(macro)
         continue;
       }
 
@@ -179,6 +190,16 @@ DynamicModelDefinition::MacroConnection::operator>(const MacroConnection& other)
 bool
 DynamicModelDefinition::MacroConnection::operator>=(const MacroConnection& other) const {
   return (*this) > other || (*this) == other;
+}
+
+void
+DynModelAlgorithm::connectMacroConnectionForModel(const dfl::inputs::AssemblingXmlDocument::MacroConnect &macroConnect) {
+  dynamicModels_.usedMacroConnections.insert(macroConnect.macroConnection);
+  addMacroConnectionToModelDefinitions(
+      automaton,
+      DynamicModelDefinition::MacroConnection(macroConnect.macroConnection,
+                                              DynamicModelDefinition::MacroConnection::ElementType::MODEL,
+                                              modelAssociationsMap[macroConnect.id].model.id));
 }
 
 void
