@@ -248,7 +248,7 @@ class DynModelAlgorithm {
    * @brief Process multi association from configuration
    *
    * @param automaton the dynamic automaton
-   * @param macro the macro connection connected to the singleassociation
+   * @param macro the macro connection connected to the multiassociation
    * @param multiassoc the multi association config element to process
    */
   void extractMultiAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
