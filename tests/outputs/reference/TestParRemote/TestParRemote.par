@@ -14,6 +14,22 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
+  <macroParameterSet id="macro_remoteSignalNFixedPRectangular">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin" origData="IIDM" origName="qMin"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
+  </macroParameterSet>
   <macroParameterSet id="macro_remoteVControl">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
@@ -24,6 +40,22 @@
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
+  </macroParameterSet>
+  <macroParameterSet id="macro_remoteVControlRectangular">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin" origData="IIDM" origName="qMin"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
@@ -40,6 +72,11 @@
     <par name="generator_QMinTableName" type="STRING" value="10160083025018531003_tableqmin"/>
     <macroParSet id="macro_propSignalNGenerator"/>
   </set>
+  <set id="12811459763870767443">
+    <par name="generator_QMax0" type="DOUBLE" value="21"/>
+    <par name="generator_QMin0" type="DOUBLE" value="1"/>
+    <macroParSet id="macro_remoteSignalNFixedPRectangular"/>
+  </set>
   <set id="6320417593396202500">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
@@ -48,6 +85,11 @@
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
     <macroParSet id="macro_remoteVControl"/>
+  </set>
+  <set id="9965188665212998056">
+    <par name="generator_QMax0" type="DOUBLE" value="21"/>
+    <par name="generator_QMin0" type="DOUBLE" value="1"/>
+    <macroParSet id="macro_remoteVControlRectangular"/>
   </set>
   <set id="Model_Signal_NQ_BUS_1">
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
