@@ -45,7 +45,7 @@ TEST(Diagram, writeWithCurvePoint) {
   }
   outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
   const std::string bus1 = "BUS_1";
-  std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00",
+  std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
@@ -131,9 +131,9 @@ TEST(Diagram, writeEmpty) {
   const std::string bus1 = "BUS_1";
 
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN, "01", {}, -20., -2., 22., 220., 100, bus1),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "63", {}, 4., 40., 44., 440., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "04", {}, -20., -2., 22., 220., 100, bus1)};
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "01", {}, -20., -2., 22., 220., 100, bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "63", {}, 4., 40., 44., 440., 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "04", {}, -20., -2., 22., 220., 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));

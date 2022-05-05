@@ -30,48 +30,49 @@ void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes) {
   auto& node_generators = node->generators;
 
-  auto isModelWithInvalidDiagram = [](GeneratorDefinition::ModelType model, inputs::Generator generator) {
-    return (model == GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN || model == GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
-            model == GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) &&
-           !isDiagramValid(generator);
-  };
-
   for (const auto& generator : node_generators) {
-    GeneratorDefinition::ModelType model = GeneratorDefinition::ModelType::NETWORK;
-    if (isTargetPValid(generator) && generator.isVoltageRegulationOn) {
+    ModelType model = ModelType::NETWORK;
+    if (isTargetPValid(generator) && generator.isVoltageRegulationOn && isDiagramValid(generator)) {
       dfl::inputs::NetworkManager::BusMapRegulating::const_iterator it = busMap_.find(generator.regulatedBusId);
       assert(it != busMap_.end());
       dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGenerators = it->second;
-      model = GeneratorDefinition::ModelType::SIGNALN;
+      model = ModelType::SIGNALN_INFINITE;
+      algoRes->isAtLeastOneGeneratorRegulating = true;
       if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
-        model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-        if (!isModelWithInvalidDiagram(model, generator)) {
-          algoRes->isAtLeastOneGeneratorRegulating = true;
-          busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+        if (useInfiniteReactivelimits_) {
+          model = ModelType::PROP_SIGNALN_INFINITE;
+        } else {
+          model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
         }
+        busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
       } else {
         switch (nbOfRegulatingGenerators) {
         case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
-          algoRes->isAtLeastOneGeneratorRegulating = true;
           if (generator.regulatedBusId == generator.connectedBusId) {
-            model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::SIGNALN : GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
+            if (useInfiniteReactivelimits_) {
+              model = ModelType::SIGNALN_INFINITE;
+            } else {
+              model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
+            }
           } else {
-            model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::REMOTE_SIGNALN : GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
+            if (useInfiniteReactivelimits_) {
+              model = ModelType::REMOTE_SIGNALN_INFINITE;
+            } else {
+              model = isDiagramRectangular(generator) ? ModelType::REMOTE_SIGNALN_RECTANGULAR : ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
+            }
           }
           break;
         case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
-          model = useInfiniteReactivelimits_ ? GeneratorDefinition::ModelType::PROP_SIGNALN : GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-          if (!isModelWithInvalidDiagram(model, generator)) {
-            algoRes->isAtLeastOneGeneratorRegulating = true;
-            busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+          if (useInfiniteReactivelimits_) {
+            model = ModelType::PROP_SIGNALN_INFINITE;
+          } else {
+            model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
           }
+          busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
           break;
         default:  //  impossible by definition of the enum
           break;
         }
-      }
-      if (isModelWithInvalidDiagram(model, generator)) {
-        model = GeneratorDefinition::ModelType::NETWORK;
       }
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
@@ -81,6 +82,9 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
 
 bool
 GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator) {
+  if (useInfiniteReactivelimits_) {
+    return true;
+  }
   // If there are no points, the diagram will be constructed from the pmin, pmax, qmin and qmax values.
   // We check the validity of pmin,pmax and qmin,qmax values
   if (generator.points.empty()) {
@@ -151,6 +155,16 @@ bool
 GeneratorDefinitionAlgorithm::isTargetPValid(const inputs::Generator& generator) const {
   return (DYN::doubleEquals(-generator.targetP, generator.pmin) || -generator.targetP > generator.pmin) &&
          (DYN::doubleEquals(-generator.targetP, generator.pmax) || -generator.targetP < generator.pmax);
+}
+
+bool
+notEqual(const DYN::GeneratorInterface::ReactiveCurvePoint& firstPoint, const DYN::GeneratorInterface::ReactiveCurvePoint& secondPoint) {
+  return DYN::doubleNotEquals(firstPoint.qmax, secondPoint.qmax) || DYN::doubleNotEquals(firstPoint.qmin, secondPoint.qmin);
+}
+
+bool
+GeneratorDefinitionAlgorithm::isDiagramRectangular(const inputs::Generator& generator) const {
+  return (std::adjacent_find(generator.points.begin(), generator.points.end(), notEqual) == generator.points.end());
 }
 
 }  // namespace algo
