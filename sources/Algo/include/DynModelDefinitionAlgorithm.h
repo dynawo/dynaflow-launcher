@@ -258,9 +258,13 @@ class DynModelAlgorithm {
 
   /**
    * @brief Process model in case of dynamic automaton model connection
-   * @param macroConnect macro connection to process
+   * @param automaton the dynamic automaton
+   * @param macro macro connection to process
+   * @param modelassoc the model association config element to process
    */
-  void connectMacroConnectionForModel(const dfl::inputs::AssemblingXmlDocument::MacroConnect &macroConnect)
+  void connectMacroConnectionForModel(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+                                      const inputs::AssemblingXmlDocument::MacroConnect& macro,
+                                      const inputs::AssemblingXmlDocument::ModelAssociation& modelassoc);
 
   /**
    * @brief Process node in case of dynamic automaton bus connection
