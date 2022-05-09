@@ -19,7 +19,7 @@
 
 \section{Overview}
 
-The following section will provide information on:
+The following sections will provide information on:
 \begin{itemize}
 \item How to create the input files depending on the algorithm of interest;
 \item How to configure the input files in order to get the necessary output files to analyse the obtained results;
@@ -57,7 +57,7 @@ Three inputs are required:
 \begin{itemize}
   \item a network description file in IIDM format;
   \item a configuration file in json format;
-  \item a contingency file in json format.
+  \item a contingencies list file in json format.
 \end{itemize}
 
 The command line used to launch Dynaflow static analysis is the following:
@@ -140,7 +140,9 @@ The systematic analysis parameters are described below:
 \toprule
 \textbf{{Name}} & \textbf{{Type}} & \textbf{{Description}} & \textbf{{Default value}}\\
 \midrule
+\rowcolor{white}
 TimeOfEvent & integer & Time when the contingency occurs & 80 \\
+\rowcolor{gray!10}
 NumberOfThreads & integer & Number of threads to use & 4 \\
 \bottomrule
 \end{tabular}
