@@ -14,7 +14,7 @@ You can download Dynaflow-launcher documentation [here](https://github.com/dynaw
 
 Scripts:
 * **compile.sh**: compile each separated LaTex document (except the licenses).
-* **dynaflow_launcher_documentation.sh**: merge all LaTex files to create the complete Dyna&omega;o-algorithms documentation.
+* **dynaflow_launcher_documentation.sh**: merge all LaTex files to create the complete Dynaflow-launcher documentation.
 * **clean.sh**: remove all latex temporary files and pdf.
 
 For the moment those scripts should be launched from this directory to work properly.
