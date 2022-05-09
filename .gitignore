@@ -22,6 +22,12 @@ documentation/*.log
 documentation/*.nlo
 documentation/*.out
 documentation/*.pdf
+documentation/*/*.aux
+documentation/*/*.log
+documentation/*/*.nlo
+documentation/*/*.out
+documentation/*/*.pdf
+documentation/*/*.toc
 documentation/licenses/*/*.aux
 documentation/licenses/*/*.log
 documentation/licenses/*/*.nlo
