@@ -33,6 +33,9 @@ TEST(TestDynamicDataBaseManager, base) {
   const auto& multiAssociations = manager.assemblingDocument().multipleAssociations();
   ASSERT_EQ(multiAssociations.size(), 2);
 
+  const auto& modelAssociations = manager.assemblingDocument().modelAssociations();
+  ASSERT_EQ(modelAssociations.size(), 2);
+
   const auto& dynamicAutomatons = manager.assemblingDocument().dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 2);
 

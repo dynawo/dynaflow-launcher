@@ -40,4 +40,10 @@
   <singleAssociation id="ORDER_SALON">
     <line name="OBLA"/>
   </singleAssociation>
+  <modelAssociation id="MODELE_1_VL4_ID">
+    <model id="MODELE_1_VL4" lib="DYNModel1"/>
+  </modelAssociation>
+  <modelAssociation id="MODELE_1_VL6_ID">
+    <model id="MODELE_1_VL6" lib="DYNModel1"/>
+  </modelAssociation>
 </assembling>

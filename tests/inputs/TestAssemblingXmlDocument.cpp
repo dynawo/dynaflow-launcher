@@ -81,6 +81,17 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(multiAssociations.front().id, "SHUNTS_MODELE_1_VL4");
   ASSERT_EQ(multiAssociations.front().shunt.voltageLevel, "VL4");
 
+  const auto& modelAssociations = doc.modelAssociations();
+  ASSERT_EQ(modelAssociations.size(), 2);
+  auto modelAssoc1 = modelAssociations[0];
+  ASSERT_EQ(modelAssoc1.id, "MODELE_1_VL4_ID");
+  ASSERT_EQ(modelAssoc1.model.id, "MODELE_1_VL4");
+  ASSERT_EQ(modelAssoc1.model.lib, "DYNModel1");
+  auto modelAssoc2 = modelAssociations[1];
+  ASSERT_EQ(modelAssoc2.id, "MODELE_1_VL6_ID");
+  ASSERT_EQ(modelAssoc2.model.id, "MODELE_1_VL6");
+  ASSERT_EQ(modelAssoc2.model.lib, "DYNModel1");
+
   const auto& dynamicAutomatons = doc.dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 2);
   ASSERT_EQ(dynamicAutomatons.front().id, "MODELE_1_VL4");
