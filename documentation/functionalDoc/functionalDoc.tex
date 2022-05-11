@@ -1,0 +1,230 @@
+%% Except where otherwise noted, content in this documentation is Copyright (c)
+%% 2022, RTE (http://www.rte-france.com) and licensed under a
+%% CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+%% license. All rights reserved.
+
+\documentclass[a4paper, 12pt]{report}
+
+% Latex setup
+\input{../latex_setup.tex}
+
+\begin{document}
+
+\title{Dynaflow-launcher Functional Documentation}
+\date\today
+
+\maketitle
+\tableofcontents
+
+\chapter{Functional documentation}
+
+\section[Dynaflow-launcher Overview]{Dynaflow-launcher Overview}
+Dynaflow-launcher creates, for a given .iidm network file and config.json, all the input files needed for a DynaFlow simulation, runs a simulation and collects the results.
+\par In particular, it generates the .dyd file containing all the modelling choices for all the system's elements and the .par file that contains all the parameters for these models.
+\par The next section presents the modelling choices that are made.
+
+\section{Modelling}
+
+The modelling choices are based on two inputs: the configuration file which is defined by the user, and on the network description file (iidm).
+The description of the behavior of the models mentionned below can be found in the \Dynawo documentation.
+
+\subsection{Loads}
+
+The models that are used for the loads depend on the parameter \textit{DsoVoltageLevel} in the config file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
+\begin{table}[h!]
+\center
+\begin{tabular}{ l | c }
+\toprule
+\textbf{{Voltage condition}} & \textbf{{Model}}\\
+\midrule
+ $voltage < DsoVoltageLevel$ &  fixed PQ load \\
+ $voltage \geq DsoVoltageLevel$ &  DYNModelLoadRestorativeWithLimits \\
+\bottomrule
+\end{tabular}
+\caption{Loads modelling}
+\end{table}
+
+\subsection{Generators}
+
+The following parameters from the configuration file are used for generators modelling (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}):
+\begin{itemize}
+  \item The parameter \textit{InfiniteReactiveLimits} determines whether the generator models have infinite reactive power limits or PQ diagrams;
+  \item The parameter \textit{ActivePowerCompensation} determines whether the generators participate in the active power balancing proportionally to PMax, P or PTarget.
+\end{itemize}
+
+The information that a generator partipates or not in the voltage regulation is given in the IIDM input file.
+
+\par Concerning the voltage regulation:
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c}
+\toprule
+\footnotesize{\textbf{{Voltage regulation}}} & \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \footnotesize{\textbf{{Model}}}\\
+\midrule
+\rowcolor{white}
+ \small{None}  & \small{-} & \footnotesize{fixed PQ generator} \\
+\rowcolor{gray!10}
+ \small{At the connection bus} & \small{false} & \footnotesize{GeneratorPVDiagramPQSignalN} \\
+\rowcolor{white}
+ \small{At the connection bus} & \small{true} & \footnotesize{GeneratorPVSignalN} \\
+\rowcolor{gray!10}
+ \small{At a distant bus} & \small{false} & \footnotesize{GeneratorPVRemoteDiagramPQSignalN} \\
+\rowcolor{white}
+ \small{At a distant bus} & \small{true} & \footnotesize{GeneratorPVRemoteSignalN} \\
+\rowcolor{gray!10}
+\small{Another generator}&  &  \\
+\rowcolor{gray!10}
+\small{regulates the same node} & \multirow{-2}{*}{\small{false}} & \multirow{-2}{*}{\footnotesize{GeneratorPQPropDiagramPQSignalN}} \\
+\rowcolor{white}
+\small{Another generator}&  & \footnotesize{GeneratorPQPropSignalN}  \\
+\rowcolor{white}
+\small{regulates the same node} & \multirow{-2}{*}{\small{true}} & \footnotesize{+ VRRemote model} \\
+\bottomrule
+\end{tabular}
+\caption{Generators modelling}
+\end{table}
+
+\par Concerning the active power balancing:
+
+\begin{itemize}
+  \item A generator that does not participate in the voltage regulation cannot participate in the acting power balancing;
+  \item A generator with an active power target equal to 0 does not participate in the active power balancing. It can however regulate the voltage;
+  \item the active power reference of the others generator define if they participate in the active power balancing.
+\end{itemize}
+
+\subsection{HVDC}
+
+Two types of HVDC links are modelled in DynaFlow : LCCs and VSCs.
+
+The parameter \textit{InfiniteReactiveLimits} from the configuration file determines whether the HVDC models have infinite reactive power limits
+or PQ diagrams (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
+
+\subsubsection{VSCs}
+
+The conditions and models used are given below.
+The information that a HVDC has an AC regulation law is given in the IIDM input file.\\
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c}
+\toprule
+\small{\textbf{{Voltage regulation}}}& \small{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{gray!10}
+ \small{At the connection bus} & \small{false}& \small{HvdcPVDiagramPQ} \\
+\rowcolor{white}
+ \small{At the connection bus} & \small{true}& \small{HvdcPV} \\
+\rowcolor{gray!10}
+ \small{At a distant bus} & \small{false} & \small{HvdcPQPropDiagramPQ} \\
+\rowcolor{white}
+ \small{At a distant bus} & \small{true} & \small{HvdcPQProp} \\
+\bottomrule
+\end{tabular}
+\caption{VSCs modelling (not dangling, no AC emulation law)}
+\end{table}
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c}
+\toprule
+\footnotesize{\textbf{{Voltage regulation}}}& \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{gray!10}
+ \footnotesize{At the connection bus} & \small{false}& \footnotesize{HvdcPVDiagramPQEmulation} \\
+\rowcolor{white}
+ \footnotesize{At the connection bus} & \small{true}& \footnotesize{HvdcPVEmulation} \\
+\rowcolor{gray!10}
+ \footnotesize{At a distant bus} & \small{false} & \footnotesize{HvdcPQPropDiagramPQEmulation} \\
+\rowcolor{white}
+ \footnotesize{At a distant bus} & \small{true} & \footnotesize{HvdcPQPropEmulation} \\
+\bottomrule
+\end{tabular}
+\caption{VSCs modelling (not dangling, AC emulation law)}
+\end{table}
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c }
+\toprule
+\footnotesize{\textbf{{Voltage regulation}}}& \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{gray!10}
+ \footnotesize{At the connection bus} & \small{false}& \footnotesize{HvdcPVDanglingDiagramPQ} \\
+\rowcolor{white}
+ \footnotesize{At the connection bus} & \small{true}& \footnotesize{HvdcPVDangling} \\
+\rowcolor{gray!10}
+ \footnotesize{At a distant bus} & \small{false} & \footnotesize{HvdcPQPropDanglingDiagramPQ} \\
+\rowcolor{white}
+ \footnotesize{At a distant bus} & \small{true} & \footnotesize{HvdcPQPropDangling} \\
+\bottomrule
+\end{tabular}
+\caption{VSCs modelling (dangling)}
+\end{table}
+
+\subsubsection{LCCs}
+
+The conditions and models used are given below.
+
+\begin{table}[ht!]
+\center
+\begin{tabular}{ c | c | c }
+\toprule
+\small{\textbf{{Dangling}}}& \small{\textbf{{InfiniteReactiveLimits}}} & \small{\textbf{{Model}}} \\
+\midrule
+\rowcolor{white}
+ \small{false} & \small{false}  & \small{HvdcPTanPhi} \\
+\rowcolor{gray!10}
+ \small{true} & \small{false}& \small{HvdcPTanPhiDangling} \\
+\rowcolor{white}
+ \small{false} & \small{true}& \small{HvdcPTanPhiDiagramPQ} \\
+\rowcolor{gray!10}
+ \small{true} & \small{true} & \small{HvdcPTanPhiDanglingDiagramPQ} \\
+\bottomrule
+\end{tabular}
+\caption{LCCs modelling}
+\end{table}
+
+\subsection{Static Var Compensators}
+
+The conditions and models used are given below.
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c | c}
+\toprule
+& & \scriptsize{\textbf{{Custom mode}}} &  \\
+\scriptsize{\multirow{-2}{*}{\textbf{{Voltage regulation}}}}& \multirow{-2}{*}{\scriptsize{\textbf{{Control law}}}}& \scriptsize{\textbf{{control law}}} & \multirow{-2}{*}{\scriptsize{\textbf{{Model}}}} \\
+\midrule
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{None}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPV} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{None}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVModeHandling} \\
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{U + Lambda*Q}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPVProp} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{U + Lambda*Q}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVPropModeHandling} \\
+\rowcolor{white}
+ \scriptsize{At a distant bus} & \scriptsize{None}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPVRemote} \\
+\rowcolor{gray!10}
+ \scriptsize{At a distant bus} & \scriptsize{None}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVRemoteModeHandling} \\
+\rowcolor{white}
+ \scriptsize{At a distant bus} & \scriptsize{U + Lambda*Q}& \scriptsize{false}& \scriptsize{StaticVarCompensatorPVPropRemote} \\
+\rowcolor{gray!10}
+ \scriptsize{At a distant bus} & \scriptsize{U + Lambda*Q}& \scriptsize{true}& \scriptsize{StaticVarCompensatorPVPropRemoteModeHandling} \\
+\bottomrule
+\end{tabular}
+\caption{Static Var Compensators modelling}
+\end{table}
+
+
+\section{Solver}
+
+The solver used is the Simplified Solver (SolverSIM) from \Dynawo.
+The Maximum time step value is 10s.
+
+The full configuration used is the following:
+
+\lstinputlisting[language=XML,title=\Dynawo Simplified Solver configuration]{../../etc/solver.par}
+
+\end{document}

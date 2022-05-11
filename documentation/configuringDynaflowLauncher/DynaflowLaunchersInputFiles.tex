@@ -1,0 +1,174 @@
+%% Except where otherwise noted, content in this documentation is Copyright (c)
+%% 2022, RTE (http://www.rte-france.com) and licensed under a
+%% CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+%% license. All rights reserved.
+
+\documentclass[a4paper, 12pt]{report}
+% Latex setup
+\input{../latex_setup.tex}
+
+\begin{document}
+
+\title{Configure Dynaflow-launcher}
+\date\today
+
+\maketitle
+\tableofcontents
+
+\chapter[Configure Dynaflow-launcher]{Configure Dynaflow-launcher}
+
+\section{Overview}
+
+The following sections will provide information on:
+\begin{itemize}
+\item How to create the input files depending on the algorithm of interest;
+\item How to configure the input files in order to get the necessary output files to analyse the obtained results;
+\end{itemize}
+
+
+\subsection[Dynaflow-launcher inputs]{Dynaflow-launcher inputs}
+\subsubsection{Dynaflow}
+
+To launch Dynaflow, two inputs are required:
+\begin{itemize}
+  \item a network description file in IIDM format;
+  \item a configuration file in json format.
+\end{itemize}
+
+The command line used to launch Dynaflow is the following:
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+$> ./myEnvDFL.sh <PATH TO NETWORK FILE> <PATH TO CONFIG FILE>
+\end{lstlisting}
+
+for example:
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+$> ./myEnvDFL.sh tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json
+\end{lstlisting}
+
+This command will compute the steady-state of the network and provides as output the final state of the network in IIDM format.
+
+\subsubsection{Dynaflow systematic analysis}
+
+The Dynaflow systematic analysis mode can be used to assess the stability of a network subject to several contingencies scenarios.
+
+Three inputs are required:
+\begin{itemize}
+  \item a network description file in IIDM format;
+  \item a configuration file in json format;
+  \item a contingencies list file in json format.
+\end{itemize}
+
+The command line used to launch Dynaflow static analysis is the following:
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+$> ./myEnvDFL.sh <PATH TO NETWORK FILE> <PATH TO CONFIG FILE> <PATH TO CONTINGENCIES FILE>
+\end{lstlisting}
+
+for example:
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+$> ./myEnvDFL.sh tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json
+\end{lstlisting}
+
+This command will simulate all the events described in the contingencies file and provide as outputs the final states of the network for each of them in IIDM format.
+
+\textbf{Warning: The systematic analysis assumes that the network used as input is already properly initialized with a steady-state.}
+
+\subsection[Dynaflow-launcher outputs]{Dynaflow-launcher outputs}
+
+Dynaflow-launcher will generate an IIDM file containing the final state of the network. When the systematic analysis is launched, one IIDM per contingency will be generated.
+
+\section[Dynaflow-launcher input files modification]{Dynaflow-launcher input files modification}
+
+This section aims at giving more details on input files in order to help the user parametrize its inputs easily and autonomously.
+
+\subsection{Configuration file}
+\label{Dynaflow_Launcher_Configuration_Configuration_File}
+
+The configuration file is a \textbf{.json} file containing the values for the parameters of Dynaflow-launcher. An example is given below:
+
+\lstinputlisting[language=JSON,title=configuration file example]{../resources/syntaxExample/config.json}
+
+The parameters are described below:
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ l | c | c | c }
+\toprule
+\textbf{{Name}} & \textbf{{Type}} & \textbf{{Description}} & \textbf{{Default value}}\\
+\midrule
+\rowcolor{white}
+ &  & \small{if true, use infinite reactive limits,} & \\
+\rowcolor{white}
+\multirow{-2}{*}{\small{InfiniteReactiveLimits}} & \multirow{-2}{*}{\small{boolean}} & \small{if false, use diagrams} & \multirow{-2}{*}{\small{false} } \\
+\rowcolor{gray!10}
+ &  & \small{Enable static var compensators} &  \\
+\rowcolor{gray!10}
+\multirow{-2}{*}{\small{SVCRegulationOn}} & \multirow{-2}{*}{\small{boolean}} & \small{regulation} & \multirow{-2}{*}{\small{true}} \\
+\rowcolor{white}
+\small{ShuntRegulationOn} & \small{boolean} & \small{Enable shunt regulation} & \small{true} \\
+\rowcolor{gray!10}
+ &  & \small{Enable the automatic research} &  \\
+\rowcolor{gray!10}
+\multirow{-2}{*}{\small{AutomaticSlackBusOn}} & \multirow{-2}{*}{\small{boolean}} & \small{of the slack node} & \multirow{-2}{*}{\small{true}} \\
+\rowcolor{white}
+&  & \small{Path to the directory where} &  \\
+\rowcolor{white}
+\multirow{-2}{*}{\small{OutputDir}}&  \multirow{-2}{*}{\small{string}} & \small{outputs will be written}  &  \multirow{-2}{*}{\small{current path}} \\
+\rowcolor{gray!10}
+\small{DsoVoltageLevel} & \small{real} & \small{Minimum voltage level of loads} & \small{45} \\
+\rowcolor{white}
+ & & \small{Active power compensation type:} & \\
+\rowcolor{white}
+\multirow{-2}{*}{\small{ActivePowerCompensation}} & \multirow{-2}{*}{\small{enum}}& \small{P, TARGET\_P or PMAX} & \multirow{-2}{*}{\small{PMAX}} \\
+\rowcolor{gray!10}
+\small{StartTime} & \small{integer} & \small{Simulation start time (in s)} & \small{0} \\
+\rowcolor{white}
+\small{StopTime} & \small{integer} & \small{Simulation stop time (in s)} & \small{100} \\
+\bottomrule
+\end{tabular}
+\caption{Simulation parameters}
+\end{table}
+
+The systematic analysis parameters are described below:
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ l | c | c | c }
+\toprule
+\textbf{{Name}} & \textbf{{Type}} & \textbf{{Description}} & \textbf{{Default value}}\\
+\midrule
+\rowcolor{white}
+TimeOfEvent & integer & Time when the contingency occurs & 80 \\
+\rowcolor{gray!10}
+NumberOfThreads & integer & Number of threads to use & 4 \\
+\bottomrule
+\end{tabular}
+\caption{Systematic Analysis parameters}
+\end{table}
+
+\subsection{Contingencies file}
+
+The contingency file is a \textbf{.json} file containing a list of elements describing contingencies. An example is given below:
+\lstinputlisting[language=JSON,title=configuration file example]{../resources/syntaxExample/contingencies.json}
+
+The id of the element is the id of the node in the IIDM file.
+Also, each contingency has an unique id which will be reused in outputs file and logs.
+The possible contingency types are the following:
+\begin{itemize}
+  \item LOAD
+  \item GENERATOR
+  \item BRANCH
+  \item LINE
+  \item TWO\_WINDINGS\_TRANSFORMER
+  \item THREE\_WINDINGS\_TRANSFORMER
+  \item SHUNT\_COMPENSATOR
+  \item STATIC\_VAR\_COMPENSATOR
+  \item DANGLING\_LINE
+  \item HVDC\_LINE
+  \item BUSBAR\_SECTION
+\end{itemize}
+
+\end{document}

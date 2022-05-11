@@ -1,0 +1,149 @@
+%% Except where otherwise noted, content in this documentation is Copyright (c)
+%% 2022, RTE (http://www.rte-france.com) and licensed under a
+%% CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+%% license. All rights reserved.
+
+\documentclass[a4paper, 12pt]{report}
+
+% Latex setup
+\input{../latex_setup.tex}
+
+\begin{document}
+
+\title{Dynaflow-launcher Installation Documentation}
+\date\today
+
+\maketitle
+\tableofcontents
+
+\chapter{Install procedure}
+
+Dynaflow-launcher is available on \textbf{Linux}.
+You can either build it from sources or use binaries distributed on Github.
+This project uses the \href{https://github.com/dynawo/dynawo}{\Dynawo}  and the \href{https://github.com/dynawo/dynawo-algorithms}{\Dynawo-algorithms} projects.
+
+\section{Dynaflow-launcher binaries distribution}
+
+Dynaflow-launcher release is available on Github : \href{https://github.com/dynawo/dynaflow-launcher/releases/download/v1.3.0/Dynaflow_Launcher_Linux_v1.3.0.zip}{Linux release}.
+
+The packages required to use the distribution are the same as \Dynawo.
+
+\subsection{Using a distribution}
+
+You can use the following commands to download and test the latest distribution:
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+$> curl -L $(curl -s -L -X GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep "Dynaflow_Launcher_Linux" | grep url | cut -d '"' -f 4) -o Dynaflow_Launcher_Linux_latest.zip
+$> unzip Dynaflow_Launcher_Linux_latest.zip
+$> cd dynaflow-launcher
+$> ./dynaflow-launcher.sh --network tests/main/res/TestIIDM_launch.iidm --config tests/main/res/config_launch.json
+$> ./dynaflow-launcher.sh help
+\end{lstlisting}
+
+\section{Building requirements}
+
+Dynaflow-launcher is tested on Linux platforms (Centos, Debian and Ubuntu based) and provided that you can install system packages there should be no problem on any other Linux distribution.
+
+The requirements to build Dynaflow-launcher are the same as \Dynawo.
+
+\section[Building Dynaflow-launcher]{Building Dynaflow-launcher}
+\label{Dynaflow_launcher_Installation_Documentation_Building_Dynaflow_launcher}
+The first step is to build \Dynawo in a separate folder. Please refer to the \Dynawo documentation to do so.
+Then, the following command needs to be launched from the \Dynawo folder.
+
+\begin{lstlisting}[language=bash]
+$> ./myEnvDynawo.sh deploy
+\end{lstlisting}
+
+This command creates a deploy folder. The path to dynawo deploy is then the path to the subdirectory dynawo in the deploy folder. It is similar to:
+
+\begin{lstlisting}[language=bash]
+$> PATH_TO_DYNAWO_DEPLOY=<DYNAWO FOLDER>/deploy/<COMPILER><COMPILER VERSION>/shared/dynawo/
+\end{lstlisting}
+
+The second step is to do the same for \Dynawo-algorithms. Please refer to the \Dynawo-algorithms documentation to do so.
+Then, the following command needs to be launched from the \Dynawo-algorithms folder.
+
+\begin{lstlisting}[language=bash]
+$> ./myEnvDynawoAlgorithms.sh deploy
+\end{lstlisting}
+
+This command creates a deploy folder. The path to dynawo deploy is then the path to the subdirectory dynawo in the deploy folder. It is similar to:
+
+\begin{lstlisting}[language=bash]
+$> PATH_TO_DYNAWO_ALGORITHMS_DEPLOY=<DYNAWO-ALGORITHMS FOLDER>/deploy/<COMPILER><COMPILER VERSION>/shared/dynawo/
+\end{lstlisting}
+
+
+To build Dynaflow-launcher you need to clone the github repository and launch the following commands in the source code directory:
+
+\begin{lstlisting}[language=bash]
+$> git clone https://github.com/dynawo/dynaflow-launcher.git
+$> cd dynaflow-launcher
+$> echo '#!/bin/bash
+
+# Required
+export DYNAFLOW_LAUNCHER_HOME=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+export DYNAWO_HOME=<PATH_TO_DYNAWO_DEPLOY>
+export DYNAWO_ALGORITHMS_HOME=<PATH_TO_DYNAWO_ALGORITHMS_DEPLOY>
+export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
+
+# Optional
+# export DYNAFLOW_LAUNCHER_LOCALE=en_GB
+# export DYNAFLOW_LAUNCHER_CMAKE_GENERATOR=Ninja # default is Unix Makefiles
+# export DYNAFLOW_LAUNCHER_PROCESSORS_USED=8 # default 1
+# export DYNAFLOW_LAUNCHER_SHARED_LIB=ON # default OFF
+# export DYNAFLOW_LAUNCHER_USE_DOXYGEN=OFF # default ON
+# export DYNAFLOW_LAUNCHER_BUILD_TESTS=OFF # default ON
+# export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
+# export DYNAFLOW_LAUNCHER_BROWSER=firefox # browser command used to visualize test coverage. default: firefox
+
+# Optional external links : optional variable used at runtime to use additional iidm extension
+# export DYNAWO_IIDM_EXTENSION=<PATH_TO_IIDM_EXTENSIONS_LIBRARY>
+
+# Run
+$DYNAFLOW_LAUNCHER_HOME/scripts/envDFL.sh $@' > myEnvDFL.sh
+$> chmod +x myEnvDFL.sh
+$> ./myEnvDFL.sh build-user
+\end{lstlisting}
+
+Below is a description of some environment variables that can be modified in the file \textit{myEnvDFL.sh}:
+
+\begin{center}
+\begin{tabular}{|l|l|}
+  \hline
+   \tiny{DYNAFLOW\_LAUNCHER\_BROWSER} & \small{Default browser command} \\
+  \hline
+   \tiny{DYNAFLOW\_LAUNCHER\_PROCESSORS\_USED} & \small{Maximum number of cores to use} \\
+  \hline
+   \tiny{DYNAFLOW\_LAUNCHER\_BUILD\_TYPE} & \small{Build type: Release or Debug} \\
+  \hline
+   \tiny{DYNAFLOW\_LAUNCHER\_LOG\_LEVEL} & \small{Level of Dynaflow-launcher logs} \\
+  \hline
+   \tiny{DYNAFLOW\_LAUNCHER\_BUILD\_TESTS} & \small{Enable tests build} \\
+  \hline
+   \tiny{DYNAWO\_IIDM\_EXTENSION} & \small{Path to iidm extension library} \\
+  \hline
+\end{tabular}
+\end{center}
+
+\textbf{Warning}: If you're working behind a proxy make sure you have exported the following proxy environment variables:
+
+\begin{lstlisting}[language=bash]
+$> export http_proxy=
+$> export https_proxy=
+$> export no_proxy=localhost,127.0.0.0/8,::1
+$> export HTTP_PROXY=$http_proxy;export HTTPS_PROXY=$https_proxy;export NO_PROXY=$no_proxy;
+\end{lstlisting}
+
+\section[Launching Dynaflow-launcher]{Launching Dynaflow-launcher}
+
+Once you have installed and compiled Dynaflow-launcher as explained in section \ref{Dynaflow_launcher_Installation_Documentation_Building_Dynaflow_launcher},
+you can launch a simulation by calling one example:
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+$> ./myEnvDFL.sh tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json
+\end{lstlisting}
+
+This command launches Dynaflow on a simple network and should succeed if your installation went well and your compilation finished successfully.
+
+\end{document}
