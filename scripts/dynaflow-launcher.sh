@@ -62,9 +62,20 @@ case $1 in
     args="$args --contingencies"
     shift
     ;;
+  --contingencies=*)
+    if [ ! -z "${1#*=}" ]; then
+      USEMPI=true
+    fi
+    args="$args --contingencies=${1#*=}"
+    shift
+    ;;
   --nbThreads|-np)
     NBPROCS=$2
     shift 2 # pass argument and value
+    ;;
+  --nbThreads=*)
+    NBPROCS="${1#*=}"
+    shift # past value
     ;;
   *)
     args="$args $1"
