@@ -567,7 +567,7 @@ open_doxygen_doc() {
     echo "... end of doc generation"
   fi
   verify_browser
-  $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/html/index.html 
+  $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_INSTALL_DIR/doxygen/html/index.html
 }
 
 build_doc() {
@@ -636,10 +636,14 @@ ARGS=""
 while (($#)); do
     key="$1"
     case "$key" in
-        --nbThreads|-np)
+      --nbThreads|-np)
         NBPROCS=$2
         shift 2 # pass argument and value
         ;;
+      --nbThreads=*)
+        NBPROCS="${1#*=}"
+        shift # past value
+      ;;
     *)
         shift # pass argument
         ARGS="$ARGS $key"
