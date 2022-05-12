@@ -31,8 +31,8 @@ jobs:
         run: |
           source .github/workflows/tools.sh
 
-          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip
-          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO nightly-release Dynawo_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO_ALGORITHMS nightly-release DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
 
       - name: Unzip Dynawo and Dynawo algorithms
         run: |
@@ -99,8 +99,8 @@ jobs:
         run: |
           source .github/workflows/tools.sh
 
-          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip
-          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO nightly-release Dynawo_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO_ALGORITHMS nightly-release DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
 
       - name: Unzip Dynawo and Dynawo algorithms
         run: |
