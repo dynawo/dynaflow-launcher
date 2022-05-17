@@ -237,12 +237,12 @@ set_environment() {
     fi
 
     # build
-    export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
-    export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+    export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/build/dynaflow-launcher
+    export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/install/dynaflow-launcher
 
-    #3rd party
-    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR=$DYNAFLOW_LAUNCHER_BUILD_DIR/3rdParty
-    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/3rdParty
+    # 3rd party
+    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/build/3rdParty
+    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/install/3rdParty
     export_var_env_force DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR=$DYNAFLOW_LAUNCHER_HOME/3rdParty
 
     # global vars
@@ -255,11 +255,13 @@ set_environment() {
     export DYNAWO_RESOURCES_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd
 
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib # For local DFL libraries, used only at runtime in case we compile in shared
 
     export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_CMAKE_GENERATOR="Unix Makefiles"
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
+    export DYNAWO_NB_PROCESSORS_USED=$DYNAFLOW_LAUNCHER_PROCESSORS_USED
     export_var_env DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI="false"
 
     # Run
@@ -293,7 +295,7 @@ reset_environment_variables() {
     ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib
     ld_library_path_remove $DYNAWO_INSTALL_DIR/lib
     ld_library_path_remove $DYNAWO_ALGORITHMS_HOME/lib
-    ld_library_path_remove $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
+    ld_library_path_remove $DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR/mpich/lib
 
     pythonpath_remove $DYNAWO_HOME/sbin/nrt/nrt_diff
 
@@ -303,6 +305,7 @@ reset_environment_variables() {
     unset DYNAWO_DDB_DIR
     unset DYNAWO_LIBIIDM_EXTENSIONS
     unset IIDM_XML_XSD_PATH
+    unset DYNAWO_NB_PROCESSORS_USED
 
     unset DYNAWO_ALGORITHMS_HOME
 }
@@ -348,6 +351,7 @@ cmake_configure_3rdParty() {
     -G "$DYNAFLOW_LAUNCHER_CMAKE_GENERATOR" \
     -DCMAKE_BUILD_TYPE:STRING=$DYNAFLOW_LAUNCHER_BUILD_TYPE \
     -DCMAKE_INSTALL_PREFIX=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
+    -DDYNAWO_HOME:STRING=$DYNAWO_HOME \
     $DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR
   RETURN_CODE=$?
   popd > /dev/null
