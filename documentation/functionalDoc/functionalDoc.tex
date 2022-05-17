@@ -54,35 +54,46 @@ The following parameters from the configuration file are used for generators mod
 
 The information that a generator partipates or not in the voltage regulation is given in the IIDM input file.
 
-\par Concerning the voltage regulation:
+\par Table \ref{tab:generators_modelling} sums up the modelling choices applied by dynaflow-launcher following if a generator is on voltage regulation
+or not and where the voltage is controlled. Notice that these modelling associations are different whenever the InfiniteReactiveLimits parameter is set to true
+or not and if the reactive capability curve (diagram) of the generator is rectangular (all the values of $Q_{min}$ are equal and all the values of $Q_{max}$ are equal):
 
 \begin{table}[h!]
 \center
-\begin{tabular}{ c | c | c}
+\begin{tabular}{ c | c | c | c}
 \toprule
-\footnotesize{\textbf{{Voltage regulation}}} & \footnotesize{\textbf{{InfiniteReactiveLimits}}} & \footnotesize{\textbf{{Model}}}\\
+\scriptsize{\textbf{{Voltage regulation}}} & \scriptsize{\textbf{{InfiniteReactiveLimits}}} & \scriptsize{\textbf{{Rectangular diagram}}} & \scriptsize{\textbf{{Model}}}\\
 \midrule
 \rowcolor{white}
- \small{None}  & \small{-} & \footnotesize{fixed PQ generator} \\
+ \scriptsize{None}  & \scriptsize{-} & \scriptsize{-} & \scriptsize{fixed PQ generator} \\
 \rowcolor{gray!10}
- \small{At the connection bus} & \small{false} & \footnotesize{GeneratorPVDiagramPQSignalN} \\
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{false} & \scriptsize{GeneratorPVDiagramPQSignalN} \\
 \rowcolor{white}
- \small{At the connection bus} & \small{true} & \footnotesize{GeneratorPVSignalN} \\
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{true} & \scriptsize{GeneratorPVSignalN} \\
 \rowcolor{gray!10}
- \small{At a distant bus} & \small{false} & \footnotesize{GeneratorPVRemoteDiagramPQSignalN} \\
+ \scriptsize{At the connection bus} & \scriptsize{true} & \scriptsize{-} & \scriptsize{GeneratorPVSignalN} \\
 \rowcolor{white}
- \small{At a distant bus} & \small{true} & \footnotesize{GeneratorPVRemoteSignalN} \\
+ \scriptsize{At a distant bus} & \scriptsize{false} & \scriptsize{false} & \scriptsize{GeneratorPVRemoteDiagramPQSignalN} \\
 \rowcolor{gray!10}
-\small{Another generator}&  &  \\
+ \scriptsize{At a distant bus} & \scriptsize{false} & \scriptsize{true} & \scriptsize{GeneratorPVRemoteSignalN} \\
+\rowcolor{white}
+ \scriptsize{At a distant bus} & \scriptsize{true} & \scriptsize{-} & \scriptsize{GeneratorPVRemoteSignalN} \\
 \rowcolor{gray!10}
-\small{regulates the same node} & \multirow{-2}{*}{\small{false}} & \multirow{-2}{*}{\footnotesize{GeneratorPQPropDiagramPQSignalN}} \\
+\scriptsize{Another generator}&  &  & \scriptsize{GeneratorPQPropDiagramPQSignalN}\\
+\rowcolor{gray!10}
+\scriptsize{regulates the same node} & \multirow{-2}{*}{\scriptsize{false}} & \multirow{-2}{*}{\scriptsize{false}} & \scriptsize{+ VRRemote model} \\
 \rowcolor{white}
-\small{Another generator}&  & \footnotesize{GeneratorPQPropSignalN}  \\
+\scriptsize{Another generator}&  &  & \scriptsize{GeneratorPQPropSignalN}\\
 \rowcolor{white}
-\small{regulates the same node} & \multirow{-2}{*}{\small{true}} & \footnotesize{+ VRRemote model} \\
+\scriptsize{regulates the same node} & \multirow{-2}{*}{\scriptsize{false}} & \multirow{-2}{*}{\scriptsize{true}} & \scriptsize{+ VRRemote model} \\
+\rowcolor{gray!10}
+\scriptsize{Another generator}&  & & \scriptsize{GeneratorPQPropSignalN}  \\
+\rowcolor{gray!10}
+\scriptsize{regulates the same node} & \multirow{-2}{*}{\scriptsize{true}} & \multirow{-2}{*}{\scriptsize{-}} & \scriptsize{+ VRRemote model} \\
 \bottomrule
 \end{tabular}
-\caption{Generators modelling}
+\caption{Generators modelling.}
+\label{tab:generators_modelling}
 \end{table}
 
 \par Concerning the active power balancing:

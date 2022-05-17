@@ -35,15 +35,17 @@ TEST(TestPar, write) {
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "04", {}, 3., 30., -33., 330., 0, bus1)};
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "04", {}, 3., 30., -33., 330., 0, bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 100, bus1),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators,
-                                                              {}, activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators, {},
+                                                               activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -73,18 +75,20 @@ TEST(TestPar, writeRemote) {
   std::string bus1 = "BUS_1";
   std::string bus2 = "BUS_2";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus1),
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus2),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN, "01", {}, 2., 20., 22., 220., 100, bus2)};
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus2),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus2),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 100, bus2),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, bus2)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators,
-                                                              {}, activePowerCompensation, busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators, {},
+                                                               activePowerCompensation, busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -146,9 +150,8 @@ TEST(TestPar, writeHdvc) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {},
-                                  hvdcDefs, activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, hvdcDefs, activePowerCompensation,
+                                                               {}, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -187,14 +190,14 @@ TEST(TestPar, DynModel) {
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN, "00", {}, 1., 10., 11., 110., 100, bus1),
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators,
-                                                              {}, activePowerCompensation, {}, manager, counters, defs, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators, {},
+                                                               activePowerCompensation, {}, manager, counters, defs, {}, {}, {}));
 
   parWriter.write();
 
@@ -221,25 +224,20 @@ TEST(TestPar, writeStaticVarCompensator) {
   }
 
   std::vector<StaticVarCompensatorDefinition> svarcs{
-      StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-      StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK,
-      0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)
-  };
+      StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.,
+                                     10.),
+      StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0.,
+                                     10., 10.),
+      StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.,
+                                     10.),
+      StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245,
+                                     0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+      StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0.,
+                                     10., 10.),
+      StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
@@ -269,12 +267,9 @@ TEST(Dyd, writeLoad) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  std::vector<LoadDefinition> loads {
-    LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
-    LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
-    LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")
-  };
-
+  std::vector<LoadDefinition> loads{LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+                                    LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+                                    LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});

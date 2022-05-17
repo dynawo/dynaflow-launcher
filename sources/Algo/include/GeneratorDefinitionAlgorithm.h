@@ -36,26 +36,37 @@ class GeneratorDefinition {
    * @brief Generator model type
    */
   enum class ModelType {
-    SIGNALN = 0,                ///< Use GeneratorPVSignalN model
-    DIAGRAM_PQ_SIGNALN,         ///< Use GeneratorPVDiagramPQSignalN model
-    REMOTE_SIGNALN,             ///< Use GeneratorPVRemoteSignalN
-    REMOTE_DIAGRAM_PQ_SIGNALN,  ///< Use GeneratorPVRemoteDiagramPQSignalN
-    PROP_SIGNALN,               ///< Use GeneratorPQPropSignalN
-    PROP_DIAGRAM_PQ_SIGNALN,    ///< Use GeneratorPQPropDiagramPQSignalN
-    NETWORK                     ///< Use network cpp model
+    SIGNALN_INFINITE = 0,        ///< Use GeneratorPVSignalN model with infinite diagram
+    SIGNALN_RECTANGULAR,         ///< Use GeneratorPVSignalN model with rectangular diagram
+    DIAGRAM_PQ_SIGNALN,          ///< Use GeneratorPVDiagramPQSignalN model
+    REMOTE_SIGNALN_INFINITE,     ///< Use GeneratorPVRemoteSignalN
+    REMOTE_SIGNALN_RECTANGULAR,  ///< Use GeneratorPVRemoteSignalN with rectangular diagram
+    REMOTE_DIAGRAM_PQ_SIGNALN,   ///< Use GeneratorPVRemoteDiagramPQSignalN
+    PROP_SIGNALN_INFINITE,       ///< Use GeneratorPQPropSignalN
+    PROP_SIGNALN_RECTANGULAR,    ///< Use GeneratorPQPropSignalN with rectangular diagram
+    PROP_DIAGRAM_PQ_SIGNALN,     ///< Use GeneratorPQPropDiagramPQSignalN
+    NETWORK                      ///< Use network cpp model
   };
   using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< Alias for reactive curve point
   using BusId = std::string;                                               ///< alias of BusId
 
   /**
-   * @brief test if the model used is a diagram
+   * @brief test if the generator has a finite diagram
    *
-   * @return boolean indicating if the model uses a diagram
+   * @return @b true if the generator uses a finite diagram, @b false otheriwise
    */
   bool isUsingDiagram() const {
-    return model == ModelType::DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN || model == ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+    return model != ModelType::SIGNALN_INFINITE && model != ModelType::REMOTE_SIGNALN_INFINITE && model != ModelType::PROP_SIGNALN_INFINITE &&
+           model != ModelType::NETWORK;
   }
-
+  /**
+   * @brief test is the generator has a rectangular diagram
+   *
+   * @return @b true if the diagram is rectangular, @b false otherwise
+   */
+  bool isUsingRectangularDiagram() const {
+    return model == ModelType::SIGNALN_RECTANGULAR || model == ModelType::REMOTE_SIGNALN_RECTANGULAR || model == ModelType::PROP_SIGNALN_RECTANGULAR;
+  }
   /**
    * @brief determines if the generator model type is network
    *
@@ -114,6 +125,7 @@ class GeneratorDefinitionAlgorithm {
   using BusId = std::string;                            ///< alias for bus id
   using GenId = std::string;                            ///< alias for generator id
   using BusGenMap = std::unordered_map<BusId, GenId>;   ///< alias for map of bus id to generator id
+  using ModelType = GeneratorDefinition::ModelType;     ///< alias for generator model type
 
   /**
    * @brief Constructor
@@ -151,7 +163,7 @@ class GeneratorDefinitionAlgorithm {
    * @param generator The generator with it list of points
    * @return Boolean indicating if the diagram is valid
    */
-  static bool isDiagramValid(const inputs::Generator& generator);
+  bool isDiagramValid(const inputs::Generator& generator);
 
   /**
    * @brief Determines if a node is connected to another generator node through a switch network path
@@ -171,6 +183,14 @@ class GeneratorDefinitionAlgorithm {
    * @return true if targetP is initially in diagram
    */
   bool isTargetPValid(const inputs::Generator& generator) const;
+
+  /**
+   * @brief checks if the generator has a rectangular diagram
+   *
+   * @param generator reference to input generator
+   * @return @b true if diagram is rectangular, @b false otherwise
+   */
+  bool isDiagramRectangular(const inputs::Generator& generator) const;
 
   Generators& generators_;                                          ///< the generators list to update
   BusGenMap& busesWithDynamicModel_;                                ///< map of bus ids to a generator that regulates them

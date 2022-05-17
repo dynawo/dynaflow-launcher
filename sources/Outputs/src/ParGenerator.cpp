@@ -53,14 +53,24 @@ std::string
 ParGenerator::getGeneratorMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? helper::getMacroParameterSetId(constants::propSignalNGeneratorFixedPParId)
                 : helper::getMacroParameterSetId(constants::propSignalNGeneratorParId);
     break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR:
+    id = fixedP ? helper::getMacroParameterSetId(constants::propSignalNGeneratorFixedPParIdRect)
+                : helper::getMacroParameterSetId(constants::propSignalNGeneratorParIdRect);
+    break;
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? helper::getMacroParameterSetId(constants::remoteSignalNGeneratorFixedP) : helper::getMacroParameterSetId(constants::remoteVControlParId);
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR:
+    id = fixedP ? helper::getMacroParameterSetId(constants::remoteSignalNGeneratorFixedPRect)
+                : helper::getMacroParameterSetId(constants::remoteVControlParIdRect);
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR:
+    id = fixedP ? helper::getMacroParameterSetId(constants::signalNGeneratorFixedPParIdRect)
+                : helper::getMacroParameterSetId(constants::signalNGeneratorParIdRect);
     break;
   default:
     id = fixedP ? helper::getMacroParameterSetId(constants::signalNGeneratorFixedPParId) : helper::getMacroParameterSetId(constants::signalNGeneratorParId);
@@ -73,11 +83,11 @@ std::string
 ParGenerator::getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? constants::propSignalNGeneratorFixedPParId : constants::propSignalNGeneratorParId;
     break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? constants::remoteSignalNGeneratorFixedP : constants::remoteVControlParId;
     break;
@@ -118,14 +128,32 @@ ParGenerator::buildGeneratorMacroParameterSet(algo::GeneratorDefinition::ModelTy
   }
 
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
     macroParameterSet->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
     macroParameterSet->addReference(helper::buildReference("generator_QPercent", "qMax_pu", "DOUBLE"));
     break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
     macroParameterSet->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR:
+    macroParameterSet->addReference(helper::buildReference("generator_QMin", "qMin", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_QMax", "qMax", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+    break;
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR:
+    macroParameterSet->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_QPercent", "qMax_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_QMin", "qMin", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_QMax", "qMax", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR:
+    macroParameterSet->addReference(helper::buildReference("generator_QMin", "qMin", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_QMax", "qMax", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
     break;
   default:
     macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
@@ -174,15 +202,18 @@ ParGenerator::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowe
                                           dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
   auto set = updateSignalNGenerator(getGeneratorParameterSetId(modelType, fixedP), activePowerCompensation, fixedP);
   switch (modelType) {
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR:
     updatePropParameters(set);
     break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::SIGNALN:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN:
   case algo::GeneratorDefinition::ModelType::NETWORK:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR:
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR:
     break;
   }
   return set;
@@ -205,14 +236,15 @@ ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::st
   set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
   set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
 
-  auto dirname_diagram = dirname;
-  dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
+  if (!def.isUsingRectangularDiagram()) {
+    auto dirname_diagram = dirname;
+    dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
 
-  set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
-  set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
-  set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
-  set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
-
+    set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
+    set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
+    set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
+    set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
+  }
   return set;
 }
 

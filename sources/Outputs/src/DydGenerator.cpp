@@ -23,11 +23,14 @@ namespace dfl {
 namespace outputs {
 
 const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> DydGenerator::correspondence_lib_ = {
-    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN, "GeneratorPVSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "GeneratorPVSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN, "GeneratorPVRemoteSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "GeneratorPVRemoteSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "GeneratorPVRemoteSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "GeneratorPVRemoteDiagramPQSignalN"),
-    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN, "GeneratorPQPropSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "GeneratorPQPropSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "GeneratorPQPropSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "GeneratorPQPropDiagramPQSignalN")};
 
 void
@@ -95,9 +98,13 @@ DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsColl
     if (it->isNetwork()) {
       continue;
     }
-    if (it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN || it->model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN) {
+    if (it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE ||
+        it->model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
+        it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR) {
       dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U_value");
-    } else if (it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN || it->model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN) {
+    } else if (it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE ||
+               it->model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN ||
+               it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR) {
       dynamicModelsToConnect->addConnect(it->id, "generator_NQ", constants::modelSignalNQprefix_ + it->regulatedBusId, "vrremote_NQ");
     }
 
@@ -113,13 +120,13 @@ std::string
 DydGenerator::getSpecificParId(const dfl::algo::GeneratorDefinition& generator) {
   std::string parId;
   switch (generator.model) {
-  case algo::GeneratorDefinition::ModelType::SIGNALN:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
     parId = (DYN::doubleIsZero(generator.targetP)) ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
     break;
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
     parId = constants::propSignalNGeneratorParId;
     break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
     parId = constants::remoteVControlParId;
     break;
   default:

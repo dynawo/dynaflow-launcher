@@ -46,7 +46,7 @@ Diagram::write() const {
 void
 Diagram::writeGenerators() const {
   for (const auto& generator : def_.generators) {
-    if (!generator.isUsingDiagram())
+    if (!generator.isUsingDiagram() || generator.isUsingRectangularDiagram())
       continue;
     if (!boost::filesystem::exists(def_.directoryPath)) {
       boost::filesystem::create_directories(def_.directoryPath);

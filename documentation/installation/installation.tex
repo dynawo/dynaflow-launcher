@@ -31,7 +31,7 @@ The packages required to use the distribution are the same as \Dynawo.
 \subsection{Using a distribution}
 
 You can use the following commands to download and test the latest distribution:
-\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
 $> curl -L $(curl -s -L -X GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep "Dynaflow_Launcher_Linux" | grep url | cut -d '"' -f 4) -o Dynaflow_Launcher_Linux_latest.zip
 $> unzip Dynaflow_Launcher_Linux_latest.zip
 $> cd dynaflow-launcher
@@ -50,33 +50,33 @@ The requirements to build Dynaflow-launcher are the same as \Dynawo.
 The first step is to build \Dynawo in a separate folder. Please refer to the \Dynawo documentation to do so.
 Then, the following command needs to be launched from the \Dynawo folder.
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, columns=fullflexible]
 $> ./myEnvDynawo.sh deploy
 \end{lstlisting}
 
 This command creates a deploy folder. The path to dynawo deploy is then the path to the subdirectory dynawo in the deploy folder. It is similar to:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, columns=fullflexible]
 $> PATH_TO_DYNAWO_DEPLOY=<DYNAWO FOLDER>/deploy/<COMPILER><COMPILER VERSION>/shared/dynawo/
 \end{lstlisting}
 
 The second step is to do the same for \Dynawo-algorithms. Please refer to the \Dynawo-algorithms documentation to do so.
 Then, the following command needs to be launched from the \Dynawo-algorithms folder.
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, columns=fullflexible]
 $> ./myEnvDynawoAlgorithms.sh deploy
 \end{lstlisting}
 
 This command creates a deploy folder. The path to dynawo deploy is then the path to the subdirectory dynawo in the deploy folder. It is similar to:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, columns=fullflexible]
 $> PATH_TO_DYNAWO_ALGORITHMS_DEPLOY=<DYNAWO-ALGORITHMS FOLDER>/deploy/<COMPILER><COMPILER VERSION>/shared/dynawo/
 \end{lstlisting}
 
 
 To build Dynaflow-launcher you need to clone the github repository and launch the following commands in the source code directory:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, columns=fullflexible]
 $> git clone https://github.com/dynawo/dynaflow-launcher.git
 $> cd dynaflow-launcher
 $> echo '#!/bin/bash
@@ -128,7 +128,7 @@ Below is a description of some environment variables that can be modified in the
 
 \textbf{Warning}: If you're working behind a proxy make sure you have exported the following proxy environment variables:
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, columns=fullflexible]
 $> export http_proxy=
 $> export https_proxy=
 $> export no_proxy=localhost,127.0.0.0/8,::1
@@ -140,7 +140,7 @@ $> export HTTP_PROXY=$http_proxy;export HTTPS_PROXY=$https_proxy;export NO_PROXY
 Once you have installed and compiled Dynaflow-launcher as explained in section \ref{Dynaflow_launcher_Installation_Documentation_Building_Dynaflow_launcher},
 you can launch a simulation by calling one example:
 
-\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false]
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
 $> ./myEnvDFL.sh tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json
 \end{lstlisting}
 
