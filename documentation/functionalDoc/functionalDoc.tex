@@ -238,4 +238,89 @@ The full configuration used is the following:
 
 \lstinputlisting[language=XML,title=\Dynawo Simplified Solver configuration]{../../etc/solver.par}
 
+\section{Assembling and Setting files}
+
+The following parameters from the configuration file are used to add additional models and their settings to the system's elements defined in the given .iidm network file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}):
+\begin{itemize}
+  \item The parameter \textit{AssemblingPath} is the path to the assembling file;
+  \item The parameter \textit{SettingPath} is the path to the setting file.
+\end{itemize}
+
+These two files use a syntax close to the one used for the .dyd and .par files. It's available here etc/xsd/.
+
+\subsection{Assembling file}
+
+The assembling file is a \textbf{.xml} file containing connections between system's elements and models. An example is given below:
+
+\lstinputlisting[language=XML,title=\Dynawo Assembling file example]{../resources/syntaxExample/assembling.xml}
+
+\subsubsection{Use a model}
+
+A dynamicAutomaton statement is required to define a model. The user must also specify an id and the model librairy:
+
+\begin{lstlisting}[language=XML, morekeywords={dynamicAutomaton}]
+<dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1">
+  ...
+</dynamicAutomaton>
+\end{lstlisting}
+
+\subsubsection{Defines sets of connections}
+
+The connection between two different models often needs more than one ``connect'' statement. For example, in order to connect DYNModel1 to the Network we need to connect three variables: shunt\_state, shunt\_isCapacitor and shunt\_isAvailable.
+In order not to write the three connections for each DYNModel1 model of the network, we can define a macro connection :
+\begin{lstlisting}[language=XML, morekeywords={macroConnection}]
+<macroConnection id="ToControlledShunts">
+  <connection var1="shunt_state_@INDEX@" var2="@NAME@_state"/>
+  <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor"/>
+  <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable"/>
+</macroConnection>
+\end{lstlisting}
+
+\subsubsection{Connect a model variable to an other model}
+
+In order to connect a variable of a model defined in dynamicAutomaton tags to an other model variable, the user can use a macroConnect. It takes :
+\begin{itemize}
+  \item A macro connection, to link a current model variable to an other model variable;
+  \item An id referring to a system's element (in this cas, the other model will be the Network) or an other model name (see next section \ref{Node_Or_Model_Reference_On_Macro_Connect})
+\end{itemize}
+
+\begin{lstlisting}[language=XML, morekeywords={macroConnect}]
+<dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1">
+  <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
+  <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
+</dynamicAutomaton>
+\end{lstlisting}
+
+\subsubsection{How to reference system's element or an other model in a macroConnect statement ?}
+\label{Node_Or_Model_Reference_On_Macro_Connect}
+
+To refer to a bus, a line or a tfo of the system, the user can use a singleAssociation statement. For example, in order to connect MODELE\_1\_VL4 variables to the variables of
+the bus with voltage level VLP6, we can define a single association :
+
+\begin{lstlisting}[language=XML, morekeywords={singleAssociation}]
+<singleAssociation id="MESURE_MODELE_1_VL4">
+  <bus voltageLevel="VLP6" />
+</singleAssociation>
+\end{lstlisting}
+
+To refer to a shunt of the system, the user can use a multipleAssociation statement :
+
+\begin{lstlisting}[language=XML, morekeywords={multipleAssociation}]
+<multipleAssociation id="SHUNTS_MODELE_1_VL4">
+  <shunt voltageLevel="VL4"/>
+</multipleAssociation>
+\end{lstlisting}
+
+To refer to an other model, the user cas use a modelAssociation statement :
+
+\begin{lstlisting}[language=XML, morekeywords={modelAssociation}]
+<modelAssociation id="MY_MODEL_ASSOCIATION_ID">
+  <model id="MY_MODEL_ID" lib="MY_MODEL_LIB"/>
+</modelAssociation>
+\end{lstlisting}
+
+\subsection{Setting file}
+
+The setting file is a .xml file containing the needed parameters of the models referenced in the assembling file. The syntax is the same as for .par files.
+
 \end{document}
