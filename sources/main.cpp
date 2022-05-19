@@ -185,6 +185,7 @@ main(int argc, char* argv[]) {
   try {
     auto timeSimuStart = std::chrono::steady_clock::now();
     context->execute();
+    context->exportResults(true);
 
     if (mpiContext.isRootProc()) {
       LOG(info, SimulationEnded, context->basename(), elapsed(timeSimuStart));
@@ -193,6 +194,7 @@ main(int argc, char* argv[]) {
     }
     return EXIT_SUCCESS;
   } catch (DYN::Error& e) {
+    context->exportResults(false);
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed" << std::endl;
       std::cerr << "Dynawo: " << e.what() << std::endl;
@@ -203,6 +205,7 @@ main(int argc, char* argv[]) {
     }
     return EXIT_FAILURE;
   } catch (DYN::MessageError& e) {
+    context->exportResults(false);
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed" << std::endl;
       std::cerr << "Dynawo: " << e.what() << std::endl;
@@ -213,6 +216,7 @@ main(int argc, char* argv[]) {
     }
     return EXIT_FAILURE;
   } catch (std::exception& e) {
+    context->exportResults(false);
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed" << std::endl;
       std::cerr << e.what() << std::endl;
@@ -223,6 +227,7 @@ main(int argc, char* argv[]) {
     }
     return EXIT_FAILURE;
   } catch (...) {
+    context->exportResults(false);
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed" << std::endl;
       std::cerr << "Unknown error" << std::endl;
