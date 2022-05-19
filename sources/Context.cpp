@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <tuple>
 
 namespace file = boost::filesystem;
@@ -342,6 +343,37 @@ Context::executeSecurityAnalysis() {
   saLauncher->init();
   saLauncher->launch();
   saLauncher->writeResults();
+}
+
+void
+Context::exportResults(bool isOk) {
+  switch (def_.simulationKind) {
+  case SimulationKind::STEADY_STATE_CALCULATION: {
+    boost::property_tree::ptree resultsTree, componentResultsTree, componentResultsChild;
+    resultsTree.put("version", "1.2");
+    resultsTree.put("isOK", isOk);
+    resultsTree.put("metrics.useInfiniteReactiveLimits", config_.useInfiniteReactiveLimits());
+    resultsTree.put("metrics.isSVCRegulationOn", config_.isSVCRegulationOn());
+    resultsTree.put("metrics.isShuntRegulationOn", config_.isShuntRegulationOn());
+    resultsTree.put("metrics.isAutomaticSlackBusOn", config_.isAutomaticSlackBusOn());
+    componentResultsChild.put("connectedComponentNum", 0);
+    componentResultsChild.put("synchronousComponentNum", 0);
+    componentResultsChild.put("status", isOk ? "CONVERGED" : "SOLVER_FAILED");
+    componentResultsChild.put("iterationCount", 0);
+    componentResultsChild.put("slackBusId", slackNode_->id);
+    componentResultsChild.put("slackBusActivePowerMismatch", 0);
+    componentResultsTree.push_back(std::make_pair("", componentResultsChild));
+    resultsTree.add_child("componentResults", componentResultsTree);
+
+    file::path resultsOutput(config_.outputDir());
+    resultsOutput.append("results.json");
+    std::ofstream ofs(resultsOutput.c_str(), std::ios::out);
+    boost::property_tree::json_parser::write_json(ofs, resultsTree);
+    break;
+  }
+  case SimulationKind::SECURITY_ANALYSIS:
+    break;
+  }
 }
 
 void

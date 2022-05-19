@@ -41,6 +41,8 @@ target_link_libraries(DynaFlowLauncher
   DynawoAlgorithms::dynawo_algorithms_Launcher
 
   LibXml2::LibXml2
+
+  Boost::serialization
 )
 
 # explicitly say that the executable depends on custom target

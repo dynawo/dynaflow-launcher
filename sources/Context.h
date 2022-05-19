@@ -107,6 +107,15 @@ class Context {
   void exportOutputs();
 
   /**
+   * @brief Export results file
+   *
+   * @param isOk the simulation was ok
+   *
+   * This create a json output file of the results
+   */
+  void exportResults(bool isOk);
+
+  /**
    * @brief Execute simulation
    *
    * Constructs, initializes and execute Dynawo simulation.
