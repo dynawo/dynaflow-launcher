@@ -81,7 +81,8 @@ main(int argc, char* argv[]) {
   }
   if (std::get<1>(parsing_status) == dfl::common::Options::Request::VERSION) {
     if (mpiContext.isRootProc())
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << DYNAFLOW_LAUNCHER_VERSION_STRING
+          << " (rev:" << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << DYN::Trace::endline;
     return EXIT_SUCCESS;
   }
 
