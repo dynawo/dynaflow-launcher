@@ -10,14 +10,14 @@ export_preload() {
 
   externalTcMallocLib=$(find $DYNAWO_ALGORITHMS_HOME/lib -iname *$lib)
   if [ -n "$externalTcMallocLib" ]; then
-    echo "Use downloaded tcmalloc library $externalTcMallocLib"
+    # echo "Use downloaded tcmalloc library $externalTcMallocLib"
     export LD_PRELOAD=$externalTcMallocLib
     return
   fi
 
   nativeTcMallocLib=$(ldconfig -p | grep -e $lib$ | cut -d ' ' -f4)
   if [ -n "$nativeTcMallocLib" ]; then
-    echo "Use native tcmalloc library $nativeTcMallocLib"
+    # echo "Use native tcmalloc library $nativeTcMallocLib"
     export LD_PRELOAD=$nativeTcMallocLib
     return
   fi
