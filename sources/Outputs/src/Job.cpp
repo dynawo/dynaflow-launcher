@@ -114,7 +114,7 @@ Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.startTime);
   simu->setStopTime(def_.stopTime);
-  simu->setPrecision(def_.precision_.value_or(simu->getPrecision()));
+  simu->setPrecision(def_.precision_.value_or(1e-3));
 
   return simu;
 }
