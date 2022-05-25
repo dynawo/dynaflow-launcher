@@ -67,6 +67,7 @@ Solver::writeSolverSet() const {
   set->addParameter(helper::buildParameter("scsteptol", 1.e-4));
   set->addParameter(helper::buildParameter("scsteptolAlg", 1.e-4));
   set->addParameter(helper::buildParameter("scsteptolAlgJ", 1.e-4));
+  set->addParameter(helper::buildParameter("minimumModeChangeTypeForAlgebraicRestoration", std::string("ALGEBRAIC_J_UPDATE")));
   return set;
 }
 

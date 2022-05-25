@@ -27,5 +27,6 @@
     <par type="DOUBLE" name="scsteptol" value="1e-4"/>
     <par type="DOUBLE" name="scsteptolAlg" value="1e-4"/>
     <par type="DOUBLE" name="scsteptolAlgJ" value="1e-4"/>
+    <par type="STRING" name="minimumModeChangeTypeForAlgebraicRestoration" value="ALGEBRAIC_J_UPDATE"/>
   </set>
 </parametersSet>
