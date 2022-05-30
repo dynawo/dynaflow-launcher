@@ -67,13 +67,17 @@ TEST(Job, write) {
   ASSERT_EQ("TXT", outputs->getTimelineEntry()->getExportMode());
   ASSERT_EQ("", outputs->getTimelineEntry()->getOutputFile());
   ASSERT_EQ(true, outputs->getTimelineEntry()->getExportWithTime());
+#else
+  ASSERT_EQ(nullptr, outputs->getTimelineEntry());
+#endif
+
   ASSERT_NE(nullptr, outputs->getConstraintsEntry());
   ASSERT_EQ("XML", outputs->getConstraintsEntry()->getExportMode());
   ASSERT_EQ("", outputs->getConstraintsEntry()->getOutputFile());
-#else
-  ASSERT_EQ(nullptr, outputs->getTimelineEntry());
-  ASSERT_EQ(nullptr, outputs->getConstraintsEntry());
-#endif
+
+  ASSERT_NE(nullptr, outputs->getLostEquipmentsEntry());
+  ASSERT_TRUE(outputs->getLostEquipmentsEntry()->getDumpLostEquipments());
+
   ASSERT_EQ(nullptr, outputs->getInitValuesEntry());
   auto appenders = outputs->getLogsEntry()->getAppenderEntries();
   ASSERT_EQ(1, appenders.size());
@@ -88,7 +92,11 @@ TEST(Job, write) {
 
   auto finalstates = outputs->getFinalStateEntries();
   ASSERT_EQ(finalstates.size(), 1);
+#if _DEBUG_
   ASSERT_EQ(true, finalstates.front()->getExportIIDMFile());
+#else
+  ASSERT_EQ(false, finalstates.front()->getExportIIDMFile());
+#endif
   ASSERT_EQ(false, finalstates.front()->getExportDumpFile());
 
   std::string basename = "TestJob";
