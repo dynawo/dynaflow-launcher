@@ -140,8 +140,12 @@ class Job {
 
  private:
   static constexpr bool useStandardModels_ = true;  ///< use standard models in job entry and file
-  static constexpr bool exportIIDMFile_ = true;     ///< export IIDM file in job entry and file
-  static constexpr bool exportDumpFile_ = false;    ///< export dump file in job entry and file
+#if _DEBUG_
+  static constexpr bool exportIIDMFile_ = true;  ///< export IIDM file in job entry and file
+#else
+  static constexpr bool exportIIDMFile_ = false;  ///< export IIDM file in job entry and file
+#endif
+  static constexpr bool exportDumpFile_ = false;  ///< export dump file in job entry and file
 
  private:
   JobDefinition def_;  ///< the job definition to use
