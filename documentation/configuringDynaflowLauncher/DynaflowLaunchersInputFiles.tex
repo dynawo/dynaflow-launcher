@@ -47,11 +47,12 @@ for example:
 $> ./myEnvDFL.sh tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json
 \end{lstlisting}
 
-This command will compute the steady-state of the network and provides as output the final state of the network in IIDM format.
+This command will compute the steady-state of the network and provides as
+output the constraints and lostEquipments files (see \Dynawo documentation for more details on those files).
 
 \subsubsection{Dynaflow systematic analysis}
 
-The Dynaflow systematic analysis mode can be used to assess the stability of a network subject to several contingencies scenarios.
+The Dynaflow systematic analysis mode can be used to assess the stability of a network test case subject to several contingencies scenarios.
 
 Three inputs are required:
 \begin{itemize}
@@ -72,13 +73,14 @@ for example:
 $> ./myEnvDFL.sh tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json
 \end{lstlisting}
 
-This command will simulate all the events described in the contingencies file and provide as outputs the final states of the network for each of them in IIDM format.
+This command will simulate all the events described in the contingencies file and provide as outputs the constraints and lostEquipments files for each of them.
 
 \textbf{Warning: The systematic analysis assumes that the network used as input is already properly initialized with a steady-state.}
 
 \subsection[Dynaflow-launcher outputs]{Dynaflow-launcher outputs}
 
-Dynaflow-launcher will generate an IIDM file containing the final state of the network. When the systematic analysis is launched, one IIDM per contingency will be generated.
+Dynaflow-launcher will generate the constraints and lostEquipments files.
+When the systematic analysis is launched, one constraints and lostEquipments files will be generated per contingency.
 
 \section[Dynaflow-launcher input files modification]{Dynaflow-launcher input files modification}
 

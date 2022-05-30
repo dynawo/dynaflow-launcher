@@ -6021,7 +6021,7 @@
                 <iidm:bus v="226.19467200002475" angle="-4.4727508952054436" nodes="12,16,38,42"/>
                 <iidm:bus v="214.70024878452395" angle="-16.218145851188147" nodes="4,5,6,7,14,19,20,27,28,29,30,36,41"/>
             </iidm:nodeBreakerTopology>
-            <iidm:vscConverterStation id="_b46bfb8e-7af6-459e-acf3-53a42c943a7c" name="VSC2" voltageRegulatorOn="true" lossFactor="0.32362458" voltageSetpoint="226.194672" reactivePowerSetpoint="0" node="42" p="-0" q="-27.473880899938585">
+            <iidm:vscConverterStation id="_b46bfb8e-7af6-459e-acf3-53a42c943a7c" name="VSC2" voltageRegulatorOn="true" lossFactor="0.32362458" voltageSetpoint="226.194672" reactivePowerSetpoint="0" node="42" p="-0" q="-27.473880916388243">
                 <iidm:alias>_a168e701-bd48-4f66-8f0b-0f69b2545530</iidm:alias>
                 <iidm:minMaxReactiveLimits minQ="-1.7976931348623157e+308" maxQ="1.7976931348623157e+308"/>
             </iidm:vscConverterStation>
