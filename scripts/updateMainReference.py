@@ -11,7 +11,9 @@
 #
 
 import os
+import filecmp
 import iidmDiff
+import constraintsDiff
 import shutil
 
 # Execution requires to have iidmDiff module from dynawo library scripts
@@ -28,7 +30,7 @@ if __name__ == "__main__":
             continue
 
         for file in files:
-            if file != "outputIIDM.xml":
+            if file != "outputIIDM.xml" and file != "constraints.xml" and file != "lostEquipments.xml":
                 continue
             filepath = os.path.join(root, file)
             root_filetest = root.split("results")[0]
@@ -46,8 +48,18 @@ if __name__ == "__main__":
             if not os.path.exists(filepathreference):
                 # No reference : ignore
                 continue
-            (nb_differences, msg) = iidmDiff.OutputIIDMCloseEnough(
-                filepath, filepathreference)
+
+            nb_differences = 0
+            if file == "outputIIDM.xml":
+                (nb_differences, msg) = iidmDiff.OutputIIDMCloseEnough(
+                    filepath, filepathreference)
+            elif file =="constraints.xml":
+                (nb_differences, msg) = constraintsDiff.output_constraints_close_enough(
+                    filepath, filepathreference)
+            elif file =="lostEquipments.xml":
+                identical = filecmp.cmp (filepath, filepathreference, shallow=False)
+                if not identical:
+                    nb_differences += 1
             if nb_differences > 0:
                 shutil.copyfile(filepath, filepathreference)
                 print("Update reference output: " + filepathreference)
