@@ -26,6 +26,7 @@
 #include "Log.h"
 #include "Par.h"
 #include "ParEvent.h"
+#include "Solver.h"
 
 #include <DYNMPIContext.h>
 #include <DYNMultipleJobsFactory.h>
@@ -215,6 +216,9 @@ Context::exportOutputs() {
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_));
   diagramWriter.write();
+
+  outputs::Solver solverWriter{dfl::outputs::Solver::SolverDefinition(config_)};
+  solverWriter.write();
 
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     exportOutputsContingencies();

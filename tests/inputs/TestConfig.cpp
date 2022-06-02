@@ -32,6 +32,7 @@ TEST(Config, Nominal) {
   ASSERT_EQ(120, config.getStopTime().count());
   ASSERT_DOUBLE_EQUALS_DYNAWO(1e-3, config.getPrecision().value());
   ASSERT_EQ(50, config.getTimeOfEvent().count());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(2.6, config.getTimeStep());
 }
 
 TEST(Config, Default) {
@@ -47,4 +48,5 @@ TEST(Config, Default) {
   ASSERT_EQ(45.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());
   ASSERT_EQ(80, config.getTimeOfEvent().count());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeStep());
 }

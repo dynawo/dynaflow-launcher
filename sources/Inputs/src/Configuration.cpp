@@ -133,6 +133,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateSeconds(startTime_, config, "StartTime");
     helper::updateSeconds(stopTime_, config, "StopTime");
     helper::updateSeconds(timeOfEvent_, config, "sa.TimeOfEvent");
+    helper::updateValue(timeStep_, config, "TimeStep");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());
