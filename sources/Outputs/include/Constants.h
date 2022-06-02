@@ -84,6 +84,7 @@ constexpr double powerValueMax = std::numeric_limits<double>::max();  ///< Maxim
 static constexpr double pi_ = M_PI;                                   ///< PI value
 static constexpr double kGoverNullValue_ = 0.;                        ///< KGover null value
 static constexpr double kGoverDefaultValue_ = 1.;                     ///< KGover default value
+const std::string solverParFileName{"solver.par"};                    ///< name of the solver par file
 
 }  // namespace constants
 }  // namespace outputs

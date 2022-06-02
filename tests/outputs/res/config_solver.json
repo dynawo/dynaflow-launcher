@@ -1,0 +1,5 @@
+{ "dfl-config": {
+    "OutputDir": "resultsTestsTmp/TestSolverPar",
+    "TimeStep" : 2.6
+    }
+  }
