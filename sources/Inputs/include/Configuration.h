@@ -130,6 +130,15 @@ class Configuration {
   }
 
   /**
+   * @brief retrieves the maximum value of the solver timestep
+   *
+   * @return value of timestep
+   */
+  double getTimeStep() const {
+    return timeStep_;
+  }
+
+  /**
    * @brief type of active power compensation for generator
    */
   enum class ActivePowerCompensation {
@@ -176,8 +185,8 @@ class Configuration {
   Seconds startTime_ = Seconds(0);                                                   ///< start time of simulation
   Seconds stopTime_ = Seconds(100);                                                  ///< stop time for simulation
   boost::optional<double> precision_;                                                ///< Precision of the simulation
-
-  Seconds timeOfEvent_ = Seconds(80);  ///< time for contingency simulation (security analysis only)
+  double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
+  Seconds timeOfEvent_ = Seconds(80);                                                ///< time for contingency simulation (security analysis only)
 };
 
 }  // namespace inputs

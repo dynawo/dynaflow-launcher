@@ -25,6 +25,7 @@ src/ParGenerator.cpp
 src/ParHvdc.cpp
 src/ParLoads.cpp
 src/ParSVarC.cpp
+src/Solver.cpp
 )
 
 add_library(outputs SHARED ${SOURCES})

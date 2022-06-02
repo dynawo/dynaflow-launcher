@@ -221,10 +221,14 @@ The conditions and models used are given below.
 \section{Solver}
 
 The solver used is the Simplified Solver (SolverSIM) from \Dynawo.
-The Maximum time step value is 10s.
+The Maximum time step value is by default 10s. This value can be modified in the configuration file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
+Notice that the maximum step value should be reduced only when the simulation is including
+Special Protection Scheme automatons with a timescale smaller than 10 seconds: this would allow one to properly
+take into account the SPS behaviour, avoiding any artificial synchronization effect. When modifying the
+solver maximum time step, its value must be included in $ 1.0  < TimeStep \leq 10.0 $ seconds.
 
-The full configuration used is the following:
+The full configuration (with default values) used is the following:
 
-\lstinputlisting[language=XML,title=\Dynawo Simplified Solver configuration]{../../etc/solver.par}
+\lstinputlisting[language=XML,title=\Dynawo Simplified Solver configuration]{../resources/syntaxExample/solver.par}
 
 \end{document}
