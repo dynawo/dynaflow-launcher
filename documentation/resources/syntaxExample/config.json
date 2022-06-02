@@ -12,6 +12,7 @@
     "sa": {
       "TimeOfEvent": 50,
       "NumberOfThreads": 6
-    }
+    },
+    "TimeStep" : 2.6
   }
 }

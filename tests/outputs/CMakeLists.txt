@@ -11,6 +11,10 @@ DEFINE_TEST(TestJob OUTPUTS)
 set_property(TEST OUTPUTS.TestJob PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:$ENV{LD_LIBRARY_PATH})
 target_link_libraries(TestJob DynaFlowLauncher::outputs)
 
+DEFINE_TEST_XML(TestSolverPar OUTPUTS)
+set_property(TEST OUTPUTS.TestSolverPar PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:$ENV{LD_LIBRARY_PATH})
+target_link_libraries(TestSolverPar DynaFlowLauncher::outputs)
+
 DEFINE_TEST_XML(TestDyd OUTPUTS)
 set_property(TEST OUTPUTS.TestDyd PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:$ENV{LD_LIBRARY_PATH})
 target_link_libraries(TestDyd DynaFlowLauncher::outputs)
