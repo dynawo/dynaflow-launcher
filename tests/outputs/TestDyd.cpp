@@ -117,10 +117,10 @@ TEST(Dyd, writeHvdc) {
 
   auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation2",
                                     "_BUS___10_TN", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
-                                    {}, 0., boost::none, boost::none, boost::none);
+                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false);
   auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
                                     "_BUS___11_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
-                                    0., boost::none, boost::none, boost::none);
+                                    0., boost::none, boost::none, boost::none, boost::none, false);
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   dfl::algo::HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {

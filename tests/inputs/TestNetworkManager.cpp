@@ -59,8 +59,8 @@ TEST(NetworkManager, hvdcLines) {
   auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0.,
                                                                      std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
   std::vector<std::shared_ptr<dfl::inputs::HvdcLine>> expected_hvdcLines = {
-      dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, dummyStation, dummyStation, boost::none, 2000),
-      dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, dummyStationVSC, boost::none, 2000)};
+      dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, dummyStation, dummyStation, boost::none, 2000, false),
+      dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, dummyStationVSC, boost::none, 2000, false)};
 
   NetworkManager manager("res/HvdcDangling.iidm");
   const auto& hvdcLines = manager.getHvdcLine();

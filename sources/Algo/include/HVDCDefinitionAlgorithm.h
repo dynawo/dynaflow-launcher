@@ -58,8 +58,8 @@ class VSCDefinition {
    */
   bool operator==(const dfl::algo::VSCDefinition& other) const {
     return id == other.id && DYN::doubleEquals(pmax, other.pmax) && DYN::doubleEquals(pmin, other.pmin) && points.size() == other.points.size() &&
-           std::equal(points.begin(), points.end(), other.points.begin(), comparePoints) &&
-           DYN::doubleEquals(qmax, other.qmax) && DYN::doubleEquals(qmin, other.qmin);
+           std::equal(points.begin(), points.end(), other.points.begin(), comparePoints) && DYN::doubleEquals(qmax, other.qmax) &&
+           DYN::doubleEquals(qmin, other.qmin);
   }
 
   VSCId id;                                ///< id of the converter
@@ -112,14 +112,14 @@ class HVDCDefinition {
     HvdcPQPropDangling,
     HvdcPQPropDanglingDiagramPQ,
     HvdcPQPropDiagramPQ,
-    HvdcPQPropDiagramPQEmulation,
-    HvdcPQPropEmulation,
+    HvdcPQPropDiagramPQEmulationSet,
+    HvdcPQPropEmulationSet,
     HvdcPV,
     HvdcPVDangling,
     HvdcPVDanglingDiagramPQ,
     HvdcPVDiagramPQ,
-    HvdcPVDiagramPQEmulation,
-    HvdcPVEmulation,
+    HvdcPVDiagramPQEmulationSet,
+    HvdcPVEmulationSet,
   };
 
   /**
@@ -128,8 +128,8 @@ class HVDCDefinition {
    */
   bool hasDiagramModel() const {
     return model == HVDCModel::HvdcPTanPhiDanglingDiagramPQ || model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDanglingDiagramPQ ||
-           model == HVDCModel::HvdcPTanPhiDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQEmulation ||
-           model == HVDCModel::HvdcPVDiagramPQ || model == HVDCModel::HvdcPVDiagramPQEmulation;
+           model == HVDCModel::HvdcPTanPhiDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet ||
+           model == HVDCModel::HvdcPVDiagramPQ || model == HVDCModel::HvdcPVDiagramPQEmulationSet;
   }
 
   /**
@@ -137,8 +137,8 @@ class HVDCDefinition {
    * @returns true if HVDC definition is using an AC emulation model, false if not
    */
   bool hasEmulationModel() const {
-    return model == HVDCModel::HvdcPQPropEmulation || model == HVDCModel::HvdcPQPropDiagramPQEmulation || model == HVDCModel::HvdcPVEmulation ||
-           model == HVDCModel::HvdcPVDiagramPQEmulation;
+    return model == HVDCModel::HvdcPQPropEmulationSet || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet || model == HVDCModel::HvdcPVEmulationSet ||
+           model == HVDCModel::HvdcPVDiagramPQEmulationSet;
   }
 
   /**
@@ -147,7 +147,7 @@ class HVDCDefinition {
    */
   bool hasPQPropModel() const {
     return model == HVDCModel::HvdcPQPropDangling || model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPQProp ||
-           model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropEmulation || model == HVDCModel::HvdcPQPropDiagramPQEmulation;
+           model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropEmulationSet || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet;
   }
 
   /**
@@ -177,12 +177,15 @@ class HVDCDefinition {
    * @param vscDefinition1 the definition of the first VSC, if present
    * @param vscDefinition2 the definition of the second VSC, if present
    * @param droop the active power droop value for HVDC, if the value exists
+   * @param p0 the active power setpoint for HVDC, if the value exists
+   * @param isConverter1Rectifier whether converter 1 is rectifier
    */
   explicit HVDCDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const ConverterId& converter1Id,
                           const BusId& converter1BusId, const boost::optional<bool>& converter1VoltageRegulationOn, const ConverterId& converter2Id,
                           const BusId& converter2BusId, const boost::optional<bool>& converter2VoltageRegulationOn, const Position position,
                           const HVDCModel& model, const std::array<double, 2>& powerFactors, double pMax, const boost::optional<VSCDefinition>& vscDefinition1,
-                          const boost::optional<VSCDefinition>& vscDefinition2, const boost::optional<double>& droop) :
+                          const boost::optional<VSCDefinition>& vscDefinition2, const boost::optional<double>& droop, const boost::optional<double>& p0,
+                          bool isConverter1Rectifier) :
       id{id},
       converterType{converterType},
       converter1Id{converter1Id},
@@ -197,7 +200,9 @@ class HVDCDefinition {
       pMax{pMax},
       vscDefinition1(vscDefinition1),
       vscDefinition2(vscDefinition2),
-      droop(droop) {}
+      droop(droop),
+      p0(p0),
+      isConverter1Rectifier{isConverter1Rectifier} {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -214,6 +219,8 @@ class HVDCDefinition {
   const boost::optional<VSCDefinition> vscDefinition1;        ///< underlying VSC converter 1, irrelevant if type is not VSC
   const boost::optional<VSCDefinition> vscDefinition2;        ///< underlying VSC converter 2, irrelevant if type is not VSC
   const boost::optional<double> droop;                        ///< active power droop value for HVDC, if it exists
+  const boost::optional<double> p0;                           ///< active power setpoint value for HVDC, if it exists
+  const bool isConverter1Rectifier;                           ///< whether converter 1 is rectifier
 };
 
 /// @brief HVDC line definitions

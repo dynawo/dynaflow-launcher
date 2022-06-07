@@ -138,7 +138,7 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
       break;
     }
   }
-  if (!hvdcDefinition.hasDanglingModel()) {
+  if (!hvdcDefinition.hasDanglingModel() && !hvdcDefinition.hasEmulationModel()) {
     set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
   }
   if (hvdcDefinition.hasDiagramModel()) {
@@ -147,7 +147,11 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
   if (hvdcDefinition.hasEmulationModel()) {
     set->addParameter(helper::buildParameter("acemulation_tFilter", 50.));
     auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)
+    auto pSet = hvdcDefinition.isConverter1Rectifier
+                    ? computePSET(*hvdcDefinition.p0)
+                    : -1.0 * computePSET(*hvdcDefinition.p0);  // since the model is an emulation one, the extension is defined (see algo)
     set->addParameter(helper::buildParameter("acemulation_KACEmulation", kac));
+    set->addParameter(helper::buildParameter("acemulation_PRefSet0Pu", pSet));
   }
   return set;
 }
