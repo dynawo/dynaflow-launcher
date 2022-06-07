@@ -143,8 +143,9 @@ HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine& hvdcline, HVDCDefi
         return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
                                HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, node);
       } else {
-        return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulation, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation,
-                               HVDCDefinition::HVDCModel::HvdcPVEmulation, HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation, node);
+        return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
+                               HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
+                               HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet, node);
       }
     }
   } else {
@@ -187,10 +188,11 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
     }
 
     boost::optional<double> droop = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->droop : boost::optional<double>();
+    boost::optional<double> p0 = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->p0 : boost::optional<double>();
     HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId, voltageRegulation1,
                                    hvdcLine.converter2->converterId, hvdcLine.converter2->busId, voltageRegulation2,
                                    HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1,
-                                   def2, droop);
+                                   def2, droop, p0, hvdcLine.isConverter1Rectifier);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }
