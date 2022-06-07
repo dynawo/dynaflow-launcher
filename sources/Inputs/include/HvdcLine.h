@@ -68,12 +68,13 @@ class HvdcLine {
    * @param converter2 the second converter
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
+   * @param isConverter1Rectifier whether converter 1 is rectifier
    *
    * @return HVDC line object
    */
   static std::shared_ptr<HvdcLine> build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
                                          const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl,
-                                         double pMax);
+                                         double pMax, bool isConverter1Rectifier);
 
  public:
   const HvdcLineId id;                                           ///< HvdcLine id
@@ -82,6 +83,7 @@ class HvdcLine {
   const std::shared_ptr<Converter> converter2;                   ///< second converter
   const boost::optional<ActivePowerControl> activePowerControl;  ///< active power control information
   const double pMax;                                             ///< maximum p
+  const bool isConverter1Rectifier;                              ///< whether converter 1 is rectifier
 
  private:
   /**
@@ -93,9 +95,10 @@ class HvdcLine {
    * @param converter2 the second converter
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
+   * @param isConverter1Rectifier whether converter 1 is rectifier
    */
   HvdcLine(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1, const std::shared_ptr<Converter>& converter2,
-           const boost::optional<ActivePowerControl>& activePowerControl, double pMax);
+           const boost::optional<ActivePowerControl>& activePowerControl, double pMax, bool isConverter1Rectifier);
 };
 }  // namespace inputs
 }  // namespace dfl
