@@ -112,8 +112,8 @@ Job::writeModeler() const {
 boost::shared_ptr<job::SimulationEntry>
 Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
-  simu->setStartTime(def_.startTime.count());
-  simu->setStopTime(def_.stopTime.count());
+  simu->setStartTime(def_.startTime);
+  simu->setStopTime(def_.stopTime);
   simu->setPrecision(def_.precision_.value_or(simu->getPrecision()));
 
   return simu;
