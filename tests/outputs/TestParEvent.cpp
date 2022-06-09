@@ -46,8 +46,7 @@ TEST(TestParEvent, write) {
   networkElements.insert("TestStaticVarCompensatorNetwork");
 
   outputPath.append(filename);
-  dfl::outputs::ParEvent par(
-      dfl::outputs::ParEvent::ParEventDefinition(basename, outputPath.generic_string(), contingency, networkElements, std::chrono::seconds(80)));
+  dfl::outputs::ParEvent par(dfl::outputs::ParEvent::ParEventDefinition(basename, outputPath.generic_string(), contingency, networkElements, 80.));
   par.write();
 
   boost::filesystem::path reference("reference");

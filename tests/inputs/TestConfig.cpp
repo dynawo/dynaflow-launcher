@@ -28,10 +28,10 @@ TEST(Config, Nominal) {
   ASSERT_EQ("/tmp", config.outputDir());
   ASSERT_EQ(63.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::P, config.getActivePowerCompensation());
-  ASSERT_EQ(10, config.getStartTime().count());
-  ASSERT_EQ(120, config.getStopTime().count());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(10, config.getStartTime());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(120, config.getStopTime());
   ASSERT_DOUBLE_EQUALS_DYNAWO(1e-3, config.getPrecision().value());
-  ASSERT_EQ(50, config.getTimeOfEvent().count());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.6, config.getTimeStep());
 }
 
@@ -47,6 +47,6 @@ TEST(Config, Default) {
   ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
   ASSERT_EQ(45.0, config.getDsoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());
-  ASSERT_EQ(80, config.getTimeOfEvent().count());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeStep());
 }

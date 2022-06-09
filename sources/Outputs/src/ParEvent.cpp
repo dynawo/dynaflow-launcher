@@ -64,26 +64,26 @@ ParEvent::write() {
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParEvent::buildBranchDisconnection(const std::string& branchId, const std::chrono::seconds& timeOfEvent) {
+ParEvent::buildBranchDisconnection(const std::string& branchId, const double timeOfEvent) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + branchId));
-  set->addParameter(helper::buildParameter("event_tEvent", static_cast<double>(timeOfEvent.count())));
+  set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_disconnectOrigin", true));
   set->addParameter(helper::buildParameter("event_disconnectExtremity", true));
   return set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParEvent::buildEventSetPointBooleanDisconnection(const std::string& elementId, const std::chrono::seconds& timeOfEvent) {
+ParEvent::buildEventSetPointBooleanDisconnection(const std::string& elementId, const double timeOfEvent) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
-  set->addParameter(helper::buildParameter("event_tEvent", static_cast<double>(timeOfEvent.count())));
+  set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_stateEvent1", true));
   return set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParEvent::buildEventSetPointRealDisconnection(const std::string& elementId, const std::chrono::seconds& timeOfEvent) {
+ParEvent::buildEventSetPointRealDisconnection(const std::string& elementId, const double timeOfEvent) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
-  set->addParameter(helper::buildParameter("event_tEvent", static_cast<double>(timeOfEvent.count())));
+  set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_stateEvent1", 1.0));
   return set;
 }
