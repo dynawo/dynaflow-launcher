@@ -21,7 +21,6 @@
 
 #include <JOBJobEntry.h>
 #include <boost/optional.hpp>
-#include <chrono>
 #include <string>
 
 namespace dfl {
@@ -38,8 +37,6 @@ class Job {
    */
   class JobDefinition {
    public:
-    using Seconds = std::chrono::seconds;  ///< Alias for seconds
-
     /**
      * @brief Constructor
      *
@@ -75,8 +72,8 @@ class Job {
 
     std::string filename;                        ///< filename of the job output file
     std::string dynawoLogLevel;                  ///< Dynawo log level, in string representation
-    Seconds startTime;                           ///< The start time of the simulation
-    Seconds stopTime;                            ///< the constant duration of the simulation in the job
+    double startTime;                            ///< The start time of the simulation
+    double stopTime;                             ///< the constant duration of the simulation in the job
     boost::optional<std::string> contingencyId;  ///< Identifier of referred contingency, only for security analysis jobs
     boost::optional<std::string> baseFilename;   ///< Name for base case filename if we are defining a jobs file for a contingency
     boost::optional<double> precision_;          ///< Precision of the simulation
