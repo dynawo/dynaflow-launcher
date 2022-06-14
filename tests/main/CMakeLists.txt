@@ -23,7 +23,6 @@ add_test(
   )
 set_property(TEST MAIN.help PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${DYNAWO_ALGORITHMS_HOME}/lib:$ENV{LD_LIBRARY_PATH})
 
-
   add_test(
     NAME MAIN.version
     COMMAND DynaFlowLauncher --version
