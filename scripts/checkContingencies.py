@@ -8,7 +8,7 @@ import re
 import xml.etree.ElementTree as ET
 
 ### Regexes ####################################################################
-contingency_event_time = 80
+contingency_event_time = 10
 timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
 
 ### Code #######################################################################
