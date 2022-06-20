@@ -27,7 +27,7 @@ src/ParLoads.cpp
 src/ParSVarC.cpp
 )
 
-add_library(outputs ${LINK_TYPE} ${SOURCES})
+add_library(outputs SHARED ${SOURCES})
 
 target_include_directories(outputs
 PUBLIC
@@ -48,4 +48,4 @@ Boost::filesystem
 
 )
 add_library(DynaFlowLauncher::outputs ALIAS outputs)
-install_lib_shared(outputs)
+install(TARGETS outputs DESTINATION ${CMAKE_INSTALL_LIBDIR})
