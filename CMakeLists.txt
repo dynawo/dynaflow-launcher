@@ -43,7 +43,6 @@ include(Coverage)
 include(Policy)
 include(CheckVar)
 include(BuildType)
-include(InstallLibShared)
 
 ###############
 ## POLICIES ###
@@ -64,19 +63,11 @@ set(FORCE_CXX11_ABI OFF CACHE BOOL "Choose either ON or OFF.")
 
 option(DYNAFLOW_LAUNCHER_USE_ADDITIONAL_SOURCEFILE "Use the additional source file" ON)
 
-option(DYNAFLOW_LAUNCHER_SHARED_LIB "Compile shared library" OFF)
-
 # Use your own option for tests, in case people use your library through add_subdirectory
 cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "Enable ${PROJECT_NAME} project tests targets" ON # By default we want tests if CTest is enabled
     "BUILD_TESTING" OFF # Stay coherent with CTest variables
 )
-
-set(LINK_TYPE "STATIC")
-if (DYNAFLOW_LAUNCHER_SHARED_LIB)
-    set(LINK_TYPE "SHARED")
-endif()
-message(STATUS "Compile internal libraries in " ${LINK_TYPE})
 
 set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_=1")
 if(FORCE_CXX11_ABI)
