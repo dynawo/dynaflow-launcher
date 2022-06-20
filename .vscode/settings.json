@@ -17,7 +17,6 @@
 
         "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/build-code/Install/dynaflow-launcher",
 
-        "DYNAFLOW_LAUNCHER_SHARED_LIB": "ON",
         "DYNAFLOW_LAUNCHER_USE_DOXYGEN": "OFF"
     },
 
