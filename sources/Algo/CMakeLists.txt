@@ -20,7 +20,7 @@ src/ShuntDefinitionAlgorithm.cpp
 src/SlackNodeAlgorithm.cpp
 )
 
-add_library(algo ${LINK_TYPE} ${SOURCES})
+add_library(algo SHARED ${SOURCES})
 
 target_include_directories(algo
 PUBLIC
@@ -35,4 +35,4 @@ DynaFlowLauncher::common
 Boost::system
 )
 add_library(DynaFlowLauncher::algo ALIAS algo)
-install_lib_shared(algo)
+install(TARGETS algo DESTINATION ${CMAKE_INSTALL_LIBDIR})

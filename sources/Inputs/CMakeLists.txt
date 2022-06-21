@@ -19,7 +19,7 @@ set(SOURCES
   src/AssemblingXmlDocument.cpp
 )
 
-add_library(inputs ${LINK_TYPE} ${SOURCES})
+add_library(inputs SHARED ${SOURCES})
 
 target_include_directories(inputs
 PUBLIC
@@ -39,4 +39,4 @@ PRIVATE
 Dynawo::dynawo_DataInterfaceFactory
 )
 add_library(DynaFlowLauncher::inputs ALIAS inputs)
-install_lib_shared(inputs)
+install(TARGETS inputs DESTINATION ${CMAKE_INSTALL_LIBDIR})

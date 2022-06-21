@@ -257,7 +257,6 @@ set_environment() {
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib # For local DFL libraries, used only at runtime in case we compile in shared
 
-    export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_CMAKE_GENERATOR="Unix Makefiles"
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
@@ -334,7 +333,6 @@ cmake_configure() {
         -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
         -DBOOST_ROOT:STRING=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
-        -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
         -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS \
         $CMAKE_OPTIONAL
     RETURN_CODE=$?
