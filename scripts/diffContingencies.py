@@ -44,8 +44,9 @@ def compare_file(options, contingency_folder):
         # file, there are cases where the file itself should not exist
         if not os.path.exists(reference_path):
             if os.path.exists(result_path):
-                print("Reference path " + reference_path +
-                    " does not exist but the result file does: not checked")
+                if options.verbose:
+                    print("Reference path " + reference_path +
+                          " does not exist but the result file does: not checked")
         else:
             if options.verbose:
                 print("comparing " + result_path + " and " + reference_path)
@@ -65,8 +66,9 @@ def compare_file(options, contingency_folder):
         options.root, "reference", options.testdir, contingency_folder, "constraints.xml")
 
     if not os.path.exists(reference_path):
-        print("Reference path " + reference_path +
-                " does not exist : not checked")
+        if options.verbose:
+            print("Reference path " + reference_path +
+                    " does not exist : not checked")
     else:
         if options.verbose:
             print("comparing " + result_path + " and " + reference_path)
@@ -86,16 +88,19 @@ def compare_file(options, contingency_folder):
         options.root, "reference", options.testdir, contingency_folder, "lostEquipments.xml")
 
     if not os.path.exists(reference_path):
-        print("Reference path " + reference_path +
-                " does not exist : not checked")
+        if options.verbose:
+            print("Reference path " + reference_path +
+                    " does not exist : not checked")
     else:
         if options.verbose:
             print("comparing " + result_path + " and " + reference_path)
 
         identical = filecmp.cmp (result_path, reference_path, shallow=False)
         if identical:
-            print("No difference")
+            if options.verbose:
+                print("No difference")
         else:
+            print("[ERROR] lost equipments file " + result_path + " different from reference file " + reference_path)
             nb_differences += 1
 
     return nb_differences
