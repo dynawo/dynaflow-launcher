@@ -97,6 +97,10 @@ def compare_file(options, contingency_folder):
             print("No difference")
         else:
             nb_differences += 1
+            with open(result_path, 'r') as f:
+                print(f.read())
+            with open(reference_path, 'r') as f:
+                print(f.read())
 
     return nb_differences
 
