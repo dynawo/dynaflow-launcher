@@ -115,12 +115,11 @@ Context::process() {
     }
   }
 
-  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
-                                                                 config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
+  onNodeOnMainConnexComponent(
+      algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(), config_.useInfiniteReactiveLimits()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
-                                                            networkManager_.getMapBusVSCConvertersBusId(),
-                                                            networkManager_.dataInterface()->getServiceManager()));
+                                                            networkManager_.getMapBusVSCConvertersBusId()));
   if (config_.isSVCRegulationOn()) {
     onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   }

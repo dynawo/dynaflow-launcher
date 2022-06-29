@@ -27,12 +27,10 @@ HVDCDefinitionAlgorithm::HVDCModelDefinition::VSCBusPairHash::operator()(const H
 
 HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
                                                  const std::unordered_set<std::shared_ptr<inputs::Converter>>& converters,
-                                                 const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId,
-                                                 const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager) :
+                                                 const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId) :
     hvdcLinesDefinitions_(hvdcLinesDefinitions),
     infiniteReactiveLimits_(infiniteReactiveLimits),
-    mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId),
-    serviceManager_(serviceManager) {
+    mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId) {
   std::transform(converters.begin(), converters.end(), std::inserter(vscConverters_, vscConverters_.begin()),
                  [](const std::shared_ptr<inputs::Converter>& converter) { return std::make_pair(converter->busId, converter); });
 }
@@ -92,9 +90,10 @@ HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine& hvdcLine, HV
 auto
 HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, const NodePtr& node) const
     -> HVDCModelDefinition::VSCBusPairSet {
-  auto vl = node->voltageLevel.lock();
-  auto buses = serviceManager_->getBusesConnectedBySwitch(node->id, vl->id);
+  auto& buses = node->getBusesConnectedByVoltageLevel();
   HVDCModelDefinition::VSCBusPairSet ret;
+
+  auto vl = node->voltageLevel.lock();
   for (const auto& id : buses) {
     auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
     assert(found != vl->nodes.end());

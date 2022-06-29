@@ -87,7 +87,8 @@ NetworkManager::buildTree() {
       assert(nodes_.count(nodeId) == 0);
 #endif
       auto found = shuntsMap.find(nodeId);
-      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{}, bus->isFictitious());
+      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{}, bus->isFictitious(),
+                                   interface_->getServiceManager());
       if (bus->isFictitious())
         LOG(debug, FictitiousNodeCreation, nodeId);
       else

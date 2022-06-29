@@ -300,9 +300,10 @@ TEST(Generators, base) {
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      dfl::inputs::Node::build("0", vl, 0.0, {}),  dfl::inputs::Node::build("1", vl, 1.0, {}),  dfl::inputs::Node::build("2", vl, 2.0, {}),
-      dfl::inputs::Node::build("3", vl, 3.0, {}),  dfl::inputs::Node::build("4", vl2, 5.0, {}), dfl::inputs::Node::build("5", vl2, 5.0, {}),
-      dfl::inputs::Node::build("6", vl2, 0.0, {}),
+      dfl::inputs::Node::build("0", vl, 0.0, {}, false, testServiceManager),  dfl::inputs::Node::build("1", vl, 1.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("2", vl, 2.0, {}, false, testServiceManager),  dfl::inputs::Node::build("3", vl, 3.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("4", vl2, 5.0, {}, false, testServiceManager), dfl::inputs::Node::build("5", vl2, 5.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("6", vl2, 0.0, {}, false, testServiceManager),
   };
 
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
@@ -344,7 +345,7 @@ TEST(Generators, base) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -359,7 +360,7 @@ TEST(Generators, base) {
 
   generators.clear();
   busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -375,7 +376,7 @@ TEST(Generators, base) {
 TEST(Generators, noGeneratorRegulating) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
-  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("0", vl, 0.0, {})};
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("0", vl, 0.0, {}, false, testServiceManager)};
 
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
       {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
@@ -391,7 +392,7 @@ TEST(Generators, noGeneratorRegulating) {
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap;
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -402,7 +403,7 @@ TEST(Generators, noGeneratorRegulating) {
 
   generators.clear();
   busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -417,9 +418,10 @@ TEST(Generators, SwitchConnexity) {
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VL2");
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      dfl::inputs::Node::build("0", vl, 0.0, {}),  dfl::inputs::Node::build("1", vl, 1.0, {}),  dfl::inputs::Node::build("2", vl, 2.0, {}),
-      dfl::inputs::Node::build("3", vl, 3.0, {}),  dfl::inputs::Node::build("4", vl2, 5.0, {}), dfl::inputs::Node::build("5", vl2, 5.0, {}),
-      dfl::inputs::Node::build("6", vl2, 0.0, {}),
+      dfl::inputs::Node::build("0", vl, 0.0, {}, false, testServiceManager),  dfl::inputs::Node::build("1", vl, 1.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("2", vl, 2.0, {}, false, testServiceManager),  dfl::inputs::Node::build("3", vl, 3.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("4", vl2, 5.0, {}, false, testServiceManager), dfl::inputs::Node::build("5", vl2, 5.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("6", vl2, 0.0, {}, false, testServiceManager),
   };
 
   testServiceManager->add("0", "VL", "1");
@@ -461,7 +463,7 @@ TEST(Generators, SwitchConnexity) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true);
 
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
@@ -476,7 +478,7 @@ TEST(Generators, SwitchConnexity) {
   generators.clear();
   busesWithDynamicModel.clear();
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoResFinite(new dfl::algo::AlgorithmsResults());
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoResFinite);
@@ -543,9 +545,10 @@ TEST(HvdcLine, base) {
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
-      dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
-      dfl::inputs::Node::build("6", vl, 0.0, {}),
+      dfl::inputs::Node::build("0", vl, 98.0, {}, false, testServiceManager), dfl::inputs::Node::build("1", vl, 111.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("2", vl, 24.0, {}, false, testServiceManager), dfl::inputs::Node::build("3", vl, 63.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("4", vl, 56.0, {}, false, testServiceManager), dfl::inputs::Node::build("5", vl, 46.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("6", vl, 0.0, {}, false, testServiceManager),
   };
   auto dummyStation = std::make_shared<dfl::inputs::LCCConverter>("StationN", "_BUS___99_TN", nullptr, 99.);
   auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0.,
@@ -587,7 +590,7 @@ TEST(HvdcLine, base) {
   constexpr bool useReactiveLimits = true;
   dfl::inputs::NetworkManager::BusMapRegulating map;
   std::unordered_set<std::shared_ptr<dfl::inputs::Converter>> set{vscStation2};
-  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, map, testServiceManager);
+  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, map);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo(node, algoRes);
@@ -633,11 +636,13 @@ TEST(hvdcLine, models) {
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
-      dfl::inputs::Node::build("0", vl, 98.0, {}), dfl::inputs::Node::build("1", vl, 111.0, {}), dfl::inputs::Node::build("2", vl, 24.0, {}),
-      dfl::inputs::Node::build("3", vl, 63.0, {}), dfl::inputs::Node::build("4", vl, 56.0, {}),  dfl::inputs::Node::build("5", vl, 46.0, {}),
-      dfl::inputs::Node::build("6", vl, 0.0, {}),  dfl::inputs::Node::build("7", vl, 0.0, {}),   dfl::inputs::Node::build("8", vl, 0.0, {}),
-      dfl::inputs::Node::build("9", vl, 0.0, {}),  dfl::inputs::Node::build("10", vl, 0.0, {}),  dfl::inputs::Node::build("11", vl, 0.0, {}),
-      dfl::inputs::Node::build("12", vl, 0.0, {}),
+      dfl::inputs::Node::build("0", vl, 98.0, {}, false, testServiceManager), dfl::inputs::Node::build("1", vl, 111.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("2", vl, 24.0, {}, false, testServiceManager), dfl::inputs::Node::build("3", vl, 63.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("4", vl, 56.0, {}, false, testServiceManager), dfl::inputs::Node::build("5", vl, 46.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("6", vl, 0.0, {}, false, testServiceManager),  dfl::inputs::Node::build("7", vl, 0.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("8", vl, 0.0, {}, false, testServiceManager),  dfl::inputs::Node::build("9", vl, 0.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("10", vl, 0.0, {}, false, testServiceManager), dfl::inputs::Node::build("11", vl, 0.0, {}, false, testServiceManager),
+      dfl::inputs::Node::build("12", vl, 0.0, {}, false, testServiceManager),
   };
   std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint> emptyPoints{};
 
@@ -710,7 +715,7 @@ TEST(hvdcLine, models) {
       vscStation1, vscStation2, vscStation21, vscStation22, vscStation23, vscStation5,  vscStation6,
       vscStation7, vscStation8, vscStation9,  vscStation10, vscStation11, vscStation12,
   };
-  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, busMap, testServiceManager);
+  dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, busMap);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo(node, algoRes);
@@ -736,7 +741,7 @@ TEST(hvdcLine, models) {
   hvdcDefs.vscBusVSCDefinitionsMap.clear();
   // case diagrams
   useReactiveLimits = false;
-  dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, set, busMap, testServiceManager);
+  dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, set, busMap);
   for (const auto& node : nodes) {
     algo2(node, algoRes);
   }
@@ -766,12 +771,12 @@ testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> poin
   Generator generator("G1", true, points, 3., 30., 33., 330., 100, bus1, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
-  std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {});
+  std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {}, false, testServiceManager);
 
   const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, false, testServiceManager);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, false);
 
   node->generators.emplace_back(generator);
   algo_infinite(node, algoRes);

@@ -31,11 +31,11 @@ target_link_libraries(inputs
 PUBLIC
 DynaFlowLauncher::common
 Boost::filesystem
-Dynawo::dynawo_DataInterface
 XMLSAXParser${LibXML_LINK_SUFFIX}
 LibXml2::LibXml2
 
 PRIVATE
+Dynawo::dynawo_DataInterface
 Dynawo::dynawo_DataInterfaceFactory
 )
 add_library(DynaFlowLauncher::inputs ALIAS inputs)

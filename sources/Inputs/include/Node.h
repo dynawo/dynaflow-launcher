@@ -19,6 +19,7 @@
 
 #include "Behaviours.h"
 
+#include <DYNServiceManagerInterface.h>
 #include <memory>
 #include <string>
 #include <vector>
@@ -208,26 +209,33 @@ class Node {
    * @param nominalVoltage the nominal voltage of the node
    * @param shunts the list of the shunts connectable to this node
    * @param fictitious the flag to mark the node is fictitious
+   * @param serviceManagerNode the dynawo service manager to use
    *
    * @returns the built node
    */
   static std::shared_ptr<Node> build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, const std::vector<Shunt>& shunts,
-                                     bool fictitious = false);
+                                     bool fictitious = false, boost::shared_ptr<DYN::ServiceManagerInterface> serviceManagerNode = nullptr);
+  /**
+   * @brief Retrieve the buses linked to this node through its voltage level
+   * @returns the list of the bus ids linked to this node
+   */
+  const std::vector<std::string>& getBusesConnectedByVoltageLevel();
 
-  const NodeId id;                                   ///< node id
-  const std::weak_ptr<VoltageLevel> voltageLevel;    ///< voltage level containing the node
-  const double nominalVoltage;                       ///< Nominal voltage of the node
-  const std::vector<Shunt> shunts;                   ///< Shunts connectable to the node
-  const bool fictitious;                             ///< Flag to mark the node is fictitious
-  std::vector<std::weak_ptr<Line>> lines;            ///< Lines connected to this node
-  std::vector<std::weak_ptr<Tfo>> tfos;              ///< Transformers connected to this node
-  std::vector<std::shared_ptr<Node>> neighbours;     ///< list of neighbours
-  std::vector<Load> loads;                           ///< list of loads associated to this node
-  std::vector<Generator> generators;                 ///< list of generators associated to this node
-  std::vector<std::weak_ptr<Converter>> converters;  ///< list of converter associated to this node
-  std::vector<StaticVarCompensator> svarcs;          ///< List of static var compensators
-  std::vector<DanglingLine> danglingLines;           ///< List of dangling lines
-  std::vector<BusBarSection> busBarSections;         ///< List of bus bar sections
+  const NodeId id;                                                 ///< node id
+  const std::weak_ptr<VoltageLevel> voltageLevel;                  ///< voltage level containing the node
+  const double nominalVoltage;                                     ///< Nominal voltage of the node
+  const std::vector<Shunt> shunts;                                 ///< Shunts connectable to the node
+  const bool fictitious;                                           ///< Flag to mark the node is fictitious
+  std::vector<std::weak_ptr<Line>> lines;                          ///< Lines connected to this node
+  std::vector<std::weak_ptr<Tfo>> tfos;                            ///< Transformers connected to this node
+  std::vector<std::shared_ptr<Node>> neighbours;                   ///< list of neighbours
+  std::vector<Load> loads;                                         ///< list of loads associated to this node
+  std::vector<Generator> generators;                               ///< list of generators associated to this node
+  std::vector<std::weak_ptr<Converter>> converters;                ///< list of converter associated to this node
+  std::vector<StaticVarCompensator> svarcs;                        ///< List of static var compensators
+  std::vector<DanglingLine> danglingLines;                         ///< List of dangling lines
+  std::vector<BusBarSection> busBarSections;                       ///< List of bus bar sections
+  boost::shared_ptr<DYN::ServiceManagerInterface> serviceManager;  ///< Service manager to use
 
  private:
   /**
@@ -240,8 +248,14 @@ class Node {
    * @param nominalVoltage the voltage level associated with the node
    * @param shunts the list of the shunts connectable to this node
    * @param fictitious the flag to mark if node is fictitious
+   * @param serviceManagerNode the dynawo service manager to use
    */
-  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, const std::vector<Shunt>& shunts, bool fictitious);
+  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, const std::vector<Shunt>& shunts, bool fictitious,
+       boost::shared_ptr<DYN::ServiceManagerInterface> serviceManagerNode);
+
+ private:
+  bool busesConnectedInitialized;           ///< true if busesConnected was filled with getBusesConnectedByVoltageLevel, false otherwise
+  std::vector<std::string> busesConnected;  ///< List of buses connected by this switch
 };
 
 /**

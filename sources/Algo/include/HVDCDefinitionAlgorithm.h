@@ -253,12 +253,10 @@ class HVDCDefinitionAlgorithm {
    * @param infiniteReactiveLimits the configuration data of whether we use infinite reactive limits
    * @param vscConverters list of VSC converters
    * @param mapBusVSCConvertersBusId the mapping of buses and their number of VSC converters regulating them
-   * @param serviceManager the dynawo service manager to use
    */
   HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
                           const std::unordered_set<std::shared_ptr<inputs::Converter>>& vscConverters,
-                          const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId,
-                          const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager);
+                          const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId);
 
   /**
    * @brief Perform the algorithm
@@ -361,7 +359,6 @@ class HVDCDefinitionAlgorithm {
   HVDCLineDefinitions& hvdcLinesDefinitions_;                                 ///< The HVDC lines definitions to update
   const bool infiniteReactiveLimits_;                                         ///< whether we use infinite reactive limits
   const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId_;  ///< the map of buses and the number of VSC converters regulating them
-  boost::shared_ptr<DYN::ServiceManagerInterface> serviceManager_;            ///< Service manager to use
   std::unordered_map<inputs::Converter::ConverterId, std::shared_ptr<inputs::Converter>> vscConverters_;  ///< List of VSC converters to use
 };
 
