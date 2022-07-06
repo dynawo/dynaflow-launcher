@@ -34,7 +34,6 @@ export DYNAWO_RESOURCES_DIR=$DYNAWO_HOME/share:$DYNAWO_HOME/share/xsd
 export DYNAWO_DDB_DIR=$DYNAWO_HOME/ddb
 
 if [ -z "$DYNAWO_IIDM_EXTENSION" ]; then
-  export DYNAWO_IIDM_EXTENSION=$DYNAWO_HOME/lib/libdynawo_DataInterfaceIIDMExtension.so
   if [ -f $DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so ]; then
     export DYNAWO_IIDM_EXTENSION=$DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so
   fi
