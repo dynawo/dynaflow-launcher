@@ -9,7 +9,7 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-# This file aimes to encapsulate processing for users to compiler and use DFL
+# This file aims to encapsulate processing for users to compiler and use DFL
 
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 MPIRUN_PATH=$(which mpirun 2> /dev/null)

@@ -28,13 +28,16 @@ documentation/*/*.nlo
 documentation/*/*.out
 documentation/*/*.pdf
 documentation/*/*.toc
+documentation/*/*.synctex.gz
 documentation/licenses/*/*.aux
 documentation/licenses/*/*.log
 documentation/licenses/*/*.nlo
 documentation/licenses/*/*.out
 documentation/licenses/*/*.pdf
 documentation/dynaflowLauncherDocumentation
-
+__pycache__
+3rdParty/mpich
+.gitignore_local
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode

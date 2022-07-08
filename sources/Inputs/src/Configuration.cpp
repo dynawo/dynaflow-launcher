@@ -83,7 +83,8 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path& filepath) {
+Configuration::Configuration(const boost::filesystem::path& filepath,
+                              dfl::inputs::Configuration::SimulationKind simulationKind) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -106,6 +107,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
 
     auto config = tree.get_child("dfl-config");
 
+    updateChosenOutput(config, simulationKind);
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
     helper::updateValue(isSVCRegulationOn_, config, "SVCRegulationOn");
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
@@ -124,5 +126,50 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     throw Error(ErrorConfigFileRead, e.what());
   }
 }
+
+void
+Configuration::updateChosenOutput(
+  const boost::property_tree::ptree& tree,
+#if _DEBUG_
+  dfl::inputs::Configuration::SimulationKind
+#else
+  dfl::inputs::Configuration::SimulationKind simulationKind
+#endif
+  ) {
+#if _DEBUG_
+  chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
+  chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
+  chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE);
+  chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
+#else
+  switch (simulationKind) {
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+      chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
+      break;
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+      chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
+      chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
+      break;
+  }
+#endif
+  const boost::optional<const boost::property_tree::ptree &>& optionalChosenOutputs = tree.get_child_optional("chosenOutputs");
+  if (optionalChosenOutputs) {
+    for (auto& chosenOutputElement : *optionalChosenOutputs) {
+      const std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
+      if (chosenOutputName == "STEADYSTATE") {
+        chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
+      } else if (chosenOutputName == "CONSTRAINTS") {
+        chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
+      } else if (chosenOutputName == "TIMELINE") {
+        chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE);
+      } else if (chosenOutputName == "LOSTEQ") {
+        chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
+      } else {
+        throw Error(ChosenOutputDoesntExist, chosenOutputName);
+      }
+    }
+  }
+}
+
 }  // namespace inputs
 }  // namespace dfl

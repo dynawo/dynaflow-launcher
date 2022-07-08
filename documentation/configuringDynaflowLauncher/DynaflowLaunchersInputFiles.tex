@@ -7,6 +7,8 @@
 % Latex setup
 \input{../latex_setup.tex}
 
+\usepackage{float}
+
 \begin{document}
 
 \title{Configure Dynaflow-launcher}
@@ -95,7 +97,7 @@ The configuration file is a \textbf{.json} file containing the values for the pa
 
 The parameters are described below:
 
-\begin{table}[h!]
+\begin{table}[H]
 \center
 \begin{tabular}{ l | c | c | c }
 \toprule
@@ -131,14 +133,35 @@ The parameters are described below:
 \small{StopTime} & \small{integer} & \small{Simulation stop time (in s)} & \small{100} \\
 \rowcolor{gray!10}
 \small{TimeStep} & \small{real} & \small{Maximum time solver step value} & \small{10} \\
+\rowcolor{white}
+\multirow{3}{*}{\small{ChosenOutputs}} & \multirow{3}{*}{\small{struct}} & \multirow{2}{*}{\small{Chosen outputs to configure}} & \small{Depends on the} \\
+& & \multirow{2}{*}{\small{the .jobs file}} & \small{buildtype and the} \\
+& & & \small{simulation kind} \\
 \bottomrule
 \end{tabular}
 \caption{Simulation parameters}
 \end{table}
 
+\begin{table}[H]
+The default chosen outputs depend on the build type (Release or Debug) and the simulation kind (Steady State or Security Analysis). The \textit{ChosenOutput} attribute array in the configuration file can add optional chosen outputs.
+\center
+\begin{tabular}{| c | c | c |}
+\cline{2-3}
+\multicolumn{1}{c|}{} & Steady State & Security Analysis \\
+\hline
+\multirow{2}{*}{Release} & \textcolor{green}{\small{IIDM} \textcolor{gray}{CONSTRAINTS}} & \small{\textcolor{gray}{IIDM} \textcolor{green}{CONSTRAINTS}} \\
+& \small{\textcolor{gray}{LOSTEQ}} \textcolor{gray}{TIMELINE} & \small{\textcolor{green}{LOSTEQ} \textcolor{gray}{TIMELINE}} \\
+\hline
+\multirow{2}{*}{Debug} & \textcolor{green}{\small{IIDM CONSTRAINTS}} & \textcolor{green}{\small{IIDM CONSTRAINTS}} \\
+& \textcolor{green}{\small{LOSTEQ TIMELINE}} & \textcolor{green}{\small{LOSTEQ TIMELINE}} \\
+\hline
+\end{tabular}
+\caption{Chosen Outputs depending on the buildtype and the simulation kind : outputs chosen by default are \textcolor{green}{green} and optional inputs are \textcolor{gray}{gray}}
+\end{table}
+
 The systematic analysis parameters are described below:
 
-\begin{table}[h!]
+\begin{table}[H]
 \center
 \begin{tabular}{ l | c | c | c }
 \toprule

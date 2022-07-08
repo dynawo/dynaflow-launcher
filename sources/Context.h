@@ -51,25 +51,19 @@ class Context {
   using ProcessNodeCallBackMainComponent =
       std::function<void(const std::shared_ptr<inputs::Node>&,
                          std::shared_ptr<dfl::algo::AlgorithmsResults>&)>;  ///< Callback for node algorithm on main topological island
-  /// @brief The kind of simulation that is requested
-  enum class SimulationKind {
-    STEADY_STATE_CALCULATION = 0,  ///< A steady-state calculation
-    SECURITY_ANALYSIS              ///< A security analysis for a given list of contingencies
-  };
-
   /**
    * @brief Context definition
    */
   struct ContextDef {
-    SimulationKind simulationKind;                  ///< kind of simulation requested (steady-state or security analysis)
-    boost::filesystem::path networkFilepath;        ///< network filepath
-    boost::filesystem::path settingFilePath;        ///< setting file path for dynamic data base
-    boost::filesystem::path assemblingFilePath;     ///< assembling file path for dynamic data base
-    boost::filesystem::path contingenciesFilePath;  ///< contigencies file path for Security Analysis simulation
-    std::string dynawoLogLevel;                     ///< string representation of the dynawo log level
-    boost::filesystem::path parFileDir;             ///< parameter file directory
-    boost::filesystem::path dynawoResDir;           ///< DYNAWO resources
-    std::string locale;                             ///< localization
+    dfl::inputs::Configuration::SimulationKind simulationKind; ///< kind of simulation requested (steady-state or security analysis)
+    boost::filesystem::path networkFilepath;                   ///< network filepath
+    boost::filesystem::path settingFilePath;                   ///< setting file path for dynamic data base
+    boost::filesystem::path assemblingFilePath;                ///< assembling file path for dynamic data base
+    boost::filesystem::path contingenciesFilePath;             ///< contigencies file path for Security Analysis simulation
+    std::string dynawoLogLevel;                                ///< string representation of the dynawo log level
+    boost::filesystem::path parFileDir;                        ///< parameter file directory
+    boost::filesystem::path dynawoResDir;                      ///< DYNAWO resources
+    std::string locale;                                        ///< localization
   };
 
  public:

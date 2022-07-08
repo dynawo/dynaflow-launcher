@@ -123,7 +123,7 @@ Context::process() {
   if (config_.isSVCRegulationOn()) {
     onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   }
-  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+  if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
     const auto& contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
       validContingencies_ = boost::make_optional(algo::ValidContingencies(contingencies));
@@ -134,7 +134,7 @@ Context::process() {
 
   // the validation of contingencies on algorithm definitions must be done after walking all nodes
   // on main topological island, because this is where we fill the algorithms definitions
-  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS && validContingencies_) {
+  if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS && validContingencies_) {
     auto contValOnDefs = algo::ContingencyValidationAlgorithmOnDefs(*validContingencies_);
     contValOnDefs.fillValidContingenciesOnDefs(loads_, generators_, staticVarCompensators_);
   }
@@ -220,7 +220,7 @@ Context::exportOutputs() {
   outputs::Solver solverWriter{dfl::outputs::Solver::SolverDefinition(config_)};
   solverWriter.write();
 
-  if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
+  if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
     exportOutputsContingencies();
   }
 }
@@ -236,14 +236,14 @@ Context::exportOutputJob() {
     return;
 
   switch (def_.simulationKind) {
-  case SimulationKind::SECURITY_ANALYSIS:
+  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
     // For security analysis always export the main jobs file, as dynawo-algorithms will need it
-    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
+    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_);
     break;
   default:
     // For the rest of calculations, only export the jobs file when in DEBUG mode
 #if _DEBUG_
-    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_.outputDir());
+    outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_);
 #endif
     break;
   }
@@ -284,7 +284,7 @@ Context::exportOutputsContingency(const inputs::Contingency& contingency, const 
   outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawoLogLevel, config_, contingency.id, basename_));
   boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
   jobsEvents_.emplace_back(jobEvent);
-  outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_.outputDir());
+  outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_);
 #endif
 }
 
@@ -300,7 +300,7 @@ Context::execute() {
   simu_context->setWorkingDirectory(config_.outputDir().generic_string());
 
   switch (def_.simulationKind) {
-  case SimulationKind::STEADY_STATE_CALCULATION: {
+  case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION: {
     // This shall be the last log performed before building simulation,
     // because simulation constructor will re-initialize traces for Dynawo
     // Since DFL traces are persistent, they can be re-used after simulation is performed outside this function
@@ -314,7 +314,7 @@ Context::execute() {
     simu->clean();
     break;
   }
-  case SimulationKind::SECURITY_ANALYSIS:
+  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
     LOG(info, SecurityAnalysisSimulationInfo, basename_, def_.contingenciesFilePath);
     executeSecurityAnalysis();
     break;
@@ -351,7 +351,7 @@ Context::executeSecurityAnalysis() {
 void
 Context::exportResults(bool simulationOk) {
   switch (def_.simulationKind) {
-  case SimulationKind::STEADY_STATE_CALCULATION: {
+  case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION: {
     boost::property_tree::ptree resultsTree;
     boost::property_tree::ptree componentResultsTree;
     boost::property_tree::ptree componentResultsChild;
@@ -376,7 +376,7 @@ Context::exportResults(bool simulationOk) {
     boost::property_tree::json_parser::write_json(ofs, resultsTree);
     break;
   }
-  case SimulationKind::SECURITY_ANALYSIS:
+  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
     break;
   }
 }
