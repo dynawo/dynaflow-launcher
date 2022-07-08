@@ -112,9 +112,9 @@ Job::writeModeler() const {
 boost::shared_ptr<job::SimulationEntry>
 Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
-  simu->setStartTime(def_.startTime);
-  simu->setStopTime(def_.stopTime);
-  simu->setPrecision(def_.precision_.value_or(1e-3));
+  simu->setStartTime(def_.configuration.getStartTime());
+  simu->setStopTime(def_.configuration.getStopTime());
+  simu->setPrecision(def_.configuration.getPrecision().value_or(1e-3));
 
   return simu;
 }
@@ -138,30 +138,37 @@ Job::writeOutputs() const {
   output->setLogsEntry(log);
 
   auto final_state = job::FinalStateEntryFactory::newInstance();
-  final_state->setExportIIDMFile(exportIIDMFile_);
+
+  final_state->setExportIIDMFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   final_state->setExportDumpFile(exportDumpFile_);
   output->addFinalStateEntry(final_state);
 
-  auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
-  constraints->setExportMode("XML");
-  output->setConstraintsEntry(constraints);
+  if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
+    auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
+    constraints->setExportMode("XML");
+    output->setConstraintsEntry(constraints);
+  }
 
-  auto lostEquipments = boost::shared_ptr<job::LostEquipmentsEntry>(new job::LostEquipmentsEntry());
-  lostEquipments->setDumpLostEquipments(true);
-  output->setLostEquipmentsEntry(lostEquipments);
+  if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ)) {
+    auto lostEquipments = boost::shared_ptr<job::LostEquipmentsEntry>(new job::LostEquipmentsEntry());
+    lostEquipments->setDumpLostEquipments(true);
+    output->setLostEquipmentsEntry(lostEquipments);
+  }
 
-#if _DEBUG_
-  auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
-  timeline->setExportMode("TXT");
-  output->setTimelineEntry(timeline);
-#endif
+  if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
+    auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
+    timeline->setExportMode("TXT");
+    output->setTimelineEntry(timeline);
+  }
 
   return output;
 }
 
 void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry, const boost::filesystem::path& outputDir) {
-  boost::filesystem::path path(outputDir);
+Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry,
+                const boost::filesystem::path& networkFileEntry,
+                const dfl::inputs::Configuration& config) {
+  boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {
     boost::filesystem::create_directories(path);
@@ -262,7 +269,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
     formatter->endElement();
   }
 
-  attrs.add("exportIIDMFile", exportIIDMFile_);
+  attrs.add("exportIIDMFile", config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   attrs.add("exportDumpFile", exportDumpFile_);
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();

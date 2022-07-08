@@ -47,9 +47,7 @@ class Job {
     JobDefinition(const std::string& filename, const std::string& lvl, const dfl::inputs::Configuration& config) :
         filename(filename),
         dynawoLogLevel(lvl),
-        startTime(config.getStartTime()),
-        stopTime(config.getStopTime()),
-        precision_(config.getPrecision()) {}
+        configuration(config) {}
 
     /**
      * @brief Constructor with a reference to a contingency
@@ -64,19 +62,15 @@ class Job {
                   const std::string& baseFilename) :
         filename(filename),
         dynawoLogLevel(lvl),
-        startTime(config.getStartTime()),
-        stopTime(config.getStopTime()),
+        configuration(config),
         contingencyId(contingencyId),
-        baseFilename(baseFilename),
-        precision_(config.getPrecision()) {}
+        baseFilename(baseFilename) {}
 
-    std::string filename;                        ///< filename of the job output file
-    std::string dynawoLogLevel;                  ///< Dynawo log level, in string representation
-    double startTime;                            ///< The start time of the simulation
-    double stopTime;                             ///< the constant duration of the simulation in the job
-    boost::optional<std::string> contingencyId;  ///< Identifier of referred contingency, only for security analysis jobs
-    boost::optional<std::string> baseFilename;   ///< Name for base case filename if we are defining a jobs file for a contingency
-    boost::optional<double> precision_;          ///< Precision of the simulation
+    std::string filename;                                     ///< filename of the job output file
+    std::string dynawoLogLevel;                               ///< Dynawo log level, in string representation
+    const dfl::inputs::Configuration& configuration;          ///< Simulation configuration
+    boost::optional<std::string> contingencyId;               ///< Identifier of referred contingency, only for security analysis jobs
+    boost::optional<std::string> baseFilename;                ///< Name for base case filename if we are defining a jobs file for a contingency
   };
 
  public:
@@ -85,11 +79,11 @@ class Job {
   *
   * @param jobEntry the job entry to export
   * @param networkFileEntry path to the input network file
-  * @param outputDir the output directory
+  * @param config configuration
   */
-  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry,
-                        const boost::filesystem::path& outputDir);
-
+  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry,
+                        const boost::filesystem::path& networkFileEntry,
+                        const dfl::inputs::Configuration& config);
   /**
    * @brief Constructor
    *
@@ -140,12 +134,7 @@ class Job {
 
  private:
   static constexpr bool useStandardModels_ = true;  ///< use standard models in job entry and file
-#if _DEBUG_
-  static constexpr bool exportIIDMFile_ = true;  ///< export IIDM file in job entry and file
-#else
-  static constexpr bool exportIIDMFile_ = false;  ///< export IIDM file in job entry and file
-#endif
-  static constexpr bool exportDumpFile_ = false;  ///< export dump file in job entry and file
+  static constexpr bool exportDumpFile_ = false;    ///< export dump file in job entry and file
 
  private:
   JobDefinition def_;  ///< the job definition to use

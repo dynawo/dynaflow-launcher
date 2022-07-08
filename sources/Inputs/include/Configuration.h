@@ -18,7 +18,9 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <string>
+#include <unordered_set>
 
 namespace dfl {
 namespace inputs {
@@ -27,15 +29,21 @@ namespace inputs {
  */
 class Configuration {
  public:
+  /// @brief The kind of simulation that is requested
+  enum class SimulationKind {
+    STEADY_STATE_CALCULATION = 0,  ///< A steady-state calculation
+    SECURITY_ANALYSIS              ///< A security analysis for a given list of contingencies
+  };
   /**
    * @brief Constructor
    *
    * exit the program on error in parsing the file
    *
    * @param filepath the configuration file to use
+   * @param simulationKind the simulation kind (Steady state or Security analysis)
    */
-  explicit Configuration(const boost::filesystem::path& filepath);
-
+  explicit Configuration(const boost::filesystem::path& filepath,
+                          dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
   /**
    * @brief determines if we use infinite reactive limits
    *
@@ -169,7 +177,37 @@ class Configuration {
     return assemblingFilePath_;
   }
 
+  /**
+   * @brief Chosen outputs
+   *
+   * enum that gathers all possible chosen outputs
+   */
+  enum class ChosenOutputEnum {
+    STEADYSTATE = 0,
+    CONSTRAINTS,
+    LOSTEQ,
+    TIMELINE
+  };
+
+  /**
+   * @brief Indicate if the output is chosen
+   *
+   * @param output the chosen output to check
+   * @returns true if the output is chosen, false otherwise
+   */
+  bool isChosenOutput(const ChosenOutputEnum output) const {
+    return static_cast<bool>(chosenOutputs_.count(output));
+  }
+
  private:
+  /**
+  * @brief Helper function to update the chosen outputs
+  *
+  * @param tree the element of the boost tree
+  * @param simulationKind simulation kind of the simulation
+  */
+  void updateChosenOutput(const boost::property_tree::ptree& tree, dfl::inputs::Configuration::SimulationKind simulationKind);
+
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
   bool isSVCRegulationOn_ = true;                                                    ///< SVC regulation on
   bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
@@ -184,6 +222,7 @@ class Configuration {
   boost::optional<double> precision_;                                                ///< Precision of the simulation
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
   double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
+  std::unordered_set<ChosenOutputEnum> chosenOutputs_;                               ///< chosen configuration outputs
 };
 
 }  // namespace inputs
