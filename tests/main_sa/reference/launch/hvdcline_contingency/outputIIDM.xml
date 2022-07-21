@@ -4696,7 +4696,7 @@
                 <iidm:busbarSection id="_822a54a2-7ae3-4ee4-9211-7177f3695dbd" name="BUSBAR116" node="4">
                     <iidm:alias>_7b395e7f-bd27-41ce-a590-eeb60a5f502b</iidm:alias>
                 </iidm:busbarSection>
-                <iidm:switch id="_f468d841-1bf6-470e-85d4-55d34fab8bff" name="BREAKER368" kind="BREAKER" retained="false" open="false" node1="5" node2="6">
+                <iidm:switch id="_f468d841-1bf6-470e-85d4-55d34fab8bff" name="BREAKER368" kind="BREAKER" retained="false" open="true" node1="5" node2="6">
                     <iidm:alias>_706e83b8-c1de-43d0-bafd-57766513c62e</iidm:alias>
                     <iidm:alias>_a78dbd51-f64b-4abf-9154-3c138316e279</iidm:alias>
                 </iidm:switch>
@@ -4720,7 +4720,7 @@
                 <iidm:internalConnection node1="10" node2="3"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="0"/>
-                <iidm:bus v="390.29497722094663" angle="0" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13"/>
+                <iidm:bus v="390.27767352280995" angle="0" nodes="0,1,4,5,7,8,12,13"/>
             </iidm:nodeBreakerTopology>
             <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0" powerFactor="0.80000000000000004" node="12" p="-0" q="-0">
                 <iidm:alias>_739658a7-e08b-4395-8d79-93e87b7855e3</iidm:alias>
@@ -6348,7 +6348,7 @@
                 <iidm:busbarSection id="_eae6d138-617b-4a9a-9024-caac1fd497b9" name="BUSBAR117" node="4">
                     <iidm:alias>_3e33fc23-0e6a-411e-b0eb-67b1271cf383</iidm:alias>
                 </iidm:busbarSection>
-                <iidm:switch id="_cf08be5d-b85e-46be-9378-6eb35540e070" name="BREAKER369" kind="BREAKER" retained="false" open="false" node1="5" node2="6">
+                <iidm:switch id="_cf08be5d-b85e-46be-9378-6eb35540e070" name="BREAKER369" kind="BREAKER" retained="false" open="true" node1="5" node2="6">
                     <iidm:alias>_6398ff9b-368e-4aa0-9a7b-8d9a2d095835</iidm:alias>
                     <iidm:alias>_d6a25879-018d-46a3-82a7-81b9b99b609c</iidm:alias>
                 </iidm:switch>
@@ -6369,7 +6369,7 @@
                 <iidm:internalConnection node1="10" node2="3"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="0"/>
-                <iidm:bus v="363.99528121973026" angle="-12.380483091356682" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
+                <iidm:bus v="363.98910503110454" angle="-12.380746619365491" nodes="0,1,4,5,7,8,12"/>
             </iidm:nodeBreakerTopology>
             <iidm:lccConverterStation id="_9793118d-5ba1-4a9c-b2e0-db1d15be5913" name="Conv2" lossFactor="0" powerFactor="-0.75741000000000003" node="12" p="-0" q="-0">
                 <iidm:alias>_453bdc57-5855-4eb5-8712-d6a0255e0da8</iidm:alias>
