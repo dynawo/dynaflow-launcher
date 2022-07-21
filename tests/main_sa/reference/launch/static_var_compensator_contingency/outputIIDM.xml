@@ -1311,7 +1311,7 @@
                 <iidm:busbarSection id="_2c1501a3-bf43-407d-846e-7175dea3ca53" name="BUSBAR115" node="4">
                     <iidm:alias>_5c8e0d41-008e-48dc-af1e-e988941e71ac</iidm:alias>
                 </iidm:busbarSection>
-                <iidm:switch id="_cf4393c0-21c2-4e35-b330-c1acda2647ba" name="BREAKER363" kind="BREAKER" retained="false" open="false" node1="6" node2="7">
+                <iidm:switch id="_cf4393c0-21c2-4e35-b330-c1acda2647ba" name="BREAKER363" kind="BREAKER" retained="false" open="true" node1="6" node2="7">
                     <iidm:alias>_4d0edeee-fb82-46ff-9ad7-8937813fd4a7</iidm:alias>
                     <iidm:alias>_72627757-688f-4752-a751-c9e2bd554d2e</iidm:alias>
                 </iidm:switch>
@@ -1335,7 +1335,7 @@
                 <iidm:internalConnection node1="10" node2="2"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="3"/>
-                <iidm:bus v="31.044553203010945" angle="10.023043935799656" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13"/>
+                <iidm:bus v="31.044553203010945" angle="10.023043935799656" nodes="0,1,4,5,6,8,9,13"/>
             </iidm:nodeBreakerTopology>
             <iidm:staticVarCompensator id="_svc_network" name="svc_network" bMin="-10" bMax="10" reactivePowerSetpoint="0" regulationMode="REACTIVE_POWER" node="0" p="0" q="0"/>
             <iidm:staticVarCompensator id="_047fc6e6-c766-11e1-8775-005056c00008" name="Pinevlle SVC" bMin="-10" bMax="10" voltageSetpoint="33.494999999999997" regulationMode="VOLTAGE" node="5" p="-0" q="-0">
