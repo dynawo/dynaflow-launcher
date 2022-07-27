@@ -5,13 +5,13 @@
             <iidm:busBreakerTopology>
                 <iidm:bus id="_BUS___10_TN" v="402.82078645621738" angle="1.2988706565492731e-49"/>
             </iidm:busBreakerTopology>
-            <iidm:load id="_Load__10" name="LOAD  10" loadType="UNDEFINED" p0="100" q0="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="100" q="0"/>
+            <iidm:load id="_Load__10" name="LOAD  10" loadType="UNDEFINED" p0="100" q0="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="99.997079169577191" q="0"/>
         </iidm:voltageLevel>
     </iidm:substation>
     <iidm:substation id="_BUS____1_SS" name="BUS    1_SS" country="AF">
         <iidm:voltageLevel id="_BUS____1_VL" name="BUS    1_VL" nominalV="69" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="_BUS____1_TN" v="73.134189307294861" angle="12.644168876941293"/>
+                <iidm:bus id="_BUS____1_TN" v="73.140003936142804" angle="12.644168876941293"/>
             </iidm:busBreakerTopology>
             <iidm:generator id="_Generator___1" name="GEN    1" energySource="OTHER" minP="-9999" maxP="9999" voltageRegulatorOn="true" targetP="100" targetV="73.140000000000001" targetQ="0" bus="_BUS____1_TN" connectableBus="_BUS____1_TN" p="-105.57652056694195" q="-18.227351247485238">
                 <iidm:minMaxReactiveLimits minQ="-999" maxQ="999"/>

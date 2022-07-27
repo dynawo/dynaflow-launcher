@@ -272,9 +272,9 @@
                 <iidm:internalConnection node1="61" node2="12"/>
                 <iidm:internalConnection node1="62" node2="15"/>
                 <iidm:internalConnection node1="63" node2="18"/>
-                <iidm:bus v="126.06" angle="-18.497407907120905" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63"/>
+                <iidm:bus v="126.06000000465637" angle="-18.497407907120905" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_046c3ee7-c766-11e1-8775-005056c00008" name="Torrey SM" energySource="THERMAL" minP="20" maxP="80" ratedS="100" voltageRegulatorOn="true" targetP="48" targetV="126.06" targetQ="0" node="21" p="-53.140791903372616" q="-7.2799134883611352">
+            <iidm:generator id="_046c3ee7-c766-11e1-8775-005056c00008" name="Torrey SM" energySource="THERMAL" minP="20" maxP="80" ratedS="100" voltageRegulatorOn="true" targetP="48" targetV="126.06" targetQ="0" node="21" p="-53.142703747109444" q="-7.2746402984059584">
                 <iidm:alias>_047147f3-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_b97aee41-3115-4cfd-9071-b52fb44d0b66"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_5005c073-28d1-4a7d-b257-649dec43ec73"/>
@@ -514,7 +514,7 @@
                 <iidm:internalConnection node1="60" node2="12"/>
                 <iidm:internalConnection node1="61" node2="15"/>
                 <iidm:internalConnection node1="62" node2="18"/>
-                <iidm:bus v="125.913826" angle="-18.669769931491807" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
+                <iidm:bus v="125.90820021990628" angle="-18.669769931491807" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_0450a093-c766-11e1-8775-005056c00008" name="Sunnysde LD" loadType="UNDEFINED" p0="84" q0="18" node="20" p="84" q="18">
                 <iidm:alias>_045f4695-c766-11e1-8775-005056c00008</iidm:alias>
@@ -665,12 +665,12 @@
                 <iidm:internalConnection node1="41" node2="6"/>
                 <iidm:internalConnection node1="42" node2="9"/>
                 <iidm:internalConnection node1="43" node2="12"/>
-                <iidm:bus v="126.066" angle="-2.701476456601549" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43"/>
+                <iidm:bus v="126.06407409814645" angle="-2.701476456601549" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_04682035-c766-11e1-8775-005056c00008" name="Fieldale LD" loadType="UNDEFINED" p0="39" q0="30" node="14" p="39" q="30">
                 <iidm:alias>_0478c20a-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:shunt id="_045c6067-c766-11e1-8775-005056c00008" name="Fieldale SC" sectionCount="5" voltageRegulatorOn="true" targetV="126.066" targetDeadband="1" node="15" q="-5.4670669064640007">
+            <iidm:shunt id="_045c6067-c766-11e1-8775-005056c00008" name="Fieldale SC" sectionCount="5" voltageRegulatorOn="true" targetV="126.066" targetDeadband="1" node="15" q="-5.4668998677086984">
                 <iidm:alias>_0451b209-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.RegulatingControl" value="_2d222dd9-7306-4afd-baa5-fd303b0eeb40"/>
                 <iidm:shuntLinearModel bPerSection="6.8800000000000005e-05" gPerSection="0" maximumSectionCount="10"/>
@@ -876,9 +876,9 @@
                 <iidm:internalConnection node1="40" node2="6"/>
                 <iidm:internalConnection node1="41" node2="9"/>
                 <iidm:internalConnection node1="42" node2="12"/>
-                <iidm:bus v="221.09999999999994" angle="-1.5394310033331511" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42"/>
+                <iidm:bus v="221.10000000796103" angle="-1.5394310033331511" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_0458ddf1-c766-11e1-8775-005056c00008" name="Muskngum SM" energySource="THERMAL" minP="200" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="391" targetV="221.09999999999999" targetQ="0" node="14" p="-432.8760340462228" q="-159.91103539550397">
+            <iidm:generator id="_0458ddf1-c766-11e1-8775-005056c00008" name="Muskngum SM" energySource="THERMAL" minP="200" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="391" targetV="221.09999999999999" targetQ="0" node="14" p="-432.89160760666238" q="-159.91103539550397">
                 <iidm:alias>_04522732-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_5036c3a5-56f9-489c-9ecb-8c15aa7c70c5"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_12b01822-ca11-4cf8-a6b4-2f8ff805ca20"/>
@@ -1053,9 +1053,9 @@
                 <iidm:internalConnection node1="41" node2="6"/>
                 <iidm:internalConnection node1="42" node2="9"/>
                 <iidm:internalConnection node1="43" node2="12"/>
-                <iidm:bus v="133.31999200000001" angle="3.0396325653868672" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43"/>
+                <iidm:bus v="133.31536708988796" angle="3.0396325653868672" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_046bf0c4-c766-11e1-8775-005056c00008" name="Claytor SM" energySource="THERMAL" minP="0" maxP="160" ratedS="200" voltageRegulatorOn="false" targetP="40" targetV="133.31999200000001" targetQ="0" node="15" p="-44" q="-83.072208124548979">
+            <iidm:generator id="_046bf0c4-c766-11e1-8775-005056c00008" name="Claytor SM" energySource="THERMAL" minP="0" maxP="160" ratedS="200" voltageRegulatorOn="false" targetP="40" targetV="133.31999200000001" targetQ="0" node="15" p="-43.999999999999993" q="-83.072208124548979">
                 <iidm:alias>_0460a627-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_e56da2eb-bb6a-4133-953c-40073c5bc5f4"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_d41be6b4-155e-4c8f-b46b-16b50c49f0f4"/>
@@ -1335,7 +1335,7 @@
                 <iidm:internalConnection node1="10" node2="2"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="3"/>
-                <iidm:bus v="33.494999999999997" angle="9.4629862395231985" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13"/>
+                <iidm:bus v="33.49500000170633" angle="9.4629862395231985" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13"/>
             </iidm:nodeBreakerTopology>
             <iidm:staticVarCompensator id="_svc_network" name="svc_network" bMin="-10" bMax="10" reactivePowerSetpoint="0" regulationMode="REACTIVE_POWER" node="0" p="0" q="0"/>
             <iidm:staticVarCompensator id="_047fc6e6-c766-11e1-8775-005056c00008" name="Pinevlle SVC" bMin="-10" bMax="10" voltageSetpoint="33.494999999999997" regulationMode="VOLTAGE" node="5" p="-0" q="-19.240546694322326">
@@ -1599,7 +1599,7 @@
                 <iidm:internalConnection node1="20" node2="6"/>
                 <iidm:internalConnection node1="21" node2="3"/>
                 <iidm:internalConnection node1="22" node2="6"/>
-                <iidm:bus v="126.616508" angle="-1.681694298175856" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
+                <iidm:bus v="126.61947443735761" angle="-1.681694298175856" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_044ecbd1-c766-11e1-8775-005056c00008" name="Blaine LD" loadType="UNDEFINED" p0="2" q0="1" node="8" p="2" q="1">
                 <iidm:alias>_04700f74-c766-11e1-8775-005056c00008</iidm:alias>
@@ -1883,7 +1883,7 @@
                 <iidm:internalConnection node1="30" node2="3"/>
                 <iidm:internalConnection node1="31" node2="6"/>
                 <iidm:internalConnection node1="32" node2="9"/>
-                <iidm:bus v="126.72360999999999" angle="-0.94990055734687384" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
+                <iidm:bus v="126.72801456867661" angle="-0.94990055734687384" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_0476781a-c766-11e1-8775-005056c00008" name="Cloverdl LD" loadType="UNDEFINED" p0="43" q0="16" node="11" p="43" q="16">
                 <iidm:alias>_0481749a-c766-11e1-8775-005056c00008</iidm:alias>
@@ -1955,7 +1955,7 @@
                 <iidm:internalConnection node1="30" node2="3"/>
                 <iidm:internalConnection node1="31" node2="6"/>
                 <iidm:internalConnection node1="32" node2="9"/>
-                <iidm:bus v="128.113708" angle="0.41881066397376443" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
+                <iidm:bus v="128.11414150030686" angle="0.41881066397376443" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_046b0665-c766-11e1-8775-005056c00008" name="Hancock LD" loadType="UNDEFINED" p0="38" q0="25" node="11" p="38" q="25">
                 <iidm:alias>_0464c4d5-c766-11e1-8775-005056c00008</iidm:alias>
@@ -2048,9 +2048,9 @@
                 <iidm:internalConnection node1="10" node2="2"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="3"/>
-                <iidm:bus v="230.99998500000001" angle="22.471378984576919" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
+                <iidm:bus v="230.99998500045871" angle="22.471378984576919" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_045868c0-c766-11e1-8775-005056c00008" name="Breed SM" energySource="THERMAL" minP="300" maxP="600" ratedS="750" voltageRegulatorOn="true" targetP="450" targetV="230.99998500000001" targetQ="0" node="5" p="-498.19492409411828" q="26.893706771568759">
+            <iidm:generator id="_045868c0-c766-11e1-8775-005056c00008" name="Breed SM" energySource="THERMAL" minP="300" maxP="600" ratedS="750" voltageRegulatorOn="true" targetP="450" targetV="230.99998500000001" targetQ="0" node="5" p="-498.21284762915104" q="26.893706771568759">
                 <iidm:alias>_045b7606-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_f26d4eb3-ebdb-4025-8080-f856ce656b42"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_7566f2a7-61eb-42fe-a59a-8276257fdbc6"/>
@@ -2196,9 +2196,9 @@
                 <iidm:internalConnection node1="30" node2="3"/>
                 <iidm:internalConnection node1="31" node2="6"/>
                 <iidm:internalConnection node1="32" node2="9"/>
-                <iidm:bus v="138.59999099999999" angle="12.868305456988603" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
+                <iidm:bus v="138.59999100018513" angle="12.868305456988603" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_045ab2b0-c766-11e1-8775-005056c00008" name="TannrsCk SM" energySource="THERMAL" minP="100" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="220" targetV="138.59999099999999" targetQ="0" node="11" p="-243.56196289045786" q="-47.77962892409888">
+            <iidm:generator id="_045ab2b0-c766-11e1-8775-005056c00008" name="TannrsCk SM" energySource="THERMAL" minP="100" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="220" targetV="138.59999099999999" targetQ="0" node="11" p="-243.570725507585" q="-47.77962892409888">
                 <iidm:alias>_046ba2a5-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_56975783-9739-40fc-8ec1-e1de8cb06c9a"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_b8449cd9-5a17-497e-bf04-70f728b0f9f2"/>
@@ -2251,9 +2251,9 @@
                 <iidm:internalConnection node1="20" node2="6"/>
                 <iidm:internalConnection node1="21" node2="3"/>
                 <iidm:internalConnection node1="22" node2="6"/>
-                <iidm:bus v="223.30000000000004" angle="14.927006620885901" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
+                <iidm:bus v="223.30000000016079" angle="14.927006620885901" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_0483224a-c766-11e1-8775-005056c00008" name="TannrsCk SM" energySource="THERMAL" minP="100" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="314" targetV="223.30000000000001" targetQ="0" node="8" p="-347.62934703456256" q="-19.427079296122844">
+            <iidm:generator id="_0483224a-c766-11e1-8775-005056c00008" name="TannrsCk SM" energySource="THERMAL" minP="100" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="314" targetV="223.30000000000001" targetQ="0" node="8" p="-347.64185367900762" q="-19.427079296122844">
                 <iidm:alias>_045cd594-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_05df66ba-3f64-40cb-8b18-c66d26c4e2c1"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_c1d29442-5f57-41d1-bb60-4b74b4994c20"/>
@@ -2404,9 +2404,9 @@
                 <iidm:internalConnection node1="60" node2="12"/>
                 <iidm:internalConnection node1="61" node2="15"/>
                 <iidm:internalConnection node1="62" node2="18"/>
-                <iidm:bus v="136.62" angle="3.7847357756288451" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
+                <iidm:bus v="136.62000000507547" angle="3.7847357756288451" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_048aea70-c766-11e1-8775-005056c00008" name="Sporn SM" energySource="THERMAL" minP="400" maxP="800" ratedS="1000" voltageRegulatorOn="true" targetP="513.43743900000004" targetV="136.62" targetQ="-62.132553100000003" node="20" p="-568.42650211040791" q="51.369012905938682">
+            <iidm:generator id="_048aea70-c766-11e1-8775-005056c00008" name="Sporn SM" energySource="THERMAL" minP="400" maxP="800" ratedS="1000" voltageRegulatorOn="true" targetP="513.43743900000004" targetV="136.62" targetQ="-62.132553100000003" node="20" p="-568.4469523635745" q="51.369012905938682">
                 <iidm:alias>_04555b84-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_27799004-aa1e-4889-ba95-ee6fdae64895"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_827a9c80-183d-4e33-9e73-ef0aab3dfb13"/>
@@ -2496,9 +2496,9 @@
                 <iidm:internalConnection node1="39" node2="9"/>
                 <iidm:internalConnection node1="40" node2="12"/>
                 <iidm:internalConnection node1="41" node2="3"/>
-                <iidm:bus v="219.70725999999996" angle="-0.0036302657305816574" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41"/>
+                <iidm:bus v="219.70693538384023" angle="-0.0036302657305816574" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41"/>
             </iidm:nodeBreakerTopology>
-            <iidm:danglingLine id="_0482fb33-c766-11e1-8775-005056c00008" name="68-116" p0="184" q0="0" r="0.16456000000000001" x="1.9601999999999999" g="0" b="0.00033884300000000002" ucteXnodeCode="XWE_BR21" node="41" p="184.11571995672981" q="-14.972663428884808">
+            <iidm:danglingLine id="_0482fb33-c766-11e1-8775-005056c00008" name="68-116" p0="184" q0="0" r="0.16456000000000001" x="1.9601999999999999" g="0" b="0.00033884300000000002" ucteXnodeCode="XWE_BR21" node="41" p="184.11556919985105" q="-14.979704076945513">
                 <iidm:alias>_0459c855-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:alias>_04684742-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:alias>_5631ccc0-d9d2-11e2-bb49-005056c00008</iidm:alias>
@@ -2834,7 +2834,7 @@
                 <iidm:internalConnection node1="20" node2="6"/>
                 <iidm:internalConnection node1="21" node2="3"/>
                 <iidm:internalConnection node1="22" node2="6"/>
-                <iidm:bus v="135.10302699999997" angle="4.1748446590567525" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
+                <iidm:bus v="135.08735415593273" angle="4.1748446590567525" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_046adf5a-c766-11e1-8775-005056c00008" name="Bradley LD" loadType="UNDEFINED" p0="34" q0="8" node="8" p="34" q="8">
                 <iidm:alias>_04555b85-c766-11e1-8775-005056c00008</iidm:alias>
@@ -3058,9 +3058,9 @@
                 <iidm:internalConnection node1="81" node2="18"/>
                 <iidm:internalConnection node1="82" node2="21"/>
                 <iidm:internalConnection node1="83" node2="24"/>
-                <iidm:bus v="134.243988" angle="6.5872414625980262" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83"/>
+                <iidm:bus v="134.24398800668473" angle="6.5872414625980262" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_044cd00a-c766-11e1-8775-005056c00008" name="Glen Lyn SM" energySource="THERMAL" minP="200" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="252" targetV="134.243988" targetQ="0" node="27" p="-278.98915749270628" q="-82.774284692078737">
+            <iidm:generator id="_044cd00a-c766-11e1-8775-005056c00008" name="Glen Lyn SM" energySource="THERMAL" minP="200" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="252" targetV="134.243988" targetQ="0" node="27" p="-278.99919467232462" q="-82.776399859550878">
                 <iidm:alias>_045e5c30-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_e54b499b-436c-4b89-9803-b1d75e2fa364"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_32c8ab65-80f7-4c17-b3f5-ff075cce0ba5"/>
@@ -3229,12 +3229,12 @@
                 <iidm:internalConnection node1="51" node2="9"/>
                 <iidm:internalConnection node1="52" node2="12"/>
                 <iidm:internalConnection node1="53" node2="15"/>
-                <iidm:bus v="127.42299999999999" angle="-0.68369913725495446" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53"/>
+                <iidm:bus v="127.42006191450349" angle="-0.68369913725495446" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_0484cffb-c766-11e1-8775-005056c00008" name="Roanoke LD" loadType="UNDEFINED" p0="31" q0="26" node="17" p="31" q="26">
                 <iidm:alias>_0454983a-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:shunt id="_0489d903-c766-11e1-8775-005056c00008" name="Roanoke SC" sectionCount="5" voltageRegulatorOn="true" targetV="127.423" targetDeadband="1" node="18" q="-18.639640826491998">
+            <iidm:shunt id="_0489d903-c766-11e1-8775-005056c00008" name="Roanoke SC" sectionCount="5" voltageRegulatorOn="true" targetV="127.423" targetDeadband="1" node="18" q="-18.638781260683697">
                 <iidm:alias>_0476c638-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.RegulatingControl" value="_5be38d1a-9d01-42d8-b8bb-e9a26cfbcf1a"/>
                 <iidm:shuntLinearModel bPerSection="0.0002296" gPerSection="0" maximumSectionCount="10"/>
@@ -3544,9 +3544,9 @@
                 <iidm:internalConnection node1="81" node2="18"/>
                 <iidm:internalConnection node1="82" node2="21"/>
                 <iidm:internalConnection node1="83" node2="24"/>
-                <iidm:bus v="137.28000000000003" angle="4.6780649751559915" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83"/>
+                <iidm:bus v="137.28000000586101" angle="4.6780649751559915" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_045868c1-c766-11e1-8775-005056c00008" name="CabinCrk SM" energySource="THERMAL" minP="300" maxP="600" ratedS="750" voltageRegulatorOn="true" targetP="477" targetV="137.28" targetQ="0" node="27" p="-528.08661953976537" q="-136.36940564607426">
+            <iidm:generator id="_045868c1-c766-11e1-8775-005056c00008" name="CabinCrk SM" energySource="THERMAL" minP="300" maxP="600" ratedS="750" voltageRegulatorOn="true" targetP="477" targetV="137.28" targetQ="0" node="27" p="-528.10561848690008" q="-136.36940564607426">
                 <iidm:alias>_0487dd36-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_a6ec9760-88da-48df-a23f-7877e7c85ccd"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_e6131af8-c298-413b-84e3-4e21c3b6b06f"/>
@@ -3637,12 +3637,12 @@
                 <iidm:internalConnection node1="21" node2="6"/>
                 <iidm:internalConnection node1="22" node2="3"/>
                 <iidm:internalConnection node1="23" node2="6"/>
-                <iidm:bus v="134.72299999999998" angle="-12.056992512158304" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23"/>
+                <iidm:bus v="134.74739838649654" angle="-12.056992512158304" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_04524e4a-c766-11e1-8775-005056c00008" name="Zanesvll LD" loadType="UNDEFINED" p0="20" q0="11" node="8" p="20" q="11">
                 <iidm:alias>_045c1240-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:shunt id="_048b5fa9-c766-11e1-8775-005056c00008" name="Zanesvll SC" sectionCount="5" voltageRegulatorOn="true" targetV="134.72300000000001" targetDeadband="1" node="9" q="-15.627396873668999">
+            <iidm:shunt id="_048b5fa9-c766-11e1-8775-005056c00008" name="Zanesvll SC" sectionCount="5" voltageRegulatorOn="true" targetV="134.72300000000001" targetDeadband="1" node="9" q="-15.633057641231051">
                 <iidm:alias>_04736ad5-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.RegulatingControl" value="_99c6c4ad-5247-4058-96d4-ee8495103e85"/>
                 <iidm:shuntLinearModel bPerSection="0.00017220000000000001" gPerSection="0" maximumSectionCount="10"/>
@@ -3783,7 +3783,7 @@
                 <iidm:internalConnection node1="11" node2="2"/>
                 <iidm:internalConnection node1="12" node2="3"/>
                 <iidm:internalConnection node1="13" node2="3"/>
-                <iidm:bus v="122.60537699999999" angle="-5.3487123886479928" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13"/>
+                <iidm:bus v="122.60338203220839" angle="-5.3487123886479928" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_0463da70-c766-11e1-8775-005056c00008" name="Danville LD" loadType="UNDEFINED" p0="25" q0="13" node="5" p="25" q="13">
                 <iidm:alias>_0488eeab-c766-11e1-8775-005056c00008</iidm:alias>
@@ -4117,7 +4117,7 @@
                 <iidm:internalConnection node1="32" node2="9"/>
                 <iidm:bus v="221.44867467164633" angle="5.9040241507974356" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
             </iidm:nodeBreakerTopology>
-            <iidm:load id="_04867dab-c766-11e1-8775-005056c00008" name="Olive NegG LD" loadType="UNDEFINED" p0="28" q0="0" node="11" p="28.000000000000014" q="0">
+            <iidm:load id="_04867dab-c766-11e1-8775-005056c00008" name="Olive NegG LD" loadType="UNDEFINED" p0="28" q0="0" node="11" p="27.999692550679722" q="0">
                 <iidm:alias>_048433b8-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
         </iidm:voltageLevel>
@@ -5029,9 +5029,9 @@
                 <iidm:internalConnection node1="121" node2="30"/>
                 <iidm:internalConnection node1="122" node2="33"/>
                 <iidm:internalConnection node1="123" node2="36"/>
-                <iidm:bus v="135.30000000000004" angle="-11.23928610355544" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123"/>
+                <iidm:bus v="135.30000000475823" angle="-11.23928610355544" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_04859346-c766-11e1-8775-005056c00008" name="Philo SM" energySource="THERMAL" minP="100" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="204" targetV="135.30000000000001" targetQ="0" node="39" p="-225.84836558933361" q="-175.37009555854635">
+            <iidm:generator id="_04859346-c766-11e1-8775-005056c00008" name="Philo SM" energySource="THERMAL" minP="100" maxP="400" ratedS="500" voltageRegulatorOn="true" targetP="204" targetV="135.30000000000001" targetQ="0" node="39" p="-225.85649092521516" q="-175.37009555854635">
                 <iidm:alias>_048719e2-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_e3753d6d-b894-4cce-b6fa-307c50dc107f"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_dff93c01-9c84-4c1f-8529-66c054ed9e37"/>
@@ -5144,7 +5144,7 @@
                 <iidm:internalConnection node1="22" node2="6"/>
                 <iidm:internalConnection node1="23" node2="3"/>
                 <iidm:internalConnection node1="24" node2="6"/>
-                <iidm:bus v="124.76299999999999" angle="-3.65805438784425" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24"/>
+                <iidm:bus v="124.75639028463914" angle="-3.65805438784425" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_04566cf3-c766-11e1-8775-005056c00008" name="Reusens NegG LD" loadType="UNDEFINED" p0="22" q0="0" node="8" p="22" q="0">
                 <iidm:alias>_0483be81-c766-11e1-8775-005056c00008</iidm:alias>
@@ -5152,7 +5152,7 @@
             <iidm:load id="_0482fb36-c766-11e1-8775-005056c00008" name="Reusens LD" loadType="UNDEFINED" p0="28" q0="12" node="9" p="28.000000000000004" q="12">
                 <iidm:alias>_0486cbc1-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:shunt id="_04558293-c766-11e1-8775-005056c00008" name="Reusens SC" sectionCount="5" voltageRegulatorOn="true" targetV="124.76300000000001" targetDeadband="1" node="10" q="-5.354637322136">
+            <iidm:shunt id="_04558293-c766-11e1-8775-005056c00008" name="Reusens SC" sectionCount="5" voltageRegulatorOn="true" targetV="124.76300000000001" targetDeadband="1" node="10" q="-5.3540699793975017">
                 <iidm:alias>_04893ccc-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.RegulatingControl" value="_99303cd3-6b53-4ee2-a5ce-fe8d5feeb304"/>
                 <iidm:shuntLinearModel bPerSection="6.8800000000000005e-05" gPerSection="0" maximumSectionCount="10"/>
@@ -5397,7 +5397,7 @@
             <iidm:load id="_04716f06-c766-11e1-8775-005056c00008" name="CapitlHl LD" loadType="UNDEFINED" p0="39" q0="32" node="8" p="39" q="32">
                 <iidm:alias>_04700f70-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:shunt id="_0466c0a0-c766-11e1-8775-005056c00008" name="CapitlHl SC" sectionCount="5" voltageRegulatorOn="true" targetV="133.00200000000001" targetDeadband="1" node="9" q="-20.307582740592007">
+            <iidm:shunt id="_0466c0a0-c766-11e1-8775-005056c00008" name="CapitlHl SC" sectionCount="5" voltageRegulatorOn="true" targetV="133.00200000000001" targetDeadband="1" node="9" q="-20.297049962796645">
                 <iidm:alias>_045e8346-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.RegulatingControl" value="_99931a87-ee15-4fd0-b251-9556df7fe598"/>
                 <iidm:shuntLinearModel bPerSection="0.0002296" gPerSection="0" maximumSectionCount="10"/>
@@ -6017,15 +6017,15 @@
                 <iidm:internalConnection node1="42" node2="12"/>
                 <iidm:internalConnection node1="43" node2="11"/>
                 <iidm:bus v="218.90678421449445" angle="-4.2417800340699001" nodes="0,1,2,3,8,9,10,13,17,18,21,22,23,24,25,26,31,32,33,34,35,39,40"/>
-                <iidm:bus v="237.93768299999996" angle="-15.989422791464493" nodes="11,15,37,43"/>
-                <iidm:bus v="226.19467199999997" angle="-4.2417800340670597" nodes="12,16,38,42"/>
+                <iidm:bus v="237.93768300902732" angle="-15.989422791464493" nodes="11,15,37,43"/>
+                <iidm:bus v="226.19467200829399" angle="-4.2417800340670597" nodes="12,16,38,42"/>
                 <iidm:bus v="214.70024879264761" angle="-15.989422791464493" nodes="4,5,6,7,14,19,20,27,28,29,30,36,41"/>
             </iidm:nodeBreakerTopology>
-            <iidm:vscConverterStation id="_b46bfb8e-7af6-459e-acf3-53a42c943a7c" name="VSC2" voltageRegulatorOn="true" lossFactor="0.32362458" voltageSetpoint="226.194672" reactivePowerSetpoint="0" node="42" p="0" q="-27.473898131661727">
+            <iidm:vscConverterStation id="_b46bfb8e-7af6-459e-acf3-53a42c943a7c" name="VSC2" voltageRegulatorOn="true" lossFactor="0.32362458" voltageSetpoint="226.194672" reactivePowerSetpoint="0" node="42" p="0" q="-27.474689817180881">
                 <iidm:alias>_a168e701-bd48-4f66-8f0b-0f69b2545530</iidm:alias>
                 <iidm:minMaxReactiveLimits minQ="-1.7976931348623157e+308" maxQ="1.7976931348623157e+308"/>
             </iidm:vscConverterStation>
-            <iidm:vscConverterStation id="_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd" name="VSC1" voltageRegulatorOn="true" lossFactor="0.32467531999999999" voltageSetpoint="237.93768299999999" reactivePowerSetpoint="0" node="43" p="-0" q="-92.151020930299211">
+            <iidm:vscConverterStation id="_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd" name="VSC1" voltageRegulatorOn="true" lossFactor="0.32467531999999999" voltageSetpoint="237.93768299999999" reactivePowerSetpoint="0" node="43" p="-0" q="-92.151020935009015">
                 <iidm:alias>_071bb138-ff00-4874-8acc-a884aa5cf4a9</iidm:alias>
                 <iidm:minMaxReactiveLimits minQ="-1.7976931348623157e+308" maxQ="1.7976931348623157e+308"/>
             </iidm:vscConverterStation>
@@ -6179,9 +6179,9 @@
                 <iidm:internalConnection node1="40" node2="6"/>
                 <iidm:internalConnection node1="41" node2="9"/>
                 <iidm:internalConnection node1="42" node2="12"/>
-                <iidm:bus v="131.34" angle="-6.648081624994564" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42"/>
+                <iidm:bus v="131.3400000048928" angle="-6.648081624994564" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_0472a789-c766-11e1-8775-005056c00008" name="W.Kammer SM" energySource="THERMAL" minP="120" maxP="240" ratedS="300" voltageRegulatorOn="true" targetP="160" targetV="131.34" targetQ="0" node="14" p="-177.13597301124207" q="94.091906687436023">
+            <iidm:generator id="_0472a789-c766-11e1-8775-005056c00008" name="W.Kammer SM" energySource="THERMAL" minP="120" maxP="240" ratedS="300" voltageRegulatorOn="true" targetP="160" targetV="131.34" targetQ="0" node="14" p="-177.14234582369818" q="94.091144180992814">
                 <iidm:alias>_04697fc0-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_17852426-f663-4add-9a2b-0a635d51f101"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_b512ea0a-96d0-4a48-9de1-a5cf499bf0dd"/>
@@ -6330,9 +6330,9 @@
                 <iidm:internalConnection node1="71" node2="15"/>
                 <iidm:internalConnection node1="72" node2="18"/>
                 <iidm:internalConnection node1="73" node2="21"/>
-                <iidm:bus v="130.02000000000004" angle="-15.989422791464493" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73"/>
+                <iidm:bus v="130.020000004933" angle="-15.989422791464493" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_04839777-c766-11e1-8775-005056c00008" name="Tidd SM" energySource="THERMAL" minP="120" maxP="240" ratedS="300" voltageRegulatorOn="true" targetP="155" targetV="130.02000000000001" targetQ="0" node="24" p="-171.60047385464074" q="-94.869047829875186">
+            <iidm:generator id="_04839777-c766-11e1-8775-005056c00008" name="Tidd SM" energySource="THERMAL" minP="120" maxP="240" ratedS="300" voltageRegulatorOn="true" targetP="155" targetV="130.02000000000001" targetQ="0" node="24" p="-171.6066475167076" q="-94.872836275655629">
                 <iidm:alias>_045fe2d8-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_d2a96d8d-65be-4fd6-a012-ceeeabd2bee6"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_29df1e0b-36ca-4536-97b4-6f98b84d49d8"/>
@@ -6610,7 +6610,7 @@
                 <iidm:internalConnection node1="30" node2="3"/>
                 <iidm:internalConnection node1="31" node2="6"/>
                 <iidm:internalConnection node1="32" node2="9"/>
-                <iidm:bus v="125.576454" angle="-18.922146664513019" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
+                <iidm:bus v="125.56951012827871" angle="-18.922146664513019" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_044974a8-c766-11e1-8775-005056c00008" name="Wagenhls LD" loadType="UNDEFINED" p0="63" q0="22" node="11" p="63" q="22">
                 <iidm:alias>_048481d4-c766-11e1-8775-005056c00008</iidm:alias>
@@ -7088,9 +7088,9 @@
                 <iidm:internalConnection node1="32" node2="3"/>
                 <iidm:internalConnection node1="33" node2="6"/>
                 <iidm:internalConnection node1="34" node2="9"/>
-                <iidm:bus v="132.66" angle="-12.799392995248551" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34"/>
+                <iidm:bus v="132.66000000450919" angle="-12.799392995248551" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_04633e31-c766-11e1-8775-005056c00008" name="W.Lancst SM" energySource="THERMAL" minP="0" maxP="40" ratedS="50" voltageRegulatorOn="true" targetP="19" targetV="132.66" targetQ="0" node="13" p="-21.034896795084997" q="1.4453136615538713">
+            <iidm:generator id="_04633e31-c766-11e1-8775-005056c00008" name="W.Lancst SM" energySource="THERMAL" minP="0" maxP="40" ratedS="50" voltageRegulatorOn="true" targetP="19" targetV="132.66" targetQ="0" node="13" p="-21.035653566564154" q="1.4453136615538713">
                 <iidm:alias>_047bcf42-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_83fae784-1da1-4055-8108-ba978276d1b6"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_5f711f63-f631-45d3-b26c-33821ab2ee56"/>
@@ -7100,7 +7100,7 @@
             <iidm:load id="_048a9c51-c766-11e1-8775-005056c00008" name="W.Lancst LD" loadType="UNDEFINED" p0="28" q0="10" node="11" p="28.000000000000004" q="10">
                 <iidm:alias>_044e7db6-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:shunt id="_045b00d9-c766-11e1-8775-005056c00008" name="W.Lancst SC" sectionCount="5" voltageRegulatorOn="true" targetV="132.66" targetDeadband="1" node="12" q="-10.1016397944">
+            <iidm:shunt id="_045b00d9-c766-11e1-8775-005056c00008" name="W.Lancst SC" sectionCount="5" voltageRegulatorOn="true" targetV="132.66" targetDeadband="1" node="12" q="-10.10163979508672">
                 <iidm:alias>_04758db6-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.RegulatingControl" value="_be267a3c-f7a7-4bdf-bb17-71b773247fbf"/>
                 <iidm:shuntLinearModel bPerSection="0.0001148" gPerSection="0" maximumSectionCount="10"/>
@@ -7283,9 +7283,9 @@
                 <iidm:internalConnection node1="31" node2="3"/>
                 <iidm:internalConnection node1="32" node2="6"/>
                 <iidm:internalConnection node1="33" node2="9"/>
-                <iidm:bus v="127.64400000000001" angle="-4.5943395012826436" nodes="0,1,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,23,24,25,26,27,28,29,30,32,33"/>
+                <iidm:bus v="127.64400000004038" angle="-4.5943395012826436" nodes="0,1,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,23,24,25,26,27,28,29,30,32,33"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_04856c34-c766-11e1-8775-005056c00008" name="DeerCrk SM" energySource="THERMAL" minP="0" maxP="40" ratedS="50" voltageRegulatorOn="true" targetP="7" targetV="127.64400000000001" targetQ="0" node="12" p="-7.7496988192418419" q="-39.903259048308811">
+            <iidm:generator id="_04856c34-c766-11e1-8775-005056c00008" name="DeerCrk SM" energySource="THERMAL" minP="0" maxP="40" ratedS="50" voltageRegulatorOn="true" targetP="7" targetV="127.64400000000001" targetQ="0" node="12" p="-7.7499776297867946" q="-39.903259048308811">
                 <iidm:alias>_0477d7a5-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_e5a479a8-ab8d-4a54-bb52-376874ae2784"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_b55d80d5-720f-46f9-897f-ff8c5eaf8b44"/>
@@ -7540,7 +7540,7 @@
                 <iidm:internalConnection node1="20" node2="6"/>
                 <iidm:internalConnection node1="21" node2="3"/>
                 <iidm:internalConnection node1="22" node2="6"/>
-                <iidm:bus v="126.32643899999999" angle="-2.0567646328535378" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
+                <iidm:bus v="126.32920866416738" angle="-2.0567646328535378" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_045f94b4-c766-11e1-8775-005056c00008" name="Franklin LD" loadType="UNDEFINED" p0="8" q0="3" node="8" p="8" q="3">
                 <iidm:alias>_047da403-c766-11e1-8775-005056c00008</iidm:alias>
@@ -7742,9 +7742,9 @@
                 <iidm:internalConnection node1="71" node2="18"/>
                 <iidm:internalConnection node1="72" node2="21"/>
                 <iidm:internalConnection node1="73" node2="12"/>
-                <iidm:bus v="130.68000799999999" angle="-2.9836929671429284" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73"/>
+                <iidm:bus v="130.68000800011112" angle="-2.9836929671429284" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_044ca8f0-c766-11e1-8775-005056c00008" name="TwinBrch SM" energySource="THERMAL" minP="50" maxP="160" ratedS="200" voltageRegulatorOn="true" targetP="85" targetV="130.68000799999999" targetQ="0" node="24" p="-94.10348566222234" q="-87.481714227485554">
+            <iidm:generator id="_044ca8f0-c766-11e1-8775-005056c00008" name="TwinBrch SM" energySource="THERMAL" minP="50" maxP="160" ratedS="200" voltageRegulatorOn="true" targetP="85" targetV="130.68000799999999" targetQ="0" node="24" p="-94.106871218839643" q="-87.481714227485554">
                 <iidm:alias>_04633e38-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_0f6ab5a4-6b72-42f4-92bc-1993e1ae58a3"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_668eb671-5c36-4351-a95d-53ca850581db"/>
@@ -7754,7 +7754,7 @@
             <iidm:load id="_048740f1-c766-11e1-8775-005056c00008" name="TwinBrch LD" loadType="UNDEFINED" p0="47" q0="10" node="23" p="47" q="10">
                 <iidm:alias>_044ecbda-c766-11e1-8775-005056c00008</iidm:alias>
             </iidm:load>
-            <iidm:danglingLine id="_045338a1-c766-11e1-8775-005056c00008" name="12-117" p0="20" q0="8" r="5.7324960000000003" x="24.393599999999999" g="0" b="0.00020546369999999999" ucteXnodeCode="XMO_TE32" node="73" p="20.152549931578694" q="5.1972520031243228">
+            <iidm:danglingLine id="_045338a1-c766-11e1-8775-005056c00008" name="12-117" p0="20" q0="8" r="5.7324960000000003" x="24.393599999999999" g="0" b="0.00020546369999999999" ucteXnodeCode="XMO_TE32" node="73" p="20.161793615971892" q="5.1797255239087994">
                 <iidm:alias>_044afb42-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:alias>_0457f391-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:alias>_5631f3d0-d9d2-11e2-bb49-005056c00008</iidm:alias>
@@ -7905,7 +7905,7 @@
                 <iidm:internalConnection node1="20" node2="6"/>
                 <iidm:internalConnection node1="21" node2="3"/>
                 <iidm:internalConnection node1="22" node2="6"/>
-                <iidm:bus v="134.65982099999999" angle="4.6660054164381437" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
+                <iidm:bus v="134.64675911672691" angle="4.6660054164381437" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="_044c81e4-c766-11e1-8775-005056c00008" name="Hinton NegG LD" loadType="UNDEFINED" p0="42" q0="0" node="8" p="42" q="0">
                 <iidm:alias>_04494d96-c766-11e1-8775-005056c00008</iidm:alias>
@@ -8098,9 +8098,9 @@
                 <iidm:internalConnection node1="10" node2="2"/>
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:internalConnection node1="12" node2="3"/>
-                <iidm:bus v="129.36000000000001" angle="-1.1453507804641889" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
+                <iidm:bus v="129.36000000663239" angle="-1.1453507804641889" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_0452ea80-c766-11e1-8775-005056c00008" name="DanRiver SM" energySource="THERMAL" minP="20" maxP="40" ratedS="50" voltageRegulatorOn="true" targetP="36" targetV="129.36000000000001" targetQ="0" node="5" p="-39.855593927529462" q="-20.293540154035501">
+            <iidm:generator id="_0452ea80-c766-11e1-8775-005056c00008" name="DanRiver SM" energySource="THERMAL" minP="20" maxP="40" ratedS="50" voltageRegulatorOn="true" targetP="36" targetV="129.36000000000001" targetQ="0" node="5" p="-39.857027810332085" q="-20.29307878506825">
                 <iidm:alias>_046a4316-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_fec62959-21c5-4921-90b2-7c85e9f3bfab"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_9db08c95-4586-4a2b-87e3-5a17c944b43a"/>
@@ -8175,7 +8175,7 @@
                 <iidm:internalConnection node1="31" node2="6"/>
                 <iidm:bus v="130.17365695218842" angle="-1.1715535411446518" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31"/>
             </iidm:nodeBreakerTopology>
-            <iidm:danglingLine id="_044ef2e7-c766-11e1-8775-005056c00008" name="71-73" p0="6" q0="0" r="1.508918" x="7.9104960000000002" g="0" b="6.76079e-05" ucteXnodeCode="XMO_TE31" node="31" p="6.0032528483936938" q="-1.1224545076998291">
+            <iidm:danglingLine id="_044ef2e7-c766-11e1-8775-005056c00008" name="71-73" p0="6" q0="0" r="1.508918" x="7.9104960000000002" g="0" b="6.76079e-05" ucteXnodeCode="XMO_TE31" node="31" p="6.003209148602318" q="-1.1288041542063285">
                 <iidm:alias>_04670ec2-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:alias>_046b2d7a-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:alias>_26a070b9-db0c-47cd-9991-0a461576aec2</iidm:alias>
@@ -8364,9 +8364,9 @@
                 <iidm:internalConnection node1="60" node2="12"/>
                 <iidm:internalConnection node1="61" node2="15"/>
                 <iidm:internalConnection node1="62" node2="18"/>
-                <iidm:bus v="132.66" angle="19.947078334676718" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
+                <iidm:bus v="132.66000000728218" angle="19.947078334676718" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62"/>
             </iidm:nodeBreakerTopology>
-            <iidm:generator id="_0489b1fa-c766-11e1-8775-005056c00008" name="ClinchRv SM" energySource="THERMAL" minP="400" maxP="800" ratedS="1000" voltageRegulatorOn="true" targetP="607" targetV="132.66" targetQ="0" node="20" p="-672.00959761139961" q="-35.318304655830104">
+            <iidm:generator id="_0489b1fa-c766-11e1-8775-005056c00008" name="ClinchRv SM" energySource="THERMAL" minP="400" maxP="800" ratedS="1000" voltageRegulatorOn="true" targetP="607" targetV="132.66" targetQ="0" node="20" p="-672.033774468655" q="-35.318543267375155">
                 <iidm:alias>_04840caa-c766-11e1-8775-005056c00008</iidm:alias>
                 <iidm:property name="CGMES.GeneratingUnit" value="_2621b09a-22e3-4630-b3bd-32c102e36741"/>
                 <iidm:property name="CGMES.RegulatingControl" value="_b0d662e5-64c9-4d59-b8e0-9b1ed175769b"/>
@@ -9695,7 +9695,7 @@
             <iidm:temporaryLimit name="_e7c9dfab-fb45-4470-964f-4ba9e391f60b" acceptableDuration="60" value="1400"/>
         </iidm:currentLimits1>
     </iidm:line>
-    <iidm:line id="_044b7078-c766-11e1-8775-005056c00008" name="105-107" r="9.2347199999999994" x="31.885919999999999" g1="0" b1="0.00013544535" g2="0" b2="0.00013544535" node1="49" voltageLevelId1="_0465611a-c766-11e1-8775-005056c00008" node2="23" voltageLevelId2="_046205b3-c766-11e1-8775-005056c00008" p1="26.890594473064382" q1="1.3441125200888124" p2="-26.472224288034685" q2="-4.1915108286012579">
+    <iidm:line id="_044b7078-c766-11e1-8775-005056c00008" name="105-107" r="9.2347199999999994" x="31.885919999999999" g1="0" b1="0.00013544535" g2="0" b2="0.00013544535" node1="49" voltageLevelId1="_0465611a-c766-11e1-8775-005056c00008" node2="23" voltageLevelId2="_046205b3-c766-11e1-8775-005056c00008" p1="26.890594473064382" q1="1.3289059627123927" p2="-26.472224288034685" q2="-4.1915108286012579">
         <iidm:alias>_0452c378-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:alias>_0481c2b7-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:currentLimits1 permanentLimit="1000">
@@ -9951,7 +9951,7 @@
             <iidm:temporaryLimit name="_d9d53af2-5ffa-4f2a-a4e6-ed22371332d6" acceptableDuration="60" value="1400"/>
         </iidm:currentLimits1>
     </iidm:line>
-    <iidm:line id="_04885268-c766-11e1-8775-005056c00008" name="110-112" r="4.3037280000000004" x="11.1513615" g1="0" b1="0.00017791549999999999" g2="0" b2="0.00017791549999999999" node1="41" voltageLevelId1="_04740714-c766-11e1-8775-005056c00008" node2="13" voltageLevelId2="_04784cd1-c766-11e1-8775-005056c00008" p1="69.354381394095185" q1="11.007358141103952" p2="-67.999992197135953" q2="-12.999995243020686">
+    <iidm:line id="_04885268-c766-11e1-8775-005056c00008" name="110-112" r="4.3037280000000004" x="11.1513615" g1="0" b1="0.00017791549999999999" g2="0" b2="0.00017791549999999999" node1="41" voltageLevelId1="_04740714-c766-11e1-8775-005056c00008" node2="13" voltageLevelId2="_04784cd1-c766-11e1-8775-005056c00008" p1="69.354434127533438" q1="11.007652725994893" p2="-68.000000006898659" q2="-13.000000001315948">
         <iidm:alias>_04611b55-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:alias>_0481c2ba-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:currentLimits1 permanentLimit="1000">
@@ -10223,7 +10223,7 @@
             <iidm:temporaryLimit name="_8b888209-5038-4b98-80fc-062b5ea55747" acceptableDuration="60" value="1400"/>
         </iidm:currentLimits1>
     </iidm:line>
-    <iidm:line id="_0460cd36-c766-11e1-8775-005056c00008" name="34-36" r="1.51763" x="4.669632" g1="0" b1="1.6299349999999998e-05" g2="0" b2="1.6299349999999998e-05" node1="43" voltageLevelId1="_0483be8b-c766-11e1-8775-005056c00008" node2="21" voltageLevelId2="_0485e169-c766-11e1-8775-005056c00008" p1="34.522242604019482" q1="11.237830336534197" p2="-34.392843697175159" q2="-11.32372997214102">
+    <iidm:line id="_0460cd36-c766-11e1-8775-005056c00008" name="34-36" r="1.51763" x="4.669632" g1="0" b1="1.6299349999999998e-05" g2="0" b2="1.6299349999999998e-05" node1="43" voltageLevelId1="_0483be8b-c766-11e1-8775-005056c00008" node2="21" voltageLevelId2="_0485e169-c766-11e1-8775-005056c00008" p1="34.522242604019482" q1="11.237830336534197" p2="-34.392843697175159" q2="-11.34239127281788">
         <iidm:alias>_046a6a26-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:alias>_0487b620-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:currentLimits1 permanentLimit="1000">
@@ -10639,7 +10639,7 @@
             <iidm:temporaryLimit name="_94316214-afd8-4c0d-bca4-916acb92af85" acceptableDuration="60" value="1400"/>
         </iidm:currentLimits1>
     </iidm:line>
-    <iidm:line id="_048a2725-c766-11e1-8775-005056c00008" name="35-37" r="1.9166399999999999" x="8.6597279999999994" g1="0" b1="3.7821399999999997e-05" g2="0" b2="3.7821399999999997e-05" node1="21" voltageLevelId1="_04817490-c766-11e1-8775-005056c00008" node2="60" voltageLevelId2="_04878f10-c766-11e1-8775-005056c00008" p1="-29.608231700284804" q1="-14.41912001367132" p2="29.741778524777956" q2="13.856763732214411">
+    <iidm:line id="_048a2725-c766-11e1-8775-005056c00008" name="35-37" r="1.9166399999999999" x="8.6597279999999994" g1="0" b1="3.7821399999999997e-05" g2="0" b2="3.7821399999999997e-05" node1="21" voltageLevelId1="_04817490-c766-11e1-8775-005056c00008" node2="60" voltageLevelId2="_04878f10-c766-11e1-8775-005056c00008" p1="-29.608231700284804" q1="-14.426794601087856" p2="29.741778524777956" q2="13.856763732214411">
         <iidm:alias>_0471bd29-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:alias>_04808a30-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:currentLimits1 permanentLimit="1000">
@@ -10775,7 +10775,7 @@
             <iidm:temporaryLimit name="_5b0395f4-534d-4975-a1af-e0b6ef439193" acceptableDuration="60" value="1400"/>
         </iidm:currentLimits1>
     </iidm:line>
-    <iidm:line id="_04649dc2-c766-11e1-8775-005056c00008" name="35-36" r="0.39029799999999998" x="1.7772479999999999" g1="0" b1="7.6905500000000004e-06" g2="0" b2="7.6905500000000004e-06" node1="22" voltageLevelId1="_04817490-c766-11e1-8775-005056c00008" node2="22" voltageLevelId2="_0485e169-c766-11e1-8775-005056c00008" p1="-3.3917683008639168" q1="5.4184068191602508" p2="3.3928436960396429" q2="-5.6754679081003605">
+    <iidm:line id="_04649dc2-c766-11e1-8775-005056c00008" name="35-36" r="0.39029799999999998" x="1.7772479999999999" g1="0" b1="7.6905500000000004e-06" g2="0" b2="7.6905500000000004e-06" node1="22" voltageLevelId1="_04817490-c766-11e1-8775-005056c00008" node2="22" voltageLevelId2="_0485e169-c766-11e1-8775-005056c00008" p1="-3.3917683008639168" q1="5.4267946010249055" p2="3.3928436960396429" q2="-5.6576087275196825">
         <iidm:alias>_044c0cb5-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:alias>_0456e225-c766-11e1-8775-005056c00008</iidm:alias>
         <iidm:currentLimits1 permanentLimit="1000">
