@@ -11,7 +11,7 @@
     <dyn:simulation startTime="0" stopTime="100" precision="9.9999999999999995e-07"/>
     <dyn:outputs directory="outputs">
       <dyn:constraints exportMode="XML"/>
-      <dyn:finalState exportIIDMFile="false" exportDumpFile="false"/>
+      <dyn:finalState exportIIDMFile="true" exportDumpFile="false"/>
       <dyn:lostEquipments/>
       <dyn:logs>
         <dyn:appender tag="" file="dynawo.log" lvlFilter="INFO"/>
