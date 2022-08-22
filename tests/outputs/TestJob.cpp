@@ -92,11 +92,7 @@ TEST(Job, write) {
 
   auto finalstates = outputs->getFinalStateEntries();
   ASSERT_EQ(finalstates.size(), 1);
-#if _DEBUG_
   ASSERT_EQ(true, finalstates.front()->getExportIIDMFile());
-#else
-  ASSERT_EQ(false, finalstates.front()->getExportIIDMFile());
-#endif
   ASSERT_EQ(false, finalstates.front()->getExportDumpFile());
 
   std::string basename = "TestJob";
