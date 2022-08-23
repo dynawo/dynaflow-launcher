@@ -27,12 +27,10 @@ HVDCDefinitionAlgorithm::HVDCModelDefinition::VSCBusPairHash::operator()(const H
 
 HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
                                                  const std::unordered_set<std::shared_ptr<inputs::Converter>>& converters,
-                                                 const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId,
-                                                 const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager) :
+                                                 const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId) :
     hvdcLinesDefinitions_(hvdcLinesDefinitions),
     infiniteReactiveLimits_(infiniteReactiveLimits),
-    mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId),
-    serviceManager_(serviceManager) {
+    mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId) {
   std::transform(converters.begin(), converters.end(), std::inserter(vscConverters_, vscConverters_.begin()),
                  [](const std::shared_ptr<inputs::Converter>& converter) { return std::make_pair(converter->busId, converter); });
 }
@@ -92,9 +90,10 @@ HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine& hvdcLine, HV
 auto
 HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, const NodePtr& node) const
     -> HVDCModelDefinition::VSCBusPairSet {
-  auto vl = node->voltageLevel.lock();
-  auto buses = serviceManager_->getBusesConnectedBySwitch(node->id, vl->id);
+  auto& buses = node->getBusesConnectedByVoltageLevel();
   HVDCModelDefinition::VSCBusPairSet ret;
+
+  auto vl = node->voltageLevel.lock();
   for (const auto& id : buses) {
     auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
     assert(found != vl->nodes.end());
@@ -143,8 +142,9 @@ HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine& hvdcline, HVDCDefi
         return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
                                HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, node);
       } else {
-        return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulation, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation,
-                               HVDCDefinition::HVDCModel::HvdcPVEmulation, HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation, node);
+        return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
+                               HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
+                               HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet, node);
       }
     }
   } else {
@@ -187,10 +187,11 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
     }
 
     boost::optional<double> droop = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->droop : boost::optional<double>();
+    boost::optional<double> p0 = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->p0 : boost::optional<double>();
     HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId, voltageRegulation1,
                                    hvdcLine.converter2->converterId, hvdcLine.converter2->busId, voltageRegulation2,
                                    HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1,
-                                   def2, droop);
+                                   def2, droop, p0, hvdcLine.isConverter1Rectifier);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }

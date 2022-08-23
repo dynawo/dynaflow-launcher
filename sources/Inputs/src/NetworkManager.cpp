@@ -87,7 +87,8 @@ NetworkManager::buildTree() {
       assert(nodes_.count(nodeId) == 0);
 #endif
       auto found = shuntsMap.find(nodeId);
-      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{}, bus->isFictitious());
+      nodes_[nodeId] = Node::build(nodeId, vl, networkVL->getVNom(), (found != shuntsMap.end()) ? found->second : std::vector<Shunt>{}, bus->isFictitious(),
+                                   interface_->getServiceManager());
       if (bus->isFictitious())
         LOG(debug, FictitiousNodeCreation, nodeId);
       else
@@ -284,7 +285,12 @@ NetworkManager::buildTree() {
             ? boost::optional<HvdcLine::ActivePowerControl>(HvdcLine::ActivePowerControl(hvdcLine->getDroop().value(), hvdcLine->getP0().value()))
             : boost::none;
 
-    auto hvdcLineCreated = HvdcLine::build(hvdcLine->getID(), converterType, converter1, converter2, activePowerControl, hvdcLine->getPmax());
+    bool isConverter1Rectifier = false;
+    if (hvdcLine->getConverterMode() == DYN::HvdcLineInterface::ConverterMode_t::RECTIFIER_INVERTER) {
+      isConverter1Rectifier = true;
+    }
+    auto hvdcLineCreated =
+        HvdcLine::build(hvdcLine->getID(), converterType, converter1, converter2, activePowerControl, hvdcLine->getPmax(), isConverter1Rectifier);
     hvdcLines_.emplace_back(hvdcLineCreated);
     nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
     nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);

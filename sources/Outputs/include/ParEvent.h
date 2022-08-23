@@ -32,7 +32,6 @@
 
 #include <PARParametersSet.h>
 #include <boost/shared_ptr.hpp>
-#include <chrono>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -59,7 +58,7 @@ class ParEvent {
      * @param timeOfEvent time of event
      */
     ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency,
-                       const std::unordered_set<std::string>& networkElements, const std::chrono::seconds& timeOfEvent) :
+                       const std::unordered_set<std::string>& networkElements, const double timeOfEvent) :
         basename(base),
         filename(filename),
         contingency(contingency),
@@ -70,7 +69,7 @@ class ParEvent {
     std::string filename;                                    ///< filename of the output file to write
     const inputs::Contingency& contingency;                  ///< contingency definition for the event parameters
     const std::unordered_set<std::string> networkElements_;  ///< set of contingency elements ids using network model
-    std::chrono::seconds timeOfEvent;                        ///< time of event
+    double timeOfEvent;                                      ///< time of event
   };
 
   /**
@@ -94,7 +93,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string& branchId, const std::chrono::seconds& timeOfEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string& branchId, const double timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventSetPointBoolean dynamic model
@@ -104,8 +103,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string& elementId,
-                                                                                             const std::chrono::seconds& timeOfEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string& elementId, const double timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventSetPointReal dynamic model
@@ -115,8 +113,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId,
-                                                                                          const std::chrono::seconds& timeOfEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId, const double timeOfEvent);
 
   /**
    * @brief Determines if contingency element is using a network cpp model

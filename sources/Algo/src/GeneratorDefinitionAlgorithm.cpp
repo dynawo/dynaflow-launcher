@@ -18,13 +18,11 @@ namespace dfl {
 namespace algo {
 
 GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel,
-                                                           const inputs::NetworkManager::BusMapRegulating& busMap, bool infinitereactivelimits,
-                                                           const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager) :
+                                                           const inputs::NetworkManager::BusMapRegulating& busMap, bool infinitereactivelimits) :
     generators_(gens),
     busesWithDynamicModel_(busesWithDynamicModel),
     busMap_(busMap),
-    useInfiniteReactivelimits_{infinitereactivelimits},
-    serviceManager_(serviceManager) {}
+    useInfiniteReactivelimits_{infinitereactivelimits} {}
 
 void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes) {
@@ -130,12 +128,12 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
 
 bool
 GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr& node) const {
-  auto vl = node->voltageLevel.lock();
-  auto buses = serviceManager_->getBusesConnectedBySwitch(node->id, vl->id);
+  auto& buses = node->getBusesConnectedByVoltageLevel();
 
   if (buses.size() == 0) {
     return false;
   }
+  auto vl = node->voltageLevel.lock();
 
   for (const auto& id : buses) {
     auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
@@ -158,7 +156,7 @@ GeneratorDefinitionAlgorithm::isTargetPValid(const inputs::Generator& generator)
 }
 
 bool
-notEqual(const DYN::GeneratorInterface::ReactiveCurvePoint& firstPoint, const DYN::GeneratorInterface::ReactiveCurvePoint& secondPoint) {
+notEqual(const inputs::Generator::ReactiveCurvePoint& firstPoint, const inputs::Generator::ReactiveCurvePoint& secondPoint) {
   return DYN::doubleNotEquals(firstPoint.qmax, secondPoint.qmax) || DYN::doubleNotEquals(firstPoint.qmin, secondPoint.qmin);
 }
 

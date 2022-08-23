@@ -14,7 +14,9 @@
 import os
 import sys
 import argparse
+import filecmp
 import iidmDiff
+import constraintsDiff
 
 
 def get_argparser():
@@ -30,24 +32,69 @@ def get_argparser():
 if __name__ == "__main__":
     parser = get_argparser()
     options = parser.parse_args()
+    buildType = os.getenv("DYNAFLOW_LAUNCHER_BUILD_TYPE")
+    nb_differences = 0
 
+    #output IIDM
+    if buildType == "Debug":
+        result_path = os.path.realpath(os.path.join(
+            options.root, "resultsTestsTmp", options.testdir, "outputs/finalState/outputIIDM.xml"))
+        reference_path = os.path.realpath(os.path.join(
+            options.root, "reference", options.testdir, "outputIIDM.xml"))
+
+        if not os.path.exists(reference_path):
+            print("Reference path " + reference_path +
+                  " does not exist : not checked")
+        else:
+            if options.verbose:
+                print("comparing " + result_path + " and " + reference_path)
+
+            (nb_differences_local, msg) = iidmDiff.OutputIIDMCloseEnough(
+                result_path, reference_path)
+            if nb_differences_local > 0:
+                print(msg)
+            elif options.verbose:
+                print("No difference")
+            nb_differences += nb_differences_local
+
+    #constraints
     result_path = os.path.realpath(os.path.join(
-        options.root, "resultsTestsTmp", options.testdir, "outputs/finalState/outputIIDM.xml"))
+        options.root, "resultsTestsTmp", options.testdir, "outputs/constraints/constraints.xml"))
     reference_path = os.path.realpath(os.path.join(
-        options.root, "reference", options.testdir, "outputIIDM.xml"))
+        options.root, "reference", options.testdir, "constraints.xml"))
 
     if not os.path.exists(reference_path):
         print("Reference path " + reference_path +
-              " does not exist : not checked")
-        sys.exit(-1)
+                " does not exist : not checked")
+    else:
+        if options.verbose:
+            print("comparing " + result_path + " and " + reference_path)
 
-    if options.verbose:
-        print("comparing " + result_path + " and " + reference_path)
+        (nb_differences_local, msg) = constraintsDiff.output_constraints_close_enough(
+            result_path, reference_path)
+        if nb_differences_local > 0:
+            print(msg)
+        elif options.verbose:
+            print("No difference")
+        nb_differences += nb_differences_local
 
-    (nb_differences, msg) = iidmDiff.OutputIIDMCloseEnough(
-        result_path, reference_path)
-    if nb_differences > 0:
-        print(msg)
-    elif options.verbose:
-        print("No differences")
+    #lost equipments
+    result_path = os.path.realpath(os.path.join(
+        options.root, "resultsTestsTmp", options.testdir, "outputs/lostEquipments/lostEquipments.xml"))
+    reference_path = os.path.realpath(os.path.join(
+        options.root, "reference", options.testdir, "lostEquipments.xml"))
+
+    if not os.path.exists(reference_path):
+        print("Reference path " + reference_path +
+                " does not exist : not checked")
+    else:
+        if options.verbose:
+            print("comparing " + result_path + " and " + reference_path)
+
+        identical = filecmp.cmp (result_path, reference_path, shallow=False)
+        if identical:
+            print("No difference")
+        else:
+            nb_differences += 1
+
     sys.exit(nb_differences)

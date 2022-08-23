@@ -81,21 +81,6 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
   }
 }
 
-/**
- * @brief Helper function to update a std::chrono::seconds value
- *
- * @param seconds the value to update
- * @param tree the element of the boost tree
- * @param key the key of the parameter to retrieve
- */
-static void
-updateSeconds(std::chrono::seconds& seconds, const boost::property_tree::ptree& tree, const std::string& key) {
-  unsigned int scount = std::numeric_limits<unsigned int>::max();
-  helper::updateValue(scount, tree, key);
-  if (scount != std::numeric_limits<unsigned int>::max()) {
-    seconds = std::chrono::seconds(scount);
-  }
-}
 }  // namespace helper
 
 Configuration::Configuration(const boost::filesystem::path& filepath) {
@@ -130,9 +115,10 @@ Configuration::Configuration(const boost::filesystem::path& filepath) {
     helper::updateValue(settingFilePath_, config, "SettingPath");
     helper::updateValue(assemblingFilePath_, config, "AssemblingPath");
     helper::updateValue(precision_, config, "Precision");
-    helper::updateSeconds(startTime_, config, "StartTime");
-    helper::updateSeconds(stopTime_, config, "StopTime");
-    helper::updateSeconds(timeOfEvent_, config, "sa.TimeOfEvent");
+    helper::updateValue(startTime_, config, "StartTime");
+    helper::updateValue(stopTime_, config, "StopTime");
+    helper::updateValue(timeOfEvent_, config, "sa.TimeOfEvent");
+    helper::updateValue(timeStep_, config, "TimeStep");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());

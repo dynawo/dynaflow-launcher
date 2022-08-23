@@ -19,13 +19,15 @@
 namespace dfl {
 namespace inputs {
 HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
-                   const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax) :
+                   const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax,
+                   bool isConverter1Rectifier) :
     id{id},
     converterType{converterType},
     converter1(converter1),
     converter2(converter2),
     activePowerControl{activePowerControl},
-    pMax{pMax} {
+    pMax{pMax},
+    isConverter1Rectifier{isConverter1Rectifier} {
   // converters are required
   assert(converter1);
   assert(converter2);
@@ -46,8 +48,9 @@ HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, con
 
 std::shared_ptr<HvdcLine>
 HvdcLine::build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
-                const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax) {
-  auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id, converterType, converter1, converter2, activePowerControl, pMax));
+                const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax,
+                bool isConverter1Rectifier) {
+  auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id, converterType, converter1, converter2, activePowerControl, pMax, isConverter1Rectifier));
   converter1->hvdcLine = hvdcLineCreated;
   converter2->hvdcLine = hvdcLineCreated;
   return hvdcLineCreated;

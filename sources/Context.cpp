@@ -26,6 +26,7 @@
 #include "Log.h"
 #include "Par.h"
 #include "ParEvent.h"
+#include "Solver.h"
 
 #include <DYNMPIContext.h>
 #include <DYNMultipleJobsFactory.h>
@@ -37,6 +38,7 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <tuple>
 
 namespace file = boost::filesystem;
@@ -113,12 +115,11 @@ Context::process() {
     }
   }
 
-  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
-                                                                 config_.useInfiniteReactiveLimits(), networkManager_.dataInterface()->getServiceManager()));
+  onNodeOnMainConnexComponent(
+      algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(), config_.useInfiniteReactiveLimits()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
-                                                            networkManager_.getMapBusVSCConvertersBusId(),
-                                                            networkManager_.dataInterface()->getServiceManager()));
+                                                            networkManager_.getMapBusVSCConvertersBusId()));
   if (config_.isSVCRegulationOn()) {
     onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   }
@@ -215,6 +216,9 @@ Context::exportOutputs() {
   diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_));
   diagramWriter.write();
+
+  outputs::Solver solverWriter{dfl::outputs::Solver::SolverDefinition(config_)};
+  solverWriter.write();
 
   if (def_.simulationKind == SimulationKind::SECURITY_ANALYSIS) {
     exportOutputsContingencies();
@@ -342,6 +346,39 @@ Context::executeSecurityAnalysis() {
   saLauncher->init();
   saLauncher->launch();
   saLauncher->writeResults();
+}
+
+void
+Context::exportResults(bool simulationOk) {
+  switch (def_.simulationKind) {
+  case SimulationKind::STEADY_STATE_CALCULATION: {
+    boost::property_tree::ptree resultsTree;
+    boost::property_tree::ptree componentResultsTree;
+    boost::property_tree::ptree componentResultsChild;
+    resultsTree.put("version", "1.2");
+    resultsTree.put("isOK", simulationOk);
+    resultsTree.put("metrics.useInfiniteReactiveLimits", config_.useInfiniteReactiveLimits());
+    resultsTree.put("metrics.isSVCRegulationOn", config_.isSVCRegulationOn());
+    resultsTree.put("metrics.isShuntRegulationOn", config_.isShuntRegulationOn());
+    resultsTree.put("metrics.isAutomaticSlackBusOn", config_.isAutomaticSlackBusOn());
+    componentResultsChild.put("connectedComponentNum", 0);
+    componentResultsChild.put("synchronousComponentNum", 0);
+    componentResultsChild.put("status", simulationOk ? "CONVERGED" : "SOLVER_FAILED");
+    componentResultsChild.put("iterationCount", 0);
+    componentResultsChild.put("slackBusId", slackNode_->id);
+    componentResultsChild.put("slackBusActivePowerMismatch", 0);
+    componentResultsTree.push_back(std::make_pair("", componentResultsChild));
+    resultsTree.add_child("componentResults", componentResultsTree);
+
+    file::path resultsOutput(config_.outputDir());
+    resultsOutput.append("results.json");
+    std::ofstream ofs(resultsOutput.c_str(), std::ios::out);
+    boost::property_tree::json_parser::write_json(ofs, resultsTree);
+    break;
+  }
+  case SimulationKind::SECURITY_ANALYSIS:
+    break;
+  }
 }
 
 void

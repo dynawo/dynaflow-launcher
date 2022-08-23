@@ -21,19 +21,33 @@ namespace dfl {
 namespace inputs {
 
 std::shared_ptr<Node>
-Node::build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, const std::vector<Shunt>& shunts, bool fictitious) {
-  auto ret = std::shared_ptr<Node>(new Node(id, vl, nominalVoltage, shunts, fictitious));
+Node::build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, const std::vector<Shunt>& shunts, bool fictitious,
+            boost::shared_ptr<DYN::ServiceManagerInterface> serviceManagerNode) {
+  auto ret = std::shared_ptr<Node>(new Node(id, vl, nominalVoltage, shunts, fictitious, serviceManagerNode));
   vl->nodes.push_back(ret);
   return ret;
 }
 
-Node::Node(const NodeId& idNode, const std::shared_ptr<VoltageLevel> vl, double nominalVoltageNode, const std::vector<Shunt>& shunts, bool fictitious) :
+Node::Node(const NodeId& idNode, const std::shared_ptr<VoltageLevel> vl, double nominalVoltageNode, const std::vector<Shunt>& shunts, bool fictitious,
+           boost::shared_ptr<DYN::ServiceManagerInterface> serviceManagerNode) :
     id(idNode),
     voltageLevel(vl),
     nominalVoltage{nominalVoltageNode},
     shunts(shunts),
     fictitious(fictitious),
-    neighbours{} {}
+    neighbours{},
+    serviceManager(serviceManagerNode),
+    busesConnectedInitialized(serviceManagerNode == nullptr) {}
+
+const std::vector<std::string>&
+Node::getBusesConnectedByVoltageLevel() {
+  if (!busesConnectedInitialized) {
+    busesConnectedInitialized = true;
+    auto vl = voltageLevel.lock();
+    busesConnected = serviceManager->getBusesConnectedBySwitch(id, vl->id);
+  }
+  return busesConnected;
+}
 
 bool
 operator==(const Node& lhs, const Node& rhs) {

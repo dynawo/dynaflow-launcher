@@ -90,6 +90,7 @@ macro(DEFINE_TEST _name _module_name)
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${_name}
   )
+  set_property(TEST ${_module_name}.${_name} PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${DYNAWO_ALGORITHMS_HOME}/lib:$ENV{LD_LIBRARY_PATH})
 endmacro(DEFINE_TEST)
 
 macro(DEFINE_TEST_XML _name _module_name)
@@ -108,6 +109,7 @@ macro(DEFINE_TEST_XML _name _module_name)
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${_name}
   )
+  set_property(TEST ${_module_name}.${_name} PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${DYNAWO_ALGORITHMS_HOME}/lib:$ENV{LD_LIBRARY_PATH})
 endmacro(DEFINE_TEST_XML)
 
 add_subdirectory(common)

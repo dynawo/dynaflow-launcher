@@ -15,9 +15,8 @@
         "DYNAWO_ALGORITHMS_HOME": "${workspaceFolder}/../dynawo-algorithms/build-code/deploy",
         "DYNAFLOW_LAUNCHER_HOME": "${workspaceFolder}",
 
-        "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/build-code/Install/dynaflow-launcher",
+        "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/build-code/install/dynaflow-launcher",
 
-        "DYNAFLOW_LAUNCHER_SHARED_LIB": "ON",
         "DYNAFLOW_LAUNCHER_USE_DOXYGEN": "OFF"
     },
 

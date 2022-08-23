@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <set id="SimplifiedSolver">
+    <par name="fnormtol" type="DOUBLE" value="0.0001"/>
+    <par name="fnormtolAlg" type="DOUBLE" value="0.0001"/>
+    <par name="fnormtolAlgJ" type="DOUBLE" value="0.0001"/>
+    <par name="hMax" type="DOUBLE" value="2.6000000000000001"/>
+    <par name="hMin" type="DOUBLE" value="1"/>
+    <par name="initialaddtol" type="DOUBLE" value="0.10000000000000001"/>
+    <par name="initialaddtolAlg" type="DOUBLE" value="0.10000000000000001"/>
+    <par name="initialaddtolAlgJ" type="DOUBLE" value="0.10000000000000001"/>
+    <par name="kReduceStep" type="DOUBLE" value="0.5"/>
+    <par name="linearSolverName" type="STRING" value="KLU"/>
+    <par name="maxNewtonTry" type="INT" value="10"/>
+    <par name="minimumModeChangeTypeForAlgebraicRestoration" type="STRING" value="ALGEBRAIC_J_UPDATE"/>
+    <par name="msbset" type="INT" value="0"/>
+    <par name="msbsetAlg" type="INT" value="1"/>
+    <par name="msbsetAlgJ" type="INT" value="1"/>
+    <par name="mxiter" type="INT" value="15"/>
+    <par name="mxiterAlg" type="INT" value="30"/>
+    <par name="mxiterAlgJ" type="INT" value="50"/>
+    <par name="mxnewtstep" type="DOUBLE" value="100000"/>
+    <par name="mxnewtstepAlg" type="DOUBLE" value="100000"/>
+    <par name="mxnewtstepAlgJ" type="DOUBLE" value="100000"/>
+    <par name="printfl" type="INT" value="0"/>
+    <par name="printflAlg" type="INT" value="0"/>
+    <par name="printflAlgJ" type="INT" value="0"/>
+    <par name="scsteptol" type="DOUBLE" value="0.0001"/>
+    <par name="scsteptolAlg" type="DOUBLE" value="0.0001"/>
+    <par name="scsteptolAlgJ" type="DOUBLE" value="0.0001"/>
+  </set>
+</parametersSet>

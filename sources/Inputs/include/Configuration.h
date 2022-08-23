@@ -18,7 +18,6 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
-#include <chrono>
 #include <string>
 
 namespace dfl {
@@ -28,8 +27,6 @@ namespace inputs {
  */
 class Configuration {
  public:
-  using Seconds = std::chrono::seconds;  ///< Alias for seconds
-
   /**
    * @brief Constructor
    *
@@ -98,7 +95,7 @@ class Configuration {
    *
    * @returns the start time value
    */
-  const Seconds& getStartTime() const {
+  double getStartTime() const {
     return startTime_;
   }
 
@@ -107,7 +104,7 @@ class Configuration {
    *
    * @returns the stop time value
    */
-  const Seconds& getStopTime() const {
+  double getStopTime() const {
     return stopTime_;
   }
 
@@ -125,8 +122,17 @@ class Configuration {
    *
    * @returns the time of event value
    */
-  const Seconds& getTimeOfEvent() const {
+  double getTimeOfEvent() const {
     return timeOfEvent_;
+  }
+
+  /**
+   * @brief retrieves the maximum value of the solver timestep
+   *
+   * @return value of timestep
+   */
+  double getTimeStep() const {
+    return timeStep_;
   }
 
   /**
@@ -173,11 +179,11 @@ class Configuration {
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
   boost::filesystem::path settingFilePath_;                                          ///< setting file path
   boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
-  Seconds startTime_ = Seconds(0);                                                   ///< start time of simulation
-  Seconds stopTime_ = Seconds(100);                                                  ///< stop time for simulation
+  double startTime_ = 0.;                                                            ///< start time of simulation
+  double stopTime_ = 100.;                                                           ///< stop time for simulation
   boost::optional<double> precision_;                                                ///< Precision of the simulation
-
-  Seconds timeOfEvent_ = Seconds(80);  ///< time for contingency simulation (security analysis only)
+  double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
+  double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
 };
 
 }  // namespace inputs

@@ -16,7 +16,13 @@ project("dynaflow-launcher-3rd"
 LANGUAGES C CXX
 )
 
+get_filename_component(DYNAWO_HOME ${DYNAWO_HOME} ABSOLUTE)
+
 include(ExternalProject)
+include(${DYNAWO_HOME}/share/cmake/CPUCount.cmake)
+if(NOT DEFINED CPU_COUNT)
+  message(FATAL_ERROR "CPUCount.cmake: file not found.")
+endif()
 
 set(DOWNLOAD_DIR ${CMAKE_INSTALL_PREFIX}/src CACHE PATH "Directory where 3rd parties are downloaded.")
 set(TMP_DIR ${CMAKE_INSTALL_PREFIX}/tmp CACHE PATH "Directory where 3rd parties temporary files are created.")
@@ -55,6 +61,7 @@ else()
                           --with-device=ch3:nemesis
                           --disable-fortran
                           --enable-fast=all,O3,ndebug
+      BUILD_COMMAND       make -j ${CPU_COUNT}
   )
   ExternalProject_Get_Property(mpich install_dir)
   set(MPI_HOME ${install_dir})

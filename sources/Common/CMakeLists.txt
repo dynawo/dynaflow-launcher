@@ -21,7 +21,7 @@ set_source_files_properties(include/DFLLog_keys.h PROPERTIES GENERATED 1)
 set_source_files_properties(src/DFLError_keys.cpp PROPERTIES GENERATED 1)
 set_source_files_properties(include/DFLError_keys.h PROPERTIES GENERATED 1)
 
-add_library(common ${LINK_TYPE} ${SOURCES})
+add_library(common SHARED ${SOURCES})
 target_include_directories(common
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -57,5 +57,5 @@ target_link_libraries(common
     Boost::filesystem
 )
 add_library(DynaFlowLauncher::common ALIAS common)
-install_lib_shared(common)
 install(FILES ${CMAKE_SOURCE_DIR}/etc/Dictionaries/DFLLog_en_GB.dic ${CMAKE_SOURCE_DIR}/etc/Dictionaries/DFLError_en_GB.dic DESTINATION share)
+install(TARGETS common DESTINATION ${CMAKE_INSTALL_LIBDIR})

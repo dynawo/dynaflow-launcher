@@ -32,8 +32,8 @@ The packages required to use the distribution are the same as \Dynawo.
 
 You can use the following commands to download and test the latest distribution:
 \begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-$> curl -L $(curl -s -L -X GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep "Dynaflow_Launcher_Linux" | grep url | cut -d '"' -f 4) -o Dynaflow_Launcher_Linux_latest.zip
-$> unzip Dynaflow_Launcher_Linux_latest.zip
+$> curl -L $(curl -s -L -X GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep "DynaFlowLauncher_Linux" | grep url | cut -d '"' -f 4) -o DynaflowLauncher_Linux_latest.zip
+$> unzip DynaflowLauncher_Linux_latest.zip
 $> cd dynaflow-launcher
 $> ./dynaflow-launcher.sh --network tests/main/res/TestIIDM_launch.iidm --config tests/main/res/config_launch.json
 $> ./dynaflow-launcher.sh help
@@ -91,7 +91,6 @@ export DYNAFLOW_LAUNCHER_BUILD_TYPE=Release
 # export DYNAFLOW_LAUNCHER_LOCALE=en_GB
 # export DYNAFLOW_LAUNCHER_CMAKE_GENERATOR=Ninja # default is Unix Makefiles
 # export DYNAFLOW_LAUNCHER_PROCESSORS_USED=8 # default 1
-# export DYNAFLOW_LAUNCHER_SHARED_LIB=ON # default OFF
 # export DYNAFLOW_LAUNCHER_USE_DOXYGEN=OFF # default ON
 # export DYNAFLOW_LAUNCHER_BUILD_TESTS=OFF # default ON
 # export DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # default INFO: can be DEBUG, INFO, WARN, ERROR
@@ -145,5 +144,15 @@ $> ./myEnvDFL.sh tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launc
 \end{lstlisting}
 
 This command launches Dynaflow on a simple network and should succeed if your installation went well and your compilation finished successfully.
+
+\section{Third parties}
+
+To run a simulation, Dynaflow-launcher uses external libraries that are downloaded and compiled during the building process:
+\begin{itemize}
+\item \href{https://www.mpich.org/}{\underline{MPICH}}, an implementation of the Message Passing Interface (MPI) standard distributed under a BSD-like license.
+\Dynawo-algorithms is currently using the version 3.4.2.
+\end{itemize}
+
+Finally, Dynaflow-launcher also uses others libraries for the unit testing process or to build its source documentation.
 
 \end{document}

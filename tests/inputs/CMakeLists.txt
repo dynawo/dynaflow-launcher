@@ -24,17 +24,14 @@ DEFINE_TEST_XML(TestDynamicDataBaseManager INPUTS)
 target_link_libraries(TestDynamicDataBaseManager
 DynaFlowLauncher::inputs
 )
-set_property(TEST INPUTS.TestDynamicDataBaseManager PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd)
+set_property(TEST INPUTS.TestDynamicDataBaseManager APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd)
 
 DEFINE_TEST(TestNetworkManager INPUTS)
 target_link_libraries(TestNetworkManager DynaFlowLauncher::inputs)
-set_property(TEST INPUTS.TestNetworkManager PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")
-set_property(TEST INPUTS.TestNetworkManager APPEND PROPERTY ENVIRONMENT LD_LIBRARY_PATH=${DYNAWO_HOME}/lib:${LD_LIBRARY_PATH})
-set_property(TEST INPUTS.TestNetworkManager APPEND PROPERTY ENVIRONMENT DYNAWO_IIDM_EXTENSION=${DYNAWO_HOME}/lib/libdynawo_DataInterfaceIIDMExtension.so)
+set_property(TEST INPUTS.TestNetworkManager APPEND PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")
 set_property(TEST INPUTS.TestNetworkManager APPEND PROPERTY ENVIRONMENT DYNAWO_LIBIIDM_EXTENSIONS=${DYNAWO_HOME}/lib)
 
 DEFINE_TEST(TestConfig INPUTS)
 target_link_libraries(TestConfig DynaFlowLauncher::inputs)
-set_property(TEST INPUTS.TestConfig PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")
-set_property(TEST INPUTS.TestConfig APPEND PROPERTY ENVIRONMENT DYNAWO_IIDM_EXTENSION=${DYNAWO_HOME}/lib/libdynawo_DataInterfaceIIDMExtension.so)
+set_property(TEST INPUTS.TestConfig APPEND PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH="${DYNAWO_HOME}/share/iidm/xsd/")
 set_property(TEST INPUTS.TestConfig APPEND PROPERTY ENVIRONMENT DYNAWO_LIBIIDM_EXTENSIONS=${DYNAWO_HOME}/lib)

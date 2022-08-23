@@ -47,8 +47,8 @@ class GeneratorDefinition {
     PROP_DIAGRAM_PQ_SIGNALN,     ///< Use GeneratorPQPropDiagramPQSignalN
     NETWORK                      ///< Use network cpp model
   };
-  using ReactiveCurvePoint = DYN::GeneratorInterface::ReactiveCurvePoint;  ///< Alias for reactive curve point
-  using BusId = std::string;                                               ///< alias of BusId
+  using ReactiveCurvePoint = inputs::Generator::ReactiveCurvePoint;  ///< Alias for reactive curve point
+  using BusId = std::string;                                         ///< alias of BusId
 
   /**
    * @brief test if the generator has a finite diagram
@@ -134,10 +134,9 @@ class GeneratorDefinitionAlgorithm {
    * @param busesWithDynamicModel map of bus ids to a generator that regulates them
    * @param busMap mapping of busId and the number of generators that regulates them
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
-   * @param serviceManager dynawo service manager in order to use Dynawo extra algorithms
    */
   GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel, const inputs::NetworkManager::BusMapRegulating& busMap,
-                               bool infinitereactivelimits, const boost::shared_ptr<DYN::ServiceManagerInterface>& serviceManager);
+                               bool infinitereactivelimits);
 
   /**
    * @brief Perform algorithm
@@ -192,11 +191,10 @@ class GeneratorDefinitionAlgorithm {
    */
   bool isDiagramRectangular(const inputs::Generator& generator) const;
 
-  Generators& generators_;                                          ///< the generators list to update
-  BusGenMap& busesWithDynamicModel_;                                ///< map of bus ids to a generator that regulates them
-  const inputs::NetworkManager::BusMapRegulating& busMap_;          ///< mapping of busId and the number of generators that regulates them
-  bool useInfiniteReactivelimits_;                                  ///< determine if infinite reactive limits are used
-  boost::shared_ptr<DYN::ServiceManagerInterface> serviceManager_;  ///< dynawo service manager
+  Generators& generators_;                                  ///< the generators list to update
+  BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
+  const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
+  bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used
 };
 }  // namespace algo
 }  // namespace dfl

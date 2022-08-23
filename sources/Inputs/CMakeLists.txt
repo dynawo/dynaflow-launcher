@@ -19,7 +19,7 @@ set(SOURCES
   src/AssemblingXmlDocument.cpp
 )
 
-add_library(inputs ${LINK_TYPE} ${SOURCES})
+add_library(inputs SHARED ${SOURCES})
 
 target_include_directories(inputs
 PUBLIC
@@ -31,12 +31,12 @@ target_link_libraries(inputs
 PUBLIC
 DynaFlowLauncher::common
 Boost::filesystem
-Dynawo::dynawo_DataInterface
 XMLSAXParser${LibXML_LINK_SUFFIX}
 LibXml2::LibXml2
 
 PRIVATE
+Dynawo::dynawo_DataInterface
 Dynawo::dynawo_DataInterfaceFactory
 )
 add_library(DynaFlowLauncher::inputs ALIAS inputs)
-install_lib_shared(inputs)
+install(TARGETS inputs DESTINATION ${CMAKE_INSTALL_LIBDIR})

@@ -70,6 +70,16 @@ class ParHvdc {
     return droop * 1.8 / constants::pi_;
   }
 
+  /**
+   * @brief Computes pSet emulation parameter
+   *
+   * @param p0 p0 data, in MW
+   * @returns pSet, in pu (base SnRef=100MW)
+   */
+  inline double computePSET(double p0) {
+    return p0 / 100.;
+  }
+
  private:
   const algo::HVDCLineDefinitions& hvdcDefinitions_;  ///< list of hvdcs definitions
 };

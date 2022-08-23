@@ -10,14 +10,14 @@ export_preload() {
 
   externalTcMallocLib=$(find $DYNAWO_ALGORITHMS_HOME/lib -iname *$lib)
   if [ -n "$externalTcMallocLib" ]; then
-    echo "Use downloaded tcmalloc library $externalTcMallocLib"
+    # echo "Use downloaded tcmalloc library $externalTcMallocLib"
     export LD_PRELOAD=$externalTcMallocLib
     return
   fi
 
   nativeTcMallocLib=$(ldconfig -p | grep -e $lib$ | cut -d ' ' -f4)
   if [ -n "$nativeTcMallocLib" ]; then
-    echo "Use native tcmalloc library $nativeTcMallocLib"
+    # echo "Use native tcmalloc library $nativeTcMallocLib"
     export LD_PRELOAD=$nativeTcMallocLib
     return
   fi
@@ -34,7 +34,9 @@ export DYNAWO_RESOURCES_DIR=$DYNAWO_HOME/share:$DYNAWO_HOME/share/xsd
 export DYNAWO_DDB_DIR=$DYNAWO_HOME/ddb
 
 if [ -z "$DYNAWO_IIDM_EXTENSION" ]; then
-  export DYNAWO_IIDM_EXTENSION=$DYNAWO_HOME/lib/libdynawo_DataInterfaceIIDMExtension.so
+  if [ -f $DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so ]; then
+    export DYNAWO_IIDM_EXTENSION=$DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so
+  fi
 fi
 export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_HOME/lib
 

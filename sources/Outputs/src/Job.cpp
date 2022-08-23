@@ -112,9 +112,9 @@ Job::writeModeler() const {
 boost::shared_ptr<job::SimulationEntry>
 Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
-  simu->setStartTime(def_.startTime.count());
-  simu->setStopTime(def_.stopTime.count());
-  simu->setPrecision(def_.precision_.value_or(simu->getPrecision()));
+  simu->setStartTime(def_.startTime);
+  simu->setStopTime(def_.stopTime);
+  simu->setPrecision(def_.precision_.value_or(1e-3));
 
   return simu;
 }
@@ -142,13 +142,18 @@ Job::writeOutputs() const {
   final_state->setExportDumpFile(exportDumpFile_);
   output->addFinalStateEntry(final_state);
 
+  auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
+  constraints->setExportMode("XML");
+  output->setConstraintsEntry(constraints);
+
+  auto lostEquipments = boost::shared_ptr<job::LostEquipmentsEntry>(new job::LostEquipmentsEntry());
+  lostEquipments->setDumpLostEquipments(true);
+  output->setLostEquipmentsEntry(lostEquipments);
+
 #if _DEBUG_
   auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
   timeline->setExportMode("TXT");
   output->setTimelineEntry(timeline);
-  auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
-  constraints->setExportMode("XML");
-  output->setConstraintsEntry(constraints);
 #endif
 
   return output;
@@ -262,6 +267,13 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();
   formatter->endElement();  // finalState
+
+  auto lostEquipments = outputs->getLostEquipmentsEntry();
+  if (lostEquipments) {
+    formatter->startElement("dyn", "lostEquipments", attrs);
+    attrs.clear();
+    formatter->endElement();
+  }
 
   auto logs = outputs->getLogsEntry();
   formatter->startElement("dyn", "logs");

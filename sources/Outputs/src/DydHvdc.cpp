@@ -30,14 +30,14 @@ const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string> DydHvdc::
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDangling, "HvdcPQPropDangling"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ, "HvdcPQPropDanglingDiagramPQ"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, "HvdcPQPropDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulation, "HvdcPQPropDiagramPQEmulation"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulation, "HvdcPQPropEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, "HvdcPQPropDiagramPQEmulationSet"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, "HvdcPQPropEmulationSet"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPV, "HvdcPV"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDangling, "HvdcPVDangling"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, "HvdcPVDanglingDiagramPQ"),
     std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, "HvdcPVDiagramPQ"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulation, "HvdcPVDiagramPQEmulation"),
-    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVEmulation, "HvdcPVEmulation"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet, "HvdcPVDiagramPQEmulationSet"),
+    std::make_pair(algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, "HvdcPVEmulationSet"),
 };
 
 void

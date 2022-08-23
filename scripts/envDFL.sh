@@ -237,12 +237,12 @@ set_environment() {
     fi
 
     # build
-    export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/buildLinux
-    export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/installLinux
+    export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/build/dynaflow-launcher
+    export_var_env DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/install/dynaflow-launcher
 
-    #3rd party
-    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR=$DYNAFLOW_LAUNCHER_BUILD_DIR/3rdParty
-    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/3rdParty
+    # 3rd party
+    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/build/3rdParty
+    export_var_env DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/install/3rdParty
     export_var_env_force DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR=$DYNAFLOW_LAUNCHER_HOME/3rdParty
 
     # global vars
@@ -255,11 +255,12 @@ set_environment() {
     export DYNAWO_RESOURCES_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd
 
     ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
+    ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib # For local DFL libraries, used only at runtime in case we compile in shared
 
-    export_var_env DYNAFLOW_LAUNCHER_SHARED_LIB=OFF # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_CMAKE_GENERATOR="Unix Makefiles"
     export_var_env DYNAFLOW_LAUNCHER_PROCESSORS_USED=1
+    export DYNAWO_NB_PROCESSORS_USED=$DYNAFLOW_LAUNCHER_PROCESSORS_USED
     export_var_env DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI="false"
 
     # Run
@@ -293,7 +294,7 @@ reset_environment_variables() {
     ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib
     ld_library_path_remove $DYNAWO_INSTALL_DIR/lib
     ld_library_path_remove $DYNAWO_ALGORITHMS_HOME/lib
-    ld_library_path_remove $DYNAFLOW_LAUNCHER_EXTERNAL_LIBRARIES
+    ld_library_path_remove $DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR/mpich/lib
 
     pythonpath_remove $DYNAWO_HOME/sbin/nrt/nrt_diff
 
@@ -303,6 +304,7 @@ reset_environment_variables() {
     unset DYNAWO_DDB_DIR
     unset DYNAWO_LIBIIDM_EXTENSIONS
     unset IIDM_XML_XSD_PATH
+    unset DYNAWO_NB_PROCESSORS_USED
 
     unset DYNAWO_ALGORITHMS_HOME
 }
@@ -331,7 +333,6 @@ cmake_configure() {
         -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
         -DBOOST_ROOT:STRING=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
-        -DDYNAFLOW_LAUNCHER_SHARED_LIB:BOOL=$DYNAFLOW_LAUNCHER_SHARED_LIB \
         -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS \
         $CMAKE_OPTIONAL
     RETURN_CODE=$?
@@ -348,6 +349,7 @@ cmake_configure_3rdParty() {
     -G "$DYNAFLOW_LAUNCHER_CMAKE_GENERATOR" \
     -DCMAKE_BUILD_TYPE:STRING=$DYNAFLOW_LAUNCHER_BUILD_TYPE \
     -DCMAKE_INSTALL_PREFIX=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
+    -DDYNAWO_HOME:STRING=$DYNAWO_HOME \
     $DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR
   RETURN_CODE=$?
   popd > /dev/null
@@ -388,6 +390,7 @@ verify_browser() {
 
 cmake_coverage() {
     pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
+    find tests -type d -name "resultsTestsTmp" -prune -exec rm -rf {} \;
     export GTEST_COLOR=1
     ctest \
         -S cmake/CTestScript.cmake \
@@ -402,14 +405,14 @@ cmake_coverage() {
         exit ${RETURN_CODE}
     fi
 
-    mkdir -p $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar || error_exit "Impossible to create $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar."
-    cd $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar
-    for file in $(find $DYNAFLOW_LAUNCHER_HOME/buildCoverage -name "*.gcno" | grep -v "/tests/"); do
+    mkdir -p $DYNAFLOW_LAUNCHER_HOME/build/coverage/coverage-sonar || error_exit "Impossible to create $DYNAFLOW_LAUNCHER_HOME/build/coverage/coverage-sonar."
+    cd $DYNAFLOW_LAUNCHER_HOME/build/coverage/coverage-sonar
+    for file in $(find $DYNAFLOW_LAUNCHER_HOME/build/coverage -name "*.gcno" | grep -v "/tests/" | grep -v "/googletest-build/"); do
         cpp_file_name=$(basename $file .gcno)
         cpp_file=$(find $DYNAFLOW_LAUNCHER_HOME/sources -name "$cpp_file_name" 2> /dev/null)
         gcov -pb $cpp_file -o $file > /dev/null
     done
-    find $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage-sonar -type f -not -name "*dynaflow-launcher*" -exec rm -f {} \;
+    find $DYNAFLOW_LAUNCHER_HOME/build/coverage/coverage-sonar -type f -not -name "*dynaflow-launcher*" -exec rm -f {} \;
     popd > /dev/null
 }
 
@@ -427,13 +430,13 @@ build_user() {
 }
 
 build_tests_coverage() {
-    rm -rf $DYNAFLOW_LAUNCHER_HOME/buildCoverage
+    #rm -rf $DYNAFLOW_LAUNCHER_HOME/build/coverage
     cmake_configure_3rdParty || error_exit "Error during 3rd party cmake configuration."
     cmake_build_3rdParty || error_exit "Error during 3rd party cmake build."
     cmake_coverage || error_exit "Error during coverage."
     if [ "$DYNAFLOW_LAUNCHER_BROWSER_SHOW" = true ] ; then
         verify_browser
-        $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/buildCoverage/coverage/index.html
+        $DYNAFLOW_LAUNCHER_BROWSER $DYNAFLOW_LAUNCHER_HOME/build/coverage/coverage/index.html
     fi
 }
 

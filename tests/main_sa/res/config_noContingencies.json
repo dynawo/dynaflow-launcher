@@ -1,0 +1,8 @@
+{
+  "dfl-config": {
+      "InfiniteReactiveLimits": "true",
+      "AutomaticSlackBusOn": "true",
+      "OutputDir": "resultsTestsTmp/noContingencies",
+      "DsoVoltageLevel": 133.0
+  }
+}
