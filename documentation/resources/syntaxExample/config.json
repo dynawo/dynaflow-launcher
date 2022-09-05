@@ -1,7 +1,7 @@
 {
   "dfl-config": {
     "InfiniteReactiveLimits": "true",
-    "chosenOutputs" : ["STEADYSTATE", "LOSTEQ", "TIMELINE", "CONSTRAINTS"],
+    "ChosenOutputs" : ["STEADYSTATE", "LOSTEQ", "TIMELINE", "CONSTRAINTS"],
     "SVCRegulationOn": "false",
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",
