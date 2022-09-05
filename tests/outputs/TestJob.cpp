@@ -202,7 +202,7 @@ TEST(Job, writePrecision) {
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
-TEST(Job, chosenOutputs) {
+TEST(Job, ChosenOutputs) {
   /*
   To check which field should be displayed we use four masks :
   STEADYSTATE corresponds to 1000
