@@ -152,7 +152,7 @@ Configuration::updateChosenOutput(
       break;
   }
 #endif
-  const boost::optional<const boost::property_tree::ptree &>& optionalChosenOutputs = tree.get_child_optional("chosenOutputs");
+  const boost::optional<const boost::property_tree::ptree &>& optionalChosenOutputs = tree.get_child_optional("ChosenOutputs");
   if (optionalChosenOutputs) {
     for (auto& chosenOutputElement : *optionalChosenOutputs) {
       const std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();

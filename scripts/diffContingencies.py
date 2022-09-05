@@ -129,7 +129,7 @@ if __name__ == "__main__":
         with open(config_root, 'r') as configuration_file:
             configuration_data = json.load(configuration_file)
             try:
-                chosen_outputs = configuration_data["dfl-config"]["chosenOutputs"]
+                chosen_outputs = configuration_data["dfl-config"]["ChosenOutputs"]
             except KeyError:
                 pass
 
