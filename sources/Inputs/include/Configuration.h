@@ -182,11 +182,26 @@ class Configuration {
    *
    * enum that gathers all possible chosen outputs
    */
-  enum class ChosenOutputEnum {
+  enum class ChosenOutputEnum : size_t {
     STEADYSTATE = 0,
     CONSTRAINTS,
     LOSTEQ,
     TIMELINE
+  };
+
+   /**
+   * @brief Hash structure for chosenOutputEnum
+   */
+  struct ChosenOutputHash {
+    /**
+     * @brief Operator to retrieve chosenOutputEnum hash value
+     *
+     * @param chosenOutputEnum the chosenOutputEnum to hash
+     * @returns the hash value
+     */
+    size_t operator()(ChosenOutputEnum chosenOutputEnum) const {
+      return static_cast<size_t>(chosenOutputEnum);
+    }
   };
 
   /**
@@ -222,7 +237,7 @@ class Configuration {
   boost::optional<double> precision_;                                                ///< Precision of the simulation
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
   double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
-  std::unordered_set<ChosenOutputEnum> chosenOutputs_;                               ///< chosen configuration outputs
+  std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
 };
 
 }  // namespace inputs
