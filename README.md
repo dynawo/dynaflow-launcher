@@ -39,7 +39,7 @@ You can download a pre-built Dynaflow-launcher release to start testing it. Pre-
 - Binary utilities: [curl](https://curl.haxx.se/) and unzip
 - [CMake](https://cmake.org/)
 
-**Note** For Python you need to have the `python` command available in your PATH. If you don't have one, you can use an environment variable to point to your Python version with `export DYNAFLOW_LAUNCHER_PYTHON_COMMAND="python3"`.
+**Note** For Python you need to have the `python` command available in your PATH. If you don't have one, you can use an environment variable to point to your Python version with `export DYNAWO_PYTHON_COMMAND="python3"`.
 
 You can install the dependencies for Ubuntu or Fedora with:
 

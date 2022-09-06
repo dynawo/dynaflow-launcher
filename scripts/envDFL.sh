@@ -26,7 +26,7 @@ export_var_env() {
     local value="${var#*=}"
 
     if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
-        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" -a "$name" != "DYNAWO_DDB_DIR" ]; then
+        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" -a "$name" != "DYNAWO_DDB_DIR" -a "$name" != "DYNAWO_PYTHON_COMMAND" ]; then
             error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
         fi
     fi
@@ -231,9 +231,9 @@ set_environment() {
     export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
     # miscellaneous
-    export_var_env DYNAFLOW_LAUNCHER_PYTHON_COMMAND="python"
-    if [ ! -x "$(command -v ${DYNAFLOW_LAUNCHER_PYTHON_COMMAND})" ]; then
-        error_exit "Your python interpreter \"${DYNAFLOW_LAUNCHER_PYTHON_COMMAND}\" does not work. Use export DYNAFLOW_LAUNCHER_PYTHON_COMMAND=<Python Interpreter> in your myEnvDFL.sh."
+    export_var_env DYNAWO_PYTHON_COMMAND="python"
+    if [ ! -x "$(command -v ${DYNAWO_PYTHON_COMMAND})" ]; then
+      error_exit "Your python interpreter \"${DYNAWO_PYTHON_COMMAND}\" does not work. Use export DYNAWO_PYTHON_COMMAND=<Python Interpreter> in your myEnvDynawo.sh."
     fi
 
     # build
@@ -509,7 +509,7 @@ version() {
 }
 
 update_references() {
-    ${DYNAFLOW_LAUNCHER_PYTHON_COMMAND} $HERE/updateMainReference.py
+    ${DYNAWO_PYTHON_COMMAND} $HERE/updateMainReference.py
 }
 
 apply_clang_format() {
