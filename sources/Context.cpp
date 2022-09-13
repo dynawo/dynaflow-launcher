@@ -124,6 +124,7 @@ Context::process() {
   if (config_.isSVCRegulationOn()) {
     onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   }
+
   if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
     const auto& contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
@@ -243,10 +244,11 @@ Context::exportOutputJob() {
     return;
 
   switch (def_.simulationKind) {
-  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS: {
     // For security analysis always export the main jobs file, as dynawo-algorithms will need it
     outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_);
     break;
+  }
   default:
     // For the rest of calculations, only export the jobs file when in DEBUG mode
 #if _DEBUG_
@@ -321,10 +323,11 @@ Context::execute() {
     simu->clean();
     break;
   }
-  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS: {
     LOG(info, SecurityAnalysisSimulationInfo, basename_, def_.contingenciesFilePath);
     executeSecurityAnalysis();
     break;
+  }
   }
 }
 

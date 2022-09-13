@@ -169,6 +169,10 @@ Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
     chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
     chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
     break;
+  default:
+    // Code should never be reached.
+    throw std::logic_error("Cannot determine simulation kind.");
+    break;
   }
 #endif
   const boost::optional<const boost::property_tree::ptree&>& optionalChosenOutputs = tree.get_child_optional("ChosenOutputs");

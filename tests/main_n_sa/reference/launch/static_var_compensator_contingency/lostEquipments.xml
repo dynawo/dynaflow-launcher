@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<lostEquipments xmlns="http://www.rte-france.com/dynawo">
+  <lostEquipment id="_047fc6e6-c766-11e1-8775-005056c00008" type="STATIC_VAR_COMPENSATOR"/>
+  <lostEquipment id="InternalAsBreaker_svc" type="SWITCH"/>
+</lostEquipments>

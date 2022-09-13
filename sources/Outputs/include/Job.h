@@ -66,11 +66,11 @@ class Job {
         contingencyId(contingencyId),
         baseFilename(baseFilename) {}
 
-    std::string filename;                                     ///< filename of the job output file
-    std::string dynawoLogLevel;                               ///< Dynawo log level, in string representation
-    const dfl::inputs::Configuration& configuration;          ///< Simulation configuration
-    boost::optional<std::string> contingencyId;               ///< Identifier of referred contingency, only for security analysis jobs
-    boost::optional<std::string> baseFilename;                ///< Name for base case filename if we are defining a jobs file for a contingency
+    std::string filename;                             ///< filename of the job output file
+    std::string dynawoLogLevel;                       ///< Dynawo log level, in string representation
+    const dfl::inputs::Configuration& configuration;  ///< Simulation configuration
+    boost::optional<std::string> contingencyId;       ///< Identifier of referred contingency, only for security analysis jobs
+    boost::optional<std::string> baseFilename;        ///< Name for base case filename if we are defining a jobs file for a contingency
   };
 
  public:
@@ -81,8 +81,7 @@ class Job {
   * @param networkFileEntry path to the input network file
   * @param config configuration
   */
-  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry,
-                        const boost::filesystem::path& networkFileEntry,
+  static void exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry,
                         const dfl::inputs::Configuration& config);
   /**
    * @brief Constructor

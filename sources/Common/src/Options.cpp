@@ -87,21 +87,23 @@ Options::Options() : desc_{}, config_{"", "", "", "", defaultLogLevel_} {
       (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())(
       "network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
       "contingencies", po::value<std::string>(&config_.contingenciesFilePath), "Contingencies file path to process (Security Analysis)")(
-      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version");
+      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version")(
+      "nsa", "Run steady state calculation followed by security analysis. Requires contingencies file to be defined.");
 }
 
-auto
-Options::parse(int argc, char* argv[]) -> std::tuple<bool, Request> {
+Options::Request
+Options::parse(int argc, char* argv[]) {
   try {
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc_).run(), vm);
 
     config_.programName = basename(argv[0]);
+
     if (vm.count("help") > 0) {
-      return std::forward_as_tuple(true, Request::HELP);
+      return Request::HELP;
     }
     if (vm.count("version") > 0) {
-      return std::forward_as_tuple(true, Request::VERSION);
+      return Request::VERSION;
     }
 
     po::notify(vm);
@@ -110,10 +112,21 @@ Options::parse(int argc, char* argv[]) -> std::tuple<bool, Request> {
     if (vm.count("log-level") > 0) {
       config_.dynawoLogLevel = vm["log-level"].as<ParsedLogLevel>().logLevelDefinition;
     }
-    return std::forward_as_tuple(true, Request::RUN_SIMULATION);
+
+    if (vm.count("nsa") > 0) {
+      if (vm.count("contingencies") > 0) {
+        return Request::RUN_SIMULATION_NSA;
+      } else {
+        return Request::ERROR;
+      }
+    } else if (vm.count("contingencies") > 0) {
+      return Request::RUN_SIMULATION_SA;
+    } else {
+      return Request::RUN_SIMULATION_N;
+    }
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
-    return std::forward_as_tuple(false, Request::RUN_SIMULATION);
+    return Request::ERROR;
   }
 }
 

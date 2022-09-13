@@ -12,11 +12,11 @@ contingency_event_time = 10
 timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
 
 ### Code #######################################################################
-def check_test_contingencies(tests_path, test_name):
+def check_test_contingencies(tests_path, test_name, input_iidm_name):
     results_folder = os.path.join(tests_path, 'resultsTestsTmp', test_name)
     contingencies_file = os.path.join(tests_path, 'res/contingencies_' + test_name + '.json')
 
-    return check_contingencies(contingencies_file, results_folder)
+    return check_contingencies(contingencies_file, results_folder, input_iidm_name)
 
 def check_element(element, contingency_id, dyd_file, par_file, timeline_file, constraints_file, finalState_file):
     buildType = os.getenv("DYNAFLOW_LAUNCHER_BUILD_TYPE")
@@ -55,12 +55,12 @@ def check_element_inputs_and_timeline(element, contingency_id, dyd_file, par_fil
     print("  check lost equipments         : {}".format(c_lost_equipments))
     return c_dyd and c_par and c_timeline and c_constraints and c_lost_equipments
 
-def check_contingencies(contingencies_file, results_folder):
+def check_contingencies(contingencies_file, results_folder, input_iidm_name):
     all_ok = True
 
     for (contingency_id, contingency_elements) in load_contingencies(contingencies_file):
-        dyd_file  = os.path.join(results_folder ,'TestIIDM_launch-' + contingency_id + '.dyd')
-        par_file  = os.path.join(results_folder ,'TestIIDM_launch-' + contingency_id + '.par')
+        dyd_file  = os.path.join(results_folder ,input_iidm_name + '-' + contingency_id + '.dyd')
+        par_file  = os.path.join(results_folder ,input_iidm_name + '-' + contingency_id + '.par')
         timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.log')
         constraints_file  = os.path.join(results_folder , contingency_id, 'outputs/constraints/constraints.xml')
         finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
@@ -192,7 +192,8 @@ def xml_find(file, path):
 def get_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument("root", type=str, help="Root directory to process")
-    parser.add_argument("test", type=str, help="Root directory to process")
+    parser.add_argument("test", type=str, help="Test name")
+    parser.add_argument("iidm_name", type=str, help="IIDM input file")
 
     return parser
 
@@ -204,4 +205,4 @@ if __name__ == '__main__':
         print("[ERROR] environment variable DYNAFLOW_LAUNCHER_BUILD_TYPE needs to be defined")
         exit(1)
 
-    sys.exit(check_test_contingencies(options.root, options.test))
+    sys.exit(check_test_contingencies(options.root, options.test, options.iidm_name))

@@ -485,6 +485,26 @@ launch_sa() {
     unset LD_PRELOAD
 }
 
+launch_nsa() {
+    if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $2 doesn't exist"
+    fi
+    if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $3 doesn't exist"
+    fi
+    if [ ! -f "$4" ]; then
+        error_exit "Security Analysis contingencies file $4 doesn't exist"
+    fi
+    export_preload
+    "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $2 \
+    --config $3 \
+    --contingencies $4 \
+    --nsa # Steady state calculations.
+    unset LD_PRELOAD
+}
+
 launch_sa_gdb() {
     if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
@@ -679,6 +699,9 @@ case $CMD in
         ;;
     launch-sa)
         launch_sa $ARGS || error_exit "Failed to perform launch-sa"
+        ;;
+    launch-nsa)
+        launch_nsa $ARGS || error_exit "Failed to perform launch-nsa"
         ;;
     launch-sa-gdb)
         launch_sa_gdb $ARGS || error_exit "Failed to perform launch-sa-gdb"

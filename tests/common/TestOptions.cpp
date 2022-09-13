@@ -18,8 +18,7 @@ TEST(Options, help) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--help"};
   char* argv[] = {argv0, argv1};
-  ASSERT_TRUE(std::get<0>(options.parse(2, argv)));
-  ASSERT_EQ(dfl::common::Options::Request::HELP, std::get<1>(options.parse(2, argv)));
+  ASSERT_EQ(dfl::common::Options::Request::HELP, options.parse(2, argv));
 
   auto desc = options.desc();
   ASSERT_FALSE(desc.empty());
@@ -36,8 +35,7 @@ TEST(Options, version) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--version"};
   char* argv[] = {argv0, argv1};
-  ASSERT_TRUE(std::get<0>(options.parse(2, argv)));
-  ASSERT_EQ(dfl::common::Options::Request::VERSION, std::get<1>(options.parse(2, argv)));
+  ASSERT_EQ(dfl::common::Options::Request::VERSION, options.parse(2, argv));
 }
 
 TEST(Options, missingIIDM) {
@@ -46,7 +44,7 @@ TEST(Options, missingIIDM) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--config=test.json"};
   char* argv[] = {argv0, argv1};
-  ASSERT_FALSE(std::get<0>(options.parse(2, argv)));
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
 }
 
 TEST(Options, missingCONFIG) {
@@ -55,7 +53,7 @@ TEST(Options, missingCONFIG) {
   char argv0[] = {"DynawoLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char* argv[] = {argv0, argv1};
-  ASSERT_FALSE(std::get<0>(options.parse(2, argv)));
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
 }
 
 TEST(Options, nominal) {
@@ -66,8 +64,7 @@ TEST(Options, nominal) {
   char argv2[] = {"--config=test.json"};
   char* argv[] = {argv0, argv1, argv2};
   auto status = options.parse(3, argv);
-  ASSERT_TRUE(std::get<0>(status));
-  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
 }
 
 TEST(Options, nominalLogLevel) {
@@ -79,8 +76,7 @@ TEST(Options, nominalLogLevel) {
   char argv3[] = {"--log-level=DEBUG"};
   char* argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
-  ASSERT_TRUE(std::get<0>(status));
-  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
 }
 
 TEST(Options, wrongLogLevel) {
@@ -92,6 +88,134 @@ TEST(Options, wrongLogLevel) {
   char argv3[] = {"--log-level=NO_LEVEL"};  // this level is not defined
   char* argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
-  ASSERT_FALSE(std::get<0>(status));
-  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION, std::get<1>(status));
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+/*  Systematic Analysis  */
+
+TEST(Options, systematicAnalysis) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--contingencies=test.json"};
+  char* argv[] = {argv0, argv1, argv2, argv3};
+  auto status = options.parse(4, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_SA, status);
+}
+
+TEST(Options, systematicAnalysisLogLevel) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--contingencies=test.json"};
+  char argv4[] = {"--log-level=DEBUG"};
+  char* argv[] = {argv0, argv1, argv2, argv3, argv4};
+  auto status = options.parse(5, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_SA, status);
+}
+
+TEST(Options, systematicAnalysisWrongLogLevel) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--contingencies=test.json"};
+  char argv4[] = {"--log-level=NO_LEVEL"};  // this level is not defined
+  char* argv[] = {argv0, argv1, argv2, argv3, argv4};
+  auto status = options.parse(5, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, systematicAnalysisMissingConfig) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--contingencies=test.json"};
+  char* argv[] = {argv0, argv1, argv2};
+  auto status = options.parse(3, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, systematicAnalysisMissingIIDM) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--config=test.json"};
+  char argv2[] = {"--contingencies=test.json"};
+  char* argv[] = {argv0, argv1, argv2};
+  auto status = options.parse(3, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+/*  N + SA  */
+
+TEST(Options, NSA) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--contingencies=test.json"};
+  char argv4[] = {"--nsa"};
+  char* argv[] = {argv0, argv1, argv2, argv3, argv4};
+  auto status = options.parse(5, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_NSA, status);
+}
+
+TEST(Options, NSAMissingIIDM) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--config=test.json"};
+  char argv2[] = {"--contingencies=test.json"};
+  char argv3[] = {"--nsa"};
+  char* argv[] = {argv0, argv1, argv2, argv3};
+  auto status = options.parse(4, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, NSAMissingConfig) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--contingencies=test.json"};
+  char argv3[] = {"--nsa"};
+  char* argv[] = {argv0, argv1, argv2, argv3};
+  auto status = options.parse(4, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, NSALogLevel) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--contingencies=test.json"};
+  char argv4[] = {"--log-level=DEBUG"};
+  char argv5[] = {"--nsa"};
+  char* argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
+  auto status = options.parse(6, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_NSA, status);
+}
+
+TEST(Options, NSAWrongLogLevel) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynawoLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--config=test.json"};
+  char argv3[] = {"--contingencies=test.json"};
+  char argv4[] = {"--log-level=NO_LEVEL"};  // this level is not defined
+  char argv5[] = {"--nsa"};
+  char* argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
+  auto status = options.parse(6, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }

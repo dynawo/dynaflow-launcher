@@ -77,7 +77,18 @@ $> ./myEnvDFL.sh tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config
 
 This command will simulate all the events described in the contingencies file and provide as outputs the constraints and lostEquipments files for each of them.
 
-\textbf{Warning: The systematic analysis assumes that the network used as input is already properly initialized with a steady-state.}
+\textbf{Warning: The systematic analysis assumes that the network used as input is already properly initialized with a steady-state. To skip this initialization process, refer to the next section.}
+
+\subsubsection{Dynaflow steady-state and security analysis workflow}
+
+The systematic analysis assumes that the network used as input is already initialized with a steady-state.
+To automatically perform the steady-state initialization followed by a systematic analysis, provide the same inputs as for a systematic analysis and specify the \texttt{-{}-nsa} option.
+
+For example:
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+  $> ./myEnvDFL.sh tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json --nsa
+\end{lstlisting}
 
 \subsection[Dynaflow-launcher outputs]{Dynaflow-launcher outputs}
 

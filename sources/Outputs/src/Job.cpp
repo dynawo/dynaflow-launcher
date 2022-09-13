@@ -165,9 +165,7 @@ Job::writeOutputs() const {
 }
 
 void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry,
-                const boost::filesystem::path& networkFileEntry,
-                const dfl::inputs::Configuration& config) {
+Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry, const dfl::inputs::Configuration& config) {
   boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {

@@ -70,7 +70,7 @@ if __name__ == "__main__":
             (nb_differences_local, msg) = iidmDiff.OutputIIDMCloseEnough(
                 result_path, reference_path)
             if nb_differences_local > 0:
-                print(msg)
+                print("[ERROR] " + result_path + ": " + msg)
             elif options.verbose:
                 print("No difference")
             nb_differences += nb_differences_local
@@ -92,6 +92,7 @@ if __name__ == "__main__":
                 (nb_differences_local, msg) = constraintsDiff.output_constraints_close_enough(
                     result_path, reference_path)
                 if nb_differences_local > 0:
+                    print("[ERROR] constraints file " + result_path + " different from reference file " + reference_path)
                     print(msg)
                 elif options.verbose:
                     print("No difference")
@@ -115,6 +116,7 @@ if __name__ == "__main__":
                 if identical:
                     print("No difference")
                 else:
+                    print("[ERROR] lost equipments file " + result_path + " different from reference file " + reference_path)
                     nb_differences += 1
     else:
         raise UnknownBuildType(buildType)
