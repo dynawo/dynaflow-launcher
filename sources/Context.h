@@ -51,7 +51,7 @@ class Context {
   using ProcessNodeCallBackMainComponent =
       std::function<void(const std::shared_ptr<inputs::Node>&,
                          std::shared_ptr<dfl::algo::AlgorithmsResults>&)>;  ///< Callback for node algorithm on main topological island
-  /**
+                                                                            /**
    * @brief Context definition
    */
   struct ContextDef {
@@ -175,7 +175,7 @@ class Context {
   inputs::NetworkManager networkManager_;                  ///< network manager
   inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
   inputs::ContingenciesManager contingenciesManager_;      ///< contingencies manager in a Security Analysis
-  const inputs::Configuration& config_;                    ///< configuration
+  const inputs::Configuration config_;                     ///< configuration
 
   std::string basename_;                                                        ///< basename for all files
   std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components

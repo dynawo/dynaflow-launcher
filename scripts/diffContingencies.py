@@ -83,6 +83,7 @@ def compare_file(options, contingency_folder, chosen_outputs):
             (nb_differences_local, msg) = constraintsDiff.output_constraints_close_enough(
                 result_path, reference_path)
             if nb_differences_local > 0:
+                print("[ERROR] constraints file " + result_path + " different from reference file " + reference_path)
                 print(msg)
             elif options.verbose:
                 print("No difference")

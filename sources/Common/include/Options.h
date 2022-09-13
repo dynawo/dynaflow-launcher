@@ -50,9 +50,12 @@ class Options {
    * @brief type of request for dynaflow launcher
    */
   enum class Request {
-    RUN_SIMULATION = 0,  ///< Run simulation
-    HELP,                ///< help display is requested
-    VERSION              ///< version display is requested
+    ERROR = 0,          ///< request contains an error
+    HELP,               ///< help display is requested
+    VERSION,            ///< version display is requested
+    RUN_SIMULATION_N,   ///< steady state calculation is requested
+    RUN_SIMULATION_SA,  ///< security analysis is requested
+    RUN_SIMULATION_NSA  ///< steady state calculation and security analysis is requested
   };
 
  public:
@@ -76,17 +79,14 @@ class Options {
   }
 
   /**
-   * @brief Parse arguments given by main programm
-   *
-   * The returned status will be NOK if a parsing error is detected, i.e. the runtime options are incorrect
-   * The returned type of the request is undefined if the status is NOK.
+   * @brief Parse arguments given by main program
    *
    * @param argc number of arguments
    * @param argv arguments
    *
-   * @returns a pair (status OK/NOK, request type)
+   * @returns the request
    */
-  std::tuple<bool, Request> parse(int argc, char* argv[]);
+  Request parse(int argc, char* argv[]);
 
   /**
    * @brief Retrieves description of options

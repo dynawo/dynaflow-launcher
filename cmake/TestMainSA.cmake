@@ -14,7 +14,7 @@ execute_process(COMMAND ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} res/conf
 if(COMPARE_RESULT)
     message(FATAL_ERROR "resultsTestsTmp/${TEST_NAME} has some different files from reference/${TEST_NAME}")
 endif()
-execute_process(COMMAND ${PYTHON_COMMAND} ${CHECK_SCRIPT} . ${TEST_NAME} RESULT_VARIABLE CHECKS_RESULT)
+execute_process(COMMAND ${PYTHON_COMMAND} ${CHECK_SCRIPT} . ${TEST_NAME} "TestIIDM_${TEST_NAME}" RESULT_VARIABLE CHECKS_RESULT)
 if(CHECKS_RESULT)
     message(FATAL_ERROR "resultsTestsTmp/${TEST_NAME} has some input or output files that contain errors")
 endif()

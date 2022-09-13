@@ -49,6 +49,7 @@ RefUnsupportedTag             =     settings ref %1% uses a unrecognized tag %2%
 NetworkSlackNodeNotFound      =     network slack node requested but not found in network input file %1%
 SteadyStateInfo               =     processing network input file %1% and config file %2% for steady-state calculation
 SecurityAnalysisInfo          =     processing network input file %1%, contingencies %2% and config file %3% for security analysis
+SteadyStateAndSecurityAnalysisInfo          =     processing network input file %1%, contingencies %2% and config file %3% for security analysis after steady state calculation
 ExportInfo                    =     exporting outputs files for %1%
 SlackNode                     =     slack node of id %1% found with origin %2% (0=file, 1=algorithm)
 ConnexityErrorReCompute       =     slack node of id %1% not present in main connex component: compute slack node only in main connex component
