@@ -18,6 +18,7 @@
 #pragma once
 
 #include "SVarCDefinitionAlgorithm.h"
+#include "Configuration.h"
 
 #include <PARParametersSetCollection.h>
 #include <boost/shared_ptr.hpp>
@@ -41,15 +42,18 @@ class ParSVarC {
    * @brief enrich the parameter set collection for SvarCs
    *
    * @param paramSetCollection parameter set collection to enrich
+   * @param startingPointMode starting point mode
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+              dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:
   /**
    * @brief Write the macro parameter set used for static var compensators
+   * @param startingPointMode starting point mode
    * @returns the macro parameter set for SVarC
    */
-  boost::shared_ptr<parameters::MacroParameterSet> writeMacroParameterSetStaticVarCompensators();
+  boost::shared_ptr<parameters::MacroParameterSet> writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
   /**
    * @brief Write parameter set for static var compensator

@@ -24,6 +24,7 @@
 #include "DydEvent.h"
 #include "Job.h"
 #include "Log.h"
+#include "Network.h"
 #include "Par.h"
 #include "ParEvent.h"
 #include "Solver.h"
@@ -194,21 +195,27 @@ Context::exportOutputs() {
                                                      busesWithDynamicModel_, dynamicDataBaseManager_, dynamicModels_, staticVarCompensators_));
   dydWriter.write();
 
-  // Par
-  // copy constants files
-  for (auto& entry : boost::make_iterator_range(file::directory_iterator(def_.parFileDir))) {
-    if (entry.path().extension() == ".par") {
-      file::path dest(outputDir);
-      dest.append(entry.path().filename().generic_string());
-      file::copy_file(entry.path(), dest, file::copy_option::overwrite_if_exists);
-    }
-  }
+  // create Network.par
+  file::path networkOutput(config_.outputDir());
+  networkOutput.append("Network.par");
+  outputs::Network networkWriter(outputs::Network::NetworkDefinition(networkOutput, config_.getStartingPointMode()));
+  networkWriter.write();
+
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_.outputDir(), parOutput, generators_, hvdcLineDefinitions_,
-                                                     config_.getActivePowerCompensation(), busesWithDynamicModel_, dynamicDataBaseManager_, counters_,
-                                                     dynamicModels_, linesById_, staticVarCompensators_, loads_));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_,
+                                                      config_,
+                                                      parOutput,
+                                                      generators_,
+                                                      hvdcLineDefinitions_,
+                                                      busesWithDynamicModel_,
+                                                      dynamicDataBaseManager_,
+                                                      counters_,
+                                                      dynamicModels_,
+                                                      linesById_,
+                                                      staticVarCompensators_,
+                                                      loads_));
   parWriter.write();
 
   // Diagram

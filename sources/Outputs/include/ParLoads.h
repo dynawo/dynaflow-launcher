@@ -41,16 +41,20 @@ class ParLoads {
    * @brief enrich the parameter set collection for loads
    *
    * @param paramSetCollection parameter set collection to enrich
+   * @param startingPointMode starting point mode
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+              dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:
   /**
    * @brief create a new parameter set for loads
    *
+   * @param startingPointMode starting point mode
+   *
    * @return the new parameter set for loads
    */
-  boost::shared_ptr<parameters::ParametersSet> writeConstantLoadsSet();
+  boost::shared_ptr<parameters::ParametersSet> writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:
   std::vector<algo::LoadDefinition> loadsDefinitions_;  ///< list of loads definitions

@@ -188,10 +188,27 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
 
     boost::optional<double> droop = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->droop : boost::optional<double>();
     boost::optional<double> p0 = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->p0 : boost::optional<double>();
-    HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId, voltageRegulation1,
-                                   hvdcLine.converter2->converterId, hvdcLine.converter2->busId, voltageRegulation2,
-                                   HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1,
-                                   def2, droop, p0, hvdcLine.isConverter1Rectifier);
+    HVDCDefinition createdHvdcLine(hvdcLine.id,
+                                    hvdcLine.converterType,
+                                    hvdcLine.converter1->converterId,
+                                    hvdcLine.converter1->busId,
+                                    voltageRegulation1,
+                                    hvdcLine.converter2->converterId,
+                                    hvdcLine.converter2->busId,
+                                    voltageRegulation2,
+                                    HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
+                                    HVDCDefinition::HVDCModel::HvdcPTanPhi,
+                                    powerFactors,
+                                    hvdcLine.pMax,
+                                    def1,
+                                    def2,
+                                    droop,
+                                    p0,
+                                    hvdcLine.isConverter1Rectifier,
+                                    hvdcLine.vdcNom,
+                                    hvdcLine.pSetPoint,
+                                    hvdcLine.rdc,
+                                    hvdcLine.lossFactors);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }

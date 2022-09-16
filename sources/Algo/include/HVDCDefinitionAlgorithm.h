@@ -179,13 +179,32 @@ class HVDCDefinition {
    * @param droop the active power droop value for HVDC, if the value exists
    * @param p0 the active power setpoint for HVDC, if the value exists
    * @param isConverter1Rectifier whether converter 1 is rectifier
+   * @param vdcNom nominal dc voltage of the hvdc line in kV
+   * @param pSetPoint active power set-point of the hvdc line in MW
+   * @param rdc dc resistance of the hvdc line in Ohm
+   * @param lossFactors loss factors for converters 1 and 2
    */
-  explicit HVDCDefinition(const HvdcLineId& id, const inputs::HvdcLine::ConverterType converterType, const ConverterId& converter1Id,
-                          const BusId& converter1BusId, const boost::optional<bool>& converter1VoltageRegulationOn, const ConverterId& converter2Id,
-                          const BusId& converter2BusId, const boost::optional<bool>& converter2VoltageRegulationOn, const Position position,
-                          const HVDCModel& model, const std::array<double, 2>& powerFactors, double pMax, const boost::optional<VSCDefinition>& vscDefinition1,
-                          const boost::optional<VSCDefinition>& vscDefinition2, const boost::optional<double>& droop, const boost::optional<double>& p0,
-                          bool isConverter1Rectifier) :
+  explicit HVDCDefinition(const HvdcLineId& id,
+                          const inputs::HvdcLine::ConverterType converterType,
+                          const ConverterId& converter1Id,
+                          const BusId& converter1BusId,
+                          const boost::optional<bool>& converter1VoltageRegulationOn,
+                          const ConverterId& converter2Id,
+                          const BusId& converter2BusId,
+                          const boost::optional<bool>& converter2VoltageRegulationOn,
+                          const Position position,
+                          const HVDCModel& model,
+                          const std::array<double, 2>& powerFactors,
+                          double pMax,
+                          const boost::optional<VSCDefinition>& vscDefinition1,
+                          const boost::optional<VSCDefinition>& vscDefinition2,
+                          const boost::optional<double>& droop,
+                          const boost::optional<double>& p0,
+                          bool isConverter1Rectifier,
+                          const double vdcNom,
+                          const double pSetPoint,
+                          const double rdc,
+                          const std::array<double, 2>& lossFactors) :
       id{id},
       converterType{converterType},
       converter1Id{converter1Id},
@@ -202,7 +221,11 @@ class HVDCDefinition {
       vscDefinition2(vscDefinition2),
       droop(droop),
       p0(p0),
-      isConverter1Rectifier{isConverter1Rectifier} {}
+      isConverter1Rectifier{isConverter1Rectifier},
+      vdcNom(vdcNom),
+      pSetPoint(pSetPoint),
+      rdc(rdc),
+      lossFactors(lossFactors) {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -221,6 +244,10 @@ class HVDCDefinition {
   const boost::optional<double> droop;                        ///< active power droop value for HVDC, if it exists
   const boost::optional<double> p0;                           ///< active power setpoint value for HVDC, if it exists
   const bool isConverter1Rectifier;                           ///< whether converter 1 is rectifier
+  const double vdcNom;                                        ///< nominal dc voltage of the hvdc line in kV
+  const double pSetPoint;                                     ///< active power set-point of the hvdc line in MW
+  const double rdc;                                           ///< dc resistance of the hvdc line in Ohm
+  const std::array<double, 2> lossFactors;                    ///< loss factors for converters 1 and 2
 };
 
 /// @brief HVDC line definitions

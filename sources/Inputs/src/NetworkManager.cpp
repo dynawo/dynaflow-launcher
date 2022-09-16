@@ -290,8 +290,20 @@ NetworkManager::buildTree() {
     if (hvdcLine->getConverterMode() == DYN::HvdcLineInterface::ConverterMode_t::RECTIFIER_INVERTER) {
       isConverter1Rectifier = true;
     }
+    std::array<double, 2> lossFactors = {converterDyn1->getLossFactor() / 100.,
+                                          converterDyn2->getLossFactor() / 100.};
     auto hvdcLineCreated =
-        HvdcLine::build(hvdcLine->getID(), converterType, converter1, converter2, activePowerControl, hvdcLine->getPmax(), isConverter1Rectifier);
+        HvdcLine::build(hvdcLine->getID(),
+                        converterType,
+                        converter1,
+                        converter2,
+                        activePowerControl,
+                        hvdcLine->getPmax(),
+                        isConverter1Rectifier,
+                        hvdcLine->getVNom(),
+                        hvdcLine->getActivePowerSetpoint(),
+                        hvdcLine->getResistanceDC(),
+                        lossFactors);
     hvdcLines_.emplace_back(hvdcLineCreated);
     nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
     nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);

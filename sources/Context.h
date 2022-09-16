@@ -55,15 +55,16 @@ class Context {
    * @brief Context definition
    */
   struct ContextDef {
-    dfl::inputs::Configuration::SimulationKind simulationKind; ///< kind of simulation requested (steady-state or security analysis)
-    boost::filesystem::path networkFilepath;                   ///< network filepath
-    boost::filesystem::path settingFilePath;                   ///< setting file path for dynamic data base
-    boost::filesystem::path assemblingFilePath;                ///< assembling file path for dynamic data base
-    boost::filesystem::path contingenciesFilePath;             ///< contigencies file path for Security Analysis simulation
-    std::string dynawoLogLevel;                                ///< string representation of the dynawo log level
-    boost::filesystem::path parFileDir;                        ///< parameter file directory
-    boost::filesystem::path dynawoResDir;                      ///< DYNAWO resources
-    std::string locale;                                        ///< localization
+    dfl::inputs::Configuration::StartingPointMode startingPointMode;  ///< starting point mode of the simulation
+    dfl::inputs::Configuration::SimulationKind simulationKind;        ///< kind of simulation requested (steady-state or security analysis)
+    boost::filesystem::path networkFilepath;                          ///< network filepath
+    boost::filesystem::path settingFilePath;                          ///< setting file path for dynamic data base
+    boost::filesystem::path assemblingFilePath;                       ///< assembling file path for dynamic data base
+    boost::filesystem::path contingenciesFilePath;                    ///< contigencies file path for Security Analysis simulation
+    std::string dynawoLogLevel;                                       ///< string representation of the dynawo log level
+    boost::filesystem::path parFileDir;                               ///< parameter file directory
+    boost::filesystem::path dynawoResDir;                             ///< DYNAWO resources
+    std::string locale;                                               ///< localization
   };
 
  public:

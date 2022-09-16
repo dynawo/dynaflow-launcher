@@ -106,6 +106,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
 
     auto config = tree.get_child("dfl-config");
 
+    updateStartingPointMode(config);
     updateChosenOutput(config, simulationKind);
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
     helper::updateValue(isSVCRegulationOn_, config, "SVCRegulationOn");
@@ -124,6 +125,25 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());
+  }
+
+  if (startingPointMode_ == Configuration::StartingPointMode::FLAT &&
+        activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
+    throw Error(InvalidActivePowerCompensation);
+  }
+}
+
+void Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) {
+  const boost::optional<const boost::property_tree::ptree &>& optionalStartingPointMode = tree.get_child_optional("StartingPointMode");
+  if (optionalStartingPointMode.is_initialized()) {
+    const std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
+    if (startingPointMode == "warm") {
+      startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::WARM;
+    } else if (startingPointMode == "flat") {
+      startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::FLAT;
+    } else {
+      throw Error(StartingPointModeDoesntExist, startingPointMode);
+    }
   }
 }
 

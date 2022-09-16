@@ -18,6 +18,7 @@ src/DydHvdc.cpp
 src/DydLoads.cpp
 src/DydSVarC.cpp
 src/Job.cpp
+src/Network.cpp
 src/Par.cpp
 src/ParDynModel.cpp
 src/ParEvent.cpp

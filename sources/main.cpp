@@ -125,7 +125,8 @@ main(int argc, char* argv[]) {
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
-    dfl::Context::ContextDef def{simulationKind,
+    dfl::Context::ContextDef def{config.getStartingPointMode(),
+                                 simulationKind,
                                  runtimeConfig.networkFilePath,
                                  config.settingFilePath(),
                                  config.assemblingFilePath(),

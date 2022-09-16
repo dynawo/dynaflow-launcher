@@ -20,8 +20,11 @@ namespace outputs {
 
 void
 ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, const std::string& basename,
-                    const boost::filesystem::path& dirname, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) {
+                    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                    const std::string& basename,
+                    const boost::filesystem::path& dirname,
+                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
+                    dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   for (const auto& generator : generatorDefinitions_) {
     if (generator.isNetwork()) {
       continue;
@@ -29,7 +32,10 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
     if (!paramSetCollection->hasMacroParametersSet(getGeneratorMacroParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP))) &&
         generator.isUsingDiagram()) {
-      paramSetCollection->addMacroParameterSet(buildGeneratorMacroParameterSet(generator.model, activePowerCompensation, DYN::doubleIsZero(generator.targetP)));
+      paramSetCollection->addMacroParameterSet(buildGeneratorMacroParameterSet(generator.model,
+                                                                                activePowerCompensation,
+                                                                                DYN::doubleIsZero(generator.targetP),
+                                                                                startingPointMode));
     }
     // if generator is not using infinite diagrams, no need to create constant sets
     boost::shared_ptr<parameters::ParametersSet> paramSet;
@@ -37,7 +43,7 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
       paramSet = writeGenerator(generator, basename, dirname);
     } else {
       if (!paramSetCollection->hasParametersSet(getGeneratorParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP)))) {
-        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator.model, DYN::doubleIsZero(generator.targetP));
+        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator.model, DYN::doubleIsZero(generator.targetP), startingPointMode);
       }
     }
     if (paramSet && generator.hasTransformer()) {
@@ -109,15 +115,30 @@ ParGenerator::getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType mo
 
 boost::shared_ptr<parameters::MacroParameterSet>
 ParGenerator::buildGeneratorMacroParameterSet(algo::GeneratorDefinition::ModelType modelType,
-                                              inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP) {
+                                              inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                              bool fixedP,
+                                              dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
       boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(modelType, fixedP)));
+
   macroParameterSet->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
   macroParameterSet->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+
+  switch (startingPointMode) {
+  case dfl::inputs::Configuration::StartingPointMode::WARM:
+    macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::StartingPointMode::FLAT:
+    macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "targetP_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "targetQ_pu", "DOUBLE"));
+    macroParameterSet->addParameter(helper::buildParameter("generator_U0Pu", 1.0));
+    macroParameterSet->addParameter(helper::buildParameter("generator_UPhase0", 0.));
+    break;
+  }
+
   macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
   macroParameterSet->addParameter(helper::buildParameter("generator_tFilter", 0.001));
 
@@ -172,7 +193,10 @@ ParGenerator::buildGeneratorMacroParameterSet(algo::GeneratorDefinition::ModelTy
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParGenerator::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP) {
+ParGenerator::updateSignalNGenerator(const std::string& modelId,
+                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                      bool fixedP,
+                                      dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(modelId));
   double value = fixedP ? constants::kGoverNullValue_ : constants::kGoverDefaultValue_;
   set->addParameter(helper::buildParameter("generator_KGover", value));
@@ -193,10 +217,21 @@ ParGenerator::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Co
     break;
   }
 
-  set->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+  switch (startingPointMode) {
+    case dfl::inputs::Configuration::StartingPointMode::WARM:
+      set->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+      break;
+    case dfl::inputs::Configuration::StartingPointMode::FLAT:
+      set->addReference(helper::buildReference("generator_P0Pu", "targetP_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("generator_Q0Pu", "targetQ_pu", "DOUBLE"));
+      set->addParameter(helper::buildParameter("generator_U0Pu", 1.0));
+      set->addParameter(helper::buildParameter("generator_UPhase0", 0.));
+      break;
+  }
+
   set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
   if (modelId == constants::remoteVControlParId) {
     set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
@@ -208,8 +243,10 @@ ParGenerator::updateSignalNGenerator(const std::string& modelId, dfl::inputs::Co
 
 boost::shared_ptr<parameters::ParametersSet>
 ParGenerator::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                                          dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP) {
-  auto set = updateSignalNGenerator(getGeneratorParameterSetId(modelType, fixedP), activePowerCompensation, fixedP);
+                                          dfl::algo::GeneratorDefinition::ModelType modelType,
+                                          bool fixedP,
+                                          dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+  auto set = updateSignalNGenerator(getGeneratorParameterSetId(modelType, fixedP), activePowerCompensation, fixedP, startingPointMode);
   switch (modelType) {
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN:
