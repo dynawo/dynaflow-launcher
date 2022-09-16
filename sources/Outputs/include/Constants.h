@@ -67,6 +67,7 @@ const std::string signalNGeneratorParId{"signalNGenerator"};                 ///
 const std::string signalNTfoGeneratorParId{"signalNTfoGenerator"};           ///< PAR id for generators using signal N and transformer
 const std::string signalNGeneratorParIdRect{"signalNGeneratorRectangular"};  ///< PAR id for generators using signal N with rectangular diagram
 const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};     ///< PAR id for generators using signal N with fixed P
+const std::string networkParId{"Network"};                                   ///< PAR id for Network
 const std::string signalNGeneratorFixedPParIdRect{
     "signalNGeneratorFixedPRectangular"};                             ///< PAR id for generators using signal N with fixed P and rectangular diagram
 const std::string propSignalNGeneratorParId{"propSignalNGenerator"};  ///< PAR id for generators using prop signal N

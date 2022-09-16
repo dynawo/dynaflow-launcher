@@ -1,0 +1,7 @@
+{
+  "dfl-config": {
+    "OutputDir": "resultsTestsTmp",
+    "StartingPointMode": "flat",
+    "ActivePowerCompensation": "P"
+  }
+}
