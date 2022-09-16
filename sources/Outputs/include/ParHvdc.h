@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Configuration.h"
 #include "Constants.h"
 #include "HVDCDefinitionAlgorithm.h"
 
@@ -44,8 +45,12 @@ class ParHvdc {
    * @param paramSetCollection parameter set collection to enrich
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
+   * @param startingPointMode starting point mode
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const std::string& basename, const boost::filesystem::path& dirname);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+              const std::string& basename,
+              const boost::filesystem::path& dirname,
+              dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:
   /**
@@ -54,11 +59,14 @@ class ParHvdc {
    * @param hvdcLine the hvdc line definition to use
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
+   * @param startingPointMode starting point mode
    *
    * @returns the parameter set
    */
-  boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename,
-                                                             const boost::filesystem::path& dirname);
+  boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition& hvdcLine,
+                                                              const std::string& basename,
+                                                              const boost::filesystem::path& dirname,
+                                                              dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
   /**
    * @brief Computes KAC emulation parameter

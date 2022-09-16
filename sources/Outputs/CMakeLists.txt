@@ -18,6 +18,7 @@ src/DydHvdc.cpp
 src/DydLoads.cpp
 src/DydSVarC.cpp
 src/Job.cpp
+src/Network.cpp
 src/Par.cpp
 src/ParDynModel.cpp
 src/ParEvent.cpp
@@ -25,6 +26,7 @@ src/ParGenerator.cpp
 src/ParHvdc.cpp
 src/ParLoads.cpp
 src/ParSVarC.cpp
+src/ParNetwork.cpp
 src/Solver.cpp
 )
 

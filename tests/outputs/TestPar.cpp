@@ -46,9 +46,19 @@ TEST(TestPar, write) {
       GeneratorDefinition("G10", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
-  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators, {},
-                                                               activePowerCompensation, {}, manager, {}, {}, {}, {}, {}));
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                                config,
+                                                                outputPath.generic_string(),
+                                                                generators,
+                                                                {},
+                                                                {},
+                                                                manager,
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                {}));
 
   parWriter.write();
 
@@ -88,10 +98,20 @@ TEST(TestPar, writeRemote) {
       GeneratorDefinition("G7", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, bus2)};
 
   outputPath.append(filename);
-  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators, {},
-                                                               activePowerCompensation, busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                               config,
+                                                               outputPath.generic_string(),
+                                                               generators,
+                                                               {},
+                                                               busesWithDynamicModel,
+                                                               manager,
+                                                               {},
+                                                               {},
+                                                               {},
+                                                               {},
+                                                               {}));
 
   parWriter.write();
 
@@ -160,9 +180,19 @@ TEST(TestPar, writeHdvc) {
   dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
   outputPath.append(filename);
-  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, hvdcDefs, activePowerCompensation,
-                                                               {}, manager, {}, {}, {}, {}, {}));
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                                config,
+                                                                outputPath.generic_string(),
+                                                                {},
+                                                                hvdcDefs,
+                                                                {},
+                                                                manager,
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                {}));
 
   parWriter.write();
 
@@ -206,9 +236,19 @@ TEST(TestPar, DynModel) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
-  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), generators, {},
-                                                               activePowerCompensation, {}, manager, counters, defs, {}, {}, {}));
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                                config,
+                                                                outputPath.generic_string(),
+                                                                generators,
+                                                                {},
+                                                                {},
+                                                                manager,
+                                                                counters,
+                                                                defs,
+                                                                {},
+                                                                {},
+                                                                {}));
 
   parWriter.write();
 
@@ -250,9 +290,19 @@ TEST(TestPar, writeStaticVarCompensator) {
                                      10., 10.),
       StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
   outputPath.append(filename);
-  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
-                                                               manager, {}, {}, {}, svarcs, {}));
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                                config,
+                                                                outputPath.generic_string(),
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                manager,
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                svarcs,
+                                                                {}));
 
   parWriter.write();
 
@@ -286,9 +336,19 @@ TEST(Dyd, writeLoad) {
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   outputPath.append(filename);
-  dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, outputPathResults, outputPath.generic_string(), {}, {}, activePowerCompensation, {},
-                                                               manager, {}, {}, {}, {}, loads));
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                                config,
+                                                                outputPath.generic_string(),
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                manager,
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                {},
+                                                                loads));
 
   parWriter.write();
 
@@ -297,4 +357,92 @@ TEST(Dyd, writeLoad) {
   reference.append(filename);
 
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(TestPar, startingPointMode) {
+  using dfl::algo::LoadDefinition;
+  using dfl::algo::GeneratorDefinition;
+  using dfl::algo::StaticVarCompensatorDefinition;
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  std::string basename = "TestStartingPointMode";
+
+  boost::filesystem::path directoryOutputPath(outputPathResults);
+  directoryOutputPath.append(basename);
+
+  if (!boost::filesystem::exists(directoryOutputPath)) {
+    boost::filesystem::create_directories(directoryOutputPath);
+  }
+
+  std::map<std::string, std::string> startingPointModeArray = { {"Default", "config_no_startingpointmode.json"},
+                                                                          {"WARM", "config_startingpointmode_warm.json"},
+                                                                          {"FLAT", "config_startingpointmode_flat.json"}};
+  for (const auto& startingPointMode : startingPointModeArray) {
+    std::string startingPointModeName = startingPointMode.first;
+    std::string startingPointModeFile = startingPointMode.second;
+
+    std::vector<LoadDefinition> loads{LoadDefinition("LOAD1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+                                      LoadDefinition("LOAD2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "Slack"),
+                                      LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")};
+    const std::string bus1 = "BUS_1";
+    std::vector<GeneratorDefinition> generators = {
+        GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
+        GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
+        GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+    std::vector<StaticVarCompensatorDefinition> svarcs{
+        StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK,
+                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
+
+    boost::filesystem::path outputPath = directoryOutputPath;
+    std::string filename = basename + startingPointModeName + ".par";
+    outputPath.append(filename);
+
+    std::string startingPointConfigFilePath = "res/" + startingPointModeFile;
+    dfl::inputs::Configuration config(startingPointConfigFilePath);
+    dfl::outputs::Par startingPointModeParWriter(dfl::outputs::Par::ParDefinition(basename,
+                                                                                  config,
+                                                                                  outputPath.generic_string(),
+                                                                                  generators,
+                                                                                  {},
+                                                                                  {},
+                                                                                  manager,
+                                                                                  {},
+                                                                                  {},
+                                                                                  {},
+                                                                                  svarcs,
+                                                                                  loads));
+
+    startingPointModeParWriter.write();
+
+    boost::filesystem::path reference("reference");
+    reference.append(basename);
+
+    std::string referenceFilename;
+    if (startingPointModeName != "Default") {
+      referenceFilename = filename;
+    } else {
+      // When StartingPointMode isn't specified, its value should be WARM
+      referenceFilename = basename + "WARM" + ".par";
+    }
+    reference.append(referenceFilename);
+
+    dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+  }
 }

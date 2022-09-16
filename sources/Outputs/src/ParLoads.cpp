@@ -8,22 +8,23 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+#include "Configuration.h"
 #include "ParLoads.h"
-
 #include "ParCommon.h"
 
 namespace dfl {
 namespace outputs {
 
 void
-ParLoads::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection) {
+ParLoads::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+                dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!loadsDefinitions_.empty()) {
-    paramSetCollection->addParametersSet(writeConstantLoadsSet());
+    paramSetCollection->addParametersSet(writeConstantLoadsSet(startingPointMode));
   }
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParLoads::writeConstantLoadsSet() {
+ParLoads::writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   // Load
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::loadParId));
   set->addParameter(helper::buildParameter("load_Alpha", 1.5));
@@ -34,8 +35,18 @@ ParLoads::writeConstantLoadsSet() {
   set->addParameter(helper::buildParameter("load_tFilter", 10.));
   set->addReference(helper::buildReference("load_P0Pu", "p0_pu", "DOUBLE"));
   set->addReference(helper::buildReference("load_Q0Pu", "q0_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("load_U0Pu", "v_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("load_UPhase0", "angle_pu", "DOUBLE"));
+
+  switch (startingPointMode) {
+  case dfl::inputs::Configuration::StartingPointMode::WARM:
+    set->addReference(helper::buildReference("load_U0Pu", "v_pu", "DOUBLE"));
+    set->addReference(helper::buildReference("load_UPhase0", "angle_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::StartingPointMode::FLAT:
+    set->addParameter(helper::buildParameter("load_U0Pu", 1.0));
+    set->addParameter(helper::buildParameter("load_UPhase0", 0.));
+    break;
+  }
+
   return set;
 }
 

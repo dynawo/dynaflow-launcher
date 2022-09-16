@@ -1,0 +1,6 @@
+{
+  "dfl-config": {
+    "OutputDir": "resultsTestsTmp",
+    "StartingPointMode": "WARM"
+  }
+}

@@ -21,9 +21,10 @@ namespace outputs {
 const std::string ParSVarC::macroParameterSetStaticCompensator_("MacroParameterSetStaticCompensator");
 
 void
-ParSVarC::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection) {
+ParSVarC::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+                dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!svarcsDefinitions_.empty()) {
-    paramSetCollection->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators());
+    paramSetCollection->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators(startingPointMode));
     for (const auto& svarc : svarcsDefinitions_) {
       if (svarc.isNetwork()) {
         continue;
@@ -34,13 +35,22 @@ ParSVarC::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSet
 }
 
 boost::shared_ptr<parameters::MacroParameterSet>
-ParSVarC::writeMacroParameterSetStaticVarCompensators() {
+ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   auto macro = boost::make_shared<parameters::MacroParameterSet>(macroParameterSetStaticCompensator_);
+
+  switch (startingPointMode) {
+  case dfl::inputs::Configuration::StartingPointMode::WARM:
+    macro->addReference(helper::buildReference("SVarC_U0Pu", "v_pu", "DOUBLE"));
+    macro->addReference(helper::buildReference("SVarC_UPhase0", "angle_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::StartingPointMode::FLAT:
+    macro->addParameter(helper::buildParameter("SVarC_U0Pu", 1.0));
+    macro->addParameter(helper::buildParameter("SVarC_UPhase0", 0.));
+    break;
+  }
 
   macro->addReference(helper::buildReference("SVarC_P0Pu", "p_pu", "DOUBLE"));
   macro->addReference(helper::buildReference("SVarC_Q0Pu", "q_pu", "DOUBLE"));
-  macro->addReference(helper::buildReference("SVarC_U0Pu", "v_pu", "DOUBLE"));
-  macro->addReference(helper::buildReference("SVarC_UPhase0", "angle_pu", "DOUBLE"));
 
   return macro;
 }

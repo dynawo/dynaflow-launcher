@@ -20,8 +20,11 @@ namespace outputs {
 
 void
 ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, const std::string& basename,
-                    const boost::filesystem::path& dirname, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel) {
+                    dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                    const std::string& basename,
+                    const boost::filesystem::path& dirname,
+                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
+                    dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   for (const auto& generator : generatorDefinitions_) {
     if (generator.isNetwork()) {
       continue;
@@ -29,7 +32,10 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
     // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
     if (!paramSetCollection->hasMacroParametersSet(getGeneratorMacroParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP))) &&
         generator.isUsingDiagram()) {
-      paramSetCollection->addMacroParameterSet(buildGeneratorMacroParameterSet(generator.model, activePowerCompensation, DYN::doubleIsZero(generator.targetP)));
+      paramSetCollection->addMacroParameterSet(buildGeneratorMacroParameterSet(generator.model,
+                                                                                activePowerCompensation,
+                                                                                DYN::doubleIsZero(generator.targetP),
+                                                                                startingPointMode));
     }
     // if generator is not using infinite diagrams, no need to create constant sets
     boost::shared_ptr<parameters::ParametersSet> paramSet;
@@ -109,15 +115,30 @@ ParGenerator::getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType mo
 
 boost::shared_ptr<parameters::MacroParameterSet>
 ParGenerator::buildGeneratorMacroParameterSet(algo::GeneratorDefinition::ModelType modelType,
-                                              inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP) {
+                                              inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                              bool fixedP,
+                                              dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
       boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(modelType, fixedP)));
+
   macroParameterSet->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
   macroParameterSet->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
-  macroParameterSet->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+
+  switch (startingPointMode) {
+  case dfl::inputs::Configuration::StartingPointMode::WARM:
+    macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "p_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "q_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_U0Pu", "v_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_UPhase0", "angle_pu", "DOUBLE"));
+    break;
+  case dfl::inputs::Configuration::StartingPointMode::FLAT:
+    macroParameterSet->addReference(helper::buildReference("generator_P0Pu", "targetP_pu", "DOUBLE"));
+    macroParameterSet->addReference(helper::buildReference("generator_Q0Pu", "targetQ_pu", "DOUBLE"));
+    macroParameterSet->addParameter(helper::buildParameter("generator_U0Pu", 1.0));
+    macroParameterSet->addParameter(helper::buildParameter("generator_UPhase0", 0.));
+    break;
+  }
+
   macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
   macroParameterSet->addParameter(helper::buildParameter("generator_tFilter", 0.001));
 

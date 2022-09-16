@@ -16,10 +16,12 @@ namespace dfl {
 namespace outputs {
 
 void
-ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const std::string& basename,
-               const boost::filesystem::path& dirname) {
+ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+                const std::string& basename,
+                const boost::filesystem::path& dirname,
+                dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   for (const auto& hvdcLine : hvdcDefinitions_.hvdcLines) {
-    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname));
+    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode));
   }
   // adding parameters sets related to remote voltage control or multiple VSC regulating same bus
   for (const auto& keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
@@ -31,7 +33,10 @@ ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetC
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string& basename, const boost::filesystem::path& dirname) {
+ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
+                        const std::string& basename,
+                        const boost::filesystem::path& dirname,
+                        dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   auto dirnameDiagram = dirname;
   dirnameDiagram.append(basename + constants::diagramDirectorySuffix);
 
@@ -70,12 +75,22 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
   set->addReference(helper::buildReference("hvdc_P10Pu", "p" + first + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_P1RefSetPu", "p" + first + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_Q10Pu", "q" + first + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_U10Pu", "v" + first + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_UPhase10", "angle" + first + "_pu", "DOUBLE"));
+  if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::WARM) {
+    set->addReference(helper::buildReference("hvdc_U10Pu", "v" + first + "_pu", "DOUBLE"));
+    set->addReference(helper::buildReference("hvdc_UPhase10", "angle" + first + "_pu", "DOUBLE"));
+  } else if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::FLAT) {
+    set->addParameter(helper::buildParameter("hvdc_U10Pu", 1.));
+    set->addParameter(helper::buildParameter("hvdc_UPhase10", 0.));
+  }
   set->addReference(helper::buildReference("hvdc_P20Pu", "p" + second + "_pu", "DOUBLE"));
   set->addReference(helper::buildReference("hvdc_Q20Pu", "q" + second + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
+  if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::WARM) {
+    set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
+    set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
+  } else if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::FLAT) {
+    set->addParameter(helper::buildParameter("hvdc_U20Pu", 1.));
+    set->addParameter(helper::buildParameter("hvdc_UPhase20", 0.));
+  }
   set->addReference(helper::buildReference("hvdc_PMaxPu", "pMax_pu", "DOUBLE"));
   set->addParameter(helper::buildParameter("hvdc_KLosses", 1.0));
 

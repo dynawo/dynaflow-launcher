@@ -50,11 +50,10 @@ class Par {
      * @brief Constructor
      *
      * @param base basename for current simulation
-     * @param dir the dirname of the output PAR file
+     * @param config configuration
      * @param filename file path for output PAR file (corresponds to basename)
      * @param gens list of the generators taken into account
      * @param hvdcDefinitions HVDC lines definitions
-     * @param activePowerCompensation the type of active power compensation
      * @param busesWithDynamicModel map of bus ids to a generator that regulates them
      * @param dynamicDataBaseManager dynamic database manager to use
      * @param counters the counters definitions to use
@@ -63,16 +62,22 @@ class Par {
      * @param svarcsDefinitions the SVarC definitions to use
      * @param loadsDefinitions the loads definitions to use
      */
-    ParDefinition(const std::string& base, const boost::filesystem::path& dir, const boost::filesystem::path& filename,
-                  const std::vector<algo::GeneratorDefinition>& gens, const algo::HVDCLineDefinitions& hvdcDefinitions,
-                  inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
-                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions, const std::vector<algo::LoadDefinition>& loadsDefinitions) :
+    ParDefinition(const std::string& base,
+                  const inputs::Configuration& config,
+                  const boost::filesystem::path& filename,
+                  const std::vector<algo::GeneratorDefinition>& gens,
+                  const algo::HVDCLineDefinitions& hvdcDefinitions,
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
+                  const dfl::inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+                  const algo::ShuntCounterDefinitions& counters,
+                  const algo::DynamicModelDefinitions& models,
+                  const algo::LinesByIdDefinitions& linesById,
+                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions,
+                  const std::vector<algo::LoadDefinition>& loadsDefinitions) :
         basename_(base),
-        dirname_(dir),
+        dirname_(config.outputDir()),
         filepath_(filename),
-        activePowerCompensation_(activePowerCompensation),
+        activePowerCompensation_(config.getActivePowerCompensation()),
         busesWithDynamicModel_(busesWithDynamicModel),
         dynamicDataBaseManager_(dynamicDataBaseManager),
         shuntCounters_(counters),
@@ -81,7 +86,8 @@ class Par {
         parSVarC_(new ParSVarC(svarcsDefinitions)),
         parHvdc_(new ParHvdc(hvdcDefinitions)),
         parGenerator_(new ParGenerator(gens)),
-        parDynModel_(new ParDynModel(models)) {}
+        parDynModel_(new ParDynModel(models)),
+        startingPointMode_(config.getStartingPointMode()) {}
 
     std::string basename_;                                                         ///< basename
     boost::filesystem::path dirname_;                                              ///< Dirname of output file relative to execution dir
@@ -96,6 +102,7 @@ class Par {
     std::shared_ptr<ParHvdc> parHvdc_;                                             ///< reference to hvdcs par writer
     std::shared_ptr<ParGenerator> parGenerator_;                                   ///< reference to generators par writer
     std::shared_ptr<ParDynModel> parDynModel_;                                     ///< reference to defined dynamic model par writer
+    dfl::inputs::Configuration::StartingPointMode startingPointMode_;              ///< starting point mode
   };
 
   /**
