@@ -13,6 +13,7 @@
     <par name="linearSolverName" type="STRING" value="KLU"/>
     <par name="maxNewtonTry" type="INT" value="10"/>
     <par name="minimumModeChangeTypeForAlgebraicRestoration" type="STRING" value="ALGEBRAIC_J_UPDATE"/>
+    <par name="minimumModeChangeTypeForAlgebraicRestorationInit" type="STRING" value="ALGEBRAIC_J_UPDATE"/>
     <par name="msbset" type="INT" value="0"/>
     <par name="msbsetAlg" type="INT" value="1"/>
     <par name="msbsetAlgJ" type="INT" value="1"/>
