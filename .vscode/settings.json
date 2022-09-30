@@ -8,16 +8,18 @@
     },
 
     "cmake.sourceDirectory": "${workspaceFolder}",
-    "cmake.buildDirectory": "${workspaceFolder}/build-code/dynaflow-launcher",
+    "cmake.buildDirectory": "${workspaceFolder}/build-code/build/dynaflow-launcher/${buildType}",
 
     "cmake.configureSettings": {
-        "DYNAWO_HOME": "${workspaceFolder}/../dynawo/build-code/deploy",
-        "DYNAWO_ALGORITHMS_HOME": "${workspaceFolder}/../dynawo-algorithms/build-code/deploy",
+        "DYNAWO_HOME": "${workspaceFolder}/../dynawo/build-code/deploy/${buildType}/dynawo",
+        "DYNAWO_ALGORITHMS_HOME": "${workspaceFolder}/../dynawo-algorithms/build-code/deploy/${buildType}/dynawo-algorithms",
         "DYNAFLOW_LAUNCHER_HOME": "${workspaceFolder}",
 
-        "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/build-code/install/dynaflow-launcher",
+        "CMAKE_INSTALL_PREFIX": "${workspaceFolder}/build-code/install/dynaflow-launcher/${buildType}",
 
-        "DYNAFLOW_LAUNCHER_USE_DOXYGEN": "OFF"
+        "DYNAFLOW_LAUNCHER_USE_DOXYGEN": "OFF",
+        "GTEST_ROOT": "${workspaceFolder}/../dynawo/build-code/deploy/Debug/dynawo",
+        "GMOCK_HOME": "${workspaceFolder}/../dynawo/build-code/deploy/Debug/dynawo"
     },
 
     "files.exclude": {
@@ -27,6 +29,8 @@
     "files.watcherExclude": {
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
-        "build-code": true
+        "build-code": true,
+        "build-clion": true,
+        "install-clion": true
       }
 }
