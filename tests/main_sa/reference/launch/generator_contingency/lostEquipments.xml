@@ -1,9 +1,2 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<lostEquipments xmlns="http://www.rte-france.com/dynawo">
-  <lostEquipment id="_046783f3-c766-11e1-8775-005056c00008" type="LINE"/>
-  <lostEquipment id="_04581aa5-c766-11e1-8775-005056c00008" type="LINE"/>
-  <lostEquipment id="_044ef2e1-c766-11e1-8775-005056c00008" type="LINE"/>
-  <lostEquipment id="_045c3958-c766-11e1-8775-005056c00008" type="LINE"/>
-  <lostEquipment id="_04689568-c766-11e1-8775-005056c00008" type="LINE"/>
-  <lostEquipment id="_046b7b92-c766-11e1-8775-005056c00008" type="LINE"/>
-</lostEquipments>
+<lostEquipments xmlns="http://www.rte-france.com/dynawo"/>
