@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<lostEquipments xmlns="http://www.rte-france.com/dynawo"/>
+<lostEquipments xmlns="http://www.rte-france.com/dynawo">
+  <lostEquipment id="_046bf0c4-c766-11e1-8775-005056c00008" type="GENERATOR"/>
+  <lostEquipment id="InternalAsBreaker_gen" type="SWITCH"/>
+</lostEquipments>

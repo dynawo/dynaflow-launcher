@@ -37,8 +37,10 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_bea273f1-1e21-476d-b0d0-92dd6cb9a2d4</iidm:alias>
                     <iidm:alias>_c94e6b68-da6c-43d1-94fd-09ad60c74134</iidm:alias>
                 </iidm:switch>
+                <iidm:switch id="internalAsBreaker" name="MYBREAKER" kind="BREAKER" retained="true" open="false" node1="8" node2="0">
+                </iidm:switch>
                 <iidm:internalConnection node1="7" node2="0"/>
-                <iidm:internalConnection node1="8" node2="0"/>
+                <!--iidm:internalConnection node1="8" node2="0"/-->
                 <iidm:internalConnection node1="9" node2="1"/>
                 <iidm:internalConnection node1="10" node2="2"/>
                 <iidm:internalConnection node1="11" node2="4"/>
@@ -233,9 +235,11 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_ca73dc61-46db-48cd-b6ac-020490792c8b</iidm:alias>
                     <iidm:alias>_3b667f9d-2ac9-4b00-b8ec-120472c203a4</iidm:alias>
                 </iidm:switch>
+                <iidm:switch id="InternalAsBreaker" name="MYBREAKER" kind="BREAKER" retained="true" open="false" node1="21" node2="0">
+                </iidm:switch>
                 <iidm:internalConnection node1="19" node2="0"/>
                 <iidm:internalConnection node1="20" node2="0"/>
-                <iidm:internalConnection node1="21" node2="0"/>
+                <!--iidm:internalConnection node1="21" node2="0"/-->
                 <iidm:internalConnection node1="22" node2="1"/>
                 <iidm:internalConnection node1="23" node2="2"/>
                 <iidm:internalConnection node1="24" node2="4"/>
@@ -557,9 +561,10 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_3c7306cd-aaf6-4452-bf95-aa1b65184654</iidm:alias>
                     <iidm:alias>_5422d93f-8f56-4ece-b98d-d6bfdacfbced</iidm:alias>
                 </iidm:switch>
+                <iidm:switch id="InternalAsBreaker_shunt" name="MYBREAKER" kind="BREAKER" retained="true" open="false" node1="9" node2="0"/>
                 <iidm:internalConnection node1="7" node2="0"/>
                 <iidm:internalConnection node1="8" node2="0"/>
-                <iidm:internalConnection node1="9" node2="0"/>
+                <!--iidm:internalConnection node1="9" node2="0"/-->
                 <iidm:internalConnection node1="10" node2="1"/>
                 <iidm:internalConnection node1="11" node2="2"/>
                 <iidm:internalConnection node1="12" node2="4"/>
@@ -1037,9 +1042,11 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                     <iidm:alias>_8705133d-cdf1-4be9-b24f-e9b2e676a388</iidm:alias>
                     <iidm:alias>_a47fb97d-2d7b-4251-9f17-312b1e07eac5</iidm:alias>
                 </iidm:switch>
+                <iidm:switch id="InternalAsBreaker_gen" name="MYBREAKER" kind="BREAKER" retained="true" open="false" node1="15" node2="0">
+                </iidm:switch>
                 <iidm:internalConnection node1="13" node2="0"/>
                 <iidm:internalConnection node1="14" node2="0"/>
-                <iidm:internalConnection node1="15" node2="0"/>
+                <!--iidm:internalConnection node1="15" node2="0"/-->
                 <iidm:internalConnection node1="16" node2="1"/>
                 <iidm:internalConnection node1="17" node2="2"/>
                 <iidm:internalConnection node1="18" node2="4"/>
@@ -1347,9 +1354,9 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:switch id="_83a05cd7-017e-4e7a-bc5e-a01ee9681f9f-1" name="DISCONNECTOR725-1" kind="DISCONNECTOR" retained="false" open="false" node1="14" node2="15"/>
                 <iidm:switch id="_cf4393c0-21c2-4e35-b330-c1acda2647ba-1" name="BREAKER363-1" kind="BREAKER" retained="false" open="true" node1="13" node2="14"/>
                 <iidm:switch id="_b9ab29b9-3d90-4536-8d1a-7757d8c22ae4-1" name="DISCONNECTOR726-1" kind="DISCONNECTOR" retained="false" open="false" node1="0" node2="13"/>
-
+                <iidm:switch id="InternalAsBreaker_svc" name="MYBREAKER" kind="BREAKER" retained="true" open="false" node1="5" node2="0"/>
                 <iidm:internalConnection node1="4" node2="0"/>
-                <iidm:internalConnection node1="5" node2="0"/>
+                <!--iidm:internalConnection node1="5" node2="0"/-->
                 <iidm:internalConnection node1="6" node2="1"/>
                 <iidm:internalConnection node1="7" node2="2"/>
                 <iidm:internalConnection node1="8" node2="0"/>
@@ -4763,7 +4770,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:switch id="_4d08a684-cdcb-484a-a767-03b10f4ada7f-1" name="DISCONNECTOR735-1" kind="DISCONNECTOR" retained="false" open="false" node1="14" node2="15"/>
                 <iidm:switch id="_f468d841-1bf6-470e-85d4-55d34fab8bff-1" name="BREAKER368-1" kind="BREAKER" retained="true" open="false" node1="13" node2="14"/>
                 <iidm:switch id="_f193bd8f-badf-4600-82ac-f212d1f33534-1" name="DISCONNECTOR736-1" kind="DISCONNECTOR" retained="false" open="false" node1="0" node2="13"/>
-
+                <iidm:switch id="InternalAsBreaker_hvdc" name="MYBREAKER" kind="BREAKER" retained="true" open="false" node1="12" node2="0"/>
                 <iidm:internalConnection node1="4" node2="0"/>
                 <iidm:internalConnection node1="5" node2="1"/>
                 <iidm:internalConnection node1="6" node2="2"/>
@@ -4772,7 +4779,7 @@ cas-1.1.3-data-4.0.3/SmallGrid/NodeBreaker/CGMES_v2.4.15_SmallGridTestConfigurat
                 <iidm:internalConnection node1="9" node2="2"/>
                 <iidm:internalConnection node1="10" node2="3"/>
                 <iidm:internalConnection node1="11" node2="3"/>
-                <iidm:internalConnection node1="12" node2="0"/>
+                <!--iidm:internalConnection node1="12" node2="0"/-->
                 <iidm:bus v="382.187561" angle="-12.6222725" nodes="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"/>
             </iidm:nodeBreakerTopology>
             <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0.0" powerFactor="0.8574929257" node="12" p="10.0" q="6.0">
