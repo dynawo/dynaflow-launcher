@@ -43,7 +43,7 @@ class Configuration {
    * @param simulationKind the simulation kind (Steady state or Security analysis)
    */
   explicit Configuration(const boost::filesystem::path& filepath,
-                          dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
+                         dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
   /**
    * @brief determines if we use infinite reactive limits
    *
@@ -96,6 +96,15 @@ class Configuration {
    */
   double getDsoVoltageLevel() const {
     return dsoVoltageLevel_;
+  }
+
+  /**
+   * @brief Retrieves the maximum voltage level for which we assume that generator's transfos are in the static model
+   *
+   * @returns the parameter value
+   */
+  double getTfoVoltageLevel() const {
+    return tfoVoltageLevel_;
   }
 
   /**
@@ -182,14 +191,9 @@ class Configuration {
    *
    * enum that gathers all possible chosen outputs
    */
-  enum class ChosenOutputEnum : size_t {
-    STEADYSTATE = 0,
-    CONSTRAINTS,
-    LOSTEQ,
-    TIMELINE
-  };
+  enum class ChosenOutputEnum : size_t { STEADYSTATE = 0, CONSTRAINTS, LOSTEQ, TIMELINE };
 
-   /**
+  /**
    * @brief Hash structure for chosenOutputEnum
    */
   struct ChosenOutputHash {
@@ -238,6 +242,7 @@ class Configuration {
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
   double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
+  double tfoVoltageLevel_ = 100;  ///< Maximum voltage level for which we assume that generator's transfos are in the static model
 };
 
 }  // namespace inputs

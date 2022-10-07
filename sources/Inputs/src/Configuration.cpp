@@ -83,8 +83,7 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path& filepath,
-                              dfl::inputs::Configuration::SimulationKind simulationKind) {
+Configuration::Configuration(const boost::filesystem::path& filepath, dfl::inputs::Configuration::SimulationKind simulationKind) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -121,6 +120,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath,
     helper::updateValue(stopTime_, config, "StopTime");
     helper::updateValue(timeOfEvent_, config, "sa.TimeOfEvent");
     helper::updateValue(timeStep_, config, "TimeStep");
+    helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel");
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());
@@ -128,14 +128,13 @@ Configuration::Configuration(const boost::filesystem::path& filepath,
 }
 
 void
-Configuration::updateChosenOutput(
-  const boost::property_tree::ptree& tree,
+Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
 #if _DEBUG_
-  dfl::inputs::Configuration::SimulationKind
+                                  dfl::inputs::Configuration::SimulationKind
 #else
-  dfl::inputs::Configuration::SimulationKind simulationKind
+                                  dfl::inputs::Configuration::SimulationKind simulationKind
 #endif
-  ) {
+) {
 #if _DEBUG_
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
@@ -143,16 +142,16 @@ Configuration::updateChosenOutput(
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
 #else
   switch (simulationKind) {
-    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
-      chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
-      break;
-    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-      chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
-      chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
-      break;
+  case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+    chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
+    break;
+  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+    chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
+    chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
+    break;
   }
 #endif
-  const boost::optional<const boost::property_tree::ptree &>& optionalChosenOutputs = tree.get_child_optional("ChosenOutputs");
+  const boost::optional<const boost::property_tree::ptree&>& optionalChosenOutputs = tree.get_child_optional("ChosenOutputs");
   if (optionalChosenOutputs) {
     for (auto& chosenOutputElement : *optionalChosenOutputs) {
       const std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();

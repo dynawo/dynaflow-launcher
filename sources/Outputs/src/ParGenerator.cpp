@@ -32,13 +32,19 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
       paramSetCollection->addMacroParameterSet(buildGeneratorMacroParameterSet(generator.model, activePowerCompensation, DYN::doubleIsZero(generator.targetP)));
     }
     // if generator is not using infinite diagrams, no need to create constant sets
+    boost::shared_ptr<parameters::ParametersSet> paramSet;
     if (generator.isUsingDiagram()) {
-      paramSetCollection->addParametersSet(writeGenerator(generator, basename, dirname));
+      paramSet = writeGenerator(generator, basename, dirname);
     } else {
       if (!paramSetCollection->hasParametersSet(getGeneratorParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP)))) {
-        paramSetCollection->addParametersSet(writeConstantGeneratorsSets(activePowerCompensation, generator.model, DYN::doubleIsZero(generator.targetP)));
+        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator.model, DYN::doubleIsZero(generator.targetP));
       }
     }
+    if (paramSet && generator.hasTransformer()) {
+      updateTransfoParameters(generator, paramSet);
+    }
+    if (paramSet && !paramSetCollection->hasParametersSet(paramSet->getId()))
+      paramSetCollection->addParametersSet(paramSet);
   }
   // adding parameters sets related to remote voltage control or multiple generator regulating same bus
   for (const auto& keyValue : busesWithDynamicModel) {
@@ -90,6 +96,9 @@ ParGenerator::getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType mo
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
   case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
     id = fixedP ? constants::remoteSignalNGeneratorFixedP : constants::remoteVControlParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE:
+    id = constants::signalNTfoGeneratorParId;
     break;
   default:
     id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
@@ -207,13 +216,7 @@ ParGenerator::writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowe
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR:
     updatePropParameters(set);
     break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
-  case algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
-  case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN:
-  case algo::GeneratorDefinition::ModelType::NETWORK:
-  case algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR:
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR:
+  default:
     break;
   }
   return set;
@@ -233,8 +236,13 @@ ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::st
   // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
   // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
   // on the limit of the reactive capability curve
-  set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
-  set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
+  if (def.hasTransformer() && (!def.isUsingDiagram() || def.isUsingRectangularDiagram())) {
+    set->addParameter(helper::buildParameter("generator_QMin", def.qmin - 1));
+    set->addParameter(helper::buildParameter("generator_QMax", def.qmax + 1));
+  } else {
+    set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
+    set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
+  }
 
   if (!def.isUsingRectangularDiagram()) {
     auto dirname_diagram = dirname;
@@ -252,6 +260,16 @@ void
 ParGenerator::updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set) {
   set->addReference(helper::buildReference("generator_QRef0Pu", "targetQ_pu", "DOUBLE"));
   set->addReference(helper::buildReference("generator_QPercent", "qMax_pu", "DOUBLE"));
+}
+
+void
+ParGenerator::updateTransfoParameters(const algo::GeneratorDefinition& generator, boost::shared_ptr<parameters::ParametersSet> set) {
+  // TODO(rosiereflo) We assume here that QNom = QMax which might not be always true ...
+  set->addReference(helper::buildReference("generator_QNomAlt", "qMax", "DOUBLE"));
+  set->addParameter(helper::buildParameter("generator_SNom", sqrt(generator.pmax * generator.pmax + generator.qmax * generator.qmax)));
+  set->addParameter(helper::buildParameter("generator_RTfoPu", 0.0029));
+  set->addParameter(helper::buildParameter("generator_rTfoPu", 0.9535));
+  set->addParameter(helper::buildParameter("generator_XTfoPu", 0.1228));
 }
 
 }  // namespace outputs

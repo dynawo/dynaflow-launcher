@@ -122,21 +122,27 @@ The parameters are described below:
 \rowcolor{white}
 \multirow{-2}{*}{\small{OutputDir}}&  \multirow{-2}{*}{\small{string}} & \small{outputs will be written}  &  \multirow{-2}{*}{\small{current path}} \\
 \rowcolor{gray!10}
-\small{DsoVoltageLevel} & \small{real} & \small{Minimum voltage level of loads} & \small{45} \\
+\small{DsoVoltageLevel} & \small{real} & \small{Minimum voltage level of loads} & \small{45}
+\\\rowcolor{white}
+&  & \small{Maximum voltage for which} &  \\
 \rowcolor{white}
+\multirow{-2}{*}{\small{TfoVoltageLevel}}&  \multirow{-2}{*}{\small{real}} & \small{generator transformers are in iidm}  &  \multirow{-2}{*}{\small{100}} \\
+\rowcolor{gray!10}
  & & \small{Active power compensation type:} & \\
-\rowcolor{white}
+\rowcolor{gray!10}
 \multirow{-2}{*}{\small{ActivePowerCompensation}} & \multirow{-2}{*}{\small{enum}}& \small{P, TARGET\_P or PMAX} & \multirow{-2}{*}{\small{PMAX}} \\
-\rowcolor{gray!10}
+\rowcolor{white}
 \small{StartTime} & \small{integer} & \small{Simulation start time (in s)} & \small{0} \\
-\rowcolor{white}
-\small{StopTime} & \small{integer} & \small{Simulation stop time (in s)} & \small{100} \\
 \rowcolor{gray!10}
-\small{TimeStep} & \small{real} & \small{Maximum time solver step value} & \small{10} \\
+\small{StopTime} & \small{integer} & \small{Simulation stop time (in s)} & \small{100} \\
 \rowcolor{white}
-\multirow{3}{*}{\small{ChosenOutputs}} & \multirow{3}{*}{\small{struct}} & \multirow{2}{*}{\small{Chosen outputs to configure}} & \small{Depends on the} \\
-& & \multirow{2}{*}{\small{the .jobs file}} & \small{buildtype and the} \\
-& & & \small{simulation kind} \\
+\small{TimeStep} & \small{real} & \small{Maximum time solver step value} & \small{10} \\
+\rowcolor{gray!10}
+& & & \small{Depends on the} \\
+\rowcolor{gray!10}
+& & & \small{buildtype and the} \\
+\rowcolor{gray!10}
+\multirow{-3}{*}{\small{ChosenOutputs}} & \multirow{-3}{*}{\small{struct}}  & \multirow{-3}{*}{\small{Chosen outputs}} & \small{simulation kind} \\
 \bottomrule
 \end{tabular}
 \caption{Simulation parameters}

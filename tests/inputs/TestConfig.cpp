@@ -8,15 +8,18 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "Log.h"
-
 #include "Configuration.h"
+#include "Log.h"
 #include "Tests.h"
 
 #include <DYNCommon.h>
 #include <gtest_dynawo.h>
 
 using DYN::doubleEquals;
+
+TEST(Config, Incorrect) {
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
+}
 
 TEST(Config, Nominal) {
   dfl::inputs::Configuration config("res/config.json");
@@ -28,7 +31,8 @@ TEST(Config, Nominal) {
   ASSERT_EQ(config.settingFilePath().generic_string(), "res/setting.xml");
   ASSERT_EQ(config.assemblingFilePath().generic_string(), "res/assembling.xml");
   ASSERT_EQ("/tmp", config.outputDir());
-  ASSERT_EQ(63.0, config.getDsoVoltageLevel());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(63.0, config.getDsoVoltageLevel());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(150., config.getTfoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::P, config.getActivePowerCompensation());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10, config.getStartTime());
   ASSERT_DOUBLE_EQUALS_DYNAWO(120, config.getStopTime());
@@ -58,7 +62,8 @@ TEST(Config, Default) {
   ASSERT_EQ(config.settingFilePath().generic_string(), "");
   ASSERT_EQ(config.assemblingFilePath().generic_string(), "");
   ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
-  ASSERT_EQ(45.0, config.getDsoVoltageLevel());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(45.0, config.getDsoVoltageLevel());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(100., config.getTfoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeStep());
@@ -85,27 +90,27 @@ TEST(Config, ChosenOutputTest) {
   */
 
   dfl::inputs::Configuration::SimulationKind simulationKindsArray[2] = {dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION,
-                                                                          dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS};
+                                                                        dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS};
   for (dfl::inputs::Configuration::SimulationKind simulationKind : simulationKindsArray) {
     std::map<const std::string, const int> configFileToChosenOutputMap;
-  #if _DEBUG_
+#if _DEBUG_
     configFileToChosenOutputMap = {{"../outputs/res/config_empty.json", 0b1111},
-                                    {"../outputs/res/config_only_lost_equipments_chosen.json", 0b1111},
-                                    {"../outputs/res/config_all_chosen_outputs.json", 0b1111}};
-  #else
+                                   {"../outputs/res/config_only_lost_equipments_chosen.json", 0b1111},
+                                   {"../outputs/res/config_all_chosen_outputs.json", 0b1111}};
+#else
     switch (simulationKind) {
-      case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
-        configFileToChosenOutputMap = {{"../outputs/res/config_empty.json", 0b1000},
-                                      {"../outputs/res/config_only_lost_equipments_chosen.json", 0b1001},
-                                      {"../outputs/res/config_all_chosen_outputs.json", 0b1111}};
-        break;
-      case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-        configFileToChosenOutputMap = {{"../outputs/res/config_empty.json", 0b0101},
-                                      {"../outputs/res/config_only_timeline_chosen.json", 0b0111},
-                                      {"../outputs/res/config_all_chosen_outputs.json", 0b1111}};
-        break;
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+      configFileToChosenOutputMap = {{"../outputs/res/config_empty.json", 0b1000},
+                                     {"../outputs/res/config_only_lost_equipments_chosen.json", 0b1001},
+                                     {"../outputs/res/config_all_chosen_outputs.json", 0b1111}};
+      break;
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+      configFileToChosenOutputMap = {{"../outputs/res/config_empty.json", 0b0101},
+                                     {"../outputs/res/config_only_timeline_chosen.json", 0b0111},
+                                     {"../outputs/res/config_all_chosen_outputs.json", 0b1111}};
+      break;
     }
-  #endif
+#endif
 
     ASSERT_FALSE(configFileToChosenOutputMap.empty());
 

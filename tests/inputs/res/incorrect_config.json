@@ -1,20 +1,22 @@
 {
   "dfl-config": {
     "InfiniteReactiveLimits": "true",
-    "ChosenOutputs" : ["STEADYSTATE", "LOSTEQ", "TIMELINE", "CONSTRAINTS"],
+    "ChosenOutputs" : ["TIMELINE"],
     "SVCRegulationOn": "false",
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
-    "TfoVoltageLevel": 100.0,
+    "TfoVoltageLevel": 150.0,
     "ActivePowerCompensation": "P",
-    "StartTime": 10,
+    "SettingPath": "res/setting.xml",
+    "AssemblingPath": "res/assembling.xml",
+    "StartTime": "Hello",
     "StopTime": 120,
+    "Precision": 1e-3,
     "sa": {
-      "TimeOfEvent": 50,
-      "NumberOfThreads": 6
+      "TimeOfEvent": 50
     },
-    "TimeStep" : 2.6
+    "TimeStep": 2.6
   }
 }

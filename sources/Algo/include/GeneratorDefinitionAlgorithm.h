@@ -36,15 +36,18 @@ class GeneratorDefinition {
    * @brief Generator model type
    */
   enum class ModelType {
-    SIGNALN_INFINITE = 0,        ///< Use GeneratorPVSignalN model with infinite diagram
-    SIGNALN_RECTANGULAR,         ///< Use GeneratorPVSignalN model with rectangular diagram
-    DIAGRAM_PQ_SIGNALN,          ///< Use GeneratorPVDiagramPQSignalN model
-    REMOTE_SIGNALN_INFINITE,     ///< Use GeneratorPVRemoteSignalN
-    REMOTE_SIGNALN_RECTANGULAR,  ///< Use GeneratorPVRemoteSignalN with rectangular diagram
-    REMOTE_DIAGRAM_PQ_SIGNALN,   ///< Use GeneratorPVRemoteDiagramPQSignalN
-    PROP_SIGNALN_INFINITE,       ///< Use GeneratorPQPropSignalN
-    PROP_SIGNALN_RECTANGULAR,    ///< Use GeneratorPQPropSignalN with rectangular diagram
-    PROP_DIAGRAM_PQ_SIGNALN,     ///< Use GeneratorPQPropDiagramPQSignalN
+    SIGNALN_INFINITE = 0,        ///< Use signalN generator model with infinite diagram
+    SIGNALN_RECTANGULAR,         ///< Use signalN generator model with rectangular diagram
+    DIAGRAM_PQ_SIGNALN,          ///< Use signalN generator model
+    SIGNALN_TFO_INFINITE,        ///< Use signalN generator model with infinite diagram and tfo
+    SIGNALN_TFO_RECTANGULAR,     ///< Use signalN generator model with rectangular diagram and tfo
+    DIAGRAM_PQ_TFO_SIGNALN,      ///< Use signalN generator model and tfo
+    REMOTE_SIGNALN_INFINITE,     ///< Use signalN generator regulating remote nodes with infinite diagram
+    REMOTE_SIGNALN_RECTANGULAR,  ///< Use signalN generator regulating remote nodes with rectangular diagram
+    REMOTE_DIAGRAM_PQ_SIGNALN,   ///< Use signalN generator regulating remote nodes
+    PROP_SIGNALN_INFINITE,       ///< Use signalN generator sharing node regulation with infinite diagram
+    PROP_SIGNALN_RECTANGULAR,    ///< Use signalN generator sharing node regulation with rectangular diagram
+    PROP_DIAGRAM_PQ_SIGNALN,     ///< Use Use signalN generator sharing node regulation
     NETWORK                      ///< Use network cpp model
   };
   using ReactiveCurvePoint = inputs::Generator::ReactiveCurvePoint;  ///< Alias for reactive curve point
@@ -57,7 +60,7 @@ class GeneratorDefinition {
    */
   bool isUsingDiagram() const {
     return model != ModelType::SIGNALN_INFINITE && model != ModelType::REMOTE_SIGNALN_INFINITE && model != ModelType::PROP_SIGNALN_INFINITE &&
-           model != ModelType::NETWORK;
+           model != ModelType::SIGNALN_TFO_INFINITE && model != ModelType::NETWORK;
   }
   /**
    * @brief test is the generator has a rectangular diagram
@@ -65,7 +68,16 @@ class GeneratorDefinition {
    * @return @b true if the diagram is rectangular, @b false otherwise
    */
   bool isUsingRectangularDiagram() const {
-    return model == ModelType::SIGNALN_RECTANGULAR || model == ModelType::REMOTE_SIGNALN_RECTANGULAR || model == ModelType::PROP_SIGNALN_RECTANGULAR;
+    return model == ModelType::SIGNALN_RECTANGULAR || model == ModelType::SIGNALN_TFO_RECTANGULAR || model == ModelType::REMOTE_SIGNALN_RECTANGULAR ||
+           model == ModelType::PROP_SIGNALN_RECTANGULAR;
+  }
+  /**
+   * @brief test is the generator has a tranformer
+   *
+   * @return @b true if the diagram has a tranformer, @b false otherwise
+   */
+  bool hasTransformer() const {
+    return model == ModelType::SIGNALN_TFO_INFINITE || model == ModelType::SIGNALN_TFO_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_SIGNALN;
   }
   /**
    * @brief determines if the generator model type is network
@@ -134,9 +146,10 @@ class GeneratorDefinitionAlgorithm {
    * @param busesWithDynamicModel map of bus ids to a generator that regulates them
    * @param busMap mapping of busId and the number of generators that regulates them
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
+   * @param tfoVoltageLevel maximum voltage level for which we assume that generator's transfos are in the static model
    */
   GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel, const inputs::NetworkManager::BusMapRegulating& busMap,
-                               bool infinitereactivelimits);
+                               bool infinitereactivelimits, double tfoVoltageLevel);
 
   /**
    * @brief Perform algorithm
@@ -194,7 +207,8 @@ class GeneratorDefinitionAlgorithm {
   Generators& generators_;                                  ///< the generators list to update
   BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
   const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
-  bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used
+  bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used,
+  double tfoVoltageLevel_;                                  ///< Maximum voltage level for which we assume that generator's transfos are in the static model
 };
 }  // namespace algo
 }  // namespace dfl

@@ -26,6 +26,9 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> DydG
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "GeneratorPVTfoSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "GeneratorPVTfoSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "GeneratorPVTfoDiagramPQSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "GeneratorPVRemoteSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "GeneratorPVRemoteSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "GeneratorPVRemoteDiagramPQSignalN"),
@@ -122,6 +125,9 @@ DydGenerator::getSpecificParId(const dfl::algo::GeneratorDefinition& generator) 
   switch (generator.model) {
   case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
     parId = (DYN::doubleIsZero(generator.targetP)) ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE:
+    parId = constants::signalNTfoGeneratorParId;
     break;
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
     parId = constants::propSignalNGeneratorParId;

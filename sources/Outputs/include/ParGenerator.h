@@ -114,6 +114,14 @@ class ParGenerator {
   void updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set);
 
   /**
+   * @brief Update parameter set with transformer parameters
+   *
+   * @param generator the generator definition to use
+   * @param set the parameter set to update
+   */
+  void updateTransfoParameters(const algo::GeneratorDefinition& generator, boost::shared_ptr<parameters::ParametersSet> set);
+
+  /**
    * @brief Write generator parameter set
    *
    * @param def the generator definition to use

@@ -7,6 +7,7 @@
     "AutomaticSlackBusOn": "false",
     "OutputDir": "/tmp",
     "DsoVoltageLevel": 63.0,
+    "TfoVoltageLevel": 150.0,
     "ActivePowerCompensation": "P",
     "SettingPath": "res/setting.xml",
     "AssemblingPath": "res/assembling.xml",
