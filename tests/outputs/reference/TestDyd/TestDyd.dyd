@@ -33,6 +33,12 @@
   <dyn:blackBoxModel id="G4" staticId="G4" lib="GeneratorPVSignalN" parFile="TestDyd.par" parId="signalNGeneratorFixedP">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G6" staticId="G6" lib="GeneratorPVTfoSignalN" parFile="TestDyd.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="G7" staticId="G7" lib="GeneratorPVTfoDiagramPQSignalN" parFile="TestDyd.par" parId="12811459763870767443">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
   <dyn:blackBoxModel id="L0" staticId="L0" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDyd.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
@@ -56,5 +62,9 @@
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N" index2="1"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G4" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G6" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G6" id2="Model_Signal_N" index2="4"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G7" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G7" id2="Model_Signal_N" index2="5"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
 </dyn:dynamicModelsArchitecture>

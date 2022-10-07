@@ -92,8 +92,36 @@ or not and if the reactive capability curve (diagram) of the generator is rectan
 \scriptsize{regulates the same node} & \multirow{-2}{*}{\scriptsize{true}} & \multirow{-2}{*}{\scriptsize{-}} & \scriptsize{+ VRRemote model} \\
 \bottomrule
 \end{tabular}
-\caption{Generators modelling.}
+\caption{Generators modelling when $targetV \leq TfoVoltageLevel$}
 \label{tab:generators_modelling}
+\end{table}
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c | c}
+\toprule
+\scriptsize{\textbf{{Voltage regulation}}} & \scriptsize{\textbf{{InfiniteReactiveLimits}}} & \scriptsize{\textbf{{Rectangular diagram}}} & \scriptsize{\textbf{{Model}}}\\
+\midrule
+\rowcolor{white}
+ \scriptsize{None}  & \scriptsize{-} & \scriptsize{-} & \scriptsize{fixed PQ generator} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{false} & \scriptsize{GeneratorPVTfoDiagramPQSignalN} \\
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{-} & \scriptsize{true} & \scriptsize{GeneratorPVTfoSignalN} \\
+\rowcolor{gray!10}
+\scriptsize{Another generator}&  &  & \\
+\rowcolor{gray!10}
+\scriptsize{regulates the same node} & \multirow{-2}{*}{\scriptsize{false}} & \multirow{-2}{*}{\scriptsize{false}} & \multirow{-2}{*}{\scriptsize{GeneratorPVTfoDiagramPQSignalN}}  \\
+\rowcolor{white}
+\scriptsize{Another generator}&  & & \\
+\rowcolor{white}
+\scriptsize{regulates the same node} & \multirow{-2}{*}{\scriptsize{-}} & \multirow{-2}{*}{\scriptsize{-}} & \multirow{-2}{*}{\scriptsize{GeneratorPVTfoSignalN}} \\
+\rowcolor{gray!10}
+ \scriptsize{At a distant bus} & \scriptsize{-} & \scriptsize{-} & \scriptsize{\bf{Not Supported}} \\
+\bottomrule
+\end{tabular}
+\caption{Generators modelling when $targetV > TfoVoltageLevel$}
+\label{tab:generators_modelling_tfo}
 \end{table}
 
 \par Concerning the active power balancing:

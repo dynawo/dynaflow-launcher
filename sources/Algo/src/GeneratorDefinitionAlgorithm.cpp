@@ -18,11 +18,13 @@ namespace dfl {
 namespace algo {
 
 GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel,
-                                                           const inputs::NetworkManager::BusMapRegulating& busMap, bool infinitereactivelimits) :
+                                                           const inputs::NetworkManager::BusMapRegulating& busMap, bool infinitereactivelimits,
+                                                           double tfoVoltageLevel) :
     generators_(gens),
     busesWithDynamicModel_(busesWithDynamicModel),
     busMap_(busMap),
-    useInfiniteReactivelimits_{infinitereactivelimits} {}
+    useInfiniteReactivelimits_{infinitereactivelimits},
+    tfoVoltageLevel_(tfoVoltageLevel) {}
 
 void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes) {
@@ -36,40 +38,60 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
       dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGenerators = it->second;
       model = ModelType::SIGNALN_INFINITE;
       algoRes->isAtLeastOneGeneratorRegulating = true;
-      if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
+      if (generator.targetV > tfoVoltageLevel_) {
+        if (generator.regulatedBusId != generator.connectedBusId) {
+          throw Error(UnsuportedGeneratorRemoteRegulationWithTfo, generator.id);
+        }
+        // Generator is assumed to have its transfo in the static model
+        // Several generators regulate this node
         if (useInfiniteReactivelimits_) {
-          model = ModelType::PROP_SIGNALN_INFINITE;
+          model = ModelType::SIGNALN_TFO_INFINITE;
         } else {
-          model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+          model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_SIGNALN;
         }
         busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
       } else {
-        switch (nbOfRegulatingGenerators) {
-        case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
-          if (generator.regulatedBusId == generator.connectedBusId) {
-            if (useInfiniteReactivelimits_) {
-              model = ModelType::SIGNALN_INFINITE;
-            } else {
-              model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
-            }
-          } else {
-            if (useInfiniteReactivelimits_) {
-              model = ModelType::REMOTE_SIGNALN_INFINITE;
-            } else {
-              model = isDiagramRectangular(generator) ? ModelType::REMOTE_SIGNALN_RECTANGULAR : ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
-            }
-          }
-          break;
-        case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
+        // Generator is assumed to have its transfo in the static model
+        if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
+          // Several generators regulate this node
           if (useInfiniteReactivelimits_) {
             model = ModelType::PROP_SIGNALN_INFINITE;
           } else {
             model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
           }
           busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
-          break;
-        default:  //  impossible by definition of the enum
-          break;
+        } else {
+          switch (nbOfRegulatingGenerators) {
+          case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
+            // Only one generator regulates this node
+            if (generator.regulatedBusId == generator.connectedBusId) {
+              // local regulation
+              if (useInfiniteReactivelimits_) {
+                model = ModelType::SIGNALN_INFINITE;
+              } else {
+                model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
+              }
+            } else {
+              // remote regulation
+              if (useInfiniteReactivelimits_) {
+                model = ModelType::REMOTE_SIGNALN_INFINITE;
+              } else {
+                model = isDiagramRectangular(generator) ? ModelType::REMOTE_SIGNALN_RECTANGULAR : ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
+              }
+            }
+            break;
+          case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
+            // Several generators regulate this node
+            if (useInfiniteReactivelimits_) {
+              model = ModelType::PROP_SIGNALN_INFINITE;
+            } else {
+              model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+            }
+            busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+            break;
+          default:  //  impossible by definition of the enum
+            break;
+          }
         }
       }
     }

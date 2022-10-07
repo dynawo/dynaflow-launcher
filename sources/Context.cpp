@@ -115,8 +115,8 @@ Context::process() {
     }
   }
 
-  onNodeOnMainConnexComponent(
-      algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(), config_.useInfiniteReactiveLimits()));
+  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
+                                                                 config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
                                                             networkManager_.getMapBusVSCConvertersBusId()));

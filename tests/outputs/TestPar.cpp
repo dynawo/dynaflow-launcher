@@ -40,7 +40,10 @@ TEST(TestPar, write) {
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1),
       GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "04", {}, 3., 30., -33., 330., 0, bus1),
       GeneratorDefinition("G6", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 100, bus1),
-      GeneratorDefinition("G7", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1)};
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1),
+      GeneratorDefinition("G8", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1),
+      GeneratorDefinition("G9", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1),
+      GeneratorDefinition("G10", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation(dfl::inputs::Configuration::ActivePowerCompensation::P);

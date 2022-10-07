@@ -41,7 +41,9 @@ TEST(Dyd, write) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0., bus1)};
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
