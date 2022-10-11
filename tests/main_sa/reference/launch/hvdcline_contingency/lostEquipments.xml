@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <lostEquipments xmlns="http://www.rte-france.com/dynawo">
-  <lostEquipment id="_ffd940c8-03c8-4dcf-ad46-62018a0d813d" type="TWO_WINDINGS_TRANSFORMER"/>
-  <lostEquipment id="_b08e9e50-4e0c-4ac0-9f21-4a27429caeb2" type="TWO_WINDINGS_TRANSFORMER"/>
-  <lostEquipment id="_f468d841-1bf6-470e-85d4-55d34fab8bff-1" type="SWITCH"/>
+  <lostEquipment id="InternalAsBreaker_hvdc" type="SWITCH"/>
+  <lostEquipment id="_7393a68e-c4e6-48dd-9347-543858363fdb" type="LCC_CONVERTER"/>
 </lostEquipments>

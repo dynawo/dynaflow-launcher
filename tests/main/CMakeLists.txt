@@ -34,7 +34,7 @@ macro(DEFINE_LAUNCH_TEST _name)
   add_test(
     # Use some per-module/project prefix so that it is easier to run only tests for this module
     NAME MAIN.${_name}
-    COMMAND ${CMAKE_COMMAND} -DEXE=$<TARGET_FILE:DynaFlowLauncher> -DTEST_NAME=${_name} -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diff.py -P ${CMAKE_SOURCE_DIR}/cmake/TestMain.cmake
+    COMMAND ${CMAKE_COMMAND} -DPYTHON_COMMAND=${PYTHON_EXECUTABLE} -DEXE=$<TARGET_FILE:DynaFlowLauncher> -DTEST_NAME=${_name} -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diff.py -P ${CMAKE_SOURCE_DIR}/cmake/TestMain.cmake
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
   set_property(TEST MAIN.${_name} PROPERTY ENVIRONMENT IIDM_XML_XSD_PATH=${DYNAWO_HOME}/share/iidm/xsd/)
@@ -49,6 +49,7 @@ macro(DEFINE_LAUNCH_TEST _name)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT PYTHONPATH=${DYNAWO_HOME}/sbin/nrt/nrt_diff)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LIBRARIES=${DYNAWO_HOME}/ddb)
   set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd)
+  set_property(TEST MAIN.${_name} APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_BUILD_TYPE=${CMAKE_BUILD_TYPE})
 endmacro()
 
 DEFINE_LAUNCH_TEST(launch)

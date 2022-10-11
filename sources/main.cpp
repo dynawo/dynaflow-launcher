@@ -53,12 +53,12 @@ elapsed(const std::chrono::steady_clock::time_point& timePoint) {
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
-static dfl::Context::SimulationKind
+static dfl::inputs::Configuration::SimulationKind
 getSimulationKind(const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
   if (runtimeConfig.contingenciesFilePath.empty()) {
-    return dfl::Context::SimulationKind::STEADY_STATE_CALCULATION;
+    return dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION;
   } else {
-    return dfl::Context::SimulationKind::SECURITY_ANALYSIS;
+    return dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS;
   }
 }
 
@@ -87,7 +87,8 @@ main(int argc, char* argv[]) {
   }
 
   auto& runtimeConfig = options.config();
-  dfl::inputs::Configuration config(boost::filesystem::path(runtimeConfig.configPath));
+  auto simulationKind = getSimulationKind(runtimeConfig);
+  dfl::inputs::Configuration config(boost::filesystem::path(runtimeConfig.configPath), simulationKind);
   try {
     if (mpiContext.isRootProc()) {
       dfl::common::Log::init(options, config.outputDir().generic_string());
@@ -112,12 +113,11 @@ main(int argc, char* argv[]) {
       throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
 
-    auto simulationKind = getSimulationKind(runtimeConfig);
     switch (simulationKind) {
-    case dfl::Context::SimulationKind::STEADY_STATE_CALCULATION:
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
       LOG(info, SteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath);
       break;
-    case dfl::Context::SimulationKind::SECURITY_ANALYSIS:
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
       LOG(info, SecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath);
       break;
     }

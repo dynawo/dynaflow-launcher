@@ -1,6 +1,7 @@
 {
   "dfl-config": {
     "InfiniteReactiveLimits": "true",
+    "ChosenOutputs" : ["TIMELINE"],
     "SVCRegulationOn": "false",
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",

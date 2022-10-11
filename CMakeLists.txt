@@ -146,8 +146,13 @@ message(STATUS "mpirun found: " ${MPI_RUN})
 find_package(Dynawo 1.4.0 REQUIRED)
 find_package(DynawoAlgorithms 1.4.0 REQUIRED)
 
-## Python
-find_package (Python COMPONENTS Interpreter)
+# Python Interpreter
+find_package(PythonInterp REQUIRED)
+if (DEFINED DYNAWO_PYTHON_COMMAND AND NOT DYNAWO_PYTHON_COMMAND STREQUAL "")
+  set(PYTHON_EXECUTABLE ${DYNAWO_PYTHON_COMMAND})
+  separate_arguments(PYTHON_EXECUTABLE)
+endif()
+message(STATUS "Python command used: ${PYTHON_EXECUTABLE}")
 
 ##
 

@@ -7,11 +7,11 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-execute_process(COMMAND ${EXE}  --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json RESULT_VARIABLE EXE_RESULT)
+execute_process(COMMAND ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json RESULT_VARIABLE EXE_RESULT)
 if(EXE_RESULT)
     message(FATAL_ERROR "Execution failed: ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json")
 endif()
-execute_process(COMMAND python ${DIFF_SCRIPT} . ${TEST_NAME} RESULT_VARIABLE COMPARE_RESULT)
+execute_process(COMMAND ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json RESULT_VARIABLE COMPARE_RESULT)
 if(COMPARE_RESULT)
     message(FATAL_ERROR "resultsTestsTmp/${TEST_NAME}/outputs/finalState/outputIIDM.xml is different from expected reference/${TEST_NAME}/outputIIDM.xml")
 endif()

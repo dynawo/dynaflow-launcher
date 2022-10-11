@@ -1,0 +1,5 @@
+{
+    "dfl-config": {
+    "ChosenOutputs" : ["STEADYSTATE", "LOSTEQ", "TIMELINE", "CONSTRAINTS"]
+    }
+}
