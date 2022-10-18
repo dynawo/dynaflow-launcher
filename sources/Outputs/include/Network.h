@@ -21,8 +21,8 @@
 #include "DynModelDefinitionAlgorithm.h"
 #include "DynamicDataBaseManager.h"
 #include "LineDefinitionAlgorithm.h"
-#include "ParNetwork.h"
 #include "ShuntDefinitionAlgorithm.h"
+#include <PARParametersSet.h>
 
 #include <string>
 #include <vector>
@@ -47,11 +47,9 @@ class Network {
     NetworkDefinition(const boost::filesystem::path& filename,
                       dfl::inputs::Configuration::StartingPointMode startingPointMode) :
         filepath_(filename),
-        parNetwork_(new ParNetwork()),
         startingPointMode_(startingPointMode) {}
 
     boost::filesystem::path filepath_;                                 ///< file path of the output file to write
-    std::shared_ptr<ParNetwork> parNetwork_;                           ///< reference to network par writer
     dfl::inputs::Configuration::StartingPointMode startingPointMode_;  ///< starting point mode
   };
 
@@ -68,6 +66,13 @@ class Network {
   void write() const;
 
  private:
+  /**
+   * @brief create a new parameter set for network
+   *
+   * @return the new parameter set for network
+   */
+  boost::shared_ptr<parameters::ParametersSet> writeNetworkSet() const;
+
   NetworkDefinition def_;  ///< Network file definition
 };
 

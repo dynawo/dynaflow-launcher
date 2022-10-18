@@ -26,7 +26,6 @@ src/ParGenerator.cpp
 src/ParHvdc.cpp
 src/ParLoads.cpp
 src/ParSVarC.cpp
-src/ParNetwork.cpp
 src/Solver.cpp
 )
 

@@ -17,6 +17,7 @@
 
 #include "Network.h"
 
+#include "ParCommon.h"
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
 #include <PARXmlExporter.h>
@@ -31,12 +32,48 @@ Network::Network(NetworkDefinition&& def) : def_{std::forward<NetworkDefinition>
 void
 Network::write() const {
   parameters::XmlExporter exporter;
-
   boost::shared_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
-  // adding load parameter set
-  def_.parNetwork_->write(paramSetCollection, def_.startingPointMode_);
+  paramSetCollection->addParametersSet(writeNetworkSet());
+  boost::filesystem::path networkFileName(def_.filepath_);
+  exporter.exportToFile(paramSetCollection, networkFileName.generic_string(), constants::xmlEncoding);
+}
 
-  exporter.exportToFile(paramSetCollection, def_.filepath_.generic_string(), constants::xmlEncoding);
+boost::shared_ptr<parameters::ParametersSet>
+Network::writeNetworkSet() const {
+  // Network
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::networkParId));
+
+  set->addParameter(helper::buildParameter("capacitor_no_reclosing_delay", 300.));
+  set->addParameter(helper::buildParameter("dangling_line_currentLimit_maxTimeOperation", 90.));
+  set->addParameter(helper::buildParameter("line_currentLimit_maxTimeOperation", 90.));
+  set->addParameter(helper::buildParameter("load_Tp", 90.));
+  set->addParameter(helper::buildParameter("load_Tq", 90.));
+  set->addParameter(helper::buildParameter("load_alpha", 0.));
+  set->addParameter(helper::buildParameter("load_alphaLong", 0.));
+  set->addParameter(helper::buildParameter("load_beta", 0.));
+  set->addParameter(helper::buildParameter("load_betaLong", 0.));
+  set->addParameter(helper::buildParameter("load_isControllable", false));
+  set->addParameter(helper::buildParameter("load_isRestorative", false));
+  set->addParameter(helper::buildParameter("load_zPMax", 100.));
+  set->addParameter(helper::buildParameter("load_zQMax", 100.));
+  set->addParameter(helper::buildParameter("reactance_no_reclosing_delay", 0.));
+  set->addParameter(helper::buildParameter("transformer_currentLimit_maxTimeOperation", 90.));
+  set->addParameter(helper::buildParameter("transformer_t1st_HT", 60.));
+  set->addParameter(helper::buildParameter("transformer_t1st_THT", 30.));
+  set->addParameter(helper::buildParameter("transformer_tNext_HT", 10.));
+  set->addParameter(helper::buildParameter("transformer_tNext_THT", 10.));
+  set->addParameter(helper::buildParameter("transformer_tolV", 0.01499999970000000));
+
+  switch (def_.startingPointMode_) {
+  case dfl::inputs::Configuration::StartingPointMode::WARM:
+      set->addParameter(helper::buildParameter("startingPointMode", std::string("warm")));
+    break;
+  case dfl::inputs::Configuration::StartingPointMode::FLAT:
+      set->addParameter(helper::buildParameter("startingPointMode", std::string("flat")));
+    break;
+  }
+
+  return set;
 }
 
 }  // namespace outputs
