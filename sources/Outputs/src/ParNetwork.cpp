@@ -48,10 +48,10 @@ ParNetwork::writeNetworkSet(dfl::inputs::Configuration::StartingPointMode starti
 
   switch (startingPointMode) {
   case dfl::inputs::Configuration::StartingPointMode::WARM:
-      set->addParameter(helper::buildParameter("startingPointMode", std::string("WARM")));
+      set->addParameter(helper::buildParameter("startingPointMode", std::string("warm")));
     break;
   case dfl::inputs::Configuration::StartingPointMode::FLAT:
-      set->addParameter(helper::buildParameter("startingPointMode", std::string("FLAT")));
+      set->addParameter(helper::buildParameter("startingPointMode", std::string("flat")));
     break;
   }
 

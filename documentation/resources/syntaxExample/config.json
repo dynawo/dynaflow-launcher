@@ -2,7 +2,7 @@
   "dfl-config": {
     "InfiniteReactiveLimits": "true",
     "ChosenOutputs" : ["STEADYSTATE", "LOSTEQ", "TIMELINE", "CONSTRAINTS"],
-    "StartingPointMode": "WARM",
+    "StartingPointMode": "warm",
     "SVCRegulationOn": "false",
     "ShuntRegulationOn": "false",
     "AutomaticSlackBusOn": "false",

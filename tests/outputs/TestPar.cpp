@@ -376,8 +376,8 @@ TEST(TestPar, startingPointMode) {
   }
 
   std::map<std::string, std::string> startingPointModeArray = { {"Default", "config_no_startingpointmode.json"},
-                                                                          {"WARM", "config_startingpointmode_warm.json"},
-                                                                          {"FLAT", "config_startingpointmode_flat.json"}};
+                                                                          {"Warm", "config_startingpointmode_warm.json"},
+                                                                          {"Flat", "config_startingpointmode_flat.json"}};
   for (const auto& startingPointMode : startingPointModeArray) {
     std::string startingPointModeName = startingPointMode.first;
     std::string startingPointModeFile = startingPointMode.second;
@@ -438,8 +438,8 @@ TEST(TestPar, startingPointMode) {
     if (startingPointModeName != "Default") {
       referenceFilename = filename;
     } else {
-      // When StartingPointMode isn't specified, its value should be WARM
-      referenceFilename = basename + "WARM" + ".par";
+      // When StartingPointMode isn't specified, its value should be warm
+      referenceFilename = basename + "Warm" + ".par";
     }
     reference.append(referenceFilename);
 

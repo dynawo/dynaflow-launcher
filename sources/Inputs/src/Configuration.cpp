@@ -132,9 +132,9 @@ void Configuration::updateStartingPointMode(const boost::property_tree::ptree& t
   const boost::optional<const boost::property_tree::ptree &>& optionalStartingPointMode = tree.get_child_optional("StartingPointMode");
   if (optionalStartingPointMode.is_initialized()) {
     const std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
-    if (startingPointMode == "WARM") {
+    if (startingPointMode == "warm") {
       startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::WARM;
-    } else if (startingPointMode == "FLAT") {
+    } else if (startingPointMode == "flat") {
       startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::FLAT;
     } else {
       throw Error(StartingPointModeDoesntExist, startingPointMode);
