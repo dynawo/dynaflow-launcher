@@ -411,7 +411,7 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, 0.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  ASSERT_THROW_DYNAWO(algo_infinite(nodes[4], algoRes), DYN::Error::GENERAL, dfl::KeyError_t::UnsuportedGeneratorRemoteRegulationWithTfo);
+  ASSERT_THROW_DYNAWO(algo_infinite(nodes[4], algoRes), DYN::Error::GENERAL, dfl::KeyError_t::UnsupportedGeneratorRemoteRegulationWithTfo);
 }
 TEST(Generators, generatorWithTfo) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");

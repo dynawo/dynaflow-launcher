@@ -74,7 +74,7 @@ class GeneratorDefinition {
   /**
    * @brief test is the generator has a tranformer
    *
-   * @return @b true if the diagram has a tranformer, @b false otherwise
+   * @return @b true if the generator has a tranformer, @b false otherwise
    */
   bool hasTransformer() const {
     return model == ModelType::SIGNALN_TFO_INFINITE || model == ModelType::SIGNALN_TFO_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_SIGNALN;
@@ -146,7 +146,7 @@ class GeneratorDefinitionAlgorithm {
    * @param busesWithDynamicModel map of bus ids to a generator that regulates them
    * @param busMap mapping of busId and the number of generators that regulates them
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
-   * @param tfoVoltageLevel maximum voltage level for which we assume that generator's transfos are in the static model
+   * @param tfoVoltageLevel maximum voltage level for which we assume that generator's transformers are already described in the static description
    */
   GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel, const inputs::NetworkManager::BusMapRegulating& busMap,
                                bool infinitereactivelimits, double tfoVoltageLevel);
@@ -208,7 +208,7 @@ class GeneratorDefinitionAlgorithm {
   BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
   const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
   bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used,
-  double tfoVoltageLevel_;                                  ///< Maximum voltage level for which we assume that generator's transfos are in the static model
+  double tfoVoltageLevel_;  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
 };
 }  // namespace algo
 }  // namespace dfl
