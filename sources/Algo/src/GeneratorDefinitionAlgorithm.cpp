@@ -38,9 +38,9 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
       dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGenerators = it->second;
       model = ModelType::SIGNALN_INFINITE;
       algoRes->isAtLeastOneGeneratorRegulating = true;
-      if (generator.targetV > tfoVoltageLevel_) {
+      if (generator.VNom > tfoVoltageLevel_ || DYN::doubleEquals(generator.VNom, tfoVoltageLevel_)) {
         if (generator.regulatedBusId != generator.connectedBusId) {
-          throw Error(UnsuportedGeneratorRemoteRegulationWithTfo, generator.id);
+          throw Error(UnsupportedGeneratorRemoteRegulationWithTfo, generator.id);
         }
         // Generator is assumed to have its transfo in the static model
         // Several generators regulate this node

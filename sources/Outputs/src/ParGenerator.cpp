@@ -264,7 +264,7 @@ ParGenerator::updatePropParameters(boost::shared_ptr<parameters::ParametersSet> 
 
 void
 ParGenerator::updateTransfoParameters(const algo::GeneratorDefinition& generator, boost::shared_ptr<parameters::ParametersSet> set) {
-  // TODO(rosiereflo) We assume here that QNom = QMax which might not be always true ...
+  // TODO(rosiereflo) We assume here that QNom = QMax which might not be always true ... We should use the QMax of the diagram, not the iidm one.
   set->addReference(helper::buildReference("generator_QNomAlt", "qMax", "DOUBLE"));
   set->addParameter(helper::buildParameter("generator_SNom", sqrt(generator.pmax * generator.pmax + generator.qmax * generator.qmax)));
   set->addParameter(helper::buildParameter("generator_RTfoPu", 0.0029));

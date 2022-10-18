@@ -99,7 +99,7 @@ class Configuration {
   }
 
   /**
-   * @brief Retrieves the maximum voltage level for which we assume that generator's transfos are in the static model
+   * @brief Retrieves the maximum voltage level we assume that generator's transformers are already described in the static description
    *
    * @returns the parameter value
    */
@@ -242,7 +242,7 @@ class Configuration {
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
   double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
-  double tfoVoltageLevel_ = 100;  ///< Maximum voltage level for which we assume that generator's transfos are in the static model
+  double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
 };
 
 }  // namespace inputs

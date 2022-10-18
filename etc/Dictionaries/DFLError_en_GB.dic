@@ -18,7 +18,7 @@ UnsupportedOrigDataReference  =     unsupported data origin %1% for reference %2
 UnsupportedParameterDataType  =     unsupported set parameter type %1% in setting file
 
 //------------------ Algo ---------------------------
-UnsuportedGeneratorRemoteRegulationWithTfo = found a generator with transformer regulating a remote node %1% (case not supported)
+UnsupportedGeneratorRemoteRegulationWithTfo = found a generator with transformer regulating a remote node %1% (case not supported)
 
 //------------------ Outputs -----------------------
 
