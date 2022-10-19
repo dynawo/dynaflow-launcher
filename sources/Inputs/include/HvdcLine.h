@@ -83,7 +83,9 @@ class HvdcLine {
                                           const double pSetPoint  = 42,
                                           const double rdc  = 42,
                                           const double lossFactor1 = 42,
-                                          const double lossFactor2 = 42);
+                                          const double lossFactor2 = 42,
+                                          const boost::optional<double> powerFactor1 = boost::none,
+                                          const boost::optional<double> powerFactor2 = boost::none);
 
  public:
   const HvdcLineId id;                                           ///< HvdcLine id
@@ -98,6 +100,8 @@ class HvdcLine {
   const double rdc_;
   const double lossFactor1_;
   const double lossFactor2_;
+  const boost::optional<double> powerFactor1_;
+  const boost::optional<double> powerFactor2_;
 
  private:
   /**
@@ -122,7 +126,9 @@ class HvdcLine {
             const double pSetPoint,
             const double rdc,
             const double lossFactor1,
-            const double lossFactor2);
+            const double lossFactor2,
+            const boost::optional<double> powerFactor1,
+            const boost::optional<double> powerFactor2);
 };
 }  // namespace inputs
 }  // namespace dfl

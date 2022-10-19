@@ -201,7 +201,9 @@ class HVDCDefinition {
                           const double pSetPoint = 42,
                           const double rdc = 42,
                           const double lossFactor1 = 42,
-                          const double lossFactor2 = 42) :
+                          const double lossFactor2 = 42,
+                          const boost::optional<double> powerFactor1 = boost::none,
+                          const boost::optional<double> powerFactor2 = boost::none) :
       id{id},
       converterType{converterType},
       converter1Id{converter1Id},
@@ -223,7 +225,9 @@ class HVDCDefinition {
       pSetPoint_(pSetPoint),
       rdc_(rdc),
       lossFactor1_(lossFactor1),
-      lossFactor2_(lossFactor2) {}
+      lossFactor2_(lossFactor2),
+      powerFactor1_(powerFactor1),
+      powerFactor2_(powerFactor2) {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -247,6 +251,8 @@ class HVDCDefinition {
   const double rdc_;
   const double lossFactor1_;
   const double lossFactor2_;
+  const boost::optional<double> powerFactor1_;
+  const boost::optional<double> powerFactor2_;
 };
 
 /// @brief HVDC line definitions

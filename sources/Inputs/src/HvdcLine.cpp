@@ -29,7 +29,9 @@ HvdcLine::HvdcLine(const std::string& id,
                     const double pSetPoint,
                     const double rdc,
                     const double lossFactor1,
-                    const double lossFactor2) :
+                    const double lossFactor2,
+                    const boost::optional<double> powerFactor1 = boost::none,
+                    const boost::optional<double> powerFactor2 = boost::none) :
     id{id},
     converterType{converterType},
     converter1(converter1),
@@ -41,7 +43,9 @@ HvdcLine::HvdcLine(const std::string& id,
     pSetPoint_(pSetPoint),
     rdc_(rdc),
     lossFactor1_(lossFactor1),
-    lossFactor2_(lossFactor2) {
+    lossFactor2_(lossFactor2),
+    powerFactor1_(powerFactor1),
+    powerFactor2_(powerFactor2) {
   // converters are required
   assert(converter1);
   assert(converter2);
@@ -72,7 +76,9 @@ HvdcLine::build(const std::string& id,
                 const double pSetPoint,
                 const double rdc,
                 const double lossFactor1,
-                const double lossFactor2) {
+                const double lossFactor2,
+                const boost::optional<double> powerFactor1,
+                const boost::optional<double> powerFactor2) {
   auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id,
                                                                 converterType,
                                                                 converter1,
@@ -84,9 +90,25 @@ HvdcLine::build(const std::string& id,
                                                                 pSetPoint,
                                                                 rdc,
                                                                 lossFactor1,
-                                                                lossFactor2));
+                                                                lossFactor2,
+                                                                powerFactor1,
+                                                                powerFactor2));
   converter1->hvdcLine = hvdcLineCreated;
   converter2->hvdcLine = hvdcLineCreated;
+
+  switch (converterType) {
+  case ConverterType::VSC:
+    if (powerFactor1.is_initialized() || powerFactor2.is_initialized()) {
+      throw std::runtime_error("powerFactor1 and powerFactor2 shouldn't be initialized for a VSC HVDC");
+    }
+    break;
+  case ConverterType::LCC:
+    if (!powerFactor1.is_initialized() || !powerFactor2.is_initialized()) {
+      throw std::runtime_error("powerFactor1 and powerFactor2 should be initialized for a VSC HVDC");
+    }
+    break;
+  }
+
   return hvdcLineCreated;
 }
 
