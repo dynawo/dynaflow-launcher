@@ -221,13 +221,13 @@ class HVDCDefinition {
       droop(droop),
       p0(p0),
       isConverter1Rectifier{isConverter1Rectifier},
-      vdcNom_(vdcNom),
-      pSetPoint_(pSetPoint),
-      rdc_(rdc),
-      lossFactor1_(lossFactor1),
-      lossFactor2_(lossFactor2),
-      powerFactor1_(powerFactor1),
-      powerFactor2_(powerFactor2) {}
+      vdcNom(vdcNom),
+      pSetPoint(pSetPoint),
+      rdc(rdc),
+      lossFactor1(lossFactor1),
+      lossFactor2(lossFactor2),
+      powerFactor1(powerFactor1),
+      powerFactor2(powerFactor2) {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -246,13 +246,13 @@ class HVDCDefinition {
   const boost::optional<double> droop;                        ///< active power droop value for HVDC, if it exists
   const boost::optional<double> p0;                           ///< active power setpoint value for HVDC, if it exists
   const bool isConverter1Rectifier;                           ///< whether converter 1 is rectifier
-  const double vdcNom_;
-  const double pSetPoint_;
-  const double rdc_;
-  const double lossFactor1_;
-  const double lossFactor2_;
-  const boost::optional<double> powerFactor1_;
-  const boost::optional<double> powerFactor2_;
+  const double vdcNom;
+  const double pSetPoint;
+  const double rdc;
+  const double lossFactor1;
+  const double lossFactor2;
+  const boost::optional<double> powerFactor1;
+  const boost::optional<double> powerFactor2;
 };
 
 /// @brief HVDC line definitions

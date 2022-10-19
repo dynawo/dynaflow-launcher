@@ -91,11 +91,11 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
       set->addParameter(helper::buildParameter("hvdc_U20Pu", 1.));
       set->addParameter(helper::buildParameter("hvdc_UPhase20", 0.));
 
-      const double rdc = hvdcDefinition.rdc_;
-      const double pSetPoint = hvdcDefinition.pSetPoint_;
-      const double vdcNom = hvdcDefinition.vdcNom_;
-      const double lossFactor1 = hvdcDefinition.lossFactor1_;
-      const double lossFactor2 = hvdcDefinition.lossFactor2_;
+      const double rdc = hvdcDefinition.rdc;
+      const double pSetPoint = hvdcDefinition.pSetPoint;
+      const double vdcNom = hvdcDefinition.vdcNom;
+      const double lossFactor1 = hvdcDefinition.lossFactor1;
+      const double lossFactor2 = hvdcDefinition.lossFactor2;
 
       const double pdcLoss = rdc * (pSetPoint / vdcNom) * (pSetPoint / vdcNom) / 100.;
       const double p0dc = pSetPoint / 100.;
@@ -124,9 +124,9 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
           }
           break;
         case algo::HVDCDefinition::ConverterType::LCC:
-          if (hvdcDefinition.powerFactor1_.is_initialized() && hvdcDefinition.powerFactor2_.is_initialized()) {
-            const double powerFactor1 = *(hvdcDefinition.powerFactor1_);
-            const double powerFactor2 = *(hvdcDefinition.powerFactor2_);
+          if (hvdcDefinition.powerFactor1.is_initialized() && hvdcDefinition.powerFactor2.is_initialized()) {
+            const double powerFactor1 = *(hvdcDefinition.powerFactor1);
+            const double powerFactor2 = *(hvdcDefinition.powerFactor2);
             const double q01 = -abs(powerFactor1 * p01);
             const double q02 = -abs(powerFactor2 * p02);
             set->addParameter(helper::buildParameter("hvdc_Q10Pu", q01));

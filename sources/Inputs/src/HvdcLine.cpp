@@ -39,13 +39,13 @@ HvdcLine::HvdcLine(const std::string& id,
     activePowerControl{activePowerControl},
     pMax{pMax},
     isConverter1Rectifier{isConverter1Rectifier},
-    vdcNom_(vdcNom),
-    pSetPoint_(pSetPoint),
-    rdc_(rdc),
-    lossFactor1_(lossFactor1),
-    lossFactor2_(lossFactor2),
-    powerFactor1_(powerFactor1),
-    powerFactor2_(powerFactor2) {
+    vdcNom(vdcNom),
+    pSetPoint(pSetPoint),
+    rdc(rdc),
+    lossFactor1(lossFactor1),
+    lossFactor2(lossFactor2),
+    powerFactor1(powerFactor1),
+    powerFactor2(powerFactor2) {
   // converters are required
   assert(converter1);
   assert(converter2);

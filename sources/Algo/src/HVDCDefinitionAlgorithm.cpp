@@ -205,13 +205,13 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
                                     droop,
                                     p0,
                                     hvdcLine.isConverter1Rectifier,
-                                    hvdcLine.vdcNom_,
-                                    hvdcLine.pSetPoint_,
-                                    hvdcLine.rdc_,
-                                    hvdcLine.lossFactor1_,
-                                    hvdcLine.lossFactor2_,
-                                    hvdcLine.powerFactor1_,
-                                    hvdcLine.powerFactor2_);
+                                    hvdcLine.vdcNom,
+                                    hvdcLine.pSetPoint,
+                                    hvdcLine.rdc,
+                                    hvdcLine.lossFactor1,
+                                    hvdcLine.lossFactor2,
+                                    hvdcLine.powerFactor1,
+                                    hvdcLine.powerFactor2);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }
