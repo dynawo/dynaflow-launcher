@@ -104,7 +104,7 @@ HvdcLine::build(const std::string& id,
     break;
   case ConverterType::LCC:
     if (!powerFactor1.is_initialized() || !powerFactor2.is_initialized()) {
-      throw std::runtime_error("powerFactor1 and powerFactor2 should be initialized for a VSC HVDC");
+      throw std::runtime_error("powerFactor1 and powerFactor2 should be initialized for a LCC HVDC");
     }
     break;
   }

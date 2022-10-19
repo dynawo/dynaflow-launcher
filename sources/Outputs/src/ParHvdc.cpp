@@ -72,24 +72,71 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
     first = "2";
     second = "1";
   }
-  set->addReference(helper::buildReference("hvdc_P10Pu", "p" + first + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_P1RefSetPu", "p" + first + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_Q10Pu", "q" + first + "_pu", "DOUBLE"));
-  if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::WARM) {
-    set->addReference(helper::buildReference("hvdc_U10Pu", "v" + first + "_pu", "DOUBLE"));
-    set->addReference(helper::buildReference("hvdc_UPhase10", "angle" + first + "_pu", "DOUBLE"));
-  } else if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::FLAT) {
-    set->addParameter(helper::buildParameter("hvdc_U10Pu", 1.));
-    set->addParameter(helper::buildParameter("hvdc_UPhase10", 0.));
-  }
-  set->addReference(helper::buildReference("hvdc_P20Pu", "p" + second + "_pu", "DOUBLE"));
-  set->addReference(helper::buildReference("hvdc_Q20Pu", "q" + second + "_pu", "DOUBLE"));
-  if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::WARM) {
-    set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
-    set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
-  } else if (startingPointMode == dfl::inputs::Configuration::StartingPointMode::FLAT) {
-    set->addParameter(helper::buildParameter("hvdc_U20Pu", 1.));
-    set->addParameter(helper::buildParameter("hvdc_UPhase20", 0.));
+
+  switch (startingPointMode) {
+    case dfl::inputs::Configuration::StartingPointMode::WARM:
+      set->addReference(helper::buildReference("hvdc_P10Pu", "p" + first + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_P1RefSetPu", "p" + first + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_Q10Pu", "q" + first + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_U10Pu", "v" + first + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_UPhase10", "angle" + first + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_P20Pu", "p" + second + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_Q20Pu", "q" + second + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_U20Pu", "v" + second + "_pu", "DOUBLE"));
+      set->addReference(helper::buildReference("hvdc_UPhase20", "angle" + second + "_pu", "DOUBLE"));
+      break;
+    case dfl::inputs::Configuration::StartingPointMode::FLAT:
+      set->addParameter(helper::buildParameter("hvdc_U10Pu", 1.));
+      set->addParameter(helper::buildParameter("hvdc_UPhase10", 0.));
+      set->addParameter(helper::buildParameter("hvdc_U20Pu", 1.));
+      set->addParameter(helper::buildParameter("hvdc_UPhase20", 0.));
+
+      const double rdc = hvdcDefinition.rdc_;
+      const double pSetPoint = hvdcDefinition.pSetPoint_;
+      const double vdcNom = hvdcDefinition.vdcNom_;
+      const double lossFactor1 = hvdcDefinition.lossFactor1_;
+      const double lossFactor2 = hvdcDefinition.lossFactor2_;
+
+      const double pdcLoss = rdc * (pSetPoint / vdcNom) * (pSetPoint / vdcNom) / 100.;
+      const double p0dc = pSetPoint / 100.;
+
+      double p01;
+      double p02;
+      if (first == "1" && second == "2") {
+        p01 = -p0dc;
+        p02 = ((p0dc * (1 - lossFactor1)) - pdcLoss) * (1. - lossFactor2);
+      } else {
+        p01 = ((p0dc * (1 - lossFactor2)) - pdcLoss) * (1. - lossFactor1);
+        p02 = -p0dc;
+      }
+      set->addParameter(helper::buildParameter("hvdc_P10Pu", p01));
+      set->addParameter(helper::buildParameter("hvdc_P1RefSetPu", p01));
+      set->addParameter(helper::buildParameter("hvdc_P20Pu", p02));
+
+      switch (hvdcDefinition.converterType) {
+        case algo::HVDCDefinition::ConverterType::VSC:
+          if (first == "1" && second == "2") {
+            set->addReference(helper::buildReference("hvdc_Q10Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter1Id));
+            set->addReference(helper::buildReference("hvdc_Q20Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
+          } else {
+            set->addReference(helper::buildReference("hvdc_Q10Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
+            set->addReference(helper::buildReference("hvdc_Q20Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter1Id));
+          }
+          break;
+        case algo::HVDCDefinition::ConverterType::LCC:
+          if (hvdcDefinition.powerFactor1_.is_initialized() && hvdcDefinition.powerFactor2_.is_initialized()) {
+            const double powerFactor1 = *(hvdcDefinition.powerFactor1_);
+            const double powerFactor2 = *(hvdcDefinition.powerFactor2_);
+            const double q01 = -abs(powerFactor1 * p01);
+            const double q02 = -abs(powerFactor2 * p02);
+            set->addParameter(helper::buildParameter("hvdc_Q10Pu", q01));
+            set->addParameter(helper::buildParameter("hvdc_Q20Pu", q02));
+          } else {
+            throw std::runtime_error("powerFactor1 and powerFactor2 should be initialized for a LCC HVDC");
+          }
+          break;
+      }
+      break;
   }
   set->addReference(helper::buildReference("hvdc_PMaxPu", "pMax_pu", "DOUBLE"));
   set->addParameter(helper::buildParameter("hvdc_KLosses", 1.0));
