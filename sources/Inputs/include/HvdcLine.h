@@ -79,11 +79,11 @@ class HvdcLine {
                                           const boost::optional<ActivePowerControl>& activePowerControl,
                                           double pMax,
                                           bool isConverter1Rectifier,
-                                          const double vdcNom = 42,
-                                          const double pSetPoint  = 42,
-                                          const double rdc  = 42,
-                                          const double lossFactor1 = 42,
-                                          const double lossFactor2 = 42,
+                                          const double vdcNom,
+                                          const double pSetPoint,
+                                          const double rdc,
+                                          const double lossFactor1,
+                                          const double lossFactor2,
                                           const boost::optional<double> powerFactor1 = boost::none,
                                           const boost::optional<double> powerFactor2 = boost::none);
 
