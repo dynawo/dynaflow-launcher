@@ -72,9 +72,18 @@ class HvdcLine {
    *
    * @return HVDC line object
    */
-  static std::shared_ptr<HvdcLine> build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
-                                         const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl,
-                                         double pMax, bool isConverter1Rectifier);
+  static std::shared_ptr<HvdcLine> build(const std::string& id,
+                                          const ConverterType converterType,
+                                          const std::shared_ptr<Converter>& converter1,
+                                          const std::shared_ptr<Converter>& converter2,
+                                          const boost::optional<ActivePowerControl>& activePowerControl,
+                                          double pMax,
+                                          bool isConverter1Rectifier,
+                                          const double vdcNom = 42,
+                                          const double pSetPoint  = 42,
+                                          const double rdc  = 42,
+                                          const double lossFactor1 = 42,
+                                          const double lossFactor2 = 42);
 
  public:
   const HvdcLineId id;                                           ///< HvdcLine id
@@ -84,6 +93,11 @@ class HvdcLine {
   const boost::optional<ActivePowerControl> activePowerControl;  ///< active power control information
   const double pMax;                                             ///< maximum p
   const bool isConverter1Rectifier;                              ///< whether converter 1 is rectifier
+  const double vdcNom_;
+  const double pSetPoint_;
+  const double rdc_;
+  const double lossFactor1_;
+  const double lossFactor2_;
 
  private:
   /**
@@ -97,8 +111,18 @@ class HvdcLine {
    * @param pMax the maximum p
    * @param isConverter1Rectifier whether converter 1 is rectifier
    */
-  HvdcLine(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1, const std::shared_ptr<Converter>& converter2,
-           const boost::optional<ActivePowerControl>& activePowerControl, double pMax, bool isConverter1Rectifier);
+  HvdcLine(const std::string& id,
+            const ConverterType converterType,
+            const std::shared_ptr<Converter>& converter1,
+            const std::shared_ptr<Converter>& converter2,
+            const boost::optional<ActivePowerControl>& activePowerControl,
+            double pMax,
+            bool isConverter1Rectifier,
+            const double vdcNom,
+            const double pSetPoint,
+            const double rdc,
+            const double lossFactor1,
+            const double lossFactor2);
 };
 }  // namespace inputs
 }  // namespace dfl

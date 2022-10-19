@@ -18,16 +18,30 @@
 #include "HvdcLine.h"
 namespace dfl {
 namespace inputs {
-HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
-                   const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax,
-                   bool isConverter1Rectifier) :
+HvdcLine::HvdcLine(const std::string& id,
+                    const ConverterType converterType,
+                    const std::shared_ptr<Converter>& converter1,
+                    const std::shared_ptr<Converter>& converter2,
+                    const boost::optional<ActivePowerControl>& activePowerControl,
+                    double pMax,
+                    bool isConverter1Rectifier,
+                    const double vdcNom,
+                    const double pSetPoint,
+                    const double rdc,
+                    const double lossFactor1,
+                    const double lossFactor2) :
     id{id},
     converterType{converterType},
     converter1(converter1),
     converter2(converter2),
     activePowerControl{activePowerControl},
     pMax{pMax},
-    isConverter1Rectifier{isConverter1Rectifier} {
+    isConverter1Rectifier{isConverter1Rectifier},
+    vdcNom_(vdcNom),
+    pSetPoint_(pSetPoint),
+    rdc_(rdc),
+    lossFactor1_(lossFactor1),
+    lossFactor2_(lossFactor2) {
   // converters are required
   assert(converter1);
   assert(converter2);
@@ -47,10 +61,30 @@ HvdcLine::HvdcLine(const std::string& id, const ConverterType converterType, con
 }
 
 std::shared_ptr<HvdcLine>
-HvdcLine::build(const std::string& id, const ConverterType converterType, const std::shared_ptr<Converter>& converter1,
-                const std::shared_ptr<Converter>& converter2, const boost::optional<ActivePowerControl>& activePowerControl, double pMax,
-                bool isConverter1Rectifier) {
-  auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id, converterType, converter1, converter2, activePowerControl, pMax, isConverter1Rectifier));
+HvdcLine::build(const std::string& id,
+                const ConverterType converterType,
+                const std::shared_ptr<Converter>& converter1,
+                const std::shared_ptr<Converter>& converter2,
+                const boost::optional<ActivePowerControl>& activePowerControl,
+                double pMax,
+                bool isConverter1Rectifier,
+                const double vdcNom,
+                const double pSetPoint,
+                const double rdc,
+                const double lossFactor1,
+                const double lossFactor2) {
+  auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id,
+                                                                converterType,
+                                                                converter1,
+                                                                converter2,
+                                                                activePowerControl,
+                                                                pMax,
+                                                                isConverter1Rectifier,
+                                                                vdcNom,
+                                                                pSetPoint,
+                                                                rdc,
+                                                                lossFactor1,
+                                                                lossFactor2));
   converter1->hvdcLine = hvdcLineCreated;
   converter2->hvdcLine = hvdcLineCreated;
   return hvdcLineCreated;

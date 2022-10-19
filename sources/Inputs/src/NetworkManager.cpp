@@ -291,7 +291,18 @@ NetworkManager::buildTree() {
       isConverter1Rectifier = true;
     }
     auto hvdcLineCreated =
-        HvdcLine::build(hvdcLine->getID(), converterType, converter1, converter2, activePowerControl, hvdcLine->getPmax(), isConverter1Rectifier);
+        HvdcLine::build(hvdcLine->getID(),
+                        converterType,
+                        converter1,
+                        converter2,
+                        activePowerControl,
+                        hvdcLine->getPmax(),
+                        isConverter1Rectifier,
+                        hvdcLine->getVNom(),
+                        hvdcLine->getActivePowerSetpoint(),
+                        hvdcLine->getResistanceDC(),
+                        hvdcLine->getConverter1()->getLossFactor() / 100.,
+                        hvdcLine->getConverter2()->getLossFactor() / 100.);
     hvdcLines_.emplace_back(hvdcLineCreated);
     nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
     nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);
