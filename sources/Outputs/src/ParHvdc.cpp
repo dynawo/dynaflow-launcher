@@ -100,8 +100,8 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
       const double pdcLoss = rdc * (pSetPoint / vdcNom) * (pSetPoint / vdcNom) / 100.;
       const double p0dc = pSetPoint / 100.;
 
-      double p01;
-      double p02;
+      double p01 = std::numeric_limits<double>::min();
+      double p02 = std::numeric_limits<double>::min();
       if (first == "1" && second == "2") {
         p01 = -p0dc;
         p02 = ((p0dc * (1 - lossFactor1)) - pdcLoss) * (1. - lossFactor2);
