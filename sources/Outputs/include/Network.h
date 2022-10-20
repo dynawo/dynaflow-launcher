@@ -11,7 +11,7 @@
 /**
  * @file  Network.h
  *
- * @brief Dynaflow launcher Network file writer header file
+ * @brief Dynaflow launcher Network model parameters file writer header file
  *
  */
 
@@ -23,18 +23,18 @@
 namespace dfl {
 namespace outputs {
 /**
- * @brief Network file writer
+ * @brief Network model parameters file writer
  */
 class Network {
  public:
   /**
-   * @brief Network file definition
+   * @brief Network model parameters file definition
    */
   struct NetworkDefinition {
     /**
      * @brief Constructor
      *
-     * @param filename file path for output Network file (corresponds to basename)
+     * @param filename file path for output Network model parameters file (corresponds to basename)
      * @param startingPointMode starting point mode
      */
     NetworkDefinition(const boost::filesystem::path& filename,
@@ -54,7 +54,7 @@ class Network {
   explicit Network(NetworkDefinition&& def);
 
   /**
-   * @brief Export Network file
+   * @brief Export Network model parameters file
    */
   void write() const;
 

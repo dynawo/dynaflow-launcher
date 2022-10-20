@@ -11,7 +11,7 @@
 /**
  * @file  Network.cpp
  *
- * @brief Dynaflow launcher Network file writer implementation file
+ * @brief Dynaflow launcher Network model parameters file writer implementation file
  *
  */
 
