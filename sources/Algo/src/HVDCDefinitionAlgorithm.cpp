@@ -209,9 +209,7 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
                                     hvdcLine.pSetPoint,
                                     hvdcLine.rdc,
                                     hvdcLine.lossFactor1,
-                                    hvdcLine.lossFactor2,
-                                    hvdcLine.powerFactor1,
-                                    hvdcLine.powerFactor2);
+                                    hvdcLine.lossFactor2);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }

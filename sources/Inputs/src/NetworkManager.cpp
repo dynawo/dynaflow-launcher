@@ -251,10 +251,6 @@ NetworkManager::buildTree() {
     if (!converterDyn1->getInitialConnected() || !converterDyn2->getInitialConnected()) {
       continue;
     }
-
-    boost::optional<double> powerFactor1 = boost::none;
-    boost::optional<double> powerFactor2 = boost::none;
-
     std::shared_ptr<Converter> converter1;
     std::shared_ptr<Converter> converter2;
 
@@ -281,8 +277,6 @@ NetworkManager::buildTree() {
       auto lccConverterDyn2 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn2);
       converter2 =
           std::make_shared<LCCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, lccConverterDyn2->getPowerFactor());
-      powerFactor1 = lccConverterDyn1->getPowerFactor();
-      powerFactor2 = lccConverterDyn2->getPowerFactor();
     }
 
     // active power control external IIDM extension
@@ -308,9 +302,7 @@ NetworkManager::buildTree() {
                         hvdcLine->getActivePowerSetpoint(),
                         hvdcLine->getResistanceDC(),
                         hvdcLine->getConverter1()->getLossFactor() / 100.,
-                        hvdcLine->getConverter2()->getLossFactor() / 100.,
-                        powerFactor1,
-                        powerFactor2);
+                        hvdcLine->getConverter2()->getLossFactor() / 100.);
     hvdcLines_.emplace_back(hvdcLineCreated);
     nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
     nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);

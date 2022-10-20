@@ -124,16 +124,10 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
           }
           break;
         case algo::HVDCDefinition::ConverterType::LCC:
-          if (hvdcDefinition.powerFactor1.is_initialized() && hvdcDefinition.powerFactor2.is_initialized()) {
-            const double powerFactor1 = *(hvdcDefinition.powerFactor1);
-            const double powerFactor2 = *(hvdcDefinition.powerFactor2);
-            const double q01 = -abs(powerFactor1 * p01);
-            const double q02 = -abs(powerFactor2 * p02);
-            set->addParameter(helper::buildParameter("hvdc_Q10Pu", q01));
-            set->addParameter(helper::buildParameter("hvdc_Q20Pu", q02));
-          } else {
-            throw std::runtime_error("powerFactor1 and powerFactor2 should be initialized for a LCC HVDC");
-          }
+          const double q01 = -abs(hvdcDefinition.powerFactors.at(0) * p01);
+          const double q02 = -abs(hvdcDefinition.powerFactors.at(1) * p02);
+          set->addParameter(helper::buildParameter("hvdc_Q10Pu", q01));
+          set->addParameter(helper::buildParameter("hvdc_Q20Pu", q02));
           break;
       }
       break;

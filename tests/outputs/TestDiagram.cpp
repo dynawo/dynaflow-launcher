@@ -223,15 +223,15 @@ TEST(Diagram, writeLCC) {
       std::make_pair(
           "0", HVDCDefinition("HVDCLCCLine", HVDCDefinition::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation99", "_BUS___99_TN", false,
                               HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 0., boost::none,
-                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01, -1, 1)),
+                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01)),
       std::make_pair(
           "1", HVDCDefinition("HVDCLCCLine1", HVDCDefinition::ConverterType::LCC, "LCCStation99", "_BUS___99_TN", false, "LCCStation11", "_BUS___11_TN", false,
                               HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10., boost::none,
-                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01, -1, 1)),
+                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01)),
       std::make_pair(
           "2", HVDCDefinition("HVDCLCCLine2", HVDCDefinition::ConverterType::LCC, "LCCStation12", "_BUS___12_TN", false, "LCCStation2", "_BUS___22_TN", false,
                               HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10., boost::none,
-                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01, -1, 1)),
+                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01)),
   };
 
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};

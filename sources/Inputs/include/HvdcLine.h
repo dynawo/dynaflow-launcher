@@ -74,8 +74,6 @@ class HvdcLine {
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactor1 loss factor of the converter 1
    * @param lossFactor2 loss factor of the converter 2
-   * @param powerFactor1 power factor of the lcc converter 1
-   * @param powerFactor2 power factor of the lcc converter 2
    *
    * @return HVDC line object
    */
@@ -90,9 +88,7 @@ class HvdcLine {
                                           const double pSetPoint,
                                           const double rdc,
                                           const double lossFactor1,
-                                          const double lossFactor2,
-                                          const boost::optional<double> powerFactor1 = boost::none,
-                                          const boost::optional<double> powerFactor2 = boost::none);
+                                          const double lossFactor2);
 
  public:
   const HvdcLineId id;                                           ///< HvdcLine id
@@ -102,13 +98,11 @@ class HvdcLine {
   const boost::optional<ActivePowerControl> activePowerControl;  ///< active power control information
   const double pMax;                                             ///< maximum p
   const bool isConverter1Rectifier;                              ///< whether converter 1 is rectifier
-  const double vdcNom;
-  const double pSetPoint;
-  const double rdc;
-  const double lossFactor1;
-  const double lossFactor2;
-  const boost::optional<double> powerFactor1;
-  const boost::optional<double> powerFactor2;
+  const double vdcNom;                                           ///< nominal voltage of the hvdc line in kV
+  const double pSetPoint;                                        ///< active power set-point of the hvdc line in MW
+  const double rdc;                                              ///< dc resistance of the hvdc line in Ohm
+  const double lossFactor1;                                      ///< loss factor of the converter 1
+  const double lossFactor2;                                      ///< loss factor of the converter 2
 
  private:
   /**
@@ -126,8 +120,6 @@ class HvdcLine {
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactor1 loss factor of the converter 1
    * @param lossFactor2 loss factor of the converter 2
-   * @param powerFactor1 power factor of the lcc converter 1
-   * @param powerFactor2 power factor of the lcc converter 2
    */
   HvdcLine(const std::string& id,
             const ConverterType converterType,
@@ -140,9 +132,7 @@ class HvdcLine {
             const double pSetPoint,
             const double rdc,
             const double lossFactor1,
-            const double lossFactor2,
-            const boost::optional<double> powerFactor1,
-            const boost::optional<double> powerFactor2);
+            const double lossFactor2);
 };
 }  // namespace inputs
 }  // namespace dfl

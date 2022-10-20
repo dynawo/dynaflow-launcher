@@ -184,8 +184,6 @@ class HVDCDefinition {
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactor1 loss factor of the converter 1
    * @param lossFactor2 loss factor of the converter 2
-   * @param powerFactor1 power factor of the lcc converter 1
-   * @param powerFactor2 power factor of the lcc converter 2
    */
   explicit HVDCDefinition(const HvdcLineId& id,
                           const inputs::HvdcLine::ConverterType converterType,
@@ -208,9 +206,7 @@ class HVDCDefinition {
                           const double pSetPoint,
                           const double rdc,
                           const double lossFactor1,
-                          const double lossFactor2,
-                          const boost::optional<double> powerFactor1 = boost::none,
-                          const boost::optional<double> powerFactor2 = boost::none) :
+                          const double lossFactor2) :
       id{id},
       converterType{converterType},
       converter1Id{converter1Id},
@@ -232,9 +228,7 @@ class HVDCDefinition {
       pSetPoint(pSetPoint),
       rdc(rdc),
       lossFactor1(lossFactor1),
-      lossFactor2(lossFactor2),
-      powerFactor1(powerFactor1),
-      powerFactor2(powerFactor2) {}
+      lossFactor2(lossFactor2) {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -253,13 +247,11 @@ class HVDCDefinition {
   const boost::optional<double> droop;                        ///< active power droop value for HVDC, if it exists
   const boost::optional<double> p0;                           ///< active power setpoint value for HVDC, if it exists
   const bool isConverter1Rectifier;                           ///< whether converter 1 is rectifier
-  const double vdcNom;
-  const double pSetPoint;
-  const double rdc;
-  const double lossFactor1;
-  const double lossFactor2;
-  const boost::optional<double> powerFactor1;
-  const boost::optional<double> powerFactor2;
+  const double vdcNom;                                        ///< nominal voltage of the hvdc line in kV
+  const double pSetPoint;                                     ///< active power set-point of the hvdc line in MW
+  const double rdc;                                           ///< dc resistance of the hvdc line in Ohm
+  const double lossFactor1;                                   ///< loss factor of the converter 1
+  const double lossFactor2;                                   ///< loss factor of the converter 2
 };
 
 /// @brief HVDC line definitions
