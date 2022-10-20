@@ -69,6 +69,13 @@ class HvdcLine {
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
    * @param isConverter1Rectifier whether converter 1 is rectifier
+   * @param vdcNom nominal voltage of the hvdc line in kV
+   * @param pSetPoint active power set-point of the hvdc line in MW
+   * @param rdc dc resistance of the hvdc line in Ohm
+   * @param lossFactor1 loss factor of the converter 1
+   * @param lossFactor2 loss factor of the converter 2
+   * @param powerFactor1 power factor of the lcc converter 1
+   * @param powerFactor2 power factor of the lcc converter 2
    *
    * @return HVDC line object
    */
@@ -114,6 +121,13 @@ class HvdcLine {
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
    * @param isConverter1Rectifier whether converter 1 is rectifier
+   * @param vdcNom nominal voltage of the hvdc line in kV
+   * @param pSetPoint active power set-point of the hvdc line in MW
+   * @param rdc dc resistance of the hvdc line in Ohm
+   * @param lossFactor1 loss factor of the converter 1
+   * @param lossFactor2 loss factor of the converter 2
+   * @param powerFactor1 power factor of the lcc converter 1
+   * @param powerFactor2 power factor of the lcc converter 2
    */
   HvdcLine(const std::string& id,
             const ConverterType converterType,

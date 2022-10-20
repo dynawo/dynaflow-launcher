@@ -179,6 +179,13 @@ class HVDCDefinition {
    * @param droop the active power droop value for HVDC, if the value exists
    * @param p0 the active power setpoint for HVDC, if the value exists
    * @param isConverter1Rectifier whether converter 1 is rectifier
+   * @param vdcNom nominal voltage of the hvdc line in kV
+   * @param pSetPoint active power set-point of the hvdc line in MW
+   * @param rdc dc resistance of the hvdc line in Ohm
+   * @param lossFactor1 loss factor of the converter 1
+   * @param lossFactor2 loss factor of the converter 2
+   * @param powerFactor1 power factor of the lcc converter 1
+   * @param powerFactor2 power factor of the lcc converter 2
    */
   explicit HVDCDefinition(const HvdcLineId& id,
                           const inputs::HvdcLine::ConverterType converterType,
