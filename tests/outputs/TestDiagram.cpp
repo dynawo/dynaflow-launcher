@@ -165,7 +165,8 @@ TEST(Diagram, writeVSC) {
       std::make_pair(
           "0", HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___11_TN", false, "VSCStation99", "_BUS___99_TN",
                               false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {}, 0.,
-                              dfl::algo::VSCDefinition("VSCStation1", 51, -51, 21, {}), boost::none, boost::none, boost::none, false)),
+                              dfl::algo::VSCDefinition("VSCStation1", 51, -51, 21, {}), boost::none, boost::none, boost::none, false,
+                              320, 322, 0.125, 0.01, 0.01)),
       std::make_pair("1", HVDCDefinition("HVDCVSCLine1", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation99", "_BUS___99_TN", false, "VSCStation2",
                                          "_BUS___12_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT,
                                          HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, {}, 0., boost::none,
@@ -176,11 +177,12 @@ TEST(Diagram, writeVSC) {
                                                                       dfl::algo::VSCDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                       dfl::algo::VSCDefinition::ReactiveCurvePoint(2., 22., 220.),
                                                                   }),
-                                         boost::none, boost::none, false)),
+                                         boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01)),
       std::make_pair("2", HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation3", "_BUS___13_TN", false, "VSCStation4",
                                          "_BUS___14_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
                                          HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, {}, 0., dfl::algo::VSCDefinition("VSCStation3", 53, -53, 23, {}),
-                                         dfl::algo::VSCDefinition("VSCStation4", 54, -54, 24, {}), boost::none, boost::none, false)),
+                                         dfl::algo::VSCDefinition("VSCStation4", 54, -54, 24, {}), boost::none, boost::none, false,
+                                         320, 322, 0.125, 0.01, 0.01)),
   };
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
   dfl::algo::HVDCLineDefinitions defs{map, vscIds};
@@ -221,15 +223,15 @@ TEST(Diagram, writeLCC) {
       std::make_pair(
           "0", HVDCDefinition("HVDCLCCLine", HVDCDefinition::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation99", "_BUS___99_TN", false,
                               HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 0., boost::none,
-                              boost::none, boost::none, boost::none, false)),
+                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01, -1, 1)),
       std::make_pair(
           "1", HVDCDefinition("HVDCLCCLine1", HVDCDefinition::ConverterType::LCC, "LCCStation99", "_BUS___99_TN", false, "LCCStation11", "_BUS___11_TN", false,
                               HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10., boost::none,
-                              boost::none, boost::none, boost::none, false)),
+                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01, -1, 1)),
       std::make_pair(
           "2", HVDCDefinition("HVDCLCCLine2", HVDCDefinition::ConverterType::LCC, "LCCStation12", "_BUS___12_TN", false, "LCCStation2", "_BUS___22_TN", false,
                               HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10., boost::none,
-                              boost::none, boost::none, boost::none, false)),
+                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, 0.01, 0.01, -1, 1)),
   };
 
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};

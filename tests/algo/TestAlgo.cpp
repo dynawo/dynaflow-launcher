@@ -763,15 +763,18 @@ TEST(HvdcLine, base) {
   std::vector<dfl::algo::HVDCDefinition> expected_hvdcLines = {
       dfl::algo::HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::none, "StationN",
                                 "_BUS___99_TN", boost::none, dfl::algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT,
-                                dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 99.}, 0., boost::none, boost::none, boost::none, boost::none, false),
+                                dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 99.}, 0., boost::none, boost::none, boost::none, boost::none, false,
+                                320, 322, 0.125, 0.01, 0.01, -1, 1),
       dfl::algo::HVDCDefinition(
           "HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "StationN", "_BUS___99_TN", false, "VSCStation2", "_BUS___11_TN", false,
           dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {0., 0.}, 10.,
           dfl::algo::VSCDefinition(dummyStationVSC->converterId, dummyStationVSC->qMax, dummyStationVSC->qMin, 10., dummyStationVSC->points),
-          dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, 10., vscStation2->points), boost::none, boost::none, false),
+          dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, 10., vscStation2->points), boost::none, boost::none, false,
+          320, 322, 0.125, 0.01, 0.01),
       dfl::algo::HVDCDefinition("HVDCLineBothInMain", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStationMain1", "_BUS__11_TN", boost::none,
                                 "LCCStationMain2", "_BUS__11_TN", boost::none, dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 2.}, 20., boost::none, boost::none, boost::none, boost::none, false),
+                                dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 2.}, 20., boost::none, boost::none, boost::none, boost::none, false,
+                                320, 322, 0.125, 0.01, 0.01, -1, 1),
   };
 
   nodes[0]->converters.emplace_back(lccStation1);
