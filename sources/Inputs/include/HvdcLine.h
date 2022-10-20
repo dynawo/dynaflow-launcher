@@ -69,7 +69,7 @@ class HvdcLine {
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
    * @param isConverter1Rectifier whether converter 1 is rectifier
-   * @param vdcNom nominal voltage of the hvdc line in kV
+   * @param vdcNom nominal dc voltage of the hvdc line in kV
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactor1 loss factor of the converter 1
@@ -98,7 +98,7 @@ class HvdcLine {
   const boost::optional<ActivePowerControl> activePowerControl;  ///< active power control information
   const double pMax;                                             ///< maximum p
   const bool isConverter1Rectifier;                              ///< whether converter 1 is rectifier
-  const double vdcNom;                                           ///< nominal voltage of the hvdc line in kV
+  const double vdcNom;                                           ///< nominal dc voltage of the hvdc line in kV
   const double pSetPoint;                                        ///< active power set-point of the hvdc line in MW
   const double rdc;                                              ///< dc resistance of the hvdc line in Ohm
   const double lossFactor1;                                      ///< loss factor of the converter 1
@@ -115,7 +115,7 @@ class HvdcLine {
    * @param activePowerControl the active power control information, when present in the network
    * @param pMax the maximum p
    * @param isConverter1Rectifier whether converter 1 is rectifier
-   * @param vdcNom nominal voltage of the hvdc line in kV
+   * @param vdcNom nominal dc voltage of the hvdc line in kV
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactor1 loss factor of the converter 1

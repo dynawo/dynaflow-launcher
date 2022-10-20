@@ -179,7 +179,7 @@ class HVDCDefinition {
    * @param droop the active power droop value for HVDC, if the value exists
    * @param p0 the active power setpoint for HVDC, if the value exists
    * @param isConverter1Rectifier whether converter 1 is rectifier
-   * @param vdcNom nominal voltage of the hvdc line in kV
+   * @param vdcNom nominal dc voltage of the hvdc line in kV
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactor1 loss factor of the converter 1
@@ -247,7 +247,7 @@ class HVDCDefinition {
   const boost::optional<double> droop;                        ///< active power droop value for HVDC, if it exists
   const boost::optional<double> p0;                           ///< active power setpoint value for HVDC, if it exists
   const bool isConverter1Rectifier;                           ///< whether converter 1 is rectifier
-  const double vdcNom;                                        ///< nominal voltage of the hvdc line in kV
+  const double vdcNom;                                        ///< nominal dc voltage of the hvdc line in kV
   const double pSetPoint;                                     ///< active power set-point of the hvdc line in MW
   const double rdc;                                           ///< dc resistance of the hvdc line in Ohm
   const double lossFactor1;                                   ///< loss factor of the converter 1

@@ -18,14 +18,7 @@
 #pragma once
 
 #include "Configuration.h"
-#include "DynModelDefinitionAlgorithm.h"
-#include "DynamicDataBaseManager.h"
-#include "LineDefinitionAlgorithm.h"
-#include "ShuntDefinitionAlgorithm.h"
 #include <PARParametersSet.h>
-
-#include <string>
-#include <vector>
 
 namespace dfl {
 namespace outputs {
@@ -56,7 +49,7 @@ class Network {
   /**
    * @brief Constructor
    *
-   * @param def Network file definition
+   * @param def Network model parameters file description
    */
   explicit Network(NetworkDefinition&& def);
 
@@ -73,7 +66,7 @@ class Network {
    */
   boost::shared_ptr<parameters::ParametersSet> writeNetworkSet() const;
 
-  NetworkDefinition def_;  ///< Network file definition
+  NetworkDefinition def_;  ///< Network model parameters file description
 };
 
 }  // namespace outputs
