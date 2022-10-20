@@ -1,0 +1,7 @@
+{
+  "dfl-config": {
+    "OutputDir": "resultsTestsTmp/hvdc_diagrams_flat_start",
+    "DsoVoltageLevel": 600,
+    "StartingPointMode": "flat"
+  }
+}
