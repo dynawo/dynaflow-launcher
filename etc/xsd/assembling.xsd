@@ -16,7 +16,9 @@ SPDX-License-Identifier: MPL-2.0 -->
         <xs:element name="dynamicAutomaton" type="GenericModel"/>
         <xs:element name="multipleAssociation" type="MultipleAssociation"/>
         <xs:element name="macroConnection" type="MacroConnection"/>
+        <xs:element name="generator" type="Generator"/>
       </xs:choice>
+      <xs:attribute name="version" use="optional" type="xs:string"/>
     </xs:complexType>
     <xs:unique name="DynamicAutomatonUnique">
       <xs:selector xpath="DynamicAutomaton"/>
@@ -36,6 +38,17 @@ SPDX-License-Identifier: MPL-2.0 -->
     <xs:attribute name="var2" use="required" type="xs:string"/>
   </xs:complexType>
 
+  <xs:complexType name="Generator">
+    <xs:sequence>
+      <xs:element name="regulation" type="Regulation" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="association" use="optional" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Regulation">
+    <xs:attribute name="automaton" use="required" type="xs:string"/>
+  </xs:complexType>
+
   <xs:complexType name="SingleAssociation">
     <xs:group ref="SingleNetworkItems"/>
     <xs:attribute name="id" use="required" type="xs:string"/>
@@ -50,6 +63,9 @@ SPDX-License-Identifier: MPL-2.0 -->
     <xs:choice>
       <xs:choice maxOccurs="1">
         <xs:element name="shunt" type="Shunt"/>
+      </xs:choice>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="generator" type="GeneratorItem"/>
       </xs:choice>
     </xs:choice>
   </xs:group>
@@ -70,6 +86,10 @@ SPDX-License-Identifier: MPL-2.0 -->
     </xs:sequence>
     <xs:attribute name="id" use="required" type="xs:string"/>
     <xs:attribute name="lib" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="GeneratorItem">
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="Bus">
