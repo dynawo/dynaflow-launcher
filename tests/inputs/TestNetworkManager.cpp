@@ -69,8 +69,7 @@ TEST(NetworkManager, hvdcLines) {
                                     320,
                                     322,
                                     0.125,
-                                    0.01,
-                                    0.01),
+                                    {0.01, 0.01}),
       dfl::inputs::HvdcLine::build("HVDCVSCLine",
                                     dfl::inputs::HvdcLine::ConverterType::VSC,
                                     dummyStationVSC,
@@ -81,8 +80,7 @@ TEST(NetworkManager, hvdcLines) {
                                     320,
                                     322,
                                     0.125,
-                                    0.01,
-                                    0.01)};
+                                    {0.01, 0.01})};
   NetworkManager manager("res/HvdcDangling.iidm");
   const auto& hvdcLines = manager.getHvdcLine();
   for (int index = 0; index < 2; ++index) {

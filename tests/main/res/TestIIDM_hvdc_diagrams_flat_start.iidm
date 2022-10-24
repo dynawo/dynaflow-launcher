@@ -5,8 +5,8 @@
       <busBreakerTopology>
         <bus id="NIREEP61" v="230.5185831228867" angle="-15.446039481825624"/>
       </busBreakerTopology>
-      <load id="NIREEP6_NIREE1" name="NIREEP6_NIREE1" loadType="UNDEFINED" p0="184.61332003465" q0="17.041038967108069" bus="NIREEP61" connectableBus="NIREEP61" p="185.5784825276121" q="17.219686588625635"/>
-      <load id="NIREEP6_NIREE4" name="NIREEP6_NIREE4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="NIREEP61" p="0" q="0"/>
+      <load id="NIREEP6_NIREE1" name="NIREEP6_NIREE1" loadType="UNDEFINED" p0="184.61332003465" q0="17.041038967108069" bus="NIREEP61" connectableBus="NIREEP61"/>
+      <load id="NIREEP6_NIREE4" name="NIREEP6_NIREE4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="NIREEP61"/>
     </voltageLevel>
     <voltageLevel id="DOLONP6_S_VL6" name="DOLONP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
       <busBreakerTopology>
@@ -14,8 +14,8 @@
         <bus id="DOLONP6_S_VL6_TN1" v="230.66133052430868" angle="-18.730696239778123"/>
         <switch id="DOLONP6_C21" kind="BREAKER" retained="true" open="false" bus1="DOLONP6_S_VL6_TN2" bus2="DOLONP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="DOLONP6_DOLON1" name="DOLONP6_DOLON1" loadType="UNDEFINED" p0="190.63861493814102" q0="18.171540752766465" bus="DOLONP6_S_VL6_TN1" connectableBus="DOLONP6_S_VL6_TN1" p="191.64537642851195" q="18.363975153213087"/>
-      <load id="DOLONP6_DOLON4" name="DOLONP6_DOLON4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="DOLONP6_S_VL6_TN1" p="0" q="0"/>
+      <load id="DOLONP6_DOLON1" name="DOLONP6_DOLON1" loadType="UNDEFINED" p0="190.63861493814102" q0="18.171540752766465" bus="DOLONP6_S_VL6_TN1" connectableBus="DOLONP6_S_VL6_TN1"/>
+      <load id="DOLONP6_DOLON4" name="DOLONP6_DOLON4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="DOLONP6_S_VL6_TN1"/>
     </voltageLevel>
     <twoWindingsTransformer id="NIREEL61DOLON_ACLS" r="0.080000102519989014" x="8.3600072860717773" g="0" b="0" ratedU1="225" ratedU2="225" voltageLevelId1="DOLONP6_S_VL6" bus1="DOLONP6_S_VL6_TN1" connectableBus1="DOLONP6_S_VL6_TN1" voltageLevelId2="NIREE6" bus2="NIREEP61" connectableBus2="NIREEP61" p1="1.6134411794317294" q1="3.6353020737973356" p2="-1.6134155174772422" q2="-3.6326204004566565">
       <phaseTapChanger lowTapPosition="0" tapPosition="17" regulationMode="CURRENT_LIMITER" regulationValue="409.27999999999997" regulating="true">
@@ -68,9 +68,9 @@
         <switch id="ULYSSP6_SW_ULYSS___6COUPL_B__DJ" kind="BREAKER" retained="true" open="false" bus1="ULYSSP6_S_VL6_TN4" bus2="ULYSSP6_S_VL6_TN2"/>
         <switch id="ULYSSP6_SW_ULYSS___6COUPL_A__DJ" kind="BREAKER" retained="true" open="false" bus1="ULYSSP6_S_VL6_TN3" bus2="ULYSSP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="ULYSSP6_ULYSS1" name="ULYSSP6_ULYSS1" loadType="UNDEFINED" p0="101.34473795564341" q0="10.270755911298043" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1" p="101.83022866433566" q="10.369395469830902"/>
-      <load id="ULYSSP6_ULYSS4" name="ULYSSP6_ULYSS4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="ULYSSP6_S_VL6_TN1" p="0" q="0"/>
-      <shunt id="ULYSSP6_COND.11" name="ULYSSP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1" q="-84.933658677342095"/>
+      <load id="ULYSSP6_ULYSS1" name="ULYSSP6_ULYSS1" loadType="UNDEFINED" p0="101.34473795564341" q0="10.270755911298043" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1"/>
+      <load id="ULYSSP6_ULYSS4" name="ULYSSP6_ULYSS4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="ULYSSP6_S_VL6_TN1"/>
+      <shunt id="ULYSSP6_COND.11" name="ULYSSP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1"/>
     </voltageLevel>
   </substation>
   <substation id="AGAMEP6_S" name="AGAMEP6" country="FR" tso="RTE">
@@ -85,8 +85,8 @@
         <switch id="AGAMEP6_SW_AGAME___6COUPL_B__DJ" kind="BREAKER" retained="true" open="false" bus1="AGAMEP6_S_VL6_TN4" bus2="AGAMEP6_S_VL6_TN2"/>
         <switch id="AGAMEP6_SW_AGAME___6COUPL_A__DJ" kind="BREAKER" retained="true" open="false" bus1="AGAMEP6_S_VL6_TN3" bus2="AGAMEP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="AGAMEP6_AGAME1" name="AGAMEP6_AGAME1" loadType="UNDEFINED" p0="200.91743567029621" q0="20.183907978163784" bus="AGAMEP6_S_VL6_TN1" connectableBus="AGAMEP6_S_VL6_TN1" p="201.87535430428619" q="20.376829337740514"/>
-      <load id="AGAMEP6_AGAME4" name="AGAMEP6_AGAME4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="AGAMEP6_S_VL6_TN1" p="0" q="0"/>
+      <load id="AGAMEP6_AGAME1" name="AGAMEP6_AGAME1" loadType="UNDEFINED" p0="200.91743567029621" q0="20.183907978163784" bus="AGAMEP6_S_VL6_TN1" connectableBus="AGAMEP6_S_VL6_TN1"/>
+      <load id="AGAMEP6_AGAME4" name="AGAMEP6_AGAME4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="AGAMEP6_S_VL6_TN1"/>
     </voltageLevel>
   </substation>
   <substation id="PRIAMP6_S" name="PRIAMP6" country="FR" tso="RTE">
@@ -96,9 +96,9 @@
         <bus id="PRIAMP6_S_VL6_TN1" v="231.80452291893261" angle="-19.394143257823384"/>
         <switch id="PRIAMP6_SW_Disj_Couplage_1_2" kind="BREAKER" retained="true" open="false" bus1="PRIAMP6_S_VL6_TN2" bus2="PRIAMP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="PRIAMP6_PRIAM1" name="PRIAMP6_PRIAM1" loadType="UNDEFINED" p0="221.65287835010776" q0="20.30165226482961" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1" p="222.85228413011572" q="20.521958901656941"/>
-      <load id="PRIAMP6_PRIAM4" name="PRIAMP6_PRIAM4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="PRIAMP6_S_VL6_TN1" p="0" q="0"/>
-      <shunt id="PRIAMP6_COND.11" name="PRIAMP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1" q="-84.911942040851642"/>
+      <load id="PRIAMP6_PRIAM1" name="PRIAMP6_PRIAM1" loadType="UNDEFINED" p0="221.65287835010776" q0="20.30165226482961" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1"/>
+      <load id="PRIAMP6_PRIAM4" name="PRIAMP6_PRIAM4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="PRIAMP6_S_VL6_TN1"/>
+      <shunt id="PRIAMP6_COND.11" name="PRIAMP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1"/>
     </voltageLevel>
   </substation>
   <substation id="ACHILP6_S" name="ACHILP6" country="FR" tso="RTE">
@@ -110,8 +110,8 @@
         <switch id="ACHILP6_C31" kind="BREAKER" retained="true" open="false" bus1="ACHILP6_S_VL6_TN3" bus2="ACHILP6_S_VL6_TN1"/>
         <switch id="ACHILP6_C21" kind="BREAKER" retained="true" open="false" bus1="ACHILP6_S_VL6_TN2" bus2="ACHILP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="ACHILP6_ACHIL5" name="ACHILP6_ACHIL5" loadType="UNDEFINED" p0="200.00777666141016" q0="20.001555362520222" bus="ACHILP6_S_VL6_TN3" connectableBus="ACHILP6_S_VL6_TN3" p="201.12894641380282" q="20.226426542763146"/>
-      <load id="ACHILP6_ACHIL9" name="ACHILP6_ACHIL9" loadType="UNDEFINED" p0="0" q0="0" connectableBus="ACHILP6_S_VL6_TN1" p="0" q="0"/>
+      <load id="ACHILP6_ACHIL5" name="ACHILP6_ACHIL5" loadType="UNDEFINED" p0="200.00777666141016" q0="20.001555362520222" bus="ACHILP6_S_VL6_TN3" connectableBus="ACHILP6_S_VL6_TN3"/>
+      <load id="ACHILP6_ACHIL9" name="ACHILP6_ACHIL9" loadType="UNDEFINED" p0="0" q0="0" connectableBus="ACHILP6_S_VL6_TN1"/>
     </voltageLevel>
   </substation>
   <substation id="MYDONP6_S" name="MYDONP6" country="FR" tso="RTE">
@@ -126,8 +126,8 @@
         <bus id="MYDONP6_S_VL6_TN1" v="230.42949047426109" angle="-12.958171121974162"/>
         <switch id="MYDONP6_C21" kind="BREAKER" retained="true" open="false" bus1="MYDONP6_S_VL6_TN2" bus2="MYDONP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="MYDONP6_MYDON62" name="MYDONP6_MYDON62" loadType="UNDEFINED" p0="200.65073772401115" q0="20.130359274594966" bus="MYDONP6_S_VL6_TN2" connectableBus="MYDONP6_S_VL6_TN2" p="201.6694305256498" q="20.335279604269953"/>
-      <load id="MYDONP6_MYDON63" name="MYDONP6_MYDON63" loadType="UNDEFINED" p0="0" q0="0" connectableBus="MYDONP6_S_VL6_TN2" p="0" q="0"/>
+      <load id="MYDONP6_MYDON62" name="MYDONP6_MYDON62" loadType="UNDEFINED" p0="200.65073772401115" q0="20.130359274594966" bus="MYDONP6_S_VL6_TN2" connectableBus="MYDONP6_S_VL6_TN2"/>
+      <load id="MYDONP6_MYDON63" name="MYDONP6_MYDON63" loadType="UNDEFINED" p0="0" q0="0" connectableBus="MYDONP6_S_VL6_TN2"/>
     </voltageLevel>
     <twoWindingsTransformer id="MYDONL61PARIS_ACLS" r="2.0000002384185791" x="10.600000381469727" g="0" b="3.2000003557186574e-05" ratedU1="225" ratedU2="225" voltageLevelId1="PARIS" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId2="MYDONP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" p1="-152.50920458435536" q1="26.32070809031789" p2="153.4002742500482" q2="-23.295032214949547">
       <phaseTapChanger lowTapPosition="0" tapPosition="17" regulationMode="CURRENT_LIMITER" regulationValue="409.27999999999997" regulating="true">
@@ -178,9 +178,9 @@
         <switch id="CIRCEP6_C21" kind="BREAKER" retained="true" open="false" bus1="CIRCEP6_S_VL6_TN2" bus2="CIRCEP6_S_VL6_TN1"/>
         <switch id="CIRCEP6_C31" kind="BREAKER" retained="true" open="false" bus1="CIRCEP6_S_VL6_TN3" bus2="CIRCEP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="CIRCEP6_CIRCE5" name="CIRCEP6_CIRCE5" loadType="UNDEFINED" p0="202.15805678670534" q0="20.433939961888399" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1" p="203.06513889740597" q="20.617725317711393"/>
-      <load id="CIRCEP6_CIRCE9" name="CIRCEP6_CIRCE9" loadType="UNDEFINED" p0="0" q0="0" connectableBus="CIRCEP6_S_VL6_TN1" p="0" q="0"/>
-      <shunt id="CIRCEP6_COND.11" name="CIRCEP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1" q="-84.677850470235555"/>
+      <load id="CIRCEP6_CIRCE5" name="CIRCEP6_CIRCE5" loadType="UNDEFINED" p0="202.15805678670534" q0="20.433939961888399" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1"/>
+      <load id="CIRCEP6_CIRCE9" name="CIRCEP6_CIRCE9" loadType="UNDEFINED" p0="0" q0="0" connectableBus="CIRCEP6_S_VL6_TN1"/>
+      <shunt id="CIRCEP6_COND.11" name="CIRCEP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1"/>
     </voltageLevel>
   </substation>
   <substation id="HELENP6_S" name="HELENP6" country="FR" tso="RTE">
@@ -190,8 +190,8 @@
         <bus id="HELENP6_S_VL6_TN1" v="231.48475210067559" angle="-8.4447037901530901"/>
         <switch id="HELENP6_SW_Disj_Couplage_1_2" kind="BREAKER" retained="true" open="false" bus1="HELENP6_S_VL6_TN2" bus2="HELENP6_S_VL6_TN1"/>
       </busBreakerTopology>
-      <load id="HELENP6_HELEN5" name="HELENP6_HELEN5" loadType="UNDEFINED" p0="202.15803731783981" q0="20.433936026100533" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1" p="203.06511933903857" q="20.617721346088963"/>
-      <shunt id="HELENP6_COND.11" name="HELENP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1" q="-84.677834157971546"/>
+      <load id="HELENP6_HELEN5" name="HELENP6_HELEN5" loadType="UNDEFINED" p0="202.15803731783981" q0="20.433936026100533" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1"/>
+      <shunt id="HELENP6_COND.11" name="HELENP6_COND.11" bPerSection="0.0015802469570189714" maximumSectionCount="1" currentSectionCount="1" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1"/>
     </voltageLevel>
   </substation>
   <substation id="ATHENP7_S" name="ATHENP7" country="FR" tso="RTE">
@@ -204,13 +204,13 @@
       <busBreakerTopology>
         <bus id="ATHENP7_S_VL7_TN1" v="390.31181766356588" angle="5.7126803379135325"/>
       </busBreakerTopology>
-      <generator id="ATHEN7ATHEN1_NGU_SM" name="ATHEN7ATHEN1" energySource="NUCLEAR" minP="398" maxP="1498" voltageRegulatorOn="true" targetP="762.85800067289142" targetQ="129.45613680827205" targetV="390.75128980300326" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1" p="-776.69238144869735" q="-120.37253358486318">
+      <generator id="ATHEN7ATHEN1_NGU_SM" name="ATHEN7ATHEN1" energySource="NUCLEAR" minP="398" maxP="1498" voltageRegulatorOn="true" targetP="762.85800067289142" targetQ="129.45613680827205" targetV="390.75128980300326" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="398" minQ="-5" maxQ="360"/>
           <point p="1498" minQ="-220" maxQ="200"/>
         </reactiveCapabilityCurve>
       </generator>
-      <load id="ATHEN1" name="ATHEN1" loadType="UNDEFINED" p0="0" q0="0" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1" p="0" q="0"/>
+      <load id="ATHEN1" name="ATHEN1" loadType="UNDEFINED" p0="0" q0="0" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1"/>
     </voltageLevel>
     <twoWindingsTransformer id="ATHENY761" r="0.4699999988079071" x="39.699996948242188" g="0" b="0" ratedU1="225" ratedU2="380" voltageLevelId1="ATHENP6_S_VL6" bus1="ATHENP6_S_VL6_TN1" connectableBus1="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP7_S_VL7" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" p1="-840.32451026110664" q1="93.945561973039389" p2="842.54143914694362" q2="93.314161910865138">
       <ratioTapChanger lowTapPosition="0" tapPosition="0" loadTapChangingCapabilities="false" targetV="238.43904113769531">
@@ -232,19 +232,19 @@
         <bus id="HADESP7_S_VL7_TN2" v="392.07458881185511" angle="13.829238701761474"/>
         <switch id="HADESP7_SW_HADES___7COUPL_1__DJ" kind="BREAKER" retained="true" open="false" bus1="HADESP7_S_VL7_TN1" bus2="HADESP7_S_VL7_TN2"/>
       </busBreakerTopology>
-      <generator id="HADES7HADES1_NGU_SM" name="HADES7HADES1" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetQ="100.23241552420848" targetV="391.31585308922013" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="-535.74343355897315" q="-77.658233364343872">
+      <generator id="HADES7HADES1_NGU_SM" name="HADES7HADES1" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetQ="100.23241552420848" targetV="391.31585308922013" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="0" minQ="-230" maxQ="320"/>
           <point p="917" minQ="-300" maxQ="230"/>
         </reactiveCapabilityCurve>
       </generator>
-      <generator id="HADES7HADES2_NGU_SM" name="HADES7HADES2" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetQ="100.23239904279535" targetV="391.31581592763018" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="-535.74343355897406" q="-77.6582333643439">
+      <generator id="HADES7HADES2_NGU_SM" name="HADES7HADES2" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetQ="100.23239904279535" targetV="391.31581592763018" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="0" minQ="-230" maxQ="320"/>
           <point p="917" minQ="-300" maxQ="230"/>
         </reactiveCapabilityCurve>
       </generator>
-      <load id="HADES1" name="HADES1" loadType="UNDEFINED" p0="0" q0="0" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="0" q="0"/>
+      <load id="HADES1" name="HADES1" loadType="UNDEFINED" p0="0" q0="0" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1"/>
     </voltageLevel>
     <twoWindingsTransformer id="HADESY761" r="0.4699999988079071" x="39.699996948242188" g="0" b="0" ratedU1="225" ratedU2="380" voltageLevelId1="HADESP6_S_VL6" bus1="HADESP6_S_VL6_TN1" connectableBus1="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP7_S_VL7" bus2="HADESP7_S_VL7_TN1" connectableBus2="HADESP7_S_VL7_TN1" p1="-918.90870073282485" q1="99.772754504158627" p2="921.55189879994896" q2="123.49310818642678">
       <ratioTapChanger lowTapPosition="0" tapPosition="0" loadTapChangingCapabilities="false" targetV="238.43904113769531">
@@ -259,15 +259,15 @@
       <busBreakerTopology>
         <bus id="AJAXP7_S_VL7_TN1" v="409.73005742585076" angle="28.102009542188398"/>
       </busBreakerTopology>
-      <load id="AJAXP7_AJAX5" name="AJAXP7_AJAX5" loadType="UNDEFINED" p0="0" q0="0" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="0" q="0"/>
-      <vscConverterStation id="AJAXP7_AJAX_TER_1" name="AJAX_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170">
+      <load id="AJAXP7_AJAX5" name="AJAXP7_AJAX5" loadType="UNDEFINED" p0="0" q0="0" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1"/>
+      <vscConverterStation id="AJAXP7_AJAX_TER_1" name="AJAX_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <vscConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" voltageRegulatorOn="false" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-170">
+      <vscConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" voltageRegulatorOn="false" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
@@ -281,15 +281,15 @@
       <busBreakerTopology>
         <bus id="HERAP7_S_VL7_TN1" v="403.86336477401227" angle="-9.5118624779095473"/>
       </busBreakerTopology>
-      <load id="HERAP7_HERA5" name="HERAP7_HERA5" loadType="UNDEFINED" p0="0" q0="0" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="0" q="0"/>
-      <vscConverterStation id="HERAP7_HERA_TER_1" name="HERA_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270">
+      <load id="HERAP7_HERA5" name="HERAP7_HERA5" loadType="UNDEFINED" p0="0" q0="0" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1"/>
+      <vscConverterStation id="HERAP7_HERA_TER_1" name="HERA_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="false" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270">
+      <vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="false" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>

@@ -72,8 +72,7 @@ class HvdcLine {
    * @param vdcNom nominal dc voltage of the hvdc line in kV
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
-   * @param lossFactor1 loss factor of the converter 1
-   * @param lossFactor2 loss factor of the converter 2
+   * @param lossFactors loss factors for converters 1 and 2
    *
    * @return HVDC line object
    */
@@ -87,8 +86,7 @@ class HvdcLine {
                                           const double vdcNom,
                                           const double pSetPoint,
                                           const double rdc,
-                                          const double lossFactor1,
-                                          const double lossFactor2);
+                                          const std::array<double, 2>& lossFactors);
 
  public:
   const HvdcLineId id;                                           ///< HvdcLine id
@@ -101,8 +99,7 @@ class HvdcLine {
   const double vdcNom;                                           ///< nominal dc voltage of the hvdc line in kV
   const double pSetPoint;                                        ///< active power set-point of the hvdc line in MW
   const double rdc;                                              ///< dc resistance of the hvdc line in Ohm
-  const double lossFactor1;                                      ///< loss factor of the converter 1
-  const double lossFactor2;                                      ///< loss factor of the converter 2
+  const std::array<double, 2> lossFactors;                      ///< loss factors for converters 1 and 2
 
  private:
   /**
@@ -118,8 +115,7 @@ class HvdcLine {
    * @param vdcNom nominal dc voltage of the hvdc line in kV
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
-   * @param lossFactor1 loss factor of the converter 1
-   * @param lossFactor2 loss factor of the converter 2
+   * @param lossFactors loss factors for converters 1 and 2
    */
   HvdcLine(const std::string& id,
             const ConverterType converterType,
@@ -131,8 +127,7 @@ class HvdcLine {
             const double vdcNom,
             const double pSetPoint,
             const double rdc,
-            const double lossFactor1,
-            const double lossFactor2);
+            const std::array<double, 2>& lossFactors);
 };
 }  // namespace inputs
 }  // namespace dfl

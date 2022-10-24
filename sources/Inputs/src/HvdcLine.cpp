@@ -28,8 +28,7 @@ HvdcLine::HvdcLine(const std::string& id,
                     const double vdcNom,
                     const double pSetPoint,
                     const double rdc,
-                    const double lossFactor1,
-                    const double lossFactor2) :
+                    const std::array<double, 2>& lossFactors) :
     id{id},
     converterType{converterType},
     converter1(converter1),
@@ -40,8 +39,7 @@ HvdcLine::HvdcLine(const std::string& id,
     vdcNom(vdcNom),
     pSetPoint(pSetPoint),
     rdc(rdc),
-    lossFactor1(lossFactor1),
-    lossFactor2(lossFactor2) {
+    lossFactors(lossFactors) {
   // converters are required
   assert(converter1);
   assert(converter2);
@@ -71,8 +69,7 @@ HvdcLine::build(const std::string& id,
                 const double vdcNom,
                 const double pSetPoint,
                 const double rdc,
-                const double lossFactor1,
-                const double lossFactor2) {
+                const std::array<double, 2>& lossFactors) {
   auto hvdcLineCreated = std::shared_ptr<HvdcLine>(new HvdcLine(id,
                                                                 converterType,
                                                                 converter1,
@@ -83,8 +80,7 @@ HvdcLine::build(const std::string& id,
                                                                 vdcNom,
                                                                 pSetPoint,
                                                                 rdc,
-                                                                lossFactor1,
-                                                                lossFactor2));
+                                                                lossFactors));
   converter1->hvdcLine = hvdcLineCreated;
   converter2->hvdcLine = hvdcLineCreated;
 

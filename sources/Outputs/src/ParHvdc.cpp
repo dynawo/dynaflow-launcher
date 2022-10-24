@@ -94,8 +94,7 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
       const double rdc = hvdcDefinition.rdc;
       const double pSetPoint = hvdcDefinition.pSetPoint;
       const double vdcNom = hvdcDefinition.vdcNom;
-      const double lossFactor1 = hvdcDefinition.lossFactor1;
-      const double lossFactor2 = hvdcDefinition.lossFactor2;
+      const std::array<double, 2>& lossFactors = hvdcDefinition.lossFactors;
 
       const double pdcLoss = rdc * (pSetPoint / vdcNom) * (pSetPoint / vdcNom) / 100.;
       const double p0dc = pSetPoint / 100.;
@@ -104,9 +103,9 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition,
       double p02 = std::numeric_limits<double>::min();
       if (first == "1" && second == "2") {
         p01 = -p0dc;
-        p02 = ((p0dc * (1 - lossFactor1)) - pdcLoss) * (1. - lossFactor2);
+        p02 = ((p0dc * (1 - lossFactors[1])) - pdcLoss) * (1. - lossFactors[2]);
       } else {
-        p01 = ((p0dc * (1 - lossFactor2)) - pdcLoss) * (1. - lossFactor1);
+        p01 = ((p0dc * (1 - lossFactors[2])) - pdcLoss) * (1. - lossFactors[1]);
         p02 = -p0dc;
       }
       set->addParameter(helper::buildParameter("hvdc_P10Pu", p01));

@@ -729,8 +729,7 @@ TEST(HvdcLine, base) {
                                                   320,
                                                   322,
                                                   0.125,
-                                                  0.01,
-                                                  0.01);
+                                                  {0.01, 0.01});
   auto hvdcLineVSC = dfl::inputs::HvdcLine::build("HVDCVSCLine",
                                                   dfl::inputs::HvdcLine::ConverterType::VSC,
                                                   dummyStationVSC,
@@ -741,8 +740,7 @@ TEST(HvdcLine, base) {
                                                   320,
                                                   322,
                                                   0.125,
-                                                  0.01,
-                                                  0.01);
+                                                  {0.01, 0.01});
   auto hvdcLineBothInMainComponent = dfl::inputs::HvdcLine::build("HVDCLineBothInMain",
                                                                   dfl::inputs::HvdcLine::ConverterType::LCC,
                                                                   lccStationMain1,
@@ -753,24 +751,23 @@ TEST(HvdcLine, base) {
                                                                   320,
                                                                   322,
                                                                   0.125,
-                                                                  0.01,
-                                                                  0.01);
+                                                                  {0.01, 0.01});
   // model not checked in this test : see the dedicated test
   std::vector<dfl::algo::HVDCDefinition> expected_hvdcLines = {
       dfl::algo::HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", boost::none, "StationN",
                                 "_BUS___99_TN", boost::none, dfl::algo::HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT,
                                 dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 99.}, 0., boost::none, boost::none, boost::none, boost::none, false,
-                                320, 322, 0.125, 0.01, 0.01),
+                                320, 322, 0.125, {0.01, 0.01}),
       dfl::algo::HVDCDefinition(
           "HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "StationN", "_BUS___99_TN", false, "VSCStation2", "_BUS___11_TN", false,
           dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {0., 0.}, 10.,
           dfl::algo::VSCDefinition(dummyStationVSC->converterId, dummyStationVSC->qMax, dummyStationVSC->qMin, 10., dummyStationVSC->points),
           dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, 10., vscStation2->points), boost::none, boost::none, false,
-          320, 322, 0.125, 0.01, 0.01),
+          320, 322, 0.125, {0.01, 0.01}),
       dfl::algo::HVDCDefinition("HVDCLineBothInMain", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStationMain1", "_BUS__11_TN", boost::none,
                                 "LCCStationMain2", "_BUS__11_TN", boost::none, dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
                                 dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling, {1., 2.}, 20., boost::none, boost::none, boost::none, boost::none, false,
-                                320, 322, 0.125, 0.01, 0.01),
+                                320, 322, 0.125, {0.01, 0.01}),
   };
 
   nodes[0]->converters.emplace_back(lccStation1);
@@ -859,27 +856,27 @@ TEST(hvdcLine, models) {
   auto vscStation11 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation11", "11", nullptr, true, 11.1, 11., emptyPoints);
   auto vscStation12 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation12", "12", nullptr, true, 12.1, 12., emptyPoints);
   auto hvdcLineLCC = dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation1, dummyStation, boost::none, 0,
-                                                  false, 320, 322, 0.125, 0.01, 0.01);  // first is in main cc
+                                                  false, 320, 322, 0.125, {0.01, 0.01});  // first is in main cc
   auto hvdcLineVSC = dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation1, dummyStationVSC, boost::none, 1,
-                                                  false, 320, 322, 0.125, 0.01, 0.01);  // first in main cc
+                                                  false, 320, 322, 0.125, {0.01, 0.01});  // first in main cc
   auto hvdcLineVSC2 = dfl::inputs::HvdcLine::build("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, vscStation2, boost::none, 2,
-                                                   false, 320, 322, 0.125, 0.01, 0.01);  // second in main cc
+                                                   false, 320, 322, 0.125, {0.01, 0.01});  // second in main cc
   auto hvdcLineVSC3 = dfl::inputs::HvdcLine::build("HVDCVSCLine3", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation21, dummyStationVSC, boost::none, 2,
-                                                   false, 320, 322, 0.125, 0.01, 0.01);  // first in main cc
+                                                   false, 320, 322, 0.125, {0.01, 0.01});  // first in main cc
   auto hvdcLineBothInMainComponent = dfl::inputs::HvdcLine::build("HVDCLineBothInMain1", dfl::inputs::HvdcLine::ConverterType::LCC, lccStation3, lccStation4,
-                                                                  boost::none, 3.4, false, 320, 322, 0.125, 0.01, 0.01);  // both in main cc
+                                                                  boost::none, 3.4, false, 320, 322, 0.125, {0.01, 0.01});  // both in main cc
   auto hvdcLineBothInMainComponent2 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain2", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation5, vscStation6,
-                                                                   activeControl, 5.6, false, 320, 322, 0.125, 0.01, 0.01);  // both in main cc
+                                                                   activeControl, 5.6, false, 320, 322, 0.125, {0.01, 0.01});  // both in main cc
   auto hvdcLineBothInMainComponent3 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain3", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation22, vscStation7,
-                                                                   activeControl, 2.7, false, 320, 322, 0.125, 0.01, 0.01);  // both in main cc
+                                                                   activeControl, 2.7, false, 320, 322, 0.125, {0.01, 0.01});  // both in main cc
   auto hvdcLineBothInMainComponent4 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain4", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation9, vscStation10,
-                                                                   boost::none, 9.10, false, 320, 322, 0.125, 0.01, 0.01);  // both in main cc
+                                                                   boost::none, 9.10, false, 320, 322, 0.125, {0.01, 0.01});  // both in main cc
   auto hvdcLineBothInMainComponent5 = dfl::inputs::HvdcLine::build("HVDCLineBothInMain5", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation23, vscStation8,
-                                                                   boost::none, 2.8, false, 320, 322, 0.125, 0.01, 0.01);  // both in main cc
+                                                                   boost::none, 2.8, false, 320, 322, 0.125, {0.01, 0.01});  // both in main cc
   auto hvdcLineVSCSwitch1 = dfl::inputs::HvdcLine::build("HVDCVSCLineSwitch1", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation11, dummyStationVSC,
-                                                         boost::none, 11, false, 320, 322, 0.125, 0.01, 0.01);  // first in main cc
+                                                         boost::none, 11, false, 320, 322, 0.125, {0.01, 0.01});  // first in main cc
   auto hvdcLineVSCSwitch2 = dfl::inputs::HvdcLine::build("HVDCVSCLineSwitch2", dfl::inputs::HvdcLine::ConverterType::VSC, vscStation12, dummyStationVSC,
-                                                         boost::none, 12, false, 320, 322, 0.125, 0.01, 0.01);  // first in main cc
+                                                         boost::none, 12, false, 320, 322, 0.125, {0.01, 0.01});  // first in main cc
   nodes[0]->converters.push_back(lccStation1);
   nodes[1]->converters.push_back(vscStation1);
   nodes[2]->converters.push_back(vscStation2);
@@ -1200,8 +1197,7 @@ TEST(ContingencyValidation, base) {
                                                 320,
                                                 322,
                                                 0.125,
-                                                0.01,
-                                                0.01);
+                                                {0.01, 0.01});
   conv1->hvdcLine = hvdc_line;
   conv2->hvdcLine = hvdc_line;
 

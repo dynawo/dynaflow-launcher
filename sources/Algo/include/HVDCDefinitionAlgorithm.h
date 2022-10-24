@@ -182,8 +182,7 @@ class HVDCDefinition {
    * @param vdcNom nominal dc voltage of the hvdc line in kV
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
-   * @param lossFactor1 loss factor of the converter 1
-   * @param lossFactor2 loss factor of the converter 2
+   * @param lossFactors loss factors for converters 1 and 2
    */
   explicit HVDCDefinition(const HvdcLineId& id,
                           const inputs::HvdcLine::ConverterType converterType,
@@ -205,8 +204,7 @@ class HVDCDefinition {
                           const double vdcNom,
                           const double pSetPoint,
                           const double rdc,
-                          const double lossFactor1,
-                          const double lossFactor2) :
+                          const std::array<double, 2>& lossFactors) :
       id{id},
       converterType{converterType},
       converter1Id{converter1Id},
@@ -227,8 +225,7 @@ class HVDCDefinition {
       vdcNom(vdcNom),
       pSetPoint(pSetPoint),
       rdc(rdc),
-      lossFactor1(lossFactor1),
-      lossFactor2(lossFactor2) {}
+      lossFactors(lossFactors) {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -250,8 +247,7 @@ class HVDCDefinition {
   const double vdcNom;                                        ///< nominal dc voltage of the hvdc line in kV
   const double pSetPoint;                                     ///< active power set-point of the hvdc line in MW
   const double rdc;                                           ///< dc resistance of the hvdc line in Ohm
-  const double lossFactor1;                                   ///< loss factor of the converter 1
-  const double lossFactor2;                                   ///< loss factor of the converter 2
+  const std::array<double, 2> lossFactors;                    ///< loss factors for converters 1 and 2
 };
 
 /// @brief HVDC line definitions
