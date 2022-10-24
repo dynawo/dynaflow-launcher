@@ -39,9 +39,9 @@ class GeneratorDefinition {
     SIGNALN_INFINITE = 0,        ///< Use signalN generator model with infinite diagram
     SIGNALN_RECTANGULAR,         ///< Use signalN generator model with rectangular diagram
     DIAGRAM_PQ_SIGNALN,          ///< Use signalN generator model
-    SIGNALN_TFO_INFINITE,        ///< Use signalN generator model with infinite diagram and tfo
-    SIGNALN_TFO_RECTANGULAR,     ///< Use signalN generator model with rectangular diagram and tfo
-    DIAGRAM_PQ_TFO_SIGNALN,      ///< Use signalN generator model and tfo
+    SIGNALN_TFO_INFINITE,        ///< Use signalN generator model with infinite diagram and transformer
+    SIGNALN_TFO_RECTANGULAR,     ///< Use signalN generator model with rectangular diagram and transformer
+    DIAGRAM_PQ_TFO_SIGNALN,      ///< Use signalN generator model and transformer
     REMOTE_SIGNALN_INFINITE,     ///< Use signalN generator regulating remote nodes with infinite diagram
     REMOTE_SIGNALN_RECTANGULAR,  ///< Use signalN generator regulating remote nodes with rectangular diagram
     REMOTE_DIAGRAM_PQ_SIGNALN,   ///< Use signalN generator regulating remote nodes
