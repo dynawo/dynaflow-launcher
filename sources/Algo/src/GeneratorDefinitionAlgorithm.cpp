@@ -39,7 +39,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
       model = ModelType::SIGNALN_INFINITE;
       algoRes->isAtLeastOneGeneratorRegulating = true;
       if (generator.regulatedBusId == generator.connectedBusId && (generator.VNom > tfoVoltageLevel_ || DYN::doubleEquals(generator.VNom, tfoVoltageLevel_))) {
-        // Generator is assumed to have its transfo in the static model
+        // Generator is assumed to have its transfomer in the static model
         // Several generators regulate this node
         if (useInfiniteReactivelimits_) {
           model = ModelType::SIGNALN_TFO_INFINITE;
