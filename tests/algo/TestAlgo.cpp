@@ -397,21 +397,62 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   const std::string bus2 = "BUS_2";
   const std::string bus3 = "BUS_3";
   const std::string bus4 = "BUS_4";
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+                                     bus1),  // multiple generators on the same node
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points, -1, 1, -1, 1, 0,
+                                     bus1),  // multiple generators on the same node
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus3)};
+
+  dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+                                     bus1),  // multiple generators on the same node
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+                                     bus1),  // multiple generators on the same node
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus3)};
 
   nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
   nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
 
   nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
   nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 1.0, bus3, bus2);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 15, bus3, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, 0.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  ASSERT_THROW_DYNAWO(algo_infinite(nodes[4], algoRes), DYN::Error::GENERAL, dfl::KeyError_t::UnsupportedGeneratorRemoteRegulationWithTfo);
+  for (const auto& node : nodes) {
+    algo_infinite(node, algoRes);
+  }
+
+  ASSERT_EQ(5, generators.size());
+  ASSERT_TRUE(algoRes->isAtLeastOneGeneratorRegulating);
+  for (size_t index = 0; index < generators.size(); ++index) {
+    generatorsEquals(expected_gens_infinite[index], generators[index]);
+    ASSERT_EQ(expected_gens_infinite[index].targetP, generators[index].targetP);
+  }
+
+  generators.clear();
+  busesWithDynamicModel.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, false, 10.);
+
+  for (const auto& node : nodes) {
+    algo_finite(node, algoRes);
+  }
+
+  ASSERT_EQ(5, generators.size());
+  ASSERT_TRUE(algoRes->isAtLeastOneGeneratorRegulating);
+  for (size_t index = 0; index < generators.size(); ++index) {
+    generatorsEquals(expected_gens_finite[index], generators[index]);
+    ASSERT_EQ(expected_gens_finite[index].targetP, generators[index].targetP);
+  }
 }
 TEST(Generators, generatorWithTfo) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
