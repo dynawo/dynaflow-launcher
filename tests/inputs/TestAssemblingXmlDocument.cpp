@@ -8,11 +8,13 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "AssemblingXmlDocument.h"
+#include "AssemblingDataBase.h"
+#include "Log.h"
 #include "Tests.h"
 
 #include <array>
 #include <fstream>
+#include <gtest_dynawo.h>
 #include <iostream>
 #include <tuple>
 #include <xml/sax/parser/Parser.h>
@@ -26,25 +28,17 @@ testing::Environment* initXmlEnvironment();
 testing::Environment* const env = initXmlEnvironment();
 
 TEST(AssemblingXmlDocument, readFile) {
-  using dfl::inputs::AssemblingXmlDocument;
-
-  AssemblingXmlDocument doc;
-  parser::ParserFactory factory;
   const std::string filepath = "res/assembling.xml";
+  dfl::inputs::AssemblingDataBase assembling(filepath);
 
-  auto parser = factory.createParser();
-  std::ifstream in(filepath.c_str());
-  ASSERT_TRUE(in);
-  ASSERT_NO_THROW(parser->parse(in, doc, false));
+  ASSERT_THROW_DYNAWO(assembling.getMultipleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownMultiAssoc);
 
-  const auto& macroConnections = doc.macroConnections();
-  ASSERT_EQ(macroConnections.size(), 2);
-  auto macro = macroConnections[0];
+  auto macro = assembling.getMacroConnection("ToUMeasurement");
   ASSERT_EQ(macro.id, "ToUMeasurement");
   ASSERT_EQ(macro.connections.size(), 1);
   ASSERT_EQ(macro.connections.front().var1, "U_IMPIN");
   ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
-  macro = macroConnections[1];
+  macro = assembling.getMacroConnection("ToControlledShunts");
   ASSERT_EQ(macro.id, "ToControlledShunts");
   ASSERT_EQ(macro.connections.size(), 3);
   std::array<std::tuple<std::string, std::string>, 3> connect_values = {std::make_tuple("shunt_state_@INDEX@", "@NAME@_state"),
@@ -55,37 +49,45 @@ TEST(AssemblingXmlDocument, readFile) {
     ASSERT_EQ(macro.connections[i].var2, std::get<1>(connect_values[i]));
   }
 
-  const auto& singleAssociations = doc.singleAssociations();
-  ASSERT_EQ(singleAssociations.size(), 6);
-  auto singleAssoc = singleAssociations.front();
+  ASSERT_THROW_DYNAWO(assembling.getSingleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownSingleAssoc);
+  ASSERT_NO_THROW(assembling.getSingleAssociation("MESURE_MODELE_1_VL4"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("MESURE_MODELE_1_VL6"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("MESURE_I_VL661"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("TAP_VL661"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("MESURE_I_SALON"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("ORDER_SALON"));
+  auto singleAssoc = assembling.getSingleAssociation("MESURE_MODELE_1_VL4");
   ASSERT_EQ(singleAssoc.id, "MESURE_MODELE_1_VL4");
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_TRUE(singleAssoc.bus);
   ASSERT_EQ(singleAssoc.bus->voltageLevel, "VLP6");
-  singleAssoc = singleAssociations[2];
+  singleAssoc = assembling.getSingleAssociation("MESURE_I_VL661");
   ASSERT_EQ(singleAssoc.id, "MESURE_I_VL661");
   ASSERT_FALSE(singleAssoc.bus);
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_TRUE(singleAssoc.tfo);
   ASSERT_EQ(singleAssoc.tfo->name, "VL661");
-  singleAssoc = singleAssociations[4];
+  singleAssoc = assembling.getSingleAssociation("MESURE_I_SALON");
   ASSERT_EQ(singleAssoc.id, "MESURE_I_SALON");
   ASSERT_FALSE(singleAssoc.bus);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_TRUE(singleAssoc.line);
   ASSERT_EQ(singleAssoc.line->name, "QBLA");
 
-  const auto& multiAssociations = doc.multipleAssociations();
-  ASSERT_EQ(multiAssociations.size(), 2);
-  ASSERT_EQ(multiAssociations.front().id, "SHUNTS_MODELE_1_VL4");
-  ASSERT_EQ(multiAssociations.front().shunt.voltageLevel, "VL4");
+  ASSERT_THROW_DYNAWO(assembling.getMultipleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownMultiAssoc);
+  ASSERT_NO_THROW(assembling.getMultipleAssociation("SHUNTS_MODELE_1_VL4"));
+  ASSERT_NO_THROW(assembling.getMultipleAssociation("SHUNTS_MODELE_1_VL6"));
+  auto multipleAssoc = assembling.getMultipleAssociation("SHUNTS_MODELE_1_VL4");
+  ASSERT_EQ(multipleAssoc.id, "SHUNTS_MODELE_1_VL4");
+  ASSERT_TRUE(multipleAssoc.shunt);
+  ASSERT_EQ(multipleAssoc.shunt->voltageLevel, "VL4");
 
-  const auto& dynamicAutomatons = doc.dynamicAutomatons();
+  const auto& dynamicAutomatons = assembling.dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 2);
-  ASSERT_EQ(dynamicAutomatons.front().id, "MODELE_1_VL4");
-  ASSERT_EQ(dynamicAutomatons.front().lib, "DYNModel1");
-  const auto& macroConnects = dynamicAutomatons.front().macroConnects;
+  ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.id, "MODELE_1_VL4");
+  ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.lib, "DYNModel1");
+  const auto& macroConnects = dynamicAutomatons.find("MODELE_1_VL4")->second.macroConnects;
   ASSERT_EQ(macroConnects.size(), 2);
   ASSERT_EQ(macroConnects[0].id, "MESURE_MODELE_1_VL4");
   ASSERT_EQ(macroConnects[0].macroConnection, "ToUMeasurement");

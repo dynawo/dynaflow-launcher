@@ -8,11 +8,12 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "SettingXmlDocument.h"
+#include "SettingDataBase.h"
 #include "Tests.h"
 
 #include <array>
 #include <fstream>
+#include <gtest_dynawo.h>
 #include <iostream>
 #include <tuple>
 #include <xml/sax/parser/Parser.h>
@@ -26,21 +27,10 @@ testing::Environment* initXmlEnvironment();
 testing::Environment* const env = initXmlEnvironment();
 
 TEST(SettingXmlDocument, readFile) {
-  using dfl::inputs::SettingXmlDocument;
-
-  SettingXmlDocument doc;
-  parser::ParserFactory factory;
   const std::string filepath = "res/setting.xml";
+  dfl::inputs::SettingDataBase setting(filepath);
 
-  auto parser = factory.createParser();
-  std::ifstream in(filepath.c_str());
-  ASSERT_TRUE(in);
-  ASSERT_NO_THROW(parser->parse(in, doc, false));
-
-  const auto& sets = doc.sets();
-  ASSERT_EQ(sets.size(), 14);
-
-  auto set = sets.front();
+  auto set = setting.getSet("MODELE_1_VL4");
   ASSERT_EQ(set.id, "MODELE_1_VL4");
   ASSERT_EQ(set.counts.size(), 1);
   auto count = set.counts.front();
@@ -64,7 +54,7 @@ TEST(SettingXmlDocument, readFile) {
   ASSERT_EQ(set.references.size(), 0);
   ASSERT_EQ(set.refs.size(), 0);
 
-  set = sets[5];
+  set = setting.getSet("MODELE_2_TZE");
   ASSERT_EQ(set.id, "MODELE_2_TZE");
   ASSERT_EQ(set.references.size(), 0);
   ASSERT_EQ(set.refs.size(), 0);
@@ -102,7 +92,7 @@ TEST(SettingXmlDocument, readFile) {
     ASSERT_EQ(set.doubleParameters[i].value, values[i].second);
   }
 
-  set = sets[6];
+  set = setting.getSet("DM_M661");
   ASSERT_EQ(set.id, "DM_M661");
   ASSERT_EQ(set.counts.size(), 0);
   ASSERT_EQ(set.refs.size(), 0);
@@ -119,17 +109,17 @@ TEST(SettingXmlDocument, readFile) {
     ASSERT_EQ(set.doubleParameters[i].value, values6[i].second);
   }
   ASSERT_EQ(set.references.size(), 10);
-  std::array<std::tuple<std::string, std::string, SettingXmlDocument::Reference::DataType>, 10> values8 = {
-      std::make_tuple("phaseShifter_I0", "i1", SettingXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_tap0", "tap0", SettingXmlDocument::Reference::DataType::INT),
-      std::make_tuple("phaseShifter_tapMin", "tapMin", SettingXmlDocument::Reference::DataType::INT),
-      std::make_tuple("phaseShifter_tapMax", "tapMax", SettingXmlDocument::Reference::DataType::INT),
-      std::make_tuple("phaseShifter_regulating0", "regulating", SettingXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_iMax", "iMax", SettingXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_iStop", "iStop", SettingXmlDocument::Reference::DataType::DOUBLE),
-      std::make_tuple("phaseShifter_increasePhase", "increasePhase", SettingXmlDocument::Reference::DataType::INT),
-      std::make_tuple("test", "test", SettingXmlDocument::Reference::DataType::STRING),
-      std::make_tuple("testb", "testb", SettingXmlDocument::Reference::DataType::BOOL)};
+  std::array<std::tuple<std::string, std::string, dfl::inputs::SettingDataBase::Reference::DataType>, 10> values8 = {
+      std::make_tuple("phaseShifter_I0", "i1", dfl::inputs::SettingDataBase::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_tap0", "tap0", dfl::inputs::SettingDataBase::Reference::DataType::INT),
+      std::make_tuple("phaseShifter_tapMin", "tapMin", dfl::inputs::SettingDataBase::Reference::DataType::INT),
+      std::make_tuple("phaseShifter_tapMax", "tapMax", dfl::inputs::SettingDataBase::Reference::DataType::INT),
+      std::make_tuple("phaseShifter_regulating0", "regulating", dfl::inputs::SettingDataBase::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_iMax", "iMax", dfl::inputs::SettingDataBase::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_iStop", "iStop", dfl::inputs::SettingDataBase::Reference::DataType::DOUBLE),
+      std::make_tuple("phaseShifter_increasePhase", "increasePhase", dfl::inputs::SettingDataBase::Reference::DataType::INT),
+      std::make_tuple("test", "test", dfl::inputs::SettingDataBase::Reference::DataType::STRING),
+      std::make_tuple("testb", "testb", dfl::inputs::SettingDataBase::Reference::DataType::BOOL)};
   for (unsigned int i = 0; i < values8.size(); ++i) {
     ASSERT_TRUE(set.references[i].componentId.has_value());
     ASSERT_EQ(set.references[i].componentId.get(), "@TFO@");
@@ -138,7 +128,7 @@ TEST(SettingXmlDocument, readFile) {
     ASSERT_EQ(set.references[i].dataType, std::get<2>(values8[i]));
   }
 
-  set = sets[9];
+  set = setting.getSet("DM_TAILLE");
   ASSERT_EQ(set.id, "DM_TAILLE");
   ASSERT_EQ(set.counts.size(), 0);
   ASSERT_EQ(set.references.size(), 0);
@@ -165,14 +155,6 @@ TEST(SettingXmlDocument, readFile) {
 }
 
 TEST(SettingXmlDocument, error) {
-  using dfl::inputs::SettingXmlDocument;
-
-  SettingXmlDocument doc;
-  parser::ParserFactory factory;
   const std::string filepath = "res/setting_error.xml";
-
-  auto parser = factory.createParser();
-  std::ifstream in(filepath.c_str());
-  ASSERT_TRUE(in);
-  ASSERT_ANY_THROW(parser->parse(in, doc, false));
+  ASSERT_ANY_THROW(dfl::inputs::SettingDataBase setting(filepath));
 }

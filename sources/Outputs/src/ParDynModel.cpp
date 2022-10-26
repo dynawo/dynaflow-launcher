@@ -19,10 +19,9 @@ namespace outputs {
 void
 ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                    const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions) {
-  const auto& sets = dynamicDataBaseManager.settingDocument().sets();
-  for (const auto& set : sets) {
-    auto new_set =
-        writeDynamicModelParameterSet(set, dynamicDataBaseManager.assemblingDocument(), shuntCounters, dynamicModelsDefinitions_, linesByIdDefinitions);
+  for (const auto& automatonId : dynamicDataBaseManager.assembling().dynamicAutomatons()) {
+    auto new_set = writeDynamicModelParameterSet(dynamicDataBaseManager.setting().getSet(automatonId.first), dynamicDataBaseManager, shuntCounters,
+                                                 dynamicModelsDefinitions_, linesByIdDefinitions);
     if (new_set) {
       paramSetCollection->addParametersSet(new_set);
     }
@@ -41,7 +40,7 @@ ParDynModel::getTransformerComponentId(const algo::DynamicModelDefinition& dynMo
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParDynModel::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set, const inputs::AssemblingXmlDocument& assemblingDoc,
+ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                                            const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
                                            const algo::LinesByIdDefinitions& linesById) {
   if (models.models.count(set.id) == 0) {
@@ -50,21 +49,15 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set
   }
 
   auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
-  const auto& multipleAssociations = assemblingDoc.multipleAssociations();
-  std::unordered_map<std::string, inputs::AssemblingXmlDocument::MultipleAssociation> associationsById;
-  std::transform(multipleAssociations.begin(), multipleAssociations.end(), std::inserter(associationsById, associationsById.begin()),
-                 [](const inputs::AssemblingXmlDocument::MultipleAssociation& association) { return std::make_pair(association.id, association); });
   for (const auto& count : set.counts) {
-    auto found = associationsById.find(count.id);
-    if (found == associationsById.end()) {
-      LOG(debug, CountIdNotFound, count.id);
-      continue;
+    const auto& multipleAssociation = dynamicDataBaseManager.assembling().getMultipleAssociation(count.id);
+    if (multipleAssociation.shunt) {
+      if (counters.nbShunts.count(multipleAssociation.shunt->voltageLevel) == 0) {
+        // case voltage level not in network, skip
+        continue;
+      }
+      new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(multipleAssociation.shunt->voltageLevel))));
     }
-    if (counters.nbShunts.count(found->second.shunt.voltageLevel) == 0) {
-      // case voltage level not in network, skip
-      continue;
-    }
-    new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(found->second.shunt.voltageLevel))));
   }
 
   for (const auto& param : set.boolParameters) {
@@ -93,12 +86,12 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set
         continue;
       }
     }
-    new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingXmlDocument::Reference::toString(ref.dataType), componentId));
+    new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingDataBase::Reference::toString(ref.dataType), componentId));
   }
 
   for (const auto& ref : set.refs) {
     if (ref.tag == seasonTag_) {
-      auto seasonOpt = getActiveSeason(ref, linesById, assemblingDoc);
+      auto seasonOpt = getActiveSeason(ref, linesById, dynamicDataBaseManager);
       if (!seasonOpt) {
         continue;
       }
@@ -112,22 +105,14 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set
 }
 
 boost::optional<std::string>
-ParDynModel::getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const algo::LinesByIdDefinitions& linesById,
-                             const inputs::AssemblingXmlDocument& assemblingDoc) {
-  const auto& singleAssocations = assemblingDoc.singleAssociations();
-
-  // the ref element references the single association to use
-  auto foundAsso = std::find_if(singleAssocations.begin(), singleAssocations.end(),
-                                [&ref](const inputs::AssemblingXmlDocument::SingleAssociation& asso) { return asso.id == ref.id; });
-  if (foundAsso == singleAssocations.end()) {
-    LOG(warn, SingleAssociationRefNotFound, ref.name, ref.id);
-    return boost::none;
-  }
-  if (!foundAsso->line) {
+ParDynModel::getActiveSeason(const inputs::SettingDataBase::Ref& ref, const algo::LinesByIdDefinitions& linesById,
+                             const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+  const auto& singleAssoc = dynamicDataBaseManager.assembling().getSingleAssociation(ref.id);
+  if (!singleAssoc.line) {
     LOG(warn, SingleAssociationRefNotALine, ref.name, ref.id);
     return boost::none;
   }
-  const auto& lineId = foundAsso->line->name;
+  const auto& lineId = singleAssoc.line->name;
   auto foundLine = linesById.linesMap.find(lineId);
   if (foundLine == linesById.linesMap.end()) {
     LOG(warn, RefLineNotFound, ref.name, ref.id, lineId);

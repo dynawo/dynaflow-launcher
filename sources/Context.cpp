@@ -153,20 +153,20 @@ Context::process() {
 
 void
 Context::filterPartiallyConnectedDynamicModels() {
-  const auto& automatonsConfig = dynamicDataBaseManager_.assemblingDocument().dynamicAutomatons();
+  const auto& automatonsConfig = dynamicDataBaseManager_.assembling().dynamicAutomatons();
   for (const auto& automaton : automatonsConfig) {
-    if (dynamicModels_.models.count(automaton.id) == 0) {
+    if (dynamicModels_.models.count(automaton.second.id) == 0) {
       continue;
     }
 
-    const auto& modelDef = dynamicModels_.models.at(automaton.id);
-    for (const auto& macroConnect : automaton.macroConnects) {
+    const auto& modelDef = dynamicModels_.models.at(automaton.second.id);
+    for (const auto& macroConnect : automaton.second.macroConnects) {
       auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
           [&macroConnect](const algo::DynamicModelDefinition::MacroConnection& macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
       if (found == modelDef.nodeConnections.end()) {
-        LOG(debug, ModelPartiallyConnected, automaton.id);
-        dynamicModels_.models.erase(automaton.id);
+        LOG(debug, ModelPartiallyConnected, automaton.second.id);
+        dynamicModels_.models.erase(automaton.second.id);
         break;  // element doesn't exist any more, go to next automaton
       }
     }

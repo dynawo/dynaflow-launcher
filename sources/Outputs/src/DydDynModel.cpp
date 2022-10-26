@@ -25,17 +25,12 @@ namespace outputs {
 void
 DydDynModel::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
-  const auto& assemblingDoc = dynamicDataBaseManager.assemblingDocument();
-  std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection> macrosById;
-  std::transform(assemblingDoc.macroConnections().begin(), assemblingDoc.macroConnections().end(), std::inserter(macrosById, macrosById.begin()),
-                 [](const inputs::AssemblingXmlDocument::MacroConnection& macro) { return std::make_pair(macro.id, macro); });
-
   for (const auto& model : dynamicModelsDefinitions_.models) {
     auto blackBoxModel = helper::buildBlackBox(model.second.id, model.second.lib, basename + ".par", model.second.id);
     dynamicModelsToConnect->addModel(blackBoxModel);
     writeMacroConnector(dynamicModelsToConnect, model.second);
   }
-  writeMacroConnectors(dynamicModelsToConnect, macrosById);
+  writeMacroConnectors(dynamicModelsToConnect, dynamicDataBaseManager);
 }
 
 void
@@ -70,20 +65,10 @@ DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCol
 
 void
 DydDynModel::writeMacroConnectors(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                                  const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macrosById) {
+                                  const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
   for (const auto& macro : dynamicModelsDefinitions_.usedMacroConnections) {
     auto macroConnector = dynamicdata::MacroConnectorFactory::newMacroConnector(macro);
-    auto found = macrosById.find(macro);
-#if _DEBUG_
-    assert(found != macrosById.end());
-#endif
-    if (found == macrosById.end()) {
-      // macro used in dynamic model not defined in configuration:  configuration error
-      LOG(warn, DynModelMacroNotDefined, macro);
-      continue;
-    }
-
-    for (const auto& connection : found->second.connections) {
+    for (const auto& connection : dynamicDataBaseManager.assembling().getMacroConnection(macro).connections) {
       macroConnector->addConnect(connection.var1, connection.var2);
     }
     dynamicModelsToConnect->addMacroConnector(macroConnector);

@@ -22,19 +22,9 @@ TEST(TestDynamicDataBaseManager, base) {
   using dfl::inputs::DynamicDataBaseManager;
   DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
 
-  const auto& sets = manager.settingDocument().sets();
-  ASSERT_EQ(sets.size(), 14);
-
-  const auto& macroConnections = manager.assemblingDocument().macroConnections();
-  ASSERT_EQ(macroConnections.size(), 2);
-  const auto& singleAssociations = manager.assemblingDocument().singleAssociations();
-  ASSERT_EQ(singleAssociations.size(), 6);
-
-  const auto& multiAssociations = manager.assemblingDocument().multipleAssociations();
-  ASSERT_EQ(multiAssociations.size(), 2);
-
-  const auto& dynamicAutomatons = manager.assemblingDocument().dynamicAutomatons();
-  ASSERT_EQ(dynamicAutomatons.size(), 2);
+  ASSERT_NO_THROW(manager.setting().getSet("MODELE_1_5P3"));
+  ASSERT_NO_THROW(manager.assembling().getMacroConnection("ToUMeasurement"));
+  ASSERT_EQ(manager.assembling().dynamicAutomatons().size(), 2);
 
   // The rest is considered covered by the unit tests of the members classes
 }
@@ -46,7 +36,7 @@ createManager() {
   dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "");
 
   // pointless operation to ensure that construction is not removed when compiling
-  dummySize = manager.settingDocument().sets().size();
+  ASSERT_NO_THROW(manager.setting().getSet("MODELE_1_5P3"));
 }
 
 // MUST BE THE LAST TEST OF THE FILE, SINCE WE MODIFY THE ENVIRONMENTS VARIABLES
