@@ -239,20 +239,18 @@ class DynModelAlgorithm {
    *
    * @param automaton the dynamic automaton
    * @param macro the macro connection connected to the singleassociation
-   * @param singleassoc the single association config element to process
    */
-  void extractSingleAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                                    const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc);
+  void extractSingleAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro);
 
   /**
    * @brief Process multi association from configuration
    *
    * @param automaton the dynamic automaton
-   * @param macro the macro connection connected to the singleassociation
-   * @param multiassoc the multi association config element to process
+   * @param macro the macro connection connected to the multiassociation
+   * @param shuntRegulationOn whether the shunt regulation is activated or not
    */
-  void extractMultiAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton, const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                                   const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc);
+  void extractMultiAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro,
+                                   bool shuntRegulationOn);
 
   /**
    * @brief Process node in case of dynamic automaton bus connection
@@ -287,13 +285,12 @@ class DynModelAlgorithm {
    * @param automaton the dynamic automaton
    * @param macroConnection the macro connection to add
    */
-  void addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+  void addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingDataBase::DynamicAutomaton& automaton,
                                             const DynamicModelDefinition::MacroConnection& macroConnection);
 
  private:
   DynamicModelDefinitions& dynamicModels_;  ///< Dynamic model definitions to update
 
-  std::unordered_map<std::string, inputs::AssemblingXmlDocument::DynamicAutomaton> dynamicAutomatonsById_;  ///< dynamic automatons by model id
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::unordered_set<MacroConnect, MacroConnectHash>>
       macroConnectByVlForBusesId_;  ///< macro connections for buses, by voltage level
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::vector<MacroConnect>>

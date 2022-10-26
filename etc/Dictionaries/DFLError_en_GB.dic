@@ -18,6 +18,10 @@ UnsupportedCountName          =     unsupported count name %1% for setting set
 UnsupportedDataTypeReference  =     unsupported data type %1% for reference %2% in setting file
 UnsupportedOrigDataReference  =     unsupported data origin %1% for reference %2% in setting file
 UnsupportedParameterDataType  =     unsupported set parameter type %1% in setting file
+UnknownMacroConnection        =     couldn't find the macroConnection %1% in assembling file
+UnknownSingleAssoc            =     couldn't find the singleAssociation %1% in assembling file
+UnknownMultiAssoc             =     couldn't find the multiAssociation %1% in assembling file
+UnknownParamSet               =     couldn't find the parameter set %1% in setting file
 
 //------------------ Algo ---------------------------
 

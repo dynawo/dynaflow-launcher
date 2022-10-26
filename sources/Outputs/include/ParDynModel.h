@@ -64,15 +64,15 @@ class ParDynModel {
    * @brief Write setting set for dynamic models
    *
    * @param set the configuration set to write
-   * @param assemblingDoc the corresponding assembling document handler
+   * @param dynamicDataBaseManager the dynamic DB manager to use
    * @param counters the counters to use
    * @param models the models definitions to use
    * @param linesById lines by id to use
    *
    * @returns the parameter set to add
    */
-  boost::shared_ptr<parameters::ParametersSet> writeDynamicModelParameterSet(const inputs::SettingXmlDocument::Set& set,
-                                                                             const inputs::AssemblingXmlDocument& assemblingDoc,
+  boost::shared_ptr<parameters::ParametersSet> writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& set,
+                                                                             const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                                                                              const algo::ShuntCounterDefinitions& counters,
                                                                              const algo::DynamicModelDefinitions& models,
                                                                              const algo::LinesByIdDefinitions& linesById);
@@ -82,12 +82,12 @@ class ParDynModel {
    *
    * @param ref the Ref XML element referencing the active season
    * @param linesById Dynawo lines by id to use
-   * @param assemblingDoc the assembling document containing the association referenced
+   * @param dynamicDataBaseManager the dynamic DB manager to use
    *
    * @return active season value
    */
-  boost::optional<std::string> getActiveSeason(const inputs::SettingXmlDocument::Ref& ref, const algo::LinesByIdDefinitions& linesById,
-                                               const inputs::AssemblingXmlDocument& assemblingDoc);
+  boost::optional<std::string> getActiveSeason(const inputs::SettingDataBase::Ref& ref, const algo::LinesByIdDefinitions& linesById,
+                                               const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;  ///< list of defined dynamic models

@@ -6,10 +6,10 @@ warning: return type of member dfl::common::validate is not documented
 warning: return type of member dfl::common::Log::init is not documented
 warning: return type of member dfl::inputs::ContingencyElement::isCompatible is not documented
 warning: return type of member dfl::inputs::NetworkManager::updateMapRegulatingBuses is not documented
-warning: return type of member dfl::inputs::SettingXmlDocument::createOptionalParameter is not documented
 warning: return type of member dfl::inputs::helper::XsdTrait::filename is not documented
 warning: return type of member dfl::outputs::Diagram::writeTable is not documented
 warning: return type of member dfl::outputs::DydEvent::addNetworkState12DisconnectionConnect is not documented
 warning: return type of member dfl::outputs::DydEvent::addNetworkStateDisconnectionConnect is not documented
 warning: return type of member dfl::outputs::DydEvent::addSwitchOffSignalDisconnectionConnect is not documented
 warning: return type of member dfl::outputs::Job::exportJob is not documented
+warning: return type of member dfl::inputs::SettingDataBase::SettingXmlDocument::createOptionalParameter is not documented

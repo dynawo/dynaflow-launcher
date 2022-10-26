@@ -17,11 +17,10 @@
 
 #pragma once
 
-#include "AssemblingXmlDocument.h"
-#include "SettingXmlDocument.h"
+#include "AssemblingDataBase.h"
+#include "SettingDataBase.h"
 
 #include <boost/filesystem.hpp>
-#include <memory>
 
 namespace dfl {
 namespace inputs {
@@ -32,33 +31,31 @@ namespace inputs {
 class DynamicDataBaseManager {
  public:
   /**
-   * @brief Retrieves the assembling document handler
-   * @returns the assembling document handler
-   */
-  const AssemblingXmlDocument& assemblingDocument() const {
-    return assemblingDoc_;
-  }
-
-  /**
-   * @brief Retrieves the setting document handler
-   * @returns the setting document handler
-   */
-  const SettingXmlDocument& settingDocument() const {
-    return settingDoc_;
-  }
-
- public:
-  /**
    * @brief Constructor
    * @param settingFilePath the setting document file path
    * @param assemblingFilePath the assembling document file path
    */
   DynamicDataBaseManager(const boost::filesystem::path& settingFilePath, const boost::filesystem::path& assemblingFilePath);
 
+  /**
+   * @brief get current assembling database
+   * @return current assembling database
+   */
+  const AssemblingDataBase& assembling() const {
+    return assembling_;
+  }
+
+  /**
+   * @brief get current setting database
+   * @return current setting database
+   */
+  const SettingDataBase& setting() const {
+    return setting_;
+  }
+
  private:
-  // Configuration
-  AssemblingXmlDocument assemblingDoc_;  ///< assembling document handler
-  SettingXmlDocument settingDoc_;        ///< setting document handler
+  AssemblingDataBase assembling_;  ///< assembling database
+  SettingDataBase setting_;        ///< setting database
 };
 
 }  // namespace inputs
