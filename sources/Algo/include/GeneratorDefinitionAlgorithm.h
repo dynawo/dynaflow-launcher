@@ -208,7 +208,7 @@ class GeneratorDefinitionAlgorithm {
   BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
   const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
   bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used,
-  double tfoVoltageLevel_;  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
+  double tfoVoltageLevel_;                                  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
 };
 }  // namespace algo
 }  // namespace dfl
