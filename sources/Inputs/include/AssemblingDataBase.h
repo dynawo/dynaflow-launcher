@@ -55,6 +55,13 @@ class AssemblingDataBase {
   };
 
   /**
+   * @brief Generator XML element
+   */
+  struct Generator {
+    std::string name;  ///< name of the generator
+  };
+
+  /**
    * @brief Tfo XML element
    */
   struct Tfo {
@@ -99,8 +106,9 @@ class AssemblingDataBase {
    * @brief Multiple association XML element
    */
   struct MultipleAssociation {
-    std::string id;                ///< unique association id
-    boost::optional<Shunt> shunt;  ///< Shunt of the association
+    std::string id;                     ///< unique association id
+    boost::optional<Shunt> shunt;       ///< Shunt of the association
+    std::vector<Generator> generators;  ///< List of generators
   };
 
   /**
@@ -165,6 +173,19 @@ class AssemblingDataBase {
       explicit ShuntHandler(const elementName_type& root);
 
       boost::optional<AssemblingDataBase::Shunt> currentShunt;  ///< current shunt element
+    };
+
+    /**
+     * @brief Generator element handler
+     */
+    struct GeneratorHandler : public xml::sax::parser::ComposableElementHandler {
+      /**
+       * @brief Constructor
+       * @param root the root element to parse
+       */
+      explicit GeneratorHandler(const elementName_type& root);
+
+      boost::optional<AssemblingDataBase::Generator> currentGenerator;  ///< current generator element
     };
 
     /**
@@ -250,7 +271,8 @@ class AssemblingDataBase {
 
       boost::optional<AssemblingDataBase::MultipleAssociation> currentMultipleAssociation;  ///< current multiple association element
 
-      ShuntHandler shuntHandler;  ///< shunt element handler
+      ShuntHandler shuntHandler;          ///< shunt element handler
+      GeneratorHandler generatorHandler;  ///< generator element handler
     };
 
     /**

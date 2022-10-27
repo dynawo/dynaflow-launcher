@@ -8,7 +8,7 @@
 #
 
 set(SOURCES
-src/Constants.cpp
+src/OutputsConstants.cpp
 src/Diagram.cpp
 src/Dyd.cpp
 src/DydDynModel.cpp

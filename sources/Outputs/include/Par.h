@@ -62,18 +62,11 @@ class Par {
      * @param svarcsDefinitions the SVarC definitions to use
      * @param loadsDefinitions the loads definitions to use
      */
-    ParDefinition(const std::string& base,
-                  const inputs::Configuration& config,
-                  const boost::filesystem::path& filename,
-                  const std::vector<algo::GeneratorDefinition>& gens,
-                  const algo::HVDCLineDefinitions& hvdcDefinitions,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
-                  const dfl::inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                  const algo::ShuntCounterDefinitions& counters,
-                  const algo::DynamicModelDefinitions& models,
-                  const algo::LinesByIdDefinitions& linesById,
-                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions,
-                  const std::vector<algo::LoadDefinition>& loadsDefinitions) :
+    ParDefinition(const std::string& base, const inputs::Configuration& config, const boost::filesystem::path& filename,
+                  const std::vector<algo::GeneratorDefinition>& gens, const algo::HVDCLineDefinitions& hvdcDefinitions,
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const dfl::inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+                  const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
+                  const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions, const std::vector<algo::LoadDefinition>& loadsDefinitions) :
         basename_(base),
         dirname_(config.outputDir()),
         filepath_(filename),
@@ -86,7 +79,7 @@ class Par {
         parSVarC_(new ParSVarC(svarcsDefinitions)),
         parHvdc_(new ParHvdc(hvdcDefinitions)),
         parGenerator_(new ParGenerator(gens)),
-        parDynModel_(new ParDynModel(models)),
+        parDynModel_(new ParDynModel(models, gens)),
         startingPointMode_(config.getStartingPointMode()) {}
 
     std::string basename_;                                                         ///< basename

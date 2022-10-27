@@ -56,7 +56,8 @@ struct DynamicModelDefinition {
       NODE = 0,  ///< Node type
       LINE,      ///< Line type
       TFO,       ///< Transformer type
-      SHUNT      ///< Shunt type
+      SHUNT,     ///< Shunt type
+      GENERATOR  ///< Generator type
     };
 
     /**
@@ -112,7 +113,7 @@ struct DynamicModelDefinition {
 
     MacroId id;                    ///< Macro connector id
     ElementType elementType;       ///< Connected element type
-    ElementId connectedElementId;  ///< Element id connected throught the macro connection (can be node, line or tfo)
+    ElementId connectedElementId;  ///< Element id connected throught the macro connection
   };
 
   /**
@@ -277,6 +278,12 @@ class DynModelAlgorithm {
   void connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tfo>& tfo);
 
   /**
+   * @brief Process node in case of dynamic automaton generator connection
+   * @param generator to process
+   */
+  void connectMacroConnectionForGenerator(const inputs::Generator& generator);
+
+  /**
    * @brief Add macro connection to the dynamic model definition
    *
    * Creates the dynamic model definition if not already existing
@@ -297,6 +304,8 @@ class DynModelAlgorithm {
       macroConnectByVlForShuntsId_;                                                             ///< macro connections for shunts, by voltage level
   std::unordered_map<inputs::Line::LineId, std::vector<MacroConnect>> macroConnectByLineName_;  ///< macro connections for lines, by line id
   std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;     ///< macro connections for transformer, by transformer id
+  std::unordered_map<inputs::Generator::GeneratorId, std::vector<MacroConnect>>
+      macroConnectByGeneratorName_;  ///< macro connections for generators, by generator id
 
   const inputs::DynamicDataBaseManager& manager_;  ///< dynamic database config manager
 };

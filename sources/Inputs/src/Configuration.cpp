@@ -109,7 +109,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     updateStartingPointMode(config);
     updateChosenOutput(config, simulationKind);
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
-    helper::updateValue(isSVCRegulationOn_, config, "SVCRegulationOn");
+    helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn");
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
     helper::updateValue(outputDir_, config, "OutputDir");
@@ -127,14 +127,14 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     throw Error(ErrorConfigFileRead, e.what());
   }
 
-  if (startingPointMode_ == Configuration::StartingPointMode::FLAT &&
-        activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
+  if (startingPointMode_ == Configuration::StartingPointMode::FLAT && activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
     throw Error(InvalidActivePowerCompensation, filepath.generic_string());
   }
 }
 
-void Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) {
-  const boost::optional<const boost::property_tree::ptree &>& optionalStartingPointMode = tree.get_child_optional("StartingPointMode");
+void
+Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) {
+  const boost::optional<const boost::property_tree::ptree&>& optionalStartingPointMode = tree.get_child_optional("StartingPointMode");
   if (optionalStartingPointMode.is_initialized()) {
     const std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
     if (startingPointMode == "warm") {

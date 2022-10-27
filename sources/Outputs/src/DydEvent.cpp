@@ -17,8 +17,8 @@
 
 #include "DydEvent.h"
 
-#include "Constants.h"
 #include "Log.h"
+#include "OutputsConstants.h"
 
 #include <DYDBlackBoxModelFactory.h>
 #include <DYDDynamicModelsCollection.h>

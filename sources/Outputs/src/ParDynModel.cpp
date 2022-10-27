@@ -10,18 +10,32 @@
 
 #include "ParDynModel.h"
 
+#include "Constants.h"
 #include "Log.h"
 #include "ParCommon.h"
+
+#include <DYNCommon.h>
 
 namespace dfl {
 namespace outputs {
 
+ParDynModel::ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition>& gens) :
+    dynamicModelsDefinitions_(dynamicModelsDefinitions),
+    generatorDefinitions_(gens) {
+  for (size_t i = 0; i < gens.size(); ++i) {
+    generatorIdToIndex_[gens[i].id] = i;
+  }
+}
+
 void
 ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                    const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions) {
-  for (const auto& automatonId : dynamicDataBaseManager.assembling().dynamicAutomatons()) {
-    auto new_set = writeDynamicModelParameterSet(dynamicDataBaseManager.setting().getSet(automatonId.first), dynamicDataBaseManager, shuntCounters,
-                                                 dynamicModelsDefinitions_, linesByIdDefinitions);
+  for (const auto& automaton : dynamicDataBaseManager.assembling().dynamicAutomatons()) {
+    boost::shared_ptr<parameters::ParametersSet> new_set = writeDynamicModelParameterSet(
+        dynamicDataBaseManager.setting().getSet(automaton.first), dynamicDataBaseManager, shuntCounters, dynamicModelsDefinitions_, linesByIdDefinitions);
+    if (automaton.second.lib == common::constants::svcModelName) {
+      writeAdditionalSVCParameterSet(new_set, automaton.second);
+    }
     if (new_set) {
       paramSetCollection->addParametersSet(new_set);
     }
@@ -37,6 +51,37 @@ ParDynModel::getTransformerComponentId(const algo::DynamicModelDefinition& dynMo
   }
 
   return boost::none;
+}
+
+void
+ParDynModel::writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet,
+                                            const inputs::AssemblingDataBase::DynamicAutomaton& automaton) {
+  const auto& svcDefinition = dynamicModelsDefinitions_.models.find(automaton.id);
+  if (svcDefinition == dynamicModelsDefinitions_.models.end()) {
+    return;
+  }
+  unsigned idx = 1;
+  paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
+  for (const auto& connection : svcDefinition->second.nodeConnections) {
+    const auto& generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
+    if (generatorIdx != generatorIdToIndex_.end()) {
+      const auto& genDefinition = generatorDefinitions_[generatorIdx->second];
+      if (!genDefinition.isNetwork()) {
+        paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
+      }
+      paramSet->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p_pu", "DOUBLE", genDefinition.id));
+      paramSet->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q_pu", "DOUBLE", genDefinition.id));
+      paramSet->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v_pu", "DOUBLE", genDefinition.id));
+      paramSet->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
+      if (genDefinition.hasTransformer())
+        paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_", constants::generatorXPuValue));
+      ++idx;
+    } else {
+      // We assume this is a node
+      paramSet->addReference(helper::buildReference("secondaryVoltageControl_Up0Pu", "Upu", "DOUBLE", connection.connectedElementId));
+      paramSet->addReference(helper::buildReference("secondaryVoltageControl_UpRef0Pu", "Upu", "DOUBLE", connection.connectedElementId));
+    }
+  }
 }
 
 boost::shared_ptr<parameters::ParametersSet>
@@ -78,7 +123,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& s
     auto componentId = ref.componentId;
 
     // special case @TFO@ reference
-    if (componentId && *componentId == componentTransformerIdTag_) {
+    if (componentId && *componentId == constants::componentTransformerIdTag) {
       componentId = getTransformerComponentId(models.models.at(set.id));
       if (!componentId) {
         // Configuration error : references is using a TFO element while no TFO element is connected to the dynamic model
@@ -90,7 +135,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& s
   }
 
   for (const auto& ref : set.refs) {
-    if (ref.tag == seasonTag_) {
+    if (ref.tag == constants::seasonTag) {
       auto seasonOpt = getActiveSeason(ref, linesById, dynamicDataBaseManager);
       if (!seasonOpt) {
         continue;

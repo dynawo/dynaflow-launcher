@@ -40,4 +40,20 @@
   <singleAssociation id="ORDER_SALON">
     <line name="OBLA"/>
   </singleAssociation>
+  <singleAssociation id="MESURE_MODELE_2_VL7">
+    <bus voltageLevel="VL7"/>
+  </singleAssociation>
+  <multipleAssociation id="GeneratorId">
+    <generator name="GeneratorId1"/>
+    <generator name="GeneratorId_1"/>
+  </multipleAssociation>
+  <multipleAssociation id="GeneratorId2">
+    <generator name="GeneratorId2"/>
+    <generator name="GeneratorId_2"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="GeneratorAutomaton" lib="GeneratorAutomatonModel">
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_2_VL7"/>
+    <macroConnect macroConnection="ToGenerator" id="GeneratorId"/>
+    <macroConnect macroConnection="ToGenerator" id="GeneratorId2"/>
+  </dynamicAutomaton>
 </assembling>

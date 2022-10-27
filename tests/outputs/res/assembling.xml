@@ -44,4 +44,32 @@
     <macroConnect macroConnection="PhaseShifterToTap" id="TAP_VL61"/>
     <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_VL61"/>
   </dynamicAutomaton>
+  <macroConnection id="SVCToUMeasurement">
+    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+  </macroConnection>
+  <macroConnection id="SVCToGenerator">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+  </macroConnection>
+  <singleAssociation id="UMeasurement">
+    <bus voltageLevel="VL"/>
+  </singleAssociation>
+  <multipleAssociation id="G5">
+    <generator name="G5"/>
+  </multipleAssociation>
+  <multipleAssociation id="G6">
+    <generator name="G6"/>
+  </multipleAssociation>
+  <multipleAssociation id="G7">
+    <generator name="G7"/>
+  </multipleAssociation>
+  <multipleAssociation id="G8">
+    <generator name="G8"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+    <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
+    <macroConnect macroConnection="SVCToGenerator" id="G5"/>
+    <macroConnect macroConnection="SVCToGenerator" id="G6"/>
+    <macroConnect macroConnection="SVCToGenerator" id="G7"/>
+    <macroConnect macroConnection="SVCToGenerator" id="G8"/>
+  </dynamicAutomaton>
 </assembling>

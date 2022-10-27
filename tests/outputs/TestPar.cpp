@@ -47,18 +47,7 @@ TEST(TestPar, write) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                                config,
-                                                                outputPath.generic_string(),
-                                                                generators,
-                                                                {},
-                                                                {},
-                                                                manager,
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -100,18 +89,8 @@ TEST(TestPar, writeRemote) {
   outputPath.append(filename);
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                               config,
-                                                               outputPath.generic_string(),
-                                                               generators,
-                                                               {},
-                                                               busesWithDynamicModel,
-                                                               manager,
-                                                               {},
-                                                               {},
-                                                               {},
-                                                               {},
-                                                               {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -156,14 +135,14 @@ TEST(TestPar, writeHdvc) {
       HVDCDefinition("HVDCVSCLine3", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
                      HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation2,
                      vscStation3, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
-  auto hvdcLineVSC4 = HVDCDefinition("HVDCVSCLine4", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3",
-                                     "_BUS___12_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                     dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2, vscStation3, 5, 120., false,
-                                     320, 322, 0.125, {0.01, 0.01});
-  auto hvdcLineVSC5 = HVDCDefinition("HVDCVSCLine5", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3",
-                                     "_BUS___12_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                     dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2, vscStation3, 5, 120., true,
-                                     320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC4 =
+      HVDCDefinition("HVDCVSCLine4", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2,
+                     vscStation3, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC5 =
+      HVDCDefinition("HVDCVSCLine5", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2,
+                     vscStation3, 5, 120., true, 320, 322, 0.125, {0.01, 0.01});
   double powerFactor = 1. / std::sqrt(5.);  // sqrt(1/(2^2+1)) => qMax = 2 with pMax = 1
   auto hvdcLineLCC2 =
       HVDCDefinition("HVDCLCCLine2", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", true, "LCCStation2", "_BUS___22_TN", false,
@@ -183,18 +162,7 @@ TEST(TestPar, writeHdvc) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                                config,
-                                                                outputPath.generic_string(),
-                                                                {},
-                                                                hvdcDefs,
-                                                                {},
-                                                                manager,
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, {}, manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -231,26 +199,40 @@ TEST(TestPar, DynModel) {
       dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId"));
   defs.models.insert({dynModel.id, dynModel});
 
+  defs.usedMacroConnections.insert("SVCToUMeasurement");
+  defs.usedMacroConnections.insert("SVCToGenerator");
+  defs.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
+  auto macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G7");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G8", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                                config,
-                                                                outputPath.generic_string(),
-                                                                generators,
-                                                                {},
-                                                                {},
-                                                                manager,
-                                                                counters,
-                                                                defs,
-                                                                {},
-                                                                {},
-                                                                {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, counters, defs, {}, {}, {}));
 
   parWriter.write();
 
@@ -293,18 +275,7 @@ TEST(TestPar, writeStaticVarCompensator) {
       StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                                config,
-                                                                outputPath.generic_string(),
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                manager,
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                svarcs,
-                                                                {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, svarcs, {}));
 
   parWriter.write();
 
@@ -339,18 +310,7 @@ TEST(Dyd, writeLoad) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                                config,
-                                                                outputPath.generic_string(),
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                manager,
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                {},
-                                                                loads));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, {}, loads));
 
   parWriter.write();
 
@@ -362,9 +322,9 @@ TEST(Dyd, writeLoad) {
 }
 
 TEST(TestPar, startingPointMode) {
-  using dfl::algo::LoadDefinition;
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::HVDCDefinition;
+  using dfl::algo::LoadDefinition;
   using dfl::algo::StaticVarCompensatorDefinition;
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
@@ -378,11 +338,11 @@ TEST(TestPar, startingPointMode) {
     boost::filesystem::create_directories(directoryOutputPath);
   }
 
-  std::map<std::string, std::string> startingPointModeArray = { {"Default", "config_no_startingpointmode.json"},
-                                                                  {"WarmNoIRL", "config_startingpointmode_warm.json"},
-                                                                  {"FlatNoIRL", "config_startingpointmode_flat.json"},
-                                                                  {"WarmWithIRL", "config_warm_infinite_reactive_limits.json"},
-                                                                  {"FlatWithIRL", "config_flat_infinite_reactive_limits.json"}};
+  std::map<std::string, std::string> startingPointModeArray = {{"Default", "config_no_startingpointmode.json"},
+                                                               {"WarmNoIRL", "config_startingpointmode_warm.json"},
+                                                               {"FlatNoIRL", "config_startingpointmode_flat.json"},
+                                                               {"WarmWithIRL", "config_warm_infinite_reactive_limits.json"},
+                                                               {"FlatWithIRL", "config_flat_infinite_reactive_limits.json"}};
   for (const auto& startingPointMode : startingPointModeArray) {
     std::string startingPointModeName = startingPointMode.first;
     std::string startingPointModeFile = startingPointMode.second;
@@ -400,38 +360,38 @@ TEST(TestPar, startingPointMode) {
     dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., {});
 
     auto hvdcLineLCC =
-      HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___21_TN", false, "LCCStation2", "_BUS___22_TN", false,
-                     HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
-                     boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+        HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___21_TN", false, "LCCStation2", "_BUS___22_TN", false,
+                       HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
+                       boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
     auto hvdcLineVSC =
         HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2", "_BUS___11_TN", false,
-                      HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., vscStation1,
-                      vscStation2, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                       HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., vscStation1,
+                       vscStation2, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
     auto hvdcLineVSC2 =
         HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2", "_BUS___11_TN", false,
-                      HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation1,
-                      vscStation2, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                       HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation1,
+                       vscStation2, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
     auto hvdcLineVSC3 =
         HVDCDefinition("HVDCVSCLine3", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
-                      HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation2,
-                      vscStation3, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
-    auto hvdcLineVSC4 = HVDCDefinition("HVDCVSCLine4", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3",
-                                      "_BUS___12_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                      dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2, vscStation3, 5, 120., false,
-                                      320, 322, 0.125, {0.01, 0.01});
-    auto hvdcLineVSC5 = HVDCDefinition("HVDCVSCLine5", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3",
-                                      "_BUS___12_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                      dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2, vscStation3, 5, 120., true,
-                                      320, 322, 0.125, {0.01, 0.01});
+                       HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation2,
+                       vscStation3, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+    auto hvdcLineVSC4 =
+        HVDCDefinition("HVDCVSCLine4", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                       HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0.,
+                       vscStation2, vscStation3, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
+    auto hvdcLineVSC5 =
+        HVDCDefinition("HVDCVSCLine5", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                       HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0.,
+                       vscStation2, vscStation3, 5, 120., true, 320, 322, 0.125, {0.01, 0.01});
     double powerFactor = 1. / std::sqrt(5.);  // sqrt(1/(2^2+1)) => qMax = 2 with pMax = 1
     auto hvdcLineLCC2 =
         HVDCDefinition("HVDCLCCLine2", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", true, "LCCStation2", "_BUS___22_TN", false,
-                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {powerFactor, powerFactor},
-                     1., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                       HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {powerFactor, powerFactor},
+                       1., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
     dfl::algo::HVDCLineDefinitions::HvdcLineMap hvdcLines = {
-      std::make_pair(hvdcLineVSC.id, hvdcLineVSC),   std::make_pair(hvdcLineLCC.id, hvdcLineLCC),   std::make_pair(hvdcLineVSC2.id, hvdcLineVSC2),
-      std::make_pair(hvdcLineVSC3.id, hvdcLineVSC3), std::make_pair(hvdcLineVSC4.id, hvdcLineVSC4), std::make_pair(hvdcLineVSC5.id, hvdcLineVSC5),
-      std::make_pair(hvdcLineLCC2.id, hvdcLineLCC2),
+        std::make_pair(hvdcLineVSC.id, hvdcLineVSC),   std::make_pair(hvdcLineLCC.id, hvdcLineLCC),   std::make_pair(hvdcLineVSC2.id, hvdcLineVSC2),
+        std::make_pair(hvdcLineVSC3.id, hvdcLineVSC3), std::make_pair(hvdcLineVSC4.id, hvdcLineVSC4), std::make_pair(hvdcLineVSC5.id, hvdcLineVSC5),
+        std::make_pair(hvdcLineLCC2.id, hvdcLineLCC2),
     };
     dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
         std::make_pair("_BUS___10_TN", vscStation1),
@@ -441,24 +401,20 @@ TEST(TestPar, startingPointMode) {
     dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
     std::vector<StaticVarCompensatorDefinition> svarcs{
-        StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
-        StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK,
-                                        0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
+        StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC1", StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.,
+                                       10.),
+        StaticVarCompensatorDefinition("SVARC2", StaticVarCompensatorDefinition::ModelType::SVARCPVPROP, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC3", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0.,
+                                       10., 10.),
+        StaticVarCompensatorDefinition("SVARC4", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10.,
+                                       10.),
+        StaticVarCompensatorDefinition("SVARC5", StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235,
+                                       245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC6", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245,
+                                       0., 10., 10.),
+        StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
 
     boost::filesystem::path outputPath = directoryOutputPath;
     std::string filename = basename + startingPointModeName + ".par";
@@ -466,18 +422,8 @@ TEST(TestPar, startingPointMode) {
 
     std::string startingPointConfigFilePath = "res/" + startingPointModeFile;
     dfl::inputs::Configuration config(startingPointConfigFilePath);
-    dfl::outputs::Par startingPointModeParWriter(dfl::outputs::Par::ParDefinition(basename,
-                                                                                  config,
-                                                                                  outputPath.generic_string(),
-                                                                                  generators,
-                                                                                  hvdcDefs,
-                                                                                  {},
-                                                                                  manager,
-                                                                                  {},
-                                                                                  {},
-                                                                                  {},
-                                                                                  svarcs,
-                                                                                  loads));
+    dfl::outputs::Par startingPointModeParWriter(
+        dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs, {}, manager, {}, {}, {}, svarcs, loads));
 
     startingPointModeParWriter.write();
 

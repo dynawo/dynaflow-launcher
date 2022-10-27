@@ -85,7 +85,7 @@ class Dyd {
         dydSVarC_(new DydSVarC(svarcsDefs)),
         dydHvdc_(new DydHvdc(hvdcDefinitions)),
         dydGenerator_(new DydGenerator(gens)),
-        dydDynModel_(new DydDynModel(models)) {}
+        dydDynModel_(new DydDynModel(models, gens)) {}
 
     std::string basename_;                                                        ///< basename for file
     std::string filename_;                                                        ///< filepath for file to write

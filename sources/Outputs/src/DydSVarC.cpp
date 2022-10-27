@@ -10,8 +10,8 @@
 
 #include "DydSVarC.h"
 
-#include "Constants.h"
 #include "DydCommon.h"
+#include "OutputsConstants.h"
 
 #include <DYDMacroConnectFactory.h>
 #include <DYDMacroConnectorFactory.h>
@@ -53,9 +53,9 @@ DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamic
     default:
       break;
     }
-    auto svcMacroConnectRef = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, constants::networkModelName);
+    auto sVarCMacroConnectRef = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, constants::networkModelName);
     dynamicModelsToConnect->addModel(blackBoxModel);
-    dynamicModelsToConnect->addMacroConnect(svcMacroConnectRef);
+    dynamicModelsToConnect->addMacroConnect(sVarCMacroConnectRef);
   }
   writeMacroConnector(dynamicModelsToConnect);
   writeMacroStaticReference(dynamicModelsToConnect);

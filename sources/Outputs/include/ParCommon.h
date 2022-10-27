@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "Constants.h"
 #include "GeneratorDefinitionAlgorithm.h"
+#include "OutputsConstants.h"
 
 #include <DYNCommon.h>
 #include <PARParameter.h>
@@ -135,6 +135,12 @@ getGeneratorParameterSetId(const algo::GeneratorDefinition& generator) {
     break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE:
     id = constants::signalNTfoGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE:
+    id = constants::signalNTfoRpclGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE:
+    id = constants::signalNRpclGeneratorParId;
     break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
     id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;

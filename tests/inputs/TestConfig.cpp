@@ -18,19 +18,16 @@
 using DYN::doubleEquals;
 
 TEST(Config, Incorrect) {
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"),
-                                                        DYN::Error::GENERAL,
-                                                        dfl::KeyError_t::ErrorConfigFileRead);
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"),
-                                                        DYN::Error::GENERAL,
-                                                        dfl::KeyError_t::InvalidActivePowerCompensation);
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"), DYN::Error::GENERAL,
+                      dfl::KeyError_t::InvalidActivePowerCompensation);
 }
 
 TEST(Config, Nominal) {
   dfl::inputs::Configuration config("res/config.json");
 
   ASSERT_TRUE(config.useInfiniteReactiveLimits());
-  ASSERT_FALSE(config.isSVCRegulationOn());
+  ASSERT_FALSE(config.isSVarCRegulationOn());
   ASSERT_FALSE(config.isShuntRegulationOn());
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
   ASSERT_EQ(config.settingFilePath().generic_string(), "res/setting.xml");
@@ -61,7 +58,7 @@ TEST(Config, Default) {
   dfl::inputs::Configuration config("res/config_default.json");
 
   ASSERT_FALSE(config.useInfiniteReactiveLimits());
-  ASSERT_TRUE(config.isSVCRegulationOn());
+  ASSERT_TRUE(config.isSVarCRegulationOn());
   ASSERT_TRUE(config.isShuntRegulationOn());
   ASSERT_TRUE(config.isAutomaticSlackBusOn());
   ASSERT_EQ(config.settingFilePath().generic_string(), "");

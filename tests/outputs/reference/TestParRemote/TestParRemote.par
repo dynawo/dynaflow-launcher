@@ -73,8 +73,6 @@
     <macroParSet id="macro_propSignalNGenerator"/>
   </set>
   <set id="12811459763870767443">
-    <par name="generator_QMax0" type="DOUBLE" value="21"/>
-    <par name="generator_QMin0" type="DOUBLE" value="1"/>
     <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
     <macroParSet id="macro_remoteSignalNFixedPRectangular"/>
   </set>
@@ -89,8 +87,6 @@
     <macroParSet id="macro_remoteVControl"/>
   </set>
   <set id="9965188665212998056">
-    <par name="generator_QMax0" type="DOUBLE" value="21"/>
-    <par name="generator_QMin0" type="DOUBLE" value="1"/>
     <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
     <macroParSet id="macro_remoteVControlRectangular"/>
   </set>

@@ -10,6 +10,7 @@
 
 #include "GeneratorDefinitionAlgorithm.h"
 
+#include "Constants.h"
 #include "Log.h"
 
 #include <DYNCommon.h>
@@ -18,13 +19,26 @@ namespace dfl {
 namespace algo {
 
 GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel,
-                                                           const inputs::NetworkManager::BusMapRegulating& busMap, bool infinitereactivelimits,
-                                                           double tfoVoltageLevel) :
+                                                           const inputs::NetworkManager::BusMapRegulating& busMap,
+                                                           const inputs::DynamicDataBaseManager& manager, bool infinitereactivelimits, double tfoVoltageLevel) :
     generators_(gens),
     busesWithDynamicModel_(busesWithDynamicModel),
     busMap_(busMap),
     useInfiniteReactivelimits_{infinitereactivelimits},
-    tfoVoltageLevel_(tfoVoltageLevel) {}
+    tfoVoltageLevel_(tfoVoltageLevel) {
+  for (const auto& automaton : manager.assembling().dynamicAutomatons()) {
+    if (automaton.second.lib == dfl::common::constants::svcModelName) {
+      for (const auto& macroConn : automaton.second.macroConnects) {
+        if (manager.assembling().isMultipleAssociation(macroConn.id)) {
+          const auto& assoc = manager.assembling().getMultipleAssociation(macroConn.id);
+          for (const auto& generator : assoc.generators) {
+            generatorsInSVC.insert(generator.name);
+          }
+        }
+      }
+    }
+  }
+}
 
 void
 GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes) {
@@ -36,19 +50,27 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
       dfl::inputs::NetworkManager::BusMapRegulating::const_iterator it = busMap_.find(generator.regulatedBusId);
       assert(it != busMap_.end());
       dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGenerators = it->second;
+      bool isInSVC = generatorsInSVC.find(generator.id) != generatorsInSVC.end();
       model = ModelType::SIGNALN_INFINITE;
       algoRes->isAtLeastOneGeneratorRegulating = true;
+
       if (generator.regulatedBusId == generator.connectedBusId && (generator.VNom > tfoVoltageLevel_ || DYN::doubleEquals(generator.VNom, tfoVoltageLevel_))) {
-        // Generator is assumed to have its transfomer in the static model
-        // Several generators regulate this node
+        // Generator is assumed to have no transformer in the static model description
+        // or regulatedBus equals to connectedBus
         if (useInfiniteReactivelimits_) {
-          model = ModelType::SIGNALN_TFO_INFINITE;
+          model = (isInSVC) ? ModelType::SIGNALN_TFO_RPCL_INFINITE : ModelType::SIGNALN_TFO_INFINITE;
         } else {
-          model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_SIGNALN;
+          if (isInSVC)
+            model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN;
+          else
+            model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_SIGNALN;
         }
       } else {
-        // Generator is assumed to have its transfo in the static model
+        // Generator is assumed to have its transformer in the static model description
+        // or regulatedBus different from connectedBus
         if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
+          if (isInSVC)
+            throw Error(SeveralGeneratorinSVCRegulatingNode, node->id, generator.id);
           // Several generators regulate this node
           if (useInfiniteReactivelimits_) {
             model = ModelType::PROP_SIGNALN_INFINITE;
@@ -63,9 +85,12 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
             if (generator.regulatedBusId == generator.connectedBusId) {
               // local regulation
               if (useInfiniteReactivelimits_) {
-                model = ModelType::SIGNALN_INFINITE;
+                model = (isInSVC) ? ModelType::SIGNALN_RPCL_INFINITE : ModelType::SIGNALN_INFINITE;
               } else {
-                model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
+                if (isInSVC)
+                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL_SIGNALN;
+                else
+                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
               }
             } else {
               // remote regulation
@@ -77,6 +102,8 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
             }
             break;
           case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
+            if (isInSVC)
+              throw Error(SeveralGeneratorinSVCRegulatingNode, node->id, generator.id);
             // Several generators regulate this node
             if (useInfiniteReactivelimits_) {
               model = ModelType::PROP_SIGNALN_INFINITE;

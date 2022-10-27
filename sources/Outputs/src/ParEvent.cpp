@@ -17,8 +17,8 @@
 
 #include "ParEvent.h"
 
-#include "Constants.h"
 #include "Contingencies.h"
+#include "OutputsConstants.h"
 #include "ParCommon.h"
 
 #include <DYNCommon.h>

@@ -63,20 +63,36 @@ TEST(TestAlgoDynModel, base) {
 
   auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], true, true);
 
+  const std::string bus1 = "BUS_1";
+  const std::string bus2 = "BUS_2";
+  const std::string bus3 = "BUS_3";
+  const std::string bus4 = "BUS_4";
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
+      {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points0;
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
+
+  nodes[1]->generators.emplace_back("G0", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
+
+  nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
+
   dfl::algo::DynModelAlgorithm algo(defs, manager, true);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
-  ASSERT_EQ(defs.usedMacroConnections.size(), 8);
+  ASSERT_EQ(defs.usedMacroConnections.size(), 10);
   std::set<std::string> usedMacroConnections(defs.usedMacroConnections.begin(), defs.usedMacroConnections.end());
-  const std::vector<std::string> usedMacroConnectionsRef = {
-      "ToUMeasurement",          "ToControlledShunts",         "CLAToIMeasurement", "CLAToControlledLineState",
-      "CLAToAutomatonActivated", "PhaseShifterToIMeasurement", "PhaseShifterToTap", "PhaseShifterrToAutomatonActivated",
-  };
+  const std::vector<std::string> usedMacroConnectionsRef = {"ToUMeasurement",          "ToControlledShunts",
+                                                            "CLAToIMeasurement",       "CLAToControlledLineState",
+                                                            "CLAToAutomatonActivated", "PhaseShifterToIMeasurement",
+                                                            "PhaseShifterToTap",       "PhaseShifterrToAutomatonActivated",
+                                                            "SVCToUMeasurement",       "SVCToGenerator"};
   std::set<std::string> usedMacroConnectionsRefSet(usedMacroConnectionsRef.begin(), usedMacroConnectionsRef.end());
   ASSERT_EQ(usedMacroConnections, usedMacroConnectionsRefSet);
 
-  ASSERT_EQ(defs.models.size(), 5);
+  ASSERT_EQ(defs.models.size(), 6);
   // bus
   ASSERT_NO_THROW(defs.models.at("MODELE_1_VL4"));
   const auto& dynModel = defs.models.at("MODELE_1_VL4");
@@ -122,9 +138,39 @@ TEST(TestAlgoDynModel, base) {
   searched = "PhaseShifterToIMeasurement";
   found_connection = std::find_if(dynModel_tfo.nodeConnections.begin(), dynModel_tfo.nodeConnections.end(),
                                   [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
-  ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
+  ASSERT_NE(found_connection, dynModel_tfo.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "TFO1");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO);
+
+  // GENERATORS
+  ASSERT_NO_THROW(defs.models.at("GeneratorAutomaton"));
+  const auto& dynModel_gen = defs.models.at("GeneratorAutomaton");
+  ASSERT_EQ(dynModel_gen.id, "GeneratorAutomaton");
+  ASSERT_EQ(dynModel_gen.lib, "libdummyLib");
+  ASSERT_EQ(dynModel_gen.nodeConnections.size(), 3);
+  searched = "SVCToUMeasurement";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "VL1");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE);
+  searched = "SVCToGenerator";
+  std::string searched2 = "G0";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched, &searched2](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) {
+                                    return connection.id == searched && connection.connectedElementId == searched2;
+                                  });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "G0");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR);
+  searched2 = "G3";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched, &searched2](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) {
+                                    return connection.id == searched && connection.connectedElementId == searched2;
+                                  });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "G3");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR);
 }
 
 TEST(TestAlgoDynModel, noRegulation) {
@@ -156,25 +202,40 @@ TEST(TestAlgoDynModel, noRegulation) {
 
   auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], true, true);
 
+  const std::string bus1 = "BUS_1";
+  const std::string bus2 = "BUS_2";
+  const std::string bus3 = "BUS_3";
+  const std::string bus4 = "BUS_4";
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
+      {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
+  std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points0;
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
+  points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
+
+  nodes[1]->generators.emplace_back("G0", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
+
+  nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
+
   dfl::algo::DynModelAlgorithm algo(defs, manager, false);
 
   std::for_each(nodes.begin(), nodes.end(), algo);
 
-  ASSERT_EQ(defs.usedMacroConnections.size(), 7);
+  ASSERT_EQ(defs.usedMacroConnections.size(), 9);
   std::set<std::string> usedMacroConnections(defs.usedMacroConnections.begin(), defs.usedMacroConnections.end());
-  const std::vector<std::string> usedMacroConnectionsRef = {
-      "ToUMeasurement",
-      "CLAToIMeasurement",
-      "CLAToControlledLineState",
-      "CLAToAutomatonActivated",
-      "PhaseShifterToIMeasurement",
-      "PhaseShifterToTap",
-      "PhaseShifterrToAutomatonActivated",
-  };
+  const std::vector<std::string> usedMacroConnectionsRef = {"ToUMeasurement",
+                                                            "CLAToIMeasurement",
+                                                            "CLAToControlledLineState",
+                                                            "CLAToAutomatonActivated",
+                                                            "PhaseShifterToIMeasurement",
+                                                            "PhaseShifterToTap",
+                                                            "PhaseShifterrToAutomatonActivated",
+                                                            "SVCToUMeasurement",
+                                                            "SVCToGenerator"};
   std::set<std::string> usedMacroConnectionsRefSet(usedMacroConnectionsRef.begin(), usedMacroConnectionsRef.end());
   ASSERT_EQ(usedMacroConnections, usedMacroConnectionsRefSet);
 
-  ASSERT_EQ(defs.models.size(), 5);
+  ASSERT_EQ(defs.models.size(), 6);
   // bus
   ASSERT_NO_THROW(defs.models.at("MODELE_1_VL4"));
   const auto& dynModel = defs.models.at("MODELE_1_VL4");
@@ -223,4 +284,34 @@ TEST(TestAlgoDynModel, noRegulation) {
   ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "TFO1");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO);
+
+  // GENERATORS
+  ASSERT_NO_THROW(defs.models.at("GeneratorAutomaton"));
+  const auto& dynModel_gen = defs.models.at("GeneratorAutomaton");
+  ASSERT_EQ(dynModel_gen.id, "GeneratorAutomaton");
+  ASSERT_EQ(dynModel_gen.lib, "libdummyLib");
+  ASSERT_EQ(dynModel_gen.nodeConnections.size(), 3);
+  searched = "SVCToUMeasurement";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "VL1");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE);
+  searched = "SVCToGenerator";
+  std::string searched2 = "G0";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched, &searched2](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) {
+                                    return connection.id == searched && connection.connectedElementId == searched2;
+                                  });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "G0");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR);
+  searched2 = "G3";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched, &searched2](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) {
+                                    return connection.id == searched && connection.connectedElementId == searched2;
+                                  });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "G3");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR);
 }

@@ -10,9 +10,9 @@
 
 #include "DydDynModel.h"
 
-#include "Constants.h"
 #include "DydCommon.h"
 #include "Log.h"
+#include "OutputsConstants.h"
 
 #include <DYDMacroConnectFactory.h>
 #include <DYDMacroConnectorFactory.h>
@@ -21,6 +21,16 @@
 
 namespace dfl {
 namespace outputs {
+
+DydDynModel::DydDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition>& gens) :
+    dynamicModelsDefinitions_(dynamicModelsDefinitions) {
+  for (const auto& generator : gens) {
+    if (generator.isNetwork()) {
+      continue;
+    }
+    generatorsWithDynamicModels_.insert(generator.id);
+  }
+}
 
 void
 DydDynModel::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
@@ -51,15 +61,20 @@ DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCol
   }
 
   for (const auto& connection : connections) {
-    auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, constants::networkModelName);
-    macroConnect->setName2(connection.connectedElementId);
+    if (generatorsWithDynamicModels_.find(connection.connectedElementId) != generatorsWithDynamicModels_.end()) {
+      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, connection.connectedElementId);
+      dynamicModelsToConnect->addMacroConnect(macroConnect);
+    } else {
+      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, constants::networkModelName);
+      macroConnect->setName2(connection.connectedElementId);
 #if _DEBUG_
-    assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
+      assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
 #endif
-    // We put index1 to 0 even in case there is only one connection, for consistency in the output file
-    macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
-    (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
-    dynamicModelsToConnect->addMacroConnect(macroConnect);
+      // We put index1 to 0 even in case there is only one connection, for consistency in the output file
+      macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
+      (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
+      dynamicModelsToConnect->addMacroConnect(macroConnect);
+    }
   }
 }
 
