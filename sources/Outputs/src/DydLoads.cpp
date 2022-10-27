@@ -10,8 +10,8 @@
 
 #include "DydLoads.h"
 
-#include "Constants.h"
 #include "DydCommon.h"
+#include "OutputsConstants.h"
 
 #include <DYDMacroConnectFactory.h>
 #include <DYDMacroConnectorFactory.h>

@@ -17,12 +17,13 @@
 
 #include "Network.h"
 
+#include "OutputsConstants.h"
 #include "ParCommon.h"
+
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
 #include <PARXmlExporter.h>
 #include <type_traits>
-#include "Constants.h"
 
 namespace dfl {
 namespace outputs {
@@ -66,10 +67,10 @@ Network::writeNetworkSet() const {
 
   switch (def_.startingPointMode_) {
   case dfl::inputs::Configuration::StartingPointMode::WARM:
-      set->addParameter(helper::buildParameter("startingPointMode", std::string("warm")));
+    set->addParameter(helper::buildParameter("startingPointMode", std::string("warm")));
     break;
   case dfl::inputs::Configuration::StartingPointMode::FLAT:
-      set->addParameter(helper::buildParameter("startingPointMode", std::string("flat")));
+    set->addParameter(helper::buildParameter("startingPointMode", std::string("flat")));
     break;
   }
 

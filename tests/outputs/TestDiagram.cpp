@@ -10,6 +10,7 @@
 
 #include "Constants.h"
 #include "Diagram.h"
+#include "OutputsConstants.h"
 #include "Tests.h"
 
 #include <boost/filesystem.hpp>
@@ -21,7 +22,7 @@ testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& ge
 
   boost::filesystem::path reference("reference");
   reference.append(basename);
-  reference.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
   for (const GeneratorDefinition& gen : generators) {
     if (!gen.isUsingDiagram())
       continue;
@@ -43,7 +44,7 @@ TEST(Diagram, writeWithCurvePoint) {
   if (!boost::filesystem::exists(outputDirectory)) {
     boost::filesystem::create_directories(outputDirectory);
   }
-  outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00",
                                                                      {
@@ -82,7 +83,7 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
   if (!boost::filesystem::exists(outputDirectory)) {
     boost::filesystem::create_directories(outputDirectory);
   }
-  outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
   const std::string bus1 = "BUS_1";
 
   std::vector<GeneratorDefinition> generators = {GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "00",
@@ -127,7 +128,7 @@ TEST(Diagram, writeEmpty) {
   if (!boost::filesystem::exists(outputDirectory)) {
     boost::filesystem::create_directories(outputDirectory);
   }
-  outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
   const std::string bus1 = "BUS_1";
 
   std::vector<GeneratorDefinition> generators = {
@@ -159,14 +160,13 @@ TEST(Diagram, writeVSC) {
   if (!boost::filesystem::exists(outputDirectory)) {
     boost::filesystem::create_directories(outputDirectory);
   }
-  outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
 
   dfl::algo::HVDCLineDefinitions::HvdcLineMap map{
-      std::make_pair(
-          "0", HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___11_TN", false, "VSCStation99", "_BUS___99_TN",
-                              false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {}, 0.,
-                              dfl::algo::VSCDefinition("VSCStation1", 51, -51, 21, {}), boost::none, boost::none, boost::none, false,
-                              320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair("0", HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___11_TN", false, "VSCStation99",
+                                         "_BUS___99_TN", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT,
+                                         HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {}, 0., dfl::algo::VSCDefinition("VSCStation1", 51, -51, 21, {}),
+                                         boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
       std::make_pair("1", HVDCDefinition("HVDCVSCLine1", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation99", "_BUS___99_TN", false, "VSCStation2",
                                          "_BUS___12_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT,
                                          HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, {}, 0., boost::none,
@@ -178,11 +178,11 @@ TEST(Diagram, writeVSC) {
                                                                       dfl::algo::VSCDefinition::ReactiveCurvePoint(2., 22., 220.),
                                                                   }),
                                          boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
-      std::make_pair("2", HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation3", "_BUS___13_TN", false, "VSCStation4",
-                                         "_BUS___14_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                         HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, {}, 0., dfl::algo::VSCDefinition("VSCStation3", 53, -53, 23, {}),
-                                         dfl::algo::VSCDefinition("VSCStation4", 54, -54, 24, {}), boost::none, boost::none, false,
-                                         320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair(
+          "2", HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation3", "_BUS___13_TN", false, "VSCStation4", "_BUS___14_TN",
+                              false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, {}, 0.,
+                              dfl::algo::VSCDefinition("VSCStation3", 53, -53, 23, {}), dfl::algo::VSCDefinition("VSCStation4", 54, -54, 24, {}), boost::none,
+                              boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
   };
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
   dfl::algo::HVDCLineDefinitions defs{map, vscIds};
@@ -195,7 +195,7 @@ TEST(Diagram, writeVSC) {
   // check reference
   boost::filesystem::path reference("reference");
   reference.append(basename);
-  reference.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
   for (const auto& vscPair : vscIds) {
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);
@@ -215,7 +215,7 @@ TEST(Diagram, writeLCC) {
   if (!boost::filesystem::exists(outputDirectory)) {
     boost::filesystem::create_directories(outputDirectory);
   }
-  outputDirectory.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
 
   const std::vector<std::string> lccIds{"LCCStation1", "LCCStation11", "LCCStation12", "LCCStation2"};
 
@@ -245,7 +245,7 @@ TEST(Diagram, writeLCC) {
   // check reference
   boost::filesystem::path reference("reference");
   reference.append(basename);
-  reference.append(prefixDir + dfl::outputs::constants::diagramDirectorySuffix);
+  reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
   for (const auto& id : lccIds) {
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);

@@ -35,10 +35,7 @@ class Configuration {
     SECURITY_ANALYSIS              ///< A security analysis for a given list of contingencies
   };
   /// @brief Simulation starting mode
-  enum class StartingPointMode {
-    WARM = 0,
-    FLAT
-  };
+  enum class StartingPointMode { WARM = 0, FLAT };
   /**
    * @brief Constructor
    *
@@ -59,12 +56,12 @@ class Configuration {
   }
 
   /**
-   * @brief determines if SVC regulation is on
+   * @brief determines if SVarC regulation is on
    *
    * @returns the parameter value
    */
-  bool isSVCRegulationOn() const {
-    return isSVCRegulationOn_;
+  bool isSVarCRegulationOn() const {
+    return isSVarCRegulationOn_;
   }
 
   /**
@@ -213,7 +210,7 @@ class Configuration {
     }
   };
 
-   /**
+  /**
    * @brief Indicate the starting point mode
    *
    * @returns the starting point mode
@@ -247,23 +244,23 @@ class Configuration {
   */
   void updateChosenOutput(const boost::property_tree::ptree& tree, dfl::inputs::Configuration::SimulationKind simulationKind);
 
-  StartingPointMode startingPointMode_ = StartingPointMode::WARM;                            ///< simulation starting point mode
-  bool useInfiniteReactiveLimits_ = false;                                                   ///< infinite reactive limits
-  bool isSVCRegulationOn_ = true;                                                            ///< SVC regulation on
-  bool isShuntRegulationOn_ = true;                                                          ///< Shunt regulation on
-  bool isAutomaticSlackBusOn_ = true;                                                        ///< automatic slack bus on
-  boost::filesystem::path outputDir_ = boost::filesystem::current_path();                    ///< Directory for output files
-  double dsoVoltageLevel_ = 45.0;                                                            ///< Minimum voltage level of the load to be taken into account
-  ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;          ///< Type of active power compensation
-  boost::filesystem::path settingFilePath_;                                                  ///< setting file path
-  boost::filesystem::path assemblingFilePath_;                                               ///< assembling file path
-  double startTime_ = 0.;                                                                    ///< start time of simulation
-  double stopTime_ = 100.;                                                                   ///< stop time for simulation
-  boost::optional<double> precision_;                                                        ///< Precision of the simulation
-  double timeStep_ = 10.;                                                                    ///< maximum value of the solver timestep
-  double timeOfEvent_ = 10.;                                                                 ///< time for contingency simulation (security analysis only)
-  std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;                     ///< chosen configuration outputs
-  double tfoVoltageLevel_ = 100;                                                             ///< Maximum voltage level we assume that generator's transformers are already described in the static description
+  StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
+  bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
+  bool isSVarCRegulationOn_ = true;                                                  ///< StaticVarCompensator regulation on
+  bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
+  bool isAutomaticSlackBusOn_ = true;                                                ///< automatic slack bus on
+  boost::filesystem::path outputDir_ = boost::filesystem::current_path();            ///< Directory for output files
+  double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
+  ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
+  boost::filesystem::path settingFilePath_;                                          ///< setting file path
+  boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
+  double startTime_ = 0.;                                                            ///< start time of simulation
+  double stopTime_ = 100.;                                                           ///< stop time for simulation
+  boost::optional<double> precision_;                                                ///< Precision of the simulation
+  double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
+  double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
+  std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
+  double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
 };
 
 }  // namespace inputs

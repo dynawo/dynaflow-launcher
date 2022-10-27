@@ -24,7 +24,7 @@ TEST(TestDynamicDataBaseManager, base) {
 
   ASSERT_NO_THROW(manager.setting().getSet("MODELE_1_5P3"));
   ASSERT_NO_THROW(manager.assembling().getMacroConnection("ToUMeasurement"));
-  ASSERT_EQ(manager.assembling().dynamicAutomatons().size(), 2);
+  ASSERT_EQ(manager.assembling().dynamicAutomatons().size(), 3);
 
   // The rest is considered covered by the unit tests of the members classes
 }

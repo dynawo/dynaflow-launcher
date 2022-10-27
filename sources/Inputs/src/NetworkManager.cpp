@@ -186,7 +186,7 @@ NetworkManager::buildTree() {
       nodes_[nodeid]->svarcs.emplace_back(svarc->getID(), isRegulatingVoltage, svarc->getBMin(), svarc->getBMax(), voltageSetPoint, svarc->getVNom(),
                                           uMinActivation, uMaxActivation, uSetPointMin, uSetPointMax, b0, svarc->getSlope(), svarc->hasStandbyAutomaton(),
                                           svarc->hasVoltagePerReactivePowerControl(), regulatedBus->getID(), nodeid, regulatedBus->getVNom());
-      LOG(debug, NodeContainsSVC, nodeid, svarc->getID());
+      LOG(debug, NodeContainsSVarC, nodeid, svarc->getID());
     }
 
     const auto& dangling_lines = networkVL->getDanglingLines();
@@ -290,20 +290,10 @@ NetworkManager::buildTree() {
     if (hvdcLine->getConverterMode() == DYN::HvdcLineInterface::ConverterMode_t::RECTIFIER_INVERTER) {
       isConverter1Rectifier = true;
     }
-    std::array<double, 2> lossFactors = {converterDyn1->getLossFactor() / 100.,
-                                          converterDyn2->getLossFactor() / 100.};
+    std::array<double, 2> lossFactors = {converterDyn1->getLossFactor() / 100., converterDyn2->getLossFactor() / 100.};
     auto hvdcLineCreated =
-        HvdcLine::build(hvdcLine->getID(),
-                        converterType,
-                        converter1,
-                        converter2,
-                        activePowerControl,
-                        hvdcLine->getPmax(),
-                        isConverter1Rectifier,
-                        hvdcLine->getVNom(),
-                        hvdcLine->getActivePowerSetpoint(),
-                        hvdcLine->getResistanceDC(),
-                        lossFactors);
+        HvdcLine::build(hvdcLine->getID(), converterType, converter1, converter2, activePowerControl, hvdcLine->getPmax(), isConverter1Rectifier,
+                        hvdcLine->getVNom(), hvdcLine->getActivePowerSetpoint(), hvdcLine->getResistanceDC(), lossFactors);
     hvdcLines_.emplace_back(hvdcLineCreated);
     nodes_[converterDyn1->getBusInterface()->getID()]->converters.push_back(converter1);
     nodes_[converterDyn2->getBusInterface()->getID()]->converters.push_back(converter2);

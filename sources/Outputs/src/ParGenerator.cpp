@@ -10,6 +10,8 @@
 
 #include "ParGenerator.h"
 
+#include "Constants.h"
+#include "Log.h"
 #include "ParCommon.h"
 
 namespace dfl {
@@ -18,7 +20,8 @@ namespace outputs {
 void
 ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, ActivePowerCompensation activePowerCompensation,
                     const std::string& basename, const boost::filesystem::path& dirname,
-                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, StartingPointMode startingPointMode) {
+                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, StartingPointMode startingPointMode,
+                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
   for (const auto& generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {
@@ -39,10 +42,13 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
       paramSet = writeGenerator(generator, basename, dirname);
     }
 
-    // common to any type of generator model, except the network one
-    if (paramSet && generator.hasTransformer()) {
-      updateTransfoParameters(generator, paramSet);
+    if (paramSet && generator.hasRpcl()) {
+      updateRpclParameters(paramSet, generator.id, dynamicDataBaseManager.setting().getSet(generator.id));
     }
+    if (paramSet && generator.hasTransformer()) {
+      updateTransfoParameters(paramSet);
+    }
+
     // adding parameter specific to remote voltage regulation for a generator and that cannot be included in a macroParameter
     if (paramSet && generator.isRegulatingRemotely()) {
       updateRemoteRegulationParameters(generator, paramSet);
@@ -80,6 +86,9 @@ ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP) 
                 : helper::getMacroParameterSetId(constants::remoteVControlParIdRect);
     break;
   case ModelType::SIGNALN_RECTANGULAR:
+  case ModelType::SIGNALN_TFO_RECTANGULAR:
+  case ModelType::SIGNALN_TFO_RPCL_RECTANGULAR:
+  case ModelType::SIGNALN_RPCL_RECTANGULAR:
     id = fixedP ? helper::getMacroParameterSetId(constants::signalNGeneratorFixedPParIdRect)
                 : helper::getMacroParameterSetId(constants::signalNGeneratorParIdRect);
     break;
@@ -142,6 +151,9 @@ ParGenerator::buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCo
     macroParameterSet->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
     break;
   case ModelType::SIGNALN_RECTANGULAR:
+  case ModelType::SIGNALN_TFO_RECTANGULAR:
+  case ModelType::SIGNALN_TFO_RPCL_RECTANGULAR:
+  case ModelType::SIGNALN_RPCL_RECTANGULAR:
     macroParameterSet->addReference(helper::buildReference("generator_QMin", "qMin", "DOUBLE"));
     macroParameterSet->addReference(helper::buildReference("generator_QMax", "qMax", "DOUBLE"));
     macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
@@ -245,20 +257,17 @@ ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::st
   set->addMacroParSet(
       boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
 
-  // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
-  // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
-  // on the limit of the reactive capability curve
-  if (def.hasTransformer() && (def.isUsingRectangularDiagram())) {
-    set->addParameter(helper::buildParameter("generator_QMin", def.qmin - 1));
-    set->addParameter(helper::buildParameter("generator_QMax", def.qmax + 1));
-  } else {
+  if (def.isUsingDiagram() && !def.isUsingRectangularDiagram()) {
+    // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
+    // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
+    // on the limit of the reactive capability curve
     set->addParameter(helper::buildParameter("generator_QMin0", def.qmin - 1));
     set->addParameter(helper::buildParameter("generator_QMax0", def.qmax + 1));
   }
 
   if (!def.isUsingRectangularDiagram()) {
     auto dirname_diagram = dirname;
-    dirname_diagram.append(basename + constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
+    dirname_diagram.append(basename + common::constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
 
     set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
     set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
@@ -269,13 +278,29 @@ ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::st
 }
 
 void
-ParGenerator::updateTransfoParameters(const algo::GeneratorDefinition& generator, boost::shared_ptr<parameters::ParametersSet> set) {
-  // TODO(rosiereflo) We assume here that QNom = QMax which might not be always true ... We should use the QMax of the diagram, not the iidm one.
-  set->addReference(helper::buildReference("generator_QNomAlt", "qMax", "DOUBLE"));
-  set->addParameter(helper::buildParameter("generator_SNom", sqrt(generator.pmax * generator.pmax + generator.qmax * generator.qmax)));
-  set->addParameter(helper::buildParameter("generator_RTfoPu", 0.0029));
-  set->addParameter(helper::buildParameter("generator_rTfoPu", 0.9535));
-  set->addParameter(helper::buildParameter("generator_XTfoPu", 0.1228));
+ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set) {
+  if (!set->hasReference("generator_QNomAlt"))
+    set->addReference(helper::buildReference("generator_QNomAlt", "qNom", "DOUBLE"));
+  set->addReference(helper::buildReference("generator_SNom", "sNom", "DOUBLE"));
+  set->addParameter(helper::buildParameter("generator_RTfoPu", constants::generatorRPuValue));
+  set->addParameter(helper::buildParameter("generator_rTfoPu", constants::generatorRhoValue));
+  set->addParameter(helper::buildParameter("generator_XTfoPu", constants::generatorXPuValue));
+}
+
+void
+ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string& genId,
+                                   const inputs::SettingDataBase::Set& databaseSetting) {
+  std::array<std::string, 3> parameters = {"reactivePowerControlLoop_DerURefMaxPu", "reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_TiQ"};
+  for (auto parameter : parameters) {
+    auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                [&parameter](const inputs::SettingDataBase::Parameter<double>& setting) { return setting.name == parameter; });
+    if (paramIt != databaseSetting.doubleParameters.end())
+      set->addParameter(helper::buildParameter(parameter, paramIt->value));
+    else
+      throw Error(MissingGeneratorParameterInSettings, parameter, genId);
+  }
+  if (!set->hasReference("generator_QNomAlt"))
+    set->addReference(helper::buildReference("generator_QNomAlt", "qNom", "DOUBLE"));
 }
 
 }  // namespace outputs

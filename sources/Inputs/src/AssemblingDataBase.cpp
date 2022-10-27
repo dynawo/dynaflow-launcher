@@ -181,6 +181,10 @@ AssemblingDataBase::AssemblingXmlDocument::ShuntHandler::ShuntHandler(const elem
       root, [this](const parser::ElementName&, const attributes_type& attributes) { currentShunt->voltageLevel = attributes["voltageLevel"].as_string(); });
 }
 
+AssemblingDataBase::AssemblingXmlDocument::GeneratorHandler::GeneratorHandler(const elementName_type& root) {
+  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentGenerator->name = attributes["name"].as_string(); });
+}
+
 AssemblingDataBase::AssemblingXmlDocument::TfoHandler::TfoHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentTfo->name = attributes["name"].as_string(); });
 }
@@ -239,8 +243,10 @@ AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssoc
 }
 
 AssemblingDataBase::AssemblingXmlDocument::MultipleAssociationHandler::MultipleAssociationHandler(const elementName_type& root) :
-    shuntHandler(parser::ElementName(ns, "shunt")) {
+    shuntHandler(parser::ElementName(ns, "shunt")),
+    generatorHandler(parser::ElementName(ns, "generator")) {
   onElement(root + ns("shunt"), shuntHandler);
+  onElement(root + ns("generator"), generatorHandler);
 
   onStartElement(root,
                  [this](const parser::ElementName&, const attributes_type& attributes) { currentMultipleAssociation->id = attributes["id"].as_string(); });
@@ -249,6 +255,12 @@ AssemblingDataBase::AssemblingXmlDocument::MultipleAssociationHandler::MultipleA
   shuntHandler.onEnd([this]() {
     currentMultipleAssociation->shunt = *shuntHandler.currentShunt;
     shuntHandler.currentShunt.reset();
+  });
+
+  generatorHandler.onStart([this]() { generatorHandler.currentGenerator = AssemblingDataBase::Generator(); });
+  generatorHandler.onEnd([this]() {
+    currentMultipleAssociation->generators.push_back(*generatorHandler.currentGenerator);
+    generatorHandler.currentGenerator.reset();
   });
 }
 

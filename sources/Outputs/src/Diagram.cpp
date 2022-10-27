@@ -17,7 +17,7 @@
 
 #include "Diagram.h"
 
-#include "Constants.h"
+#include "OutputsConstants.h"
 
 #include <boost/filesystem.hpp>
 #include <fstream>

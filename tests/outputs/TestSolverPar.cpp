@@ -8,8 +8,8 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+#include "OutputsConstants.h"
 #include "Solver.h"
-#include "Constants.h"
 #include "Tests.h"
 
 TEST(SolverPar, writeDefaultValues) {

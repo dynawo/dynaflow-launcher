@@ -18,6 +18,7 @@
 #pragma once
 
 #include "DynModelDefinitionAlgorithm.h"
+#include "GeneratorDefinitionAlgorithm.h"
 
 #include <DYDDynamicModelsCollection.h>
 #include <boost/shared_ptr.hpp>
@@ -34,8 +35,9 @@ class DydDynModel {
    * @brief Construct a new Par defined dynamic models object
    *
    * @param dynamicModelsDefinitions reference to the list of load definitions
+   * @param gens generators definition coming from algorithms
    */
-  explicit DydDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions) : dynamicModelsDefinitions_(dynamicModelsDefinitions) {}
+  explicit DydDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition>& gens);
 
   /**
    * @brief enrich the dynamic black models set collection for defined dynamic models
@@ -66,6 +68,7 @@ class DydDynModel {
 
  private:
   const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;  ///< list of defined dynamic models
+  std::unordered_set<std::string> generatorsWithDynamicModels_;    ///< ids of generators with a dynamic model different from the network one
 };
 
 }  // namespace outputs

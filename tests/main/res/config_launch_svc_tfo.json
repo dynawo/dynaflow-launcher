@@ -1,0 +1,8 @@
+{
+  "dfl-config": {
+    "OutputDir": "resultsTestsTmp/launch_svc_tfo",
+    "SettingPath": "res/setting_svc.xml",
+    "AssemblingPath": "res/assembling_svc.xml",
+    "TfoVoltageLevel": 0
+  }
+}
