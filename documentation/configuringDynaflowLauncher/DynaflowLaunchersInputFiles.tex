@@ -145,7 +145,7 @@ The parameters are described below:
 & & & \small{buildtype and the} \\
 \rowcolor{gray!10}
 \multirow{-3}{*}{\small{ChosenOutputs}} & \multirow{-3}{*}{\small{struct}}  & \multirow{-3}{*}{\small{Chosen outputs}} & \small{simulation kind} \\
-\rowcolor{gray!10}
+\rowcolor{white}
 \small{StartingPointMode} & \small{string} & \small{Starting point mode : warm / flat} & \small{warm} \\
 \bottomrule
 \end{tabular}
@@ -169,7 +169,8 @@ The default chosen outputs depend on the build type (Release or Debug) and the s
 \caption{Chosen Outputs depending on the buildtype and the simulation kind : outputs chosen by default are \textcolor{green}{green} and optional inputs are \textcolor{gray}{gray}}
 \end{table}
 
-The \textit{StartingPointMode} indicates the starting state of the simulation. If it's warm, the simulation starts from a previous simulation state. If it's flat, the simulation starts from scratch.
+The \textit{StartingPointMode} indicates the starting point values considered in the simulation. If it's \textit{warm}, the starting values for voltage, phase and injections are considered previously calculated.
+If, instead, \textit{StartingPointMode} is set to \textit{flat}, starting point values considered are nominal value for bus voltages and set points values for injections.
 
 \begin{table}[H]
 The systematic analysis parameters are described below:
