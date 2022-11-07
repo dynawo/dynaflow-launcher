@@ -562,6 +562,6 @@
       <temporaryLimit name="IT1" acceptableDuration="60"/>
     </currentLimits2>
   </line>
-  <hvdcLine id="HERA9AJAX1" r="0.125" nominalV="320" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="322" maxP="1011" converterStation1="HERAP7_HERA_TER_1" converterStation2="AJAXP7_AJAX_TER_1"/>
-  <hvdcLine id="HERA9AJAX1bis" r="0.125" nominalV="320" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="322" maxP="1011" converterStation1="HERAP7_HERA_TER_2" converterStation2="AJAXP7_AJAX_TER_2"/>
+  <hvdcLine id="HERA9AJAX1" r="0.125" nominalV="320" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="800" maxP="1011" converterStation1="HERAP7_HERA_TER_1" converterStation2="AJAXP7_AJAX_TER_1"/>
+  <hvdcLine id="HERA9AJAX1bis" r="0.125" nominalV="320" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="800" maxP="1011" converterStation1="HERAP7_HERA_TER_2" converterStation2="AJAXP7_AJAX_TER_2"/>
 </network>
