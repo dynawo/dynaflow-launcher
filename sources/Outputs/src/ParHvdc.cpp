@@ -99,9 +99,9 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
     double p02 = std::numeric_limits<double>::min();
     if (first == "1" && second == "2") {
       p01 = -p0dc;
-      p02 = ((p0dc * (1 - lossFactors[0])) - pdcLoss) * (1. - lossFactors[1]);
+      p02 = ((p0dc * (1 - lossFactors.at(0))) - pdcLoss) * (1. - lossFactors.at(1));
     } else {
-      p01 = ((p0dc * (1 - lossFactors[1])) - pdcLoss) * (1. - lossFactors[0]);
+      p01 = ((p0dc * (1 - lossFactors.at(1))) - pdcLoss) * (1. - lossFactors.at(0));
       p02 = -p0dc;
     }
     set->addParameter(helper::buildParameter("hvdc_P10Pu", p01));
