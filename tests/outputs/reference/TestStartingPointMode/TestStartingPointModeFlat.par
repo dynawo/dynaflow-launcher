@@ -170,7 +170,7 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_P10Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_P1RefSetPu" type="DOUBLE" value="3.2200000000000002"/>
-    <par name="hvdc_P20Pu" type="DOUBLE" value="1.7495048098879043e+73"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_Q10Pu" type="DOUBLE" value="0"/>
     <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
@@ -189,9 +189,9 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_P10Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_P1RefSetPu" type="DOUBLE" value="3.2200000000000002"/>
-    <par name="hvdc_P20Pu" type="DOUBLE" value="-2.5433323569908435e+276"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_Q10Pu" type="DOUBLE" value="-1"/>
-    <par name="hvdc_Q20Pu" type="DOUBLE" value="-2147483648"/>
+    <par name="hvdc_Q20Pu" type="DOUBLE" value="-1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="12914068690953704580_tableqmax"/>
@@ -218,8 +218,8 @@
   </set>
   <set id="HVDCVSCLine">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
-    <par name="hvdc_P10Pu" type="DOUBLE" value="-3.1890530170898437"/>
-    <par name="hvdc_P1RefSetPu" type="DOUBLE" value="-3.1890530170898437"/>
+    <par name="hvdc_P10Pu" type="DOUBLE" value="-3.1571750170898438"/>
+    <par name="hvdc_P1RefSetPu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_P20Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
@@ -241,8 +241,8 @@
   </set>
   <set id="HVDCVSCLine2">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
-    <par name="hvdc_P10Pu" type="DOUBLE" value="2.5470055212363933e+121"/>
-    <par name="hvdc_P1RefSetPu" type="DOUBLE" value="2.5470055212363933e+121"/>
+    <par name="hvdc_P10Pu" type="DOUBLE" value="-3.1571750170898438"/>
+    <par name="hvdc_P1RefSetPu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_P20Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
@@ -271,7 +271,7 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_P10Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_P1RefSetPu" type="DOUBLE" value="3.2200000000000002"/>
-    <par name="hvdc_P20Pu" type="DOUBLE" value="1.479153474177823e+126"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
@@ -309,7 +309,7 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_P10Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_P1RefSetPu" type="DOUBLE" value="3.2200000000000002"/>
-    <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1890656738281251"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
@@ -337,7 +337,7 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_P10Pu" type="DOUBLE" value="3.2200000000000002"/>
     <par name="hvdc_P1RefSetPu" type="DOUBLE" value="3.2200000000000002"/>
-    <par name="hvdc_P20Pu" type="DOUBLE" value="8.1297361909974588e+213"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
@@ -379,12 +379,12 @@
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <par name="generator_U0Pu" type="DOUBLE" value="1"/>
+    <par name="generator_UPhase0" type="DOUBLE" value="0"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
-    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
-    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
-    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="targetQ_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
   </set>
 </parametersSet>

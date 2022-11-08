@@ -126,6 +126,11 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());
   }
+
+  if (startingPointMode_ == Configuration::StartingPointMode::FLAT &&
+        activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
+    throw Error(InvalidActivePowerCompensation);
+  }
 }
 
 void Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) {

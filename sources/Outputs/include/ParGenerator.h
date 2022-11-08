@@ -94,11 +94,14 @@ class ParGenerator {
     * @param activePowerCompensation the type of active power compensation
     * @param modelType type of modelling chosen for a generator
     * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+    * @param startingPointMode starting point mode
     *
     * @returns the parameter set
     */
   boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                                                                           dfl::algo::GeneratorDefinition::ModelType modelType, bool fixedP);
+                                                                           dfl::algo::GeneratorDefinition::ModelType modelType,
+                                                                           bool fixedP,
+                                                                           dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -106,11 +109,14 @@ class ParGenerator {
    * @param modelId the model of the generator
    * @param activePowerCompensation the type of active power compensation
    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+   * @param startingPointMode starting point mode
    *
    * @return result parameter set
    */
   boost::shared_ptr<parameters::ParametersSet> updateSignalNGenerator(const std::string& modelId,
-                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP);
+                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                                                      bool fixedP,
+                                                                      dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with remote references
