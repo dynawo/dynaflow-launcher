@@ -1,0 +1,7 @@
+{
+  "dfl-config": {
+    "InfiniteReactiveLimits": "true",
+    "OutputDir": "resultsTestsTmp",
+    "StartingPointMode": "warm"
+  }
+}

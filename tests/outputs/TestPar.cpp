@@ -379,8 +379,10 @@ TEST(TestPar, startingPointMode) {
   }
 
   std::map<std::string, std::string> startingPointModeArray = { {"Default", "config_no_startingpointmode.json"},
-                                                                          {"Warm", "config_startingpointmode_warm.json"},
-                                                                          {"Flat", "config_startingpointmode_flat.json"}};
+                                                                  {"WarmNoIRL", "config_startingpointmode_warm.json"},
+                                                                  {"FlatNoIRL", "config_startingpointmode_flat.json"},
+                                                                  {"WarmWithIRL", "config_warm_infinite_reactive_limits.json"},
+                                                                  {"FlatWithIRL", "config_flat_infinite_reactive_limits.json"}};
   for (const auto& startingPointMode : startingPointModeArray) {
     std::string startingPointModeName = startingPointMode.first;
     std::string startingPointModeFile = startingPointMode.second;
@@ -487,7 +489,7 @@ TEST(TestPar, startingPointMode) {
       referenceFilename = filename;
     } else {
       // When StartingPointMode isn't specified, its value should be warm
-      referenceFilename = basename + "Warm" + ".par";
+      referenceFilename = basename + "WarmNoIRL" + ".par";
     }
     reference.append(referenceFilename);
 
