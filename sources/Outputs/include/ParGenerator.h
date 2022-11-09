@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Configuration.h"
+#include "Constants.h"
 #include "GeneratorDefinitionAlgorithm.h"
 
 #include <PARParametersSetCollection.h>
@@ -31,6 +32,9 @@ namespace outputs {
  */
 class ParGenerator {
  public:
+  using ActivePowerCompensation = dfl::inputs::Configuration::ActivePowerCompensation;  ///< Alias for type of active power compensation
+  using StartingPointMode = dfl::inputs::Configuration::StartingPointMode;              ///< Alias for strating point mode
+  using ModelType = dfl::algo::GeneratorDefinition::ModelType;                          ///< Alias for model type
   /**
    * @brief Construct a new Par Generators object
    *
@@ -48,12 +52,9 @@ class ParGenerator {
    * @param busesWithDynamicModel map of bus ids to a generator that regulates them
    * @param startingPointMode starting point mode
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-             dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-             const std::string& basename,
-             const boost::filesystem::path& dirname,
-             const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
-             dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, ActivePowerCompensation activePowerCompensation,
+             const std::string& basename, const boost::filesystem::path& dirname, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
+             StartingPointMode startingPointMode);
 
  private:
   /**
@@ -63,7 +64,7 @@ class ParGenerator {
    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
    * @return Generator Parameter Set Id object
    */
-  std::string getGeneratorMacroParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP);
+  std::string getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP);
 
   /**
    * @brief Get the Generator Parameter Set Id object
@@ -72,7 +73,7 @@ class ParGenerator {
    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
    * @return Generator Parameter Set Id object
    */
-  std::string getGeneratorParameterSetId(algo::GeneratorDefinition::ModelType modelType, bool fixedP);
+  std::string getGeneratorParameterSetId(ModelType modelType, bool fixedP);
 
   /**
    * @brief build a generator macro parameter set
@@ -83,10 +84,8 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @return the new macro parameter set
    */
-  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(algo::GeneratorDefinition::ModelType modelType,
-                                                                                   inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                                                                                   bool fixedP,
-                                                                                   dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCompensation activePowerCompensation,
+                                                                                   bool fixedP, StartingPointMode startingPointMode);
 
   /**
     * @brief Write constants parameter sets for generators
@@ -98,10 +97,8 @@ class ParGenerator {
     *
     * @returns the parameter set
     */
-  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                                                                           dfl::algo::GeneratorDefinition::ModelType modelType,
-                                                                           bool fixedP,
-                                                                           dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, bool fixedP,
+                                                                           StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -114,16 +111,8 @@ class ParGenerator {
    * @return result parameter set
    */
   boost::shared_ptr<parameters::ParametersSet> updateSignalNGenerator(const std::string& modelId,
-                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                                                                      bool fixedP,
-                                                                      dfl::inputs::Configuration::StartingPointMode startingPointMode);
-
-  /**
-   * @brief Update parameter set with remote references
-   *
-   * @param set the parameter set to update
-   */
-  void updatePropParameters(boost::shared_ptr<parameters::ParametersSet> set);
+                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP,
+                                                                      StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with transformer parameters
@@ -144,6 +133,16 @@ class ParGenerator {
    */
   boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
                                                               const boost::filesystem::path& dirname);
+
+  /**
+   * @brief determine value of kGover based if a generator has a targetP equal to 0
+   *
+   * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+   * @return 0 if fixeP is True, 1.0 otherwise
+   */
+  inline double getKGoverValue(bool fixedP) {
+    return fixedP ? constants::kGoverNullValue_ : constants::kGoverDefaultValue_;
+  }
 
  private:
   std::vector<algo::GeneratorDefinition> generatorDefinitions_;  ///< list of generators definitions
