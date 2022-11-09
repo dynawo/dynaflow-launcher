@@ -45,6 +45,6 @@ jobs:
           export DYNAFLOW_LAUNCHER_HOME=$(pwd)
           export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
           scripts/envDFL.sh build-user
-          version=$(scripts/envDFL.sh version 2>&1)
+          version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
           zip -r DynaFlowLauncher_V${version}.zip dynaflow-launcher
           curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" -X POST $(curl -s --request GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep upload_url | cut -d '"' -f 4 | grep -o ".*assets")?name=DynaFlowLauncher_Linux_v${version}.zip --data-binary @DynaFlowLauncher_V${version}.zip
