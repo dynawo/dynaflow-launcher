@@ -10,7 +10,7 @@
 //------------------ Inputs -------------------------
 ErrorConfigFileRead           =     error while reading configuration file: %1%
 StartingPointModeDoesntExist  =     starting point mode %1% doesn't exist
-InvalidActivePowerCompensation =    parameter ActivePowerCompensation can't be set on P in flat starting point mode
+InvalidActivePowerCompensation =    parameter ActivePowerCompensation can't be set on P in flat starting point mode in the input config file : %1%
 ChosenOutputDoesntExist       =     chosen output %1% doesn't exist
 ContingenciesReadError        =     error while reading contingencies file %1%: %2%
 DynModelFileReadError         =     cannot parse %1% : %2%
