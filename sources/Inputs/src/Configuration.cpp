@@ -129,7 +129,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
 
   if (startingPointMode_ == Configuration::StartingPointMode::FLAT &&
         activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
-    throw Error(InvalidActivePowerCompensation);
+    throw Error(InvalidActivePowerCompensation, filepath.generic_string());
   }
 }
 
