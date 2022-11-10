@@ -12,8 +12,6 @@
 
 #include "ParCommon.h"
 
-#include <DYNCommon.h>
-
 namespace dfl {
 namespace outputs {
 
@@ -29,13 +27,13 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
     boost::shared_ptr<parameters::ParametersSet> paramSet;
     if (!generator.isUsingDiagram()) {
       if (!paramSetCollection->hasParametersSet(getGeneratorParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP)))) {
-        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator.model, DYN::doubleIsZero(generator.targetP), startingPointMode);
+        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator.model, generator.targetP, startingPointMode);
       }
     } else {
       // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
       if (!paramSetCollection->hasMacroParametersSet(getGeneratorMacroParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP)))) {
         paramSetCollection->addMacroParameterSet(
-            buildGeneratorMacroParameterSet(generator.model, activePowerCompensation, DYN::doubleIsZero(generator.targetP), startingPointMode));
+            buildGeneratorMacroParameterSet(generator.model, activePowerCompensation, generator.targetP, startingPointMode));
       }
       // if generator is not using infinite diagrams, no need to create constant sets
       paramSet = writeGenerator(generator, basename, dirname);
@@ -115,10 +113,10 @@ ParGenerator::getGeneratorParameterSetId(ModelType modelType, bool fixedP) {
 }
 
 boost::shared_ptr<parameters::MacroParameterSet>
-ParGenerator::buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCompensation activePowerCompensation, bool fixedP,
+ParGenerator::buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCompensation activePowerCompensation, double targetP,
                                               StartingPointMode startingPointMode) {
-  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
-      boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(modelType, fixedP)));
+  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(
+      new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(modelType, DYN::doubleIsZero(targetP))));
 
   macroParameterSet->addReference(helper::buildReference("generator_PMin", "pMin", "DOUBLE"));
   macroParameterSet->addReference(helper::buildReference("generator_PMax", "pMax", "DOUBLE"));
@@ -141,7 +139,7 @@ ParGenerator::buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCo
   macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
   macroParameterSet->addParameter(helper::buildParameter("generator_tFilter", 0.001));
 
-  macroParameterSet->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(fixedP)));
+  macroParameterSet->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(targetP)));
 
   switch (activePowerCompensation) {
   case ActivePowerCompensation::P:
@@ -191,10 +189,10 @@ ParGenerator::buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCo
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParGenerator::updateSignalNGenerator(const std::string& modelId, ActivePowerCompensation activePowerCompensation, bool fixedP,
+ParGenerator::updateSignalNGenerator(const std::string& modelId, ActivePowerCompensation activePowerCompensation, double targetP,
                                      StartingPointMode startingPointMode) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(modelId));
-  set->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(fixedP)));
+  set->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(targetP)));
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
@@ -237,9 +235,9 @@ ParGenerator::updateSignalNGenerator(const std::string& modelId, ActivePowerComp
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, bool fixedP,
+ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, double targetP,
                                           StartingPointMode startingPointMode) {
-  auto set = updateSignalNGenerator(getGeneratorParameterSetId(modelType, fixedP), activePowerCompensation, fixedP, startingPointMode);
+  auto set = updateSignalNGenerator(getGeneratorParameterSetId(modelType, DYN::doubleIsZero(targetP)), activePowerCompensation, targetP, startingPointMode);
   switch (modelType) {
   case ModelType::PROP_SIGNALN_INFINITE:
   case ModelType::PROP_DIAGRAM_PQ_SIGNALN:

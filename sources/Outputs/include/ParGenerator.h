@@ -21,6 +21,7 @@
 #include "Constants.h"
 #include "GeneratorDefinitionAlgorithm.h"
 
+#include <DYNCommon.h>
 #include <PARParametersSetCollection.h>
 #include <boost/shared_ptr.hpp>
 
@@ -33,7 +34,7 @@ namespace outputs {
 class ParGenerator {
  public:
   using ActivePowerCompensation = dfl::inputs::Configuration::ActivePowerCompensation;  ///< Alias for type of active power compensation
-  using StartingPointMode = dfl::inputs::Configuration::StartingPointMode;              ///< Alias for strating point mode
+  using StartingPointMode = dfl::inputs::Configuration::StartingPointMode;              ///< Alias for starting point mode
   using ModelType = dfl::algo::GeneratorDefinition::ModelType;                          ///< Alias for model type
   /**
    * @brief Construct a new Par Generators object
@@ -80,24 +81,24 @@ class ParGenerator {
    *
    * @param modelType type of modelling chosen for a generator
    * @param activePowerCompensation the type of active power compensation
-   * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+   * @param targetP generator targetP value
    * @param startingPointMode starting point mode
    * @return the new macro parameter set
    */
   boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCompensation activePowerCompensation,
-                                                                                   bool fixedP, StartingPointMode startingPointMode);
+                                                                                   double targetP, StartingPointMode startingPointMode);
 
   /**
     * @brief Write constants parameter sets for generators
     *
     * @param activePowerCompensation the type of active power compensation
     * @param modelType type of modelling chosen for a generator
-    * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+    * @param targetP generator targetP value
     * @param startingPointMode starting point mode
     *
     * @returns the parameter set
     */
-  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, bool fixedP,
+  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, double targetP,
                                                                            StartingPointMode startingPointMode);
 
   /**
@@ -105,14 +106,14 @@ class ParGenerator {
    *
    * @param modelId the model of the generator
    * @param activePowerCompensation the type of active power compensation
-   * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
+   * @param targetP generator targetP value
    * @param startingPointMode starting point mode
    *
    * @return result parameter set
    */
   boost::shared_ptr<parameters::ParametersSet> updateSignalNGenerator(const std::string& modelId,
-                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation, bool fixedP,
-                                                                      StartingPointMode startingPointMode);
+                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                                                                      double targetP, StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with transformer parameters
@@ -135,17 +136,17 @@ class ParGenerator {
                                                               const boost::filesystem::path& dirname);
 
   /**
-   * @brief determine value of kGover based if a generator has a targetP equal to 0
+   * @brief determine value of kGover based on generator targetP value
    *
-   * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
-   * @return 0 if fixeP is True, 1.0 otherwise
+   * @param targetP generator targetP value
+   * @returns kGover value
    */
-  inline double getKGoverValue(bool fixedP) {
-    return fixedP ? constants::kGoverNullValue_ : constants::kGoverDefaultValue_;
+  inline double getKGoverValue(double targetP) {
+    return DYN::doubleIsZero(targetP) ? constants::kGoverNullValue_ : constants::kGoverDefaultValue_;
   }
 
   /**
-   * @brief upadte a parameter set with information specific to remote voltage regulation for a generator
+   * @brief update a parameter set with information specific to remote voltage regulation for a generator
    *        and that cannot be included in a macroParameter
    *
    * @param def the generator definition to use
