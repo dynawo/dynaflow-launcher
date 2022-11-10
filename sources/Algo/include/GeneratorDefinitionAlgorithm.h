@@ -89,6 +89,15 @@ class GeneratorDefinition {
   }
 
   /**
+   * @brief determines if the generator is regulating remotely
+   *
+   * @return true when generator is regulating remotely
+   */
+  bool isRegulatingRemotely() const {
+    return model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_SIGNALN_INFINITE || model == ModelType::REMOTE_SIGNALN_RECTANGULAR;
+  }
+
+  /**
    * @brief Constructor
    *
    * @param genId generator id
@@ -208,7 +217,7 @@ class GeneratorDefinitionAlgorithm {
   BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
   const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
   bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used,
-  double tfoVoltageLevel_;                                  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
+  double tfoVoltageLevel_;  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
 };
 }  // namespace algo
 }  // namespace dfl
