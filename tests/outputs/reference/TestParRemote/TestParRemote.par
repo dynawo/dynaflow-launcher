@@ -75,6 +75,7 @@
   <set id="12811459763870767443">
     <par name="generator_QMax0" type="DOUBLE" value="21"/>
     <par name="generator_QMin0" type="DOUBLE" value="1"/>
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
     <macroParSet id="macro_remoteSignalNFixedPRectangular"/>
   </set>
   <set id="6320417593396202500">
@@ -84,11 +85,13 @@
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_1"/>
     <macroParSet id="macro_remoteVControl"/>
   </set>
   <set id="9965188665212998056">
     <par name="generator_QMax0" type="DOUBLE" value="21"/>
     <par name="generator_QMin0" type="DOUBLE" value="1"/>
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
     <macroParSet id="macro_remoteVControlRectangular"/>
   </set>
   <set id="Model_Signal_NQ_BUS_1">
@@ -129,5 +132,6 @@
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_1"/>
   </set>
 </parametersSet>

@@ -144,6 +144,15 @@ class ParGenerator {
     return fixedP ? constants::kGoverNullValue_ : constants::kGoverDefaultValue_;
   }
 
+  /**
+   * @brief upadte a parameter set with information specific to remote voltage regulation for a generator
+   *        and that cannot be included in a macroParameter
+   *
+   * @param def the generator definition to use
+   * @param set the parameter set to be updated
+   */
+  void updateRemoteRegulationParameters(const algo::GeneratorDefinition& def, boost::shared_ptr<parameters::ParametersSet> set);
+
  private:
   std::vector<algo::GeneratorDefinition> generatorDefinitions_;  ///< list of generators definitions
 };

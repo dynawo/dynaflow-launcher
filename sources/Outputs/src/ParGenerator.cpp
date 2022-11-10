@@ -45,6 +45,10 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
     if (paramSet && generator.hasTransformer()) {
       updateTransfoParameters(generator, paramSet);
     }
+    // adding parameter specific to remote voltage regulation for a generator and that cannot be included in a macroParameter
+    if (paramSet && generator.isRegulatingRemotely()) {
+      updateRemoteRegulationParameters(generator, paramSet);
+    }
     if (paramSet && !paramSetCollection->hasParametersSet(paramSet->getId())) {
       paramSetCollection->addParametersSet(paramSet);
     }
@@ -247,6 +251,11 @@ ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCom
     break;
   }
   return set;
+}
+
+void
+ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinition& def, boost::shared_ptr<parameters::ParametersSet> set) {
+  set->addReference(helper::buildReference("generator_URegulated0", "U", "DOUBLE", def.regulatedBusId));
 }
 
 boost::shared_ptr<parameters::ParametersSet>
