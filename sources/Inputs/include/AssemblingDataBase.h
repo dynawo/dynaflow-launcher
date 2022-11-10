@@ -283,7 +283,7 @@ class AssemblingDataBase {
   explicit AssemblingDataBase(const boost::filesystem::path& assemblingFilePath);
 
   /**
-   * @brief Retrieve a macro connections with its id
+   * @brief Retrieve a macro connection with its id
    * @param id macro connection id
    * @returns the macro connection with the given id, throw if not found
    */
@@ -297,7 +297,7 @@ class AssemblingDataBase {
   const SingleAssociation& getSingleAssociation(const std::string& id) const;
 
   /**
-   * @brief test if a single association with the given id exist
+   * @brief test if a single association with the given id exists
    * @param id single association id
    * @returns true if the single association exists, false otherwise
    */
@@ -311,7 +311,7 @@ class AssemblingDataBase {
   const MultipleAssociation& getMultipleAssociation(const std::string& id) const;
 
   /**
-   * @brief test if a multiple association with the given id exist
+   * @brief test if a multiple association with the given id exists
    * @param id multiple association id
    * @returns true if the multiple association exists, false otherwise
    */
