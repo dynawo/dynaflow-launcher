@@ -40,13 +40,10 @@ ContingencyInvalidForSimulation =     contingency %1% is invalid for simulation.
 ContingencyInvalidForSimulationNoValidElements =     contingency %1% is invalid for simulation. All elements are invalid (not in main connected component or invalid type)
 
 //------------------ Outputs -----------------------
-DynModelMacroNotDefined       =     macro %1% used in model not defined in assembling file
 TFOComponentNotFound          =     reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
-SingleAssociationRefNotFound  =     settings ref %1% references an undefined single association %2%: it will be ignored
 SingleAssociationRefNotALine  =     settings ref %1% references the single association %2% which is not associated to a line: it will be ignored
 RefLineNotFound               =     settings ref %1% references single association %2% which is associated to the undefined line %3%: it will be ignored
 RefUnsupportedTag             =     settings ref %1% uses a unrecognized tag %2%: it will be ignored
-CountIdNotFound               =     count id %1% not found as a multiple association in assembling: Configuration error
 
 //------------------ Main ---------------------------
 NetworkSlackNodeNotFound      =     network slack node requested but not found in network input file %1%

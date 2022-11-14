@@ -59,10 +59,10 @@ class DydDynModel {
    * @brief add all the macro connectors for defined dynamic models
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
-   * @param macrosById complete list of macro connections defined for defined dynamic models
+   * @param dynamicDataBaseManager the database manager to use
    */
   void writeMacroConnectors(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                            const std::unordered_map<std::string, inputs::AssemblingXmlDocument::MacroConnection>& macrosById);
+                            const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;  ///< list of defined dynamic models

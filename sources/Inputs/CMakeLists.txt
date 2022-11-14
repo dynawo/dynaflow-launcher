@@ -8,6 +8,7 @@
 #
 
 set(SOURCES
+  src/AssemblingDataBase.cpp
   src/NetworkManager.cpp
   src/Node.cpp
   src/Configuration.cpp
@@ -15,8 +16,7 @@ set(SOURCES
   src/Contingencies.cpp
   src/ContingenciesManager.cpp
   src/DynamicDataBaseManager.cpp
-  src/SettingXmlDocument.cpp
-  src/AssemblingXmlDocument.cpp
+  src/SettingDataBase.cpp
 )
 
 add_library(inputs SHARED ${SOURCES})

@@ -69,25 +69,27 @@ DynModelAlgorithm::libraryExists(const std::string& lib) {
 }
 
 void
-DynModelAlgorithm::extractMultiAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                                               const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                                               const inputs::AssemblingXmlDocument::MultipleAssociation& multiassoc) {
+DynModelAlgorithm::extractMultiAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton,
+                                               const inputs::AssemblingDataBase::MacroConnect& macro, bool shuntRegulationOn) {
   MacroConnect connection(automaton.id, macro.macroConnection);
-  const auto& vlid = multiassoc.shunt.voltageLevel;
-  macroConnectByVlForShuntsId_[vlid].push_back(connection);
+  auto& multiAssoc = manager_.assembling().getMultipleAssociation(macro.id);
+  if (shuntRegulationOn && multiAssoc.shunt) {
+    const auto& vlid = multiAssoc.shunt->voltageLevel;
+    macroConnectByVlForShuntsId_[vlid].push_back(connection);
+  }
 }
 
 void
-DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
-                                                const inputs::AssemblingXmlDocument::MacroConnect& macro,
-                                                const inputs::AssemblingXmlDocument::SingleAssociation& singleassoc) {
+DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton,
+                                                const inputs::AssemblingDataBase::MacroConnect& macro) {
   MacroConnect connection(automaton.id, macro.macroConnection);
-  if (singleassoc.bus) {
-    macroConnectByVlForBusesId_[singleassoc.bus->voltageLevel].insert(connection);
-  } else if (singleassoc.line) {
-    macroConnectByLineName_[singleassoc.line->name].push_back(connection);
-  } else if (singleassoc.tfo) {
-    macroConnectByTfoName_[singleassoc.tfo->name].push_back(connection);
+  auto& singleAssoc = manager_.assembling().getSingleAssociation(macro.id);
+  if (singleAssoc.bus) {
+    macroConnectByVlForBusesId_[singleAssoc.bus->voltageLevel].insert(connection);
+  } else if (singleAssoc.line) {
+    macroConnectByLineName_[singleAssoc.line->name].push_back(connection);
+  } else if (singleAssoc.tfo) {
+    macroConnectByTfoName_[singleAssoc.tfo->name].push_back(connection);
   } else {
 // Cannot happen if xml file is formed correctly according to its XSD
 #if _DEBUG_
@@ -98,42 +100,18 @@ DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingXmlDocum
 
 void
 DynModelAlgorithm::extractDynModels(bool shuntRegulationOn) {
-  using inputs::AssemblingXmlDocument;
-
-  const auto& automatons = manager_.assemblingDocument().dynamicAutomatons();
-  const auto& singleAssociations = manager_.assemblingDocument().singleAssociations();
-  const auto& multiAssociations = manager_.assemblingDocument().multipleAssociations();
-
-  // Use map instead of vector to find the associations
-  std::unordered_map<std::string, AssemblingXmlDocument::SingleAssociation> singleAssociationsMap;
-  for (const auto& asso : singleAssociations) {
-    singleAssociationsMap[asso.id] = asso;
-  }
-  std::unordered_map<std::string, AssemblingXmlDocument::MultipleAssociation> multiAssociationsMap;
-  if (shuntRegulationOn) {
-    for (const auto& asso : multiAssociations) {
-      multiAssociationsMap[asso.id] = asso;
-    }
-  }
-
-  for (const auto& automaton : automatons) {
+  for (const auto& automaton : manager_.assembling().dynamicAutomatons()) {
     // Check that the automaton library is available
-    if (!libraryExists(automaton.lib)) {
-      LOG(warn, DynModelLibraryNotFound, automaton.lib, automaton.id);
+    if (!libraryExists(automaton.second.lib)) {
+      LOG(warn, DynModelLibraryNotFound, automaton.second.lib, automaton.first);
       continue;
     }
-    dynamicAutomatonsById_[automaton.id] = automaton;
 
-    for (const auto& macro : automaton.macroConnects) {
-      auto singleassoc = singleAssociationsMap.find(macro.id);
-      if (singleassoc != singleAssociationsMap.end()) {
-        extractSingleAssociationInfo(automaton, macro, singleassoc->second);
-        continue;
-      }
-
-      auto multiassoc = multiAssociationsMap.find(macro.id);
-      if (multiassoc != multiAssociationsMap.end()) {
-        extractMultiAssociationInfo(automaton, macro, multiassoc->second);
+    for (const auto& macro : automaton.second.macroConnects) {
+      if (manager_.assembling().isSingleAssociation(macro.id)) {
+        extractSingleAssociationInfo(automaton.second, macro);
+      } else if (manager_.assembling().isMultipleAssociation(macro.id)) {
+        extractMultiAssociationInfo(automaton.second, macro, shuntRegulationOn);
         continue;
       }
     }
@@ -190,8 +168,8 @@ DynModelAlgorithm::connectMacroConnectionForShunt(const NodePtr& node) {
   for (const auto& macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     // dynamic model id is present in the map as for now macroConnectByVlForShuntsId_ is filled only by dynamic automatons data
-    assert(dynamicAutomatonsById_.count(macroConnection.dynModelId) > 0);
-    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
+    assert(manager_.assembling().dynamicAutomatons().count(macroConnection.dynModelId) > 0);
+    const auto& automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
 
     for (const auto& shunt : node->shunts) {
       addMacroConnectionToModelDefinitions(
@@ -206,7 +184,7 @@ DynModelAlgorithm::connectMacroConnectionForLine(const std::shared_ptr<inputs::L
   const auto& macroConnections = macroConnectByLineName_.at(line->id);
   for (const auto& macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
-    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
+    const auto& automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
 
     addMacroConnectionToModelDefinitions(
         automaton,
@@ -225,7 +203,7 @@ DynModelAlgorithm::connectMacroConnectionForBus(const NodePtr& node) {
 
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);  // Tag the used macro connection
 
-    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
+    const auto& automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
     addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(
                                                         macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::NODE, nodeId));
   }
@@ -236,7 +214,7 @@ DynModelAlgorithm::connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tf
   const auto& macroConnections = macroConnectByTfoName_.at(tfo->id);
   for (const auto& macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
-    const auto& automaton = dynamicAutomatonsById_.at(macroConnection.dynModelId);
+    const auto& automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
 
     addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(
                                                         macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::TFO, tfo->id));
@@ -244,7 +222,7 @@ DynModelAlgorithm::connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tf
 }
 
 void
-DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingXmlDocument::DynamicAutomaton& automaton,
+DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingDataBase::DynamicAutomaton& automaton,
                                                         const DynamicModelDefinition::MacroConnection& macroConnection) {
   if (dynamicModels_.models.count(automaton.id) == 0) {
     DynamicModelDefinition modelDef(automaton.id, automaton.lib);
