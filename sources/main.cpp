@@ -63,7 +63,7 @@ getOutputDir(const boost::filesystem::path& configFilepath) {
 
   const auto optionValue = tree.get_child("dfl-config").get_child_optional("OutputDir");
   if (!optionValue.is_initialized()) {
-    throw Error(ErrorConfigFileRead);
+    throw Error(ErrorConfigFileRead, configFilepath);
   }
 
   boost::filesystem::path path(optionValue->get_value<std::string>());
