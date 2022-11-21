@@ -46,7 +46,6 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
         } else {
           model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_SIGNALN;
         }
-        busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
       } else {
         // Generator is assumed to have its transfo in the static model
         if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
