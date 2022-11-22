@@ -27,6 +27,9 @@ It provides the following possibilities:
 Dynaflow-launcher depends on the [core dynawo libraries of Dyna&omega;o](https://github.com/dynawo/dynawo)
 and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo-algorithms).
 
+## Get involved!
+Dynaflow-launcher is an open-source project and as such, questions, discussions, feedbacks and more generally any form of contribution are very welcome and greatly appreciated! For further informations about contributing guidelines, please refers to the contributing documentation.
+
 ## Dynaflow-launcher Distribution
 
 You can download a pre-built Dynaflow-launcher release to start testing it. Pre-built releases are available for **Linux**:
