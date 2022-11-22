@@ -28,7 +28,7 @@ Dynaflow-launcher depends on the [core dynawo libraries of Dyna&omega;o](https:/
 and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo-algorithms).
 
 ## Get involved!
-Dynaflow-launcher is an open-source project and as such, questions, discussions, feedbacks and more generally any form of contribution are very welcome and greatly appreciated! For further informations about contributing guidelines, please refers to the contributing documentation.
+Dynaflow-launcher is an open-source project and as such, questions, discussions, feedbacks and more generally any form of contribution are very welcome and greatly appreciated! For further informations about contributing guidelines, please refers to the [contributing documentation](https://github.com/dynawo/.github/blob/master/CONTRIBUTING.md).
 
 ## Dynaflow-launcher Distribution
 
