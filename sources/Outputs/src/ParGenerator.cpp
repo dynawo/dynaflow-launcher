@@ -25,9 +25,9 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
       continue;
     }
     boost::shared_ptr<parameters::ParametersSet> paramSet;
-    if (!generator.isUsingDiagram()) {
-      if (!paramSetCollection->hasParametersSet(getGeneratorParameterSetId(generator.model, DYN::doubleIsZero(generator.targetP)))) {
-        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator.model, generator.targetP, startingPointMode);
+    if (helper::generatorSharesParId(generator)) {
+      if (!paramSetCollection->hasParametersSet(helper::getGeneratorParameterSetId(generator))) {
+        paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator, startingPointMode);
       }
     } else {
       // we check if the macroParameterSet need by generator model is not already created. If not, we create a new one
@@ -85,28 +85,6 @@ ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP) 
     break;
   default:
     id = fixedP ? helper::getMacroParameterSetId(constants::signalNGeneratorFixedPParId) : helper::getMacroParameterSetId(constants::signalNGeneratorParId);
-    break;
-  }
-  return id;
-}
-
-std::string
-ParGenerator::getGeneratorParameterSetId(ModelType modelType, bool fixedP) {
-  std::string id;
-  switch (modelType) {
-  case ModelType::PROP_SIGNALN_INFINITE:
-  case ModelType::PROP_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? constants::propSignalNGeneratorFixedPParId : constants::propSignalNGeneratorParId;
-    break;
-  case ModelType::REMOTE_SIGNALN_INFINITE:
-  case ModelType::REMOTE_DIAGRAM_PQ_SIGNALN:
-    id = fixedP ? constants::remoteSignalNGeneratorFixedP : constants::remoteVControlParId;
-    break;
-  case ModelType::SIGNALN_TFO_INFINITE:
-    id = constants::signalNTfoGeneratorParId;
-    break;
-  default:
-    id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
     break;
   }
   return id;
@@ -235,10 +213,10 @@ ParGenerator::updateSignalNGenerator(const std::string& modelId, ActivePowerComp
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, double targetP,
+ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, const algo::GeneratorDefinition& generator,
                                           StartingPointMode startingPointMode) {
-  auto set = updateSignalNGenerator(getGeneratorParameterSetId(modelType, DYN::doubleIsZero(targetP)), activePowerCompensation, targetP, startingPointMode);
-  switch (modelType) {
+  auto set = updateSignalNGenerator(helper::getGeneratorParameterSetId(generator), activePowerCompensation, generator.targetP, startingPointMode);
+  switch (generator.model) {
   case ModelType::PROP_SIGNALN_INFINITE:
   case ModelType::PROP_DIAGRAM_PQ_SIGNALN:
   case ModelType::PROP_SIGNALN_RECTANGULAR:
