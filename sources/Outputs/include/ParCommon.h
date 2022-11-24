@@ -18,7 +18,9 @@
 #pragma once
 
 #include "Constants.h"
+#include "GeneratorDefinitionAlgorithm.h"
 
+#include <DYNCommon.h>
 #include <PARParameter.h>
 #include <PARParameterFactory.h>
 #include <PARParametersSetCollection.h>
@@ -112,6 +114,51 @@ writeVRRemote(const std::string& busId, const std::string& elementId) {
   set->addReference(buildReference("vrremote_URef0", "targetV", "DOUBLE", elementId));
   set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getMacroParameterSetId(constants::remoteVControlParId + "_vr"))));
   return set;
+}
+
+/**
+ * @brief Get the Generator Parameter Set Id object
+ *
+ * @param generator generator definition
+ * @return Generator Parameter Set Id object
+ */
+inline static std::string
+getGeneratorParameterSetId(const algo::GeneratorDefinition& generator) {
+  std::string id;
+  bool fixedP = DYN::doubleIsZero(generator.targetP);
+  switch (generator.model) {
+  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
+    id = fixedP ? constants::propSignalNGeneratorFixedPParId : constants::propSignalNGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
+    id = fixedP ? constants::remoteSignalNGeneratorFixedP : constants::remoteVControlParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE:
+    id = constants::signalNTfoGeneratorParId;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
+    id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
+    break;
+  default:
+    std::size_t hashId = constants::hash(generator.id);
+    std::string hashIdStr = std::to_string(hashId);
+    id = hashIdStr;
+    break;
+  }
+  return id;
+}
+
+/**
+ * @brief return true if the generator shares its parameter set
+ *
+ * @param generator generator definition
+ * @return true if the generator shares its parameter set
+ */
+inline static bool
+generatorSharesParId(const algo::GeneratorDefinition& generator) {
+  std::string parId = getGeneratorParameterSetId(generator);
+  std::size_t hashId = constants::hash(generator.id);
+  return parId != std::to_string(hashId);
 }
 
 }  // namespace helper

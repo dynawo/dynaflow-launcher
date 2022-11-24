@@ -68,15 +68,6 @@ class ParGenerator {
   std::string getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP);
 
   /**
-   * @brief Get the Generator Parameter Set Id object
-   *
-   * @param modelType type of modelling chosen for a generator
-   * @param fixedP boolean to determine if the set represents a generator with a targetP equal to 0
-   * @return Generator Parameter Set Id object
-   */
-  std::string getGeneratorParameterSetId(ModelType modelType, bool fixedP);
-
-  /**
    * @brief build a generator macro parameter set
    *
    * @param modelType type of modelling chosen for a generator
@@ -92,14 +83,13 @@ class ParGenerator {
     * @brief Write constants parameter sets for generators
     *
     * @param activePowerCompensation the type of active power compensation
-    * @param modelType type of modelling chosen for a generator
-    * @param targetP generator targetP value
+    * @param generator generator definition
     * @param startingPointMode starting point mode
     *
     * @returns the parameter set
     */
-  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, ModelType modelType, double targetP,
-                                                                           StartingPointMode startingPointMode);
+  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
+                                                                           const algo::GeneratorDefinition& generator, StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references

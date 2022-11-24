@@ -104,14 +104,6 @@ class DydGenerator {
   void writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect);
 
   /**
-   * @brief Get the Specific Par Id object
-   *
-   * @param generator reference to a generator definition
-   * @return specific par Id depending on the generator model
-   */
-  std::string getSpecificParId(const dfl::algo::GeneratorDefinition& generator);
-
-  /**
    * @brief add the connection of signal N model to the slack node
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
