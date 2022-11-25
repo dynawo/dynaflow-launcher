@@ -12,12 +12,12 @@
 
 #include "Constants.h"
 #include "DydCommon.h"
+#include "ParCommon.h"
 
 #include <DYDMacroConnectFactory.h>
 #include <DYDMacroConnectorFactory.h>
 #include <DYDMacroStaticRefFactory.h>
 #include <DYDMacroStaticReferenceFactory.h>
-#include <DYNCommon.h>
 
 namespace dfl {
 namespace outputs {
@@ -43,7 +43,7 @@ DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dyn
     if (generator.isNetwork()) {
       continue;
     }
-    std::string parId = getSpecificParId(generator);
+    std::string parId = helper::getGeneratorParameterSetId(generator);
     auto blackBoxModel = helper::buildBlackBoxStaticId(generator.id, generator.id, correspondence_lib_.at(generator.model), basename + ".par", parId);
     blackBoxModel->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSignalNGeneratorName_));
     dynamicModelsToConnect->addModel(blackBoxModel);
@@ -117,31 +117,6 @@ DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsColl
     dynamicModelsToConnect->addMacroConnect(connection);
     dynamicModelsToConnect->addMacroConnect(signal);
   }
-}
-
-std::string
-DydGenerator::getSpecificParId(const dfl::algo::GeneratorDefinition& generator) {
-  std::string parId;
-  switch (generator.model) {
-  case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
-    parId = (DYN::doubleIsZero(generator.targetP)) ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
-    break;
-  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE:
-    parId = constants::signalNTfoGeneratorParId;
-    break;
-  case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
-    parId = constants::propSignalNGeneratorParId;
-    break;
-  case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
-    parId = constants::remoteVControlParId;
-    break;
-  default:
-    std::size_t hashId = constants::hash(generator.id);
-    std::string hashIdStr = std::to_string(hashId);
-    parId = hashIdStr;
-    break;
-  }
-  return parId;
 }
 
 void
