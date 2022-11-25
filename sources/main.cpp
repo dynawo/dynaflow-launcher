@@ -60,13 +60,11 @@ static inline boost::filesystem::path
 getOutputDir(const boost::filesystem::path& configFilepath) {
   boost::property_tree::ptree tree;
   boost::property_tree::read_json(configFilepath.generic_string(), tree);
-
+  boost::filesystem::path path = boost::filesystem::current_path();
   const auto optionValue = tree.get_child("dfl-config").get_child_optional("OutputDir");
-  if (!optionValue.is_initialized()) {
-    throw Error(ErrorConfigFileRead, configFilepath);
+  if (optionValue.is_initialized()) {
+    path = optionValue->get_value<std::string>();
   }
-
-  boost::filesystem::path path(optionValue->get_value<std::string>());
   return path;
 }
 
