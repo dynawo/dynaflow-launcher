@@ -28,6 +28,7 @@
 #include "Par.h"
 #include "ParEvent.h"
 #include "Solver.h"
+#include "version.h"
 
 #include <DYNMPIContext.h>
 #include <DYNMultipleJobsFactory.h>
@@ -205,18 +206,8 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_,
-                                                      config_,
-                                                      parOutput,
-                                                      generators_,
-                                                      hvdcLineDefinitions_,
-                                                      busesWithDynamicModel_,
-                                                      dynamicDataBaseManager_,
-                                                      counters_,
-                                                      dynamicModels_,
-                                                      linesById_,
-                                                      staticVarCompensators_,
-                                                      loads_));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_, parOutput, generators_, hvdcLineDefinitions_, busesWithDynamicModel_,
+                                                     dynamicDataBaseManager_, counters_, dynamicModels_, linesById_, staticVarCompensators_, loads_));
   parWriter.write();
 
   // Diagram
@@ -365,7 +356,7 @@ Context::exportResults(bool simulationOk) {
     boost::property_tree::ptree resultsTree;
     boost::property_tree::ptree componentResultsTree;
     boost::property_tree::ptree componentResultsChild;
-    resultsTree.put("version", "1.2");
+    resultsTree.put("version", DYNAFLOW_LAUNCHER_VERSION_STRING);
     resultsTree.put("isOK", simulationOk);
     resultsTree.put("metrics.useInfiniteReactiveLimits", config_.useInfiniteReactiveLimits());
     resultsTree.put("metrics.isSVCRegulationOn", config_.isSVCRegulationOn());
