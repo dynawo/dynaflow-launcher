@@ -119,8 +119,8 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
       }
       break;
     case algo::HVDCDefinition::ConverterType::LCC:
-      const double q01 = -abs(hvdcDefinition.powerFactors.at(0) * p01);
-      const double q02 = -abs(hvdcDefinition.powerFactors.at(1) * p02);
+      const double q01 = -fabs(hvdcDefinition.powerFactors.at(0) * p01);
+      const double q02 = -fabs(hvdcDefinition.powerFactors.at(1) * p02);
       set->addParameter(helper::buildParameter("hvdc_Q10Pu", q01));
       set->addParameter(helper::buildParameter("hvdc_Q20Pu", q02));
       break;
