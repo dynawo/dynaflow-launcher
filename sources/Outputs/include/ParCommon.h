@@ -129,21 +129,33 @@ getGeneratorParameterSetId(const algo::GeneratorDefinition& generator) {
   switch (generator.model) {
   case algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE:
     id = fixedP ? constants::propSignalNGeneratorFixedPParId : constants::propSignalNGeneratorParId;
+    if (generator.isNuclear)
+      id += "_Nuc";
     break;
   case algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE:
     id = fixedP ? constants::remoteSignalNGeneratorFixedP : constants::remoteVControlParId;
+    if (generator.isNuclear)
+      id += "_Nuc";
     break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE:
     id = constants::signalNTfoGeneratorParId;
+    if (generator.isNuclear)
+      id += "_Nuc";
     break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE:
     id = constants::signalNTfoRpclGeneratorParId;
+    if (generator.isNuclear)
+      id += "_Nuc";
     break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE:
     id = constants::signalNRpclGeneratorParId;
+    if (generator.isNuclear)
+      id += "_Nuc";
     break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
     id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
+    if (generator.isNuclear)
+      id += "_Nuc";
     break;
   default:
     std::size_t hashId = constants::hash(generator.id);

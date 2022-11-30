@@ -119,7 +119,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
       }
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
-                             generator.regulatedBusId);
+                             generator.regulatedBusId, generator.isNuclear);
   }
 }
 

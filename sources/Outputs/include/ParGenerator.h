@@ -90,8 +90,7 @@ class ParGenerator {
     * @returns the parameter set
     */
   boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
-                                                                           const algo::GeneratorDefinition& generator,
-                                                                           StartingPointMode startingPointMode);
+                                                                           const algo::GeneratorDefinition& generator, StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -111,8 +110,9 @@ class ParGenerator {
    * @brief Update parameter set with transformer parameters
    *
    * @param set the parameter set to update
+   * @param isNuclear true if the energy source of the generator is nuclear
    */
-  void updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set);
+  void updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear);
 
   /**
    * @brief Update parameter set with Rpcl parameters

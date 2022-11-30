@@ -145,7 +145,7 @@ NetworkManager::buildTree() {
       }
       nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
                                               generator->getQMin(), generator->getQMax(), pmin, pmax, targetP, generator->getBusInterface()->getVNom(),
-                                              regulatedBusId, nodeid);
+                                              regulatedBusId, nodeid, generator->getEnergySource() == DYN::GeneratorInterface::SOURCE_NUCLEAR);
       LOG(debug, NodeContainsGen, nodeid, generator->getID());
     }
 
