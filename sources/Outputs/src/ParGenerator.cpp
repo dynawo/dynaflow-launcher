@@ -46,7 +46,7 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
       updateRpclParameters(paramSet, generator.id, dynamicDataBaseManager.setting().getSet(generator.id));
     }
     if (paramSet && generator.hasTransformer()) {
-      updateTransfoParameters(paramSet);
+      updateTransfoParameters(paramSet, generator.isNuclear);
     }
 
     // adding parameter specific to remote voltage regulation for a generator and that cannot be included in a macroParameter
@@ -278,13 +278,19 @@ ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::st
 }
 
 void
-ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set) {
+ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear) {
   if (!set->hasReference("generator_QNomAlt"))
     set->addReference(helper::buildReference("generator_QNomAlt", "qNom", "DOUBLE"));
   set->addReference(helper::buildReference("generator_SNom", "sNom", "DOUBLE"));
-  set->addParameter(helper::buildParameter("generator_RTfoPu", constants::generatorRPuValue));
-  set->addParameter(helper::buildParameter("generator_rTfoPu", constants::generatorRhoValue));
-  set->addParameter(helper::buildParameter("generator_XTfoPu", constants::generatorXPuValue));
+  if (isNuclear) {
+    set->addParameter(helper::buildParameter("generator_RTfoPu", constants::generatorNucRPuValue));
+    set->addParameter(helper::buildParameter("generator_rTfoPu", constants::generatorNucRhoValue));
+    set->addParameter(helper::buildParameter("generator_XTfoPu", constants::generatorNucXPuValue));
+  } else {
+    set->addParameter(helper::buildParameter("generator_RTfoPu", constants::generatorRPuValue));
+    set->addParameter(helper::buildParameter("generator_rTfoPu", constants::generatorRhoValue));
+    set->addParameter(helper::buildParameter("generator_XTfoPu", constants::generatorXPuValue));
+  }
 }
 
 void

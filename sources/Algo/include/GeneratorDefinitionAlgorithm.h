@@ -129,10 +129,11 @@ class GeneratorDefinition {
    * @param pmax maximum active power for the generator
    * @param targetP target active power of the generator
    * @param regulatedBusId the Bus Id this generator is regulating
+   * @param isNuclear true if the energy source of this generator is nuclear
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
                       const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP,
-                      const BusId& regulatedBusId) :
+                      const BusId& regulatedBusId, bool isNuclear = false) :
       id{genId},
       model{type},
       nodeId{nodeId},
@@ -142,7 +143,8 @@ class GeneratorDefinition {
       pmin{pmin},
       pmax{pmax},
       targetP{targetP},
-      regulatedBusId{regulatedBusId} {}
+      regulatedBusId{regulatedBusId},
+      isNuclear{isNuclear} {}
 
   inputs::Generator::GeneratorId id;       ///< generator id
   ModelType model;                         ///< model
@@ -154,6 +156,7 @@ class GeneratorDefinition {
   double pmax;                             ///< maximum active power
   double targetP;                          ///< target active power of the generator
   const BusId regulatedBusId;              ///< regulated Bus Id
+  const bool isNuclear;                    ///< true if the energy source of this generator is nuclear
 };
 
 /**

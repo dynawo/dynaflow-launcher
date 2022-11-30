@@ -119,9 +119,9 @@
     <macroParSet id="macro_signalNGenerator"/>
   </set>
   <set id="648475104231997810">
-    <par name="generator_RTfoPu" type="DOUBLE" value="0.0028999999999999998"/>
-    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
-    <par name="generator_rTfoPu" type="DOUBLE" value="0.95350000000000001"/>
+    <par name="generator_RTfoPu" type="DOUBLE" value="0.0025999999999999999"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <par name="generator_rTfoPu" type="DOUBLE" value="0.92349999999999999"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
