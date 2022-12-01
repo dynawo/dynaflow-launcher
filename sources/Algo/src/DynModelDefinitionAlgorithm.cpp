@@ -246,7 +246,7 @@ DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::Assem
 }
 
 void
-DynModelAlgorithm::operator()(const NodePtr& node) {
+DynModelAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
   auto vl = node->voltageLevel.lock();
   if (macroConnectByVlForBusesId_.count(vl->id) > 0) {
     connectMacroConnectionForBus(node);

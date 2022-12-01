@@ -120,6 +120,21 @@ class AssemblingDataBase {
     std::vector<MacroConnect> macroConnects;  ///< list of macro connections to use
   };
 
+  /**
+   * @brief Device XML element
+   */
+  struct Device {
+    std::string id;  ///< device id
+  };
+
+  /**
+   * @brief Property XML element
+   */
+  struct Property {
+    std::string id;               ///< property id
+    std::vector<Device> devices;  ///< list of devices
+  };
+
  private:
   /**
    * @brief Assembling xml document handler
@@ -290,11 +305,40 @@ class AssemblingDataBase {
       MacroConnectHandler macroConnectHandler;  ///< macro connect handler
     };
 
+    /**
+     * @brief Device element handler
+     */
+    struct DeviceHandler : public xml::sax::parser::ComposableElementHandler {
+      /**
+       * @brief Constructor
+       * @param root the root element to parse
+       */
+      explicit DeviceHandler(const elementName_type& root);
+
+      boost::optional<AssemblingDataBase::Device> currentDevice;  ///< current device element
+    };
+
+    /**
+     * @brief Property element handler
+     */
+    struct PropertyHandler : public xml::sax::parser::ComposableElementHandler {
+      /**
+       * @brief Constructor
+       * @param root the root element to parse
+       */
+      explicit PropertyHandler(const elementName_type& root);
+
+      boost::optional<AssemblingDataBase::Property> currentProperty;  ///< current property
+
+      DeviceHandler deviceHandler;  ///< device handler
+    };
+
    private:
     MacroConnectionHandler macroConnectionHandler_;          ///< Macro connection handler
     SingleAssociationHandler singleAssociationHandler_;      ///< Single association handler
     MultipleAssociationHandler multipleAssociationHandler_;  ///< Multi association handler
     DynamicAutomatonHandler dynamicAutomatonHandler_;        ///< Automaton handler
+    PropertyHandler propertyHandler_;                        ///< Property handler
   };
 
  public:
@@ -333,6 +377,13 @@ class AssemblingDataBase {
   const MultipleAssociation& getMultipleAssociation(const std::string& id) const;
 
   /**
+   * @brief Retrieve a multiple association id that contains the generator with the given name
+   * @param name generator id
+   * @returns multiple association id that contains the generator with the given name, empty string if not found
+   */
+  std::string getMultipleAssociationFromGenerator(const std::string& name) const;
+
+  /**
    * @brief test if a multiple association with the given id exists
    * @param id multiple association id
    * @returns true if the multiple association exists, false otherwise
@@ -347,11 +398,27 @@ class AssemblingDataBase {
     return dynamicAutomatons_;
   }
 
+  /**
+   * @brief Retrieve a property with its id
+   * @param id property id
+   * @returns property with the given id, empty property if not found
+   */
+  const Property& getProperty(const std::string& id) const;
+
+  /**
+   * @brief test if a property with the given id exists
+   * @param id property id
+   * @returns true if theproperty exists, false otherwise
+   */
+  bool isProperty(const std::string& id) const;
+
  private:
-  std::unordered_map<std::string, MacroConnection> macroConnections_;          ///< list of macro connections
-  std::unordered_map<std::string, SingleAssociation> singleAssociations_;      ///< list of single associations
-  std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;  ///< list of multiple associations
-  std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                  ///< list of dynamic automatons
+  std::unordered_map<std::string, MacroConnection> macroConnections_;                 ///< list of macro connections
+  std::unordered_map<std::string, SingleAssociation> singleAssociations_;             ///< list of single associations
+  std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;         ///< list of multiple associations
+  std::unordered_map<std::string, std::string> generatorIdToMultipleAssociationsId_;  ///< generator id associated to the multiple associations that contains it
+  std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                         ///< list of dynamic automatons
+  std::unordered_map<std::string, Property> properties_;                              ///< list of properties
 };
 
 }  // namespace inputs

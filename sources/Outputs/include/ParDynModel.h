@@ -86,7 +86,7 @@ class ParDynModel {
    * @param automaton the current secondary voltage control automaton
    *
    */
-  void writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet, const inputs::AssemblingDataBase::DynamicAutomaton& automaton);
+  void writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet, const algo::DynamicModelDefinition& automaton);
 
   /**
    * @brief Retrieve active season

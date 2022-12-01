@@ -30,11 +30,11 @@ ParDynModel::ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefin
 void
 ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                    const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions) {
-  for (const auto& automaton : dynamicDataBaseManager.assembling().dynamicAutomatons()) {
+  for (const auto& dynModel : dynamicModelsDefinitions_.models) {
     boost::shared_ptr<parameters::ParametersSet> new_set = writeDynamicModelParameterSet(
-        dynamicDataBaseManager.setting().getSet(automaton.first), dynamicDataBaseManager, shuntCounters, dynamicModelsDefinitions_, linesByIdDefinitions);
-    if (automaton.second.lib == common::constants::svcModelName) {
-      writeAdditionalSVCParameterSet(new_set, automaton.second);
+        dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, shuntCounters, dynamicModelsDefinitions_, linesByIdDefinitions);
+    if (dynModel.second.lib == common::constants::svcModelName) {
+      writeAdditionalSVCParameterSet(new_set, dynModel.second);
     }
     if (new_set) {
       paramSetCollection->addParametersSet(new_set);
@@ -54,15 +54,10 @@ ParDynModel::getTransformerComponentId(const algo::DynamicModelDefinition& dynMo
 }
 
 void
-ParDynModel::writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet,
-                                            const inputs::AssemblingDataBase::DynamicAutomaton& automaton) {
-  const auto& svcDefinition = dynamicModelsDefinitions_.models.find(automaton.id);
-  if (svcDefinition == dynamicModelsDefinitions_.models.end()) {
-    return;
-  }
+ParDynModel::writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet, const algo::DynamicModelDefinition& automaton) {
   unsigned idx = 1;
   paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
-  for (const auto& connection : svcDefinition->second.nodeConnections) {
+  for (const auto& connection : automaton.nodeConnections) {
     const auto& generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
     if (generatorIdx != generatorIdToIndex_.end()) {
       const auto& genDefinition = generatorDefinitions_[generatorIdx->second];
