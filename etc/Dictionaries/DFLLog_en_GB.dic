@@ -62,4 +62,5 @@ ContingencySimulationDefined  =     contingency simulation defined for %1%
 SecurityAnalysisSimulationInfo  =     initializing Security Analysis simulation %1% with contingencies %2%
 ModelPartiallyConnected       =     dynamic model %1% is only partially connected to network so it is removed from exported models
 SVCConnectedToDefaultGen      =     ignoring connection from the non voltage regulating generator %1% to the secondary voltage control model %2%
+SVCConnectedToGenRegulatingNode  =     ignoring connection from the generator %1% to the secondary voltage control model %2% as the regulated node is regulated by several generators
 EmptySVC                      =     secondary voltage control model %1% is ignored as no voltage regulating generator is participating in it

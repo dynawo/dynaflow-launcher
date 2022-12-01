@@ -43,7 +43,9 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
     }
 
     if (paramSet && generator.hasRpcl()) {
-      updateRpclParameters(paramSet, generator.id, dynamicDataBaseManager.setting().getSet(generator.id));
+      updateRpclParameters(paramSet, generator.id,
+                           dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getMultipleAssociationFromGenerator(generator.id)),
+                           generator.hasRpcl2());
     }
     if (paramSet && generator.hasTransformer()) {
       updateTransfoParameters(paramSet, generator.isNuclear);
@@ -294,8 +296,17 @@ ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSe
 
 void
 ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string& genId,
-                                   const inputs::SettingDataBase::Set& databaseSetting) {
-  std::array<std::string, 3> parameters = {"reactivePowerControlLoop_DerURefMaxPu", "reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_TiQ"};
+                                   const inputs::SettingDataBase::Set& databaseSetting, bool Rcpl2) {
+  std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu"};
+  if (Rcpl2) {
+    parameters.push_back("reactivePowerControlLoop_CqMaxPu");
+    parameters.push_back("reactivePowerControlLoop_DeltaURefMaxPu");
+    parameters.push_back("reactivePowerControlLoop_Tech");
+    parameters.push_back("reactivePowerControlLoop_Ti");
+  } else {
+    parameters.push_back("reactivePowerControlLoop_DerURefMaxPu");
+    parameters.push_back("reactivePowerControlLoop_TiQ");
+  }
   for (auto parameter : parameters) {
     auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
                                 [&parameter](const inputs::SettingDataBase::Parameter<double>& setting) { return setting.name == parameter; });

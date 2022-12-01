@@ -120,8 +120,10 @@ class ParGenerator {
    * @param set the parameter set to update
    * @param genId the current generator id
    * @param databaseSetting the settings found in setting file
+   * @param Rcpl2 true if the model used is RPCL2, false otherwise
    */
-  void updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string& genId, const inputs::SettingDataBase::Set& databaseSetting);
+  void updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string& genId, const inputs::SettingDataBase::Set& databaseSetting,
+                            bool Rcpl2);
 
   /**
    * @brief Write generator parameter set

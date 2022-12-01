@@ -79,8 +79,11 @@ TEST(TestAlgoDynModel, base) {
   nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
 
   dfl::algo::DynModelAlgorithm algo(defs, manager, true);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
 
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  for (const auto& node : nodes) {
+    algo(node, algoRes);
+  }
 
   ASSERT_EQ(defs.usedMacroConnections.size(), 10);
   std::set<std::string> usedMacroConnections(defs.usedMacroConnections.begin(), defs.usedMacroConnections.end());
@@ -218,8 +221,11 @@ TEST(TestAlgoDynModel, noRegulation) {
   nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
 
   dfl::algo::DynModelAlgorithm algo(defs, manager, false);
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
 
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  for (const auto& node : nodes) {
+    algo(node, algoRes);
+  }
 
   ASSERT_EQ(defs.usedMacroConnections.size(), 9);
   std::set<std::string> usedMacroConnections(defs.usedMacroConnections.begin(), defs.usedMacroConnections.end());

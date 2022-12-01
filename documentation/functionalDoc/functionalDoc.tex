@@ -135,6 +135,8 @@ The model chosen depends on the following:
 \label{tab:generators_modelling_tfo}
 \end{table}
 
+Please refer to \ref{DFL_SVC_Rpcl_Generators} for generators belonging to a secondary voltage control area.\\
+
 \par Concerning the active power balancing:
 
 \begin{itemize}
@@ -471,7 +473,7 @@ An example is given below.
 
 \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
 <assembling>
-
+...
   <macroConnection id="SVCToUMeasurement">
     <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
   </macroConnection>
@@ -495,7 +497,7 @@ An example is given below.
     <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>
     <macroConnect macroConnection="SVCToGenerator" id="GEN2"/>
   </dynamicAutomaton>
-
+...
 </assembling>
 \end{lstlisting}
 
@@ -505,36 +507,113 @@ Moreover the setting should also contain the Rpcl parameters for all generators 
 
 \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
 <setting>
-
+...
   <set id="SVC">
     <!-- SVC parameters -->
 
-    <!-- _GEN____1_SM Qr -->
+    <!-- GEN1 Qr -->
     <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="280"/>
-    <!-- _GEN____2_SM Qr -->
+    <!-- GEN2 Qr -->
     <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="280"/>
 
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
   </set>
 
-  <set id="_GEN____1_SM">
-    <!-- _GEN____1_SM parameters -->
+  <set id="GEN1">
+    <!-- GEN1 parameters -->
     <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
   </set>
 
-  <set id="_GEN____2_SM">
-    <!-- _GEN____2_SM parameters -->
+  <set id="GEN2">
+    <!-- GEN2 parameters -->
     <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
   </set>
-
+...
 </setting>
 \end{lstlisting}
 
+
+To define a generator using a reactive power control loop 2 (Rpcl2) then the \textit{multipleAssociation}
+of the generator should be referenced in the \textit{ReactivePowerControlLoop2} property list in the assembling:
+
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <property id="ReactivePowerControlLoop2">
+    <device id="GEN2"/>
+    <device id="..."/>
+    ...
+  </property>
+...
+</assembling>
+\end{lstlisting}
+
+In this case the settings of the generator should be adapted to the Rpcl2:
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<setting>
+...
+  <set id="GEN2">
+    <!-- GEN2 parameters -->
+    <par name="reactivePowerControlLoop_CqMaxPu" type="DOUBLE" value="15"/>
+    <par name="reactivePowerControlLoop_DeltaURefMaxPu" type="DOUBLE" value="0.002"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
+    <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
+    <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
+  </set>
+...
+</setting>
+\end{lstlisting}
+
+\label{DFL_SVC_Rpcl_Generators}
+
+The models used for generators belonging to a secondary voltage control area are given in the table \ref{tab:generators_modelling_rpcl} and \ref{tab:generators_modelling_tfo_rpcl}.\\
+
+\textbf{Generators regulating at a distant node or regulating a bus already regulated by another generator are automatically removed from the secondary voltage control area.\\}
+
+Simply replace \textit{'Rpcl'} by \textit{'Rpcl2'} in the model name when the generator uses a reactive power control loop 2.\\
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c | c}
+\toprule
+\scriptsize{\textbf{{Voltage regulation}}} & \scriptsize{\textbf{{InfiniteReactiveLimits}}} & \scriptsize{\textbf{{Rectangular diagram}}}  & \scriptsize{\textbf{{Model}}}\\
+\midrule
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{false} & \scriptsize{GeneratorPVDiagramPQRpclSignalN} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{true} & \scriptsize{GeneratorPVRpclSignalN} \\
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{true} & \scriptsize{-} & \scriptsize{GeneratorPVRpclSignalN} \\
+\bottomrule
+\end{tabular}
+\caption{Generators modelling when $voltageLevel \leq TfoVoltageLevel$ and with a reactive power control loop}
+\label{tab:generators_modelling_rpcl}
+\end{table}
+
+\begin{table}[h!]
+\center
+\begin{tabular}{ c | c | c | c}
+\toprule
+\scriptsize{\textbf{{Voltage regulation}}} & \scriptsize{\textbf{{InfiniteReactiveLimits}}} & \scriptsize{\textbf{{Rectangular diagram}}}  & \scriptsize{\textbf{{Model}}}\\
+\midrule
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{false} & \scriptsize{GeneratorPVTfoDiagramPQRpclSignalN} \\
+\rowcolor{gray!10}
+ \scriptsize{At the connection bus} & \scriptsize{false} & \scriptsize{true} & \scriptsize{GeneratorPVTfoRpclSignalN} \\
+\rowcolor{white}
+ \scriptsize{At the connection bus} & \scriptsize{true} & \scriptsize{-} & \scriptsize{GeneratorPVTfoRpclSignalN} \\
+\bottomrule
+\end{tabular}
+\caption{Generators modelling when $voltageLevel > TfoVoltageLevel$ and with a reactive power control loop}
+\label{tab:generators_modelling_tfo_rpcl}
+\end{table}
 
 \section{Solver}
 

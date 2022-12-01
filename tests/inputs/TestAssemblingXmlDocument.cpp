@@ -104,4 +104,11 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(macroConnects[0].macroConnection, "ToUMeasurement");
   ASSERT_EQ(macroConnects[1].id, "SHUNTS_MODELE_1_VL4");
   ASSERT_EQ(macroConnects[1].macroConnection, "ToControlledShunts");
+
+  ASSERT_THROW_DYNAWO(assembling.getProperty("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownProperty);
+  ASSERT_TRUE(assembling.isProperty("MyProp"));
+  const auto& prop = assembling.getProperty("MyProp");
+  ASSERT_EQ(prop.devices.size(), 2);
+  ASSERT_EQ(prop.devices[0].id, "MyDevice");
+  ASSERT_EQ(prop.devices[1].id, "MyDevice2");
 }

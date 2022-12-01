@@ -7,16 +7,18 @@
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
   </set>
-  <set id="_GEN____1_SM">
+  <set id="GEN1">
     <!-- _GEN____1_SM parameters -->
     <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
   </set>
-  <set id="_GEN____2_SM">
+  <set id="GEN2">
     <!-- _GEN____2_SM parameters -->
-    <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
-    <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
-    <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
+    <par name="reactivePowerControlLoop_CqMaxPu" type="DOUBLE" value="15"/>
+    <par name="reactivePowerControlLoop_DeltaURefMaxPu" type="DOUBLE" value="0.002"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
+    <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
+    <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
   </set>
 </setting>

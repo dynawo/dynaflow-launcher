@@ -78,7 +78,6 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
-  networkManager_.onNode(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_, config_.isShuntRegulationOn()));
   if (config_.isShuntRegulationOn()) {
     networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
   }
@@ -118,6 +117,8 @@ Context::process() {
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
                                                             networkManager_.getMapBusVSCConvertersBusId()));
+  onNodeOnMainConnexComponent(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_, config_.isShuntRegulationOn()));
+
   if (config_.isSVarCRegulationOn()) {
     onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   }
@@ -160,7 +161,7 @@ Context::filterPartiallyConnectedDynamicModels() {
       continue;
     }
 
-    auto modelDef = dynamicModels_.models.at(automaton.second.id);
+    auto& modelDef = dynamicModels_.models.at(automaton.second.id);
     for (const auto& macroConnect : automaton.second.macroConnects) {
       auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
@@ -172,7 +173,7 @@ Context::filterPartiallyConnectedDynamicModels() {
       }
     }
 
-    // Filtering generators with default model from SVCs
+    // Filtering generators with default model or regulating a node regulated by several generators from SVCs
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       std::vector<algo::DynamicModelDefinition::MacroConnection> toRemove;
       for (const auto& connection : modelDef.nodeConnections) {
@@ -180,14 +181,17 @@ Context::filterPartiallyConnectedDynamicModels() {
         auto found = std::find_if(generators_.begin(), generators_.end(),
                                   [&genId](const algo::GeneratorDefinition& genDefinition) { return genDefinition.id == genId; });
         if (found != generators_.end() && found->isNetwork()) {
+          LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
+          toRemove.push_back(connection);
+        } else if (found != generators_.end() && !found->hasRpcl()) {
+          LOG(debug, SVCConnectedToGenRegulatingNode, connection.connectedElementId, automaton.second.id);
           toRemove.push_back(connection);
         }
       }
       for (const auto& connection : toRemove) {
-        LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
-        dynamicModels_.models.find(automaton.second.id)->second.nodeConnections.erase(connection);
+        modelDef.nodeConnections.erase(connection);
       }
-      if (modelDef.nodeConnections.size() == 1) {
+      if (modelDef.nodeConnections.size() <= 1) {
         LOG(debug, EmptySVC, automaton.second.id);
         dynamicModels_.models.erase(automaton.second.id);
       }

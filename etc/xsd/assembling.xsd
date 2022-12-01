@@ -14,6 +14,7 @@ SPDX-License-Identifier: MPL-2.0 -->
       <xs:choice maxOccurs="unbounded">
         <xs:element name="singleAssociation" type="SingleAssociation"/>
         <xs:element name="dynamicAutomaton" type="GenericModel"/>
+        <xs:element name="property" type="Property"/>
         <xs:element name="multipleAssociation" type="MultipleAssociation"/>
         <xs:element name="macroConnection" type="MacroConnection"/>
       </xs:choice>
@@ -74,6 +75,17 @@ SPDX-License-Identifier: MPL-2.0 -->
     </xs:sequence>
     <xs:attribute name="id" use="required" type="xs:string"/>
     <xs:attribute name="lib" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Device">
+    <xs:attribute name="id" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Property">
+    <xs:sequence>
+      <xs:element name="device" type="Device" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" use="required" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="GeneratorItem">
