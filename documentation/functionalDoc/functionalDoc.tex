@@ -267,6 +267,274 @@ The conditions and models used are given below.
 \caption{Static Var Compensators modelling}
 \end{table}
 
+\subsection{Dynamic models}
+\label{DFL_Dyn_Models}
+
+A generic way to simulate components not defined in the static model (e.g. automatons) is provided in Dynaflow-launcher through the optional xml assembling and setting files.
+
+\subsubsection{Defining an automaton in the assembling and setting files: general case}
+\paragraph{Defining a dynamicAutomaton in the assembling and setting\\}
+
+To define any automaton in Dynaflow-launcher, the assembling should contains a dynamicAutomaton. An example is given below to define a PhaseShifter.
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <dynamicAutomaton id="PhaseShifter_5_6" lib="PhaseShifterI">
+    <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_PHASE_5_6"/>
+    <macroConnect macroConnection="PhaseShifterToTap" id="TAP_PHASE_5_6"/>
+    <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_PHASE_5_6"/>
+  </dynamicAutomaton>
+...
+</assembling>
+\end{lstlisting}
+
+The \textit{dynamicAutomaton} provides a unique automaton id, the name of the dynamic model library
+to use and a list of \textit{macroConnect} that defines the connections of the automaton.
+
+The setting of this automaton should be given in the setting file, with the same id as the \textit{dynamicAutomaton} id:
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<setting>
+...
+  <set id="PhaseShifter_5_6">
+    <par type="DOUBLE" name="phaseShifter_sign" value="-1"/>
+    <par type="DOUBLE" name="phaseShifter_t1st" value="40"/>
+    ...
+    <reference type="BOOL" name="phaseShifter_regulating0" origData="IIDM" origName="regulating" componentId="_BUS____5-BUS____6-1_PS"/>
+    <reference type="INT" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" componentId="_BUS____5-BUS____6-1_PS"/>
+  </set>
+...
+</setting>
+\end{lstlisting}
+
+
+Defining a \textit{dynamicAutomaton} in the assembling will end up in the creation of a blackbox model in the dyd file of the \Dynawo simulation.
+The parameters used will be transposed as they are from the setting file to the parameter file:
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+...
+  <dyn:blackBoxModel id="PhaseShifter_5_6" lib="PhaseShifterI" parFile="TestIIDM_phase_shifter.par" parId="PhaseShifter_5_6"/>
+...
+</dyn:dynamicModelsArchitecture>
+\end{lstlisting}
+
+\paragraph{Defining the macroConnect of the dynamicAutomaton in the assembling\\}
+
+Each \textit{macroConnect} of a \textit{dynamicAutomaton} defines one connection of the automaton.
+
+The \textit{macroConnection} of a \textit{macroConnect} is similar to the \Dynawo \textit{macroConnector} from the dyd file (see \Dynawo documentation). It describes a set
+of connections to apply between the automaton and another component of the network.
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <macroConnection id="PhaseShifterToIMeasurement">
+    <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
+  </macroConnection>
+  <macroConnection id="PhaseShifterToTap">
+    <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
+  </macroConnection>
+  <macroConnection id="PhaseShifterToAutomatonActivated">
+    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+  </macroConnection>
+...
+</assembling>
+\end{lstlisting}
+
+The \textit{id} of a \textit{macroConnect} refers to an association provided in the assembling.
+
+An association allows to retrieve the network component connected to the automaton. \\
+
+To define a connection to a node, a bus singleAssociation is used:
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <bus voltageLevel="VoltageLevelId"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to the first bus of the voltage level named VoltageLevelId in the IIDM. \\
+
+To define a connection to a line, a line singleAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <line name="LineId"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to the line named LineId in the IIDM. \\
+
+To define a connection to a transformer, a tfo singleAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <tfo name="TransformerId"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to the transformer (two windings or three windings) named TransformerId in the IIDM. \\
+
+To define a connection to a shunt compensator, a shunt multiAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <shunt voltageLevel="VoltageLevelId"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to all the shunts compensator from the voltage level named VoltageLevelId in the IIDM. \\
+
+To define a connection to a generator, a generator multiAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <generator name="GeneratorId"/>
+    <generator name="GeneratorId_Alt"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to the first generator found in the IIDM based on the list. \\
+
+If we complete our current example with the following associations we will end up with the equivalent connections in the dyd file of the \Dynawo simulation:
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MESURE_I_PHASE_5_6">
+    <tfo name="_BUS____5-BUS____6-1_PS"/>
+  </singleAssociation>
+
+  <singleAssociation id="TAP_PHASE_5_6">
+    <tfo name="_BUS____5-BUS____6-1_PS"/>
+  </singleAssociation>
+
+  <singleAssociation id="AUTOMATON_EXISTS_PHASE_5_6">
+    <tfo name="_BUS____5-BUS____6-1_PS"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+...
+  <dyn:macroConnector id="PhaseShifterToAutomatonActivated">
+    <dyn:connect var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+  </dyn:macroConnector>
+
+  <dyn:macroConnector id="PhaseShifterToIMeasurement">
+    <dyn:connect var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
+  </dyn:macroConnector>
+
+  <dyn:macroConnector id="PhaseShifterToTap">
+    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step"/>
+  </dyn:macroConnector>
+
+  <dyn:macroConnect connector="PhaseShifterToAutomatonActivated" id1="PhaseShifter_5_6" id2="NETWORK" index1="0" name2="_BUS____5-BUS____6-1_PS"/>
+  <dyn:macroConnect connector="PhaseShifterToIMeasurement" id1="PhaseShifter_5_6" id2="NETWORK" index1="0" name2="_BUS____5-BUS____6-1_PS"/>
+  <dyn:macroConnect connector="PhaseShifterToTap" id1="PhaseShifter_5_6" id2="NETWORK" index1="0" name2="_BUS____5-BUS____6-1_PS"/>
+...
+</dyn:dynamicModelsArchitecture>
+\end{lstlisting}
+
+
+\subsubsection{Defining a secondary voltage control in the assembling and setting files}
+
+The secondary voltage control automaton is a specific case from the assembling and setting.
+
+If the assembling defines a \textit{dynamicAutomaton} using the library \textbf{SecondaryVoltageControlSimp} then the model of the generators connected to
+this automaton will contain a reactive power control loop (Rpcl) connected to the secondary voltage control.
+
+This dynamic automaton should be connected to one bus and some generators.
+An example is given below.
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+
+  <macroConnection id="SVCToUMeasurement">
+    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+  </macroConnection>
+  <macroConnection id="SVCToGenerator">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+  </macroConnection>
+
+  <singleAssociation id="UMeasurement">
+    <bus voltageLevel="_BUS____1_VL"/>
+  </singleAssociation>
+
+  <multipleAssociation id="GEN1">
+    <generator name="_GEN____1_SM"/>
+  </multipleAssociation>
+  <multipleAssociation id="GEN2">
+    <generator name="_GEN____2_SM"/>
+  </multipleAssociation>
+
+  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+    <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GEN2"/>
+  </dynamicAutomaton>
+
+</assembling>
+\end{lstlisting}
+
+
+Similarly to any \textit{dynamicAutomaton}, a set of parameters should be given in the setting file for the \textbf{SecondaryVoltageControlSimp} model.
+Moreover the setting should also contain the Rpcl parameters for all generators as follows:
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<setting>
+
+  <set id="SVC">
+    <!-- SVC parameters -->
+
+    <!-- _GEN____1_SM Qr -->
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="280"/>
+    <!-- _GEN____2_SM Qr -->
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="280"/>
+
+    <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
+  </set>
+
+  <set id="_GEN____1_SM">
+    <!-- _GEN____1_SM parameters -->
+    <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
+    <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
+    <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
+  </set>
+
+  <set id="_GEN____2_SM">
+    <!-- _GEN____2_SM parameters -->
+    <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
+    <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
+    <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
+  </set>
+
+</setting>
+\end{lstlisting}
+
 
 \section{Solver}
 
