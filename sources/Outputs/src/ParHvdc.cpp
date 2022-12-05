@@ -194,9 +194,6 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
   if (!hvdcDefinition.hasDanglingModel() && !hvdcDefinition.hasEmulationModel()) {
     set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
   }
-  if (hvdcDefinition.hasDiagramModel()) {
-    set->addParameter(helper::buildParameter("hvdc_tFilter", 0.001));
-  }
   if (hvdcDefinition.hasEmulationModel()) {
     set->addParameter(helper::buildParameter("acemulation_tFilter", 50.));
     auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)

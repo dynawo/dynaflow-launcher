@@ -12,7 +12,6 @@
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteSignalNFixedPRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -28,7 +27,6 @@
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
-    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteVControl">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -41,7 +39,6 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteVControlRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -57,7 +54,6 @@
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_tFilter" type="DOUBLE" value="0.001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
