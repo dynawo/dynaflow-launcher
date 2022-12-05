@@ -124,7 +124,6 @@ ParGenerator::buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCo
   }
 
   macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-  macroParameterSet->addParameter(helper::buildParameter("generator_tFilter", 0.001));
 
   macroParameterSet->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(targetP)));
 
