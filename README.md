@@ -152,8 +152,8 @@ $> ./myEnvDFL.sh launch-sa <network> <config> <contingencies>
 ```
 where network is the path to the network file (IIDM), config the path to the configuration file and contingencies the path to the contingency file (json).
 
-## Run steady-state simulation then systematic analysis
-To run a steady-state simulation followed by a systematic analysis with Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch-nsa" option:
+## Run steady-state simulation automatically followed by a systematic analysis
+To run a steady-state simulation automatically followed by a systematic analysis with Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch-nsa" option:
 ```bash
 $> ./myEnvDFL.sh launch-nsa <network> <config> <contingencies>
 ```
