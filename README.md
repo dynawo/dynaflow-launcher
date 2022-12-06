@@ -33,7 +33,7 @@ Dynaflow-launcher is an open-source project and as such, questions, discussions,
 ## Dynaflow-launcher Distribution
 
 You can download a pre-built Dynaflow-launcher release to start testing it. Pre-built releases are available for **Linux**:
-- [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.3.1/DynaFlowLauncher_Linux_v1.3.1.zip)
+- [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.3.2/DynaFlowLauncher_Linux_v1.3.2.zip)
 
 ### Linux Requirements for Distribution
 
@@ -196,7 +196,7 @@ git commits have a standard pattern, similar to the one in Dynawo core. This pat
 This hook is installed automatically when using the script myEnvDFL.sh with any option.
 
 ## Dynaflow-launcher Documentation
-You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.3.1/DynaflowLauncherDocumentation.pdf).
+You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.3.2/DynaflowLauncherDocumentation.pdf).
 
 ## Quoting Dyna&omega;o
 
