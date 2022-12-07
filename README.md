@@ -138,12 +138,26 @@ All commands described in the rest of this README are accessible throught this s
 $> ./myEnvDFL.sh help
 ```
 
-## Run
-To run Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch" or "launch-dir" option:
+## Run steady-state simulation
+To run Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch" option:
 ```bash
 $> ./myEnvDFL.sh launch <network> <config>
 ```
 where network is the path to the network file (IIDM) and config the path to the configuration file.
+
+## Run systematic analysis
+To run a systematic analysis with Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch-sa" option:
+```bash
+$> ./myEnvDFL.sh launch-sa <network> <config> <contingencies>
+```
+where network is the path to the network file (IIDM), config the path to the configuration file and contingencies the path to the contingency file (json).
+
+## Run steady-state simulation automatically followed by a systematic analysis
+To run a steady-state simulation automatically followed by a systematic analysis with Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch-nsa" option:
+```bash
+$> ./myEnvDFL.sh launch-nsa <network> <config> <contingencies>
+```
+where network is the path to the network file (IIDM), config the path to the configuration file and contingencies the path to the contingency file (json).
 
 ## Testing
 Dynaflow-launcher testing relies on cmake tests.
