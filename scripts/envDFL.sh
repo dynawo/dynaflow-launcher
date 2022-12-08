@@ -538,7 +538,7 @@ apply_clang_format() {
     else
         pushd $DYNAFLOW_LAUNCHER_HOME > /dev/null
         for file in $(git diff-index --name-only HEAD | grep -iE '\.(cpp|cc|h|hpp)$'); do
-            $CLANGF -i $file
+            $CLANGF --style=file -i $file
         done
         popd > /dev/null
     fi
