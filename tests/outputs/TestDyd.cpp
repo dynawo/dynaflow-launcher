@@ -175,6 +175,16 @@ TEST(Dyd, writeDynamicModel) {
       dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
 
+  models.usedMacroConnections.insert("SVCToUMeasurement");
+  models.usedMacroConnections.insert("SVCToGenerator");
+  models.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
+
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
+  models.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5");
+  models.models.at("SVC").nodeConnections.insert(macro);
+
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
                                        LoadDefinition("L1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "01"),
                                        LoadDefinition("L2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "02"),
@@ -184,7 +194,8 @@ TEST(Dyd, writeDynamicModel) {
   std::vector<GeneratorDefinition> generators = {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1)};
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});

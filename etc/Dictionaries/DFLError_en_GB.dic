@@ -24,9 +24,10 @@ UnknownMultiAssoc             =     couldn't find the multiAssociation %1% in as
 UnknownParamSet               =     couldn't find the parameter set %1% in setting file
 
 //------------------ Algo ---------------------------
+SeveralGeneratorinSVCRegulatingNode = node %1% is regulated by several generators whereas at least one of them (%2%) is in a secondary voltage control area
 
 //------------------ Outputs -----------------------
-
+MissingGeneratorParameterInSettings = parameter %1% not found in settings file for generator %2%
 //------------------ Main ---------------------------
 EnvVariableMissing           =     cannot find environnement variable %1% please check runtime environment
 NetworkFileNotFound          =     network file %1% does not exist

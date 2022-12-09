@@ -54,6 +54,8 @@ endmacro()
 
 DEFINE_LAUNCH_TEST(launch)
 DEFINE_LAUNCH_TEST(launch_slack)
+DEFINE_LAUNCH_TEST(launch_diagram)
+DEFINE_LAUNCH_TEST(launch_diagram_tfo)
 
 DEFINE_LAUNCH_TEST(launch_P)
 
@@ -87,4 +89,10 @@ DEFINE_LAUNCH_TEST(launch_fail_generators)
 ## Expected to fail because no generator regulates the voltage in the main connected component
 set_tests_properties(MAIN.launch_fail_generators PROPERTIES WILL_FAIL TRUE)
 
-DEFINE_LAUNCH_TEST(no_SVC_regulation)
+DEFINE_LAUNCH_TEST(no_SVarC_regulation)
+
+DEFINE_LAUNCH_TEST(launch_svc)
+DEFINE_LAUNCH_TEST(launch_svc_network)
+DEFINE_LAUNCH_TEST(launch_svc_tfo)
+DEFINE_LAUNCH_TEST(launch_svc_infinite)
+DEFINE_LAUNCH_TEST(launch_svc_tfo_infinite)

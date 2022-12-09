@@ -9,7 +9,7 @@
 //
 
 /**
- * @file Constants.h
+ * @file OutputsConstants.h
  *
  * @brief Dynaflow launcher common to all writers
  *
@@ -60,11 +60,12 @@ std::string diagramFilename(const std::string& id);
 
 const std::string networkModelName{"NETWORK"};                               ///< Name of the model corresponding to network
 const std::string loadParId{"GenericRestorativeLoad"};                       ///< PAR id common to all loads
-const std::string diagramDirectorySuffix{"_Diagram"};                        ///< Suffix for the diagram directory
 const std::string diagramMaxTableSuffix{"_tableqmax"};                       ///< Suffix for the table name for qmax in diagram file
 const std::string diagramMinTableSuffix{"_tableqmin"};                       ///< Suffix for the table name for qmin in diagram file
 const std::string signalNGeneratorParId{"signalNGenerator"};                 ///< PAR id for generators using signal N
 const std::string signalNTfoGeneratorParId{"signalNTfoGenerator"};           ///< PAR id for generators using signal N and transformer
+const std::string signalNTfoRpclGeneratorParId{"signalNTfoRpclGenerator"};   ///< PAR id for generators using signal N and transformer and Rpcl
+const std::string signalNRpclGeneratorParId{"signalNRpclGenerator"};         ///< PAR id for generators using signal N and Rpcl
 const std::string signalNGeneratorParIdRect{"signalNGeneratorRectangular"};  ///< PAR id for generators using signal N with rectangular diagram
 const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};     ///< PAR id for generators using signal N with fixed P
 const std::string networkParId{"Network"};                                   ///< PAR id for Network
@@ -87,6 +88,14 @@ static constexpr double pi_ = M_PI;                                   ///< PI va
 static constexpr double kGoverNullValue_ = 0.;                        ///< KGover null value
 static constexpr double kGoverDefaultValue_ = 1.;                     ///< KGover default value
 const std::string solverParFileName{"solver.par"};                    ///< name of the solver par file
+const std::string componentTransformerIdTag{"@TFO@"};                 ///< TFO special tag for component id
+const std::string seasonTag{"@SAISON@"};                              ///< Season special tag
+const double generatorRPuValue{0.0029};                               ///< value of RPu of generators
+const double generatorRhoValue{0.9535};                               ///< value of Rho of generators
+const double generatorXPuValue{0.1228};                               ///< value of XPu of generators
+const double generatorNucRPuValue{0.0026};                            ///< value of RPu of nuclear generators
+const double generatorNucRhoValue{0.9235};                            ///< value of Rho of nuclear generators
+const double generatorNucXPuValue{0.1426};                            ///< value of XPu of nuclear generators
 
 }  // namespace constants
 }  // namespace outputs

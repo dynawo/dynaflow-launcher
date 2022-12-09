@@ -31,6 +31,12 @@
   <macroConnection id="PhaseShifterToAutomatonActivated" name2="true">
     <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger" required="true" internal="false"/>
   </macroConnection>
+  <macroConnection id="SVCToUMeasurement">
+    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu"/>
+  </macroConnection>
+  <macroConnection id="SVCToGenerator">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+  </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
     <bus voltageLevel="VL" name="1"/>
     <bus voltageLevel="VL" name="2"/>
@@ -96,5 +102,21 @@
     <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_VL661"/>
     <macroConnect macroConnection="PhaseShifterToTap" id="TAP_VL661"/>
     <macroConnect macroConnection="PhaseShifterrToAutomatonActivated" id="AUTOMATON_EXISTS_VL661"/>
+  </dynamicAutomaton>
+  <singleAssociation id="MESURE_MODELE_VL">
+    <bus voltageLevel="VL"/>
+  </singleAssociation>
+  <multipleAssociation id="GeneratorId">
+    <generator name="G0"/>
+    <generator name="G5"/>
+  </multipleAssociation>
+  <multipleAssociation id="GeneratorId2">
+    <generator name="G3"/>
+    <generator name="G4"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="GeneratorAutomaton" lib="libdummyLib">
+    <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GeneratorId"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GeneratorId2"/>
   </dynamicAutomaton>
 </assembling>

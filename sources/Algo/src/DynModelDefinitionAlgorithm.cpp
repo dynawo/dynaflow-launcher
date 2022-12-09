@@ -77,6 +77,9 @@ DynModelAlgorithm::extractMultiAssociationInfo(const inputs::AssemblingDataBase:
     const auto& vlid = multiAssoc.shunt->voltageLevel;
     macroConnectByVlForShuntsId_[vlid].push_back(connection);
   }
+  for (const auto& generator : multiAssoc.generators) {
+    macroConnectByGeneratorName_[generator.name].push_back(connection);
+  }
 }
 
 void
@@ -222,6 +225,18 @@ DynModelAlgorithm::connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tf
 }
 
 void
+DynModelAlgorithm::connectMacroConnectionForGenerator(const inputs::Generator& generator) {
+  const auto& macroConnections = macroConnectByGeneratorName_.at(generator.id);
+  for (const auto& macroConnection : macroConnections) {
+    dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
+    const auto& automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    addMacroConnectionToModelDefinitions(
+        automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::GENERATOR,
+                                                           generator.id));
+  }
+}
+
+void
 DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingDataBase::DynamicAutomaton& automaton,
                                                         const DynamicModelDefinition::MacroConnection& macroConnection) {
   if (dynamicModels_.models.count(automaton.id) == 0) {
@@ -254,6 +269,11 @@ DynModelAlgorithm::operator()(const NodePtr& node) {
     auto tfo = tfo_ptr.lock();
     if (macroConnectByTfoName_.count(tfo->id) > 0) {
       connectMacroConnectionForTfo(tfo);
+    }
+  }
+  for (const auto& gen : node->generators) {
+    if (macroConnectByGeneratorName_.count(gen.id) > 0) {
+      connectMacroConnectionForGenerator(gen);
     }
   }
 }

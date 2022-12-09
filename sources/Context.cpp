@@ -97,9 +97,6 @@ Context::process() {
   // Process all algorithms on nodes
   networkManager_.walkNodes();
 
-  // Check models generated with algorithm
-  filterPartiallyConnectedDynamicModels();
-
   LOG(info, SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_));
 
   if (!checkConnexity()) {
@@ -117,11 +114,11 @@ Context::process() {
   }
 
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesWithDynamicModel_, networkManager_.getMapBusGeneratorsBusId(),
-                                                                 config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
+                                                                 dynamicDataBaseManager_, config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
                                                             networkManager_.getMapBusVSCConvertersBusId()));
-  if (config_.isSVCRegulationOn()) {
+  if (config_.isSVarCRegulationOn()) {
     onNodeOnMainConnexComponent(algo::StaticVarCompensatorAlgorithm(staticVarCompensators_));
   }
 
@@ -133,6 +130,9 @@ Context::process() {
     }
   }
   walkNodesMain();
+
+  // Check models generated with algorithm
+  filterPartiallyConnectedDynamicModels();
 
   // the validation of contingencies on algorithm definitions must be done after walking all nodes
   // on main topological island, because this is where we fill the algorithms definitions
@@ -160,7 +160,7 @@ Context::filterPartiallyConnectedDynamicModels() {
       continue;
     }
 
-    const auto& modelDef = dynamicModels_.models.at(automaton.second.id);
+    auto modelDef = dynamicModels_.models.at(automaton.second.id);
     for (const auto& macroConnect : automaton.second.macroConnects) {
       auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
@@ -169,6 +169,27 @@ Context::filterPartiallyConnectedDynamicModels() {
         LOG(debug, ModelPartiallyConnected, automaton.second.id);
         dynamicModels_.models.erase(automaton.second.id);
         break;  // element doesn't exist any more, go to next automaton
+      }
+    }
+
+    // Filtering generators with default model from SVCs
+    if (automaton.second.lib == dfl::common::constants::svcModelName) {
+      std::vector<algo::DynamicModelDefinition::MacroConnection> toRemove;
+      for (const auto& connection : modelDef.nodeConnections) {
+        auto genId = connection.connectedElementId;
+        auto found = std::find_if(generators_.begin(), generators_.end(),
+                                  [&genId](const algo::GeneratorDefinition& genDefinition) { return genDefinition.id == genId; });
+        if (found != generators_.end() && found->isNetwork()) {
+          toRemove.push_back(connection);
+        }
+      }
+      for (const auto& connection : toRemove) {
+        LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
+        dynamicModels_.models.find(automaton.second.id)->second.nodeConnections.erase(connection);
+      }
+      if (modelDef.nodeConnections.size() == 1) {
+        LOG(debug, EmptySVC, automaton.second.id);
+        dynamicModels_.models.erase(automaton.second.id);
       }
     }
   }
@@ -205,23 +226,13 @@ Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_,
-                                                      config_,
-                                                      parOutput,
-                                                      generators_,
-                                                      hvdcLineDefinitions_,
-                                                      busesWithDynamicModel_,
-                                                      dynamicDataBaseManager_,
-                                                      counters_,
-                                                      dynamicModels_,
-                                                      linesById_,
-                                                      staticVarCompensators_,
-                                                      loads_));
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_, parOutput, generators_, hvdcLineDefinitions_, busesWithDynamicModel_,
+                                                     dynamicDataBaseManager_, counters_, dynamicModels_, linesById_, staticVarCompensators_, loads_));
   parWriter.write();
 
   // Diagram
   file::path diagramDirectory(config_.outputDir());
-  diagramDirectory.append(basename_ + outputs::constants::diagramDirectorySuffix);
+  diagramDirectory.append(basename_ + common::constants::diagramDirectorySuffix);
   outputs::Diagram diagramWriter(outputs::Diagram::DiagramDefinition(basename_, diagramDirectory.generic_string(), generators_, hvdcLineDefinitions_));
   diagramWriter.write();
 
@@ -368,7 +379,7 @@ Context::exportResults(bool simulationOk) {
     resultsTree.put("version", "1.2");
     resultsTree.put("isOK", simulationOk);
     resultsTree.put("metrics.useInfiniteReactiveLimits", config_.useInfiniteReactiveLimits());
-    resultsTree.put("metrics.isSVCRegulationOn", config_.isSVCRegulationOn());
+    resultsTree.put("metrics.isSVCRegulationOn", config_.isSVarCRegulationOn());
     resultsTree.put("metrics.isShuntRegulationOn", config_.isShuntRegulationOn());
     resultsTree.put("metrics.isAutomaticSlackBusOn", config_.isAutomaticSlackBusOn());
     componentResultsChild.put("connectedComponentNum", 0);

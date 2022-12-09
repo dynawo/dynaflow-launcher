@@ -17,9 +17,10 @@
 
 #pragma once
 
-#include "Constants.h"
 #include "DynModelDefinitionAlgorithm.h"
+#include "GeneratorDefinitionAlgorithm.h"
 #include "LineDefinitionAlgorithm.h"
+#include "OutputsConstants.h"
 #include "ShuntDefinitionAlgorithm.h"
 
 #include <PARParametersSetCollection.h>
@@ -37,8 +38,9 @@ class ParDynModel {
    * @brief Construct a new Par Dyn Model object
    *
    * @param dynamicModelsDefinitions reference to the list of defined dynamic models definitions
+   * @param gens generators definition coming from algorithms
    */
-  explicit ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions) : dynamicModelsDefinitions_(dynamicModelsDefinitions) {}
+  explicit ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition>& gens);
 
   /**
    * @brief enrich the parameter set collection for defined dynamic models
@@ -78,6 +80,15 @@ class ParDynModel {
                                                                              const algo::LinesByIdDefinitions& linesById);
 
   /**
+   * @brief Write setting set for secondary voltage controller models
+   *
+   * @param paramSet the parameter set to update
+   * @param automaton the current secondary voltage control automaton
+   *
+   */
+  void writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet, const inputs::AssemblingDataBase::DynamicAutomaton& automaton);
+
+  /**
    * @brief Retrieve active season
    *
    * @param ref the Ref XML element referencing the active season
@@ -90,9 +101,9 @@ class ParDynModel {
                                                const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
-  const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;  ///< list of defined dynamic models
-  const std::string componentTransformerIdTag_{"@TFO@"};           ///< TFO special tag for component id
-  const std::string seasonTag_{"@SAISON@"};                        ///< Season special tag
+  const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;       ///< list of defined dynamic models
+  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;  ///< list of generator definitions
+  std::unordered_map<std::string, size_t> generatorIdToIndex_;          ///< map of generator ids to their index
 };
 
 }  // namespace outputs

@@ -18,8 +18,8 @@
 #pragma once
 
 #include "Configuration.h"
-#include "Constants.h"
 #include "GeneratorDefinitionAlgorithm.h"
+#include "OutputsConstants.h"
 
 #include <DYNCommon.h>
 #include <PARParametersSetCollection.h>
@@ -52,10 +52,11 @@ class ParGenerator {
    * @param dirname the dirname of the output PAR file
    * @param busesWithDynamicModel map of bus ids to a generator that regulates them
    * @param startingPointMode starting point mode
+   * @param dynamicDataBaseManager the dynamic DB manager to use
    */
   void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, ActivePowerCompensation activePowerCompensation,
              const std::string& basename, const boost::filesystem::path& dirname, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
-             StartingPointMode startingPointMode);
+             StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   /**
@@ -108,10 +109,19 @@ class ParGenerator {
   /**
    * @brief Update parameter set with transformer parameters
    *
-   * @param generator the generator definition to use
    * @param set the parameter set to update
+   * @param isNuclear true if the energy source of the generator is nuclear
    */
-  void updateTransfoParameters(const algo::GeneratorDefinition& generator, boost::shared_ptr<parameters::ParametersSet> set);
+  void updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear);
+
+  /**
+   * @brief Update parameter set with Rpcl parameters
+   *
+   * @param set the parameter set to update
+   * @param genId the current generator id
+   * @param databaseSetting the settings found in setting file
+   */
+  void updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string& genId, const inputs::SettingDataBase::Set& databaseSetting);
 
   /**
    * @brief Write generator parameter set

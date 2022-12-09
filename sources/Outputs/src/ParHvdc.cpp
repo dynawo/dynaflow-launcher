@@ -10,6 +10,7 @@
 
 #include "ParHvdc.h"
 
+#include "Constants.h"
 #include "ParCommon.h"
 
 namespace dfl {
@@ -34,7 +35,7 @@ boost::shared_ptr<parameters::ParametersSet>
 ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string& basename, const boost::filesystem::path& dirname,
                        dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   auto dirnameDiagram = dirname;
-  dirnameDiagram.append(basename + constants::diagramDirectorySuffix);
+  dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
   // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable
   auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram](boost::shared_ptr<parameters::ParametersSet> set,

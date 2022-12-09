@@ -18,6 +18,7 @@
 #pragma once
 
 #include "AlgorithmsResults.h"
+#include "DynamicDataBaseManager.h"
 #include "NetworkManager.h"
 #include "Node.h"
 
@@ -34,21 +35,28 @@ class GeneratorDefinition {
  public:
   /**
    * @brief Generator model type
+   * RPCL = reactive power control loop for connection to the secondary voltage control
    */
   enum class ModelType {
-    SIGNALN_INFINITE = 0,        ///< Use signalN generator model with infinite diagram
-    SIGNALN_RECTANGULAR,         ///< Use signalN generator model with rectangular diagram
-    DIAGRAM_PQ_SIGNALN,          ///< Use signalN generator model
-    SIGNALN_TFO_INFINITE,        ///< Use signalN generator model with infinite diagram and transformer
-    SIGNALN_TFO_RECTANGULAR,     ///< Use signalN generator model with rectangular diagram and transformer
-    DIAGRAM_PQ_TFO_SIGNALN,      ///< Use signalN generator model and transformer
-    REMOTE_SIGNALN_INFINITE,     ///< Use signalN generator regulating remote nodes with infinite diagram
-    REMOTE_SIGNALN_RECTANGULAR,  ///< Use signalN generator regulating remote nodes with rectangular diagram
-    REMOTE_DIAGRAM_PQ_SIGNALN,   ///< Use signalN generator regulating remote nodes
-    PROP_SIGNALN_INFINITE,       ///< Use signalN generator sharing node regulation with infinite diagram
-    PROP_SIGNALN_RECTANGULAR,    ///< Use signalN generator sharing node regulation with rectangular diagram
-    PROP_DIAGRAM_PQ_SIGNALN,     ///< Use Use signalN generator sharing node regulation
-    NETWORK                      ///< Use network cpp model
+    SIGNALN_INFINITE = 0,          ///< Use signalN generator model with infinite diagram
+    SIGNALN_RECTANGULAR,           ///< Use signalN generator model with rectangular diagram
+    DIAGRAM_PQ_SIGNALN,            ///< Use signalN generator model
+    SIGNALN_RPCL_INFINITE,         ///< Use signalN generator model with infinite diagram and RPCL
+    SIGNALN_RPCL_RECTANGULAR,      ///< Use signalN generator model with rectangular diagram and RPCL
+    DIAGRAM_PQ_RPCL_SIGNALN,       ///< Use signalN generator model and RPCL
+    SIGNALN_TFO_INFINITE,          ///< Use signalN generator model with infinite diagram and transformer
+    SIGNALN_TFO_RECTANGULAR,       ///< Use signalN generator model with rectangular diagram and transformer
+    DIAGRAM_PQ_TFO_SIGNALN,        ///< Use signalN generator model and transformer
+    SIGNALN_TFO_RPCL_INFINITE,     ///< Use signalN generator model with infinite diagram, transformer and RPCL
+    SIGNALN_TFO_RPCL_RECTANGULAR,  ///< Use signalN generator model with rectangular diagram, transformer and RPCL
+    DIAGRAM_PQ_TFO_RPCL_SIGNALN,   ///< Use signalN generator model, transformer and RPCL
+    REMOTE_SIGNALN_INFINITE,       ///< Use signalN generator regulating remote nodes with infinite diagram
+    REMOTE_SIGNALN_RECTANGULAR,    ///< Use signalN generator regulating remote nodes with rectangular diagram
+    REMOTE_DIAGRAM_PQ_SIGNALN,     ///< Use signalN generator regulating remote nodes
+    PROP_SIGNALN_INFINITE,         ///< Use signalN generator sharing node regulation with infinite diagram
+    PROP_SIGNALN_RECTANGULAR,      ///< Use signalN generator sharing node regulation with rectangular diagram
+    PROP_DIAGRAM_PQ_SIGNALN,       ///< Use Use signalN generator sharing node regulation
+    NETWORK                        ///< Use network cpp model
   };
   using ReactiveCurvePoint = inputs::Generator::ReactiveCurvePoint;  ///< Alias for reactive curve point
   using BusId = std::string;                                         ///< alias of BusId
@@ -60,7 +68,8 @@ class GeneratorDefinition {
    */
   bool isUsingDiagram() const {
     return model != ModelType::SIGNALN_INFINITE && model != ModelType::REMOTE_SIGNALN_INFINITE && model != ModelType::PROP_SIGNALN_INFINITE &&
-           model != ModelType::SIGNALN_TFO_INFINITE && model != ModelType::NETWORK;
+           model != ModelType::SIGNALN_TFO_INFINITE && model != ModelType::SIGNALN_RPCL_INFINITE && model != ModelType::SIGNALN_TFO_RPCL_INFINITE &&
+           model != ModelType::NETWORK;
   }
   /**
    * @brief test is the generator has a rectangular diagram
@@ -69,7 +78,7 @@ class GeneratorDefinition {
    */
   bool isUsingRectangularDiagram() const {
     return model == ModelType::SIGNALN_RECTANGULAR || model == ModelType::SIGNALN_TFO_RECTANGULAR || model == ModelType::REMOTE_SIGNALN_RECTANGULAR ||
-           model == ModelType::PROP_SIGNALN_RECTANGULAR;
+           model == ModelType::PROP_SIGNALN_RECTANGULAR || model == ModelType::SIGNALN_TFO_RPCL_RECTANGULAR || model == ModelType::SIGNALN_RPCL_RECTANGULAR;
   }
   /**
    * @brief test is the generator has a tranformer
@@ -77,7 +86,17 @@ class GeneratorDefinition {
    * @return @b true if the generator has a tranformer, @b false otherwise
    */
   bool hasTransformer() const {
-    return model == ModelType::SIGNALN_TFO_INFINITE || model == ModelType::SIGNALN_TFO_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_SIGNALN;
+    return model == ModelType::SIGNALN_TFO_INFINITE || model == ModelType::SIGNALN_TFO_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_SIGNALN ||
+           model == ModelType::SIGNALN_TFO_RPCL_INFINITE || model == ModelType::SIGNALN_TFO_RPCL_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN;
+  }
+  /**
+   * @brief test is the generator has a reactive power control loop for connection to the secondary voltage control
+   *
+   * @return @b true if the generator has a reactive power control loop for connection to the secondary voltage control, @b false otherwise
+   */
+  bool hasRpcl() const {
+    return model == ModelType::SIGNALN_RPCL_INFINITE || model == ModelType::SIGNALN_RPCL_RECTANGULAR || model == ModelType::DIAGRAM_PQ_RPCL_SIGNALN ||
+           model == ModelType::SIGNALN_TFO_RPCL_INFINITE || model == ModelType::SIGNALN_TFO_RPCL_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN;
   }
   /**
    * @brief determines if the generator model type is network
@@ -110,10 +129,11 @@ class GeneratorDefinition {
    * @param pmax maximum active power for the generator
    * @param targetP target active power of the generator
    * @param regulatedBusId the Bus Id this generator is regulating
+   * @param isNuclear true if the energy source of this generator is nuclear
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
                       const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP,
-                      const BusId& regulatedBusId) :
+                      const BusId& regulatedBusId, bool isNuclear = false) :
       id{genId},
       model{type},
       nodeId{nodeId},
@@ -123,7 +143,8 @@ class GeneratorDefinition {
       pmin{pmin},
       pmax{pmax},
       targetP{targetP},
-      regulatedBusId{regulatedBusId} {}
+      regulatedBusId{regulatedBusId},
+      isNuclear{isNuclear} {}
 
   inputs::Generator::GeneratorId id;       ///< generator id
   ModelType model;                         ///< model
@@ -135,6 +156,7 @@ class GeneratorDefinition {
   double pmax;                             ///< maximum active power
   double targetP;                          ///< target active power of the generator
   const BusId regulatedBusId;              ///< regulated Bus Id
+  const bool isNuclear;                    ///< true if the energy source of this generator is nuclear
 };
 
 /**
@@ -154,11 +176,12 @@ class GeneratorDefinitionAlgorithm {
    * @param gens generators list to update
    * @param busesWithDynamicModel map of bus ids to a generator that regulates them
    * @param busMap mapping of busId and the number of generators that regulates them
+   * @param manager the dynamic data base manager to use
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
    * @param tfoVoltageLevel maximum voltage level for which we assume that generator's transformers are already described in the static description
    */
   GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel, const inputs::NetworkManager::BusMapRegulating& busMap,
-                               bool infinitereactivelimits, double tfoVoltageLevel);
+                               const inputs::DynamicDataBaseManager& manager, bool infinitereactivelimits, double tfoVoltageLevel);
 
   /**
    * @brief Perform algorithm
@@ -216,8 +239,9 @@ class GeneratorDefinitionAlgorithm {
   Generators& generators_;                                  ///< the generators list to update
   BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
   const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
+  std::unordered_set<std::string> generatorsInSVC;          ///< If a generator id is in this set then it belongs to a secondary voltage control area
   bool useInfiniteReactivelimits_;                          ///< determine if infinite reactive limits are used,
-  double tfoVoltageLevel_;                                  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
+  double tfoVoltageLevel_;  ///< Maximum voltage level for which we assume that generator's transformers are already described in the static description
 };
 }  // namespace algo
 }  // namespace dfl

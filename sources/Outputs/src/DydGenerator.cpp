@@ -10,8 +10,8 @@
 
 #include "DydGenerator.h"
 
-#include "Constants.h"
 #include "DydCommon.h"
+#include "OutputsConstants.h"
 #include "ParCommon.h"
 
 #include <DYDMacroConnectFactory.h>
@@ -26,9 +26,15 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> DydG
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "GeneratorPVSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "GeneratorPVDiagramPQSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "GeneratorPVRpclSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR, "GeneratorPVRpclSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "GeneratorPVDiagramPQRpclSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "GeneratorPVTfoSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "GeneratorPVTfoSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "GeneratorPVTfoDiagramPQSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "GeneratorPVTfoRpclSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR, "GeneratorPVTfoRpclSignalN"),
+    std::make_pair(algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "GeneratorPVTfoDiagramPQRpclSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "GeneratorPVRemoteSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "GeneratorPVRemoteSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "GeneratorPVRemoteDiagramPQSignalN"),

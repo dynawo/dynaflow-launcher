@@ -1,0 +1,9 @@
+{
+  "dfl-config": {
+    "OutputDir": "resultsTestsTmp/launch_svc_tfo_infinite",
+    "SettingPath": "res/setting_svc.xml",
+    "AssemblingPath": "res/assembling_svc.xml",
+    "InfiniteReactiveLimits": true,
+    "TfoVoltageLevel": 0
+  }
+}

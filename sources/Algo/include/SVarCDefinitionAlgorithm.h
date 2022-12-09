@@ -47,7 +47,7 @@ class StaticVarCompensatorDefinition {
   /**
    * @brief Constructor
    *
-   * @param svcId the id of the SVarC
+   * @param sVarCId the id of the SVarC
    * @param modelType SVarC model type
    * @param bMin the minimum susceptance value for the variable susceptance of the SVarC
    * @param bMax the maximum susceptance value for the variable susceptance of the SVarC
@@ -61,10 +61,10 @@ class StaticVarCompensatorDefinition {
    * @param slope the slope (kV/MVar) of the SVarC voltage regulation
    * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
-  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& svcId, ModelType modelType, const double bMin, const double bMax,
+  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& sVarCId, ModelType modelType, const double bMin, const double bMax,
                                  const double voltageSetPoint, const double UNom, const double UMinActivation, const double UMaxActivation,
                                  const double USetPointMin, const double USetPointMax, const double b0, const double slope, const double UNomRemote) :
-      id{svcId},
+      id{sVarCId},
       model{modelType},
       bMin{bMin},
       bMax{bMax},
@@ -79,7 +79,7 @@ class StaticVarCompensatorDefinition {
       UNomRemote{UNomRemote} {}
 
   /**
-   * @brief determines if the svc model type is network
+   * @brief determines if the SVarC model type is network
    *
    * @return true when model type is network
    */
@@ -105,8 +105,8 @@ class StaticVarCompensatorDefinition {
 /// @brief Static var compensator algorithm
 class StaticVarCompensatorAlgorithm {
  public:
-  using SVarCDefinitions = std::vector<StaticVarCompensatorDefinition>;  ///< Alias for vector of SVC definitions
-  using ModelType = StaticVarCompensatorDefinition::ModelType;           ///< Alias for SVC model type
+  using SVarCDefinitions = std::vector<StaticVarCompensatorDefinition>;  ///< Alias for vector of SVarC definitions
+  using ModelType = StaticVarCompensatorDefinition::ModelType;           ///< Alias for SVarC model type
 
   /**
    * @brief Constructor
