@@ -83,16 +83,16 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_TRUE(multipleAssoc.shunt);
   ASSERT_EQ(multipleAssoc.shunt->voltageLevel, "VL4");
 
-  multipleAssoc = assembling.getMultipleAssociation("GeneratorId");
-  ASSERT_EQ(multipleAssoc.id, "GeneratorId");
-  ASSERT_EQ(multipleAssoc.generators.size(), 2);
-  ASSERT_EQ(multipleAssoc.generators[0].name, "GeneratorId1");
-  ASSERT_EQ(multipleAssoc.generators[1].name, "GeneratorId_1");
-  multipleAssoc = assembling.getMultipleAssociation("GeneratorId2");
-  ASSERT_EQ(multipleAssoc.id, "GeneratorId2");
-  ASSERT_EQ(multipleAssoc.generators.size(), 2);
-  ASSERT_EQ(multipleAssoc.generators[0].name, "GeneratorId2");
-  ASSERT_EQ(multipleAssoc.generators[1].name, "GeneratorId_2");
+  singleAssoc = assembling.getSingleAssociation("GeneratorId");
+  ASSERT_EQ(singleAssoc.id, "GeneratorId");
+  ASSERT_EQ(singleAssoc.generators.size(), 2);
+  ASSERT_EQ(singleAssoc.generators[0].name, "GeneratorId1");
+  ASSERT_EQ(singleAssoc.generators[1].name, "GeneratorId_1");
+  singleAssoc = assembling.getSingleAssociation("GeneratorId2");
+  ASSERT_EQ(singleAssoc.id, "GeneratorId2");
+  ASSERT_EQ(singleAssoc.generators.size(), 2);
+  ASSERT_EQ(singleAssoc.generators[0].name, "GeneratorId2");
+  ASSERT_EQ(singleAssoc.generators[1].name, "GeneratorId_2");
 
   const auto& dynamicAutomatons = assembling.dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 3);

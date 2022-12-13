@@ -96,19 +96,19 @@ class AssemblingDataBase {
    * @brief Single association XML element
    */
   struct SingleAssociation {
-    std::string id;              ///< unique association id
-    boost::optional<Bus> bus;    ///< bus of the association
-    boost::optional<Tfo> tfo;    ///< transformer of the association
-    boost::optional<Line> line;  ///< line of the association
+    std::string id;                     ///< unique association id
+    boost::optional<Bus> bus;           ///< bus of the association
+    boost::optional<Tfo> tfo;           ///< transformer of the association
+    boost::optional<Line> line;         ///< line of the association
+    std::vector<Generator> generators;  ///< List of generators
   };
 
   /**
    * @brief Multiple association XML element
    */
   struct MultipleAssociation {
-    std::string id;                     ///< unique association id
-    boost::optional<Shunt> shunt;       ///< Shunt of the association
-    std::vector<Generator> generators;  ///< List of generators
+    std::string id;                ///< unique association id
+    boost::optional<Shunt> shunt;  ///< Shunt of the association
   };
 
   /**
@@ -254,9 +254,10 @@ class AssemblingDataBase {
 
       boost::optional<AssemblingDataBase::SingleAssociation> currentSingleAssociation;  ///< current single association
 
-      BusHandler busHandler;    ///< bus element handler
-      LineHandler lineHandler;  ///< line element handler
-      TfoHandler tfoHandler;    ///< transformer element handler
+      BusHandler busHandler;              ///< bus element handler
+      LineHandler lineHandler;            ///< line element handler
+      TfoHandler tfoHandler;              ///< transformer element handler
+      GeneratorHandler generatorHandler;  ///< generator element handler
     };
 
     /**
@@ -271,8 +272,7 @@ class AssemblingDataBase {
 
       boost::optional<AssemblingDataBase::MultipleAssociation> currentMultipleAssociation;  ///< current multiple association element
 
-      ShuntHandler shuntHandler;          ///< shunt element handler
-      GeneratorHandler generatorHandler;  ///< generator element handler
+      ShuntHandler shuntHandler;  ///< shunt element handler
     };
 
     /**

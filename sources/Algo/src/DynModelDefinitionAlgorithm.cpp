@@ -77,9 +77,6 @@ DynModelAlgorithm::extractMultiAssociationInfo(const inputs::AssemblingDataBase:
     const auto& vlid = multiAssoc.shunt->voltageLevel;
     macroConnectByVlForShuntsId_[vlid].push_back(connection);
   }
-  for (const auto& generator : multiAssoc.generators) {
-    macroConnectByGeneratorName_[generator.name].push_back(connection);
-  }
 }
 
 void
@@ -87,17 +84,15 @@ DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingDataBase
                                                 const inputs::AssemblingDataBase::MacroConnect& macro) {
   MacroConnect connection(automaton.id, macro.macroConnection);
   auto& singleAssoc = manager_.assembling().getSingleAssociation(macro.id);
+  for (const auto& generator : singleAssoc.generators) {
+    macroConnectByGeneratorName_[generator.name].push_back(connection);
+  }
   if (singleAssoc.bus) {
     macroConnectByVlForBusesId_[singleAssoc.bus->voltageLevel].insert(connection);
   } else if (singleAssoc.line) {
     macroConnectByLineName_[singleAssoc.line->name].push_back(connection);
   } else if (singleAssoc.tfo) {
     macroConnectByTfoName_[singleAssoc.tfo->name].push_back(connection);
-  } else {
-// Cannot happen if xml file is formed correctly according to its XSD
-#if _DEBUG_
-    assert(false);
-#endif
   }
 }
 

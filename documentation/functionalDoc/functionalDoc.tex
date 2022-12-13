@@ -388,34 +388,34 @@ To define a connection to a transformer, a tfo singleAssociation is used:
 
 The association above will define a connection to the transformer (two windings or three windings) named TransformerId in the IIDM. \\
 
-To define a connection to a shunt compensator, a shunt multiAssociation is used:
-
- \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-<assembling>
-...
-  <singleAssociation id="MyAssoc">
-    <shunt voltageLevel="VoltageLevelId"/>
-  </singleAssociation>
-...
-</assembling>
-\end{lstlisting}
-
-The association above will define a connection to all the shunts compensator from the voltage level named VoltageLevelId in the IIDM. \\
-
-To define a connection to a generator, a generator multiAssociation is used:
+To define a connection to a generator, a generator singleAssociation is used:
 
  \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
 <assembling>
 ...
   <singleAssociation id="MyAssoc">
     <generator name="GeneratorId"/>
-    <generator name="GeneratorId_Alt"/>
+    <generator name="GeneratorId_AlternativeName"/>
   </singleAssociation>
 ...
 </assembling>
 \end{lstlisting}
 
 The association above will define a connection to the first generator found in the IIDM based on the list. \\
+
+To define a connection to a set of shunt compensators, a shunt multiAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <multiAssociation id="MyAssoc">
+    <shunt voltageLevel="VoltageLevelId"/>
+  </multiAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to \textbf{all} the shunts compensator from the voltage level named VoltageLevelId in the IIDM. \\
 
 If we complete our current example with the following associations we will end up with the equivalent connections in the dyd file of the \Dynawo simulation:
  \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
@@ -483,12 +483,12 @@ An example is given below.
     <bus voltageLevel="_BUS____1_VL"/>
   </singleAssociation>
 
-  <multipleAssociation id="GEN1">
+  <singleAssociation id="GEN1">
     <generator name="_GEN____1_SM"/>
-  </multipleAssociation>
-  <multipleAssociation id="GEN2">
+  </singleAssociation>
+  <singleAssociation id="GEN2">
     <generator name="_GEN____2_SM"/>
-  </multipleAssociation>
+  </singleAssociation>
 
   <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
