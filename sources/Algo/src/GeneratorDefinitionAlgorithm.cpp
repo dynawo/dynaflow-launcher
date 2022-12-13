@@ -29,8 +29,8 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
   for (const auto& automaton : manager.assembling().dynamicAutomatons()) {
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       for (const auto& macroConn : automaton.second.macroConnects) {
-        if (manager.assembling().isMultipleAssociation(macroConn.id)) {
-          const auto& assoc = manager.assembling().getMultipleAssociation(macroConn.id);
+        if (manager.assembling().isSingleAssociation(macroConn.id)) {
+          const auto& assoc = manager.assembling().getSingleAssociation(macroConn.id);
           for (const auto& generator : assoc.generators) {
             generatorsInSVC.insert(generator.name);
           }

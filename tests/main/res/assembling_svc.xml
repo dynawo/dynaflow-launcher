@@ -9,12 +9,12 @@
   <singleAssociation id="UMeasurement">
     <bus voltageLevel="_BUS____1_VL"/>
   </singleAssociation>
-  <multipleAssociation id="GEN1">
+  <singleAssociation id="GEN1">
     <generator name="_GEN____1_SM"/>
-  </multipleAssociation>
-  <multipleAssociation id="GEN2">
+  </singleAssociation>
+  <singleAssociation id="GEN2">
     <generator name="_GEN____2_SM"/>
-  </multipleAssociation>
+  </singleAssociation>
   <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
     <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>

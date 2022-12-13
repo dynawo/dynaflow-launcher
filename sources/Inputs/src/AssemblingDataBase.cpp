@@ -216,10 +216,12 @@ AssemblingDataBase::AssemblingXmlDocument::MacroConnectionHandler::MacroConnecti
 AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssociationHandler(const elementName_type& root) :
     busHandler(parser::ElementName(ns, "bus")),
     lineHandler(parser::ElementName(ns, "line")),
-    tfoHandler(parser::ElementName(ns, "tfo")) {
+    tfoHandler(parser::ElementName(ns, "tfo")),
+    generatorHandler(parser::ElementName(ns, "generator")) {
   onElement(root + ns("bus"), busHandler);
   onElement(root + ns("line"), lineHandler);
   onElement(root + ns("tfo"), tfoHandler);
+  onElement(root + ns("generator"), generatorHandler);
 
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentSingleAssociation->id = attributes["id"].as_string(); });
 
@@ -240,13 +242,17 @@ AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssoc
     currentSingleAssociation->tfo = tfoHandler.currentTfo;
     tfoHandler.currentTfo.reset();
   });
+
+  generatorHandler.onStart([this]() { generatorHandler.currentGenerator = AssemblingDataBase::Generator(); });
+  generatorHandler.onEnd([this]() {
+    currentSingleAssociation->generators.push_back(*generatorHandler.currentGenerator);
+    generatorHandler.currentGenerator.reset();
+  });
 }
 
 AssemblingDataBase::AssemblingXmlDocument::MultipleAssociationHandler::MultipleAssociationHandler(const elementName_type& root) :
-    shuntHandler(parser::ElementName(ns, "shunt")),
-    generatorHandler(parser::ElementName(ns, "generator")) {
+    shuntHandler(parser::ElementName(ns, "shunt")) {
   onElement(root + ns("shunt"), shuntHandler);
-  onElement(root + ns("generator"), generatorHandler);
 
   onStartElement(root,
                  [this](const parser::ElementName&, const attributes_type& attributes) { currentMultipleAssociation->id = attributes["id"].as_string(); });
@@ -255,12 +261,6 @@ AssemblingDataBase::AssemblingXmlDocument::MultipleAssociationHandler::MultipleA
   shuntHandler.onEnd([this]() {
     currentMultipleAssociation->shunt = *shuntHandler.currentShunt;
     shuntHandler.currentShunt.reset();
-  });
-
-  generatorHandler.onStart([this]() { generatorHandler.currentGenerator = AssemblingDataBase::Generator(); });
-  generatorHandler.onEnd([this]() {
-    currentMultipleAssociation->generators.push_back(*generatorHandler.currentGenerator);
-    generatorHandler.currentGenerator.reset();
   });
 }
 
