@@ -42,10 +42,7 @@ static void
 initializeDynawo(const std::string& locale) {
   DYN::IoDicos& dicos = DYN::IoDicos::instance();
   dicos.addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
-  dicos.addDico("ERROR", "DYNError", locale);
-  dicos.addDico("TIMELINE", "DYNTimeline", locale);
-  dicos.addDico("CONSTRAINT", "DYNConstraint", locale);
-  dicos.addDico("LOG", "DYNLog", locale);
+  dicos.addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"));
   dicos.addDico("DFLLOG", "DFLLog", locale);
   dicos.addDico("DFLERROR", "DFLError", locale);
 }
