@@ -69,9 +69,9 @@ getOutputDir(const boost::filesystem::path& configFilepath) {
 }
 
 static boost::shared_ptr<dfl::Context>
-buildContext(dfl::common::Options::Request request, dfl::inputs::SimulationParams const& params) {
+buildContext(dfl::inputs::SimulationParams const& params) {
   boost::filesystem::path configPath(params.runtimeConfig->configPath);
-  dfl::inputs::Configuration config(configPath, params.simulationKind, request);
+  dfl::inputs::Configuration config(configPath, params.simulationKind);
 
   dfl::Context::ContextDef def{config.getStartingPointMode(),
                                params.simulationKind,
@@ -80,7 +80,6 @@ buildContext(dfl::common::Options::Request request, dfl::inputs::SimulationParam
                                config.assemblingFilePath(),
                                params.runtimeConfig->contingenciesFilePath,
                                params.runtimeConfig->dynawoLogLevel,
-                               params.parametersDirPath,
                                params.resourcesDirPath,
                                params.locale};
 
@@ -262,7 +261,6 @@ main(int argc, char* argv[]) {
     dfl::inputs::SimulationParams params;
     params.runtimeConfig = &runtimeConfig;
     params.timeStart = timeStart;
-    params.parametersDirPath = parFilesDir;
     params.resourcesDirPath = resourcesDir;
     params.networkFilePath = runtimeConfig.networkFilePath;
     params.locale = locale;
@@ -270,7 +268,7 @@ main(int argc, char* argv[]) {
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_N || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       params.simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION;
 
-      boost::shared_ptr<dfl::Context> context = buildContext(dfl::common::Options::Request::RUN_SIMULATION_N, params);
+      boost::shared_ptr<dfl::Context> context = buildContext(params);
       execSimulation(context, params);
     }
 
@@ -282,7 +280,7 @@ main(int argc, char* argv[]) {
       if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
         params.networkFilePath = absolute("outputs/finalState/outputIIDM.xml", outputDir.string());
       }
-      boost::shared_ptr<dfl::Context> context = buildContext(dfl::common::Options::Request::RUN_SIMULATION_SA, params);
+      boost::shared_ptr<dfl::Context> context = buildContext(params);
       execSimulation(context, params);
     }
   } catch (DYN::Error& e) {
