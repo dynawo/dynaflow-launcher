@@ -40,7 +40,7 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
   }
   if (manager.assembling().isProperty(common::constants::rpcl2PropertyName)) {
     for (const auto& device : manager.assembling().getProperty(common::constants::rpcl2PropertyName).devices) {
-      for (const auto& gen : manager.assembling().getMultipleAssociation(device.id).generators) {
+      for (const auto& gen : manager.assembling().getSingleAssociation(device.id).generators) {
         auto it = generatorsInSVC.find(gen.name);
         if (it != generatorsInSVC.end())
           generatorsInSVC[gen.name] = true;

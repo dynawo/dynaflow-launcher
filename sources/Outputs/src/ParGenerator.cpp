@@ -44,7 +44,7 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
 
     if (paramSet && generator.hasRpcl()) {
       updateRpclParameters(paramSet, generator.id,
-                           dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getMultipleAssociationFromGenerator(generator.id)),
+                           dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getSingleAssociationFromGenerator(generator.id)),
                            generator.hasRpcl2());
     }
     if (paramSet && generator.hasTransformer()) {

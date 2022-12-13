@@ -370,18 +370,18 @@ class AssemblingDataBase {
   bool isSingleAssociation(const std::string& id) const;
 
   /**
+   * @brief Retrieve a single association id that contains the generator with the given name
+   * @param name generator id
+   * @returns single association id that contains the generator with the given name, empty string if not found
+   */
+  std::string getSingleAssociationFromGenerator(const std::string& name) const;
+
+  /**
    * @brief Retrieve a multiple association with its id
    * @param id multi association id
    * @returns multiple association element with the given id, throw if not found
    */
   const MultipleAssociation& getMultipleAssociation(const std::string& id) const;
-
-  /**
-   * @brief Retrieve a multiple association id that contains the generator with the given name
-   * @param name generator id
-   * @returns multiple association id that contains the generator with the given name, empty string if not found
-   */
-  std::string getMultipleAssociationFromGenerator(const std::string& name) const;
 
   /**
    * @brief test if a multiple association with the given id exists
@@ -413,12 +413,12 @@ class AssemblingDataBase {
   bool isProperty(const std::string& id) const;
 
  private:
-  std::unordered_map<std::string, MacroConnection> macroConnections_;                 ///< list of macro connections
-  std::unordered_map<std::string, SingleAssociation> singleAssociations_;             ///< list of single associations
-  std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;         ///< list of multiple associations
-  std::unordered_map<std::string, std::string> generatorIdToMultipleAssociationsId_;  ///< generator id associated to the multiple associations that contains it
-  std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                         ///< list of dynamic automatons
-  std::unordered_map<std::string, Property> properties_;                              ///< list of properties
+  std::unordered_map<std::string, MacroConnection> macroConnections_;               ///< list of macro connections
+  std::unordered_map<std::string, SingleAssociation> singleAssociations_;           ///< list of single associations
+  std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;       ///< list of multiple associations
+  std::unordered_map<std::string, std::string> generatorIdToSingleAssociationsId_;  ///< generator id associated to the single associations that contains it
+  std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                       ///< list of dynamic automatons
+  std::unordered_map<std::string, Property> properties_;                            ///< list of properties
 };
 
 }  // namespace inputs
