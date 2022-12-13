@@ -15,6 +15,9 @@
     "StartTime": 18,
     "StopTime": 101,
     "Precision": 1e-5,
-    "TimeStep": 1.7
+    "TimeStep": 1.7,
+    "sa": {
+      "TimeOfEvent": 50
+    }
   }
 }

@@ -23,6 +23,7 @@
 #include <JOBDynModelsEntryFactory.h>
 #include <JOBFinalStateEntry.h>
 #include <JOBFinalStateEntryFactory.h>
+#include <JOBInitialStateEntryFactory.h>
 #include <JOBJobEntry.h>
 #include <JOBJobEntryFactory.h>
 #include <JOBLogsEntry.h>
@@ -93,6 +94,12 @@ Job::writeModeler() const {
     auto modelsBase = job::DynModelsEntryFactory::newInstance();
     modelsBase->setDydFile(def_.baseFilename.get() + ".dyd");
     modeler->addDynModelsEntry(modelsBase);
+  }
+
+  if (!def_.configuration.initialStateFilePath().empty()) {
+    auto initialState = job::InitialStateEntryFactory::newInstance();
+    initialState->setInitialStateFile(def_.configuration.initialStateFilePath().generic_string());
+    modeler->setInitialStateEntry(initialState);
   }
 
   auto network = job::NetworkEntryFactory::newInstance();
@@ -218,6 +225,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
     formatter->startElement("dyn", "dynModels", attrs);
     attrs.clear();
     formatter->endElement();  // model
+  }
+
+  auto initialStateEntry = modeler->getInitialStateEntry();
+  if (initialStateEntry && !initialStateEntry->getInitialStateFile().empty()) {
+    attrs.add("file", initialStateEntry->getInitialStateFile());
+    formatter->startElement("dyn", "initialState", attrs);
+    attrs.clear();
+    formatter->endElement();  // initialState
   }
 
   auto pre_models = modeler->getPreCompiledModelsDirEntry();
