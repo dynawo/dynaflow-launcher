@@ -22,8 +22,7 @@ TEST(Config, Incorrect) {
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"), DYN::Error::GENERAL,
                       dfl::KeyError_t::InvalidActivePowerCompensation);
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat.json", dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS,
-                                                        dfl::common::Options::Request::RUN_SIMULATION_SA),
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat.json", dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS),
                       DYN::Error::GENERAL, dfl::KeyError_t::NoFlatStartingPointModeInSA);
 }
 
@@ -46,7 +45,7 @@ TEST(Config, Nominal) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(10, config.getStartTime());
   ASSERT_DOUBLE_EQUALS_DYNAWO(120, config.getStopTime());
   ASSERT_DOUBLE_EQUALS_DYNAWO(1e-3, config.getPrecision().value());
-  ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(10, config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.6, config.getTimeStep());
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
@@ -90,8 +89,7 @@ TEST(Config, Default) {
 }
 
 TEST(Config, ConfigN) {
-  dfl::inputs::Configuration config("res/config_N.json", dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION,
-                                    dfl::common::Options::Request::RUN_SIMULATION_N);
+  dfl::inputs::Configuration config("res/config_N.json", dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
 
   ASSERT_TRUE(config.useInfiniteReactiveLimits());
   ASSERT_EQ(config.getStartingPointMode(), dfl::inputs::Configuration::StartingPointMode::FLAT);
@@ -127,8 +125,7 @@ TEST(Config, ConfigN) {
 TEST(Config, ConfigSA) {
   std::array<std::string, 2> configFilesArray = {"res/config_SA.json", "res/config_SA_2.json"};
   for (std::string configFile : configFilesArray) {
-    dfl::inputs::Configuration config(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS,
-                                      dfl::common::Options::Request::RUN_SIMULATION_SA);
+    dfl::inputs::Configuration config(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
 
     ASSERT_TRUE(config.useInfiniteReactiveLimits());
     ASSERT_EQ(config.getStartingPointMode(), dfl::inputs::Configuration::StartingPointMode::WARM);
@@ -148,6 +145,12 @@ TEST(Config, ConfigSA) {
     ASSERT_DOUBLE_EQUALS_DYNAWO(101, config.getStopTime());
     ASSERT_DOUBLE_EQUALS_DYNAWO(1e-5, config.getPrecision().value());
     ASSERT_DOUBLE_EQUALS_DYNAWO(1.7, config.getTimeStep());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
+    if (configFile == "res/config_SA.json") {
+      ASSERT_EQ(createAbsolutePath("myInitialStatePath.dmp", prefixConfigFile), config.initialStateFilePath().generic_string());
+    } else {
+      ASSERT_TRUE(config.initialStateFilePath().empty());
+    }
 #if _DEBUG_
     ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
     ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -160,6 +163,13 @@ TEST(Config, ConfigSA) {
     ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
 #endif
   }
+}
+
+TEST(Config, ConfigSAWrongDumpState) {
+  std::string configFile = "res/config_SA_dumpState.json";
+  ASSERT_NO_THROW(dfl::inputs::Configuration config(configFile, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION));
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config2(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS), DYN::Error::GENERAL,
+                      dfl::KeyError_t::ErrorConfigFileRead);
 }
 
 TEST(Config, ChosenOutputTest) {

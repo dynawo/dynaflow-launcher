@@ -150,8 +150,7 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path& filepath, dfl::inputs::Configuration::SimulationKind simulationKind,
-                             dfl::common::Options::Request request) {
+Configuration::Configuration(const boost::filesystem::path& filepath, dfl::inputs::Configuration::SimulationKind simulationKind) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -177,7 +176,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     std::string prefixConfigFile = absolute(remove_file_name(filepath.generic_string()));
 
     bool saMode = false;
-    if (request == dfl::common::Options::Request::RUN_SIMULATION_SA)
+    if (simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
       saMode = true;
     updateStartingPointMode(config, saMode);
     updateChosenOutput(config, simulationKind, saMode);
@@ -195,7 +194,14 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     helper::updateValue(timeStep_, config, "TimeStep", saMode);
     helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode);
-    helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true);
+    if (simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
+      helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true);
+      helper::updatePathValue(initialStateFilePath_, config, "InitialStatePath", prefixConfigFile, true);
+
+      if (!initialStateFilePath_.empty() && !exists(initialStateFilePath_)) {
+        throw Error(InitialStatePathNotFound, initialStateFilePath_.generic_string());
+      }
+    }
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());
   }
@@ -204,7 +210,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     throw Error(InvalidActivePowerCompensation, filepath.generic_string());
   }
 
-  if (startingPointMode_ == Configuration::StartingPointMode::FLAT && request == dfl::common::Options::Request::RUN_SIMULATION_SA) {
+  if (startingPointMode_ == Configuration::StartingPointMode::FLAT && simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
     throw Error(NoFlatStartingPointModeInSA);
   }
 }

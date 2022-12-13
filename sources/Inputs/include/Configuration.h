@@ -16,8 +16,6 @@
  */
 #pragma once
 
-#include "Options.h"
-
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -45,11 +43,9 @@ class Configuration {
    *
    * @param filepath the configuration file to use
    * @param simulationKind the simulation kind (Steady state or Security analysis)
-   * @param request is the simulation in N or SA ?
    */
   explicit Configuration(const boost::filesystem::path& filepath,
-                         dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION,
-                         dfl::common::Options::Request request = dfl::common::Options::Request::RUN_SIMULATION_N);
+                         dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
   /**
    * @brief determines if we use infinite reactive limits
    *
@@ -193,6 +189,13 @@ class Configuration {
   }
 
   /**
+   * @brief Retrieves the initial state file path
+   * @returns the initial state file path
+   */
+  const boost::filesystem::path& initialStateFilePath() const {
+    return initialStateFilePath_;
+  }
+  /**
    * @brief Chosen outputs
    *
    * enum that gathers all possible chosen outputs
@@ -250,6 +253,7 @@ class Configuration {
   */
   void updateChosenOutput(const boost::property_tree::ptree& tree, dfl::inputs::Configuration::SimulationKind simulationKind, const bool saMode);
 
+  // General
   StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
   bool isSVarCRegulationOn_ = true;                                                  ///< StaticVarCompensator regulation on
@@ -264,9 +268,12 @@ class Configuration {
   double stopTime_ = 100.;                                                           ///< stop time for simulation
   boost::optional<double> precision_;                                                ///< Precision of the simulation
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
-  double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
   double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
+
+  // SA
+  double timeOfEvent_ = 10.;                      ///< time for contingency simulation (security analysis only)
+  boost::filesystem::path initialStateFilePath_;  ///< initial state file path
 };
 
 }  // namespace inputs
