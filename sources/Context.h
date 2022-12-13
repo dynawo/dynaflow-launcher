@@ -62,7 +62,6 @@ class Context {
     boost::filesystem::path assemblingFilePath;                       ///< assembling file path for dynamic data base
     boost::filesystem::path contingenciesFilePath;                    ///< contigencies file path for Security Analysis simulation
     std::string dynawoLogLevel;                                       ///< string representation of the dynawo log level
-    boost::filesystem::path parFileDir;                               ///< parameter file directory
     boost::filesystem::path dynawoResDir;                             ///< DYNAWO resources
     std::string locale;                                               ///< localization
   };

@@ -38,7 +38,6 @@ struct SimulationParams {
   std::string locale;                                               ///< locale
   boost::filesystem::path networkFilePath;                          ///< path to network file
   boost::filesystem::path resourcesDirPath;                         ///< path to resource directory
-  boost::filesystem::path parametersDirPath;                        ///< path to parameters directory
   dfl::inputs::Configuration::SimulationKind simulationKind;        ///< type of simulation
   std::chrono::time_point<std::chrono::steady_clock> timeStart;     ///< time of the start of the simulation
   dfl::common::Options::RuntimeConfiguration const* runtimeConfig;  ///< runtime configuration of the program
