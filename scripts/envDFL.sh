@@ -26,7 +26,7 @@ export_var_env() {
     local value="${var#*=}"
 
     if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
-        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" -a "$name" != "DYNAWO_DDB_DIR" -a "$name" != "DYNAWO_PYTHON_COMMAND" ]; then
+        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" -a "$name" != "DYNAWO_DDB_DIR" -a "$name" != "DYNAWO_PYTHON_COMMAND" -a "$name" != "DYNAWO_DICTIONARIES" ]; then
             error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
         fi
     fi
@@ -235,6 +235,7 @@ set_environment() {
     if [ ! -x "$(command -v ${DYNAWO_PYTHON_COMMAND})" ]; then
       error_exit "Your python interpreter \"${DYNAWO_PYTHON_COMMAND}\" does not work. Use export DYNAWO_PYTHON_COMMAND=<Python Interpreter> in your myEnvDynawo.sh."
     fi
+    export_var_env DYNAWO_DICTIONARIES=dictionaries_mapping
 
     # build
     export_var_env_force DYNAFLOW_LAUNCHER_BUILD_DIR=$DYNAFLOW_LAUNCHER_HOME/build/dynaflow-launcher
