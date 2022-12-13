@@ -120,9 +120,9 @@ AssemblingDataBase::getMultipleAssociation(const std::string& id) const {
 }
 
 std::string
-AssemblingDataBase::getMultipleAssociationFromGenerator(const std::string& name) const {
-  const auto it = generatorIdToMultipleAssociationsId_.find(name);
-  if (it != generatorIdToMultipleAssociationsId_.end()) {
+AssemblingDataBase::getSingleAssociationFromGenerator(const std::string& name) const {
+  const auto it = generatorIdToSingleAssociationsId_.find(name);
+  if (it != generatorIdToSingleAssociationsId_.end()) {
     return it->second;
   }
   return "";
@@ -172,15 +172,15 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   singleAssociationHandler_.onStart([this]() { singleAssociationHandler_.currentSingleAssociation = AssemblingDataBase::SingleAssociation(); });
   singleAssociationHandler_.onEnd([this, &db]() {
     db.singleAssociations_[singleAssociationHandler_.currentSingleAssociation->id] = *singleAssociationHandler_.currentSingleAssociation;
+    for (const auto& gen : singleAssociationHandler_.currentSingleAssociation->generators) {
+      db.generatorIdToSingleAssociationsId_[gen.name] = singleAssociationHandler_.currentSingleAssociation->id;
+    }
     singleAssociationHandler_.currentSingleAssociation.reset();
   });
 
   multipleAssociationHandler_.onStart([this]() { multipleAssociationHandler_.currentMultipleAssociation = AssemblingDataBase::MultipleAssociation(); });
   multipleAssociationHandler_.onEnd([this, &db]() {
     db.multipleAssociations_[multipleAssociationHandler_.currentMultipleAssociation->id] = *multipleAssociationHandler_.currentMultipleAssociation;
-    for (const auto& gen : multipleAssociationHandler_.currentMultipleAssociation->generators) {
-      db.generatorIdToMultipleAssociationsId_[gen.name] = multipleAssociationHandler_.currentMultipleAssociation->id;
-    }
     multipleAssociationHandler_.currentMultipleAssociation.reset();
   });
 

@@ -9,15 +9,15 @@
   <singleAssociation id="MESURE_MODELE_VL">
     <bus voltageLevel="VL"/>
   </singleAssociation>
-  <multipleAssociation id="GeneratorId00">
+  <singleAssociation id="GeneratorId00">
     <generator name="00"/>
-  </multipleAssociation>
-  <multipleAssociation id="GeneratorId01">
+  </singleAssociation>
+  <singleAssociation id="GeneratorId01">
     <generator name="01"/>
-  </multipleAssociation>
-  <multipleAssociation id="GeneratorId02">
+  </singleAssociation>
+  <singleAssociation id="GeneratorId02">
     <generator name="02"/>
-  </multipleAssociation>
+  </singleAssociation>
   <dynamicAutomaton id="GeneratorAutomaton" lib="SecondaryVoltageControlSimp">
     <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId00"/>
