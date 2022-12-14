@@ -575,7 +575,12 @@ In this case the settings of the generator should be adapted to the Rpcl2:
 
 The models used for generators belonging to a secondary voltage control area are given in the table \ref{tab:generators_modelling_rpcl} and \ref{tab:generators_modelling_tfo_rpcl}.\\
 
-\textbf{Generators regulating at a distant node or regulating a bus already regulated by another generator are automatically removed from the secondary voltage control area.\\}
+\textbf{Generators with the following properties will be automatically removed from the secondary voltage control area:}
+\begin{itemize}
+  \item Generators regulating at a distant node
+  \item Generators regulating a bus already regulated by another generator and with $voltageLevel \leq TfoVoltageLevel$
+\end{itemize}
+
 
 Simply replace \textit{'Rpcl'} by \textit{'Rpcl2'} in the model name when the generator uses a reactive power control loop 2.\\
 

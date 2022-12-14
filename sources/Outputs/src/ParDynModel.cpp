@@ -31,10 +31,13 @@ void
 ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                    const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions) {
   for (const auto& dynModel : dynamicModelsDefinitions_.models) {
-    boost::shared_ptr<parameters::ParametersSet> new_set = writeDynamicModelParameterSet(
-        dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, shuntCounters, dynamicModelsDefinitions_, linesByIdDefinitions);
+    boost::shared_ptr<parameters::ParametersSet> new_set;
+
     if (dynModel.second.lib == common::constants::svcModelName) {
-      writeAdditionalSVCParameterSet(new_set, dynModel.second);
+      new_set = writeSVCParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, dynModel.second);
+    } else {
+      new_set = writeDynamicModelParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, shuntCounters,
+                                              dynamicModelsDefinitions_, linesByIdDefinitions);
     }
     if (new_set) {
       paramSetCollection->addParametersSet(new_set);
@@ -53,30 +56,65 @@ ParDynModel::getTransformerComponentId(const algo::DynamicModelDefinition& dynMo
   return boost::none;
 }
 
-void
-ParDynModel::writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet, const algo::DynamicModelDefinition& automaton) {
+boost::shared_ptr<parameters::ParametersSet>
+ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManage,
+                                  const algo::DynamicModelDefinition& automaton) {
+  auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
+
+  std::unordered_map<std::string, unsigned> genIdToInitialQrIndex;
+  auto it = dynamicDataBaseManage.assembling().dynamicAutomatons().find(automaton.id);
+  assert(it != dynamicDataBaseManage.assembling().dynamicAutomatons().end());
+  unsigned genIndex = 1;
+  for (const auto& macroConn : it->second.macroConnects) {
+    if (dynamicDataBaseManage.assembling().isSingleAssociation(macroConn.id)) {
+      for (const auto& gen : dynamicDataBaseManage.assembling().getSingleAssociation(macroConn.id).generators) {
+        genIdToInitialQrIndex[gen.name] = genIndex;
+      }
+      if (!dynamicDataBaseManage.assembling().getSingleAssociation(macroConn.id).generators.empty())
+        ++genIndex;
+    }
+  }
+
+  std::unordered_map<std::string, double> genInitialQrParamToValue;
+  for (const auto& param : set.doubleParameters) {
+    if (param.name == "secondaryVoltageControl_Alpha" || param.name == "secondaryVoltageControl_Beta") {
+      new_set->addParameter(helper::buildParameter(param.name, param.value));
+    } else if (param.name.find("secondaryVoltageControl_Qr_") != std::string::npos) {
+      genInitialQrParamToValue[param.name] = param.value;
+    }
+  }
+
   unsigned idx = 1;
-  paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
+  new_set->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
   for (const auto& connection : automaton.nodeConnections) {
     const auto& generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
     if (generatorIdx != generatorIdToIndex_.end()) {
       const auto& genDefinition = generatorDefinitions_[generatorIdx->second];
       if (!genDefinition.isNetwork()) {
-        paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
       }
-      paramSet->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p_pu", "DOUBLE", genDefinition.id));
-      paramSet->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q_pu", "DOUBLE", genDefinition.id));
-      paramSet->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v_pu", "DOUBLE", genDefinition.id));
-      paramSet->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
+
+      auto it = genIdToInitialQrIndex.find(genDefinition.id);
+      if (it != genIdToInitialQrIndex.end()) {
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Qr_" + std::to_string(idx) + "_",
+                                                     genInitialQrParamToValue["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
+      }
+
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p_pu", "DOUBLE", genDefinition.id));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q_pu", "DOUBLE", genDefinition.id));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v_pu", "DOUBLE", genDefinition.id));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
       if (genDefinition.hasTransformer())
-        paramSet->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_", constants::generatorXPuValue));
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_",
+                                                     (genDefinition.isNetwork()) ? constants::generatorNucXPuValue : constants::generatorXPuValue));
       ++idx;
     } else {
       // We assume this is a node
-      paramSet->addReference(helper::buildReference("secondaryVoltageControl_Up0Pu", "Upu", "DOUBLE", connection.connectedElementId));
-      paramSet->addReference(helper::buildReference("secondaryVoltageControl_UpRef0Pu", "Upu", "DOUBLE", connection.connectedElementId));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_Up0Pu", "Upu", "DOUBLE", connection.connectedElementId));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_UpRef0Pu", "Upu", "DOUBLE", connection.connectedElementId));
     }
   }
+  return new_set;
 }
 
 boost::shared_ptr<parameters::ParametersSet>

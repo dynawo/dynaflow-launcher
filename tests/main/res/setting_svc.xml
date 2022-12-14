@@ -3,7 +3,7 @@
   <set id="SVC">
     <!-- SVC parameters -->
     <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="280"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="280"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="290"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
   </set>
