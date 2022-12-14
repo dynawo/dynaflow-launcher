@@ -82,11 +82,15 @@ class ParDynModel {
   /**
    * @brief Write setting set for secondary voltage controller models
    *
-   * @param paramSet the parameter set to update
+   * @param set the configuration set to write
+   * @param dynamicDataBaseManager the dynamic DB manager to use
    * @param automaton the current secondary voltage control automaton
    *
+   * @returns the parameter set to add
    */
-  void writeAdditionalSVCParameterSet(boost::shared_ptr<parameters::ParametersSet> paramSet, const algo::DynamicModelDefinition& automaton);
+  boost::shared_ptr<parameters::ParametersSet> writeSVCParameterSet(const inputs::SettingDataBase::Set& set,
+                                                                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+                                                                    const algo::DynamicModelDefinition& automaton);
 
   /**
    * @brief Retrieve active season

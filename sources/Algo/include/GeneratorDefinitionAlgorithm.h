@@ -53,9 +53,9 @@ class GeneratorDefinition {
     SIGNALN_TFO_RPCL_INFINITE,      ///< Use signalN generator model with infinite diagram, transformer and RPCL
     SIGNALN_TFO_RPCL_RECTANGULAR,   ///< Use signalN generator model with rectangular diagram, transformer and RPCL
     DIAGRAM_PQ_TFO_RPCL_SIGNALN,    ///< Use signalN generator model, transformer and RPCL
-    SIGNALN_TFO_RPCL2_INFINITE,     ///< Use signalN generator model with infinite diagram, transformer and RPCL
-    SIGNALN_TFO_RPCL2_RECTANGULAR,  ///< Use signalN generator model with rectangular diagram, transformer and RPCL
-    DIAGRAM_PQ_TFO_RPCL2_SIGNALN,   ///< Use signalN generator model, transformer and RPCL
+    SIGNALN_TFO_RPCL2_INFINITE,     ///< Use signalN generator model with infinite diagram, transformer and RPCL2
+    SIGNALN_TFO_RPCL2_RECTANGULAR,  ///< Use signalN generator model with rectangular diagram, transformer and RPCL2
+    DIAGRAM_PQ_TFO_RPCL2_SIGNALN,   ///< Use signalN generator model with transformer and RPCL2
     REMOTE_SIGNALN_INFINITE,        ///< Use signalN generator regulating remote nodes with infinite diagram
     REMOTE_SIGNALN_RECTANGULAR,     ///< Use signalN generator regulating remote nodes with rectangular diagram
     REMOTE_DIAGRAM_PQ_SIGNALN,      ///< Use signalN generator regulating remote nodes
