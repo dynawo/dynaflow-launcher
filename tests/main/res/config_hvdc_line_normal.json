@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/hvdc_line_normal",
+    "OutputDir": "../resultsTestsTmp/hvdc_line_normal",
     "DsoVoltageLevel": 600,
     "InfiniteReactiveLimits": true
   }

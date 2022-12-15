@@ -10,6 +10,7 @@
 
 #include "Tests.h"
 
+#include <DYNFileSystemUtils.h>
 #include <fstream>
 
 namespace dfl {
@@ -17,6 +18,26 @@ namespace test {
 
 void
 checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath) {
+  std::ofstream outFile((lfilepath + ".tmp").c_str());
+  std::ifstream readFile(lfilepath.c_str());
+  std::string readout;
+  bool replacement_done = false;
+  while (std::getline(readFile, readout)) {
+    if (readout.find("resultsTestsTmp") != std::string::npos) {
+      std::size_t pos = readout.find("value=\"");
+      outFile << readout.substr(0, pos + 7) << readout.substr(readout.find("resultsTestsTmp"), readout.size()) << std::endl;
+      replacement_done = true;
+    } else {
+      outFile << readout << std::endl;
+    }
+  }
+  if (replacement_done) {
+    remove(lfilepath);
+    copy(lfilepath + ".tmp", lfilepath);
+  } else {
+    remove(lfilepath + ".tmp");
+  }
+
   try {
     std::ifstream liss(lfilepath, std::ifstream::binary | std::ifstream::ate);
     std::ifstream riss(rfilepath, std::ifstream::binary | std::ifstream::ate);

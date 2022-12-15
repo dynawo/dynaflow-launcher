@@ -1,5 +1,11 @@
 #!/bin/bash
 
+error_exit() {
+  RETURN_CODE=$?
+  echo "${1:-"Unknown Error"}" 1>&2
+  exit ${RETURN_CODE}
+}
+
 export_preload() {
   lib="tcmalloc"
   # uncomment to activate tcmalloc in debug when build is in debug
@@ -89,8 +95,8 @@ done
 
 
 if [ "$USEMPI" = true ]; then
-  "$MPIRUN_PATH" -np $NBPROCS $INSTALL/bin/DynaFlowLauncher $args
+  "$MPIRUN_PATH" -np $NBPROCS $INSTALL/bin/DynaFlowLauncher $args || error_exit "Dynaflow-launcher execution failed"
 else
-  $INSTALL/bin/DynaFlowLauncher $args
+  $INSTALL/bin/DynaFlowLauncher $args || error_exit "Dynaflow-launcher execution failed"
 fi
 unset LD_PRELOAD

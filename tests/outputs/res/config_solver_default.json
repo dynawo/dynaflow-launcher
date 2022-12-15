@@ -1,4 +1,4 @@
 { "dfl-config": {
-    "OutputDir": "resultsTestsTmp/TestSolverParDefault"
+    "OutputDir": "../resultsTestsTmp/TestSolverParDefault"
     }
   }

@@ -1,6 +1,6 @@
 {
     "dfl-config": {
-      "OutputDir": "resultsTestsTmp/hvdc_HvdcPQPropDangling",
+      "OutputDir": "../resultsTestsTmp/hvdc_HvdcPQPropDangling",
       "DsoVoltageLevel": 600,
       "InfiniteReactiveLimits": true
     }
