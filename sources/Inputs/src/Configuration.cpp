@@ -19,6 +19,7 @@
 
 #include "Log.h"
 
+#include <DYNFileSystemUtils.h>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <limits>
@@ -56,6 +57,23 @@ updateValue(boost::optional<double>& value, const boost::property_tree::ptree& t
   auto value_opt = tree.get_child_optional(key);
   if (value_opt.is_initialized()) {
     value = value_opt->get_value<double>();
+  }
+}
+
+/**
+ * @brief Helper function to update an internal parameter of type boost::filesystem::path
+ *
+ * @param value the value to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ * @param configDirectoryPath the absolute path of the directory containing the configuration file
+ */
+void
+updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptree& tree, const std::string& key, const std::string& configDirectoryPath) {
+  auto value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized()) {
+    value = value_opt->get_value<boost::filesystem::path>();
+    value = createAbsolutePath(value.generic_string(), configDirectoryPath);
   }
 }
 
@@ -106,16 +124,18 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
 
     auto config = tree.get_child("dfl-config");
 
+    std::string prefixConfigFile = absolute(remove_file_name(filepath.generic_string()));
+
     updateStartingPointMode(config);
     updateChosenOutput(config, simulationKind);
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
     helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn");
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
-    helper::updateValue(outputDir_, config, "OutputDir");
+    helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile);
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
-    helper::updateValue(settingFilePath_, config, "SettingPath");
-    helper::updateValue(assemblingFilePath_, config, "AssemblingPath");
+    helper::updatePathValue(settingFilePath_, config, "SettingPath", prefixConfigFile);
+    helper::updatePathValue(assemblingFilePath_, config, "AssemblingPath", prefixConfigFile);
     helper::updateValue(precision_, config, "Precision");
     helper::updateValue(startTime_, config, "StartTime");
     helper::updateValue(stopTime_, config, "StopTime");

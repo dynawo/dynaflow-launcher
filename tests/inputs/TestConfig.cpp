@@ -13,6 +13,7 @@
 #include "Tests.h"
 
 #include <DYNCommon.h>
+#include <DYNFileSystemUtils.h>
 #include <gtest_dynawo.h>
 
 using DYN::doubleEquals;
@@ -30,8 +31,11 @@ TEST(Config, Nominal) {
   ASSERT_FALSE(config.isSVarCRegulationOn());
   ASSERT_FALSE(config.isShuntRegulationOn());
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
-  ASSERT_EQ(config.settingFilePath().generic_string(), "res/setting.xml");
-  ASSERT_EQ(config.assemblingFilePath().generic_string(), "res/assembling.xml");
+
+  std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config.json", current_path()));
+
+  ASSERT_EQ(config.settingFilePath().generic_string(), createAbsolutePath("setting.xml", prefixConfigFile));
+  ASSERT_EQ(config.assemblingFilePath().generic_string(), createAbsolutePath("assembling.xml", prefixConfigFile));
   ASSERT_EQ("/tmp", config.outputDir());
   ASSERT_DOUBLE_EQUALS_DYNAWO(63.0, config.getDsoVoltageLevel());
   ASSERT_DOUBLE_EQUALS_DYNAWO(150., config.getTfoVoltageLevel());

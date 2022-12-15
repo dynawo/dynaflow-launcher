@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/special_characters",
+    "OutputDir": "../resultsTestsTmp/special_characters",
     "ActivePowerCompensation": "P"
   }
 }

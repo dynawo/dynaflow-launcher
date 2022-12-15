@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/launch_P",
+    "OutputDir": "../resultsTestsTmp/launch_P",
     "ActivePowerCompensation": "P"
   }
 }

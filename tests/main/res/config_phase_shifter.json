@@ -1,7 +1,7 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/phase_shifter",
-    "SettingPath": "res/setting_phase_shifter.xml",
-    "AssemblingPath": "res/assembling_phase_shifter.xml"
+    "OutputDir": "../resultsTestsTmp/phase_shifter",
+    "SettingPath": "../res/setting_phase_shifter.xml",
+    "AssemblingPath": "../res/assembling_phase_shifter.xml"
   }
 }

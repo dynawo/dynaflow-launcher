@@ -1,5 +1,5 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/node_breaker"
+    "OutputDir": "../resultsTestsTmp/node_breaker"
   }
 }
