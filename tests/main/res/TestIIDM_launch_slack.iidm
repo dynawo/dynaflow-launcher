@@ -234,6 +234,6 @@
         <iidm:currentLimits1 permanentLimit="4183.7"/>
     </iidm:line>
     <extension id="_BUS___10_VL">
-      <st:slackTerminal Terminal="_BUS___10_TN"/>
+      <st:slackTerminal id="_LOAD__10_EC"/>
     </extension>
 </iidm:network>
