@@ -202,16 +202,8 @@ set_commit_hook() {
     $HERE/set_commit_hook.sh
 }
 
-env_var_sanity_check() {
-  value_dynawo=`grep "DYNAWO_USE_LEGACY_IIDM=\"" ${DYNAWO_HOME}/dynawoEnv.txt | sed -e 's/DYNAWO_USE_LEGACY_IIDM="//g' | sed -e 's/"//g'`
-  if [ "$(echo "$value_dynawo" | tr '[:upper:]' '[:lower:]')" = "yes" -o "$(echo "$value_dynawo" | tr '[:upper:]' '[:lower:]')" = "true" -o "$(echo "$value_dynawo" | tr '[:upper:]' '[:lower:]')" = "on" ]; then
-    error_exit "Cannot build Dynaflow launcher with DYNAWO_USE_LEGACY_IIDM enabled in dynawo core"
-  fi
-}
-
 set_environment() {
     MODE=$1
-    env_var_sanity_check
     export_var_env DYNAFLOW_LAUNCHER_HOME=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
