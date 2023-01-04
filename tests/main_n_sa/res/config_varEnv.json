@@ -2,7 +2,7 @@
   "dfl-config": {
       "InfiniteReactiveLimits": "true",
       "AutomaticSlackBusOn": "true",
-      "OutputDir": "resultsTestsTmp/varEnv",
+      "OutputDir": "../resultsTestsTmp/varEnv",
       "DsoVoltageLevel": 133.0
   }
 }

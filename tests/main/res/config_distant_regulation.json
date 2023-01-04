@@ -1,6 +1,6 @@
 {
     "dfl-config": {
-        "OutputDir": "resultsTestsTmp/distant_regulation",
+        "OutputDir": "../resultsTestsTmp/distant_regulation",
         "DsoVoltageLevel": 600,
         "InfiniteReactiveLimits": true,
         "TfoVoltageLevel": 500

@@ -1,6 +1,6 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/no_SVarC_regulation",
+    "OutputDir": "../resultsTestsTmp/no_SVarC_regulation",
     "SVCRegulationOn" : false
   }
 }
