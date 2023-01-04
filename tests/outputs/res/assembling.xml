@@ -53,18 +53,18 @@
   <singleAssociation id="UMeasurement">
     <bus voltageLevel="VL"/>
   </singleAssociation>
-  <multipleAssociation id="G5">
+  <singleAssociation id="G5">
     <generator name="G5"/>
-  </multipleAssociation>
-  <multipleAssociation id="G6">
+  </singleAssociation>
+  <singleAssociation id="G6">
     <generator name="G6"/>
-  </multipleAssociation>
-  <multipleAssociation id="G7">
+  </singleAssociation>
+  <singleAssociation id="G7">
     <generator name="G7"/>
-  </multipleAssociation>
-  <multipleAssociation id="G8">
+  </singleAssociation>
+  <singleAssociation id="G8">
     <generator name="G8"/>
-  </multipleAssociation>
+  </singleAssociation>
   <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
     <macroConnect macroConnection="SVCToGenerator" id="G5"/>

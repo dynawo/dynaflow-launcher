@@ -56,4 +56,8 @@
     <macroConnect macroConnection="ToGenerator" id="GeneratorId"/>
     <macroConnect macroConnection="ToGenerator" id="GeneratorId2"/>
   </dynamicAutomaton>
+  <property id="MyProp">
+    <device id="MyDevice"/>
+    <device id="MyDevice2"/>
+  </property>
 </assembling>

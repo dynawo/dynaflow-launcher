@@ -35,6 +35,7 @@ documentation/licenses/*/*.nlo
 documentation/licenses/*/*.out
 documentation/licenses/*/*.pdf
 documentation/dynaflowLauncherDocumentation
+dictionaries_mapping.dic
 __pycache__
 3rdParty/mpich
 .gitignore_local

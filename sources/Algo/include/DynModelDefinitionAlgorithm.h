@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "DynamicDataBaseManager.h"
 #include "NetworkManager.h"
 #include "Node.h"
@@ -160,8 +161,9 @@ class DynModelAlgorithm {
    * Macro connections not connected to a network node will be discarded and not put in the dynamic models definitions.
    *
    * @param node the node to process
+   * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node);
+  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
 
  private:
   /**

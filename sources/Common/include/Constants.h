@@ -25,8 +25,9 @@ namespace dfl {
 namespace common {
 namespace constants {
 
-const std::string diagramDirectorySuffix{"_Diagram"};           ///< Suffix for the diagram directory
-const std::string svcModelName{"SecondaryVoltageControlSimp"};  ///< name of the Secondary Voltage Controller model
+const std::string diagramDirectorySuffix{"_Diagram"};              ///< Suffix for the diagram directory
+const std::string svcModelName{"SecondaryVoltageControlSimp"};     ///< name of the Secondary Voltage Controller model
+const std::string rpcl2PropertyName{"ReactivePowerControlLoop2"};  ///< name of the property to annote RPCL2 generators in assembling
 
 }  // namespace constants
 }  // namespace common

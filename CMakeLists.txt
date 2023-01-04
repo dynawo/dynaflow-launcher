@@ -132,6 +132,16 @@ find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system 
 install(DIRECTORY ${DYNAWO_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
 install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
 
+#concatenate dictionaries_mapping files
+function(cat IN_FILE OUT_FILE)
+  file(READ ${IN_FILE} CONTENTS)
+  file(APPEND ${OUT_FILE} "${CONTENTS}")
+endfunction()
+file(WRITE dictionaries_mapping.dic "")
+cat(${DYNAWO_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic)
+cat(${DYNAWO_ALGORITHMS_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic)
+install(FILES dictionaries_mapping.dic DESTINATION  ${CMAKE_INSTALL_PREFIX}/share/)
+
 # MPI (required by algorithms)
 set(MPI_HOME ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich)
 find_package(MPI REQUIRED)
