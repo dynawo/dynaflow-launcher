@@ -25,7 +25,8 @@
                 { "name": "DYNAFLOW_LAUNCHER_XSD", "value" : "${workspaceFolder}/build-code/install/dynaflow-launcher/Debug/etc/xsd" },
                 { "name": "DYNAFLOW_LAUNCHER_LIBRARIES", "value" : "${workspaceFolder}/build-code/install/dynaflow-launcher/Debug/ddb" },
                 { "name": "DYNAWO_ALGORITHMS_LOCALE", "value" : "en_GB" },
-                { "name": "LD_LIBRARY_PATH", "value" : "${env:LD_LIBRARY_PATH}:${workspaceFolder}/build-code/install/dynaflow-launcher/Debug/lib64:${workspaceFolder}/build-code/install/dynaflow-launcher/Debug/lib" }
+                { "name": "LD_LIBRARY_PATH", "value" : "${env:LD_LIBRARY_PATH}:${workspaceFolder}/build-code/install/dynaflow-launcher/Debug/lib64:${workspaceFolder}/build-code/install/dynaflow-launcher/Debug/lib" },
+                { "name": "DYNAWO_DICTIONARIES", "value" : "dictionaries_mapping" }
             ],
             "externalConsole": false,
             "MIMode": "gdb",
