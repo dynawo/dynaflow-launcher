@@ -78,6 +78,30 @@ updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptre
 }
 
 /**
+ * @brief Helper function to update an internal parameter of type boost::optional<bool>
+ *
+ * @param value the value to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ */
+template<>
+void
+updateValue(bool& value, const boost::property_tree::ptree& tree, const std::string& key) {
+  auto value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized()) {
+    std::string value_str = value_opt->get_value<std::string>();
+    std::transform(value_str.begin(), value_str.end(), value_str.begin(), ::tolower);
+    if (value_str == "false") {
+      value = false;
+    } else if (value_str == "true") {
+      value = true;
+    } else {
+      throw std::logic_error("Wrong boolean value.");
+    }
+  }
+}
+
+/**
  * @brief Helper function to update the active power compensation parameter, if the value of ActivePowerCompensation
  * is not one of the three available, then the function does not update the value of the active power compensation parameter.
  *
@@ -156,7 +180,8 @@ void
 Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) {
   const boost::optional<const boost::property_tree::ptree&>& optionalStartingPointMode = tree.get_child_optional("StartingPointMode");
   if (optionalStartingPointMode.is_initialized()) {
-    const std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
+    std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
+    std::transform(startingPointMode.begin(), startingPointMode.end(), startingPointMode.begin(), ::tolower);
     if (startingPointMode == "warm") {
       startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::WARM;
     } else if (startingPointMode == "flat") {
@@ -198,7 +223,8 @@ Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
   const boost::optional<const boost::property_tree::ptree&>& optionalChosenOutputs = tree.get_child_optional("ChosenOutputs");
   if (optionalChosenOutputs) {
     for (auto& chosenOutputElement : *optionalChosenOutputs) {
-      const std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
+      std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
+      std::transform(chosenOutputName.begin(), chosenOutputName.end(), chosenOutputName.begin(), ::toupper);
       if (chosenOutputName == "STEADYSTATE") {
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
       } else if (chosenOutputName == "CONSTRAINTS") {
