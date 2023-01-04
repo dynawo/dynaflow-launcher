@@ -58,17 +58,19 @@ computeQmax(double powerFactor, double pMax) {
  */
 std::string diagramFilename(const std::string& id);
 
-const std::string networkModelName{"NETWORK"};                               ///< Name of the model corresponding to network
-const std::string loadParId{"GenericRestorativeLoad"};                       ///< PAR id common to all loads
-const std::string diagramMaxTableSuffix{"_tableqmax"};                       ///< Suffix for the table name for qmax in diagram file
-const std::string diagramMinTableSuffix{"_tableqmin"};                       ///< Suffix for the table name for qmin in diagram file
-const std::string signalNGeneratorParId{"signalNGenerator"};                 ///< PAR id for generators using signal N
-const std::string signalNTfoGeneratorParId{"signalNTfoGenerator"};           ///< PAR id for generators using signal N and transformer
-const std::string signalNTfoRpclGeneratorParId{"signalNTfoRpclGenerator"};   ///< PAR id for generators using signal N and transformer and Rpcl
-const std::string signalNRpclGeneratorParId{"signalNRpclGenerator"};         ///< PAR id for generators using signal N and Rpcl
-const std::string signalNGeneratorParIdRect{"signalNGeneratorRectangular"};  ///< PAR id for generators using signal N with rectangular diagram
-const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};     ///< PAR id for generators using signal N with fixed P
-const std::string networkParId{"Network"};                                   ///< PAR id for Network
+const std::string networkModelName{"NETWORK"};                                ///< Name of the model corresponding to network
+const std::string loadParId{"GenericRestorativeLoad"};                        ///< PAR id common to all loads
+const std::string diagramMaxTableSuffix{"_tableqmax"};                        ///< Suffix for the table name for qmax in diagram file
+const std::string diagramMinTableSuffix{"_tableqmin"};                        ///< Suffix for the table name for qmin in diagram file
+const std::string signalNGeneratorParId{"signalNGenerator"};                  ///< PAR id for generators using signal N
+const std::string signalNTfoGeneratorParId{"signalNTfoGenerator"};            ///< PAR id for generators using signal N and transformer
+const std::string signalNTfoRpclGeneratorParId{"signalNTfoRpclGenerator"};    ///< PAR id for generators using signal N and transformer and Rpcl
+const std::string signalNRpclGeneratorParId{"signalNRpclGenerator"};          ///< PAR id for generators using signal N and Rpcl
+const std::string signalNTfoRpcl2GeneratorParId{"signalNTfoRpcl2Generator"};  ///< PAR id for generators using signal N and transformer and Rpcl2
+const std::string signalNRpcl2GeneratorParId{"signalNRpcl2Generator"};        ///< PAR id for generators using signal N and Rpcl2
+const std::string signalNGeneratorParIdRect{"signalNGeneratorRectangular"};   ///< PAR id for generators using signal N with rectangular diagram
+const std::string signalNGeneratorFixedPParId{"signalNGeneratorFixedP"};      ///< PAR id for generators using signal N with fixed P
+const std::string networkParId{"Network"};                                    ///< PAR id for Network
 const std::string signalNGeneratorFixedPParIdRect{
     "signalNGeneratorFixedPRectangular"};                             ///< PAR id for generators using signal N with fixed P and rectangular diagram
 const std::string propSignalNGeneratorParId{"propSignalNGenerator"};  ///< PAR id for generators using prop signal N

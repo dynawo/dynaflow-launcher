@@ -119,9 +119,31 @@ AssemblingDataBase::getMultipleAssociation(const std::string& id) const {
   throw Error(UnknownMultiAssoc, id);
 }
 
+std::string
+AssemblingDataBase::getSingleAssociationFromGenerator(const std::string& name) const {
+  const auto it = generatorIdToSingleAssociationsId_.find(name);
+  if (it != generatorIdToSingleAssociationsId_.end()) {
+    return it->second;
+  }
+  return "";
+}
+
 bool
 AssemblingDataBase::isMultipleAssociation(const std::string& id) const {
   return multipleAssociations_.find(id) != multipleAssociations_.end();
+}
+
+const AssemblingDataBase::Property&
+AssemblingDataBase::getProperty(const std::string& id) const {
+  const auto it = properties_.find(id);
+  if (it != properties_.end())
+    return it->second;
+  throw Error(UnknownProperty, id);
+}
+
+bool
+AssemblingDataBase::isProperty(const std::string& id) const {
+  return properties_.find(id) != properties_.end();
 }
 
 /**
@@ -133,11 +155,13 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
     macroConnectionHandler_(parser::ElementName(ns, "macroConnection")),
     singleAssociationHandler_(parser::ElementName(ns, "singleAssociation")),
     multipleAssociationHandler_(parser::ElementName(ns, "multipleAssociation")),
-    dynamicAutomatonHandler_(parser::ElementName(ns, "dynamicAutomaton")) {
+    dynamicAutomatonHandler_(parser::ElementName(ns, "dynamicAutomaton")),
+    propertyHandler_(parser::ElementName(ns, "property")) {
   onElement(ns("assembling/macroConnection"), macroConnectionHandler_);
   onElement(ns("assembling/singleAssociation"), singleAssociationHandler_);
   onElement(ns("assembling/multipleAssociation"), multipleAssociationHandler_);
   onElement(ns("assembling/dynamicAutomaton"), dynamicAutomatonHandler_);
+  onElement(ns("assembling/property"), propertyHandler_);
 
   macroConnectionHandler_.onStart([this]() { macroConnectionHandler_.currentMacroConnection = AssemblingDataBase::MacroConnection(); });
   macroConnectionHandler_.onEnd([this, &db]() {
@@ -148,6 +172,9 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   singleAssociationHandler_.onStart([this]() { singleAssociationHandler_.currentSingleAssociation = AssemblingDataBase::SingleAssociation(); });
   singleAssociationHandler_.onEnd([this, &db]() {
     db.singleAssociations_[singleAssociationHandler_.currentSingleAssociation->id] = *singleAssociationHandler_.currentSingleAssociation;
+    for (const auto& gen : singleAssociationHandler_.currentSingleAssociation->generators) {
+      db.generatorIdToSingleAssociationsId_[gen.name] = singleAssociationHandler_.currentSingleAssociation->id;
+    }
     singleAssociationHandler_.currentSingleAssociation.reset();
   });
 
@@ -161,6 +188,12 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   dynamicAutomatonHandler_.onEnd([this, &db]() {
     db.dynamicAutomatons_[dynamicAutomatonHandler_.currentDynamicAutomaton->id] = *dynamicAutomatonHandler_.currentDynamicAutomaton;
     dynamicAutomatonHandler_.currentDynamicAutomaton.reset();
+  });
+
+  propertyHandler_.onStart([this]() { propertyHandler_.currentProperty = AssemblingDataBase::Property(); });
+  propertyHandler_.onEnd([this, &db]() {
+    db.properties_[propertyHandler_.currentProperty->id] = *propertyHandler_.currentProperty;
+    propertyHandler_.currentProperty.reset();
   });
 }
 
@@ -279,5 +312,22 @@ AssemblingDataBase::AssemblingXmlDocument::DynamicAutomatonHandler::DynamicAutom
     macroConnectHandler.currentMacroConnect.reset();
   });
 }
+
+AssemblingDataBase::AssemblingXmlDocument::DeviceHandler::DeviceHandler(const elementName_type& root) {
+  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentDevice->id = attributes["id"].as_string(); });
+}
+
+AssemblingDataBase::AssemblingXmlDocument::PropertyHandler::PropertyHandler(const elementName_type& root) : deviceHandler(parser::ElementName(ns, "device")) {
+  onElement(root + ns("device"), deviceHandler);
+
+  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentProperty->id = attributes["id"].as_string(); });
+
+  deviceHandler.onStart([this]() { deviceHandler.currentDevice = Device(); });
+  deviceHandler.onEnd([this]() {
+    currentProperty->devices.push_back(*deviceHandler.currentDevice);
+    deviceHandler.currentDevice.reset();
+  });
+}
+
 }  // namespace inputs
 }  // namespace dfl

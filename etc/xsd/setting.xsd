@@ -14,6 +14,7 @@ SPDX-License-Identifier: MPL-2.0 -->
       <xs:sequence maxOccurs="unbounded">
         <xs:element name="set" type="singleSet"/>
       </xs:sequence>
+      <xs:attribute name="version" use="optional" type="xs:string"/>
     </xs:complexType>
   </xs:element>
 
