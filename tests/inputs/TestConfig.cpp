@@ -24,6 +24,19 @@ TEST(Config, Incorrect) {
                       dfl::KeyError_t::InvalidActivePowerCompensation);
 }
 
+TEST(Config, CaseInsensitive) {
+  dfl::inputs::Configuration config("res/config_caseinsensitive.json");
+  ASSERT_TRUE(config.useInfiniteReactiveLimits());
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
+  ASSERT_EQ(config.getStartingPointMode(), dfl::inputs::Configuration::StartingPointMode::WARM);
+  ASSERT_FALSE(config.isSVarCRegulationOn());
+  ASSERT_FALSE(config.isShuntRegulationOn());
+  ASSERT_FALSE(config.isAutomaticSlackBusOn());
+}
+
 TEST(Config, Nominal) {
   dfl::inputs::Configuration config("res/config.json");
 
