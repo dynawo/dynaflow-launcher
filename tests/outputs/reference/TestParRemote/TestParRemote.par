@@ -56,6 +56,7 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteVControl_vr">
+    <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
     <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
