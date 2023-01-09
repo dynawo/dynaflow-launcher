@@ -34,6 +34,7 @@ checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath) {
   if (replacement_done) {
     remove(lfilepath);
     copy(lfilepath + ".tmp", lfilepath);
+    remove(lfilepath + ".tmp");
   } else {
     remove(lfilepath + ".tmp");
   }

@@ -95,6 +95,7 @@ buildMacroParameterSetVRRemote(const std::string& modelType) {
   if (modelType == getMacroParameterSetId(constants::remoteVControlParId + "_vr")) {
     macroParameterSet->addParameter(buildParameter("vrremote_Gain", 1.));
     macroParameterSet->addParameter(buildParameter("vrremote_tIntegral", 1.));
+    macroParameterSet->addParameter(buildParameter("vrremote_FreezingActivated", true));
   }
   return macroParameterSet;
 }
