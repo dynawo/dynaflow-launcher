@@ -50,8 +50,16 @@
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="G1" var1="generator_NQ" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ"/>
+  <dyn:connect id1="G1" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQUp_1_"/>
+  <dyn:connect id1="G1" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQDown_1_"/>
   <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="G3" var1="generator_NQ" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ"/>
+  <dyn:connect id1="G3" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQUp_2_"/>
+  <dyn:connect id1="G3" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQDown_2_"/>
   <dyn:connect id1="G4" var1="generator_NQ" id2="Model_Signal_NQ_BUS_2" var2="vrremote_NQ"/>
+  <dyn:connect id1="G4" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQUp_1_"/>
+  <dyn:connect id1="G4" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQDown_1_"/>
   <dyn:connect id1="G5" var1="generator_NQ" id2="Model_Signal_NQ_BUS_2" var2="vrremote_NQ"/>
+  <dyn:connect id1="G5" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQUp_2_"/>
+  <dyn:connect id1="G5" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQDown_2_"/>
 </dyn:dynamicModelsArchitecture>

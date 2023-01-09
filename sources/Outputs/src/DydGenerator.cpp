@@ -109,6 +109,7 @@ DydGenerator::writeSignalNBlackBox(boost::shared_ptr<dynamicdata::DynamicModelsC
 
 void
 DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+  std::unordered_map<std::string, int> ModelNQIdGenNumber;
   for (auto it = generatorDefinitions_.cbegin(); it != generatorDefinitions_.cend(); ++it) {
     if (it->isNetwork()) {
       continue;
@@ -120,7 +121,11 @@ DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsColl
     } else if (it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE ||
                it->model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN ||
                it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR) {
-      dynamicModelsToConnect->addConnect(it->id, "generator_NQ", constants::modelSignalNQprefix_ + it->regulatedBusId, "vrremote_NQ");
+      std::string ModelNQId = constants::modelSignalNQprefix_ + it->regulatedBusId;
+      ModelNQIdGenNumber[ModelNQId]++;
+      dynamicModelsToConnect->addConnect(it->id, "generator_NQ", ModelNQId, "vrremote_NQ");
+      dynamicModelsToConnect->addConnect(it->id, "generator_limUQUp", ModelNQId, "vrremote_limUQUp_" + std::to_string(ModelNQIdGenNumber[ModelNQId]) + "_");
+      dynamicModelsToConnect->addConnect(it->id, "generator_limUQDown", ModelNQId, "vrremote_limUQDown_" + std::to_string(ModelNQIdGenNumber[ModelNQId]) + "_");
     }
 
     auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenName_, it->id, constants::networkModelName);
