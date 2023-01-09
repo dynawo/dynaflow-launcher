@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <parametersSet xmlns="http://www.rte-france.com/dynawo">
   <macroParameterSet id="macro_remoteVControl_vr">
+    <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
     <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
