@@ -23,7 +23,8 @@ jobs:
       GH_API: ${{ github.api_url }}/repos/${{ github.repository }}
       GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
       GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
-      CURL_JSON: 'curl --silent --header "Content-Type": "application/json"'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CURL_JSON: 'curl --silent -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type": "application/json"'
 
     steps:
       - name: Checkout
@@ -33,8 +34,8 @@ jobs:
         run: |
           source .github/workflows/tools.sh
 
-          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip
-          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip $GITHUB_TOKEN
+          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip $GITHUB_TOKEN
 
       - name: Unzip Dynawo and Dynawo algorithms
         run: |
@@ -64,9 +65,9 @@ jobs:
             curl \
               --request DELETE \
               --url "$GH_API/releases/$RELEASE_ID" \
-              --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+              --header "Authorization: token $GITHUB_TOKEN"
             echo "Wait for release to be deleted ..."
-            wait_for_http_code "$GH_API/releases/$RELEASE_ID" 404
+            wait_for_http_code "$GH_API/releases/$RELEASE_ID" 404 $GITHUB_TOKEN
           else
             echo "Previous nightly release not found"
           fi
@@ -82,11 +83,11 @@ jobs:
           curl \
             --request DELETE \
             --url "$GH_API/git/refs/tags/nightly" \
-            --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            --header "Authorization: token $GITHUB_TOKEN" \
             --header "Content-Type: application/json"
 
           echo "Wait for tag to be deleted ..."
-          wait_for_http_code "$GH_API/git/refs/tags/nightly" 404
+          wait_for_http_code "$GH_API/git/refs/tags/nightly" 404 $GITHUB_TOKEN
 
       - name: INFO. Nightly tag should not be found
         run: $CURL_JSON "$GH_API/git/refs/tags/nightly"
@@ -111,14 +112,14 @@ jobs:
           curl \
             --request POST \
             --url "$GH_API/git/refs" \
-            --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            --header "Authorization: token $GITHUB_TOKEN" \
             --header "Content-Type: application/json" \
             --data '{
                 "ref": "refs/tags/nightly",
                 "sha": "'$MASTER_COMMIT_ID'"
                 }'
           echo "Wait for tag to be created ..."
-          wait_for_http_code "$GH_API/git/refs/tags/nightly" 200
+          wait_for_http_code "$GH_API/git/refs/tags/nightly" 200 $GITHUB_TOKEN
 
       - name: INFO. Tag nightly created"
         run: $CURL_JSON "$GH_API/git/refs/tags/nightly"
@@ -130,7 +131,7 @@ jobs:
           curl \
             --request POST \
             --url "$GH_API/releases" \
-            --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            --header "Authorization: token $GITHUB_TOKEN" \
             --header "Content-Type: application/json" \
             --data '{
                 "tag_name" : "nightly",
@@ -141,7 +142,7 @@ jobs:
                 "prerelease" : true
                 }'
           echo "Wait for the release to be published ..."
-          wait_for_http_code "$GH_API/releases/tags/nightly" 200
+          wait_for_http_code "$GH_API/releases/tags/nightly" 200 $GITHUB_TOKEN
 
       - name: INFO. Release object created for tag nightly"
         run: $CURL_JSON "$GH_API/releases/tags/nightly"
@@ -158,7 +159,7 @@ jobs:
           echo "ASSETS_URL=$ASSETS_URL" >> $GITHUB_ENV
 
           echo "Upload asset"
-          upload_zip_file $UPLOAD_URL DynaFlowLauncher_V${DYNAWO_VERSION}.zip ${{ secrets.GITHUB_TOKEN }}
+          upload_zip_file $UPLOAD_URL DynaFlowLauncher_V${DYNAWO_VERSION}.zip $GITHUB_TOKEN
 
       - name: INFO. Release assets
         run: $CURL_JSON $ASSETS_URL
