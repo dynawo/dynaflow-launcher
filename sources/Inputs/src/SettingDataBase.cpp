@@ -69,7 +69,8 @@ SettingDataBase::SettingDataBase(const boost::filesystem::path& settingFilePath)
   std::ifstream in(settingFilePath.c_str());
   if (!in) {
     // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
-    LOG(warn, DynModelFileNotFound, settingFilePath.c_str());
+    if (!settingFilePath.empty())
+      LOG(warn, DynModelFileNotFound, settingFilePath.c_str());
     return;
   }
 
