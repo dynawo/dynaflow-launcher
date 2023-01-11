@@ -9,7 +9,7 @@
 
 //------------------ Inputs -------------------------
 BadActivePowerCompensation    =     activePowerCompensation was given with the unsupported value %1%. Supported values are: PMAX, P or targetP. Default value PMAX will be used
-DynModelFileNotFound          =     dynModel file %1% cannot be opened
+DynModelFileNotFound          =     dynamic database file %1% cannot be opened
 DynModelFileXSDNotFound       =     xsd file not found to validate %1% : XSD validation is disabled
 SVarCIIDMExtensionNotFound    =     iidm extension %1% not found for static var compensator %2% : it will be ignored
 Contingency2WIsFrom3W         =     contingency element is 3W tranformer with id %1%, converted to 3 2W transformers:

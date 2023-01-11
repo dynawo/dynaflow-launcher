@@ -96,6 +96,9 @@ Context::process() {
   // Process all algorithms on nodes
   networkManager_.walkNodes();
 
+  if (!slackNode_) {
+    throw Error(SlackNodeNotFound, basename_);
+  }
   LOG(info, SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_));
 
   if (!checkConnexity()) {
@@ -390,7 +393,10 @@ Context::exportResults(bool simulationOk) {
     componentResultsChild.put("synchronousComponentNum", 0);
     componentResultsChild.put("status", simulationOk ? "CONVERGED" : "SOLVER_FAILED");
     componentResultsChild.put("iterationCount", 0);
-    componentResultsChild.put("slackBusId", slackNode_->id);
+    if (slackNode_)
+      componentResultsChild.put("slackBusId", slackNode_->id);
+    else
+      componentResultsChild.put("slackBusId", "NOT FOUND");
     componentResultsChild.put("slackBusActivePowerMismatch", 0);
     componentResultsTree.push_back(std::make_pair("", componentResultsChild));
     resultsTree.add_child("componentResults", componentResultsTree);
