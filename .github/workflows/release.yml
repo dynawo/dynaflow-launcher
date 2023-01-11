@@ -19,7 +19,8 @@ jobs:
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
       GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
       GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
-      CURL_JSON: 'curl --silent --header "Content-Type": "application/json"'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CURL_JSON: 'curl --silent -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type: application/json"'
 
     steps:
       - name: Checkout sources
@@ -28,8 +29,8 @@ jobs:
       - name: Fetch Dynawo and Dynawo Algorithms
         run: |
           source .github/workflows/tools.sh
-          download_asset $GH_API_DYNAWO v${DYNAWO_VERSION} Dynawo_Linux_v${DYNAWO_VERSION}.zip
-          download_asset $GH_API_DYNAWO_ALGORITHMS v${DYNAWO_VERSION} DynawoAlgorithms_Linux_headers_v${DYNAWO_VERSION}.zip
+          download_asset $GH_API_DYNAWO v${DYNAWO_VERSION} Dynawo_Linux_v${DYNAWO_VERSION}.zip $GITHUB_TOKEN
+          download_asset $GH_API_DYNAWO_ALGORITHMS v${DYNAWO_VERSION} DynawoAlgorithms_Linux_headers_v${DYNAWO_VERSION}.zip $GITHUB_TOKEN
 
       - name: Unzip Dynawo and Dynawo algorithms
         run: |
@@ -37,8 +38,6 @@ jobs:
           unzip -qq "DynawoAlgorithms_Linux_headers_v${DYNAWO_VERSION}.zip"
 
       - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export DYNAWO_HOME=$(pwd)/dynawo
           export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
@@ -47,4 +46,47 @@ jobs:
           scripts/envDFL.sh build-user
           version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
           zip -r DynaFlowLauncher_V${version}.zip dynaflow-launcher
-          curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" -X POST $(curl -s --request GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep upload_url | cut -d '"' -f 4 | grep -o ".*assets")?name=DynaFlowLauncher_Linux_v${version}.zip --data-binary @DynaFlowLauncher_V${version}.zip
+          curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" -X POST $(curl -s -H "Authorization: token $GITHUB_TOKEN" --request GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep upload_url | cut -d '"' -f 4 | grep -o ".*assets")?name=DynaFlowLauncher_Linux_v${version}.zip --data-binary @DynaFlowLauncher_V${version}.zip
+
+  distribution-centos7:
+    name: Distribution Linux centos7
+      runs-on: ubuntu-latest
+      container: dynawo/dynawo-distribution-centos7:latest
+      env:
+        DYNAWO_VERSION: 1.5.0
+        DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
+        DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
+        DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
+        DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
+        DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
+        DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
+        GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
+        GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CURL_JSON: 'curl --silent -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type: application/json"'
+
+      steps:
+        - name: Checkout sources
+          uses: actions/checkout@v1
+
+        - name: Fetch Dynawo and Dynawo Algorithms
+          run: |
+            source .github/workflows/tools.sh
+            download_asset $GH_API_DYNAWO v${DYNAWO_VERSION} Dynawo_Linux_centos7_v${DYNAWO_VERSION}.zip $GITHUB_TOKEN
+            download_asset $GH_API_DYNAWO_ALGORITHMS v${DYNAWO_VERSION} DynawoAlgorithms_Linux_headers_centos7_v${DYNAWO_VERSION}.zip $GITHUB_TOKEN
+
+        - name: Unzip Dynawo and Dynawo algorithms
+          run: |
+            unzip "Dynawo_Linux_centos7_v${DYNAWO_VERSION}.zip"
+            unzip -qq "DynawoAlgorithms_Linux_headers_centos7_v${DYNAWO_VERSION}.zip"
+
+        - name: Build
+          run: |
+            export DYNAWO_HOME=$(pwd)/dynawo
+            export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+            export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+            export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
+            scripts/envDFL.sh build-user
+            version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
+            zip -r DynaFlowLauncher_V${version}.zip dynaflow-launcher
+            curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" -X POST $(curl -s -H "Authorization: token $GITHUB_TOKEN" --request GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep upload_url | cut -d '"' -f 4 | grep -o ".*assets")?name=DynaFlowLauncher_Linux_centos7_v${version}.zip --data-binary @DynaFlowLauncher_V${version}.zip
