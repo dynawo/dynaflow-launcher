@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include "Options.h"
+
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -43,9 +45,11 @@ class Configuration {
    *
    * @param filepath the configuration file to use
    * @param simulationKind the simulation kind (Steady state or Security analysis)
+   * @param request is the simulation in N or SA ?
    */
   explicit Configuration(const boost::filesystem::path& filepath,
-                         dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
+                         dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION,
+                         dfl::common::Options::Request request = dfl::common::Options::Request::RUN_SIMULATION_N);
   /**
    * @brief determines if we use infinite reactive limits
    *
@@ -234,15 +238,17 @@ class Configuration {
   * @brief Helper function to update the starting point mode
   *
   * @param tree the element of the boost tree
+  * @param saMode true if simulation is in SA, false otherwise
   */
-  void updateStartingPointMode(const boost::property_tree::ptree& tree);
+  void updateStartingPointMode(const boost::property_tree::ptree& tree, const bool saMode);
   /**
   * @brief Helper function to update the chosen outputs
   *
   * @param tree the element of the boost tree
   * @param simulationKind simulation kind of the simulation
+  * @param saMode true if simulation is in SA, false otherwise
   */
-  void updateChosenOutput(const boost::property_tree::ptree& tree, dfl::inputs::Configuration::SimulationKind simulationKind);
+  void updateChosenOutput(const boost::property_tree::ptree& tree, dfl::inputs::Configuration::SimulationKind simulationKind, const bool saMode);
 
   StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits

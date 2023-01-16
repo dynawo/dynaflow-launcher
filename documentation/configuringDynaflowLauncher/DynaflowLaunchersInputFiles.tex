@@ -104,6 +104,8 @@ This section aims at giving more details on input files in order to help the use
 
 The configuration file is a \textbf{.json} file containing the values for the parameters of Dynaflow-launcher. An example is given below:
 
+\subsubsection{Simple configuration}
+
 \lstinputlisting[language=JSON,title=configuration file example]{../resources/syntaxExample/config.json}
 
 The parameters are described below:
@@ -204,6 +206,13 @@ NumberOfThreads & integer & Number of threads to use & 4 \\
 \end{tabular}
 \caption{Systematic Analysis parameters}
 \end{table}
+
+\subsubsection{Apply a different configuration in security analysis}
+
+It is possible to have a different configuration for security analysis by adding parameters in the \textit{sa} array. The parameters contained in the \textit{sa} array will then override the parameters for N in the configuration file. If no parameters were previously specified for N, it will override the default parameters of the simulation.
+
+\lstinputlisting[language=JSON,title=configuration file example for N and SA simulation]{../resources/syntaxExample/config_SA.json}
+
 
 \subsection{Contingencies file}
 
