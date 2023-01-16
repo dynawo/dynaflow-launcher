@@ -1,0 +1,38 @@
+{
+    "dfl-config": {
+      "InfiniteReactiveLimits": "false",
+      "StartingPointMode" : "flat",
+      "ChosenOutputs" : ["LOSTEQ"],
+      "SVCRegulationOn": "true",
+      "ShuntRegulationOn": "true",
+      "AutomaticSlackBusOn": "true",
+      "OutputDir": "/tmp/dummy",
+      "DsoVoltageLevel": 11.0,
+      "TfoVoltageLevel": 17.0,
+      "ActivePowerCompensation": "P",
+      "SettingPath": "dummy.xml",
+      "AssemblingPath": "dummy2.xml",
+      "StartTime": 7,
+      "StopTime": 90,
+      "Precision": 1e-2,
+      "TimeStep": 1.3,
+      "sa": {
+        "InfiniteReactiveLimits": "true",
+        "StartingPointMode" : "warm",
+        "ChosenOutputs" : ["CONSTRAINTS"],
+        "SVCRegulationOn": "false",
+        "ShuntRegulationOn": "false",
+        "AutomaticSlackBusOn": "false",
+        "OutputDir": "/tmp",
+        "DsoVoltageLevel": 83.0,
+        "TfoVoltageLevel": 114.0,
+        "ActivePowerCompensation": "targetP",
+        "SettingPath": "setting.xml",
+        "AssemblingPath": "assembling.xml",
+        "StartTime": 18,
+        "StopTime": 101,
+        "Precision": 1e-5,
+        "TimeStep": 1.7
+      }
+    }
+  }

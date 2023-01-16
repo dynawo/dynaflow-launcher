@@ -34,14 +34,19 @@ namespace helper {
  * @param value the value to update
  * @param tree the element of the boost tree
  * @param key the key of the parameter to retrieve
+ * @param saMode true if simulation is in SA, false otherwise
  */
 template<class T>
 static void
-updateValue(T& value, const boost::property_tree::ptree& tree, const std::string& key) {
-  auto value_opt = tree.get_child_optional(key);
-  if (value_opt.is_initialized()) {
+updateValue(T& value, const boost::property_tree::ptree& tree, const std::string& key, const bool saMode) {
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  auto value_opt = tree.get_child_optional(jsonKey);
+  if (!value_opt.is_initialized())
+    value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized())
     value = value_opt->get_value<T>();
-  }
 }
 
 /**
@@ -50,14 +55,19 @@ updateValue(T& value, const boost::property_tree::ptree& tree, const std::string
  * @param value the value to update
  * @param tree the element of the boost tree
  * @param key the key of the parameter to retrieve
+ * @param saMode true if simulation is in SA, false otherwise
  */
 template<>
 void
-updateValue(boost::optional<double>& value, const boost::property_tree::ptree& tree, const std::string& key) {
-  auto value_opt = tree.get_child_optional(key);
-  if (value_opt.is_initialized()) {
+updateValue(boost::optional<double>& value, const boost::property_tree::ptree& tree, const std::string& key, const bool saMode) {
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  auto value_opt = tree.get_child_optional(jsonKey);
+  if (!value_opt.is_initialized())
+    value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized())
     value = value_opt->get_value<double>();
-  }
 }
 
 /**
@@ -67,13 +77,50 @@ updateValue(boost::optional<double>& value, const boost::property_tree::ptree& t
  * @param tree the element of the boost tree
  * @param key the key of the parameter to retrieve
  * @param configDirectoryPath the absolute path of the directory containing the configuration file
+ * @param saMode true if simulation is in SA, false otherwise
  */
 void
-updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptree& tree, const std::string& key, const std::string& configDirectoryPath) {
-  auto value_opt = tree.get_child_optional(key);
+updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptree& tree, const std::string& key, const std::string& configDirectoryPath,
+                const bool saMode) {
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  auto value_opt = tree.get_child_optional(jsonKey);
+  if (!value_opt.is_initialized())
+    value_opt = tree.get_child_optional(key);
   if (value_opt.is_initialized()) {
     value = value_opt->get_value<boost::filesystem::path>();
     value = createAbsolutePath(value.generic_string(), configDirectoryPath);
+  }
+}
+
+/**
+ * @brief Helper function to update an internal parameter of type boost::optional<bool>
+ *
+ * @param value the value to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ * @param saMode true if simulation is in SA, false otherwise
+ */
+template<>
+void
+updateValue(bool& value, const boost::property_tree::ptree& tree, const std::string& key, const bool saMode) {
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  auto value_opt = tree.get_child_optional(jsonKey);
+  if (!value_opt.is_initialized())
+    value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized()) {
+    std::string value_str = value_opt->get_value<std::string>();
+    std::transform(value_str.begin(), value_str.end(), value_str.begin(), ::tolower);
+    if (value_str == "false") {
+      value = false;
+    } else if (value_str == "true") {
+      value = true;
+    } else {
+      throw std::logic_error("Wrong boolean value.");
+    }
   }
 }
 
@@ -83,14 +130,16 @@ updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptre
  *
  * @param activePowerCompensation the value to update
  * @param tree the element of the boost tree
+ * @param saMode true if simulation is in SA, false otherwise
  */
 static void
-updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activePowerCompensation, const boost::property_tree::ptree& tree) {
+updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activePowerCompensation, const boost::property_tree::ptree& tree,
+                                   const bool saMode) {
   std::map<std::string, Configuration::ActivePowerCompensation> enumResolver = {{"P", Configuration::ActivePowerCompensation::P},
                                                                                 {"targetP", Configuration::ActivePowerCompensation::TARGET_P},
                                                                                 {"PMax", Configuration::ActivePowerCompensation::PMAX}};
   std::string apcString;
-  helper::updateValue(apcString, tree, "ActivePowerCompensation");
+  helper::updateValue(apcString, tree, "ActivePowerCompensation", saMode);
   auto it = enumResolver.find(apcString);
   if (it != enumResolver.end()) {
     activePowerCompensation = it->second;
@@ -101,7 +150,8 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path& filepath, dfl::inputs::Configuration::SimulationKind simulationKind) {
+Configuration::Configuration(const boost::filesystem::path& filepath, dfl::inputs::Configuration::SimulationKind simulationKind,
+                             dfl::common::Options::Request request) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -126,23 +176,26 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
 
     std::string prefixConfigFile = absolute(remove_file_name(filepath.generic_string()));
 
-    updateStartingPointMode(config);
-    updateChosenOutput(config, simulationKind);
-    helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits");
-    helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn");
-    helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn");
-    helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn");
-    helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile);
-    helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel");
-    helper::updatePathValue(settingFilePath_, config, "SettingPath", prefixConfigFile);
-    helper::updatePathValue(assemblingFilePath_, config, "AssemblingPath", prefixConfigFile);
-    helper::updateValue(precision_, config, "Precision");
-    helper::updateValue(startTime_, config, "StartTime");
-    helper::updateValue(stopTime_, config, "StopTime");
-    helper::updateValue(timeOfEvent_, config, "sa.TimeOfEvent");
-    helper::updateValue(timeStep_, config, "TimeStep");
-    helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel");
-    helper::updateActivePowerCompensationValue(activePowerCompensation_, config);
+    bool saMode = false;
+    if (request == dfl::common::Options::Request::RUN_SIMULATION_SA)
+      saMode = true;
+    updateStartingPointMode(config, saMode);
+    updateChosenOutput(config, simulationKind, saMode);
+    helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits", saMode);
+    helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn", saMode);
+    helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn", saMode);
+    helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn", saMode);
+    helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile, saMode);
+    helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel", saMode);
+    helper::updatePathValue(settingFilePath_, config, "SettingPath", prefixConfigFile, saMode);
+    helper::updatePathValue(assemblingFilePath_, config, "AssemblingPath", prefixConfigFile, saMode);
+    helper::updateValue(precision_, config, "Precision", saMode);
+    helper::updateValue(startTime_, config, "StartTime", saMode);
+    helper::updateValue(stopTime_, config, "StopTime", saMode);
+    helper::updateValue(timeStep_, config, "TimeStep", saMode);
+    helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode);
+    helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode);
+    helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true);
   } catch (std::exception& e) {
     throw Error(ErrorConfigFileRead, e.what());
   }
@@ -150,11 +203,21 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
   if (startingPointMode_ == Configuration::StartingPointMode::FLAT && activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
     throw Error(InvalidActivePowerCompensation, filepath.generic_string());
   }
+
+  if (startingPointMode_ == Configuration::StartingPointMode::FLAT && request == dfl::common::Options::Request::RUN_SIMULATION_SA) {
+    throw Error(NoFlatStartingPointModeInSA);
+  }
 }
 
 void
-Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) {
-  const boost::optional<const boost::property_tree::ptree&>& optionalStartingPointMode = tree.get_child_optional("StartingPointMode");
+Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree, const bool saMode) {
+  const std::string key = "StartingPointMode";
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  boost::optional<const boost::property_tree::ptree&> optionalStartingPointMode = tree.get_child_optional(jsonKey);
+  if (!optionalStartingPointMode.is_initialized())
+    optionalStartingPointMode = tree.get_child_optional(key);
   if (optionalStartingPointMode.is_initialized()) {
     const std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
     if (startingPointMode == "warm") {
@@ -170,11 +233,11 @@ Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree) 
 void
 Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
 #if _DEBUG_
-                                  dfl::inputs::Configuration::SimulationKind
+                                  dfl::inputs::Configuration::SimulationKind,
 #else
-                                  dfl::inputs::Configuration::SimulationKind simulationKind
+                                  dfl::inputs::Configuration::SimulationKind simulationKind,
 #endif
-) {
+                                  const bool saMode) {
 #if _DEBUG_
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
@@ -195,10 +258,17 @@ Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
     break;
   }
 #endif
-  const boost::optional<const boost::property_tree::ptree&>& optionalChosenOutputs = tree.get_child_optional("ChosenOutputs");
-  if (optionalChosenOutputs) {
-    for (auto& chosenOutputElement : *optionalChosenOutputs) {
-      const std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
+  const std::string key = "ChosenOutputs";
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  boost::optional<const boost::property_tree::ptree&> optionalChosenOutputs = tree.get_child_optional(jsonKey);
+  if (!optionalChosenOutputs.is_initialized())
+    optionalChosenOutputs = tree.get_child_optional(key);
+  if (optionalChosenOutputs.is_initialized()) {
+    for (auto& chosenOutputElement : optionalChosenOutputs.get()) {
+      std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
+      std::transform(chosenOutputName.begin(), chosenOutputName.end(), chosenOutputName.begin(), ::toupper);
       if (chosenOutputName == "STEADYSTATE") {
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
       } else if (chosenOutputName == "CONSTRAINTS") {
