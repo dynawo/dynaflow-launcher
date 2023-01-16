@@ -1,0 +1,20 @@
+{
+  "dfl-config": {
+    "InfiniteReactiveLimits": "true",
+    "StartingPointMode" : "warm",
+    "ChosenOutputs" : ["TIMELINE"],
+    "SVCRegulationOn": "false",
+    "ShuntRegulationOn": "false",
+    "AutomaticSlackBusOn": "false",
+    "OutputDir": "/tmp",
+    "DsoVoltageLevel": 83.0,
+    "TfoVoltageLevel": 114.0,
+    "ActivePowerCompensation": "targetP",
+    "SettingPath": "setting.xml",
+    "AssemblingPath": "assembling.xml",
+    "StartTime": 18,
+    "StopTime": 101,
+    "Precision": 1e-5,
+    "TimeStep": 1.7
+  }
+}

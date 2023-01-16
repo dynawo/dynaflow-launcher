@@ -22,6 +22,9 @@ TEST(Config, Incorrect) {
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"), DYN::Error::GENERAL,
                       dfl::KeyError_t::InvalidActivePowerCompensation);
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat.json", dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS,
+                                                        dfl::common::Options::Request::RUN_SIMULATION_SA),
+                      DYN::Error::GENERAL, dfl::KeyError_t::NoFlatStartingPointModeInSA);
 }
 
 TEST(Config, Nominal) {
@@ -84,6 +87,79 @@ TEST(Config, Default) {
   ASSERT_FALSE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE));
   ASSERT_FALSE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
 #endif
+}
+
+TEST(Config, ConfigN) {
+  dfl::inputs::Configuration config("res/config_N.json", dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION,
+                                    dfl::common::Options::Request::RUN_SIMULATION_N);
+
+  ASSERT_TRUE(config.useInfiniteReactiveLimits());
+  ASSERT_EQ(config.getStartingPointMode(), dfl::inputs::Configuration::StartingPointMode::FLAT);
+  ASSERT_FALSE(config.isSVarCRegulationOn());
+  ASSERT_FALSE(config.isShuntRegulationOn());
+  ASSERT_FALSE(config.isAutomaticSlackBusOn());
+
+  std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config_N.json", current_path()));
+
+  ASSERT_EQ(config.settingFilePath().generic_string(), createAbsolutePath("setting.xml", prefixConfigFile));
+  ASSERT_EQ(config.assemblingFilePath().generic_string(), createAbsolutePath("assembling.xml", prefixConfigFile));
+  ASSERT_EQ("/tmp", config.outputDir());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(74.0, config.getDsoVoltageLevel());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(160., config.getTfoVoltageLevel());
+  ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P, config.getActivePowerCompensation());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(12, config.getStartTime());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(111, config.getStopTime());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(1e-4, config.getPrecision().value());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(2.2, config.getTimeStep());
+#if _DEBUG_
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
+#else
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
+  ASSERT_FALSE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
+  ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE));
+  ASSERT_FALSE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
+#endif
+}
+
+TEST(Config, ConfigSA) {
+  std::array<std::string, 2> configFilesArray = {"res/config_SA.json", "res/config_SA_2.json"};
+  for (std::string configFile : configFilesArray) {
+    dfl::inputs::Configuration config(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS,
+                                      dfl::common::Options::Request::RUN_SIMULATION_SA);
+
+    ASSERT_TRUE(config.useInfiniteReactiveLimits());
+    ASSERT_EQ(config.getStartingPointMode(), dfl::inputs::Configuration::StartingPointMode::WARM);
+    ASSERT_FALSE(config.isSVarCRegulationOn());
+    ASSERT_FALSE(config.isShuntRegulationOn());
+    ASSERT_FALSE(config.isAutomaticSlackBusOn());
+
+    std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config_SA.json", current_path()));
+
+    ASSERT_EQ(config.settingFilePath().generic_string(), createAbsolutePath("setting.xml", prefixConfigFile));
+    ASSERT_EQ(config.assemblingFilePath().generic_string(), createAbsolutePath("assembling.xml", prefixConfigFile));
+    ASSERT_EQ("/tmp", config.outputDir());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(83.0, config.getDsoVoltageLevel());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(114., config.getTfoVoltageLevel());
+    ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P, config.getActivePowerCompensation());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(18, config.getStartTime());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(101, config.getStopTime());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(1e-5, config.getPrecision().value());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(1.7, config.getTimeStep());
+#if _DEBUG_
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE));
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
+#else
+    ASSERT_FALSE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE));
+    ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
+#endif
+  }
 }
 
 TEST(Config, ChosenOutputTest) {
