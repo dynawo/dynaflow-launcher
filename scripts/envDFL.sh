@@ -210,6 +210,7 @@ env_var_sanity_check() {
 }
 
 set_environment() {
+    MODE=$1
     env_var_sanity_check
     export_var_env DYNAFLOW_LAUNCHER_HOME=UNDEFINED
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TYPE=UNDEFINED
@@ -255,8 +256,10 @@ set_environment() {
     export DYNAWO_LIBIIDM_EXTENSIONS=$DYNAWO_INSTALL_DIR/lib
     export DYNAWO_RESOURCES_DIR=$DYNAFLOW_LAUNCHER_INSTALL_DIR/share:$DYNAWO_INSTALL_DIR/share/xsd
 
-    ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
-    ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib # For local DFL libraries, used only at runtime in case we compile in shared
+    if [ $MODE -ne 2 ]; then
+        ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64 # For local DFL libraries, used only at runtime in case we compile in shared
+        ld_library_path_prepend $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib # For local DFL libraries, used only at runtime in case we compile in shared
+    fi
 
     export_var_env DYNAFLOW_LAUNCHER_BUILD_TESTS=ON # same default value as cmakelist
     export_var_env DYNAFLOW_LAUNCHER_CMAKE_GENERATOR="Unix Makefiles"
@@ -265,7 +268,7 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI="false"
 
     # Run
-    if [ $1 -ne 1 ]
+    if [ $MODE -eq 0 ]
     then
         # export runtime variables only if unit tests are not run
         export_var_env_force DYNAFLOW_LAUNCHER_INSTALL=$DYNAFLOW_LAUNCHER_INSTALL_DIR
@@ -291,8 +294,8 @@ reset_environment_variables() {
         unset $var
     done
 
-    ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib64
-    ld_library_path_remove $DYNAFLOW_LAUNCHER_HOME/lib
+    ld_library_path_remove $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib64
+    ld_library_path_remove $DYNAFLOW_LAUNCHER_INSTALL_DIR/lib
     ld_library_path_remove $DYNAWO_INSTALL_DIR/lib
     ld_library_path_remove $DYNAWO_ALGORITHMS_HOME/lib
     ld_library_path_remove $DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR/mpich/lib
@@ -649,7 +652,7 @@ case "$1" in
         ;;
     build-tests-coverage)
         # environment used for unit tests in coverage case is defined only in cmakelist
-        MODE=1
+        MODE=2
         ;;
     *)
         ;;
