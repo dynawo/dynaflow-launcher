@@ -3,6 +3,9 @@
   <macroConnection id="PhaseShifterToIMeasurement">
     <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
   </macroConnection>
+  <macroConnection id="PhaseShifterToP">
+    <connection var1="phaseShifter_P" var2="@NAME@_P1"/>
+  </macroConnection>
   <macroConnection id="PhaseShifterToTap">
     <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
   </macroConnection>
@@ -19,6 +22,7 @@
     <tfo name="_BUS____5-BUS____6-1_PS"/>
   </singleAssociation>
   <dynamicAutomaton id="PhaseShifter_5_6" lib="PhaseShifterI">
+    <macroConnect macroConnection="PhaseShifterToP" id="MESURE_I_PHASE_5_6"/>
     <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_PHASE_5_6"/>
     <macroConnect macroConnection="PhaseShifterToTap" id="TAP_PHASE_5_6"/>
     <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_PHASE_5_6"/>
@@ -33,6 +37,7 @@
     <tfo name="_BUS____5-BUS____7-2_PS"/>
   </singleAssociation>
   <dynamicAutomaton id="PhaseShifter_5_7" lib="PhaseShifterI">
+    <macroConnect macroConnection="PhaseShifterToP" id="MESURE_I_PHASE_5_7"/>
     <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_PHASE_5_7"/>
     <macroConnect macroConnection="PhaseShifterToTap" id="TAP_PHASE_5_7"/>
     <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_PHASE_5_7"/>
