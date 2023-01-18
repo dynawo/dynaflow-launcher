@@ -20,7 +20,7 @@ jobs:
       GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
       GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CURL_JSON: 'curl --silent -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type: application/json"'
+      CURL_JSON: 'curl --silent -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type: application/json"'
 
     steps:
       - name: Checkout sources
@@ -46,4 +46,4 @@ jobs:
           scripts/envDFL.sh build-user
           version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
           zip -r DynaFlowLauncher_V${version}.zip dynaflow-launcher
-          curl -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" -X POST $(curl -s -H "Authorization: token $GITHUB_TOKEN" --request GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep upload_url | cut -d '"' -f 4 | grep -o ".*assets")?name=DynaFlowLauncher_Linux_v${version}.zip --data-binary @DynaFlowLauncher_V${version}.zip
+          curl -H "authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/zip" -X POST $(curl -s -H "authorization: Bearer $GITHUB_TOKEN" --request GET https://api.github.com/repos/dynawo/dynaflow-launcher/releases/latest | grep upload_url | cut -d '"' -f 4 | grep -o ".*assets")?name=DynaFlowLauncher_Linux_v${version}.zip --data-binary @DynaFlowLauncher_V${version}.zip
