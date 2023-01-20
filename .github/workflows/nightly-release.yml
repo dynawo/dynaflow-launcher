@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
     env:
-      DYNAWO_VERSION: 1.4.0
+      DYNAWO_VERSION: 1.4.1
       DYNAWO_VERSION_SHORT: 1.4
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
