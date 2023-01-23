@@ -54,14 +54,12 @@ export DYNAFLOW_LAUNCHER_LIBRARIES=$DYNAWO_DDB_DIR
 export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
 export_preload
-MPIRUN_PATH=$(which mpirun 2> /dev/null)
-if [ -z "$MPIRUN_PATH" ]; then
-  MPIRUN_PATH="$INSTALL/bin/mpirun"
-fi
+MPIRUN_PATH="$INSTALL/bin/mpirun"
 
 args=""
 NBPROCS=1
 USEMPI=false
+DISPLAY_VERSION=false
 while (($#)); do
 case $1 in
   --contingencies)
@@ -86,6 +84,11 @@ case $1 in
     NBPROCS="${1#*=}"
     shift # past value
     ;;
+  --version)
+    DISPLAY_VERSION=true
+    args="$args $1"
+    shift
+    ;;
   *)
     args="$args $1"
     shift
@@ -94,7 +97,11 @@ case $1 in
 done
 
 
-if [ "$USEMPI" = true ]; then
+if [ "$DISPLAY_VERSION" = true ]; then
+  VERSION=$($INSTALL/bin/DynaFlowLauncher $args 2>&1 > /dev/null)
+  VERSION=`echo $VERSION | sed 's/Invalid MIT-MAGIC-COOKIE-1 key//g'`
+  >&2 echo "$VERSION"
+elif [ "$USEMPI" = true ]; then
   "$MPIRUN_PATH" -np $NBPROCS $INSTALL/bin/DynaFlowLauncher $args || error_exit "Dynaflow-launcher execution failed"
 else
   $INSTALL/bin/DynaFlowLauncher $args || error_exit "Dynaflow-launcher execution failed"
