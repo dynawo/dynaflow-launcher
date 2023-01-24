@@ -59,6 +59,7 @@ class Par {
      * @param counters the counters definitions to use
      * @param models list of dynamic models definitions
      * @param linesById the lines to use
+     * @param tfosById the transformers to use
      * @param svarcsDefinitions the SVarC definitions to use
      * @param loadsDefinitions the loads definitions to use
      */
@@ -67,6 +68,7 @@ class Par {
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators,
                   const dfl::inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::ShuntCounterDefinitions& counters,
                   const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
+                  const algo::TransformersByIdDefinitions& tfosById,
                   const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions, const std::vector<algo::LoadDefinition>& loadsDefinitions) :
         basename_(base),
         dirname_(config.outputDir()),
@@ -76,6 +78,7 @@ class Par {
         dynamicDataBaseManager_(dynamicDataBaseManager),
         shuntCounters_(counters),
         linesByIdDefinitions_(linesById),
+        tfosByIdDefinitions_(tfosById),
         parLoads_(new ParLoads(loadsDefinitions)),
         parSVarC_(new ParSVarC(svarcsDefinitions)),
         parHvdc_(new ParHvdc(hvdcDefinitions)),
@@ -91,6 +94,7 @@ class Par {
     const inputs::DynamicDataBaseManager& dynamicDataBaseManager_;                            ///< dynamic database manager
     const algo::ShuntCounterDefinitions& shuntCounters_;                                      ///< Shunt counters to use
     const algo::LinesByIdDefinitions& linesByIdDefinitions_;                                  ///< lines by id to use
+    const algo::TransformersByIdDefinitions& tfosByIdDefinitions_;                            ///< transformers by id to use
     std::shared_ptr<ParLoads> parLoads_;                                                      ///< reference to load par writer
     std::shared_ptr<ParSVarC> parSVarC_;                                                      ///< reference to svarcs par writer
     std::shared_ptr<ParHvdc> parHvdc_;                                                        ///< reference to hvdcs par writer

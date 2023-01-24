@@ -101,12 +101,13 @@ class Tfo {
    * @param tfoId the transformer id
    * @param node1 the first node
    * @param node2 the second node
+   * @param season the active season of the transformer
    * @param isConnectedOnNode1 whether the two windings transformer is initially connected on node 1
    * @param isConnectedOnNode2 whether the two windings transformer is initially connected on node 2
    * @returns the built transformer
    */
-  static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, bool isConnectedOnNode1,
-                                    bool isConnectedOnNode2);
+  static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season,
+                                    bool isConnectedOnNode1, bool isConnectedOnNode2);
 
   /**
    * @brief Build a three windings transformer
@@ -116,16 +117,19 @@ class Tfo {
    * @param node1 the first node
    * @param node2 the second node
    * @param node3 the third node
+   * @param season the active season of the transformer
    * @param isConnectedOnNode1 whether the three windings transformer is initially connected on node 1
    * @param isConnectedOnNode2 whether the three windings transformer is initially connected on node 2
    * @param isConnectedOnNode3 whether the three windings transformer is initially connected on node 3
    * @returns the built transformer
    */
   static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2,
-                                    const std::shared_ptr<Node>& node3, bool isConnectedOnNode1, bool isConnectedOnNode2, bool isConnectedOnNode3);
+                                    const std::shared_ptr<Node>& node3, const std::string& season, bool isConnectedOnNode1, bool isConnectedOnNode2,
+                                    bool isConnectedOnNode3);
 
   const TfoId id;                                  ///< transformer id
   const std::vector<std::shared_ptr<Node>> nodes;  ///< list of nodes
+  const std::string activeSeason;                  ///< active season associated with the transformer
 
  private:
   /**
@@ -134,8 +138,9 @@ class Tfo {
    * @param tfoId the transformer id
    * @param node1 the first node
    * @param node2 the second node
+   * @param season the active season of the transformer
    */
-  Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2);
+  Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season);
 
   /**
    * @brief Constructor
@@ -144,8 +149,10 @@ class Tfo {
    * @param node1 the first node
    * @param node2 the second node
    * @param node3 the third node
+   * @param season the active season of the transformer
    */
-  Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3);
+  Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3,
+      const std::string& season);
 };
 
 /// @brief Topological shunt

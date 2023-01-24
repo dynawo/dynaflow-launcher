@@ -221,8 +221,8 @@ NetworkManager::buildTree() {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
     if (transfo->getInitialConnected1() || transfo->getInitialConnected2()) {
-      auto tfo =
-          Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), transfo->getInitialConnected1(), transfo->getInitialConnected2());
+      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), transfo->getActiveSeason(), transfo->getInitialConnected1(),
+                            transfo->getInitialConnected2());
       tfos_.push_back(tfo);
       if (transfo->getInitialConnected1() && transfo->getInitialConnected2()) {
         LOG(debug, NodeConnectionBy2WT, bus1->getID(), bus2->getID(), transfo->getID());
@@ -236,8 +236,8 @@ NetworkManager::buildTree() {
     auto bus2 = transfo->getBusInterface2();
     auto bus3 = transfo->getBusInterface3();
     if (transfo->getInitialConnected1() || transfo->getInitialConnected2() || transfo->getInitialConnected3()) {
-      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()), transfo->getInitialConnected1(),
-                            transfo->getInitialConnected2(), transfo->getInitialConnected3());
+      auto tfo = Tfo::build(transfo->getID(), nodes_.at(bus1->getID()), nodes_.at(bus2->getID()), nodes_.at(bus3->getID()), transfo->getActiveSeason(),
+                            transfo->getInitialConnected1(), transfo->getInitialConnected2(), transfo->getInitialConnected3());
       tfos_.push_back(tfo);
       if (transfo->getInitialConnected1() && transfo->getInitialConnected2() && transfo->getInitialConnected3()) {
         LOG(debug, NodeConnectionBy3WT, bus1->getID(), bus2->getID(), bus3->getID(), transfo->getID());

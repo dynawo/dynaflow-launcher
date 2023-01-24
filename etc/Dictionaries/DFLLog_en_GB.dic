@@ -41,8 +41,8 @@ ContingencyInvalidForSimulationNoValidElements =     contingency %1% is invalid 
 
 //------------------ Outputs -----------------------
 TFOComponentNotFound          =     reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
-SingleAssociationRefNotALine  =     settings ref %1% references the single association %2% which is not associated to a line: it will be ignored
-RefLineNotFound               =     settings ref %1% references single association %2% which is associated to the undefined line %3%: it will be ignored
+SingleAssociationRefIncorrectType  =     settings ref %1% references the single association %2% which is not associated to a line or a transformer: it will be ignored
+RefDeviceNotFound             =     settings ref %1% references single association %2% which is associated to the undefined device %3%: it will be ignored
 RefUnsupportedTag             =     settings ref %1% uses a unrecognized tag %2%: it will be ignored
 
 //------------------ Main ---------------------------

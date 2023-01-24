@@ -115,8 +115,9 @@ Line::Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::
 ///////////////////////////////////////////////////
 
 std::shared_ptr<Tfo>
-Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, bool isConnectedOnNode1, bool isConnectedOnNode2) {
-  auto ret = std::shared_ptr<Tfo>(new Tfo(tfoId, node1, node2));
+Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season, bool isConnectedOnNode1,
+           bool isConnectedOnNode2) {
+  auto ret = std::shared_ptr<Tfo>(new Tfo(tfoId, node1, node2, season));
 
   // Nodes existence is checked outside the builder
   assert(node1);
@@ -137,8 +138,8 @@ Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::sh
 
 std::shared_ptr<Tfo>
 Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3,
-           bool isConnectedOnNode1, bool isConnectedOnNode2, bool isConnectedOnNode3) {
-  auto ret = std::shared_ptr<Tfo>(new Tfo(tfoId, node1, node2, node3));
+           const std::string& season, bool isConnectedOnNode1, bool isConnectedOnNode2, bool isConnectedOnNode3) {
+  auto ret = std::shared_ptr<Tfo>(new Tfo(tfoId, node1, node2, node3, season));
 
   // Nodes existence is checked outside the builder
   assert(node1);
@@ -181,11 +182,16 @@ Tfo::build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::sh
   return ret;
 }
 
-Tfo::Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2) : id(tfoId), nodes{node1, node2} {}
-
-Tfo::Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3) :
+Tfo::Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season) :
     id(tfoId),
-    nodes{node1, node2, node3} {}
+    nodes{node1, node2},
+    activeSeason(season) {}
+
+Tfo::Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3,
+         const std::string& season) :
+    id(tfoId),
+    nodes{node1, node2, node3},
+    activeSeason(season) {}
 
 }  // namespace inputs
 }  // namespace dfl
