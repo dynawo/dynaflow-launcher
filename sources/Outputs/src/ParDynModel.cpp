@@ -29,7 +29,8 @@ ParDynModel::ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefin
 
 void
 ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                   const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions) {
+                   const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions,
+                   const algo::TransformersByIdDefinitions& transformersById) {
   for (const auto& dynModel : dynamicModelsDefinitions_.models) {
     boost::shared_ptr<parameters::ParametersSet> new_set;
 
@@ -37,7 +38,7 @@ ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection>& param
       new_set = writeSVCParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, dynModel.second);
     } else {
       new_set = writeDynamicModelParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, shuntCounters,
-                                              dynamicModelsDefinitions_, linesByIdDefinitions);
+                                              dynamicModelsDefinitions_, linesByIdDefinitions, transformersById);
     }
     if (new_set) {
       paramSetCollection->addParametersSet(new_set);
@@ -62,12 +63,12 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
   auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
 
   std::unordered_map<std::string, unsigned> genIdToInitialQrIndex;
-  auto it = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
-  assert(it != dynamicDataBaseManager.assembling().dynamicAutomatons().end());
+  auto itAutomaton = dynamicDataBaseManage.assembling().dynamicAutomatons().find(automaton.id);
+  assert(itAutomaton != dynamicDataBaseManage.assembling().dynamicAutomatons().end());
   unsigned genIndex = 1;
-  for (const auto& macroConn : it->second.macroConnects) {
-    if (dynamicDataBaseManager.assembling().isSingleAssociation(macroConn.id)) {
-      for (const auto& gen : dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators) {
+  for (const auto& macroConn : itAutomaton->second.macroConnects) {
+    if (dynamicDataBaseManage.assembling().isSingleAssociation(macroConn.id)) {
+      for (const auto& gen : dynamicDataBaseManage.assembling().getSingleAssociation(macroConn.id).generators) {
         genIdToInitialQrIndex[gen.name] = genIndex;
       }
       if (!dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators.empty())
@@ -128,7 +129,7 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
 boost::shared_ptr<parameters::ParametersSet>
 ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                                            const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
-                                           const algo::LinesByIdDefinitions& linesById) {
+                                           const algo::LinesByIdDefinitions& linesById, const algo::TransformersByIdDefinitions& tfosById) {
   if (models.models.count(set.id) == 0) {
     // model is not connected : ignore corresponding set
     return nullptr;
@@ -177,7 +178,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& s
 
   for (const auto& ref : set.refs) {
     if (ref.tag == constants::seasonTag) {
-      auto seasonOpt = getActiveSeason(ref, linesById, dynamicDataBaseManager);
+      auto seasonOpt = getActiveSeason(ref, linesById, tfosById, dynamicDataBaseManager);
       if (!seasonOpt) {
         continue;
       }
@@ -192,20 +193,31 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& s
 
 boost::optional<std::string>
 ParDynModel::getActiveSeason(const inputs::SettingDataBase::Ref& ref, const algo::LinesByIdDefinitions& linesById,
-                             const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+                             const algo::TransformersByIdDefinitions& tfosById, const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
   const auto& singleAssoc = dynamicDataBaseManager.assembling().getSingleAssociation(ref.id);
-  if (!singleAssoc.line) {
-    LOG(warn, SingleAssociationRefNotALine, ref.name, ref.id);
+  if (!singleAssoc.line && !singleAssoc.tfo) {
+    LOG(warn, SingleAssociationRefIncorrectType, ref.name, ref.id);
     return boost::none;
   }
-  const auto& lineId = singleAssoc.line->name;
-  auto foundLine = linesById.linesMap.find(lineId);
-  if (foundLine == linesById.linesMap.end()) {
-    LOG(warn, RefLineNotFound, ref.name, ref.id, lineId);
-    return boost::none;
-  }
+  if (singleAssoc.line) {
+    const auto& lineId = singleAssoc.line->name;
+    auto foundLine = linesById.linesMap.find(lineId);
+    if (foundLine == linesById.linesMap.end()) {
+      LOG(warn, RefDeviceNotFound, ref.name, ref.id, lineId);
+      return boost::none;
+    }
 
-  return foundLine->second.activeSeason;
+    return foundLine->second.activeSeason;
+  } else {
+    const auto& tfoId = singleAssoc.tfo->name;
+    auto found = tfosById.tfosMap.find(tfoId);
+    if (found == tfosById.tfosMap.end()) {
+      LOG(warn, RefDeviceNotFound, ref.name, ref.id, tfoId);
+      return boost::none;
+    }
+
+    return found->second.activeSeason;
+  }
 }
 
 }  // namespace outputs

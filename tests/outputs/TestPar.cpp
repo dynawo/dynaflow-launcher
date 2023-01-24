@@ -47,7 +47,8 @@ TEST(TestPar, write) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, {}, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -90,8 +91,7 @@ TEST(TestPar, writeRemote) {
   dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
   dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, busesRegulatedBySeveralGenerators,
-                                                               manager, {}, {}, {}, {}, {}));
-
+                                                               manager, {}, {}, {}, {}, {}, {}));
   parWriter.write();
 
   boost::filesystem::path reference("reference");
@@ -162,7 +162,8 @@ TEST(TestPar, writeHdvc) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, {}, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, {}, manager, {}, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -201,7 +202,9 @@ TEST(TestPar, DynModel) {
 
   defs.usedMacroConnections.insert("SVCToUMeasurement");
   defs.usedMacroConnections.insert("SVCToGenerator");
+  defs.usedMacroConnections.insert("CLAToIMeasurement");
   defs.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
+  defs.models.insert({"DM_TEST", dfl::algo::DynamicModelDefinition("DM_TEST", "PhaseShifterI")});
   auto macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
   defs.models.at("SVC").nodeConnections.insert(macro);
@@ -218,6 +221,9 @@ TEST(TestPar, DynModel) {
   macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8");
   defs.models.at("SVC").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO,
+                                                             "MESURE_I_ADA_TEST");
+  defs.models.at("DM_TEST").nodeConnections.insert(macro);
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
@@ -231,8 +237,14 @@ TEST(TestPar, DynModel) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VLb");
+  std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("VL0", vl2, 0.0, {}), dfl::inputs::Node::build("VL1", vl, 1.0, {})};
+  auto tfo = dfl::inputs::Tfo::build("TFOId", nodes[0], nodes[1], "SUMMER", true, true);
+  dfl::algo::TransformersByIdDefinitions tfosById;
+  tfosById.tfosMap.insert({"TFOId", *tfo});
   dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, counters, defs, {}, {}, {}));
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, counters, defs, {}, tfosById, {}, {}));
 
   parWriter.write();
 
@@ -275,7 +287,7 @@ TEST(TestPar, writeStaticVarCompensator) {
       StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, svarcs, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, {}, svarcs, {}));
 
   parWriter.write();
 
@@ -310,7 +322,7 @@ TEST(Dyd, writeLoad) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, {}, loads));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, {}, {}, loads));
 
   parWriter.write();
 
@@ -423,7 +435,7 @@ TEST(TestPar, startingPointMode) {
     std::string startingPointConfigFilePath = "res/" + startingPointModeFile;
     dfl::inputs::Configuration config(startingPointConfigFilePath);
     dfl::outputs::Par startingPointModeParWriter(
-        dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs, {}, manager, {}, {}, {}, svarcs, loads));
+        dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs, {}, manager, {}, {}, {}, {}, svarcs, loads));
 
     startingPointModeParWriter.write();
 

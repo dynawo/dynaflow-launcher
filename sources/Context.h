@@ -32,6 +32,7 @@
 #include "SVarCDefinitionAlgorithm.h"
 #include "ShuntDefinitionAlgorithm.h"
 #include "SlackNodeAlgorithm.h"
+#include "TransfoDefinitionAlgorithm.h"
 
 #include <JOBJobEntry.h>
 #include <boost/filesystem.hpp>
@@ -191,6 +192,7 @@ class Context {
   algo::DynamicModelDefinitions dynamicModels_;                                      ///< model definitions
   algo::ShuntCounterDefinitions counters_;                                           ///< shunt counters definitions
   algo::LinesByIdDefinitions linesById_;                                             ///< Lines by ids definition
+  algo::TransformersByIdDefinitions tfosById_;                                       ///< Transformers by ids definition
   boost::optional<algo::ValidContingencies> validContingencies_;                     ///< contingencies accepted for simulation in a Security Analyasis
   std::shared_ptr<algo::AlgorithmsResults> algoResults_;                             ///< reference to algorithms results class
 

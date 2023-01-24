@@ -72,6 +72,9 @@
     <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>
+  <set id="DM_TEST">
+    <par name="currentLimitAutomaton_Season" type="STRING" value="SUMMER"/>
+  </set>
   <set id="DM_VL61">
     <par name="phaseShifter_sign" type="DOUBLE" value="-1"/>
     <par name="phaseShifter_t1st" type="DOUBLE" value="6"/>

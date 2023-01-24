@@ -82,6 +82,7 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
   }
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
+  networkManager_.onNode(algo::TransformersByIdAlgorithm(tfosById_));
 }
 
 bool
@@ -236,7 +237,8 @@ Context::exportOutputs() {
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
   outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_, parOutput, generators_, hvdcLineDefinitions_, busesRegulatedBySeveralGenerators_,
-                                                     dynamicDataBaseManager_, counters_, dynamicModels_, linesById_, staticVarCompensators_, loads_));
+                                                     dynamicDataBaseManager_, counters_, dynamicModels_, linesById_, tfosById_, staticVarCompensators_,
+                                                     loads_));
   parWriter.write();
 
   // Diagram

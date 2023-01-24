@@ -38,16 +38,8 @@
     <reference componentId="@TFO@" name="phaseShifter_iStop" origData="IIDM" origName="iStop" type="DOUBLE"/>
     <reference componentId="@TFO@" name="phaseShifter_increasePhase" origData="IIDM" origName="increasePhase" type="INT"/>
   </set>
-  <set id="DM_CA">
-    <par name="currentLimitAutomaton_IThresholdSummer" type="DOUBLE" value="425"/>
-    <par name="currentLimitAutomaton_IThresholdWinter1" type="DOUBLE" value="480"/>
-    <par name="currentLimitAutomaton_IThresholdWinter2" type="DOUBLE" value="480"/>
-    <par name="currentLimitAutomaton_IThresholdIntermediate1" type="DOUBLE" value="465"/>
-    <par name="currentLimitAutomaton_IThresholdIntermediate2" type="DOUBLE" value="465"/>
-    <ref id="MESURE_I_CA" name="currentLimitAutomaton_Season" tag="@SAISON@" type="STRING"/>
-    <par name="currentLimitAutomaton_Running" type="BOOL" value="true"/>
-    <par name="currentLimitAutomaton_tLagBeforeActing" type="DOUBLE" value="20"/>
-    <par name="currentLimitAutomaton_OrderToEmit" type="INT" value="4"/>
+  <set id="DM_TEST">
+    <ref id="MESURE_I_ADA_TEST" name="currentLimitAutomaton_Season" tag="@SAISON@" type="STRING"/>
   </set>
   <set id="SVC">
     <!-- SVC parameters -->

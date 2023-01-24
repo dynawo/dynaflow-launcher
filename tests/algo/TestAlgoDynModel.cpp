@@ -61,7 +61,7 @@ TEST(TestAlgoDynModel, base) {
       dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED", true, true),
   };
 
-  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], true, true);
+  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], "UNDEFINED", true, true);
 
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
@@ -203,7 +203,7 @@ TEST(TestAlgoDynModel, noRegulation) {
       dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED", true, true),
   };
 
-  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], true, true);
+  auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], "UNDEFINED", true, true);
 
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";

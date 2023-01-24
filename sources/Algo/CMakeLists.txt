@@ -18,6 +18,7 @@ src/MainConnexComponentAlgorithm.cpp
 src/SVarCDefinitionAlgorithm.cpp
 src/ShuntDefinitionAlgorithm.cpp
 src/SlackNodeAlgorithm.cpp
+src/TransfoDefinitionAlgorithm.cpp
 )
 
 add_library(algo SHARED ${SOURCES})

@@ -22,6 +22,7 @@
 #include "LineDefinitionAlgorithm.h"
 #include "OutputsConstants.h"
 #include "ShuntDefinitionAlgorithm.h"
+#include "TransfoDefinitionAlgorithm.h"
 
 #include <PARParametersSetCollection.h>
 #include <boost/shared_ptr.hpp>
@@ -49,9 +50,11 @@ class ParDynModel {
    * @param dynamicDataBaseManager the dynamic DB manager to use
    * @param shuntCounters the counters to use
    * @param linesByIdDefinitions lines by id to use
+   * @param transformersById transformers by id to use
    */
   void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-             const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions);
+             const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions,
+             const algo::TransformersByIdDefinitions& transformersById);
 
  private:
   /**
@@ -70,14 +73,14 @@ class ParDynModel {
    * @param counters the counters to use
    * @param models the models definitions to use
    * @param linesById lines by id to use
+   * @param transformersById transformers by id to use
    *
    * @returns the parameter set to add
    */
-  boost::shared_ptr<parameters::ParametersSet> writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& set,
-                                                                             const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                                                                             const algo::ShuntCounterDefinitions& counters,
-                                                                             const algo::DynamicModelDefinitions& models,
-                                                                             const algo::LinesByIdDefinitions& linesById);
+  boost::shared_ptr<parameters::ParametersSet>
+  writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+                                const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
+                                const algo::LinesByIdDefinitions& linesById, const algo::TransformersByIdDefinitions& transformersById);
 
   /**
    * @brief Write setting set for secondary voltage controller models
@@ -97,11 +100,13 @@ class ParDynModel {
    *
    * @param ref the Ref XML element referencing the active season
    * @param linesById Dynawo lines by id to use
+   * @param transformersById transformers by id to use
    * @param dynamicDataBaseManager the dynamic DB manager to use
    *
    * @return active season value
    */
   boost::optional<std::string> getActiveSeason(const inputs::SettingDataBase::Ref& ref, const algo::LinesByIdDefinitions& linesById,
+                                               const algo::TransformersByIdDefinitions& transformersById,
                                                const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:

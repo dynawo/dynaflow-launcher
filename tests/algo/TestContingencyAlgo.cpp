@@ -61,8 +61,8 @@ TEST(ContingencyValidation, base) {
   nodes[8]->busBarSections.emplace_back("BUSBAR");
 
   std::vector<std::shared_ptr<dfl::inputs::Line>> lines{dfl::inputs::Line::build("LINE", nodes[0], nodes[1], "ETE", true, true)};
-  std::vector<std::shared_ptr<dfl::inputs::Tfo>> tfos{dfl::inputs::Tfo::build("TFO", nodes[0], nodes[1], true, true),
-                                                      dfl::inputs::Tfo::build("TFO3", nodes[0], nodes[1], nodes[2], true, true, true)};
+  std::vector<std::shared_ptr<dfl::inputs::Tfo>> tfos{dfl::inputs::Tfo::build("TFO", nodes[0], nodes[1], "UNDEFINED", true, true),
+                                                      dfl::inputs::Tfo::build("TFO3", nodes[0], nodes[1], nodes[2], "UNDEFINED", true, true, true)};
 
   auto conv1 = std::make_shared<dfl::inputs::LCCConverter>("LccStation1", "0", nullptr, 1.);
   auto conv2 = std::make_shared<dfl::inputs::LCCConverter>("LccStation2", "1", nullptr, 1.);
