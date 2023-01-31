@@ -84,6 +84,12 @@ DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCo
     connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
     connector->addConnect("generator_N", "signalN_N");
     dynamicModelsToConnect->addMacroConnector(connector);
+
+    connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenVRRemoteName_);
+    connector->addConnect("generator_NQ", "vrremote_NQ");
+    connector->addConnect("generator_limUQUp", "vrremote_limUQUp_@INDEX@_");
+    connector->addConnect("generator_limUQDown", "vrremote_limUQDown_@INDEX@_");
+    dynamicModelsToConnect->addMacroConnector(connector);
   }
 }
 
@@ -123,9 +129,9 @@ DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsColl
                it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR) {
       std::string modelNQId = constants::modelSignalNQprefix_ + it->regulatedBusId;
       ++modelNQIdGenNumber[modelNQId];
-      dynamicModelsToConnect->addConnect(it->id, "generator_NQ", modelNQId, "vrremote_NQ");
-      dynamicModelsToConnect->addConnect(it->id, "generator_limUQUp", modelNQId, "vrremote_limUQUp_" + std::to_string(modelNQIdGenNumber[modelNQId]) + "_");
-      dynamicModelsToConnect->addConnect(it->id, "generator_limUQDown", modelNQId, "vrremote_limUQDown_" + std::to_string(modelNQIdGenNumber[modelNQId]) + "_");
+      auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenVRRemoteName_, it->id, modelNQId);
+      connection->setIndex2(std::to_string(modelNQIdGenNumber[modelNQId]));
+      dynamicModelsToConnect->addMacroConnect(connection);
     }
 
     auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenName_, it->id, constants::networkModelName);

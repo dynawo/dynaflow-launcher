@@ -7,6 +7,11 @@
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
     <dyn:connect var1="generator_N" var2="signalN_N"/>
   </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_VRREMOTE_CONNECTOR">
+    <dyn:connect var1="generator_NQ" var2="vrremote_NQ"/>
+    <dyn:connect var1="generator_limUQDown" var2="vrremote_limUQDown_@INDEX@_"/>
+    <dyn:connect var1="generator_limUQUp" var2="vrremote_limUQUp_@INDEX@_"/>
+  </dyn:macroConnector>
   <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
     <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
     <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
@@ -15,6 +20,8 @@
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToGenerator">
+    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
+    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
     <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
@@ -65,8 +72,8 @@
   <dyn:blackBoxModel id="MODELE_1_VL4" lib="DYNModel1" parFile="TestDydDynModel.par" parId="MODELE_1_VL4"/>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:blackBoxModel id="SVC" lib="SecondaryVoltageControlSimp" parFile="TestDydDynModel.par" parId="SVC"/>
-  <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="G5"/>
-  <dyn:macroConnect connector="SVCToUMeasurement" id1="SVC" id2="NETWORK" index1="0" name2="0"/>
+  <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="G5" index1="1"/>
+  <dyn:macroConnect connector="SVCToUMeasurement" id1="SVC" id2="NETWORK" name2="0"/>
   <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="1.1"/>
   <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="1" name2="1.2"/>
   <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>

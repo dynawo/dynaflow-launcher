@@ -58,6 +58,15 @@ class DydDynModel {
    */
   void writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::DynamicModelDefinition& dynModel);
   /**
+   * @brief add the macro connector for defined secondary voltage control model
+   *
+   * @param dynamicModelsToConnect dynamic black models set collection to enrich
+   * @param dynModel defined dynamic model
+   * @param dynamicDataBaseManager the database manager to use
+   */
+  void writeSVCMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::DynamicModelDefinition& dynModel,
+                              const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  /**
    * @brief add all the macro connectors for defined dynamic models
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich

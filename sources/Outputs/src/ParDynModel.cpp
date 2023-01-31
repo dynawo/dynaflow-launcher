@@ -57,20 +57,20 @@ ParDynModel::getTransformerComponentId(const algo::DynamicModelDefinition& dynMo
 }
 
 boost::shared_ptr<parameters::ParametersSet>
-ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManage,
+ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
                                   const algo::DynamicModelDefinition& automaton) {
   auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
 
   std::unordered_map<std::string, unsigned> genIdToInitialQrIndex;
-  auto it = dynamicDataBaseManage.assembling().dynamicAutomatons().find(automaton.id);
-  assert(it != dynamicDataBaseManage.assembling().dynamicAutomatons().end());
+  auto it = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
+  assert(it != dynamicDataBaseManager.assembling().dynamicAutomatons().end());
   unsigned genIndex = 1;
   for (const auto& macroConn : it->second.macroConnects) {
-    if (dynamicDataBaseManage.assembling().isSingleAssociation(macroConn.id)) {
-      for (const auto& gen : dynamicDataBaseManage.assembling().getSingleAssociation(macroConn.id).generators) {
+    if (dynamicDataBaseManager.assembling().isSingleAssociation(macroConn.id)) {
+      for (const auto& gen : dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators) {
         genIdToInitialQrIndex[gen.name] = genIndex;
       }
-      if (!dynamicDataBaseManage.assembling().getSingleAssociation(macroConn.id).generators.empty())
+      if (!dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators.empty())
         ++genIndex;
     }
   }
@@ -86,6 +86,7 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
 
   unsigned idx = 1;
   new_set->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
+  new_set->addParameter(helper::buildParameter("secondaryVoltageControl_FreezingActivated", true));
   for (const auto& connection : automaton.nodeConnections) {
     const auto& generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
     if (generatorIdx != generatorIdToIndex_.end()) {
