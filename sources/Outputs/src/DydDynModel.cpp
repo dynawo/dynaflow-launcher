@@ -10,6 +10,7 @@
 
 #include "DydDynModel.h"
 
+#include "Constants.h"
 #include "DydCommon.h"
 #include "Log.h"
 #include "OutputsConstants.h"
@@ -38,7 +39,11 @@ DydDynModel::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dyna
   for (const auto& model : dynamicModelsDefinitions_.models) {
     auto blackBoxModel = helper::buildBlackBox(model.second.id, model.second.lib, basename + ".par", model.second.id);
     dynamicModelsToConnect->addModel(blackBoxModel);
-    writeMacroConnector(dynamicModelsToConnect, model.second);
+    if (model.second.lib == common::constants::svcModelName) {
+      writeSVCMacroConnector(dynamicModelsToConnect, model.second, dynamicDataBaseManager);
+    } else {
+      writeMacroConnector(dynamicModelsToConnect, model.second);
+    }
   }
   writeMacroConnectors(dynamicModelsToConnect, dynamicDataBaseManager);
 }
@@ -61,18 +66,45 @@ DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCol
   }
 
   for (const auto& connection : connections) {
-    if (generatorsWithDynamicModels_.find(connection.connectedElementId) != generatorsWithDynamicModels_.end()) {
-      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, connection.connectedElementId);
-      dynamicModelsToConnect->addMacroConnect(macroConnect);
-    } else {
-      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, constants::networkModelName);
-      macroConnect->setName2(connection.connectedElementId);
+    auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, constants::networkModelName);
+    macroConnect->setName2(connection.connectedElementId);
 #if _DEBUG_
-      assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
+    assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
 #endif
-      // We put index1 to 0 even in case there is only one connection, for consistency in the output file
-      macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
-      (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
+    // We put index1 to 0 even in case there is only one connection, for consistency in the output file
+    macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
+    (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
+    dynamicModelsToConnect->addMacroConnect(macroConnect);
+  }
+}
+
+void
+DydDynModel::writeSVCMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
+                                    const algo::DynamicModelDefinition& automaton, const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+  const auto& connections = automaton.nodeConnections;
+
+  std::unordered_set<std::string> generators;
+  auto it = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
+  assert(it != dynamicDataBaseManager.assembling().dynamicAutomatons().end());
+  for (const auto& macroConn : it->second.macroConnects) {
+    if (dynamicDataBaseManager.assembling().isSingleAssociation(macroConn.id)) {
+      for (const auto& gen : dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators) {
+        generators.insert(gen.name);
+      }
+    }
+  }
+
+  unsigned idx = 1;
+  for (const auto& connection : connections) {
+    if (generatorsWithDynamicModels_.find(connection.connectedElementId) != generatorsWithDynamicModels_.end()) {
+      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, automaton.id, connection.connectedElementId);
+      macroConnect->setIndex1(std::to_string(idx));
+      ++idx;
+      dynamicModelsToConnect->addMacroConnect(macroConnect);
+    } else if (generators.find(connection.connectedElementId) == generators.end()) {
+      // U measurement
+      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, automaton.id, constants::networkModelName);
+      macroConnect->setName2(connection.connectedElementId);
       dynamicModelsToConnect->addMacroConnect(macroConnect);
     }
   }

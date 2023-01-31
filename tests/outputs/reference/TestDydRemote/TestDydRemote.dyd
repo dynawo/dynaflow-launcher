@@ -7,6 +7,11 @@
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
     <dyn:connect var1="generator_N" var2="signalN_N"/>
   </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_VRREMOTE_CONNECTOR">
+    <dyn:connect var1="generator_NQ" var2="vrremote_NQ"/>
+    <dyn:connect var1="generator_limUQDown" var2="vrremote_limUQDown_@INDEX@_"/>
+    <dyn:connect var1="generator_limUQUp" var2="vrremote_limUQUp_@INDEX@_"/>
+  </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
     <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
@@ -35,31 +40,23 @@
   <dyn:blackBoxModel id="Model_Signal_NQ_BUS_2" lib="VRRemote" parFile="TestDydRemote.par" parId="Model_Signal_NQ_BUS_2"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G0" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G0" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G1" id2="Model_Signal_NQ_BUS_1" index2="1"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G1" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G1" id2="Model_Signal_N" index2="1"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G2" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G3" id2="Model_Signal_NQ_BUS_1" index2="2"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G3" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G3" id2="Model_Signal_N" index2="3"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G4" id2="Model_Signal_NQ_BUS_2" index2="1"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G4" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="4"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G5" id2="Model_Signal_NQ_BUS_2" index2="2"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G5" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="5"/>
   <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
   <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="G1" var1="generator_NQ" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ"/>
-  <dyn:connect id1="G1" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQUp_1_"/>
-  <dyn:connect id1="G1" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQDown_1_"/>
   <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="G3" var1="generator_NQ" id2="Model_Signal_NQ_BUS_1" var2="vrremote_NQ"/>
-  <dyn:connect id1="G3" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQUp_2_"/>
-  <dyn:connect id1="G3" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_1" var2="vrremote_limUQDown_2_"/>
-  <dyn:connect id1="G4" var1="generator_NQ" id2="Model_Signal_NQ_BUS_2" var2="vrremote_NQ"/>
-  <dyn:connect id1="G4" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQUp_1_"/>
-  <dyn:connect id1="G4" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQDown_1_"/>
-  <dyn:connect id1="G5" var1="generator_NQ" id2="Model_Signal_NQ_BUS_2" var2="vrremote_NQ"/>
-  <dyn:connect id1="G5" var1="generator_limUQUp" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQUp_2_"/>
-  <dyn:connect id1="G5" var1="generator_limUQDown" id2="Model_Signal_NQ_BUS_2" var2="vrremote_limUQDown_2_"/>
 </dyn:dynamicModelsArchitecture>
