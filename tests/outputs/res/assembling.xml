@@ -47,8 +47,10 @@
   <macroConnection id="SVCToUMeasurement">
     <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
   </macroConnection>
-  <macroConnection id="SVCToGenerator">
+  <macroConnection id="SVCToGenerator" index1="true">
     <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
   </macroConnection>
   <singleAssociation id="UMeasurement">
     <bus voltageLevel="VL"/>
