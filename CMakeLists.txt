@@ -152,6 +152,7 @@ install(FILES dictionaries_mapping.dic DESTINATION  ${CMAKE_INSTALL_PREFIX}/shar
 
 # MPI (required by algorithms)
 set(MPI_HOME ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich)
+set(MPI_ROOT ${MPI_HOME})
 find_package(MPI REQUIRED)
 if(MPI_FOUND)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
