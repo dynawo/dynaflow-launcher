@@ -118,6 +118,7 @@ class DydGenerator {
   const std::string macroStaticRefSignalNGeneratorName_{"GeneratorStaticRef"};  ///< Name for the static ref macro for generators using signalN model
   const std::string macroConnectorGenName_{"GEN_NETWORK_CONNECTOR"};            ///< name for the macro connector for generators
   const std::string macroConnectorGenSignalNName_{"GEN_SIGNALN_CONNECTOR"};     ///< Name for the macro connector for SignalN
+  const std::string macroConnectorGenVRRemoteName_{"GEN_VRREMOTE_CONNECTOR"};   ///< name for the macro connector for generators
   const std::string signalNModelName_{"Model_Signal_N"};                        ///< Name of the SignalN model
 };
 

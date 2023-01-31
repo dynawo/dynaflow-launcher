@@ -31,6 +31,7 @@ SPDX-License-Identifier: MPL-2.0 -->
       <xs:element name="connection" type="Connection" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="id" use="required" type="xs:string"/>
+    <xs:attribute name="index1" use="optional" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="Connection">
