@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 
 ### Regexes ####################################################################
 contingency_event_time = 10
-timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
+timeline_log_regex = re.compile("^" + str(contingency_event_time) + "(\.0*)?\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
 
 ### Code #######################################################################
 def check_test_contingencies(tests_path, test_name, input_iidm_name):
@@ -116,11 +116,12 @@ def check_timeline(timeline_log_file, element):
     with open(timeline_log_file) as f:
         content = f.read()
         for find in timeline_log_regex.finditer(content):
+            element_id_from_timeline = find.group().split(" | ")[1]
             # For busbar sections, if we find a disconnected calculated bus it is ok
-            if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in find.group(1):
+            if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in element_id_from_timeline:
                 return True
             # For the rest of element types we must find exactly the element identifier in the timeline log
-            if find.group(1) == element_id:
+            if element_id_from_timeline == element_id:
                 return True
         else:
             print("Check timeline '" + timeline_log_file + "' failed:")
