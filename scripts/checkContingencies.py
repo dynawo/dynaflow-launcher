@@ -8,7 +8,8 @@ import re
 import xml.etree.ElementTree as ET
 
 ### Regexes ####################################################################
-timeline_log_regex = re.compile("^10\.000\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
+contingency_event_time = 10
+timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
 
 ### Code #######################################################################
 def check_test_contingencies(tests_path, test_name, input_iidm_name):
