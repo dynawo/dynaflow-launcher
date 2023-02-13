@@ -63,12 +63,12 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
   auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
 
   std::unordered_map<std::string, unsigned> genIdToInitialQrIndex;
-  auto itAutomaton = dynamicDataBaseManage.assembling().dynamicAutomatons().find(automaton.id);
-  assert(itAutomaton != dynamicDataBaseManage.assembling().dynamicAutomatons().end());
+  auto itAutomaton = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
+  assert(itAutomaton != dynamicDataBaseManager.assembling().dynamicAutomatons().end());
   unsigned genIndex = 1;
   for (const auto& macroConn : itAutomaton->second.macroConnects) {
-    if (dynamicDataBaseManage.assembling().isSingleAssociation(macroConn.id)) {
-      for (const auto& gen : dynamicDataBaseManage.assembling().getSingleAssociation(macroConn.id).generators) {
+    if (dynamicDataBaseManager.assembling().isSingleAssociation(macroConn.id)) {
+      for (const auto& gen : dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators) {
         genIdToInitialQrIndex[gen.name] = genIndex;
       }
       if (!dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators.empty())

@@ -77,10 +77,10 @@
   <macroConnection id="CLAToIMeasurement">
     <connection var1="currentLimitAutomaton_IMonitored" var2="@NAME@_iSide1"/>
   </macroConnection>
-  <singleAssociation id="MESURE_I_ADA_TEST">
+  <singleAssociation id="MESURE_I_CLA_TEST">
     <tfo name="TFOId"/>
   </singleAssociation>
   <dynamicAutomaton id="DM_TEST" lib="PhaseShifterI">
-    <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_ADA_TEST"/>
+    <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_CLA_TEST"/>
   </dynamicAutomaton>
 </assembling>

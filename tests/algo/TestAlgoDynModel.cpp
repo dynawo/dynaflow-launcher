@@ -120,15 +120,15 @@ TEST(TestAlgoDynModel, base) {
 
   // Line
   ASSERT_NO_THROW(defs.models.at("DM_SALON"));
-  const auto& dynModel_ada = defs.models.at("DM_SALON");
-  ASSERT_EQ(dynModel_ada.id, "DM_SALON");
-  ASSERT_EQ(dynModel_ada.lib, "libdummyLib");
-  ASSERT_EQ(dynModel_ada.nodeConnections.size(), 3);
+  const auto& dynModelCLA = defs.models.at("DM_SALON");
+  ASSERT_EQ(dynModelCLA.id, "DM_SALON");
+  ASSERT_EQ(dynModelCLA.lib, "libdummyLib");
+  ASSERT_EQ(dynModelCLA.nodeConnections.size(), 3);
 
   searched = "CLAToControlledLineState";
-  found_connection = std::find_if(dynModel_ada.nodeConnections.begin(), dynModel_ada.nodeConnections.end(),
+  found_connection = std::find_if(dynModelCLA.nodeConnections.begin(), dynModelCLA.nodeConnections.end(),
                                   [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
-  ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
+  ASSERT_NE(found_connection, dynModelCLA.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "1");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LINE);
 
@@ -266,15 +266,15 @@ TEST(TestAlgoDynModel, noRegulation) {
 
   // Line
   ASSERT_NO_THROW(defs.models.at("DM_SALON"));
-  const auto& dynModel_ada = defs.models.at("DM_SALON");
-  ASSERT_EQ(dynModel_ada.id, "DM_SALON");
-  ASSERT_EQ(dynModel_ada.lib, "libdummyLib");
-  ASSERT_EQ(dynModel_ada.nodeConnections.size(), 3);
+  const auto& dynModelCLA = defs.models.at("DM_SALON");
+  ASSERT_EQ(dynModelCLA.id, "DM_SALON");
+  ASSERT_EQ(dynModelCLA.lib, "libdummyLib");
+  ASSERT_EQ(dynModelCLA.nodeConnections.size(), 3);
 
   searched = "CLAToControlledLineState";
-  found_connection = std::find_if(dynModel_ada.nodeConnections.begin(), dynModel_ada.nodeConnections.end(),
+  found_connection = std::find_if(dynModelCLA.nodeConnections.begin(), dynModelCLA.nodeConnections.end(),
                                   [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
-  ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
+  ASSERT_NE(found_connection, dynModelCLA.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "1");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LINE);
 
@@ -287,7 +287,7 @@ TEST(TestAlgoDynModel, noRegulation) {
   searched = "PhaseShifterToIMeasurement";
   found_connection = std::find_if(dynModel_tfo.nodeConnections.begin(), dynModel_tfo.nodeConnections.end(),
                                   [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
-  ASSERT_NE(found_connection, dynModel_ada.nodeConnections.end());
+  ASSERT_NE(found_connection, dynModelCLA.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "TFO1");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO);
 
