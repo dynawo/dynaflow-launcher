@@ -222,7 +222,7 @@ TEST(TestPar, DynModel) {
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO,
-                                                             "MESURE_I_ADA_TEST");
+                                                             "MESURE_I_CLA_TEST");
   defs.models.at("DM_TEST").nodeConnections.insert(macro);
 
   const std::string bus1 = "BUS_1";
