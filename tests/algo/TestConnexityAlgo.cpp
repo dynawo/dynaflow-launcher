@@ -45,7 +45,7 @@ TEST(Connexity, base) {
 
   ASSERT_EQ(4, main.size());
   std::vector<dfl::inputs::Node::NodeId> nodeids_main;
-  std::for_each(main.begin(), main.end(), [&nodeids_main](const std::shared_ptr<dfl::inputs::Node>& node) { nodeids_main.push_back(node->id); });
+  std::for_each(main.begin(), main.end(), [&nodeids_main](const std::shared_ptr<dfl::inputs::Node> &node) { nodeids_main.push_back(node->id); });
   std::sort(nodeids_main.begin(), nodeids_main.end());
   ASSERT_EQ(expected_nodes, nodeids_main);
 }
@@ -74,7 +74,19 @@ TEST(Connexity, SameSize) {
 
   ASSERT_EQ(3, main.size());
   std::vector<dfl::inputs::Node::NodeId> nodeids_main;
-  std::for_each(main.begin(), main.end(), [&nodeids_main](const std::shared_ptr<dfl::inputs::Node>& node) { nodeids_main.push_back(node->id); });
+  std::for_each(main.begin(), main.end(), [&nodeids_main](const std::shared_ptr<dfl::inputs::Node> &node) { nodeids_main.push_back(node->id); });
   std::sort(nodeids_main.begin(), nodeids_main.end());
   ASSERT_EQ(expected_nodes, nodeids_main);
+}
+
+TEST(Connexity, notRetainedSwitch) {
+  using dfl::inputs::NetworkManager;
+  NetworkManager manager("res/IEEE14_disconnected_shunts.iidm");
+
+  dfl::algo::MainConnexComponentAlgorithm::ConnexGroup main;
+  dfl::algo::MainConnexComponentAlgorithm algo(main);
+  manager.onNode(algo);
+  manager.walkNodes();
+
+  ASSERT_EQ(10, main.size());
 }

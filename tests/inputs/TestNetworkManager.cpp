@@ -13,8 +13,7 @@
 
 static size_t count = 0;
 
-static void
-checkNode(const std::shared_ptr<dfl::inputs::Node>& node) {
+static void checkNode(const std::shared_ptr<dfl::inputs::Node> &node) {
   // Pattern = _BUS_+[0-9]+_TN
   ASSERT_EQ(0, node->id.compare(0, 5, "_BUS_"));
 
@@ -48,8 +47,7 @@ TEST(NetworkManager, walk) {
   ASSERT_EQ(14, count);
 }
 
-static bool
-hvdcLineEqual(const dfl::inputs::HvdcLine& lhs, const dfl::inputs::HvdcLine& rhs) {
+static bool hvdcLineEqual(const dfl::inputs::HvdcLine &lhs, const dfl::inputs::HvdcLine &rhs) {
   return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.pMax == rhs.pMax;
 }
 
@@ -59,30 +57,12 @@ TEST(NetworkManager, hvdcLines) {
   auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0.,
                                                                      std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
   std::vector<std::shared_ptr<dfl::inputs::HvdcLine>> expected_hvdcLines = {
-      dfl::inputs::HvdcLine::build("HVDCLCCLine",
-                                    dfl::inputs::HvdcLine::ConverterType::LCC,
-                                    dummyStation,
-                                    dummyStation,
-                                    boost::none,
-                                    2000,
-                                    false,
-                                    320,
-                                    322,
-                                    0.125,
-                                    {0.01, 0.01}),
-      dfl::inputs::HvdcLine::build("HVDCVSCLine",
-                                    dfl::inputs::HvdcLine::ConverterType::VSC,
-                                    dummyStationVSC,
-                                    dummyStationVSC,
-                                    boost::none,
-                                    2000,
-                                    false,
-                                    320,
-                                    322,
-                                    0.125,
-                                    {0.01, 0.01})};
+      dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, dummyStation, dummyStation, boost::none, 2000, false, 320, 322,
+                                   0.125, {0.01, 0.01}),
+      dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, dummyStationVSC, boost::none, 2000, false, 320,
+                                   322, 0.125, {0.01, 0.01})};
   NetworkManager manager("res/HvdcDangling.iidm");
-  const auto& hvdcLines = manager.getHvdcLine();
+  const auto &hvdcLines = manager.getHvdcLine();
   for (int index = 0; index < 2; ++index) {
     ASSERT_TRUE(hvdcLineEqual(*hvdcLines[index], *expected_hvdcLines[index]));
   }
@@ -91,7 +71,7 @@ TEST(NetworkManager, hvdcLines) {
   ASSERT_EQ(converters.size(), 2);
   std::vector<dfl::inputs::Converter::ConverterId> ids;
   std::transform(converters.begin(), converters.end(), std::back_inserter(ids),
-                 [](const std::shared_ptr<dfl::inputs::Converter>& converter) { return converter->converterId; });
+                 [](const std::shared_ptr<dfl::inputs::Converter> &converter) { return converter->converterId; });
   std::sort(ids.begin(), ids.end());
   ASSERT_EQ(ids.at(0), "VSCStation1");
   ASSERT_EQ(ids.at(1), "VSCStation2");
@@ -116,7 +96,7 @@ TEST(NetworkManager, shunts) {
   NetworkManager manager("res/IEEE14.iidm");
 
   unsigned int nbShunts = 0;
-  manager.onNode([&nbShunts](const std::shared_ptr<dfl::inputs::Node>& node) { nbShunts += node->shunts.size(); });
+  manager.onNode([&nbShunts](const std::shared_ptr<dfl::inputs::Node> &node) { nbShunts += node->shunts.size(); });
   manager.walkNodes();
   ASSERT_EQ(nbShunts, 1);
 }
