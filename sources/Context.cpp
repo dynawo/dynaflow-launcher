@@ -175,6 +175,8 @@ Context::filterPartiallyConnectedDynamicModels() {
         break;  // element doesn't exist any more, go to next automaton
       }
     }
+    if (dynamicModels_.models.find(automaton.second.id) == dynamicModels_.models.end())
+      continue;
 
     // Filtering generators with default model or regulating a node regulated by several generators from SVCs
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
