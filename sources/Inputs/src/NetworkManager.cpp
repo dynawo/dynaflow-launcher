@@ -42,16 +42,13 @@
 namespace dfl {
 namespace inputs {
 
-NetworkManager::NetworkManager(const boost::filesystem::path& filepath) :
-    interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())),
-    slackNode_{},
-    nodes_{},
-    nodesCallbacks_{} {
+NetworkManager::NetworkManager(const boost::filesystem::path &filepath)
+    : interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())), slackNode_{}, nodes_{},
+      nodesCallbacks_{} {
   buildTree();
 }
 
-void
-NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface) {
+void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::string &elementId, const boost::shared_ptr<DYN::DataInterface> &dataInterface) {
   auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(elementId)->getID();
   auto it = map.find(regulatedBus);
   if (it == map.end()) {
@@ -61,17 +58,16 @@ NetworkManager::updateMapRegulatingBuses(BusMapRegulating& map, const std::strin
   }
 }
 
-void
-NetworkManager::buildTree() {
+void NetworkManager::buildTree() {
   auto network = interface_->getNetwork();
 
   auto opt_id = network->getSlackNodeBusId();
 
-  const auto& voltageLevels = network->getVoltageLevels();
-  for (const auto& networkVL : voltageLevels) {
-    const auto& shunts = networkVL->getShuntCompensators();
+  const auto &voltageLevels = network->getVoltageLevels();
+  for (const auto &networkVL : voltageLevels) {
+    const auto &shunts = networkVL->getShuntCompensators();
     std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
-    for (const auto& shunt : shunts) {
+    for (const auto &shunt : shunts) {
       // We take into account even disconnected shunts as dynamic models may aim to connect them
       (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));
     }
@@ -79,9 +75,9 @@ NetworkManager::buildTree() {
     auto vl = std::make_shared<VoltageLevel>(networkVL->getID());
     voltagelevels_.push_back(vl);
 
-    const auto& buses = networkVL->getBuses();
-    for (const auto& bus : buses) {
-      const auto& nodeId = bus->getID();
+    const auto &buses = networkVL->getBuses();
+    for (const auto &bus : buses) {
+      const auto &nodeId = bus->getID();
 #if _DEBUG_
       // ids of nodes should be unique
       assert(nodes_.count(nodeId) == 0);
@@ -98,13 +94,13 @@ NetworkManager::buildTree() {
         slackNode_ = nodes_[nodeId];
       }
 
-      for (const auto& busBarSection : bus->getBusBarSectionIdentifiers()) {
+      for (const auto &busBarSection : bus->getBusBarSectionIdentifiers()) {
         nodes_[bus->getID()]->busBarSections.emplace_back(busBarSection);
       }
     }
 
-    const auto& loads = networkVL->getLoads();
-    for (const auto& load : loads) {
+    const auto &loads = networkVL->getLoads();
+    for (const auto &load : loads) {
       // if load is not connected, it is ignored
       if (!load->getInitialConnected())
         continue;
@@ -118,8 +114,8 @@ NetworkManager::buildTree() {
       LOG(debug, NodeContainsLoad, nodeid, load->getID());
     }
 
-    const auto& generators = networkVL->getGenerators();
-    for (const auto& generator : generators) {
+    const auto &generators = networkVL->getGenerators();
+    for (const auto &generator : generators) {
       // if generator is not connected, it is ignored
       if (!generator->getInitialConnected())
         continue;
@@ -150,9 +146,9 @@ NetworkManager::buildTree() {
       LOG(debug, NodeContainsGen, nodeid, generator->getID());
     }
 
-    const auto& switches = networkVL->getSwitches();
-    for (const auto& sw : switches) {
-      if (!sw->isOpen()) {
+    const auto &switches = networkVL->getSwitches();
+    for (const auto &sw : switches) {
+      if (!sw->isOpen() || sw->isRetained()) {
         auto bus1 = sw->getBusInterface1();
         auto bus2 = sw->getBusInterface2();
 #ifdef _DEBUG_
@@ -166,8 +162,8 @@ NetworkManager::buildTree() {
       }
     }
 
-    const auto& svarcs = networkVL->getStaticVarCompensators();
-    for (const auto& svarc : svarcs) {
+    const auto &svarcs = networkVL->getStaticVarCompensators();
+    for (const auto &svarc : svarcs) {
       if (!svarc->getInitialConnected()) {
         continue;
       }
@@ -190,15 +186,15 @@ NetworkManager::buildTree() {
       LOG(debug, NodeContainsSVarC, nodeid, svarc->getID());
     }
 
-    const auto& dangling_lines = networkVL->getDanglingLines();
-    for (const auto& dline : dangling_lines) {
+    const auto &dangling_lines = networkVL->getDanglingLines();
+    for (const auto &dline : dangling_lines) {
       nodes_[dline->getBusInterface()->getID()]->danglingLines.emplace_back(dline->getID());
     }
   }
 
   // perform connections
-  const auto& lines = network->getLines();
-  for (const auto& line : lines) {
+  const auto &lines = network->getLines();
+  for (const auto &line : lines) {
     auto bus1 = line->getBusInterface1();
     auto bus2 = line->getBusInterface2();
     if (line->getInitialConnected1() || line->getInitialConnected2()) {
@@ -216,8 +212,8 @@ NetworkManager::buildTree() {
     }
   }
 
-  const auto& transfos = network->getTwoWTransformers();
-  for (const auto& transfo : transfos) {
+  const auto &transfos = network->getTwoWTransformers();
+  for (const auto &transfo : transfos) {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
     if (transfo->getInitialConnected1() || transfo->getInitialConnected2()) {
@@ -230,8 +226,8 @@ NetworkManager::buildTree() {
     }
   }
 
-  const auto& transfos_three = network->getThreeWTransformers();
-  for (const auto& transfo : transfos_three) {
+  const auto &transfos_three = network->getThreeWTransformers();
+  for (const auto &transfo : transfos_three) {
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
     auto bus3 = transfo->getBusInterface3();
@@ -245,10 +241,10 @@ NetworkManager::buildTree() {
     }
   }
 
-  const auto& hvdcLines = network->getHvdcLines();
-  for (const auto& hvdcLine : hvdcLines) {
-    const auto& converterDyn1 = hvdcLine->getConverter1();
-    const auto& converterDyn2 = hvdcLine->getConverter2();
+  const auto &hvdcLines = network->getHvdcLines();
+  for (const auto &hvdcLine : hvdcLines) {
+    const auto &converterDyn1 = hvdcLine->getConverter1();
+    const auto &converterDyn2 = hvdcLine->getConverter2();
     if (!converterDyn1->getInitialConnected() || !converterDyn2->getInitialConnected()) {
       continue;
     }
@@ -302,19 +298,17 @@ NetworkManager::buildTree() {
   }
 }
 
-void
-NetworkManager::walkNodes() const {
-  for (const auto& node : nodes_) {
-    for (const auto& cbk : nodesCallbacks_) {
+void NetworkManager::walkNodes() const {
+  for (const auto &node : nodes_) {
+    for (const auto &cbk : nodesCallbacks_) {
       cbk(node.second);
     }
   }
 }
 
-std::unordered_set<std::shared_ptr<Converter>>
-NetworkManager::computeVSCConverters() const {
+std::unordered_set<std::shared_ptr<Converter>> NetworkManager::computeVSCConverters() const {
   std::unordered_set<std::shared_ptr<Converter>> ret;
-  for (const auto& hvdcLine : hvdcLines_) {
+  for (const auto &hvdcLine : hvdcLines_) {
     if (hvdcLine->converterType != HvdcLine::ConverterType::VSC) {
       continue;
     }
