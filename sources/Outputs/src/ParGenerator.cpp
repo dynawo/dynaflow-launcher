@@ -17,16 +17,15 @@
 namespace dfl {
 namespace outputs {
 
-void
-ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, ActivePowerCompensation activePowerCompensation,
-                    const std::string& basename, const boost::filesystem::path& dirname,
-                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, StartingPointMode startingPointMode,
-                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
+                         const std::string &basename, const boost::filesystem::path &dirname,
+                         const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators, StartingPointMode startingPointMode,
+                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   std::unordered_map<algo::GeneratorDefinitionAlgorithm::BusId, bool> busesRegulategBySeveralGeneratorsToFrozen;
-  for (const auto& keyValue : busesRegulatedBySeveralGenerators) {
+  for (const auto &keyValue : busesRegulatedBySeveralGenerators) {
     busesRegulategBySeveralGeneratorsToFrozen.insert({keyValue.first, true});
   }
-  for (const auto& generator : generatorDefinitions_) {
+  for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {
       continue;
@@ -65,14 +64,13 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
       paramSetCollection->addParametersSet(paramSet);
     }
 
-    if (busesRegulategBySeveralGeneratorsToFrozen.find(generator.regulatedBusId) != busesRegulategBySeveralGeneratorsToFrozen.end()) {
-      if (generator.q < generator.qmax && generator.q > generator.qmin) {
-        busesRegulategBySeveralGeneratorsToFrozen[generator.regulatedBusId] = false;
-      }
+    if (busesRegulategBySeveralGeneratorsToFrozen.find(generator.regulatedBusId) != busesRegulategBySeveralGeneratorsToFrozen.end() &&
+        generator.q < generator.qmax && generator.q > generator.qmin) {
+      busesRegulategBySeveralGeneratorsToFrozen[generator.regulatedBusId] = false;
     }
   }
   // adding parameters sets related to remote voltage control or multiple generator regulating same bus
-  for (const auto& keyValue : busesRegulatedBySeveralGenerators) {
+  for (const auto &keyValue : busesRegulatedBySeveralGenerators) {
     if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
       paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
     }
@@ -83,8 +81,7 @@ ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection>& para
   }
 }
 
-std::string
-ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP) {
+std::string ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP) {
   std::string id;
   switch (modelType) {
   case ModelType::PROP_DIAGRAM_PQ_SIGNALN:
@@ -116,9 +113,9 @@ ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, bool fixedP) 
   return id;
 }
 
-boost::shared_ptr<parameters::MacroParameterSet>
-ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def, ActivePowerCompensation activePowerCompensation, double targetP,
-                                              StartingPointMode startingPointMode) {
+boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition &def,
+                                                                                               ActivePowerCompensation activePowerCompensation, double targetP,
+                                                                                               StartingPointMode startingPointMode) {
   boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(
       new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(targetP))));
 
@@ -201,9 +198,8 @@ ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& d
   return macroParameterSet;
 }
 
-void
-ParGenerator::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, ActivePowerCompensation activePowerCompensation, double targetP,
-                                     StartingPointMode startingPointMode) {
+void ParGenerator::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, ActivePowerCompensation activePowerCompensation, double targetP,
+                                          StartingPointMode startingPointMode) {
   set->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(targetP)));
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
@@ -245,9 +241,9 @@ ParGenerator::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet
   }
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation, const algo::GeneratorDefinition& generator,
-                                          StartingPointMode startingPointMode) {
+boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
+                                                                                       const algo::GeneratorDefinition &generator,
+                                                                                       StartingPointMode startingPointMode) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(helper::getGeneratorParameterSetId(generator)));
   updateSignalNGenerator(set, activePowerCompensation, generator.targetP, startingPointMode);
   switch (generator.model) {
@@ -263,13 +259,12 @@ ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCom
   return set;
 }
 
-void
-ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinition& def, boost::shared_ptr<parameters::ParametersSet> set) {
+void ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinition &def, boost::shared_ptr<parameters::ParametersSet> set) {
   set->addReference(helper::buildReference("generator_URegulated0", "U", "DOUBLE", def.regulatedBusId));
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename, const boost::filesystem::path& dirname) {
+boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
+                                                                          const boost::filesystem::path &dirname) {
   std::size_t hashId = constants::hash(def.id);
   std::string hashIdStr = std::to_string(hashId);
 
@@ -299,8 +294,7 @@ ParGenerator::writeGenerator(const algo::GeneratorDefinition& def, const std::st
   return set;
 }
 
-void
-ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear) {
+void ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear) {
   if (!set->hasParameter("generator_QNomAlt") && !set->hasReference("generator_QNomAlt"))
     set->addReference(helper::buildReference("generator_QNomAlt", "qNom", "DOUBLE"));
   if (!set->hasParameter("generator_SNom") && !set->hasReference("generator_SNom"))
@@ -312,9 +306,8 @@ ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSe
   }
 }
 
-void
-ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string& genId,
-                                   const inputs::SettingDataBase::Set& databaseSetting, bool Rcpl2) {
+void ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string &genId,
+                                        const inputs::SettingDataBase::Set &databaseSetting, bool Rcpl2) {
   std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu"};
   if (Rcpl2) {
     parameters.push_back("reactivePowerControlLoop_CqMaxPu");
@@ -327,7 +320,7 @@ ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> 
   }
   for (auto parameter : parameters) {
     auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
-                                [&parameter](const inputs::SettingDataBase::Parameter<double>& setting) { return setting.name == parameter; });
+                                [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
     if (paramIt != databaseSetting.doubleParameters.end())
       set->addParameter(helper::buildParameter(parameter, paramIt->value));
     else
@@ -336,7 +329,7 @@ ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> 
   std::unordered_map<std::string, std::string> parameterOrReference = {{"generator_QNomAlt", "qNom"}, {"generator_SNom", "sNom"}};
   for (auto parameter : parameterOrReference) {
     auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
-                                [&parameter](const inputs::SettingDataBase::Parameter<double>& setting) { return setting.name == parameter.first; });
+                                [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter.first; });
     if (paramIt != databaseSetting.doubleParameters.end())
       set->addParameter(helper::buildParameter(parameter.first, paramIt->value));
     else if (!set->hasParameter(parameter.first) && !set->hasReference(parameter.first))
