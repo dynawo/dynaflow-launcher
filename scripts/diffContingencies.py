@@ -41,9 +41,9 @@ def compare_file(options, contingency_folder, chosen_outputs):
     if buildType == "Debug" or buildType == "Release" or buildType == "Coverage":
 
         if buildType == "Debug" or (buildType == "Release" and "STEADYSTATE" in chosen_outputs) or buildType == "Coverage":
-            #output IIDM
+            # output IIDM
             result_path = full_path(
-                options.root, "resultsTestsTmp", options.testdir, contingency_folder, "outputs","finalState","outputIIDM.xml")
+                options.root, "resultsTestsTmp", options.testdir, contingency_folder, "outputs", "finalState", "outputIIDM.xml")
             reference_path = full_path(
                 options.root, "reference", options.testdir, contingency_folder, "outputIIDM.xml")
 
@@ -66,9 +66,9 @@ def compare_file(options, contingency_folder, chosen_outputs):
                     print(contingency_folder + ": No difference")
                 nb_differences += nb_differences_local
 
-        #constraints
+        # constraints
         result_path = full_path(
-            options.root, "resultsTestsTmp", options.testdir, contingency_folder, "outputs","constraints","constraints.xml")
+            options.root, "resultsTestsTmp", options.testdir, "constraints", "constraints_" + contingency_folder + ".xml")
         reference_path = full_path(
             options.root, "reference", options.testdir, contingency_folder, "constraints.xml")
 
@@ -89,9 +89,9 @@ def compare_file(options, contingency_folder, chosen_outputs):
                 print("No difference")
             nb_differences += nb_differences_local
 
-        #lost equipments
+        # lost equipments
         result_path = full_path(
-            options.root, "resultsTestsTmp", options.testdir, contingency_folder, "outputs","lostEquipments","lostEquipments.xml")
+            options.root, "resultsTestsTmp", options.testdir, "lostEquipments", "lostEquipments_" + contingency_folder + ".xml")
         reference_path = full_path(
             options.root, "reference", options.testdir, contingency_folder, "lostEquipments.xml")
 
@@ -151,7 +151,7 @@ if __name__ == "__main__":
             print("[ERROR] Aggregated results file " + results_aggr_res + " not found.")
             total_diffs += 1
         else:
-            identical = filecmp.cmp (reference_aggr_res, results_aggr_res, shallow=False)
+            identical = filecmp.cmp(reference_aggr_res, results_aggr_res, shallow=False)
             if not identical:
                 print("[ERROR] Found differences when comparing result and reference aggregated results file.")
                 total_diffs += 1
@@ -159,19 +159,19 @@ if __name__ == "__main__":
     for folder in os.listdir(reference_root):
         if os.path.isdir(os.path.join(reference_root, folder)):
             if not os.path.isdir(os.path.join(results_root, folder)):
-                print("[ERROR] Result folder" + os.path.join(results_root, folder) + " not found.")
+                print("[ERROR] Result folder " + os.path.join(results_root, folder) + " not found.")
                 total_diffs += 1
             elif buildType == "Debug" and os.path.isfile(os.path.join(reference_root, folder, "outputIIDM.xml")) and \
-                not os.path.isfile(os.path.join(results_root, folder, "outputs","finalState","outputIIDM.xml")):
-                print("[ERROR] Result file" + os.path.join(results_root, folder, "outputs","finalState","outputIIDM.xml") + " not found.")
+                not os.path.isfile(os.path.join(results_root, folder, "outputs", "finalState", "outputIIDM.xml")):
+                print("[ERROR] Result file " + os.path.join(results_root, folder, "outputs", "finalState", "outputIIDM.xml") + " not found.")
                 total_diffs += 1
             elif os.path.isfile(os.path.join(reference_root, folder, "constraints.xml")) and \
-                not os.path.isfile(os.path.join(results_root, folder, "outputs","constraints","constraints.xml")):
-                print("[ERROR] Result file" + os.path.join(results_root, folder, "outputs","constraints","constraints.xml") + " not found.")
+                not os.path.isfile(os.path.join(results_root, "constraints", "constraints_" + folder + ".xml")):
+                print("[ERROR] Result file " + os.path.join(results_root, "constraints", "constraints_" + folder + ".xml") + " not found.")
                 total_diffs += 1
             elif os.path.isfile(os.path.join(reference_root, folder, "lostEquipments.xml")) and \
-                not os.path.isfile(os.path.join(results_root, folder, "outputs","lostEquipments","lostEquipments.xml")):
-                print("[ERROR] Result file" + os.path.join(results_root, folder, "outputs","lostEquipments","lostEquipments.xml") + " not found.")
+                not os.path.isfile(os.path.join(results_root, "lostEquipments", "lostEquipments_" + folder + ".xml")):
+                print("[ERROR] Result file " + os.path.join(results_root, "lostEquipments", "lostEquipments_" + folder + ".xml") + " not found.")
                 total_diffs += 1
 
     sys.exit(total_diffs)
