@@ -278,7 +278,9 @@ set_environment() {
     pythonpath_prepend $DYNAWO_HOME/sbin/nrt/nrt_diff
 
     # hooks
-    set_commit_hook
+    if [ -d "$DYNAFLOW_LAUNCHER_HOME/.git" ]; then
+      set_commit_hook
+    fi
 }
 
 reset_environment_variables() {
