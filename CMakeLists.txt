@@ -17,7 +17,7 @@ endif()
 # More information https://cmake.org/cmake/help/latest/command/project.html
 project(
     "DynaFlowLauncher" # This will exposed as the variable PROJECT_NAME.
-    VERSION 1.5.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
+    VERSION 1.4.1 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
 
@@ -137,9 +137,17 @@ function(cat IN_FILE OUT_FILE)
   file(READ ${IN_FILE} CONTENTS)
   file(APPEND ${OUT_FILE} "${CONTENTS}")
 endfunction()
+function(cat_filter IN_FILE OUT_FILE FILTER)
+  file(STRINGS ${IN_FILE} CONTENTS)
+  foreach(LINE ${CONTENTS})
+    if (${LINE} MATCHES "${FILTER}")
+      file(APPEND ${OUT_FILE} "${LINE}\n")
+    endif()
+  endforeach()
+endfunction()
 file(WRITE dictionaries_mapping.dic "")
 cat(${DYNAWO_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic)
-cat(${DYNAWO_ALGORITHMS_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic)
+cat_filter(${DYNAWO_ALGORITHMS_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic "Algorithms")
 install(FILES dictionaries_mapping.dic DESTINATION  ${CMAKE_INSTALL_PREFIX}/share/)
 
 # MPI (required by algorithms)
@@ -153,8 +161,8 @@ find_program(MPI_RUN mpirun PATHS ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich/bin
 message(STATUS "mpirun found: " ${MPI_RUN})
 
 ## Dynawo
-find_package(Dynawo 1.5.0 REQUIRED)
-find_package(DynawoAlgorithms 1.5.0 REQUIRED)
+find_package(Dynawo 1.4.1 REQUIRED)
+find_package(DynawoAlgorithms 1.4.1 REQUIRED)
 
 # Python Interpreter
 find_package(PythonInterp REQUIRED)
