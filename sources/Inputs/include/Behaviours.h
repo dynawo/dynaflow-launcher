@@ -64,13 +64,15 @@ struct Generator {
    * @param pmin minimum active power for the generator
    * @param pmax maximum active power for the generator
    * @param targetP target active power of the generator
+   * @param q reactive power of the generator
    * @param VNom voltage level of the connected bus
    * @param regulatedBusId the Bus Id this generator is regulating
    * @param connectedBusId the Bus Id this generator is connected to
    * @param isNuclear true if the energy source of this generator is nuclear
    */
   explicit Generator(const GeneratorId& genId, const bool isVoltageRegulationOn, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax,
-                     double pmin, double pmax, double targetP, double VNom, const BusId& regulatedBusId, const BusId& connectedBusId, bool isNuclear = false) :
+                     double pmin, double pmax, double q, double targetP, double VNom, const BusId& regulatedBusId, const BusId& connectedBusId,
+                     bool isNuclear = false) :
       id{genId},
       isVoltageRegulationOn{isVoltageRegulationOn},
       points(curvePoints),
@@ -78,6 +80,7 @@ struct Generator {
       qmax{qmax},
       pmin{pmin},
       pmax{pmax},
+      q{q},
       targetP{targetP},
       VNom{VNom},
       regulatedBusId{regulatedBusId},
@@ -91,6 +94,7 @@ struct Generator {
   double qmax;                             ///< maximum reactive power
   double pmin;                             ///< minimum active power
   double pmax;                             ///< maximum active power
+  double q;                                ///< reactive power
   double targetP;                          ///< target active power of the generator
   double VNom;                             ///< voltage level of the connected bus
   const BusId regulatedBusId;              ///< regulated Bus Id

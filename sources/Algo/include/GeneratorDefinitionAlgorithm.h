@@ -149,12 +149,13 @@ class GeneratorDefinition {
    * @param qmax maximum reactive power for the generator
    * @param pmin minimum active power for the generator
    * @param pmax maximum active power for the generator
+   * @param q reactive power of the generator
    * @param targetP target active power of the generator
    * @param regulatedBusId the Bus Id this generator is regulating
    * @param isNuclear true if the energy source of this generator is nuclear
    */
   GeneratorDefinition(const inputs::Generator::GeneratorId& genId, ModelType type, const inputs::Node::NodeId& nodeId,
-                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double targetP,
+                      const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax, double pmin, double pmax, double q, double targetP,
                       const BusId& regulatedBusId, bool isNuclear = false) :
       id{genId},
       model{type},
@@ -164,6 +165,7 @@ class GeneratorDefinition {
       qmax{qmax},
       pmin{pmin},
       pmax{pmax},
+      q{q},
       targetP{targetP},
       regulatedBusId{regulatedBusId},
       isNuclear{isNuclear} {}
@@ -176,6 +178,7 @@ class GeneratorDefinition {
   double qmax;                             ///< maximum reactive power
   double pmin;                             ///< minimum active power
   double pmax;                             ///< maximum active power
+  double q;                                ///< initial reactive power
   double targetP;                          ///< target active power of the generator
   const BusId regulatedBusId;              ///< regulated Bus Id
   const bool isNuclear;                    ///< true if the energy source of this generator is nuclear
@@ -196,13 +199,13 @@ class GeneratorDefinitionAlgorithm {
    * @brief Constructor
    *
    * @param gens generators list to update
-   * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param busMap mapping of busId and the number of generators that regulates them
    * @param manager the dynamic data base manager to use
    * @param infinitereactivelimits parameter to determine if infinite reactive limits are used
    * @param tfoVoltageLevel maximum voltage level for which we assume that generator's transformers are already described in the static description
    */
-  GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel, const inputs::NetworkManager::BusMapRegulating& busMap,
+  GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesRegulatedBySeveralGenerators, const inputs::NetworkManager::BusMapRegulating& busMap,
                                const inputs::DynamicDataBaseManager& manager, bool infinitereactivelimits, double tfoVoltageLevel);
 
   /**
@@ -215,8 +218,8 @@ class GeneratorDefinitionAlgorithm {
    * If this generator is the only one regulating the bus, then we decide which model to use based on whether this generator
    * regulates the bus in local or not. Otherwise we use the prop model.
    * In order to create later on in the dyd and the par specific models based on the buses that are regulated by multiples
-   * generators, we fill the busesWithDynamicModel_ map. Each time we found a bus regulated by multiples generators we add in the
-   * busesWithDynamicModel_ map an element mapping the regulated bus to a generator id that regulates that bus.
+   * generators, we fill the busesRegulatedBySeveralGenerators_ map. Each time we found a bus regulated by multiples generators we add in the
+   * busesRegulatedBySeveralGenerators_ map an element mapping the regulated bus to a generator id that regulates that bus.
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */
@@ -259,7 +262,7 @@ class GeneratorDefinitionAlgorithm {
   bool isDiagramRectangular(const inputs::Generator& generator) const;
 
   Generators& generators_;                                  ///< the generators list to update
-  BusGenMap& busesWithDynamicModel_;                        ///< map of bus ids to a generator that regulates them
+  BusGenMap& busesRegulatedBySeveralGenerators_;            ///< map of bus ids to a generator that regulates them
   const inputs::NetworkManager::BusMapRegulating& busMap_;  ///< mapping of busId and the number of generators that regulates them
   std::unordered_map<std::string, bool> generatorsInSVC;    ///< If a generator id is in this map then it belongs to a secondary voltage control area,
                                                             // if the associated bool is true then it uses a reactive power control loop 2
