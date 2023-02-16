@@ -35,15 +35,15 @@ TEST(TestPar, write) {
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "04", {}, 3., 30., -33., 330., 0, bus1),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 100, bus1),
-      GeneratorDefinition("G7", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1),
-      GeneratorDefinition("G8", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1),
-      GeneratorDefinition("G9", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, bus1, true),
-      GeneratorDefinition("G10", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, 0, bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "04", {}, 3., 30., -33., 330., 0, 0, bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, 100, bus1),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, 0, bus1),
+      GeneratorDefinition("G8", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, 0, bus1),
+      GeneratorDefinition("G9", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, 0, bus1, true),
+      GeneratorDefinition("G10", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "04", {}, 3., 30., -33., 330., 0, 0, bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
@@ -77,20 +77,20 @@ TEST(TestPar, writeRemote) {
   std::string bus1 = "BUS_1";
   std::string bus2 = "BUS_2";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus2),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus2),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 100, bus2),
-      GeneratorDefinition("G7", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, bus2)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 3, 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 20., 100, bus2),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 0, 100, bus2),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, 100, bus2),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, 0, bus2)};
 
   outputPath.append(filename);
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, busesWithDynamicModel, manager, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, busesRegulatedBySeveralGenerators,
+                                                               manager, {}, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -221,13 +221,13 @@ TEST(TestPar, DynModel) {
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G8", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, 0, bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G8", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
@@ -352,9 +352,9 @@ TEST(TestPar, startingPointMode) {
                                       LoadDefinition("LOAD3", LoadDefinition::ModelType::NETWORK, "Slack")};
     const std::string bus1 = "BUS_1";
     std::vector<GeneratorDefinition> generators = {
-        GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-        GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-        GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, bus1)};
+        GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+        GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+        GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, 0, bus1)};
     dfl::algo::VSCDefinition vscStation1("VSCStation1", 1., -1., 0., {});
     dfl::algo::VSCDefinition vscStation2("VSCStation2", 2., -2., 0., {});
     dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., {});

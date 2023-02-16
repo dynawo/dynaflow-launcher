@@ -50,7 +50,7 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> DydG
 
 void
 DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
-                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const std::string& slackNodeId) {
+                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, const std::string& slackNodeId) {
   for (const auto& generator : generatorDefinitions_) {
     if (generator.isNetwork()) {
       continue;
@@ -60,7 +60,7 @@ DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dyn
     blackBoxModel->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSignalNGeneratorName_));
     dynamicModelsToConnect->addModel(blackBoxModel);
   }
-  for (const auto& keyValue : busesWithDynamicModel) {
+  for (const auto& keyValue : busesRegulatedBySeveralGenerators) {
     std::string id = constants::modelSignalNQprefix_ + keyValue.first;
     auto blackBoxModelVRRemote = helper::buildBlackBox(id, "VRRemote", basename + ".par", id);
     dynamicModelsToConnect->addModel(blackBoxModelVRRemote);

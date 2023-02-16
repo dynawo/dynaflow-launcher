@@ -140,38 +140,38 @@ TEST(Generators, base) {
   const std::string bus3 = "BUS_3";
   const std::string bus4 = "BUS_4";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus3)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus3)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus3)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus3)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 0, bus1, bus3);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, bus3, bus2);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 0, bus2, bus2);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 0, bus3, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -185,8 +185,8 @@ TEST(Generators, base) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 10.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -223,37 +223,37 @@ TEST(Generators, baseSVC) {
   const std::string bus4 = "BUS_4";
   const std::string bus5 = "BUS_5";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, bus2, bus2);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 0, bus2, bus2);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, bus3, bus3);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, bus5, bus5);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 0, bus3, bus3);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 0, bus5, bus5);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -267,8 +267,8 @@ TEST(Generators, baseSVC) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 5.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -305,37 +305,37 @@ TEST(Generators, baseSVCRpcl2) {
   const std::string bus4 = "BUS_4";
   const std::string bus5 = "BUS_5";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL2_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL2_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, bus2, bus2);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 0, bus2, bus2);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, bus3, bus3);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, bus5, bus5);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 0, bus3, bus3);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 0, bus5, bus5);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -349,8 +349,8 @@ TEST(Generators, baseSVCRpcl2) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 5.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -387,37 +387,37 @@ TEST(Generators, baseSVCTfo) {
   const std::string bus4 = "BUS_4";
   const std::string bus5 = "BUS_5";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 10, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 10, bus2, bus2);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 10, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 10, bus2, bus2);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 10, bus3, bus3);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, bus5, bus5);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 10, bus3, bus3);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 0, bus5, bus5);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -431,8 +431,8 @@ TEST(Generators, baseSVCTfo) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 5.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -469,37 +469,37 @@ TEST(Generators, baseSVCTfoRpcl2) {
   const std::string bus4 = "BUS_4";
   const std::string bus5 = "BUS_5";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus2),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus3),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus5)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus3),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus5)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 10, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 10, bus2, bus2);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 10, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 10, bus2, bus2);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 10, bus3, bus3);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, bus5, bus5);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 10, bus3, bus3);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 0, bus5, bus5);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -513,8 +513,8 @@ TEST(Generators, baseSVCTfoRpcl2) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 5.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -550,36 +550,36 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   const std::string bus3 = "BUS_3";
   const std::string bus4 = "BUS_4";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus3)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus3)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus3)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus3)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 0, bus1, bus3);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 15, bus3, bus2);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 0, bus2, bus2);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 0, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 15, bus3, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -593,8 +593,8 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 10.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -629,36 +629,36 @@ TEST(Generators, generatorWithTfo) {
   const std::string bus3 = "BUS_3";
   const std::string bus4 = "BUS_4";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, bus3)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "2", points, -2, 2, -2, 2, 0, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 0, bus3)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "0", points0, 0, 0, 0, 0, 0,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "0", points0, 0, 0, 0, 0, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "0", points, -1, 1, -1, 1, 0,
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "0", points, -1, 1, -1, 1, 0, 0,
                                      bus1),  // multiple generators on the same node
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, bus2),
-      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, bus4),
-      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, bus3)};
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 0, bus2),
+      dfl::algo::GeneratorDefinition("03", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "3", points, 0, 0, 0, 0, 0, 0, bus4),
+      dfl::algo::GeneratorDefinition("05", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 0, bus3)};
 
-  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 10, bus1, bus1);
-  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 10, bus2, bus2);
+  nodes[0]->generators.emplace_back("00", true, points0, 0, 0, 0, 0, 0, 0, 10, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", true, points, -1, 1, -1, 1, 0, 0, 10, bus2, bus2);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 10, bus2, bus2);
-  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 10, bus4, bus4);
-  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, bus3, bus3);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 0, 0, 10, bus2, bus2);
+  nodes[3]->generators.emplace_back("03", false, points, 0, 0, 0, 0, 0, 0, 10, bus4, bus4);
+  nodes[4]->generators.emplace_back("05", true, points, -5, 5, -5, 5, 0, 0, 0, bus3, bus3);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -672,8 +672,8 @@ TEST(Generators, generatorWithTfo) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 5.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -696,17 +696,17 @@ TEST(Generators, noGeneratorRegulating) {
 
   const std::string bus1 = "BUS_1";
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "0", points, 0, 0, 0, 0, 0, bus1)};
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "0", points, 0, 0, 0, 0, 0, 0, bus1)};
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "0", points, 0, 0, 0, 0, 0, bus1)};
+      dfl::algo::GeneratorDefinition("01", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "0", points, 0, 0, 0, 0, 0, 0, bus1)};
 
-  nodes[0]->generators.emplace_back("01", false, points, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("01", false, points, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap;
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
     algo_infinite(node, algoRes);
@@ -716,8 +716,8 @@ TEST(Generators, noGeneratorRegulating) {
   ASSERT_FALSE(algoRes->isAtLeastOneGeneratorRegulating);
 
   generators.clear();
-  busesWithDynamicModel.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 10.);
+  busesRegulatedBySeveralGenerators.clear();
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoRes);
@@ -752,33 +752,33 @@ TEST(Generators, SwitchConnexity) {
   const std::string bus3 = "BUS_3";
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_infinite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, -1, 1, -1, 1, 1,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "0", points0, -1, 1, -1, 1, 0, 1,
                                      bus1),  // due to switch connexity
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 2,
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "2", points, -2, 2, -2, 2, 0, 2,
                                      bus2),  // due to switch connexity
-      dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 5, bus3),
+      dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, -5, 5, -5, 5, 0, 5, bus3),
   };
 
   dfl::algo::GeneratorDefinitionAlgorithm::Generators expected_gens_finite = {
-      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, -1, 1, -1, 1, 1,
+      dfl::algo::GeneratorDefinition("00", dfl::algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "0", points0, -1, 1, -1, 1, 0, 1,
                                      bus1),  // due to switch connexity
-      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 2,
+      dfl::algo::GeneratorDefinition("02", dfl::algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "2", points, -2, 2, -2, 2, 0, 2,
                                      bus2),  // due to switch connexity
-      dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 5, bus3),
+      dfl::algo::GeneratorDefinition("04", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR, "4", points, -5, 5, -5, 5, 0, 5, bus3),
   };
 
-  nodes[0]->generators.emplace_back("00", true, points0, -1, 1, -1, 1, 1, 0, bus1, bus1);
+  nodes[0]->generators.emplace_back("00", true, points0, -1, 1, -1, 1, 1, 0, 0, bus1, bus1);
 
-  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 2, 0, bus2, bus2);
+  nodes[2]->generators.emplace_back("02", true, points, -2, 2, -2, 2, 2, 0, 0, bus2, bus2);
 
-  nodes[4]->generators.emplace_back("04", true, points, -5, 5, -5, 5, 5, 0, bus3, bus3);
+  nodes[4]->generators.emplace_back("04", true, points, -5, 5, -5, 5, 5, 0, 0, bus3, bus3);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
 
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto& node : nodes) {
@@ -791,9 +791,9 @@ TEST(Generators, SwitchConnexity) {
   }
 
   generators.clear();
-  busesWithDynamicModel.clear();
+  busesRegulatedBySeveralGenerators.clear();
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoResFinite(new dfl::algo::AlgorithmsResults());
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesWithDynamicModel, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
   for (const auto& node : nodes) {
     algo_finite(node, algoResFinite);
@@ -813,16 +813,16 @@ testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> poin
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
-  Generator generator("G1", true, points, 3., 30., 33., 330., 100, 0., bus1, bus2);
+  Generator generator("G1", true, points, 3., 30., 33., 330., 100, 0, 0., bus1, bus2);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {}, false, testServiceManager);
 
   const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel;
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesWithDynamicModel, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
   node->generators.emplace_back(generator);
   algo_infinite(node, algoRes);

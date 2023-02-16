@@ -48,8 +48,8 @@ TEST(ContingencyValidation, base) {
   std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points(
       {dfl::inputs::Generator::ReactiveCurvePoint(12., 44., 440.), dfl::inputs::Generator::ReactiveCurvePoint(65., 44., 440.)});
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators = {
-      dfl::algo::GeneratorDefinition("GENERATOR", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, 0, 0, 0, 0, 0, "4"),
-      dfl::algo::GeneratorDefinition("GENERATORNETWORK", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "4", points, 0, 0, 0, 0, 0, "4")};
+      dfl::algo::GeneratorDefinition("GENERATOR", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE, "4", points, 0, 0, 0, 0, 0, 0, "4"),
+      dfl::algo::GeneratorDefinition("GENERATORNETWORK", dfl::algo::GeneratorDefinition::ModelType::NETWORK, "4", points, 0, 0, 0, 0, 0, 0, "4")};
 
   dfl::algo::StaticVarCompensatorAlgorithm::SVarCDefinitions svarcs = {
       dfl::algo::StaticVarCompensatorDefinition("SVARC", dfl::algo::StaticVarCompensatorDefinition::ModelType::SVARCPV, 0., 10., 230, 230, 215, 230, 235, 245,

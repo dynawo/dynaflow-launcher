@@ -53,7 +53,7 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(3., 33., 330.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                      },
-                                                                     1., 10., 11., 110., 100, bus1),
+                                                                     1., 10., 11., 110., 0, 100, bus1),
                                                  GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(1., 11., 110.),
@@ -62,7 +62,7 @@ TEST(Diagram, writeWithCurvePoint) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2.7, 22., 220.),
                                                                      },
-                                                                     3., 30., 33., 330., 100, bus1)};
+                                                                     3., 30., 33., 330., 0, 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
 
@@ -93,7 +93,7 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2., 22., 220.),
                                                                      },
-                                                                     1., 10., -11., 110., 100, bus1),
+                                                                     1., 10., -11., 110., 0, 100, bus1),
                                                  GeneratorDefinition("G2", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "02",
                                                                      {
                                                                          GeneratorDefinition::ReactiveCurvePoint(8., 44., 440.),
@@ -108,7 +108,7 @@ TEST(Diagram, writeWithCurveAndDefaultPoints) {
                                                                          GeneratorDefinition::ReactiveCurvePoint(4., 44., 440.),
                                                                          GeneratorDefinition::ReactiveCurvePoint(2.7, 22., 220.),
                                                                      },
-                                                                     3., 30., 33., 330., 100, bus1)};
+                                                                     3., 30., 33., 330., 0, 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
@@ -132,9 +132,9 @@ TEST(Diagram, writeEmpty) {
   const std::string bus1 = "BUS_1";
 
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "01", {}, -20., -2., 22., 220., 100, bus1),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "63", {}, 4., 40., 44., 440., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "04", {}, -20., -2., 22., 220., 100, bus1)};
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "01", {}, -20., -2., 22., 220., 0, 100, bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "63", {}, 4., 40., 44., 440., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "04", {}, -20., -2., 22., 220., 0, 100, bus1)};
 
   dfl::algo::HVDCLineDefinitions defs;
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
