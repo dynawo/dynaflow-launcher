@@ -59,11 +59,11 @@ def check_contingencies(contingencies_file, results_folder, input_iidm_name):
     all_ok = True
 
     for (contingency_id, contingency_elements) in load_contingencies(contingencies_file):
-        dyd_file  = os.path.join(results_folder ,input_iidm_name + '-' + contingency_id + '.dyd')
-        par_file  = os.path.join(results_folder ,input_iidm_name + '-' + contingency_id + '.par')
-        timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.log')
-        constraints_file  = os.path.join(results_folder , contingency_id, 'outputs/constraints/constraints.xml')
-        finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
+        dyd_file = os.path.join(results_folder, input_iidm_name + '-' + contingency_id + '.dyd')
+        par_file = os.path.join(results_folder, input_iidm_name + '-' + contingency_id + '.par')
+        timeline_file = os.path.join(results_folder, 'timeLine/timeline_' + contingency_id + '.log')
+        constraints_file = os.path.join(results_folder, 'constraints/constraints_' + contingency_id + '.xml')
+        finalState_file = os.path.join(results_folder, contingency_id, 'outputs/finalState/outputIIDM.xml')
 
         print("Checking contingency " + contingency_id)
         if os.path.isdir(os.path.join(results_folder , contingency_id)):
