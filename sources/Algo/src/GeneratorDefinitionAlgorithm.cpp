@@ -18,11 +18,11 @@
 namespace dfl {
 namespace algo {
 
-GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesWithDynamicModel,
+GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesRegulatedBySeveralGenerators,
                                                            const inputs::NetworkManager::BusMapRegulating& busMap,
                                                            const inputs::DynamicDataBaseManager& manager, bool infinitereactivelimits, double tfoVoltageLevel) :
     generators_(gens),
-    busesWithDynamicModel_(busesWithDynamicModel),
+    busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
     busMap_(busMap),
     useInfiniteReactivelimits_{infinitereactivelimits},
     tfoVoltageLevel_(tfoVoltageLevel) {
@@ -99,7 +99,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
           } else {
             model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
           }
-          busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+          busesRegulatedBySeveralGenerators_.insert({generator.regulatedBusId, generator.id});
         } else {
           switch (nbOfRegulatingGenerators) {
           case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
@@ -143,7 +143,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
             } else {
               model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
             }
-            busesWithDynamicModel_.insert({generator.regulatedBusId, generator.id});
+            busesRegulatedBySeveralGenerators_.insert({generator.regulatedBusId, generator.id});
             break;
           default:  //  impossible by definition of the enum
             break;
@@ -151,8 +151,8 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
         }
       }
     }
-    generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.targetP,
-                             generator.regulatedBusId, generator.isNuclear);
+    generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.q,
+                             generator.targetP, generator.regulatedBusId, generator.isNuclear);
   }
 }
 

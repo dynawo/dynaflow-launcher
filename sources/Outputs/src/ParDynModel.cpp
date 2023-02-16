@@ -87,6 +87,7 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
   unsigned idx = 1;
   new_set->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
   new_set->addParameter(helper::buildParameter("secondaryVoltageControl_FreezingActivated", true));
+  bool frozen = true;
   for (const auto& connection : automaton.nodeConnections) {
     const auto& generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
     if (generatorIdx != generatorIdToIndex_.end()) {
@@ -108,6 +109,10 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
       if (genDefinition.hasTransformer())
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_",
                                                      (genDefinition.isNetwork()) ? constants::generatorNucXPuValue : constants::generatorXPuValue));
+
+      if (genDefinition.q < genDefinition.qmax && genDefinition.q > genDefinition.qmin) {
+        frozen = false;
+      }
       ++idx;
     } else {
       // We assume this is a node
@@ -115,6 +120,8 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
       new_set->addReference(helper::buildReference("secondaryVoltageControl_UpRef0Pu", "Upu", "DOUBLE", connection.connectedElementId));
     }
   }
+  if (frozen)
+    new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Frozen0", true));
   return new_set;
 }
 

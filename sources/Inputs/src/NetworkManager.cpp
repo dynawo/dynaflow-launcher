@@ -144,8 +144,9 @@ NetworkManager::buildTree() {
         updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
       }
       nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
-                                              generator->getQMin(), generator->getQMax(), pmin, pmax, targetP, generator->getBusInterface()->getVNom(),
-                                              regulatedBusId, nodeid, generator->getEnergySource() == DYN::GeneratorInterface::SOURCE_NUCLEAR);
+                                              generator->getQMin(), generator->getQMax(), pmin, pmax, generator->getQ(), targetP,
+                                              generator->getBusInterface()->getVNom(), regulatedBusId, nodeid,
+                                              generator->getEnergySource() == DYN::GeneratorInterface::SOURCE_NUCLEAR);
       LOG(debug, NodeContainsGen, nodeid, generator->getID());
     }
 

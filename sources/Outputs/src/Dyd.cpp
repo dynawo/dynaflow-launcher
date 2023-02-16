@@ -44,7 +44,7 @@ Dyd::write() const {
   def_.dydDynModel_->write(dynamicModelsToConnect, def_.basename_, def_.dynamicDataBaseManager_);
 
   def_.dydLoads_->write(dynamicModelsToConnect, def_.basename_);
-  def_.dydGenerator_->write(dynamicModelsToConnect, def_.basename_, def_.busesWithDynamicModel_, def_.slackNode_->id);
+  def_.dydGenerator_->write(dynamicModelsToConnect, def_.basename_, def_.busesRegulatedBySeveralGenerators_, def_.slackNode_->id);
   def_.dydHvdc_->write(dynamicModelsToConnect, def_.basename_);
   def_.dydSVarC_->write(dynamicModelsToConnect, def_.basename_);
 

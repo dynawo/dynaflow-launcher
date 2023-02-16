@@ -38,12 +38,12 @@ TEST(Dyd, write) {
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G6", GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "00", {}, 1., 10., -11., 110., 0., bus1)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
@@ -79,20 +79,20 @@ TEST(Dyd, writeRemote) {
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus2),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 100, bus2)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 0, 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+      GeneratorDefinition("G3", GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "03", {}, 4., 40., 44., 440., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 0, 100, bus2),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "01", {}, 2., 20., 22., 220., 0, 100, bus2)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   outputPath.append(filename);
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesWithDynamicModel = {{bus1, "G1"}, {bus2, "G4"}};
+  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::outputs::Dyd dydWriter(
-      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesWithDynamicModel, manager, {}, {}));
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesRegulatedBySeveralGenerators, manager, {}, {}));
 
   dydWriter.write();
 
@@ -192,10 +192,10 @@ TEST(Dyd, writeDynamicModel) {
 
   const std::string bus1 = "BUS_1";
   std::vector<GeneratorDefinition> generators = {
-      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 100, bus1),
-      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 100, bus1),
-      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0., bus1)};
+      GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});

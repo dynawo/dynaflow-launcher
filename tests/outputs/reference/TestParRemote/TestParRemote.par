@@ -93,6 +93,7 @@
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ_BUS_2">
+    <par name="vrremote_frozen0" type="BOOL" value="true"/>
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
     <macroParSet id="macro_remoteVControl_vr"/>
