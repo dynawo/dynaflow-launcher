@@ -36,7 +36,7 @@ Par::write() const {
   auto paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   // adding load parameter set
   def_.parLoads_->write(paramSetCollection, def_.startingPointMode_);
-  def_.parGenerator_->write(paramSetCollection, def_.activePowerCompensation_, def_.basename_, def_.dirname_, def_.busesWithDynamicModel_,
+  def_.parGenerator_->write(paramSetCollection, def_.activePowerCompensation_, def_.basename_, def_.dirname_, def_.busesRegulatedBySeveralGenerators_,
                             def_.startingPointMode_, def_.dynamicDataBaseManager_);
   def_.parSVarC_->write(paramSetCollection, def_.startingPointMode_);
   def_.parHvdc_->write(paramSetCollection, def_.basename_, def_.dirname_, def_.startingPointMode_);

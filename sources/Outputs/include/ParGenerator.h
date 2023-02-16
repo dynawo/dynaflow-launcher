@@ -50,13 +50,14 @@ class ParGenerator {
    * @param activePowerCompensation the type of active power compensation
    * @param basename basename for current simulation
    * @param dirname the dirname of the output PAR file
-   * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
   void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, ActivePowerCompensation activePowerCompensation,
-             const std::string& basename, const boost::filesystem::path& dirname, const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel,
-             StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+             const std::string& basename, const boost::filesystem::path& dirname,
+             const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, StartingPointMode startingPointMode,
+             const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   /**
