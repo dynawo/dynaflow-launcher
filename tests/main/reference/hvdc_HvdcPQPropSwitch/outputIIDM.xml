@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_5" id="situ_12N" caseDate="2014-02-12T13:19:17+01:00" forecastDistance="0" sourceFormat="CIM1">
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_4" id="situ_12N" caseDate="2014-02-12T13:19:17+01:00" forecastDistance="0" sourceFormat="CIM1">
     <iidm:substation id="DOLONP6_S" name="DOLONP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="NIREE6" name="NIREEP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="NIREEP61" v="230.35240554492827" angle="-29.317200722019365"/>
+                <iidm:bus id="NIREEP61" v="230.34970645586853" angle="-29.317707377380071"/>
             </iidm:busBreakerTopology>
             <iidm:load id="NIREEP6_NIREE1" name="NIREEP6_NIREE1" loadType="UNDEFINED" p0="184.61332003465" q0="17.041038967108069" bus="NIREEP61" connectableBus="NIREEP61" p="185.5784825276121" q="17.219686588625635"/>
             <iidm:load id="NIREEP6_NIREE4" name="NIREEP6_NIREE4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="NIREEP61" p="0" q="0"/>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="DOLONP6_S_VL6" name="DOLONP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="DOLONP6_S_VL6_TN2" v="230.50220529321521" angle="-32.602010986379561"/>
-                <iidm:bus id="DOLONP6_S_VL6_TN1" v="230.50220529321521" angle="-32.602010986379561"/>
+                <iidm:bus id="DOLONP6_S_VL6_TN2" v="230.49946303944753" angle="-32.602537691574305"/>
+                <iidm:bus id="DOLONP6_S_VL6_TN1" v="230.49946303944753" angle="-32.602537691574305"/>
                 <iidm:switch id="DOLONP6_C21" kind="BREAKER" retained="true" open="false" bus1="DOLONP6_S_VL6_TN2" bus2="DOLONP6_S_VL6_TN1"/>
             </iidm:busBreakerTopology>
             <iidm:load id="DOLONP6_DOLON1" name="DOLONP6_DOLON1" loadType="UNDEFINED" p0="190.63861493814102" q0="18.171540752766465" bus="DOLONP6_S_VL6_TN1" connectableBus="DOLONP6_S_VL6_TN1" p="191.64537642851195" q="18.363975153213087"/>
             <iidm:load id="DOLONP6_DOLON4" name="DOLONP6_DOLON4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="DOLONP6_S_VL6_TN1" p="0" q="0"/>
         </iidm:voltageLevel>
-        <iidm:twoWindingsTransformer id="NIREEL61DOLON_ACLS" r="0.080000102519989014" x="8.3600072860717773" g="0" b="0" ratedU1="225" ratedU2="225" bus1="DOLONP6_S_VL6_TN1" connectableBus1="DOLONP6_S_VL6_TN1" voltageLevelId1="DOLONP6_S_VL6" bus2="NIREEP61" connectableBus2="NIREEP61" voltageLevelId2="NIREE6" p1="1.5971449722325282" q1="3.8131629131249936" p2="-1.5971172077031568" q2="-3.8102615207329187">
+        <iidm:twoWindingsTransformer id="NIREEL61DOLON_ACLS" r="0.080000102519989014" x="8.3600072860717773" g="0" b="0" ratedU1="225" ratedU2="225" bus1="DOLONP6_S_VL6_TN1" connectableBus1="DOLONP6_S_VL6_TN1" voltageLevelId1="DOLONP6_S_VL6" bus2="NIREEP61" connectableBus2="NIREEP61" voltageLevelId2="NIREE6" p1="1.5950373555442523" q1="3.8120338951520796" p2="-1.5950096152694611" q2="-3.8091350373835944">
             <iidm:phaseTapChanger lowTapPosition="0" tapPosition="17" targetDeadband="0" regulationMode="CURRENT_LIMITER" regulationValue="409.27999999999997" regulating="true">
                 <iidm:terminalRef id="NIREEL61DOLON_ACLS" side="ONE"/>
                 <iidm:step r="72.599555969238281" x="72.599563598632812" g="0" b="0" rho="1" alpha="-50"/>
@@ -59,10 +59,10 @@
     <iidm:substation id="ULYSSP6_S" name="ULYSSP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="ULYSSP6_S_VL6" name="ULYSSP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="ULYSSP6_S_VL6_TN4" v="231.69434226608138" angle="-28.425252964571442"/>
-                <iidm:bus id="ULYSSP6_S_VL6_TN3" v="231.69434226608138" angle="-28.425252964571442"/>
-                <iidm:bus id="ULYSSP6_S_VL6_TN2" v="231.69434226608138" angle="-28.425252964571442"/>
-                <iidm:bus id="ULYSSP6_S_VL6_TN1" v="231.69434226608138" angle="-28.425252964571442"/>
+                <iidm:bus id="ULYSSP6_S_VL6_TN4" v="231.6916237082099" angle="-28.425712039035492"/>
+                <iidm:bus id="ULYSSP6_S_VL6_TN3" v="231.6916237082099" angle="-28.425712039035492"/>
+                <iidm:bus id="ULYSSP6_S_VL6_TN2" v="231.6916237082099" angle="-28.425712039035492"/>
+                <iidm:bus id="ULYSSP6_S_VL6_TN1" v="231.6916237082099" angle="-28.425712039035492"/>
                 <iidm:switch id="ULYSSP6_SW_ULYSS___6TRO_2AB__DJ" kind="BREAKER" retained="true" open="false" bus1="ULYSSP6_S_VL6_TN4" bus2="ULYSSP6_S_VL6_TN2"/>
                 <iidm:switch id="ULYSSP6_SW_ULYSS___6TRO_1AB__DJ" kind="BREAKER" retained="true" open="false" bus1="ULYSSP6_S_VL6_TN2" bus2="ULYSSP6_S_VL6_TN1"/>
                 <iidm:switch id="ULYSSP6_SW_ULYSS___6COUPL_B__DJ" kind="BREAKER" retained="true" open="false" bus1="ULYSSP6_S_VL6_TN4" bus2="ULYSSP6_S_VL6_TN2"/>
@@ -70,7 +70,7 @@
             </iidm:busBreakerTopology>
             <iidm:load id="ULYSSP6_ULYSS1" name="ULYSSP6_ULYSS1" loadType="UNDEFINED" p0="101.34473795564341" q0="10.270755911298043" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1" p="101.83022866433566" q="10.369395469830902"/>
             <iidm:load id="ULYSSP6_ULYSS4" name="ULYSSP6_ULYSS4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="ULYSSP6_S_VL6_TN1" p="0" q="0"/>
-            <iidm:shunt id="ULYSSP6_COND.11" name="ULYSSP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1" q="-84.831241029152764">
+            <iidm:shunt id="ULYSSP6_COND.11" name="ULYSSP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="ULYSSP6_S_VL6_TN1" connectableBus="ULYSSP6_S_VL6_TN1" q="-84.829250326377533">
                 <iidm:shuntLinearModel bPerSection="0.0015802469570189714" maximumSectionCount="1"/>
             </iidm:shunt>
         </iidm:voltageLevel>
@@ -78,10 +78,10 @@
     <iidm:substation id="AGAMEP6_S" name="AGAMEP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="AGAMEP6_S_VL6" name="AGAMEP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="AGAMEP6_S_VL6_TN4" v="230.03425788204413" angle="-28.768289158583723"/>
-                <iidm:bus id="AGAMEP6_S_VL6_TN3" v="230.03425788204413" angle="-28.768289158583723"/>
-                <iidm:bus id="AGAMEP6_S_VL6_TN2" v="230.03425788204413" angle="-28.768289158583723"/>
-                <iidm:bus id="AGAMEP6_S_VL6_TN1" v="230.03425788204413" angle="-28.768289158583723"/>
+                <iidm:bus id="AGAMEP6_S_VL6_TN4" v="230.03153583535877" angle="-28.768752352937099"/>
+                <iidm:bus id="AGAMEP6_S_VL6_TN3" v="230.03153583535877" angle="-28.768752352937099"/>
+                <iidm:bus id="AGAMEP6_S_VL6_TN2" v="230.03153583535877" angle="-28.768752352937099"/>
+                <iidm:bus id="AGAMEP6_S_VL6_TN1" v="230.03153583535877" angle="-28.768752352937099"/>
                 <iidm:switch id="AGAMEP6_SW_AGAME___6TRO_2AB__DJ" kind="BREAKER" retained="true" open="false" bus1="AGAMEP6_S_VL6_TN4" bus2="AGAMEP6_S_VL6_TN2"/>
                 <iidm:switch id="AGAMEP6_SW_AGAME___6TRO_1AB__DJ" kind="BREAKER" retained="true" open="false" bus1="AGAMEP6_S_VL6_TN2" bus2="AGAMEP6_S_VL6_TN1"/>
                 <iidm:switch id="AGAMEP6_SW_AGAME___6COUPL_B__DJ" kind="BREAKER" retained="true" open="false" bus1="AGAMEP6_S_VL6_TN4" bus2="AGAMEP6_S_VL6_TN2"/>
@@ -94,13 +94,13 @@
     <iidm:substation id="PRIAMP6_S" name="PRIAMP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="PRIAMP6_S_VL6" name="PRIAMP7" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="PRIAMP6_S_VL6_TN2" v="231.64377955024696" angle="-33.266681312369911"/>
-                <iidm:bus id="PRIAMP6_S_VL6_TN1" v="231.64377955024696" angle="-33.266681312369911"/>
+                <iidm:bus id="PRIAMP6_S_VL6_TN2" v="231.64098743835916" angle="-33.267229664237306"/>
+                <iidm:bus id="PRIAMP6_S_VL6_TN1" v="231.64098743835916" angle="-33.267229664237306"/>
                 <iidm:switch id="PRIAMP6_SW_Disj_Couplage_1_2" kind="BREAKER" retained="true" open="false" bus1="PRIAMP6_S_VL6_TN2" bus2="PRIAMP6_S_VL6_TN1"/>
             </iidm:busBreakerTopology>
             <iidm:load id="PRIAMP6_PRIAM1" name="PRIAMP6_PRIAM1" loadType="UNDEFINED" p0="221.65287835010776" q0="20.30165226482961" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1" p="222.85228413011572" q="20.521958901656941"/>
             <iidm:load id="PRIAMP6_PRIAM4" name="PRIAMP6_PRIAM4" loadType="UNDEFINED" p0="0" q0="0" connectableBus="PRIAMP6_S_VL6_TN1" p="0" q="0"/>
-            <iidm:shunt id="PRIAMP6_COND.11" name="PRIAMP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1" q="-84.794219582148088">
+            <iidm:shunt id="PRIAMP6_COND.11" name="PRIAMP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="PRIAMP6_S_VL6_TN1" connectableBus="PRIAMP6_S_VL6_TN1" q="-84.792175464908169">
                 <iidm:shuntLinearModel bPerSection="0.0015802469570189714" maximumSectionCount="1"/>
             </iidm:shunt>
         </iidm:voltageLevel>
@@ -108,9 +108,9 @@
     <iidm:substation id="ACHILP6_S" name="ACHILP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="ACHILP6_S_VL6" name="ACHILP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="ACHILP6_S_VL6_TN3" v="229.88841476138933" angle="-34.12933193055337"/>
-                <iidm:bus id="ACHILP6_S_VL6_TN2" v="229.88841476138933" angle="-34.12933193055337"/>
-                <iidm:bus id="ACHILP6_S_VL6_TN1" v="229.88841476138933" angle="-34.12933193055337"/>
+                <iidm:bus id="ACHILP6_S_VL6_TN3" v="229.88567465994689" angle="-34.129891498756457"/>
+                <iidm:bus id="ACHILP6_S_VL6_TN2" v="229.88567465994689" angle="-34.129891498756457"/>
+                <iidm:bus id="ACHILP6_S_VL6_TN1" v="229.88567465994689" angle="-34.129891498756457"/>
                 <iidm:switch id="ACHILP6_C31" kind="BREAKER" retained="true" open="false" bus1="ACHILP6_S_VL6_TN3" bus2="ACHILP6_S_VL6_TN1"/>
                 <iidm:switch id="ACHILP6_C21" kind="BREAKER" retained="true" open="false" bus1="ACHILP6_S_VL6_TN2" bus2="ACHILP6_S_VL6_TN1"/>
             </iidm:busBreakerTopology>
@@ -121,19 +121,19 @@
     <iidm:substation id="MYDONP6_S" name="MYDONP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="PARIS" name="PARISP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="PARISP61" v="230.09070235401521" angle="-31.305421603088082"/>
+                <iidm:bus id="PARISP61" v="230.08808935578253" angle="-31.305907315715171"/>
             </iidm:busBreakerTopology>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="MYDONP6_S_VL6" name="MYDONP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="MYDONP6_S_VL6_TN2" v="230.22771648531409" angle="-26.82829980099514"/>
-                <iidm:bus id="MYDONP6_S_VL6_TN1" v="230.22771648531409" angle="-26.82829980099514"/>
+                <iidm:bus id="MYDONP6_S_VL6_TN2" v="230.22520607376896" angle="-26.828742697934441"/>
+                <iidm:bus id="MYDONP6_S_VL6_TN1" v="230.22520607376896" angle="-26.828742697934441"/>
                 <iidm:switch id="MYDONP6_C21" kind="BREAKER" retained="true" open="false" bus1="MYDONP6_S_VL6_TN2" bus2="MYDONP6_S_VL6_TN1"/>
             </iidm:busBreakerTopology>
             <iidm:load id="MYDONP6_MYDON62" name="MYDONP6_MYDON62" loadType="UNDEFINED" p0="200.65073772401115" q0="20.130359274594966" bus="MYDONP6_S_VL6_TN2" connectableBus="MYDONP6_S_VL6_TN2" p="201.6694305256498" q="20.335279604269953"/>
             <iidm:load id="MYDONP6_MYDON63" name="MYDONP6_MYDON63" loadType="UNDEFINED" p0="0" q0="0" connectableBus="MYDONP6_S_VL6_TN2" p="0" q="0"/>
         </iidm:voltageLevel>
-        <iidm:twoWindingsTransformer id="MYDONL61PARIS_ACLS" r="2.0000002384185791" x="10.600000381469727" g="0" b="3.2000003557186574e-05" ratedU1="225" ratedU2="225" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId1="PARIS" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="-152.39868514896062" q1="26.479821585928203" p2="153.29033268791923" q2="-23.448225635896613">
+        <iidm:twoWindingsTransformer id="MYDONL61PARIS_ACLS" r="2.0000002384185791" x="10.600000381469727" g="0" b="3.2000003557186574e-05" ratedU1="225" ratedU2="225" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId1="PARIS" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="-152.3993580052724" q1="26.477818713726442" p2="153.29102913981106" q2="-23.44605922884347">
             <iidm:phaseTapChanger lowTapPosition="0" tapPosition="17" targetDeadband="0" regulationMode="CURRENT_LIMITER" regulationValue="409.27999999999997" regulating="true">
                 <iidm:terminalRef id="MYDONL61PARIS_ACLS" side="ONE"/>
                 <iidm:step r="92.824150085449219" x="92.824142456054688" g="0" b="0" rho="1" alpha="-42.799999237060547"/>
@@ -175,16 +175,16 @@
     <iidm:substation id="CIRCEP6_S" name="CIRCEP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="CIRCEP6_S_VL6" name="CIRCEP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="CIRCEP6_S_VL6_TN3" v="231.26289907102364" angle="-22.308891549605843"/>
-                <iidm:bus id="CIRCEP6_S_VL6_TN2" v="231.26289907102364" angle="-22.308891549605843"/>
-                <iidm:bus id="CIRCEP6_S_VL6_TN1" v="231.26289907102364" angle="-22.308891549605843"/>
+                <iidm:bus id="CIRCEP6_S_VL6_TN3" v="231.26062792468784" angle="-22.309234205681975"/>
+                <iidm:bus id="CIRCEP6_S_VL6_TN2" v="231.26062792468784" angle="-22.309234205681975"/>
+                <iidm:bus id="CIRCEP6_S_VL6_TN1" v="231.26062792468784" angle="-22.309234205681975"/>
                 <iidm:switch id="CIRCEP6_C32" kind="BREAKER" retained="true" open="false" bus1="CIRCEP6_S_VL6_TN3" bus2="CIRCEP6_S_VL6_TN2"/>
                 <iidm:switch id="CIRCEP6_C21" kind="BREAKER" retained="true" open="false" bus1="CIRCEP6_S_VL6_TN2" bus2="CIRCEP6_S_VL6_TN1"/>
                 <iidm:switch id="CIRCEP6_C31" kind="BREAKER" retained="true" open="false" bus1="CIRCEP6_S_VL6_TN3" bus2="CIRCEP6_S_VL6_TN1"/>
             </iidm:busBreakerTopology>
             <iidm:load id="CIRCEP6_CIRCE5" name="CIRCEP6_CIRCE5" loadType="UNDEFINED" p0="202.15805678670534" q0="20.433939961888399" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1" p="203.06513889740597" q="20.617725317711393"/>
             <iidm:load id="CIRCEP6_CIRCE9" name="CIRCEP6_CIRCE9" loadType="UNDEFINED" p0="0" q0="0" connectableBus="CIRCEP6_S_VL6_TN1" p="0" q="0"/>
-            <iidm:shunt id="CIRCEP6_COND.11" name="CIRCEP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1" q="-84.515602894842573">
+            <iidm:shunt id="CIRCEP6_COND.11" name="CIRCEP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="CIRCEP6_S_VL6_TN1" connectableBus="CIRCEP6_S_VL6_TN1" q="-84.513942910815061">
                 <iidm:shuntLinearModel bPerSection="0.0015802469570189714" maximumSectionCount="1"/>
             </iidm:shunt>
         </iidm:voltageLevel>
@@ -192,12 +192,12 @@
     <iidm:substation id="HELENP6_S" name="HELENP6" country="FR" tso="RTE">
         <iidm:voltageLevel id="HELENP6_S_VL6" name="HELENP6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="HELENP6_S_VL6_TN2" v="231.26287679610357" angle="-22.308890796945768"/>
-                <iidm:bus id="HELENP6_S_VL6_TN1" v="231.26287679610357" angle="-22.308890796945768"/>
+                <iidm:bus id="HELENP6_S_VL6_TN2" v="231.26060564998886" angle="-22.309233453021999"/>
+                <iidm:bus id="HELENP6_S_VL6_TN1" v="231.26060564998886" angle="-22.309233453021999"/>
                 <iidm:switch id="HELENP6_SW_Disj_Couplage_1_2" kind="BREAKER" retained="true" open="false" bus1="HELENP6_S_VL6_TN2" bus2="HELENP6_S_VL6_TN1"/>
             </iidm:busBreakerTopology>
             <iidm:load id="HELENP6_HELEN5" name="HELENP6_HELEN5" loadType="UNDEFINED" p0="202.15803731783981" q0="20.433936026100533" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1" p="203.06511933903857" q="20.617721346088963"/>
-            <iidm:shunt id="HELENP6_COND.11" name="HELENP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1" q="-84.515586613993293">
+            <iidm:shunt id="HELENP6_COND.11" name="HELENP6_COND.11" sectionCount="1" voltageRegulatorOn="false" bus="HELENP6_S_VL6_TN1" connectableBus="HELENP6_S_VL6_TN1" q="-84.513926630287202">
                 <iidm:shuntLinearModel bPerSection="0.0015802469570189714" maximumSectionCount="1"/>
             </iidm:shunt>
         </iidm:voltageLevel>
@@ -205,14 +205,14 @@
     <iidm:substation id="ATHENP7_S" name="ATHENP7" country="FR" tso="RTE">
         <iidm:voltageLevel id="ATHENP6_S_VL6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="ATHENP6_S_VL6_TN1" v="230.43541350246824" angle="-20.843224669626355"/>
+                <iidm:bus id="ATHENP6_S_VL6_TN1" v="230.43291515400296" angle="-20.843527964766178"/>
             </iidm:busBreakerTopology>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="ATHENP7_S_VL7" name="ATHENP7" nominalV="380" lowVoltageLimit="390" highVoltageLimit="410" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="ATHENP7_S_VL7_TN1" v="390.31326380910707" angle="-8.1340588611129352"/>
+                <iidm:bus id="ATHENP7_S_VL7_TN1" v="390.3100232883109" angle="-8.1341321766135639"/>
             </iidm:busBreakerTopology>
-            <iidm:generator id="ATHEN7ATHEN1_NGU_SM" name="ATHEN7ATHEN1" energySource="NUCLEAR" minP="398" maxP="1498" voltageRegulatorOn="true" targetP="762.85800067289142" targetV="390.75128980300326" targetQ="129.45613680827205" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1" p="-775.43052096786391" q="-133.25765605291934">
+            <iidm:generator id="ATHEN7ATHEN1_NGU_SM" name="ATHEN7ATHEN1" energySource="NUCLEAR" minP="398" maxP="1498" voltageRegulatorOn="true" targetP="762.85800067289142" targetV="390.75128980300326" targetQ="129.45613680827205" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1" p="-775.43136961222285" q="-133.17140556589578">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="398" minQ="-5" maxQ="360"/>
                     <iidm:point p="1498" minQ="-220" maxQ="200"/>
@@ -220,7 +220,7 @@
             </iidm:generator>
             <iidm:load id="ATHEN1" name="ATHEN1" loadType="UNDEFINED" p0="0" q0="0" bus="ATHENP7_S_VL7_TN1" connectableBus="ATHENP7_S_VL7_TN1" p="0" q="0"/>
         </iidm:voltageLevel>
-        <iidm:twoWindingsTransformer id="ATHENY761" r="0.4699999988079071" x="39.699996948242188" g="0" b="0" ratedU1="225" ratedU2="380" bus1="ATHENP6_S_VL6_TN1" connectableBus1="ATHENP6_S_VL6_TN1" voltageLevelId1="ATHENP6_S_VL6" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" voltageLevelId2="ATHENP7_S_VL7" p1="-840.68713704423703" q1="92.586968344304353" p2="842.90687648807068" q2="94.91015797399325">
+        <iidm:twoWindingsTransformer id="ATHENY761" r="0.4699999988079071" x="39.699996948242188" g="0" b="0" ratedU1="225" ratedU2="380" bus1="ATHENP6_S_VL6_TN1" connectableBus1="ATHENP6_S_VL6_TN1" voltageLevelId1="ATHENP6_S_VL6" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" voltageLevelId2="ATHENP7_S_VL7" p1="-840.68609701601213" q1="92.579064432787092" p2="842.90587462477265" q2="94.92128560356872">
             <iidm:ratioTapChanger lowTapPosition="0" tapPosition="0" loadTapChangingCapabilities="false" targetV="238.43904113769531">
                 <iidm:step r="0" x="0" g="0" b="0" rho="1"/>
                 <iidm:step r="0" x="0" g="0" b="0" rho="0.95599997043609619"/>
@@ -231,22 +231,22 @@
     <iidm:substation id="HADESP7_S" name="HADESP7" country="FR" tso="RTE">
         <iidm:voltageLevel id="HADESP6_S_VL6" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="HADESP6_S_VL6_TN1" v="230.55747941013766" angle="-13.850697061449074"/>
+                <iidm:bus id="HADESP6_S_VL6_TN1" v="230.55565911361631" angle="-13.8508879947767"/>
             </iidm:busBreakerTopology>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="HADESP7_S_VL7" name="HADESP7" nominalV="380" lowVoltageLimit="390" highVoltageLimit="410" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="HADESP7_S_VL7_TN1" v="391.72755412029346" angle="0"/>
-                <iidm:bus id="HADESP7_S_VL7_TN2" v="391.72755412029346" angle="0"/>
+                <iidm:bus id="HADESP7_S_VL7_TN1" v="391.72609196621806" angle="0"/>
+                <iidm:bus id="HADESP7_S_VL7_TN2" v="391.72609196621806" angle="0"/>
                 <iidm:switch id="HADESP7_SW_HADES___7COUPL_1__DJ" kind="BREAKER" retained="true" open="false" bus1="HADESP7_S_VL7_TN1" bus2="HADESP7_S_VL7_TN2"/>
             </iidm:busBreakerTopology>
-            <iidm:generator id="HADES7HADES1_NGU_SM" name="HADES7HADES1" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetV="391.31585308922013" targetQ="100.23241552420848" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="-536.44469943030663" q="-70.110400128479654">
+            <iidm:generator id="HADES7HADES1_NGU_SM" name="HADES7HADES1" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetV="391.31585308922013" targetQ="100.23241552420848" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="-536.44528480445683" q="-70.136953156055313">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="0" minQ="-230" maxQ="320"/>
                     <iidm:point p="917" minQ="-300" maxQ="230"/>
                 </iidm:reactiveCapabilityCurve>
             </iidm:generator>
-            <iidm:generator id="HADES7HADES2_NGU_SM" name="HADES7HADES2" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetV="391.31581592763018" targetQ="100.23239904279535" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="-536.44469943030663" q="-70.109724633863891">
+            <iidm:generator id="HADES7HADES2_NGU_SM" name="HADES7HADES2" energySource="NUCLEAR" minP="0" maxP="917" voltageRegulatorOn="true" targetP="527.77248202197438" targetV="391.31581592763018" targetQ="100.23239904279535" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="-536.44528480445683" q="-70.136277663944512">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="0" minQ="-230" maxQ="320"/>
                     <iidm:point p="917" minQ="-300" maxQ="230"/>
@@ -254,7 +254,7 @@
             </iidm:generator>
             <iidm:load id="HADES1" name="HADES1" loadType="UNDEFINED" p0="0" q0="0" bus="HADESP7_S_VL7_TN1" connectableBus="HADESP7_S_VL7_TN1" p="0" q="0"/>
         </iidm:voltageLevel>
-        <iidm:twoWindingsTransformer id="HADESY761" r="0.4699999988079071" x="39.699996948242188" g="0" b="0" ratedU1="225" ratedU2="380" bus1="HADESP6_S_VL6_TN1" connectableBus1="HADESP6_S_VL6_TN1" voltageLevelId1="HADESP6_S_VL6" bus2="HADESP7_S_VL7_TN1" connectableBus2="HADESP7_S_VL7_TN1" voltageLevelId2="HADESP7_S_VL7" p1="-918.60222643344264" q1="99.627062899666214" p2="921.2487199547104" q2="123.9171604713066">
+        <iidm:twoWindingsTransformer id="HADESY761" r="0.4699999988079071" x="39.699996948242188" g="0" b="0" ratedU1="225" ratedU2="380" bus1="HADESP6_S_VL6_TN1" connectableBus1="HADESP6_S_VL6_TN1" voltageLevelId1="HADESP6_S_VL6" bus2="HADESP7_S_VL7_TN1" connectableBus2="HADESP7_S_VL7_TN1" voltageLevelId2="HADESP7_S_VL7" p1="-918.60412650443413" q1="99.61322083117652" p2="921.25066408734278" q2="123.93472434195154">
             <iidm:ratioTapChanger lowTapPosition="0" tapPosition="0" loadTapChangingCapabilities="false" targetV="238.43904113769531">
                 <iidm:step r="0" x="0" g="0" b="0" rho="1"/>
                 <iidm:step r="0" x="0" g="0" b="0" rho="0.95599997043609619"/>
@@ -265,17 +265,17 @@
     <iidm:substation id="AJAXP7_S" name="AJAXP7" country="FR" tso="RTE">
         <iidm:voltageLevel id="AJAXP7_S_VL7" name="AJAXP7" nominalV="380" lowVoltageLimit="390" highVoltageLimit="410" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="AJAXP7_S_VL7_TN1" v="409.72065503296807" angle="14.279045250730249"/>
+                <iidm:bus id="AJAXP7_S_VL7_TN1" v="409.7206184394185" angle="14.279084177025172"/>
             </iidm:busBreakerTopology>
             <iidm:load id="AJAXP7_AJAX5" name="AJAXP7_AJAX5" loadType="UNDEFINED" p0="0" q0="0" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="0" q="0"/>
-            <iidm:vscConverterStation id="AJAXP7_AJAX_TER_1" name="AJAX_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-173.01694980335981">
+            <iidm:vscConverterStation id="AJAXP7_AJAX_TER_1" name="AJAX_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-173.02869159111961">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="-1011" minQ="-300" maxQ="300"/>
                     <iidm:point p="0" minQ="-600" maxQ="400"/>
                     <iidm:point p="1011" minQ="-300" maxQ="300"/>
                 </iidm:reactiveCapabilityCurve>
             </iidm:vscConverterStation>
-            <iidm:vscConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-173.01694980335981">
+            <iidm:vscConverterStation id="AJAXP7_AJAX_TER_2" name="AJAX_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="409.73005742585076" reactivePowerSetpoint="170" bus="AJAXP7_S_VL7_TN1" connectableBus="AJAXP7_S_VL7_TN1" p="-800" q="-173.02869159111961">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="-1011" minQ="-300" maxQ="300"/>
                     <iidm:point p="0" minQ="-600" maxQ="400"/>
@@ -287,19 +287,19 @@
     <iidm:substation id="HERAP7_S" name="HERAP7" country="FR" tso="RTE">
         <iidm:voltageLevel id="HERAP7_S_VL7" name="HERAP7" nominalV="380" lowVoltageLimit="390" highVoltageLimit="410" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="HERAP7_S_VL7_TN1" v="403.86225054297756" angle="-23.355368182973574"/>
-                <iidm:bus id="HERAP7_S_VL7_TN2" v="403.86225054297756" angle="-23.355368182973574"/>
+                <iidm:bus id="HERAP7_S_VL7_TN1" v="403.86216694658413" angle="-23.355613418140962"/>
+                <iidm:bus id="HERAP7_S_VL7_TN2" v="403.86216694658413" angle="-23.355613418140962"/>
                 <iidm:switch id="HERAP7_S_VL7_SWITCH" kind="BREAKER" retained="true" open="false" bus1="HERAP7_S_VL7_TN1" bus2="HERAP7_S_VL7_TN2"/>
             </iidm:busBreakerTopology>
             <iidm:load id="HERAP7_HERA5" name="HERAP7_HERA5" loadType="UNDEFINED" p0="0" q0="0" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="0" q="0"/>
-            <iidm:vscConverterStation id="HERAP7_HERA_TER_1" name="HERA_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270.35752378940032">
+            <iidm:vscConverterStation id="HERAP7_HERA_TER_1" name="HERA_TER_1" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1" p="800" q="-270.38434739638706">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="-1011" minQ="-300" maxQ="300"/>
                     <iidm:point p="0" minQ="-600" maxQ="400"/>
                     <iidm:point p="1011" minQ="-300" maxQ="300"/>
                 </iidm:reactiveCapabilityCurve>
             </iidm:vscConverterStation>
-            <iidm:vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN2" connectableBus="HERAP7_S_VL7_TN2" p="800" q="-270.35752378940032">
+            <iidm:vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN2" connectableBus="HERAP7_S_VL7_TN2" p="800" q="-270.38434739638706">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="-1011" minQ="-300" maxQ="300"/>
                     <iidm:point p="0" minQ="-600" maxQ="400"/>
@@ -308,7 +308,7 @@
             </iidm:vscConverterStation>
         </iidm:voltageLevel>
     </iidm:substation>
-    <iidm:line id="AJAXL71HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId1="HADESP7_S_VL7" bus2="AJAXP7_S_VL7_TN1" connectableBus2="AJAXP7_S_VL7_TN1" voltageLevelId2="AJAXP7_S_VL7" p1="-1568.8179254285001" q1="19.661808415582165" p2="1599.9999999999509" q2="346.03389960670575">
+    <iidm:line id="AJAXL71HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId1="HADESP7_S_VL7" bus2="AJAXP7_S_VL7_TN1" connectableBus2="AJAXP7_S_VL7_TN1" voltageLevelId2="AJAXP7_S_VL7" p1="-1568.8177208393079" q1="19.641117660781191" p2="1599.9999999999991" q2="346.05738318223763">
         <iidm:currentLimits1 permanentLimit="2822"/>
         <iidm:currentLimits2 permanentLimit="2822">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="3682"/>
@@ -316,7 +316,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="HERAL71ATHEN_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="ATHENP7_S_VL7_TN1" connectableBus1="ATHENP7_S_VL7_TN1" voltageLevelId1="ATHENP7_S_VL7" bus2="HERAP7_S_VL7_TN1" connectableBus2="HERAP7_S_VL7_TN1" voltageLevelId2="HERAP7_S_VL7" p1="1634.2354644368659" q1="-134.73637930836421" p2="-1599.9999999995036" q2="540.71504757862579">
+    <iidm:line id="HERAL71ATHEN_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="ATHENP7_S_VL7_TN1" connectableBus1="ATHENP7_S_VL7_TN1" voltageLevelId1="ATHENP7_S_VL7" bus2="HERAP7_S_VL7_TN1" connectableBus2="HERAP7_S_VL7_TN1" voltageLevelId2="HERAP7_S_VL7" p1="1634.2361946330541" q1="-134.78025022876133" p2="-1600.0000000000057" q2="540.768694792769">
         <iidm:currentLimits1 permanentLimit="2822"/>
         <iidm:currentLimits2 permanentLimit="2822">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="3682"/>
@@ -324,7 +324,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="HADESL61CIRCE_ACLS" name="HADESL61CIRCE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09654158411342" q1="46.08661461391447" p2="229.65056789438262" q2="-24.906840912839399">
+    <iidm:line id="HADESL61CIRCE_ACLS" name="HADESL61CIRCE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09693672912869" q1="46.083968294681995" p2="229.65104291212845" q2="-24.903380394347469">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -332,7 +332,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="HADESL62CIRCE_ACLS" name="CIRCEL61NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09654158411342" q1="46.08661461391447" p2="229.65056789438262" q2="-24.906840912839399">
+    <iidm:line id="HADESL62CIRCE_ACLS" name="CIRCEL61NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09693672912869" q1="46.083968294681995" p2="229.65104291212845" q2="-24.903380394347469">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -340,7 +340,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="CIRCEL61HELEN_ACLS" name="CIRCEL61HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="CIRCEP6_S_VL6_TN1" connectableBus2="CIRCEP6_S_VL6_TN1" voltageLevelId2="CIRCEP6_S_VL6" p1="2.0873262250586944e-07" q1="-6.2968638086267168" p2="-2.087307764131463e-07" q2="-6.2974686044188255">
+    <iidm:line id="CIRCEL61HELEN_ACLS" name="CIRCEL61HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="CIRCEP6_S_VL6_TN1" connectableBus2="CIRCEP6_S_VL6_TN1" voltageLevelId2="CIRCEP6_S_VL6" p1="2.0872810910232964e-07" q1="-6.2967401309353939" p2="-2.0872609682309751e-07" q2="-6.297344914879603">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -348,7 +348,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="MYDONL61HELEN_ACLS" name="MYDONL61HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="123.56396060867958" q1="-10.989090760519094" p2="-122.26030617581469" q2="8.1083457685182161">
+    <iidm:line id="MYDONL61HELEN_ACLS" name="MYDONL61HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="123.56435575359998" q1="-10.987336275300025" p2="-122.26066869358252" q2="8.1070927679638203">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -356,7 +356,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="MYDONL62HELEN_ACLS" name="MYDONL62HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN2" connectableBus1="HELENP6_S_VL6_TN2" voltageLevelId1="HELENP6_S_VL6" bus2="MYDONP6_S_VL6_TN2" connectableBus2="MYDONP6_S_VL6_TN2" voltageLevelId2="MYDONP6_S_VL6" p1="123.56396060867958" q1="-10.989090760519094" p2="-122.26030617581469" q2="8.1083457685182161">
+    <iidm:line id="MYDONL62HELEN_ACLS" name="MYDONL62HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN2" connectableBus1="HELENP6_S_VL6_TN2" voltageLevelId1="HELENP6_S_VL6" bus2="MYDONP6_S_VL6_TN2" connectableBus2="MYDONP6_S_VL6_TN2" voltageLevelId2="MYDONP6_S_VL6" p1="123.56435575359998" q1="-10.987336275300025" p2="-122.26066869358252" q2="8.1070927679638203">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -364,7 +364,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ACHILL61PARIS_ACLS" name="ACHILL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId1="PARIS" bus2="ACHILP6_S_VL6_TN1" connectableBus2="ACHILP6_S_VL6_TN1" voltageLevelId2="ACHILP6_S_VL6" p1="76.199342574480539" q1="-13.2399107929641" p2="-75.694999644363349" q2="4.5200025466309963">
+    <iidm:line id="ACHILL61PARIS_ACLS" name="ACHILL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId1="PARIS" bus2="ACHILP6_S_VL6_TN1" connectableBus2="ACHILP6_S_VL6_TN1" voltageLevelId2="ACHILP6_S_VL6" p1="76.199679002636302" q1="-13.238909356863759" p2="-75.695321238928841" q2="4.5194009110010205">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -372,7 +372,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ACHILL62PARIS_ACLS" name="ACHILL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId1="PARIS" bus2="ACHILP6_S_VL6_TN2" connectableBus2="ACHILP6_S_VL6_TN2" voltageLevelId2="ACHILP6_S_VL6" p1="76.199342574480539" q1="-13.2399107929641" p2="-75.694999644363349" q2="4.5200025466309963">
+    <iidm:line id="ACHILL62PARIS_ACLS" name="ACHILL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PARISP61" connectableBus1="PARISP61" voltageLevelId1="PARIS" bus2="ACHILP6_S_VL6_TN2" connectableBus2="ACHILP6_S_VL6_TN2" voltageLevelId2="ACHILP6_S_VL6" p1="76.199679002636302" q1="-13.238909356863759" p2="-75.695321238928841" q2="4.5194009110010205">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -380,7 +380,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ACHILL61PRIAM_ACLS" name="ACHILL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="ACHILP6_S_VL6_TN1" connectableBus2="ACHILP6_S_VL6_TN1" voltageLevelId2="ACHILP6_S_VL6" p1="24.928942507653868" q1="2.5332998452670856" p2="-24.869473562499451" q2="-14.633215817842482">
+    <iidm:line id="ACHILL61PRIAM_ACLS" name="ACHILL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="ACHILP6_S_VL6_TN1" connectableBus2="ACHILP6_S_VL6_TN1" voltageLevelId2="ACHILP6_S_VL6" p1="24.928620292709279" q1="2.5329942538549686" p2="-24.86915196795594" q2="-14.632614182340276">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -388,7 +388,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ACHILL62PRIAM_ACLS" name="ACHILL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN2" connectableBus1="PRIAMP6_S_VL6_TN2" voltageLevelId1="PRIAMP6_S_VL6" bus2="ACHILP6_S_VL6_TN2" connectableBus2="ACHILP6_S_VL6_TN2" voltageLevelId2="ACHILP6_S_VL6" p1="24.928942507653868" q1="2.5332998452670856" p2="-24.869473562499451" q2="-14.633215817842482">
+    <iidm:line id="ACHILL62PRIAM_ACLS" name="ACHILL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN2" connectableBus1="PRIAMP6_S_VL6_TN2" voltageLevelId1="PRIAMP6_S_VL6" bus2="ACHILP6_S_VL6_TN2" connectableBus2="ACHILP6_S_VL6_TN2" voltageLevelId2="ACHILP6_S_VL6" p1="24.928620292709279" q1="2.5329942538549686" p2="-24.86915196795594" q2="-14.632614182340276">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -396,7 +396,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="AGAMEL61PRIAM_ACLS" name="AGAMEL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="AGAMEP6_S_VL6_TN1" connectableBus2="AGAMEP6_S_VL6_TN1" voltageLevelId2="AGAMEP6_S_VL6" p1="-119.39894378962235" q1="25.696755963104117" p2="120.69754514891167" q2="-28.625207994945129">
+    <iidm:line id="AGAMEL61PRIAM_ACLS" name="AGAMEL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="AGAMEP6_S_VL6_TN1" connectableBus2="AGAMEP6_S_VL6_TN1" voltageLevelId2="AGAMEP6_S_VL6" p1="-119.39840917789681" q1="25.696290401747852" p2="120.69702763181856" q2="-28.624316042365905">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -404,7 +404,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="AGAMEL62PRIAM_ACLS" name="AGAMEL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN2" connectableBus1="PRIAMP6_S_VL6_TN2" voltageLevelId1="PRIAMP6_S_VL6" bus2="AGAMEP6_S_VL6_TN2" connectableBus2="AGAMEP6_S_VL6_TN2" voltageLevelId2="AGAMEP6_S_VL6" p1="-119.39894378962235" q1="25.696755963104117" p2="120.69754514891167" q2="-28.625207994945129">
+    <iidm:line id="AGAMEL62PRIAM_ACLS" name="AGAMEL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN2" connectableBus1="PRIAMP6_S_VL6_TN2" voltageLevelId1="PRIAMP6_S_VL6" bus2="AGAMEP6_S_VL6_TN2" connectableBus2="AGAMEP6_S_VL6_TN2" voltageLevelId2="AGAMEP6_S_VL6" p1="-119.39840917789681" q1="25.696290401747852" p2="120.69702763181856" q2="-28.624316042365905">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -412,7 +412,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="AGAMEL61ULYSS_ACLS" name="AGAMEL61ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN1" connectableBus1="ULYSSP6_S_VL6_TN1" voltageLevelId1="ULYSSP6_S_VL6" bus2="AGAMEP6_S_VL6_TN1" connectableBus2="AGAMEP6_S_VL6_TN1" voltageLevelId2="AGAMEP6_S_VL6" p1="10.790574504572428" q1="3.6378053805772179" p2="-10.772260614594556" q2="-16.053250223506431">
+    <iidm:line id="AGAMEL61ULYSS_ACLS" name="AGAMEL61ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN1" connectableBus1="ULYSSP6_S_VL6_TN1" voltageLevelId1="ULYSSP6_S_VL6" bus2="AGAMEP6_S_VL6_TN1" connectableBus2="AGAMEP6_S_VL6_TN1" voltageLevelId2="AGAMEP6_S_VL6" p1="10.790452750770823" q1="3.6378604718997543" p2="-10.772138811933612" q2="-16.053009176462659">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -420,7 +420,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="AGAMEL62ULYSS_ACLS" name="AGAMEL62ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN2" connectableBus1="ULYSSP6_S_VL6_TN2" voltageLevelId1="ULYSSP6_S_VL6" bus2="AGAMEP6_S_VL6_TN2" connectableBus2="AGAMEP6_S_VL6_TN2" voltageLevelId2="AGAMEP6_S_VL6" p1="10.790574504572428" q1="3.6378053805772179" p2="-10.772260614594556" q2="-16.053250223506431">
+    <iidm:line id="AGAMEL62ULYSS_ACLS" name="AGAMEL62ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN2" connectableBus1="ULYSSP6_S_VL6_TN2" voltageLevelId1="ULYSSP6_S_VL6" bus2="AGAMEP6_S_VL6_TN2" connectableBus2="AGAMEP6_S_VL6_TN2" voltageLevelId2="AGAMEP6_S_VL6" p1="10.790452750770823" q1="3.6378604718997543" p2="-10.772138811933612" q2="-16.053009176462659">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -428,7 +428,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="DOLONL61ULYSS_ACLS" name="DOLONL61ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN1" connectableBus1="ULYSSP6_S_VL6_TN1" voltageLevelId1="ULYSSP6_S_VL6" bus2="DOLONP6_S_VL6_TN1" connectableBus2="DOLONP6_S_VL6_TN1" voltageLevelId2="DOLONP6_S_VL6" p1="114.729651413553" q1="-9.4319779881676382" p2="-113.61071685080621" q2="5.1444388957216978">
+    <iidm:line id="DOLONL61ULYSS_ACLS" name="DOLONL61ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN1" connectableBus1="ULYSSP6_S_VL6_TN1" voltageLevelId1="ULYSSP6_S_VL6" bus2="DOLONP6_S_VL6_TN1" connectableBus2="DOLONP6_S_VL6_TN1" voltageLevelId2="DOLONP6_S_VL6" p1="114.72882066847512" q1="-9.4316142490880441" p2="-113.60987615395899" q2="5.1444460516008821">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -436,7 +436,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="DOLONL62ULYSS_ACLS" name="DOLONL62ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN2" connectableBus1="ULYSSP6_S_VL6_TN2" voltageLevelId1="ULYSSP6_S_VL6" bus2="DOLONP6_S_VL6_TN2" connectableBus2="DOLONP6_S_VL6_TN2" voltageLevelId2="DOLONP6_S_VL6" p1="114.729651413553" q1="-9.4319779881676382" p2="-113.61071685080621" q2="5.1444388957216978">
+    <iidm:line id="DOLONL62ULYSS_ACLS" name="DOLONL62ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN2" connectableBus1="ULYSSP6_S_VL6_TN2" voltageLevelId1="ULYSSP6_S_VL6" bus2="DOLONP6_S_VL6_TN2" connectableBus2="DOLONP6_S_VL6_TN2" voltageLevelId2="DOLONP6_S_VL6" p1="114.72882066847512" q1="-9.4316142490880441" p2="-113.60987615395899" q2="5.1444460516008821">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -444,7 +444,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ATHENL61ULYSS_ACLS" name="ATHENL61ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN1" connectableBus1="ULYSSP6_S_VL6_TN1" voltageLevelId1="ULYSSP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-201.83586514322033" q1="43.379398800468174" p2="205.50611665426942" q2="-28.763425763182894">
+    <iidm:line id="ATHENL61ULYSS_ACLS" name="ATHENL61ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN1" connectableBus1="ULYSSP6_S_VL6_TN1" voltageLevelId1="ULYSSP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-201.83560469954011" q1="43.378155299009158" p2="205.50592165854601" q2="-28.761413536095372">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -452,7 +452,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ATHENL62ULYSS_ACLS" name="ATHENL62ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN2" connectableBus1="ULYSSP6_S_VL6_TN2" voltageLevelId1="ULYSSP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-201.83586514322033" q1="43.379398800468174" p2="205.50611665426942" q2="-28.763425763182894">
+    <iidm:line id="ATHENL62ULYSS_ACLS" name="ATHENL62ULYSS" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="ULYSSP6_S_VL6_TN2" connectableBus1="ULYSSP6_S_VL6_TN2" voltageLevelId1="ULYSSP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-201.83560469954011" q1="43.378155299009158" p2="205.50592165854601" q2="-28.761413536095372">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -460,7 +460,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="MYDONL61NIREE_ACLS" name="MYDONL61NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="-66.647986946039723" q1="5.0809614343206464" p2="67.040742502465889" q2="-14.660067133995657">
+    <iidm:line id="MYDONL61NIREE_ACLS" name="MYDONL61NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="-66.648352707310352" q1="5.0799029956309916" p2="67.04111931204821" q2="-14.658644339678828">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -468,7 +468,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="MYDONL62NIREE_ACLS" name="MYDONL62NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="MYDONP6_S_VL6_TN2" connectableBus2="MYDONP6_S_VL6_TN2" voltageLevelId2="MYDONP6_S_VL6" p1="-66.647986946039723" q1="5.0809614343206464" p2="67.040742502465889" q2="-14.660067133995657">
+    <iidm:line id="MYDONL62NIREE_ACLS" name="MYDONL62NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="MYDONP6_S_VL6_TN2" connectableBus2="MYDONP6_S_VL6_TN2" voltageLevelId2="MYDONP6_S_VL6" p1="-66.648352707310352" q1="5.0799029956309916" p2="67.04111931204821" q2="-14.658644339678828">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -476,7 +476,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ULYSSL61NIREE_ACLS" name="ULYSSL61NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="ULYSSP6_S_VL6_TN1" connectableBus2="ULYSSP6_S_VL6_TN1" voltageLevelId2="ULYSSP6_S_VL6" p1="-25.342695713874829" q1="-11.78567396813359" p2="25.400524892951122" q2="-0.35430341315325214">
+    <iidm:line id="ULYSSL61NIREE_ACLS" name="ULYSSL61NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="ULYSSP6_S_VL6_TN1" connectableBus2="ULYSSP6_S_VL6_TN1" voltageLevelId2="ULYSSP6_S_VL6" p1="-25.343383748847831" q1="-11.785178771220558" p2="25.401216948133438" q2="-0.35447409353342729">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -484,7 +484,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ULYSSL62NIREE_ACLS" name="ULYSSL62NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="ULYSSP6_S_VL6_TN2" connectableBus2="ULYSSP6_S_VL6_TN2" voltageLevelId2="ULYSSP6_S_VL6" p1="-25.342695713874829" q1="-11.78567396813359" p2="25.400524892951122" q2="-0.35430341315325214">
+    <iidm:line id="ULYSSL62NIREE_ACLS" name="ULYSSL62NIREE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="NIREEP61" connectableBus1="NIREEP61" voltageLevelId1="NIREE6" bus2="ULYSSP6_S_VL6_TN2" connectableBus2="ULYSSP6_S_VL6_TN2" voltageLevelId2="ULYSSP6_S_VL6" p1="-25.343383748847831" q1="-11.785178771220558" p2="25.401216948133438" q2="-0.35447409353342729">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -492,7 +492,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ATHENL71HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId1="HADESP7_S_VL7" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" voltageLevelId2="ATHENP7_S_VL7" p1="860.22930216717214" q1="-1.6794220626619929" p2="-850.85590997876238" q2="86.54193869436881">
+    <iidm:line id="ATHENL71HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId1="HADESP7_S_VL7" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" voltageLevelId2="ATHENP7_S_VL7" p1="860.22881318043733" q1="-1.6513055913979293" p2="-850.85534982279819" q2="86.515185095507192">
         <iidm:currentLimits1 permanentLimit="2822"/>
         <iidm:currentLimits2 permanentLimit="2822">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="3682"/>
@@ -500,7 +500,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ATHENL72HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId1="HADESP7_S_VL7" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" voltageLevelId2="ATHENP7_S_VL7" p1="860.22930216717214" q1="-1.6794220626619929" p2="-850.85590997876238" q2="86.54193869436881">
+    <iidm:line id="ATHENL72HADES_ACLS" r="1.9429999589920044" x="25.186002731323242" g1="0" b1="0.00011981700663454831" g2="0" b2="0.00011981700663454831" bus1="HADESP7_S_VL7_TN1" connectableBus1="HADESP7_S_VL7_TN1" voltageLevelId1="HADESP7_S_VL7" bus2="ATHENP7_S_VL7_TN1" connectableBus2="ATHENP7_S_VL7_TN1" voltageLevelId2="ATHENP7_S_VL7" p1="860.22881318043733" q1="-1.6513055913979293" p2="-850.85534982279819" q2="86.515185095507192">
         <iidm:currentLimits1 permanentLimit="2822"/>
         <iidm:currentLimits2 permanentLimit="2822">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="3682"/>
@@ -508,7 +508,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ATHENL61AGAME_ACLS" name="ATHENL61AGAME" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="AGAMEP6_S_VL6_TN1" connectableBus1="AGAMEP6_S_VL6_TN1" voltageLevelId1="AGAMEP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-210.86296168641283" q1="34.490043549707949" p2="214.83745186784904" q2="-17.53005840896915">
+    <iidm:line id="ATHENL61AGAME_ACLS" name="ATHENL61AGAME" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="AGAMEP6_S_VL6_TN1" connectableBus1="AGAMEP6_S_VL6_TN1" voltageLevelId1="AGAMEP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-210.86256597201381" q1="34.488910549986038" p2="214.83712684945999" q2="-17.528118680297911">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -516,7 +516,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="ATHENL62AGAME_ACLS" name="ATHENL62AGAME" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="AGAMEP6_S_VL6_TN2" connectableBus1="AGAMEP6_S_VL6_TN2" voltageLevelId1="AGAMEP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-210.86296168641283" q1="34.490043549707949" p2="214.83745186784904" q2="-17.53005840896915">
+    <iidm:line id="ATHENL62AGAME_ACLS" name="ATHENL62AGAME" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="AGAMEP6_S_VL6_TN2" connectableBus1="AGAMEP6_S_VL6_TN2" voltageLevelId1="AGAMEP6_S_VL6" bus2="ATHENP6_S_VL6_TN1" connectableBus2="ATHENP6_S_VL6_TN1" voltageLevelId2="ATHENP6_S_VL6" p1="-210.86256597201381" q1="34.488910549986038" p2="214.83712684945999" q2="-17.528118680297911">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -524,7 +524,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="HADESL61HELEN_ACLS" name="HADESL61HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09652038252383" q1="46.086455298869559" p2="229.65054532233879" q2="-24.906690536993171">
+    <iidm:line id="HADESL61HELEN_ACLS" name="HADESL61HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09691552747131" q1="46.083808982887035" p2="229.65102034008899" q2="-24.903230021240219">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -532,7 +532,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="HADESL62HELEN_ACLS" name="HADESL62HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09652038252383" q1="46.086455298869559" p2="229.65054532233879" q2="-24.906690536993171">
+    <iidm:line id="HADESL62HELEN_ACLS" name="HADESL62HELEN" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="HELENP6_S_VL6_TN1" connectableBus1="HELENP6_S_VL6_TN1" voltageLevelId1="HELENP6_S_VL6" bus2="HADESP6_S_VL6_TN1" connectableBus2="HADESP6_S_VL6_TN1" voltageLevelId2="HADESP6_S_VL6" p1="-225.09691552747131" q1="46.083808982887035" p2="229.65102034008899" q2="-24.903230021240219">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -540,7 +540,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="DOLONL61PRIAM_ACLS" name="DOLONL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="DOLONP6_S_VL6_TN1" connectableBus2="DOLONP6_S_VL6_TN1" voltageLevelId2="DOLONP6_S_VL6" p1="-16.956140783042539" q1="3.9060745320539834" p2="16.989456150473213" q2="-16.233007928744353">
+    <iidm:line id="DOLONL61PRIAM_ACLS" name="DOLONL61PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="DOLONP6_S_VL6_TN1" connectableBus2="DOLONP6_S_VL6_TN1" voltageLevelId2="DOLONP6_S_VL6" p1="-16.956353179853078" q1="3.9058236260657804" p2="16.989669261945657" q2="-16.232450575748462">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -548,7 +548,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="DOLONL62PRIAM_ACLS" name="DOLONL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="DOLONP6_S_VL6_TN1" connectableBus2="DOLONP6_S_VL6_TN1" voltageLevelId2="DOLONP6_S_VL6" p1="-16.956140783042539" q1="3.9060745320539834" p2="16.989456150473213" q2="-16.233007928744353">
+    <iidm:line id="DOLONL62PRIAM_ACLS" name="DOLONL62PRIAM" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="PRIAMP6_S_VL6_TN1" connectableBus1="PRIAMP6_S_VL6_TN1" voltageLevelId1="PRIAMP6_S_VL6" bus2="DOLONP6_S_VL6_TN1" connectableBus2="DOLONP6_S_VL6_TN1" voltageLevelId2="DOLONP6_S_VL6" p1="-16.956353179853078" q1="3.9058236260657804" p2="16.989669261945657" q2="-16.232450575748462">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -556,7 +556,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="MYDONL61CIRCE_ACLS" name="MYDONL61CIRCE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="123.56397223981766" q1="-10.988941523054496" p2="-122.26031793339322" q2="8.1081943814126696">
+    <iidm:line id="MYDONL61CIRCE_ACLS" name="MYDONL61CIRCE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="123.56436738480076" q1="-10.98718704067071" p2="-122.26068045118157" q2="8.1069413840317299">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
@@ -564,7 +564,7 @@
             <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
         </iidm:currentLimits2>
     </iidm:line>
-    <iidm:line id="MYDONL62CIRCE_ACLS" name="MYDONL62CIRCE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="123.56397223981766" q1="-10.988941523054496" p2="-122.26031793339322" q2="8.1081943814126696">
+    <iidm:line id="MYDONL62CIRCE_ACLS" name="MYDONL62CIRCE" r="4.559999942779541" x="33.779998779296875" g1="0" b1="0.0001177340091089718" g2="0" b2="0.00011775099847000092" bus1="CIRCEP6_S_VL6_TN1" connectableBus1="CIRCEP6_S_VL6_TN1" voltageLevelId1="CIRCEP6_S_VL6" bus2="MYDONP6_S_VL6_TN1" connectableBus2="MYDONP6_S_VL6_TN1" voltageLevelId2="MYDONP6_S_VL6" p1="123.56436738480076" q1="-10.98718704067071" p2="-122.26068045118157" q2="8.1069413840317299">
         <iidm:currentLimits1 permanentLimit="1890"/>
         <iidm:currentLimits2 permanentLimit="1890">
             <iidm:temporaryLimit name="IT20" acceptableDuration="1200" value="2171"/>
