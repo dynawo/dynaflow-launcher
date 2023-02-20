@@ -24,6 +24,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <limits>
 
+#pragma GCC diagnostic warning "-Wvarargs"
+
 namespace dfl {
 namespace inputs {
 
