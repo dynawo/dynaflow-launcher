@@ -77,7 +77,7 @@ function(target_set_warnings)
         # Unless you'd like to support MSVC in the code with pragmas, this is probably the best option
         list(APPEND WarningFlags "/W4")
       elseif(WGCC)
-        list(APPEND WarningFlags "-Wall" "-Wextra" "-Wpedantic")
+        list(APPEND WarningFlags "-Wall" "-Wextra")
       elseif(WCLANG)
         list(APPEND WarningFlags "-Wall" "-Weverything" "-Wpedantic")
       endif()
