@@ -71,7 +71,7 @@ DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCol
 #if _DEBUG_
     assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
 #endif
-    // We put index1 to 0 even in case there is only one connection, for consistency in the output file
+    // We set index1 to 0 even in case there is only one connection, for consistency in the output file
     macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
     (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
     dynamicModelsToConnect->addMacroConnect(macroConnect);

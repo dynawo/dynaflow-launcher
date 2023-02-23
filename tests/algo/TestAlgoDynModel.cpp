@@ -73,10 +73,10 @@ TEST(TestAlgoDynModel, base) {
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
 
-  nodes[1]->generators.emplace_back("G0", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
+  nodes[1]->generators.emplace_back("G0", true, points0, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, 0, bus1, bus3);
 
-  nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
+  nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, 0, bus2, bus2);
 
   dfl::algo::DynModelAlgorithm algo(defs, manager, true);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
@@ -215,10 +215,10 @@ TEST(TestAlgoDynModel, noRegulation) {
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(2, -10, -10));
   points0.push_back(dfl::inputs::Generator::ReactiveCurvePoint(1, 1, 17));
 
-  nodes[1]->generators.emplace_back("G0", true, points0, 0, 0, 0, 0, 0, 0, bus1, bus1);
-  nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, bus1, bus3);
+  nodes[1]->generators.emplace_back("G0", true, points0, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
+  nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, 0, bus1, bus3);
 
-  nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, bus2, bus2);
+  nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, 0, bus2, bus2);
 
   dfl::algo::DynModelAlgorithm algo(defs, manager, false);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());

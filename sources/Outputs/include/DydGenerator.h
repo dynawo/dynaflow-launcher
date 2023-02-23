@@ -68,11 +68,11 @@ class DydGenerator {
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
    * @param basename the basename for current file
-   * @param busesWithDynamicModel map of bus ids to a generator that regulates them
+   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param slackNodeId id of slack node
    */
   void write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
-             const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesWithDynamicModel, const std::string& slackNodeId);
+             const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, const std::string& slackNodeId);
 
  private:
   /**
