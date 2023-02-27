@@ -284,12 +284,8 @@ ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSe
     set->addReference(helper::buildReference("generator_QNomAlt", "qNom", "DOUBLE"));
   set->addReference(helper::buildReference("generator_SNom", "sNom", "DOUBLE"));
   if (isNuclear) {
-    set->addParameter(helper::buildParameter("generator_RTfoPu", constants::generatorNucRPuValue));
-    set->addParameter(helper::buildParameter("generator_rTfoPu", constants::generatorNucRhoValue));
     set->addParameter(helper::buildParameter("generator_XTfoPu", constants::generatorNucXPuValue));
   } else {
-    set->addParameter(helper::buildParameter("generator_RTfoPu", constants::generatorRPuValue));
-    set->addParameter(helper::buildParameter("generator_rTfoPu", constants::generatorRhoValue));
     set->addParameter(helper::buildParameter("generator_XTfoPu", constants::generatorXPuValue));
   }
 }
