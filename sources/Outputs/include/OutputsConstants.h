@@ -92,11 +92,7 @@ static constexpr double kGoverDefaultValue_ = 1.;                     ///< KGove
 const std::string solverParFileName{"solver.par"};                    ///< name of the solver par file
 const std::string componentTransformerIdTag{"@TFO@"};                 ///< TFO special tag for component id
 const std::string seasonTag{"@SAISON@"};                              ///< Season special tag
-const double generatorRPuValue{0.0029};                               ///< value of RPu of generators
-const double generatorRhoValue{0.9535};                               ///< value of Rho of generators
 const double generatorXPuValue{0.1228};                               ///< value of XPu of generators
-const double generatorNucRPuValue{0.0026};                            ///< value of RPu of nuclear generators
-const double generatorNucRhoValue{0.9235};                            ///< value of Rho of nuclear generators
 const double generatorNucXPuValue{0.1426};                            ///< value of XPu of nuclear generators
 
 }  // namespace constants
