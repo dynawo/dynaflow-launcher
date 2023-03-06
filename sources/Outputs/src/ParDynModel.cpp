@@ -109,7 +109,7 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
       new_set->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
       if (genDefinition.hasTransformer())
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_",
-                                                     (genDefinition.isNetwork()) ? constants::generatorNucXPuValue : constants::generatorXPuValue));
+                                                     (genDefinition.isNuclear) ? constants::generatorNucXPuValue : constants::generatorXPuValue));
 
       if (genDefinition.q < genDefinition.qmax && genDefinition.q > genDefinition.qmin) {
         frozen = false;

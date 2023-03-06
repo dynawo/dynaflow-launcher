@@ -53,9 +53,7 @@
     <par name="generator_QMin0" type="DOUBLE" value="0"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G8_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="4657367540483180226_tableqmin"/>
-    <par name="generator_RTfoPu" type="DOUBLE" value="0.0028999999999999998"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
-    <par name="generator_rTfoPu" type="DOUBLE" value="0.95350000000000001"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00050000000000000001"/>
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.7"/>
     <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="180"/>
@@ -161,9 +159,7 @@
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_RTfoPu" type="DOUBLE" value="0.0028999999999999998"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
-    <par name="generator_rTfoPu" type="DOUBLE" value="0.95350000000000001"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00029999999999999997"/>
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.5"/>
     <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="160"/>

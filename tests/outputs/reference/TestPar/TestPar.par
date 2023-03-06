@@ -89,17 +89,13 @@
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G10_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="3459916906757134539_tableqmin"/>
-    <par name="generator_RTfoPu" type="DOUBLE" value="0.0028999999999999998"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
-    <par name="generator_rTfoPu" type="DOUBLE" value="0.95350000000000001"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="4657367540483180226">
-    <par name="generator_RTfoPu" type="DOUBLE" value="0.0028999999999999998"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
-    <par name="generator_rTfoPu" type="DOUBLE" value="0.95350000000000001"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
@@ -114,9 +110,7 @@
     <macroParSet id="macro_signalNGenerator"/>
   </set>
   <set id="648475104231997810">
-    <par name="generator_RTfoPu" type="DOUBLE" value="0.0025999999999999999"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
-    <par name="generator_rTfoPu" type="DOUBLE" value="0.92349999999999999"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
