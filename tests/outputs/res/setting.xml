@@ -57,12 +57,16 @@
     <par type="DOUBLE" name="secondaryVoltageControl_Qr_4_" value="310"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_SNom_1_" value="110.45"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_SNom_2_" value="110.45"/>
   </set>
   <set id="G5">
     <!-- G5 parameters -->
     <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0002"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.4"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="150"/>
+    <par type="DOUBLE" name="generator_QNomAlt" value="10"/>
+    <par type="DOUBLE" name="generator_SNom" value="110.45"/>
   </set>
   <set id="G6">
     <!-- G6 parameters -->
@@ -75,6 +79,7 @@
     <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0004"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.6"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="170"/>
+    <par type="DOUBLE" name="generator_QNomAlt" value="10"/>
   </set>
   <set id="G8">
     <!-- G6 parameters -->

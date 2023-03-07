@@ -54,7 +54,7 @@
   <dyn:blackBoxModel id="G4" staticId="G4" lib="GeneratorPVSignalN" parFile="TestDydDynModel.par" parId="signalNGeneratorFixedP">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPVRpclSignalN" parFile="TestDydDynModel.par" parId="signalNRpclGenerator">
+  <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPVRpclSignalN" parFile="TestDydDynModel.par" parId="17121589878100777463">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="L0" staticId="L0" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
