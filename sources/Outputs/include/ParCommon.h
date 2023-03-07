@@ -143,22 +143,6 @@ getGeneratorParameterSetId(const algo::GeneratorDefinition& generator) {
     if (generator.isNuclear)
       id += "_Nuc";
     break;
-  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE:
-    id = constants::signalNTfoRpclGeneratorParId;
-    if (generator.isNuclear)
-      id += "_Nuc";
-    break;
-  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE:
-    id = constants::signalNTfoRpcl2GeneratorParId;
-    break;
-  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE:
-    id = constants::signalNRpclGeneratorParId;
-    if (generator.isNuclear)
-      id += "_Nuc";
-    break;
-  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE:
-    id = constants::signalNRpcl2GeneratorParId;
-    break;
   case algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE:
     id = fixedP ? constants::signalNGeneratorFixedPParId : constants::signalNGeneratorParId;
     if (generator.isNuclear)
