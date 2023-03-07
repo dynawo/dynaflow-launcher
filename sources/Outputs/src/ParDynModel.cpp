@@ -62,26 +62,28 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
                                   const algo::DynamicModelDefinition& automaton) {
   auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
 
-  std::unordered_map<std::string, unsigned> genIdToInitialQrIndex;
+  std::unordered_map<std::string, unsigned> genIdToInitialIndex;
   auto itAutomaton = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
   assert(itAutomaton != dynamicDataBaseManager.assembling().dynamicAutomatons().end());
   unsigned genIndex = 1;
   for (const auto& macroConn : itAutomaton->second.macroConnects) {
     if (dynamicDataBaseManager.assembling().isSingleAssociation(macroConn.id)) {
       for (const auto& gen : dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators) {
-        genIdToInitialQrIndex[gen.name] = genIndex;
+        genIdToInitialIndex[gen.name] = genIndex;
       }
       if (!dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators.empty())
         ++genIndex;
     }
   }
 
-  std::unordered_map<std::string, double> genInitialQrParamToValue;
+  std::unordered_map<std::string, double> genInitialParamToValues;
   for (const auto& param : set.doubleParameters) {
     if (param.name == "secondaryVoltageControl_Alpha" || param.name == "secondaryVoltageControl_Beta") {
       new_set->addParameter(helper::buildParameter(param.name, param.value));
     } else if (param.name.find("secondaryVoltageControl_Qr_") != std::string::npos) {
-      genInitialQrParamToValue[param.name] = param.value;
+      genInitialParamToValues[param.name] = param.value;
+    } else if (param.name.find("secondaryVoltageControl_SNom_") != std::string::npos) {
+      genInitialParamToValues[param.name] = param.value;
     }
   }
 
@@ -97,16 +99,21 @@ ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set& set, const
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
       }
 
-      auto it = genIdToInitialQrIndex.find(genDefinition.id);
-      if (it != genIdToInitialQrIndex.end()) {
+      auto it = genIdToInitialIndex.find(genDefinition.id);
+      if (it != genIdToInitialIndex.end()) {
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Qr_" + std::to_string(idx) + "_",
-                                                     genInitialQrParamToValue["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
+                                                     genInitialParamToValues["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
+        auto sNomIt = genInitialParamToValues.find("secondaryVoltageControl_SNom_" + std::to_string(it->second) + "_");
+        if (sNomIt != genInitialParamToValues.end()) {
+          new_set->addParameter(helper::buildParameter("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", sNomIt->second));
+        } else {
+          new_set->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
+        }
       }
 
       new_set->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p_pu", "DOUBLE", genDefinition.id));
       new_set->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q_pu", "DOUBLE", genDefinition.id));
       new_set->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v_pu", "DOUBLE", genDefinition.id));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
       if (genDefinition.hasTransformer())
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_",
                                                      (genDefinition.isNuclear) ? constants::generatorNucXPuValue : constants::generatorXPuValue));

@@ -72,14 +72,15 @@ class ParGenerator {
   /**
    * @brief build a generator macro parameter set
    *
-   * @param modelType type of modelling chosen for a generator
+   * @param def the generator definition to use
    * @param activePowerCompensation the type of active power compensation
    * @param targetP generator targetP value
    * @param startingPointMode starting point mode
    * @return the new macro parameter set
    */
-  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(ModelType modelType, ActivePowerCompensation activePowerCompensation,
-                                                                                   double targetP, StartingPointMode startingPointMode);
+  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def,
+                                                                                   ActivePowerCompensation activePowerCompensation, double targetP,
+                                                                                   StartingPointMode startingPointMode);
 
   /**
     * @brief Write constants parameter sets for generators
@@ -96,16 +97,13 @@ class ParGenerator {
   /**
    * @brief Update parameter set with SignalN generator parameters and references
    *
-   * @param modelId the model of the generator
+   * @param set the parameter set to update
    * @param activePowerCompensation the type of active power compensation
    * @param targetP generator targetP value
    * @param startingPointMode starting point mode
-   *
-   * @return result parameter set
    */
-  boost::shared_ptr<parameters::ParametersSet> updateSignalNGenerator(const std::string& modelId,
-                                                                      dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                                                                      double targetP, StartingPointMode startingPointMode);
+  void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+                              double targetP, StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with transformer parameters
