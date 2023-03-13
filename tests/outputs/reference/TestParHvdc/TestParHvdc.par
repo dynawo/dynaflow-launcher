@@ -140,7 +140,7 @@
   </set>
   <set id="HVDCVSCLine4">
     <par name="acemulation_KACEmulation" type="DOUBLE" value="2.8647889756541161"/>
-    <par name="acemulation_PRefSet0Pu" type="DOUBLE" value="-1.2"/>
+    <par name="acemulation_PRefSet0Pu" type="DOUBLE" value="1.2"/>
     <par name="acemulation_tFilter" type="DOUBLE" value="50"/>
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
