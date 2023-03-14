@@ -85,6 +85,12 @@ buildContext(dfl::common::Options::Request request, dfl::inputs::SimulationParam
                                params.locale};
 
   boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config));
+
+  if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT &&
+      context->dynamicDataBaseAssemblingContainsSVC()) {
+    throw Error(NoSVCInFlatStartingPointMode);
+  }
+
   return context;
 }
 

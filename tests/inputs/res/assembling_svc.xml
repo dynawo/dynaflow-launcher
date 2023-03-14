@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="SVCToUMeasurement">
+    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+  </macroConnection>
+  <macroConnection id="SVCToGenerator" index1="true">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
+  </macroConnection>
+  <singleAssociation id="UMeasurement">
+    <bus voltageLevel="_BUS____1_VL"/>
+  </singleAssociation>
+  <singleAssociation id="GEN1">
+    <generator name="_GEN____1_SM"/>
+  </singleAssociation>
+  <singleAssociation id="GEN2">
+    <generator name="_GEN____2_SM"/>
+  </singleAssociation>
+  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+    <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GEN2"/>
+  </dynamicAutomaton>
+  <property id="ReactivePowerControlLoop2">
+    <device id="GEN2"/>
+  </property>
+</assembling>
