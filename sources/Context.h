@@ -119,6 +119,14 @@ class Context {
    */
   void execute();
 
+  /**
+   * @brief returns if the assembling data base contains one or more SVCs
+   * @returns true if the assembling data base contains one or more SVCs, false otherwise
+   */
+  bool dynamicDataBaseAssemblingContainsSVC() const {
+    return dynamicDataBaseManager_.assembling().containsSVC();
+  }
+
  private:
   /// @brief Slack node origin
   enum class SlackNodeOrigin {

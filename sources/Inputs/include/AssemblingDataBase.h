@@ -399,6 +399,14 @@ class AssemblingDataBase {
   }
 
   /**
+   * @brief determines if the assembling data base contains one or more SVCs
+   * @returns true if the assembling data base contains one or more SVCs, false otherwise
+   */
+  bool containsSVC() const {
+    return containsSVC_;
+  }
+
+  /**
    * @brief Retrieve a property with its id
    * @param id property id
    * @returns property with the given id, empty property if not found
@@ -418,7 +426,8 @@ class AssemblingDataBase {
   std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;       ///< list of multiple associations
   std::unordered_map<std::string, std::string> generatorIdToSingleAssociationsId_;  ///< generator id associated to the single associations that contains it
   std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                       ///< list of dynamic automatons
-  std::unordered_map<std::string, Property> properties_;                            ///< list of properties
+  bool containsSVC_;                                      ///< true if the assembling data base contains one or more SVC, false otherwise
+  std::unordered_map<std::string, Property> properties_;  ///< list of properties
 };
 
 }  // namespace inputs
