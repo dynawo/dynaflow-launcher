@@ -15,6 +15,7 @@
 
 #include "AssemblingDataBase.h"
 
+#include "Constants.h"
 #include "Log.h"
 
 #include <xml/sax/parser/ParserFactory.h>
@@ -52,7 +53,7 @@ computeXsdPath(const file::path& filepath) {
   return xsdFile;
 }
 
-AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path& assemblingFilePath) {
+AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path& assemblingFilePath) : containsSVC_(false) {
   parser::ParserFactory factory;
   AssemblingXmlDocument assemblingXml(*this);
   auto parser = factory.createParser();
@@ -188,6 +189,9 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   dynamicAutomatonHandler_.onStart([this]() { dynamicAutomatonHandler_.currentDynamicAutomaton = AssemblingDataBase::DynamicAutomaton(); });
   dynamicAutomatonHandler_.onEnd([this, &db]() {
     db.dynamicAutomatons_[dynamicAutomatonHandler_.currentDynamicAutomaton->id] = *dynamicAutomatonHandler_.currentDynamicAutomaton;
+    if ((*dynamicAutomatonHandler_.currentDynamicAutomaton).lib == dfl::common::constants::svcModelName) {
+      db.containsSVC_ = true;
+    }
     dynamicAutomatonHandler_.currentDynamicAutomaton.reset();
   });
 
