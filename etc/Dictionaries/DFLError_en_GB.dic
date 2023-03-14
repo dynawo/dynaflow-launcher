@@ -28,6 +28,7 @@ UnknownProperty               =     couldn't find the property %1% in assembling
 
 //------------------ Outputs -----------------------
 MissingGeneratorParameterInSettings = parameter %1% not found in settings file for generator %2%
+NoSVCInFlatStartingPointMode =        simulation of secondary voltage controls is not possible with 'FLAT' starting point mode
 //------------------ Main ---------------------------
 EnvVariableMissing           =     cannot find environnement variable %1% please check runtime environment
 NetworkFileNotFound          =     network file %1% does not exist
