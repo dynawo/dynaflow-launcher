@@ -1,0 +1,536 @@
+The following commits were made pursuant to the Developer Certificate of Origin, even though a Signed-off-by: was not included in the commit message.
+
+"1d327dbd87a68ae36a8b78b54c72bd06375e997f","#592 use SNom from DDB for SVCs and generatrors in SVCs area
+"e544afd9fe6c657d4a460027ec37a729df4c3258","#599 Fix PRefSet0Pu
+"ab6742d16abc24cf12697f568eeb94951b1dbec8","#559 remove french acronym
+closes #559
+"60f16f18725bfd11a4d5536c6b19da418cbfd869","#559 retrieve transformers active season when referenced in par
+closes #559
+"527d710a900b8f8c6de256423028d90c8f19c6f2","#590 Simplify GeneratorPVTfo Tfo representation
+"159ce1a69c1560633e5d9fc88395f13c0755402d","#476 Tentative to disable the warning which requieres to use one argument with DYN::Error macro by removing the -Wpedantic flag
+"01c687ce70718a0d33be7ed3ca94999bf549af43","Revert ""#476 Tentative to disable the warning which requieres to use one argument with DYN::Error macro""
+This reverts commit a2ebf3a5ac3c59d056a0497c927949b6a55ceb92.
+"af2c7a51336cab07d7a32c59c8e3daf454e1fd03","#476 Tentative to disable the warning which requieres to use one argument with DYN::Error macro
+"f84b504fa75597ff0146da0a91cb933e846fe27a","#586 properly initialize frozen property of VRRemote and SVCs + renaming
+closes #568
+"233f73f7729c7980c2bd0ea8a1eedc01c2dd4fdd","#567 Use frozen capability of svc
+close s#567
+"96876bc7653a22d4fbe80726391ad562ba1f9c07","#476 Allow having a different configuration in the same JSON file for N and SA
+"2815ec757c539b5ba86e57ebf08120e3db4db3bc","#579 exit when a partially connected automaton is deleted to avoid crash
+closes #579
+"a24f1c1e8aa3f9aad2f9ef51ef8d2817df6bdad5","#308 nrt ref update
+"4862ffb19724839b413615222546c1ed70c89a52","#570 align dynawo precision with solver precision to avoid numerical
+issues
+closes #570
+"9bae92bf79b894ac2d38fd38694c249e3f90efd0","#583 Update tests following 327 from dyn-algos.
+"9ecfbe239e8db9a7559a4e3919718a0f5c338656","#575 NRT update + match the time whatever the precision
+"71e46599b65f6ec604aba004b2fc7977d1b1d34b","Revert ""#575 NRT update""
+This reverts commit dc90fe5d533a8970ddd71676d9af6f8ed82fc3d2.
+"dc3d67a883bfc23e4551c52e1c4dc620c8e3ebf3","#575 NRT update
+"5db4ada747bc12fb588014f6237697697af7bf45","#528 remove sanity check about legacy iidm
+closes #528
+"2b606d5bc607e7168d85ea7f5de70159e232a310","#564 use mpi from dfl installation instead of system mpi
+closes #564
+"5f9588a6be5f4182d309efe526163f383b6feb70","#535 Fix cmake call for coverage.
+"4c28566b7d80c0cd95ecb12a5a8a798bc38abfb2","#555 Update following OS 2737
+"3b5577677de2e1cdc695926d812b68745e9dcab2","#560 update docupmentation links to v1.4.0 assets
+closes #560
+"14eeb5b4c18ca0347f721c4e9f3a24b9ee739f10","#535 TUs during coverage now pass when the project is in Release because we now link with .so in ./build/coverage
+"14a720f429e2f971a81fa9653eebcc0702f05035","#539 Update api to use token in workflow and avoid github limite rate.
+"9c69caa85af57fa4a1d96f97c420af1b5e8c715b","#549 NRT references update
+"3e30d6fd7257a966aca3feb2097ce2df3f03281f","#526 fix following review
+"2f846d6babb988963e2597cf9ee29ff24faa7ddd","#526 update tests
+"1eceb356fb49d4ab7b7f5b10e71309921f38a9ee","#526 upadte dyd and par creation following OS 2673
+"4c75ab91167fa8fdbb49029818894e7d25c484c5","#544 Avoid a crash when no slack node was found
+closes #544
+"e01f49fa3e254304a7aab0f0b6402a72823aaf29","#541 Add centos7 distribution generation.
+"df6b41fd76306b15f12b88a284b5b7da2eff92c1","#539 Fix workflow curl calls and add token.
+"e89bb55e9e36640fbe93d236ee4915d804d96cae","#489 PR remark
+"3d325d96e37583a5f85ffdf7360e6796391ea6fa","#489 Creation of a test to check json config files are case insensitive
+"55731c19c4e5c6488512372ac329ef12db92b041","#489 ChosenOutputs, StartingPointMode and all booleans json values are now case insensitive
+"6d3ac194571f2019a86e3e1f913e36d4a382b9a3","#519 filter dynawo-algorithms dictionaries_ammping to avoid duplicata
+when distrib is used
+closes #519
+"a5ba6a40a6f9cabff77d32dad9113296cc757a6a","#532 Addition of the DYNAWO_DICTIONARIES environment variable + fix of MAIN_NSA.noContingencies nrt
+"cd22b6e34327bc4fe783e540f263106c0fbf2e2f","#529 Update tests for slackTerminal iidm extension following 2687 from dynawo.
+"254ea6f0786a1889356044cf0a880669f119ed18","#525 paths from config are relative to the configuration file path
+closes #525
+"3a7b0ae76fdc4d10330d592701b99540f1b88972","#508 various fixes (select the proper Qr from the SVC setting list when
+some generators are removed from the SVC area, define the Xs from the SVC
+parameter depending on the nuclear property, properly concatenate
+dictionaries_mapping files)
+"2c95bbc3ffcf31c43f812b9e165ddb9f4e798473","#508 rebase
+"adcee068bbaefd1fd80a88b9be8910f311eba7ca","#508 Add the possibility to specify generators with Rpcl2 in dynamic
+database
+closes #508
+"7ec89f0c17e0b4b905e22321e383ba032b3ad8ed","#521 generators as singleAssociation
+closes #521
+"3bb7a59efcaa0d6416bfbfa2d1fa9f61726b084c","#519 load dynamically dictionaries
+closes #519
+"6f461ebc2541f10aa9fd9fe9f7e10330555ab61e","#511 remove tFilter for generators and hvdc when using combitable and update nrts. Follows OS 2253
+"7c46056386357326094d370bb52b1742ca51e84c","#507 update after review
+"a13c3a43aa0b6a2705c1b1e308a64ededa76b79b","#507 add assembling/setting doc
+close #507
+"316535c4b595e0565f185c30dce641a12bedc409","#494 dump specific transformer parameters for nuclear generators
+closes #494
+"050c7e48cb75fce85f5650c97fa1e4ec609d7d7a","#470 secondary voltage control
+closes #470
+"d477929b4a7200ae7ca41b9bf88b20db040bd38b","#510 update workflows
+"6cc9c6e5de0517d8e0efd2863e9a72cb12055080","#510 v1.3.2 release
+"999123cdb1abd39e110f08769fba8218845ad232","#510 v1.5.0
+closes #510
+"024b272bbed940fbf439c849f23440c0661456c1","#450 fix after review
+"529b62d1b9a138efc77d395b2b15d2c2cb053798","#450 add an example of sa and nsa in readme
+closes #450
+"6370cca7f65f20aad3e8fea2263678a527e0057e","#504 fix hvdc parameters (abs used instead of fabs)
+closes #504
+"fea8e7596a7a6dd8c933136ecd65a03b0b48b7d8","#500 fix config read in main when outputDir is not specified
+"2884d65ac1463c00c2b7443227c19a3841ce74be","#497 factorize the method to select generators parId
+closes #497
+"1ca06af13f4700ad58726b5a5e2f7cd62d9c4d1e","#495 link to contributing file
+"9804e18ecf7078a1abbe295d3b89e40b4d0063f3","#495 remove old get involved section
+"de0065163141847715169d7cc1cec029ea31d1e0","#495 update readme
+"2d45bb89e4608e3e4531e9ba16406161828ee0c3","#491 update tests
+"30c5e3c3e866bac46798c5867f78dea05e5bcfa9","#491 fix generator algorithm when model is with tfo
+"a87f506ad8dde43fed0271d18a5aaefd56fa4459","#401 fix centos7 build
+"98f6014b508040c7bab2722b0c8032a034835486","#401 Implement t0 + SA flow
+closes #401
+"32d0e6b87ae7910e51d677a44e7d6cfef2ae4452","#471 realign comment
+"014288035cafa04bada032708cf4724d311a60a5","#471 fix after review
+"3b41d411464c6c47066025d83832b06651a357eb","#471 Adapt par exported information for generators following OS 2221
+"b0f2e819ecdbd5fc324dc888b3dd76e1821661e6","#471 refactoring and simplify ParGenerator class
+"d8a77a5073c0faba12ce8a0e6c4230bb9cd06a2a","#474 fixes after review
+"d8e93ea7522e8c879d2720fb915ef2e8f56a96f0","#474 Refactor dynamic automaton handling
+closes #474
+"c2e5227f61f094e30903c28847dea26bb5fd1c4a","#413 Fix for Centos7
+"b32e312dc7183e057e88a2d4cf62a33c76425ac9","#483 update documentation links to 1.3.1
+"05cc10ae5728c63e50a522ee71188fd340b1ee20","#477 Fix release workflow 2.
+"adaafdcd9eb2a10797a526207260b24b6af6a05f","#395 Fix print of sha1 in version.
+"491b7b6551be9fcdb6b35ea91cff8c3619bf63a0","#413 Introduce flat and warm starting point of a simulation
+"95a06f46e94d57a8ccceefcfd1b82558e6d06a39","#477 Fix release workflow.
+"a0d9c1a88d1a7ec7d5a5e30dadb66e577f06e787","#461 fixes after review
+"0f81a49383d0daa8349921c568a93c7a7fc8a609","#461 fixes after review
+"2615419f2740f916dccb9a764aa8bea09a2098b1","#461 use former modeling for generators with remote regulation and no
+transformer in the static model
+"b14128aa965df0d748a266c96783b527564bfcdd","#461 fixes after review
+"9dfe73e7d8bd515eb4c95e5d8be81b1747e3e5a5","#461 Use generators with tfos when voltage is above a threshold
+closes #461
+"d285dc6029369dcc8ffb3a58e1a16dbe6fe6f2ba","#458 adding minimumModeChangeTypeForAlgebraicRestorationInit in solver parameters following OS 2475
+"e48b4d7340d1ca0864ac21d724b65799a002b246","#456 make sure contingencies in nrt do open something...
+closes #456
+"754eb387ef3059fa15c204c5fab712743b815af5","#294 Update vscode config.
+"fed90bd8dc3530e130b14338f8a7df39c4b2143d","#454 update references following 1933 OS
+Follows https://github.com/dynawo/dynawo/pull/2420
+closes #454
+"f2d34ccc15b75dfd3f0b912efca79d5e5b90b582","#451 update iidm reference after 2489 OS
+"62ba5b4a9696cad6373452396d2bcaab035590b3","#429 Fix python handle.
+"e8e7801592a9ea195e74dc44762420a773cca15b","#427 Use of a custom hash to use std::unordered_set with an enum with older compilers
+"2592825ce4986a23bebc8dfe6057773f5d24d86a","#427 ChosenOutputs is written with an upper-case C in the documentation and JSON files
+"da7678cc843e8f181ed51893a628208577e10ab5","#427 The user now can dump specific information between steady state, lost equipment and timeline
+"abe6b586d13afdeac0937d2ee12da53dc2a78a92","#437 update tests after OS 2442
+"f96282b202c5c42d871209d6533003dc27522555","#434 update tests following OS 2439
+"2bfe5d80e62543d31769b98a9bfc15d61ed88155","#430 update hvdc par following OS 2374
+"cc0a07a13e3b9e2fae96c4a74678110f2a2d6626","#259 all Interface objects in Inputs library
+closes #259
+"4f15484ddaef311ae534a054264bfe075f5f8e7f","#402 improve solver config for perf and modify default dynawo precision
+closes #402
+"fd769b04cb717867253e3df566a43a7c83a63ecb","#294 Update vscode config.
+"4f4cfc6ed76852153a472f378ee745f0780ef035","#419 dump only failing references
+closes #419
+"c14ab49104cb71cbbefc03f3996d8fc1a6665462","#356 minimize the number of outputs to constraints and lostEquipments
+and disable iidm dump in Release
+close #356
+"aed4fe131e85b6e9ca112ed69e2964e2a3aafc31","#417 Remove static compilation.
+"42c710b5a2e1a268ab7766676650e89967179d1d","#396 Ouput slack node in separate file.
+#396 Corrections after review.
+"d8dbf8d33c6d1bfd0b622ea71bb10b398c18d891","#414 Fix unittests launch from IDE.
+"9fb8a6a182c5b7bd733eb8abeb7378128b73739c","#411 set default timeOfEvent value to 10 seconds
+"c04344534fde008d67c3763d414e068bc97bb23b","#409 update documentation
+"cc1b740cebd3f6d52fd4ff872209a884b70119e5","#409 Adapt hvdc model choice using hvdc model without p0 recalculation
+"107b378d698789dadc2fa33aa51eebfa6e2c5a36","#407 solver par file is created based on configuration
+"ea716254ec2a1300449abc30f249bc1598089b3f","#403 fix iidm extension env var when private iidm lib is available
+"ad86faf3c862e8548b2a545693acb19a744fdf5d","#395 Add sha1 in version output.
+"c05d8094ef2fa6e987b02cef182090825ec75e47","#388 Update readme and doc following v1.3.0 release
+closes #388
+"0958637cd42fdc58fed4eb842b4dc536518d3a28","#390 Move 3rd parties build and install in a separate folder from dfl build and install. Add parallel build for mpich.
+"6fa52736eb16f0edfddb607a6fa60ea843d47deb","#381 Fix find_package gmock to handle debug libraries.
+"ef4b8448db4656362bda0f7e578624721ab983fd","#381 Fix gtest target with debug.
+"e3b3d731824c2b866036fb5b5d0221b3bd3ae0df","#378 improve parsing to handle option=value syntax
+closes #378
+"6273d1b84b767947ddddec57b204f305ea38996d","#337 improve generators algorithm when a rectangular reactive capability curve is specified
+"3bfec161481f9f8db8abdf30529d5623b607f48d","#315 fix version on master
+closes #315
+"9225ac5875c01b37ab320191423f2cb72de64318","#315 fix readme
+"c1b814a379cdf0c8a420314188ed8201cb2836d5","#315 small fix
+"073a081a5034b618afbd6e6bec156c8eca860809","#315 Proposition with modeliing section as tables
+"a4c6dc796b7a74a846bd6970cfa12397db6cf555","#315 Functional Doc
+"38e8ec989a5ce00744b948e2b70f36375e7ab407","#315 update after review, added mpich license and modified
+'AssemblyPath' option to 'AssemblingPath option'
+closes #315
+"630d6e49903187c00bf630690fe05fe61dcc93a8","#315 first version of user documentation
+closes #315
+"de2ac1e81941a4184ab0c65e03c73a7e7e0f8dab","#367 update nighlty
+closes #367
+"783b47e6e4247b7f1952e6b332971bd048cfb3f6","#367 v1.4.0
+closes #367
+"23b92b008317591dd79c5c15ae061dd21354cc22","#369 add pull request template
+closes #369
+"6762ee00b999629872584ee76532b2eab1184d51","#364 Update following dynawo issue 1883 (Add aTanPhiRef0 parameter for HvdcPTanPhi models)
+"9abaf3913dc04628b9949b853b9f1a1c33e0ca71","#358 Simplify environment to use a different dynawo home at runtime and
+use this information during the installation
+closes #358
+"91a6d0ff846695f8a2417f65cd50796c3edd20e2","#361 when a load has p0 and q0 = 0, no specific model should be associated
+"c938fd8595c33dc4dd6121842c71817da949c70a","#359 fix dynaflow launcher script
+"5c20512f8988402c0b7221fd8ebdde309c996ab6","#254 Remove cpp98 compilation artefacts
+"eb3894f799c7289f02e73520366e83dd72e63f1b","#353 during results comparison in unit tests, fails if a folder or a
+file from references is not found in results and add the comparison of
+the aggregated result file.
+closes #353
+"8a78381b9fb587b64be80f0c5f0bd1c8b78780f5","#338 do not run the base case in SA as we assume the scenario input iidm
+is already in steady-state
+Also generate the output file after SA.
+closes #338
+"8f2e5f6b258bbeb40dac93f17e554efb1031850f","#336 remove unused parameter PSTRegulationOn
+closes #336
+"93bde33dbfeb2ba7f07e245c468c2e66fde2e759","#350 Add the git hash to the log header
+closes #350
+"dab4e4232b48621e5fe53f42c783e198ed591f0c","#341 fails with an explicit error when dynawo-core was compiled with
+legacy iidm library
+"04240d5d1491b411810a1145ab0f762b09a654e4","#249 Add MPI dependency of algorithms
+closes #249
+"cee0be8732ecb370d50a8a3a3ae8942419eb92da","#347 homogeneize doxygen generation with others project and fails at
+compilation if some warnings are found
+closes #347
+"adfbbe9205737cf57834134593647e54a860ed1e","#345 when a load is fictitous, associate a network model
+"00b4642d0ff242f44b470d5c122543107127bbc4","#340 refactoring and fix of dyd and par output classes
+"f18d6cbf89abf07a275a41d0925eb284a9db66a8","#342 fix code smell
+"5a2141e3ec97db8d38809f1174d2e03eae335924","#342 fix SA when there are no contingecies specified in json file and add test
+"57479fe5b25b1aabb28b28c34e76197e2481aecb","#231 use tcmalloc from dyn-algorithms installation
+"0d19d7d72b27a466ad5aebb0caf952ed1cc9a41d","#70 Add precision to config file
+#70 review: add assert_double to TestConfig
+#70 review: remove JobDefinition constructor without config
+#70 review: redefine exportJob as static
+#70 review: call static method through class
+#70 review: keep consistency between memory and dump
+"711f8b203d763e5ace36b97231fc9669d2f9db77","#334 fix svarc network input when standByAutomaton is not present
+"212efe154777cd03be99f94636dd9aab7c7bbf16","#332 fix centos7 compile error and warning
+"4cf49498c03f447186f9f60bf0bbace7517c6351","#330 fix evaluation of main topological island in presence of partially connected components
+"97a27c8a230e25e81357fbe99bb6fc7159e4689a","#237 adding some logs in checkContingecies
+"58417fea8358ab366cf55e4ddfb6fbda7c056a54","#237 allowing contingecy on 3W transfos
+"6d9a7ebc4b9de2cedc5a6d6fa9623b6d58b719f9","#237 allowing contingecy on open ended 2W transfos
+"bd42ce11790898c26976cebbc6be2a0f7393cdf6","#237 adding test on open ended line contingency
+"22c56bf3b6fef1ee45833f22dd4558295ceba9d3","#237 allowing contingecy on open ended lines
+"bc96f2b01b6d1ecf0b19104913da63f2d6e0ff7b","#327 fix bus id retrieval when a battery is present
+"66181592a5e41267138bc2fdb3550b1c46f4539d","#217 manage shunt option when regulation is off in config
+"ad5a350f37124f478ab7c833770d58d18d012a30","#217 manage SVC option when regulation is off in config
+"815ada9b6fc5b12e447197716a95afbd38da44f4","#233 fix SA when disconnecting network models (generators, loads or svcs)
+"64d187f1d2efb64009e5c4db5c49a07e2735b414","#323 Have one switchOffSignal/running for each side of an HVDC (OS 2191)
+"3735d613a4053425e2ba109572a0690721e14bf2","#321 add dynaflow_launcher_python_command in envDFL
+"ce0a10d5ecc3f27fe952a4021e696975737918b4","#309 copy dictionaries only when different
+"cd870ce82136a86451afcb7a7455bb66968b1b17","#316 using DYNAWO_HOME env var in testjob
+"dd4b81501c0e09df8e2bd5b9ef1ff50c943c07da","#316 add xmllint test on job
+"59fb1b16d7c7b640a548f0581d5c11d81965a830","#316 fix exported job
+"d137640228fde5ced54e97996b4fb18dad451a01","#313 add the possibility to define a gtest repository
+closes #313
+"adcf8177cb496c8a6b6c628e019a581cdd4798af","#311 fix for ci
+"6ef9e2ee48c84e001cdbef31f94075e13a74b8be","#311 automatically open test coverage summary when running it
+"bee339d87d0c0079ae1e16f8af5a67f89ea78894","#304 sonar bugs and review
+"80c45efface00fddc2744f36f69dbd76f7742ce9","#304 use dictionary and log system from dynawo core
+closes #304
+"d4d049bd60ec47e6764c83534160281778d82ca6","#306 fix python script not to check SA timeline in release mode
+"9aeb17796ae1a5e72a1b8f810386f1fd0de84520","#301 fix sonar code smells
+closes #301
+"87802159a843ea77edeba4096f0221785e3eff47","#299 Fix env vars that are mandatory for envDFL that were not checked.
+"4c7df2597793603ddd68172112b698a3b26cc5ed","#297 using dynawo doubleEquals
+"ac805b6d2680990ea7373d1ada68f046e8ad451f","#297 refactoring of algorithm class
+"01bf79c87e05afe024358f915172aa3b9d6f623f","#294 Update vscode config.
+"fa233377ca785355da48d846e0a63c66013864f8","Add vscode config.
+"b44e0397b7d0df2a7b2f470c6b82d7e59c8b0017","#280 modify outpute result dir toward resultsTestsTmp
+"c6915dffd214aeee28d7d874fe21a4dc9a365bd1","#280 add missing popd
+"f383b0fe05474128792e7f084cac3720823129e3","#280 remove results folder before running tests again
+"1fcb0f33ed8a34aa6590163368bb9128088984b7","#291 Fix runtime for shared library version build.
+"d5b23b0830ee6c82a4c2bded67471a0647169153","#273 Fix version output in stderr and not stdout.
+"86f4331e18964750001c4fa0fa370648ab6a4a26","#272 Build shared library version instead of static one.
+"bedd0c97de549b005e81ec03c7155cb75f0f1465","#273 Fix github token.
+"9e05c30c12729aacdf01042c20bbfb0d5a15feaa","#287 Align DFL version with the one of Dynawo.
+"89efe0d31f21a404d587592c64fcc2fa0ec73f86","#285 Fix dynawo-algorithms call following 160 in it.
+"b6265fdbad4bcaca7fc13d68cc02c74d310668fd","#273 Fix name of dynawo and dyn-algo releases used in release workflow.
+"819633c64a09aba5ccbaf40a2f2b8b218bc742b8","#258 variable name change and add test on loads
+"9cec50f0acd870b1d74927706b5c5deb1c87a322","#258 avoiding writing useless informations in par and dyd when a component definition does not exists
+"55536dd6c82e3299e4eff29689743944f1944f57","#273 Fix version call in command line.
+"64a093f6c8edb80a66d74ab57406320e34b35130","#15 Add log of dynawo and dynawo-algo versions to ease debug.
+"50677286eb7365efcd4e138c4418c2885ef3ab63","#215 Fix compilation for old gcc with hash not defined.
+"f047f1e082586cc2401c0058fd336cd0e82e4218","#272 Add workflow_dispatch to nightly to be able to trigger job manually.
+"4a46d4fcd7e0364b3374a716b5515c8a78861436","#260 Fix rights installation of dynawo and dyn-algo for distrib.
+"b8752682c566e7584069fafd03948de85d5a93d5","#272 Add nightly workflow to test build in release/debug and tests.
+"38f083195036271ff4af25f30ebef923fa41037b","#273 Add release workflow.
+"af31c9a90e980e696e9ad48f4744f9a428439dd3","#264 Remove useless connectors (OS 2063)
+"a15ab707ebb5098205f6fb37173a857d7d5dd5d7","#15 Fix fail in main_sa unitttest because of missing compilation flag.
+"088fb0591e4ea13a4b0da942695a8e2298bb72eb","#215 minor doxygen fix
+"8a9d959311928f04ff322d90998f0d1d77da6805","#215 fix after review
+"a81efd94234aa086d799335a6806c55105d83d97","#215 update and refactoring of way static var compensators are treated
+"3e6dde19e37e2081b4be01ea2c329721dca6787a","#15 Fix coverage fail and exit with error.
+"398620130b97132bb47c4236295d0a6b4cbdd823","#15 Add badges.
+"3a9041ed71aef5fdb22b892aca3db0b384cf7f4b","#15 Add sonarcloud config.
+"8ce9e3fcf973cacb2faf590ffb3425a7c0495d72","#260 Fix force cxx11 abi for nightly release.
+"4d2ea5e98cde6f91dfc801636beee2cd2e2f1454","#260 Create a nightly release with github actions.
+"799608651213dc723f307d408f77edaa4f60cf05","#15 continuous integration using github workflows
+"571a84259915520c951574f3b694e11b9e944268","#252 Fix DFL installation
+"be76ce2f2b90983e554370ea50599116236cdf02","#222 Fix tests
+"7c1c7ec491aa11743f78d8e659380ce5eadde75a","#222 Update following OS 1898
+"9fb83c8753601257d7c1597998c74922c89ad4b7","#256 update svarc lib following OS 1897
+"9f67c87c16ee2cdd18629f7cef1014fa4f609c32","#250 Update of the README around the dynawo-algorithms dependency.
+"53855c298b1d8e6dd653835fb0e70c7f5ae5ce6b","#235 Add test using XML slack terminal extension
+"c6803e75350ceaaed7f20188a2fea2988207d906","#247 Clean test results directory when cleaning build
+"66855665fe94c7b341d401eca257cd29d4c848e8","#245 fix ld library path
+"373f71e80f8752fd9be7a2b0142c4d551c26239e","#132 Update script to update tests reference
+"53ec26cede9cbec0f9935d65e038320af6ae6ca6","#220 Fix HVDC model when VSC are connected by switch
+"3eb140481ffe506a03bc8c06711f2239ae60ac19","#225 Update JOB API
+"c4de8216fee0f85fcc098e0d121cd17424be43a6","#229 Node builder: fictitious is last parameter, with default value
+"2bdbc011f86fe1a6155a5641313ab581dd0da8b5","#229 Slack node not fictitious
+"d66ec9a2b7389e6b9000b4e28ae11caebb0ea4f3","#132 changes following review
+"b0713aa3770c262bbe2770dd08490ac09ee3beb0","#132 security analysis with validation of contingencies using algorithm in walk nodes main
+"0268d20e00780d97174d74cde7cd8b0ecee664cf","#209 Add runtime string filter
+"2ca024519503f88fcdf49788074c9fcb4a715f38","#209 allow checking runtime/string and runtime/int
+"30461474dd29c769bbbaaf59bcc0cc0fb97cae69","#209 add runtime/string
+"9c40242a00af922d881a004ffec22a4f3b421632","#209 fix sources and duplicated filter
+"a104ec731269152186efe061c01932ce6f66c2a1","#209 update cpplint config from dynawo
+"2fdbb2e1a227756c97ed909715e6941befeecc2a","#213 Fix error message in script
+"0904fc68c351f9c879574be2edcc674332aa6380","#122 Fix old compiler compilation
+"7ac024a1b84258be00b88614f3c0aa9088c09c1d","#122 Fix comments
+"aa56e49049377902967003da7c157ea7aef63c44","#122 Correct minors on HVDC
+"504316ef7abd43c983bcd8ddb843843c82001a17","#122 Update HVDC management
+Update HVDC algo to take into account multiple VSC regulating buses and
+both extermities of a HVDC line in the main connex component
+Write corresponding diagrams when required
+"05cef26c4e1700c2958cd300e1ca7eeae76e345b","#202 Correct const attributes
+"509360fb3cee8709c14e564446843dd4f335d85e","#202 Correct export files
+"aa80ec99360ead894364f739b32926d0a8c992c2","#202 Correct log
+"508b4f8c848e3f1a956091d91e75ba6b4b000691","#202 Correct comment
+"97170539a44347c0cd5c25a110f4b79fbce1ba2e","#202 Take remarks into account
+"8f98cf6efff67004c86cdb5ed554c81e85620c55","#202 Add static var compensator management
+"4b4d6f4c75128475cd7ace4f54bc2073a1ed3813","#114 Correct naming and comments
+"fedfd39a4e93cae5186b59b7f012b9dad488dc76","#114 Fail if no generator regulates the main connex component
+"8d0cf51507325158a6e4d5bf8ee735e07eb2f145","#206 Improve coding and style
+"5d091cfe44c252159d6e6d279d67ce9f9fc41a44","#203 Correct tests
+"fbc597aec99db8bcf9880dbf88388e99b01425a2","#115 Download googletest when not found
+"3494d1b6be45e46ee99fe832e7763a13a610e877","#198 Fix conflict between local and deploy boost
+"59a12f98f1c8875024864f6cdd6600fe17587e28","#195 Correct filtering automatons
+"57d07ab188b0e211b40932b4ec8838151183c89e","rename variable
+"be9807ade308be07d2156c881e6201870d3f0382","improve variable name
+"6c53feb01dd4a0bf90d38e9a090dcc20011df936","#188 Correct export of job file
+"0cc4d9b654df1e3072c16880784fa3c89495242a","#164 Update error messages
+"8afd0fec79d8b1325698213e24654a633a770d74","#164 Take remarks into account
+"7f0a8e733a7ef6dbacdea650646ff56a389ced6b","#164 Process ref elements with active season
+"7ca3d65d07faf13f5de952ee97ba193d1ca8e371","#189 Update clang format
+"904b11369017a0a233d9d42cb99a57fa25ee4529","#164 Correct naming in scripts
+"e2da5e09d9b82da9e082547837e2862d362ce0b0","#164 Finalize environment for dynamic model use
+"d0e411764dd4a2ba7a662e6f29a4b2712e886e3f","#164 Correct naming
+"0cf276a6aef2a7d0d3700be357a14a5b09fae3d3","#164 Correct comments and naming
+"76b6636473c2a9766c2d2fdab2f9d8b7cee165ee","#164 Export outputs with dynamic models
+"13bd3e45caac9cc801fab44a308af4e6db6a29ec","#184 Correct DFL environement
+"aaa9ef2f7202a214d661c087197b18428eb99e95","#164 Add assert to check presence dyn automatons
+"1229e5663687dd63a137648c408400310863b858","#164 Correct unit test environment by scripts
+"fae8305f0c9e1388df6c0bebb802288aa501219c","#164 Correct naming
+"098afb7523a3acda7b7d12852cad518eb6d9b9aa","#164 Correct comments
+"d592e3fed1614204568eb80f0f5c0fbcebddd808","#164 Correct naming
+"5c98057591dd52d189fc83384912e631be462a68","#164 Correct naming and typos
+"bc80323a692f3a53f30d8b8b7402879068c2dec4","#164 Implement algorithms for dynamic model management
+"6deb791c4fd2e78df7a3854648189bd9e3cff6c8","#172 Apply coding style when compiling
+"d19da8b44fcf3d1308b88615c4fe2c2bf875ef15","#172 Add formatting check before commit
+"1a71f4487585c5035f528b22c769a250c6b560a2","#179 Remove use of deprecated boost timer
+"b3efb3a72227ba97795bde527af08b76bea729ed","#164 Add assert in builders
+"ae53e95a293d20ee7ff66fa00875a7ab6f9a383c","#164 Take remarks into account
+"55e011fef0977ee8bee93fa0bab57035b3dbe107","#164 Update network inputs
+"ed9a6f6b62f4d096e95aae88d131aecf97ac7b17","#164 Remove private names
+"d541c8a1db3cba15589ae59f2df2884f624a119b","#164 Correct typos
+"2d0a8b72f598fa8393e81f1e5deea4f4c6228b89","#164 Correct typos
+"49c76955cac0fd7c72f1d1e8512c2d0495839edf","#164 Add setting and assembling files
+"aa68094e5eb00a4dfe879fd0bec5b06e541cbe9d","#175 Correct some comments
+"d0f3c3aba3e9a940ebe4971bd811a875bec018a5","#169 Improve filepath management
+"1617300c8825ea08dfea1f6f57c1ce5c314c8b5d","#167 Correct scripts
+"cee01d38840a218588cf8a095c53da1cd6d0e163","#159 Update scripts
+"9467312b3745ee398ae97e20e299b6efa2f7dd81","#153 Use new dynawo API
+"e84f5b840bfc2d40e3ec8910afd3d0b167ea3bf7","#161 Redirect popd to null
+"f5b578ce60d18ab482e47c68d1b4f41c8095ef73","#161 Correct cmake scripts for cmake 3.12
+"5209fb3bb6dac574e30a23f3f96f697355a01010","Remove useless constant
+"ed204b347dc1467e1a2a75ea12ddba440415a42d","Remove par set for SignalN
+"15fce67b136ad5ac4b42a8c3e5fa9b7625195529","Update following OS 1621
+"822ac49bf4e8a6fa2756c6f60e8b390ab14be478","#147 remove unused config parameters VSCAsGenerators and LCCAsLoads
+"b075d800cb44af5da00e336d64fb8a5015d009f3","#128 allow node breaker topologies
+"96142923f86b233c56a30daa37b8d229ce142e54","#148 quote cmake generator
+"c5090338036ae1ea02cbe39bcb5e9b6810ec9f72","#140 Remove pointless option
+"0f3a63d9b9550897a94cc4baf83a37442866090b","#140 Correct readme
+"66598e428ac8fb3009736300468a32837724960d","#140 Add update main references to script
+"f04fa5129131623d2f2b2c270d6736a7e852f177","#140 Correct script and readme
+"de2b44ee1807f4570d7fa401402237962240efb1","#140 Correct scripts and readme
+"e299cdb654d4d448329da59767aecb2dcd45f89a","#140 Add sript to compile and launch DFL
+"ffb1ab95f2d83c7da2bd8ab887ca3e9bccd620da","#144 updates references to be compliant with iidm4powsybl 1.3.2
+"192ad2bd69da8276bd41678037abed46f2fcb924","Correct replacement character in diagram filenames
+"37879e60956f43fdd861f10992659bf529405c78","Correct license
+"652d1021804466454a05c675a378595863d44653","Correct name diagram filename
+"6b1c1095ae08dec074aa18d800188af2dce6a3b7","Use boost 1.70 following issue 1571 dynawo
+"2bead65c07f9713da77bc3c9598092fdf766a0de","#137 Provides explanation to add to pythonpath
+"62084f9b23e8c78b64c4b2506e01f8bcf697285f","#137 Add script to update MAIN test references
+"61abd4394121c6f45c06c77d1196ccb2caed9550","#138 Update README
+"b88cca45247d9a00c07e98af5831eb2217f9da18","#138 Add script to update git hook
+"fe6a0cb2abc150c292ff51e977dc3edf00697c64","Remove useless local variable
+"9ec95a70a3636c7d39bcb39e2d9ffeb988ecf115","Remove Generator with impedance
+"f24ac68306b3022bd0d0492b575354cc50199bf0","Update following OS 1544
+"8794bcf2f2e02fa4a2a93ecf03f514d7c6f41c95","#124: introducing macroParameters for generators
+"5b344fb6798bf07354e0f01ed9af11b089faeec6","See #125 : fix dynaflow launcher script
+"3fb1361201fd5c4c9313f2526d72dc7c79300c08","changing load model
+"cdfada449f17b03af6de4623ba2d7c907c9e4986","Fix doxygen
+"ab2e33342ca8708df04304aad5a63b7dcf58446c","#119 generate a jobs file that can be directly run by dynawo core
+"ffdea845c9e8c096c93093ed5fb0ca8183dd105b","Fix compilation following dynawo 1379
+"f3265fe6c94f806d241463bb4211f4ee45f752e6","Remove useless ifdef
+"fb0d1e35708c7d863c47a7ee263ce6d321b1ea6a","Adapt to latest version
+"2afed5d44d4de57b9ffc18c352333fdff987bbc5","Update after 1370 OS to call xerces and libxml2 init and terminate methods in main
+"f3bcb034157b814f74b1b770aad840bdb8d7edcb","Update following OS 1421
+"052604b4c9ab73fc189da33bfd7119c91bf70635","Correct references
+"cfb1799049e5d60796bd2af94d13a62f1e3771d2","Change default parameters for VR Remote
+"0f500f44a93f8bd7818349e6832205a3b85c1a5e","Change name
+"e1641781911685f6ffc1487ddfd77d84a8a76fa6","Correct formatting
+"57f04f3647b029728cb790cfab095224224a8753","Corrections following Florent's review
+"824e4facc5db072e057bc62a0acb0e6d70b29bc5","Remove bus from regulated buses list when the generator's diagram is flat
+"1c99bd0f74bdfe79aeac1744ac6dc089344f020f","Fix remote voltage with switch
+"4bee6a5e887b024277dc8418083c95b4788c5f5b","Update solver file following 1255 OS
+"dcb4dc5a143917f63b06ab102034f2cd7abd9223","Add smart diff
+"62c5a9c5eaffb061b21f63bfc09caa15000fd362","Correct compilation on centos7 and tests
+"ccf4b74585739d9a21717d996833dbe058aa782d","Use dynawo service manager to manage generators connected by switches
+closes #80
+closes #79
+"ab1630dc2cf7b32db3584d83215dbf2cea17e1d8","Correct alinea in MAIN test references
+"203bfd222f62328cbfcb502b9a47b89c28ecd365","Update to use iidm 1_2
+"5a441596c7cab9120553ea05795a0a8a368d893a","Update GMock
+"cff2ee1f60848c022bb726a077bf8075c903f564","Correct minors
+"37d1b98364edcf20746d5c0e3101c1e8ec9139ef","Update HVDC parameters following dynawo issue 1348
+"ed4a708ded92448e67d2f3ace77ac899496cdda7","Update environment variables due to dynawo update
+"93a67762ce50fdd7cc99e25f76004d0be4a603c3","Update after issue 1314 in dynawo
+"f688f41df328908568fc44db1b557e085f063c4f","Correct tests hvdc
+"dc5a535e2c7f9cea5065523d2f7af044937850c1","Correct with new API location
+"4b1f6c36ccda60c4facc251b9e7e5832ef2c31d4","Update with slack node API of dynawo
+"07eb33475d066fa02d89ee282c4ea9a9ccfe738a","Change the restorative load model to recalculate the limits
+"212b91a677d8c990a8eb3d72461c86389bf8d39c","Export job file in debug
+"44201abea5c44b82a4327cf53c0a5ea648f45110","Update tests references
+"87c49813294cb781c62f37a364c90084f479a74d","Add testing command to readme
+"2d6980f8f88ed8e3c327f8ee8ca164cbab2ff8ad","Change default values of UMin/UMax for restorative loads
+"df16ba741e735a06206b626158104e95992fd098","Adapt log API and remove useless call
+"f2b04ca2cb0a5c288f3b6fb84b62115dca96fddc","Use persistant trace functionality from dynawo to properly catch all traces
+"860d46e9792a39925d966c57d773cdfd41e63eb2","Correct minors and styling
+"baa5c0a1a25e9c41ce1794695709203f2cff566a","Correct messages
+"129cb06abbd4768570fcce44adbbb2081289036c","Correct minor errors, styling and comments
+"de881be8ec5e6f036177f6f36938fd6638b0451e","take remarks into account
+"c2ee3d3fde7b841dcd2fdfb027ce2062946b2290","check diagram consistency also when reactive capability curve is not defined
+"bf5cfb058d11a34021a219f8047e6226d5804d1b","Correct parameter names in par files
+"6a2bab0c515307f047b490960c9ff63ebaa18c16","Update test reference for special characters
+fixes #57
+"cb663d9a9e8c625f1e5e53e102868cc8c6912694","update of tests reference
+"9dedc8f6d9c2f109dd55c01336fba7ce1b35859d","msbsetAlg modified to 1
+"3925d33beec33af269a1eee72057183ab7e4c8f0","fix objects connections and topology
+"50da560b1fd590c6ea5352a40c0b51b185c0db3c","Correct minors
+By default no optimization is done so we must precise in readme the release
+CPPLINT must not filter unauthorized c++11 headers because in old compilers, these headers don't exist
+"a290058384c90cff89aca283deb267a636529ca5","Update reset logging after simulation execution
+"108c339ee722bbd1c0706a185b0e2863c95f687e","Add test for special characters
+"3df7e6cb070458e93466441585d9ba5de668ee43","Update encoding for special characters
+"1ea1a24c603b916d01a6ce10cd99643eab1f83cd","Fixes after feedback
+"85686d693110fe3a3a85194e7209249b7259270a","Add wall time data in log
+"820800b20ca478517e149477637d633abd30eb53","Correct unit tests when using full static libs
+"1d6515ee1e928de772ea6b57bc48e492d599c108","Correct c++ syntax for old compiler
+- reference initialization
+- template using in Trace
+- unsupported regex posix implementation
+"03a56455fd6e67ab1c58960325f2cfee64f1547f","Add hash implementation for enum classes
+"3a7ab5b390e9a6b6e834a02acd1bf72b565d63bb","Take remarks into account
+"5246554bae8ae50e62a82e1b134b796ab5146519","#31 Add log at the end of the simulation
+"641f4ef1f466133ac3df302a1b3f9020a7684420","#31 Append to log file after simulation ended
+"efba2ebe5e0a0e1d01b77ef924aea786d39c5134","Add possibility to compile in shared
+"bc74c7b559e761e166565e4622915b103bddaf84","Move install target in the right place to be able to use cmake 3.12. Add compile flag for xerces compilation on centos7.8.
+"7577ae2402d512980abe766d627ee96d46632c4d","#29 Exit properly when node breaker is detected
+"9cb88d9bedd5f40f223f6ab016c20d673600d42e","Use generic path in test
+"d7f05cc2e530d2ac1cad906e72f7dd1032d99c2c","Correct documentation
+"f91ee7de3a62e6c7cae3ea617f958819bc7d6fc6","Correct diagram file link
+"464fb6e8c8b1e20d5494bf540e3c407664505521","Fixes after feedback
+"5f5864558aeedfa7c4294e80638d5e9cc2f2528b","Dump log in outputDir found in config and add an clean error if the network file is not found
+"379d94b29139fe6b3f62d969405af408fe25bcd6","update TestDyd.dyd
+"2f13f3a1ad4e3a04083fd362acf522f58b0a8ffb","fix parId in dyd file to match parameter set id in par file
+"f90634eb5e7eba9739a51deb4d925653486b0891","update TestDyd.dyd with lib name fix
+"f9a433563de81a88a234f338965f600f1ffedf0c","fix generators with diagram lib name
+"2bbe1dcd79d07c63d39933d772f97a9d042d47cd","Correct dependencies
+"11b531eda98add641a8d0e602683f9025469b76b","Some corrections on principal CMakeLists to use a dynawo distrib.
+"52d5c45740431ec6b0c4df0bcf4df0c02e49eef1","Correct installation of doxygen doc
+"ec2553c7416b2b013e48cdf9cf0152c377e6447c","Update name of network file option
+"1c8239f1078d63defdaf3718565153f254b9926b","Improve input configuration
+"2f316f1d04370549cfdd9f8979ed8b7cfbade503","Correct typo
+"0c195d3525e5f9b3ed02466ca5b3d6bc25e46d43","Improve doxygen documentation and comments
+"18bee84d5903e6455e9b98dd95279b0330f619d6","Provide data interface to simulation
+"1c7c7b0a83390e8cbd4e92f1c25b79661fab14f7","#18 Update tests to improve coverage
+"01d9bc5f4b7870870c193ab31204edd085206ccc","#18 Integrate coverage compilation
+"9a959cf259e85969687efe304a4d145b70747fd0","Add file comparaison to main tests
+"f3122d604ea2ee3ec25d42e5286bcd24091c9d53","Improve log content
+"54b83da1dd3b4d2b20d8bdfe936465b7ce3f8b5f","Run simulation
+Update log appenders
+Improve logs and comments
+"7714c9dbefefc4836b7794b0573858fcf5f809b4","Add unit test for Dyd and Par writer
+"0acbb9f536a0e48c63cd519a11d918338f5b8fd0","Add comment
+"60233198be93468ac7ed98e7fb679911cbf1262f","Corret name constant
+"f77330b9b4a41b64585986bfd78bf927b60cf8c8","Correct typo
+"8123861945da43cf6cdbceabcb8e1abbc3c1d64f","Add par file  writer
+"fff503459f78dd5018acbda611be6cd53d8b5931","Correct typo
+"e04a0f345249a4ec3863825a0be811a74f5da2f9","Add dyd file writer
+"990db368adffcd447b83215fbd1a0d8b8c889eb5","Add generator and loads algorithm
+"c0de7d2919eef1196be941fc16f50503300df14f","Take remarks into account
+"a9386729055a0969f7987de8f48ee1351e635862","Integrate simulation to DFL
+Use jobentry instead of writing a job file
+Create a simulation and launche it. For now, since all inputs files are not
+generated, this code is commented
+"a8049a908bbe5589b327ebed4ea2bec5b37c2bbc","Add test for same size components
+"9ae7f003a66c7e2ecdb6a0c9ba6d4e6c24bcc2fd","Re compute slack node in case not  in connex compo
+"76623a9db99558eea622bd810816382e8dd28f9a","Take remarks into account
+"d9832a061ce7ac2e5226794c1ce23467dce2e0c7","Add algoritm to compute connexity
+"46b4c400f69a7a4b6562ea8ebc904529d9317e89","Correct install launcher
+"5248750d744bb46d3a1df1297da25b00b5f83477","Update runtime variables
+"56b953eb192c38f0c6604b101fcdf20ab763bd3d","Correct network parameter file
+"956eed87067122de1b1563e45f59e83e02d6e3f5","Take remarks into account
+"0997ffa2dce68b2e0101c512e57b32927e105b3e","Add job file writer
+Also add install run script
+"0c8633b7ef5ed6ade6cd7f86dcd9ad000e1af10e","Add minors improvements
+Use cache for localization at build
+Correct prefix path for all users
+Generate doxygen doc with target ""all"" and install it
+"3f1876d9e836e92c08dac86267fd5a1ccf4c597b","Add algo library
+Put algorithms in their own library in order to test them independently
+"2c8451f6cc7de3885be028c200c8faa4bc41403d","Take remarks into account
+"b10d8c50c010ddebb08f810972e21a4401645d9a","Add dictionnary to manage language of the logs
+"d39ee8b3ddc893c365460520cccf563d18c76965","Take remarks into account
+"988994e11d6aa10788a4e5e4db4b81747c272bfd","Correct slack node algorithm
+"52f5b1c45b85c12e633c05031d0906bb6270dd55","Add configuration for DFL in JSON format
+"aa9653312e1b60cdf00c4356597c9e9dfcfd5f4a","Correct typo
+"fc689986d69b0750930dd583b388a6ad1739ab80","Compute slack node using walkthrough network manager
+"a21d0b555d9a5ff5aa5456dce58a7505a7fa7828","Take remarks into accounts
+"3eb26834186354e5a0e3c9a9299d2c8e78e0313e","Read network through DYNAWO API
+"4e544595b60f242ed21368bea1de3ddee6683023","Update naming
+"4d3e5cd8196d131bc110031f2961bb9edf520229","Correct initialization of logger
+"6b67bd3de6a07713c222e21f3ff541adb07a0635","Put log into common library
+"7511280f7a88e69009f3140e313a35a2cf5505cb","Use logging system of dynawo
+"7f04f90efdc286ade5d0423857c1b1a5b793db16","Add test for options
+"439cd2ee644431fa4fa2272dc432e47a382777ad","Correct optimization and debug info at compilation
+"1879bd2e958c3d44199a4c2837e3c157b62cc704","Correct link of static library
+"4c1a32791cab4ef82fc7056f6f0dcd7d716801d4","Put options in a namespace
+"e3e94ab85d7b9eeb97f666dc9c80a1b2d31d660d","Put option in a library
+"270fbe41494899194e38076ee13349490fc85934","Add testing system
+"bc2f3eb82fdb0ea2d2339a15fd98f94eb51ff476","Add version management in help message
+"2a7b19816dd2fecffee53014dfc03ab5cb01c5c5","Correct policy
+"c84c71f4040a50a8f04b4c389bd18bc15ad4a701","Correct options
+"78badf970b4452e4a49fc001b972a29016ffca0d","Add debug flag
+"7304871e7811ddacd705483f3186adb91b978873","Update options
+"5d74da5d38eb16dcbb8e682ce3f710a7f2758f66","Correct dependency to boost
+"425a9bfc64b8b4fdaf004d05082078b0a57c69aa","Correct copyright and environement check
+"9761101bee8d6b620005e52e118fc2d04ba9531c","Add options usage
+"30bea0e70631c93de3cf1d3f2baf9c1aba869298","Correct copyright
+"5e56dee00526ad7852574eab15055eea3e778e93","Add find package for dynawo
+"51f78604ad688a360c83ed6a7f53f9b0645fc30a","Remove settings from configuration
+"5cbed0e3dbeccb5244c43d0eccaf999a5abb0fa1","Update settings for VSCode
+"bed102e667fa38247051c92d3a223541104c85b3","Add CPPLINT
+"787d744f5b4ded649c59b0e79449155a427fdd6a","First commit
