@@ -1,0 +1,7 @@
+{
+  "dfl-config": {
+    "OutputDir": "../resultsTestsTmp",
+    "ActivePowerCompensation": "P",
+    "tFilterHvdc" : 2.0
+  }
+}

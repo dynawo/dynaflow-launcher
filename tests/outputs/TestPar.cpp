@@ -174,6 +174,79 @@ TEST(TestPar, writeHdvc) {
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
+TEST(TestPar, writeHdvctFilter) {
+  using dfl::algo::HVDCDefinition;
+  std::string basename = "TestParHvdctFilter";
+  std::string filename = basename + ".par";
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  boost::filesystem::path outputPath(outputPathResults);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  dfl::algo::VSCDefinition vscStation1("VSCStation1", 1., -1., 0., {});
+  dfl::algo::VSCDefinition vscStation2("VSCStation2", 2., -2., 0., {});
+  dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., {});
+
+  auto hvdcLineLCC =
+      HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___21_TN", false, "LCCStation2", "_BUS___22_TN", false,
+                     HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
+                     boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC =
+      HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2", "_BUS___11_TN", false,
+                     HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., vscStation1,
+                     vscStation2, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC2 =
+      HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2", "_BUS___11_TN", false,
+                     HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation1,
+                     vscStation2, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC3 =
+      HVDCDefinition("HVDCVSCLine3", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0., 0.}, 0., vscStation2,
+                     vscStation3, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC4 =
+      HVDCDefinition("HVDCVSCLine4", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2,
+                     vscStation3, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC5 =
+      HVDCDefinition("HVDCVSCLine5", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation2", "_BUS___11_TN", true, "VSCStation3", "_BUS___12_TN", false,
+                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet, {0., 0.}, 0., vscStation2,
+                     vscStation3, 5, 120., true, 320, 322, 0.125, {0.01, 0.01});
+  double powerFactor = 1. / std::sqrt(5.);  // sqrt(1/(2^2+1)) => qMax = 2 with pMax = 1
+  auto hvdcLineLCC2 =
+      HVDCDefinition("HVDCLCCLine2", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", true, "LCCStation2", "_BUS___22_TN", false,
+                     HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {powerFactor, powerFactor},
+                     1., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  dfl::algo::HVDCLineDefinitions::HvdcLineMap hvdcLines = {
+      std::make_pair(hvdcLineVSC.id, hvdcLineVSC),   std::make_pair(hvdcLineLCC.id, hvdcLineLCC),   std::make_pair(hvdcLineVSC2.id, hvdcLineVSC2),
+      std::make_pair(hvdcLineVSC3.id, hvdcLineVSC3), std::make_pair(hvdcLineVSC4.id, hvdcLineVSC4), std::make_pair(hvdcLineVSC5.id, hvdcLineVSC5),
+      std::make_pair(hvdcLineLCC2.id, hvdcLineLCC2),
+  };
+  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
+      std::make_pair("_BUS___10_TN", vscStation1),
+      std::make_pair("_BUS___11_TN", vscStation2),
+      std::make_pair("_BUS___12_TN", vscStation3),
+  };
+  dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration config("res/config_hvdc_tfilter.json");
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, {}, manager, {}, {}, {}, {}, {}, {}));
+
+  parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
 TEST(TestPar, DynModel) {
   using dfl::algo::GeneratorDefinition;
   using dfl::algo::LoadDefinition;

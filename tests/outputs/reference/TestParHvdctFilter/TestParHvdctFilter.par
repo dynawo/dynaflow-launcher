@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="macro_remoteVControl_vr">
+    <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
+    <par name="vrremote_Gain" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
+  </macroParameterSet>
+  <set id="HVDCLCCLine">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation1"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation2"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="HVDCLCCLine2">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="12914068690953704580_tableqmax"/>
+    <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="12914068690953704580_tableqmin"/>
+    <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/LCCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableName" type="STRING" value="7531727525973966584_tableqmax"/>
+    <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/LCCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableName" type="STRING" value="7531727525973966584_tableqmin"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation1"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation2"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="LCCStation1"/>
+    <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="LCCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="HVDCVSCLine">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_modeU10" type="BOOL" value="false"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle2_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle1_pu"/>
+  </set>
+  <set id="HVDCVSCLine2">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
+    <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="4391011292660086723_tableqmin"/>
+    <par name="hvdc_modeU10" type="BOOL" value="false"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle2_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle1_pu"/>
+  </set>
+  <set id="HVDCVSCLine3">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
+    <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="4391011292660086723_tableqmin"/>
+    <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.040000000000000001"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/VSCStation3_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableName" type="STRING" value="8374048307509032961_tableqmax"/>
+    <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.040000000000000001"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestParHvdctFilter_Diagram/VSCStation3_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableName" type="STRING" value="8374048307509032961_tableqmin"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="false"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="HVDCVSCLine4">
+    <par name="acemulation_KACEmulation" type="DOUBLE" value="2.8647889756541161"/>
+    <par name="acemulation_PRefSet0Pu" type="DOUBLE" value="1.2"/>
+    <par name="acemulation_tFilter" type="DOUBLE" value="2"/>
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="false"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="HVDCVSCLine5">
+    <par name="acemulation_KACEmulation" type="DOUBLE" value="2.8647889756541161"/>
+    <par name="acemulation_PRefSet0Pu" type="DOUBLE" value="1.2"/>
+    <par name="acemulation_tFilter" type="DOUBLE" value="2"/>
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="false"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="Model_Signal_NQ__BUS___10_TN">
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation1"/>
+    <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="Model_Signal_NQ__BUS___11_TN">
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>
+    <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="Model_Signal_NQ__BUS___12_TN">
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation3"/>
+    <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+</parametersSet>
