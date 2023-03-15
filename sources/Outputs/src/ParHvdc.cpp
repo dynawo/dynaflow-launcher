@@ -18,9 +18,9 @@ namespace outputs {
 
 void
 ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const std::string& basename, const boost::filesystem::path& dirname,
-               dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+               dfl::inputs::Configuration::StartingPointMode startingPointMode, const double tFilterHvdc) {
   for (const auto& hvdcLine : hvdcDefinitions_.hvdcLines) {
-    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode));
+    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode, tFilterHvdc));
   }
   // adding parameters sets related to remote voltage control or multiple VSC regulating same bus
   for (const auto& keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
@@ -33,7 +33,7 @@ ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetC
 
 boost::shared_ptr<parameters::ParametersSet>
 ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string& basename, const boost::filesystem::path& dirname,
-                       dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+                       dfl::inputs::Configuration::StartingPointMode startingPointMode, const double tFilterHvdc) {
   auto dirnameDiagram = dirname;
   dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
@@ -195,9 +195,9 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
     set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
   }
   if (hvdcDefinition.hasEmulationModel()) {
-    set->addParameter(helper::buildParameter("acemulation_tFilter", 50.));
+    set->addParameter(helper::buildParameter("acemulation_tFilter", tFilterHvdc));
     auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)
-    auto pSet = computePSET(*hvdcDefinition.p0);  // since the model is an emulation one, the extension is defined (see algo)
+    auto pSet = computePSET(*hvdcDefinition.p0);   // since the model is an emulation one, the extension is defined (see algo)
     set->addParameter(helper::buildParameter("acemulation_KACEmulation", kac));
     set->addParameter(helper::buildParameter("acemulation_PRefSet0Pu", pSet));
   }

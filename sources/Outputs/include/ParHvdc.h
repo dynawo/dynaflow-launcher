@@ -46,9 +46,10 @@ class ParHvdc {
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
    * @param startingPointMode starting point mode
+   * @param tFilterHvdc value for the time phase filtering of the hvdc in AC emulation
    */
   void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const std::string& basename, const boost::filesystem::path& dirname,
-             dfl::inputs::Configuration::StartingPointMode startingPointMode);
+             dfl::inputs::Configuration::StartingPointMode startingPointMode, const double tFilterHvdc);
 
  private:
   /**
@@ -58,12 +59,13 @@ class ParHvdc {
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
    * @param startingPointMode starting point mode
+   * @param tFilterHvdc value for the time phase filtering of the hvdc in AC emulation
    *
    * @returns the parameter set
    */
   boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename,
                                                              const boost::filesystem::path& dirname,
-                                                             dfl::inputs::Configuration::StartingPointMode startingPointMode);
+                                                             dfl::inputs::Configuration::StartingPointMode startingPointMode, const double tFilterHvdc);
 
   /**
    * @brief Computes KAC emulation parameter

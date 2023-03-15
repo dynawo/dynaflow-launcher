@@ -194,6 +194,7 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     helper::updateValue(stopTime_, config, "StopTime", saMode);
     helper::updateValue(timeStep_, config, "TimeStep", saMode);
     helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode);
+    helper::updateValue(tFilterHvdc_, config, "tFilterHvdc", saMode);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode);
     helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true);
   } catch (std::exception& e) {

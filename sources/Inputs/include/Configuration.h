@@ -159,6 +159,15 @@ class Configuration {
   }
 
   /**
+   * @brief retrieves the value for the time phase filtering of the hvdc in AC emulation
+   *
+   * @return value of timestep
+   */
+  double getTFilterHvdc() const {
+    return tFilterHvdc_;
+  }
+
+  /**
    * @brief type of active power compensation for generator
    */
   enum class ActivePowerCompensation {
@@ -267,6 +276,7 @@ class Configuration {
   double timeOfEvent_ = 10.;                                                         ///< time for contingency simulation (security analysis only)
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
   double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
+  double tFilterHvdc_ = 50;       ///< the time phase filtering of the hvdc in AC emulation
 };
 
 }  // namespace inputs

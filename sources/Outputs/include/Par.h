@@ -67,8 +67,7 @@ class Par {
                   const std::vector<algo::GeneratorDefinition>& gens, const algo::HVDCLineDefinitions& hvdcDefinitions,
                   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators,
                   const dfl::inputs::DynamicDataBaseManager& dynamicDataBaseManager, const algo::ShuntCounterDefinitions& counters,
-                  const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById,
-                  const algo::TransformersByIdDefinitions& tfosById,
+                  const algo::DynamicModelDefinitions& models, const algo::LinesByIdDefinitions& linesById, const algo::TransformersByIdDefinitions& tfosById,
                   const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions, const std::vector<algo::LoadDefinition>& loadsDefinitions) :
         basename_(base),
         dirname_(config.outputDir()),
@@ -84,7 +83,8 @@ class Par {
         parHvdc_(new ParHvdc(hvdcDefinitions)),
         parGenerator_(new ParGenerator(gens)),
         parDynModel_(new ParDynModel(models, gens)),
-        startingPointMode_(config.getStartingPointMode()) {}
+        startingPointMode_(config.getStartingPointMode()),
+        tFilterHvdc_(config.getTFilterHvdc()) {}
 
     std::string basename_;                                                                    ///< basename
     boost::filesystem::path dirname_;                                                         ///< Dirname of output file relative to execution dir
@@ -101,6 +101,7 @@ class Par {
     std::shared_ptr<ParGenerator> parGenerator_;                                              ///< reference to generators par writer
     std::shared_ptr<ParDynModel> parDynModel_;                                                ///< reference to defined dynamic model par writer
     dfl::inputs::Configuration::StartingPointMode startingPointMode_;                         ///< starting point mode
+    const double tFilterHvdc_;  ///< value for the time phase filtering of the hvdc in AC emulation
   };
 
   /**
