@@ -58,6 +58,7 @@ struct DynamicModelDefinition {
       LINE,      ///< Line type
       TFO,       ///< Transformer type
       SHUNT,     ///< Shunt type
+      MODEL,      ///< Model type
       GENERATOR  ///< Generator type
     };
 
@@ -255,6 +256,14 @@ class DynModelAlgorithm {
   void extractMultiAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro,
                                    bool shuntRegulationOn);
 
+
+  /**
+   * @brief Process model in case of dynamic automaton model connection
+   * @param automaton the dynamic automaton
+   * @param macro macro connection to process
+   */
+  void connectMacroConnectionForModel(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro);
+
   /**
    * @brief Process node in case of dynamic automaton bus connection
    * @param node node to process
@@ -265,13 +274,19 @@ class DynModelAlgorithm {
    * @brief Process node in case of dynamic automaton shunt connection
    * @param node node to process
    */
-  void connectMacroConnectionForShunt(const NodePtr& node);
+  void connectMacroConnectionForMultipleShunts(const NodePtr& node);
 
   /**
    * @brief Process node in case of dynamic automaton line connection
    * @param line line to process
    */
   void connectMacroConnectionForLine(const std::shared_ptr<inputs::Line>& line);
+
+  /**
+   * @brief Process node in case of dynamic automaton shunt connection
+   * @param shunt shunt to process
+   */
+  void connectMacroConnectionForSingleShunt(const inputs::Shunt& shunt);
 
   /**
    * @brief Process node in case of dynamic automaton transformer connection
@@ -305,6 +320,7 @@ class DynModelAlgorithm {
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::vector<MacroConnect>>
       macroConnectByVlForShuntsId_;                                                             ///< macro connections for shunts, by voltage level
   std::unordered_map<inputs::Line::LineId, std::vector<MacroConnect>> macroConnectByLineName_;  ///< macro connections for lines, by line id
+  std::unordered_map<inputs::Shunt::ShuntId, std::vector<MacroConnect>> macroConnectByShuntName_;  ///< macro connections for shunts, by shunt id
   std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;     ///< macro connections for transformer, by transformer id
   std::unordered_map<inputs::Generator::GeneratorId, std::vector<MacroConnect>>
       macroConnectByGeneratorName_;  ///< macro connections for generators, by generator id
