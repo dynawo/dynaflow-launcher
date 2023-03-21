@@ -4,6 +4,7 @@
     <!-- SVC parameters -->
     <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="280"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="290"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_SNom_2_" value="2401.27"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
   </set>
@@ -20,5 +21,7 @@
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
     <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
     <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
+    <par type="DOUBLE" name="generator_QNomAlt" value="690"/>
+    <par type="DOUBLE" name="generator_SNom" value="2401.27"/>
   </set>
 </setting>
