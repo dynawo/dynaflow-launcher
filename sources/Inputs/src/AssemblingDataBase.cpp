@@ -135,6 +135,19 @@ AssemblingDataBase::isMultipleAssociation(const std::string& id) const {
   return multipleAssociations_.find(id) != multipleAssociations_.end();
 }
 
+const AssemblingDataBase::ModelAssociation&
+AssemblingDataBase::getModelAssociation(const std::string& id) const {
+  const auto it = modelAssociations_.find(id);
+  if (it != modelAssociations_.end())
+    return it->second;
+  throw Error(UnknownMultiAssoc, id);
+}
+
+bool
+AssemblingDataBase::isModelAssociation(const std::string& id) const {
+  return modelAssociations_.find(id) != modelAssociations_.end();
+}
+
 const AssemblingDataBase::Property&
 AssemblingDataBase::getProperty(const std::string& id) const {
   const auto it = properties_.find(id);
@@ -157,11 +170,13 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
     macroConnectionHandler_(parser::ElementName(ns, "macroConnection")),
     singleAssociationHandler_(parser::ElementName(ns, "singleAssociation")),
     multipleAssociationHandler_(parser::ElementName(ns, "multipleAssociation")),
+    modelAssociationHandler_(parser::ElementName(ns, "modelAssociation")),
     dynamicAutomatonHandler_(parser::ElementName(ns, "dynamicAutomaton")),
     propertyHandler_(parser::ElementName(ns, "property")) {
   onElement(ns("assembling/macroConnection"), macroConnectionHandler_);
   onElement(ns("assembling/singleAssociation"), singleAssociationHandler_);
   onElement(ns("assembling/multipleAssociation"), multipleAssociationHandler_);
+  onElement(ns("assembling/modelAssociation"), modelAssociationHandler_);
   onElement(ns("assembling/dynamicAutomaton"), dynamicAutomatonHandler_);
   onElement(ns("assembling/property"), propertyHandler_);
 
@@ -184,6 +199,12 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   multipleAssociationHandler_.onEnd([this, &db]() {
     db.multipleAssociations_[multipleAssociationHandler_.currentMultipleAssociation->id] = *multipleAssociationHandler_.currentMultipleAssociation;
     multipleAssociationHandler_.currentMultipleAssociation.reset();
+  });
+
+  modelAssociationHandler_.onStart([this]() { modelAssociationHandler_.currentModelAssociation = AssemblingDataBase::ModelAssociation(); });
+  modelAssociationHandler_.onEnd([this, &db]() {
+    db.modelAssociations_[modelAssociationHandler_.currentModelAssociation->id] = *modelAssociationHandler_.currentModelAssociation;
+    modelAssociationHandler_.currentModelAssociation.reset();
   });
 
   dynamicAutomatonHandler_.onStart([this]() { dynamicAutomatonHandler_.currentDynamicAutomaton = AssemblingDataBase::DynamicAutomaton(); });
@@ -214,9 +235,9 @@ AssemblingDataBase::AssemblingXmlDocument::BusHandler::BusHandler(const elementN
                  [this](const parser::ElementName&, const attributes_type& attributes) { currentBus->voltageLevel = attributes["voltageLevel"].as_string(); });
 }
 
-AssemblingDataBase::AssemblingXmlDocument::ShuntHandler::ShuntHandler(const elementName_type& root) {
-  onStartElement(
-      root, [this](const parser::ElementName&, const attributes_type& attributes) { currentShunt->voltageLevel = attributes["voltageLevel"].as_string(); });
+AssemblingDataBase::AssemblingXmlDocument::MultipleShuntsHandler::MultipleShuntsHandler(const elementName_type& root) {
+  onStartElement(root,
+    [this](const parser::ElementName&, const attributes_type& attributes) { currentMultipleShunts->voltageLevel = attributes["voltageLevel"].as_string(); });
 }
 
 AssemblingDataBase::AssemblingXmlDocument::GeneratorHandler::GeneratorHandler(const elementName_type& root) {
@@ -229,6 +250,17 @@ AssemblingDataBase::AssemblingXmlDocument::TfoHandler::TfoHandler(const elementN
 
 AssemblingDataBase::AssemblingXmlDocument::LineHandler::LineHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentLine->name = attributes["name"].as_string(); });
+}
+
+AssemblingDataBase::AssemblingXmlDocument::SingleShuntHandler::SingleShuntHandler(const elementName_type& root) {
+  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentSingleShunt->name = attributes["name"].as_string(); });
+}
+
+AssemblingDataBase::AssemblingXmlDocument::ModelHandler::ModelHandler(const elementName_type& root) {
+  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
+    currentModel->id = attributes["id"].as_string();
+    currentModel->lib = attributes["lib"].as_string();
+  });
 }
 
 AssemblingDataBase::AssemblingXmlDocument::MacroConnectHandler::MacroConnectHandler(const elementName_type& root) {
@@ -255,10 +287,12 @@ AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssoc
     busHandler(parser::ElementName(ns, "bus")),
     lineHandler(parser::ElementName(ns, "line")),
     tfoHandler(parser::ElementName(ns, "tfo")),
+    singleShuntHandler(parser::ElementName(ns, "shunt")),
     generatorHandler(parser::ElementName(ns, "generator")) {
   onElement(root + ns("bus"), busHandler);
   onElement(root + ns("line"), lineHandler);
   onElement(root + ns("tfo"), tfoHandler);
+  onElement(root + ns("shunt"), singleShuntHandler);
   onElement(root + ns("generator"), generatorHandler);
 
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentSingleAssociation->id = attributes["id"].as_string(); });
@@ -281,6 +315,12 @@ AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssoc
     tfoHandler.currentTfo.reset();
   });
 
+  singleShuntHandler.onStart([this]() { singleShuntHandler.currentSingleShunt = AssemblingDataBase::SingleShunt(); });
+  singleShuntHandler.onEnd([this]() {
+    currentSingleAssociation->shunt = singleShuntHandler.currentSingleShunt;
+    singleShuntHandler.currentSingleShunt.reset();
+  });
+
   generatorHandler.onStart([this]() { generatorHandler.currentGenerator = AssemblingDataBase::Generator(); });
   generatorHandler.onEnd([this]() {
     currentSingleAssociation->generators.push_back(*generatorHandler.currentGenerator);
@@ -289,16 +329,30 @@ AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssoc
 }
 
 AssemblingDataBase::AssemblingXmlDocument::MultipleAssociationHandler::MultipleAssociationHandler(const elementName_type& root) :
-    shuntHandler(parser::ElementName(ns, "shunt")) {
-  onElement(root + ns("shunt"), shuntHandler);
+    multipleShuntsHandler(parser::ElementName(ns, "shunt")) {
+  onElement(root + ns("shunt"), multipleShuntsHandler);
 
   onStartElement(root,
                  [this](const parser::ElementName&, const attributes_type& attributes) { currentMultipleAssociation->id = attributes["id"].as_string(); });
 
-  shuntHandler.onStart([this]() { shuntHandler.currentShunt = AssemblingDataBase::Shunt(); });
-  shuntHandler.onEnd([this]() {
-    currentMultipleAssociation->shunt = *shuntHandler.currentShunt;
-    shuntHandler.currentShunt.reset();
+  multipleShuntsHandler.onStart([this]() { multipleShuntsHandler.currentMultipleShunts = AssemblingDataBase::MultipleShunts(); });
+  multipleShuntsHandler.onEnd([this]() {
+    currentMultipleAssociation->shunt = *multipleShuntsHandler.currentMultipleShunts;
+    multipleShuntsHandler.currentMultipleShunts.reset();
+  });
+}
+
+AssemblingDataBase::AssemblingXmlDocument::ModelAssociationHandler::ModelAssociationHandler(const elementName_type& root) :
+    modelHandler(parser::ElementName(ns, "model")) {
+  onElement(root + ns("model"), modelHandler);
+
+  onStartElement(root,
+                 [this](const parser::ElementName&, const attributes_type& attributes) { currentModelAssociation->id = attributes["id"].as_string(); });
+
+  modelHandler.onStart([this]() { modelHandler.currentModel = AssemblingDataBase::Model(); });
+  modelHandler.onEnd([this]() {
+    currentModelAssociation->model = *modelHandler.currentModel;
+    modelHandler.currentModel.reset();
   });
 }
 

@@ -17,6 +17,7 @@ SPDX-License-Identifier: MPL-2.0 -->
         <xs:element name="property" type="Property"/>
         <xs:element name="multipleAssociation" type="MultipleAssociation"/>
         <xs:element name="macroConnection" type="MacroConnection"/>
+        <xs:element name="modelAssociation" type="ModelAssociation"/>
       </xs:choice>
       <xs:attribute name="version" use="optional" type="xs:string"/>
     </xs:complexType>
@@ -49,10 +50,15 @@ SPDX-License-Identifier: MPL-2.0 -->
     <xs:attribute name="id" use="required" type="xs:string"/>
   </xs:complexType>
 
+  <xs:complexType name="ModelAssociation">
+    <xs:group ref="ModelNetworkItems"/>
+    <xs:attribute name="id" use="required" type="xs:string"/>
+  </xs:complexType>
+
   <xs:group name="MultipleNetworkItems">
     <xs:choice>
       <xs:choice maxOccurs="1">
-        <xs:element name="shunt" type="Shunt"/>
+        <xs:element name="shunt" type="MultipleShunts"/>
       </xs:choice>
     </xs:choice>
   </xs:group>
@@ -63,9 +69,18 @@ SPDX-License-Identifier: MPL-2.0 -->
         <xs:element name="bus" type="Bus"/>
         <xs:element name="line" type="Line"/>
         <xs:element name="tfo" type="Transformer"/>
+        <xs:element name="shunt" type="SingleShunt"/>
       </xs:choice>
       <xs:choice maxOccurs="unbounded">
         <xs:element name="generator" type="GeneratorItem"/>
+      </xs:choice>
+    </xs:choice>
+  </xs:group>
+
+  <xs:group name="ModelNetworkItems">
+    <xs:choice>
+      <xs:choice maxOccurs="1">
+        <xs:element name="model" type="Model"/>
       </xs:choice>
     </xs:choice>
   </xs:group>
@@ -97,8 +112,12 @@ SPDX-License-Identifier: MPL-2.0 -->
     <xs:attribute name="voltageLevel" use="required" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="Shunt">
+  <xs:complexType name="MultipleShunts">
     <xs:attribute name="voltageLevel" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="SingleShunt">
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="Transformer">
@@ -107,6 +126,11 @@ SPDX-License-Identifier: MPL-2.0 -->
 
   <xs:complexType name="Line">
     <xs:attribute name="name" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="Model">
+    <xs:attribute name="id" use="required" type="xs:string"/>
+    <xs:attribute name="lib" use="required" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="MacroConnect">

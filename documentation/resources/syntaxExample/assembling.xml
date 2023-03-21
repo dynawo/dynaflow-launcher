@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="ToUMeasurement">
+    <connection var1="U_IMPIN" var2="@NAME@_U"/>
+  </macroConnection>
+  <macroConnection id="ToControlledShunts">
+    <connection var1="shunt_state_@INDEX@" var2="@NAME@_state"/>
+    <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor"/>
+    <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable"/>
+  </macroConnection>
+  <singleAssociation id="MESURE_MODELE_1_VL4">
+    <bus voltageLevel="VLP6" />
+  </singleAssociation>
+  <multipleAssociation id="SHUNTS_MODELE_1_VL4">
+    <shunt voltageLevel="VL4"/>
+  </multipleAssociation>
+  <dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1">
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
+    <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
+  </dynamicAutomaton>
+</assembling>

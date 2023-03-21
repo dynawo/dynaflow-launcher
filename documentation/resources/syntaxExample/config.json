@@ -10,6 +10,8 @@
     "DsoVoltageLevel": 63.0,
     "TfoVoltageLevel": 100.0,
     "ActivePowerCompensation": "P",
+    "AssemblingPath": "/tmp/input/assembling.xml",
+    "SettingPath": "/tmp/input/setting.xml",
     "StartTime": 10,
     "StopTime": 120,
     "sa": {

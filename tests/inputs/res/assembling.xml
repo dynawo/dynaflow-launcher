@@ -40,6 +40,15 @@
   <singleAssociation id="ORDER_SALON">
     <line name="OBLA"/>
   </singleAssociation>
+  <singleAssociation id="SHUNT_MODELE_VL6">
+    <shunt name="VL6"/>
+  </singleAssociation>
+  <modelAssociation id="MODELE_1_VL4_ID">
+    <model id="MODELE_1_VL4" lib="DYNModel1"/>
+  </modelAssociation>
+  <modelAssociation id="MODELE_1_VL6_ID">
+    <model id="MODELE_1_VL6" lib="DYNModel1"/>
+  </modelAssociation>
   <singleAssociation id="MESURE_MODELE_2_VL7">
     <bus voltageLevel="VL7"/>
   </singleAssociation>
