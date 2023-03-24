@@ -29,8 +29,8 @@
 #include <sstream>
 
 static inline std::string
-getMandatoryEnvVar(const std::string& key) {
-  char* var = getenv(key.c_str());
+getMandatoryEnvVar(const std::string &key) {
+  char *var = getenv(key.c_str());
   if (var != NULL) {
     return std::string(var);
   } else {
@@ -40,8 +40,8 @@ getMandatoryEnvVar(const std::string& key) {
 }
 
 static void
-initializeDynawo(const std::string& locale) {
-  DYN::IoDicos& dicos = DYN::IoDicos::instance();
+initializeDynawo(const std::string &locale) {
+  DYN::IoDicos &dicos = DYN::IoDicos::instance();
   dicos.addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
   dicos.addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"));
   dicos.addDico("DFLLOG", "DFLLog", locale);
@@ -49,13 +49,13 @@ initializeDynawo(const std::string& locale) {
 }
 
 static inline double
-elapsed(const std::chrono::steady_clock::time_point& timePoint) {
+elapsed(const std::chrono::steady_clock::time_point &timePoint) {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - timePoint);
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
 static inline boost::filesystem::path
-getOutputDir(const boost::filesystem::path& configFilepath) {
+getOutputDir(const boost::filesystem::path &configFilepath) {
   boost::property_tree::ptree tree;
   boost::property_tree::read_json(configFilepath.generic_string(), tree);
   boost::filesystem::path path = boost::filesystem::current_path();
@@ -69,7 +69,7 @@ getOutputDir(const boost::filesystem::path& configFilepath) {
 }
 
 static boost::shared_ptr<dfl::Context>
-buildContext(dfl::inputs::SimulationParams const& params) {
+buildContext(dfl::inputs::SimulationParams const &params) {
   boost::filesystem::path configPath(params.runtimeConfig->configPath);
   dfl::inputs::Configuration config(configPath, params.simulationKind);
 
@@ -85,8 +85,7 @@ buildContext(dfl::inputs::SimulationParams const& params) {
 
   boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config));
 
-  if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT &&
-      context->dynamicDataBaseAssemblingContainsSVC()) {
+  if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT && context->dynamicDataBaseAssemblingContainsSVC()) {
     throw Error(NoSVCInFlatStartingPointMode);
   }
 
@@ -94,10 +93,10 @@ buildContext(dfl::inputs::SimulationParams const& params) {
 }
 
 static void
-execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationParams const& params) {
+execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationParams const &params) {
   std::string simuName =
       params.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS ? "Security analysis simulation" : "Steady state simulation";
-  DYNAlgorithms::mpi::Context& mpiContext = DYNAlgorithms::mpi::context();
+  DYNAlgorithms::mpi::Context &mpiContext = DYNAlgorithms::mpi::context();
   try {
     if (!context->process()) {
       LOG(info, InitEnd, elapsed(params.timeStart));
@@ -126,13 +125,13 @@ execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationP
       DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
       LOG(info, DFLEnded, context->basename(), elapsed(params.timeStart));
     }
-  } catch (DYN::Error&) {
+  } catch (DYN::Error &) {
     context->exportResults(false);
     throw;
-  } catch (DYN::MessageError&) {
+  } catch (DYN::MessageError &) {
     context->exportResults(false);
     throw;
-  } catch (std::exception&) {
+  } catch (std::exception &) {
     context->exportResults(false);
     throw;
   } catch (...) {
@@ -142,8 +141,8 @@ execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationP
 }
 
 int
-main(int argc, char* argv[]) {
-  DYNAlgorithms::mpi::Context& mpiContext = DYNAlgorithms::mpi::context();  // MUST be at the beginning to initialize the instance
+main(int argc, char *argv[]) {
+  DYNAlgorithms::mpi::Context &mpiContext = DYNAlgorithms::mpi::context();  // MUST be at the beginning to initialize the instance
   DYN::InitXerces xerces;
   DYN::InitLibXml2 libxml2;
   auto timeStart = std::chrono::steady_clock::now();
@@ -169,7 +168,7 @@ main(int argc, char* argv[]) {
     break;
   }
 
-  auto& runtimeConfig = options.config();
+  auto &runtimeConfig = options.config();
 
   std::string root;
   std::string locale;
@@ -194,7 +193,7 @@ main(int argc, char* argv[]) {
     locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
 
     initializeDynawo(locale);
-  } catch (DYN::Error& e) {
+  } catch (DYN::Error &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed: " << e.what() << std::endl;
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
@@ -202,7 +201,7 @@ main(int argc, char* argv[]) {
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (DYN::MessageError& e) {
+  } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed: " << e.what() << std::endl;
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
@@ -210,7 +209,7 @@ main(int argc, char* argv[]) {
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed: " << e.what() << std::endl;
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
@@ -283,7 +282,7 @@ main(int argc, char* argv[]) {
       boost::shared_ptr<dfl::Context> context = buildContext(params);
       execSimulation(context, params);
     }
-  } catch (DYN::Error& e) {
+  } catch (DYN::Error &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
@@ -291,7 +290,7 @@ main(int argc, char* argv[]) {
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (DYN::MessageError& e) {
+  } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
@@ -299,7 +298,7 @@ main(int argc, char* argv[]) {
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
       DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;

@@ -45,7 +45,7 @@
 namespace file = boost::filesystem;
 
 namespace dfl {
-Context::Context(const ContextDef& def, const inputs::Configuration& config) :
+Context::Context(const ContextDef &def, const inputs::Configuration &config) :
     def_(def),
     networkManager_(def.networkFilepath),
     dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
@@ -82,13 +82,20 @@ Context::Context(const ContextDef& def, const inputs::Configuration& config) :
     networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
   }
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
+
+  if (dynamicDataBaseAssemblingContainsSVC()) {
+    if (!config_.defaultValueModified("StopTime"))
+      config_.setStopTime(config_.getStartTime() + 2000);
+    if (!config_.defaultValueModified("TimeOfEvent"))
+      config_.setTimeOfEvent(config_.getStartTime() + 500);
+  }
 }
 
 bool
 Context::checkConnexity() const {
   // The slack node must be in the main connex component
   return std::find_if(mainConnexNodes_.begin(), mainConnexNodes_.end(),
-                      [this](const std::shared_ptr<inputs::Node>& node) { return node->id == slackNode_->id; }) != mainConnexNodes_.end();
+                      [this](const std::shared_ptr<inputs::Node> &node) { return node->id == slackNode_->id; }) != mainConnexNodes_.end();
 }
 
 bool
@@ -127,7 +134,7 @@ Context::process() {
   }
 
   if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
-    const auto& contingencies = contingenciesManager_.get();
+    const auto &contingencies = contingenciesManager_.get();
     if (!contingencies.empty()) {
       validContingencies_ = boost::make_optional(algo::ValidContingencies(contingencies));
       onNodeOnMainConnexComponent(algo::ContingencyValidationAlgorithmOnNodes(*validContingencies_));
@@ -158,17 +165,17 @@ Context::process() {
 
 void
 Context::filterPartiallyConnectedDynamicModels() {
-  const auto& automatonsConfig = dynamicDataBaseManager_.assembling().dynamicAutomatons();
-  for (const auto& automaton : automatonsConfig) {
+  const auto &automatonsConfig = dynamicDataBaseManager_.assembling().dynamicAutomatons();
+  for (const auto &automaton : automatonsConfig) {
     if (dynamicModels_.models.count(automaton.second.id) == 0) {
       continue;
     }
 
-    auto& modelDef = dynamicModels_.models.at(automaton.second.id);
-    for (const auto& macroConnect : automaton.second.macroConnects) {
+    auto &modelDef = dynamicModels_.models.at(automaton.second.id);
+    for (const auto &macroConnect : automaton.second.macroConnects) {
       auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
-          [&macroConnect](const algo::DynamicModelDefinition::MacroConnection& macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
+          [&macroConnect](const algo::DynamicModelDefinition::MacroConnection &macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
       if (found == modelDef.nodeConnections.end()) {
         LOG(debug, ModelPartiallyConnected, automaton.second.id);
         dynamicModels_.models.erase(automaton.second.id);
@@ -181,10 +188,10 @@ Context::filterPartiallyConnectedDynamicModels() {
     // Filtering generators with default model or regulating a node regulated by several generators from SVCs
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       std::vector<algo::DynamicModelDefinition::MacroConnection> toRemove;
-      for (const auto& connection : modelDef.nodeConnections) {
+      for (const auto &connection : modelDef.nodeConnections) {
         auto genId = connection.connectedElementId;
         auto found = std::find_if(generators_.begin(), generators_.end(),
-                                  [&genId](const algo::GeneratorDefinition& genDefinition) { return genDefinition.id == genId; });
+                                  [&genId](const algo::GeneratorDefinition &genDefinition) { return genDefinition.id == genId; });
         if (found != generators_.end() && found->isNetwork()) {
           LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
           toRemove.push_back(connection);
@@ -193,7 +200,7 @@ Context::filterPartiallyConnectedDynamicModels() {
           toRemove.push_back(connection);
         }
       }
-      for (const auto& connection : toRemove) {
+      for (const auto &connection : toRemove) {
         modelDef.nodeConnections.erase(connection);
       }
       if (modelDef.nodeConnections.size() <= 1) {
@@ -215,7 +222,7 @@ Context::exportOutputs() {
   exportOutputJob();
 
   // Only the root process is allowed to export files
-  auto& mpiContext = DYNAlgorithms::mpi::context();
+  auto &mpiContext = DYNAlgorithms::mpi::context();
   if (!mpiContext.isRootProc())
     return;
 
@@ -258,7 +265,7 @@ Context::exportOutputJob() {
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel, config_));
   jobEntry_ = jobWriter.write();
 
-  auto& mpiContext = DYNAlgorithms::mpi::context();
+  auto &mpiContext = DYNAlgorithms::mpi::context();
   // Only the root process is allowed to export files
   if (!mpiContext.isRootProc())
     return;
@@ -281,19 +288,19 @@ Context::exportOutputJob() {
 void
 Context::exportOutputsContingencies() {
   if (validContingencies_) {
-    for (const auto& contingency : validContingencies_->get()) {
+    for (const auto &contingency : validContingencies_->get()) {
       exportOutputsContingency(contingency, validContingencies_->getNetworkElements());
     }
   }
 }
 
 void
-Context::exportOutputsContingency(const inputs::Contingency& contingency, const std::unordered_set<std::string>& networkElements) {
+Context::exportOutputsContingency(const inputs::Contingency &contingency, const std::unordered_set<std::string> &networkElements) {
   // Prepare a DYD, PAR and JOBS for every contingency
   // The DYD and PAR contain the definition of the events of the contingency
 
   // Basename of event-related DYD, PAR and JOBS files
-  const auto& basenameEvent = basename_ + "-" + contingency.id;
+  const auto &basenameEvent = basename_ + "-" + contingency.id;
 
   // Specific DYD for contingency
   file::path dydEvent(config_.outputDir());
@@ -358,7 +365,7 @@ Context::executeSecurityAnalysis() {
   auto scenarios = boost::make_shared<DYNAlgorithms::Scenarios>();
   scenarios->setJobsFile(jobEntry_->getName() + ".jobs");
   if (validContingencies_) {
-    for (const auto& contingencyRef : validContingencies_->get()) {
+    for (const auto &contingencyRef : validContingencies_->get()) {
       auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
       scenario->setId(contingencyRef.get().id);
       scenario->setDydFile(basename_ + "-" + contingencyRef.get().id + ".dyd");
@@ -416,8 +423,8 @@ Context::exportResults(bool simulationOk) {
 
 void
 Context::walkNodesMain() {
-  for (const auto& node : mainConnexNodes_) {
-    for (const auto& cbk : callbacksMainConnexComponent_) {
+  for (const auto &node : mainConnexNodes_) {
+    for (const auto &cbk : callbacksMainConnexComponent_) {
       cbk(node, algoResults_);
     }
   }
