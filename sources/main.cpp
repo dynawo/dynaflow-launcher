@@ -54,25 +54,8 @@ elapsed(const std::chrono::steady_clock::time_point &timePoint) {
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
-static inline boost::filesystem::path
-getOutputDir(const boost::filesystem::path &configFilepath) {
-  boost::property_tree::ptree tree;
-  boost::property_tree::read_json(configFilepath.generic_string(), tree);
-  boost::filesystem::path path = boost::filesystem::current_path();
-  std::string configDirectoryPath = absolute(remove_file_name(configFilepath.generic_string()));
-  const auto optionValue = tree.get_child("dfl-config").get_child_optional("OutputDir");
-  if (optionValue.is_initialized()) {
-    path = optionValue->get_value<boost::filesystem::path>();
-    path = createAbsolutePath(path.generic_string(), configDirectoryPath);
-  }
-  return path;
-}
-
 static boost::shared_ptr<dfl::Context>
-buildContext(dfl::inputs::SimulationParams const &params) {
-  boost::filesystem::path configPath(params.runtimeConfig->configPath);
-  dfl::inputs::Configuration config(configPath, params.simulationKind);
-
+buildContext(dfl::inputs::SimulationParams const &params, dfl::inputs::Configuration &config) {
   dfl::Context::ContextDef def{config.getStartingPointMode(),
                                params.simulationKind,
                                params.networkFilePath,
@@ -113,7 +96,8 @@ execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationP
       context->execute();
       context->exportResults(true);
     } else {
-      // For steady-state calculation, only the root process is allowed to perform the simulation.
+      // For steady-state calculation, only the root process is allowed to
+      // perform the simulation.
       if (mpiContext.isRootProc()) {
         context->execute();
         context->exportResults(true);
@@ -173,8 +157,10 @@ main(int argc, char *argv[]) {
   std::string root;
   std::string locale;
   boost::filesystem::path resourcesDir;
+  boost::filesystem::path configPath(runtimeConfig.configPath);
+  dfl::inputs::Configuration configN(configPath, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
 
-  boost::filesystem::path outputDir = getOutputDir(runtimeConfig.configPath);
+  boost::filesystem::path outputDir = configN.outputDir();
 
   try {
     if (mpiContext.isRootProc()) {
@@ -266,20 +252,34 @@ main(int argc, char *argv[]) {
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_N || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       params.simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION;
+      if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
+        configN.addChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE);
+      }
 
-      boost::shared_ptr<dfl::Context> context = buildContext(params);
+      boost::shared_ptr<dfl::Context> context = buildContext(params, configN);
       execSimulation(context, params);
     }
 
     DYNAlgorithms::mpi::Context::sync();
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_SA || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
+      dfl::inputs::Configuration configSA(configPath, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
+      if (configSA.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT) {
+        if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA)
+          configSA.setStartingPointMode(dfl::inputs::Configuration::StartingPointMode::WARM);  // In NSA starting point mode for SA is forced to warm
+        else
+          throw Error(NoFlatStartingPointModeInSA);
+      }
       params.simulationKind = dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS;
 
       if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
         params.networkFilePath = absolute("outputs/finalState/outputIIDM.xml", outputDir.string());
+        configSA.setStartingDumpFilePath(absolute("outputs/finalState/outputState.dmp", outputDir.string()));
+        configSA.setStopTime(configN.getStopTime() + (configSA.getStopTime() - configSA.getStartTime()));
+        configSA.setStartTime(configN.getStopTime());
+        configSA.setTimeOfEvent(configN.getStopTime() + configSA.getTimeOfEvent());
       }
-      boost::shared_ptr<dfl::Context> context = buildContext(params);
+      boost::shared_ptr<dfl::Context> context = buildContext(params, configSA);
       execSimulation(context, params);
     }
   } catch (DYN::Error &e) {

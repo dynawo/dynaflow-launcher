@@ -55,7 +55,8 @@ const std::string Job::solverParId_ = "SimplifiedSolver";
 
 Job::Job(JobDefinition &&def) : def_{std::forward<JobDefinition>(def)} {}
 
-boost::shared_ptr<job::JobEntry> Job::write() const {
+boost::shared_ptr<job::JobEntry>
+Job::write() const {
   auto job = job::JobEntryFactory::newInstance();
   job->setName(def_.filename);
 
@@ -67,7 +68,8 @@ boost::shared_ptr<job::JobEntry> Job::write() const {
   return job;
 }
 
-boost::shared_ptr<job::SolverEntry> Job::writeSolver() const {
+boost::shared_ptr<job::SolverEntry>
+Job::writeSolver() const {
   auto solver = job::SolverEntryFactory::newInstance();
   solver->setLib(solverName_);
   solver->setParametersFile(solverFilename_);
@@ -76,7 +78,8 @@ boost::shared_ptr<job::SolverEntry> Job::writeSolver() const {
   return solver;
 }
 
-boost::shared_ptr<job::ModelerEntry> Job::writeModeler() const {
+boost::shared_ptr<job::ModelerEntry>
+Job::writeModeler() const {
   auto modeler = job::ModelerEntryFactory::newInstance();
   if (def_.contingencyId) {
     modeler->setCompileDir("outputs-" + def_.contingencyId.get() + "/compilation");
@@ -113,7 +116,8 @@ boost::shared_ptr<job::ModelerEntry> Job::writeModeler() const {
   return modeler;
 }
 
-boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
+boost::shared_ptr<job::SimulationEntry>
+Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
@@ -122,7 +126,8 @@ boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
   return simu;
 }
 
-boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
+boost::shared_ptr<job::OutputsEntry>
+Job::writeOutputs() const {
   auto output = job::OutputsEntryFactory::newInstance();
   if (def_.contingencyId) {
     output->setOutputsDirectory("outputs-" + def_.contingencyId.get());
@@ -142,7 +147,7 @@ boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
   auto final_state = job::FinalStateEntryFactory::newInstance();
 
   final_state->setExportIIDMFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
-  final_state->setExportDumpFile(exportDumpFile_);
+  final_state->setExportDumpFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE));
   output->addFinalStateEntry(final_state);
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
@@ -166,8 +171,8 @@ boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
   return output;
 }
 
-void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry,
-                    const dfl::inputs::Configuration &config) {
+void
+Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry, const dfl::inputs::Configuration &config) {
   boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {
@@ -278,7 +283,7 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
   }
 
   attrs.add("exportIIDMFile", config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
-  attrs.add("exportDumpFile", exportDumpFile_);
+  attrs.add("exportDumpFile", config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE));
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();
   formatter->endElement();  // finalState
