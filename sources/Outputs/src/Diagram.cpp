@@ -25,27 +25,32 @@
 namespace dfl {
 namespace outputs {
 
-Diagram::Diagram(DiagramDefinition&& def) : def_{std::forward<DiagramDefinition>(def)} {
-  for (auto& generator : def_.generators) {
+Diagram::Diagram(DiagramDefinition &&def) : def_{std::forward<DiagramDefinition>(def)} {
+  for (auto &generator : def_.generators) {
     std::sort(generator.points.begin(), generator.points.end(),
-              [](const DYN::GeneratorInterface::ReactiveCurvePoint& lhs, const DYN::GeneratorInterface::ReactiveCurvePoint& rhs) { return lhs.p < rhs.p; });
+              [](const DYN::GeneratorInterface::ReactiveCurvePoint &lhs, const DYN::GeneratorInterface::ReactiveCurvePoint &rhs) { return lhs.p < rhs.p; });
   }
-  for (auto& vscPair : def_.hvdcDefinitions.vscBusVSCDefinitionsMap) {
-    auto& points = vscPair.second.points;
-    std::sort(points.begin(), points.end(),
-              [](const algo::VSCDefinition::ReactiveCurvePoint& lhs, const algo::VSCDefinition::ReactiveCurvePoint& rhs) { return lhs.p < rhs.p; });
+  for (auto &hvdcPair : def_.hvdcDefinitions.hvdcLines) {
+    if (hvdcPair.second.vscDefinition1) {
+      auto &points = hvdcPair.second.vscDefinition1.get().points;
+      std::sort(points.begin(), points.end(),
+                [](const algo::VSCDefinition::ReactiveCurvePoint &lhs, const algo::VSCDefinition::ReactiveCurvePoint &rhs) { return lhs.p < rhs.p; });
+    }
+    if (hvdcPair.second.vscDefinition2) {
+      auto &points = hvdcPair.second.vscDefinition2.get().points;
+      std::sort(points.begin(), points.end(),
+                [](const algo::VSCDefinition::ReactiveCurvePoint &lhs, const algo::VSCDefinition::ReactiveCurvePoint &rhs) { return lhs.p < rhs.p; });
+    }
   }
 }
 
-void
-Diagram::write() const {
+void Diagram::write() const {
   writeGenerators();
   writeConverters();
 }
 
-void
-Diagram::writeGenerators() const {
-  for (const auto& generator : def_.generators) {
+void Diagram::writeGenerators() const {
+  for (const auto &generator : def_.generators) {
     if (!generator.isUsingDiagram() || generator.isUsingRectangularDiagram())
       continue;
     if (!boost::filesystem::exists(def_.directoryPath)) {
@@ -66,8 +71,7 @@ Diagram::writeGenerators() const {
   }
 }
 
-void
-Diagram::writeVSC(const algo::VSCDefinition& vscDefinition) const {
+void Diagram::writeVSC(const algo::VSCDefinition &vscDefinition) const {
   if (!boost::filesystem::exists(def_.directoryPath)) {
     boost::filesystem::create_directories(def_.directoryPath);
   }
@@ -84,8 +88,7 @@ Diagram::writeVSC(const algo::VSCDefinition& vscDefinition) const {
   ofs.close();
 }
 
-void
-Diagram::writeLCC(const algo::HVDCDefinition::ConverterId& converterId, double powerFactor, double pMax) const {
+void Diagram::writeLCC(const algo::HVDCDefinition::ConverterId &converterId, double powerFactor, double pMax) const {
   if (!boost::filesystem::exists(def_.directoryPath)) {
     boost::filesystem::create_directories(def_.directoryPath);
   }
@@ -105,10 +108,9 @@ Diagram::writeLCC(const algo::HVDCDefinition::ConverterId& converterId, double p
   ofs.close();
 }
 
-void
-Diagram::writeConverters() const {
-  for (const auto& hvdcDefPair : def_.hvdcDefinitions.hvdcLines) {
-    const auto& hvdcDef = hvdcDefPair.second;
+void Diagram::writeConverters() const {
+  for (const auto &hvdcDefPair : def_.hvdcDefinitions.hvdcLines) {
+    const auto &hvdcDef = hvdcDefPair.second;
     if (!hvdcDef.hasDiagramModel()) {
       continue;
     }
@@ -151,9 +153,7 @@ Diagram::writeConverters() const {
   }
 }
 
-template<class T>
-void
-Diagram::writeTable(const T& element, std::stringstream& buffer, Tables table) {
+template <class T> void Diagram::writeTable(const T &element, std::stringstream &buffer, Tables table) {
   buffer << "\ndouble ";
   std::size_t hash = constants::hash(element.id);
   buffer << hash;
@@ -172,7 +172,7 @@ Diagram::writeTable(const T& element, std::stringstream& buffer, Tables table) {
     buffer << '\n' << element.pmin / divisorFactor << " " << qValue / divisorFactor << '\n';
     buffer << element.pmax / divisorFactor << " " << qValue / divisorFactor;
   } else {
-    for (const auto& point : element.points) {
+    for (const auto &point : element.points) {
       double qValue = table == Tables::TABLE_QMIN ? point.qmin : point.qmax;
       buffer << '\n' << point.p / divisorFactor << " " << qValue / divisorFactor;
     }

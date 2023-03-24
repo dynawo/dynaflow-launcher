@@ -13,9 +13,9 @@
 
 #include <boost/filesystem.hpp>
 
-testing::Environment* initXmlEnvironment();
+testing::Environment *initXmlEnvironment();
 
-testing::Environment* const env = initXmlEnvironment();
+testing::Environment *const env = initXmlEnvironment();
 
 TEST(TestPar, write) {
   using dfl::algo::GeneratorDefinition;
@@ -154,9 +154,9 @@ TEST(TestPar, writeHdvc) {
       std::make_pair(hvdcLineLCC2.id, hvdcLineLCC2),
   };
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
-      std::make_pair("_BUS___10_TN", vscStation1),
-      std::make_pair("_BUS___11_TN", vscStation2),
-      std::make_pair("_BUS___12_TN", vscStation3),
+      std::make_pair("_BUS___10_TN", vscStation1.id),
+      std::make_pair("_BUS___11_TN", vscStation2.id),
+      std::make_pair("_BUS___12_TN", vscStation3.id),
   };
   dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
@@ -355,7 +355,7 @@ TEST(TestPar, startingPointMode) {
                                                                {"FlatNoIRL", "config_startingpointmode_flat.json"},
                                                                {"WarmWithIRL", "config_warm_infinite_reactive_limits.json"},
                                                                {"FlatWithIRL", "config_flat_infinite_reactive_limits.json"}};
-  for (const auto& startingPointMode : startingPointModeArray) {
+  for (const auto &startingPointMode : startingPointModeArray) {
     std::string startingPointModeName = startingPointMode.first;
     std::string startingPointModeFile = startingPointMode.second;
 
@@ -406,9 +406,9 @@ TEST(TestPar, startingPointMode) {
         std::make_pair(hvdcLineLCC2.id, hvdcLineLCC2),
     };
     dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
-        std::make_pair("_BUS___10_TN", vscStation1),
-        std::make_pair("_BUS___11_TN", vscStation2),
-        std::make_pair("_BUS___12_TN", vscStation3),
+        std::make_pair("_BUS___10_TN", vscStation1.id),
+        std::make_pair("_BUS___11_TN", vscStation2.id),
+        std::make_pair("_BUS___12_TN", vscStation3.id),
     };
     dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
