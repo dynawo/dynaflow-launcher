@@ -20,6 +20,7 @@
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 
 namespace dfl {
@@ -32,7 +33,8 @@ class Configuration {
   /// @brief The kind of simulation that is requested
   enum class SimulationKind {
     STEADY_STATE_CALCULATION = 0,  ///< A steady-state calculation
-    SECURITY_ANALYSIS              ///< A security analysis for a given list of contingencies
+    SECURITY_ANALYSIS              ///< A security analysis for a given list of
+                                   ///< contingencies
   };
   /// @brief Simulation starting mode
   enum class StartingPointMode { WARM = 0, FLAT };
@@ -82,14 +84,16 @@ class Configuration {
   const boost::filesystem::path &outputDir() const { return outputDir_; }
 
   /**
-   * @brief Retrieves the minimum voltage level of the load to be taken into account
+   * @brief Retrieves the minimum voltage level of the load to be taken into
+   * account
    *
    * @returns the parameter value
    */
   double getDsoVoltageLevel() const { return dsoVoltageLevel_; }
 
   /**
-   * @brief Retrieves the maximum voltage level we assume that generator's transformers are already described in the static description
+   * @brief Retrieves the maximum voltage level we assume that generator's
+   * transformers are already described in the static description
    *
    * @returns the parameter value
    */
@@ -101,6 +105,13 @@ class Configuration {
    * @returns the start time value
    */
   double getStartTime() const { return startTime_; }
+
+  /**
+   * @brief Set the Time at which the simulation will end
+   *
+   * @param stopTime the new stop time value
+   */
+  void setStopTime(double stopTime) { stopTime_ = stopTime; }
 
   /**
    * @brief Get the Time at which the simulation will end
@@ -117,11 +128,19 @@ class Configuration {
   const boost::optional<double> getPrecision() const { return precision_; }
 
   /**
-   * @brief Retrieves the Time at which the events related to each contingency will be simulated
+   * @brief Retrieves the Time at which the events related to each contingency
+   * will be simulated
    *
    * @returns the time of event value
    */
   double getTimeOfEvent() const { return timeOfEvent_; }
+
+  /**
+   * @brief Set the Time at which the events related to each contingency will be simulated
+   *
+   * @param timeOfEvent the new time of event value
+   */
+  void setTimeOfEvent(double timeOfEvent) { timeOfEvent_ = timeOfEvent; }
 
   /**
    * @brief retrieves the maximum value of the solver timestep
@@ -134,9 +153,12 @@ class Configuration {
    * @brief type of active power compensation for generator
    */
   enum class ActivePowerCompensation {
-    P,         ///< active power mismatch compensation proportional to active power injection P
-    TARGET_P,  ///< active power mismatch compensation proportional to active power target targetP
-    PMAX       ///< active power mismatch compensation proportional to generator maximal active power PMax
+    P,         ///< active power mismatch compensation proportional to active power
+               ///< injection P
+    TARGET_P,  ///< active power mismatch compensation proportional to active
+               ///< power target targetP
+    PMAX       ///< active power mismatch compensation proportional to generator
+               ///< maximal active power PMax
   };
 
   /**
@@ -198,6 +220,16 @@ class Configuration {
    */
   bool isChosenOutput(const ChosenOutputEnum output) const { return static_cast<bool>(chosenOutputs_.count(output)); }
 
+  /**
+   * @brief returns true if a parameter value was given in the configuration
+   * file and false if default value was used
+   *
+   * @param key the parameter key
+   * @returns true if a parameter value was given in the configuration file and
+   * false if default value was used
+   */
+  bool defaultValueModified(const std::string &key) const { return parameterValueModified_.find(key) != parameterValueModified_.end(); }
+
  private:
   /**
    * @brief Helper function to update the starting point mode
@@ -215,6 +247,7 @@ class Configuration {
    */
   void updateChosenOutput(const boost::property_tree::ptree &tree, dfl::inputs::Configuration::SimulationKind simulationKind, const bool saMode);
 
+ private:
   // General
   StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits
@@ -236,6 +269,10 @@ class Configuration {
   // SA
   double timeOfEvent_ = 10.;                      ///< time for contingency simulation (security analysis only)
   boost::filesystem::path startingDumpFilePath_;  ///< starting dump file path
+                                                                                     ///< are already described in the static description
+  std::unordered_set<std::string> parameterValueModified_;                           ///< a parameter key is present in this if the
+                                                                                     ///< value was redefined in the configuration
+                                                                                     ///< file
 };
 
 }  // namespace inputs
