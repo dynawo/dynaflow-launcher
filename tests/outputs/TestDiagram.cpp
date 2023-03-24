@@ -15,15 +15,14 @@
 
 #include <boost/filesystem.hpp>
 
-static void
-testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition>& generators, const boost::filesystem::path& outputDirectory,
-                           const std::string& basename, const std::string& prefixDir) {
+static void testMultiplesFilesEquality(const std::vector<dfl::algo::GeneratorDefinition> &generators, const boost::filesystem::path &outputDirectory,
+                                       const std::string &basename, const std::string &prefixDir) {
   using dfl::algo::GeneratorDefinition;
 
   boost::filesystem::path reference("reference");
   reference.append(basename);
   reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
-  for (const GeneratorDefinition& gen : generators) {
+  for (const GeneratorDefinition &gen : generators) {
     if (!gen.isUsingDiagram())
       continue;
     boost::filesystem::path ref(reference);
@@ -144,7 +143,7 @@ TEST(Diagram, writeEmpty) {
   try {
     std::ifstream stream(directoryPath);
     ASSERT_TRUE(stream.fail()) << "The Diagram directory " << directoryPath << " has been created even though it is not used by any generator model";
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     ASSERT_TRUE(false) << "An IO error has occured: " << e.what();
   }
 }
@@ -161,30 +160,33 @@ TEST(Diagram, writeVSC) {
     boost::filesystem::create_directories(outputDirectory);
   }
   outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
+  dfl::algo::VSCDefinition vscStation1("VSCStation1", 51, -51, 21, {});
+  dfl::algo::VSCDefinition vscStation2("VSCStation2", 52, -52, 22,
+                                       {
+                                           dfl::algo::VSCDefinition::ReactiveCurvePoint(1., 11., 110.),
+                                           dfl::algo::VSCDefinition::ReactiveCurvePoint(3., 33., 330.),
+                                           dfl::algo::VSCDefinition::ReactiveCurvePoint(4., 44., 440.),
+                                           dfl::algo::VSCDefinition::ReactiveCurvePoint(2., 22., 220.),
+                                       });
+  dfl::algo::VSCDefinition vscStation3("VSCStation3", 53, -53, 23, {});
+  dfl::algo::VSCDefinition vscStation4("VSCStation4", 54, -54, 24, {});
 
   dfl::algo::HVDCLineDefinitions::HvdcLineMap map{
-      std::make_pair("0", HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___11_TN", false, "VSCStation99",
-                                         "_BUS___99_TN", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT,
-                                         HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {}, 0., dfl::algo::VSCDefinition("VSCStation1", 51, -51, 21, {}),
-                                         boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair("0",
+                     HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___11_TN", false, "VSCStation99",
+                                    "_BUS___99_TN", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
+                                    {}, 0., vscStation1, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
       std::make_pair("1", HVDCDefinition("HVDCVSCLine1", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation99", "_BUS___99_TN", false, "VSCStation2",
                                          "_BUS___12_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT,
-                                         HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, {}, 0., boost::none,
-                                         dfl::algo::VSCDefinition("VSCStation2", 52, -52, 22,
-                                                                  {
-                                                                      dfl::algo::VSCDefinition::ReactiveCurvePoint(1., 11., 110.),
-                                                                      dfl::algo::VSCDefinition::ReactiveCurvePoint(3., 33., 330.),
-                                                                      dfl::algo::VSCDefinition::ReactiveCurvePoint(4., 44., 440.),
-                                                                      dfl::algo::VSCDefinition::ReactiveCurvePoint(2., 22., 220.),
-                                                                  }),
-                                         boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
-      std::make_pair(
-          "2", HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation3", "_BUS___13_TN", false, "VSCStation4", "_BUS___14_TN",
-                              false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, {}, 0.,
-                              dfl::algo::VSCDefinition("VSCStation3", 53, -53, 23, {}), dfl::algo::VSCDefinition("VSCStation4", 54, -54, 24, {}), boost::none,
-                              boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
+                                         HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, {}, 0., boost::none, vscStation2, boost::none, boost::none,
+                                         false, 320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair("2",
+                     HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation3", "_BUS___13_TN", false, "VSCStation4",
+                                    "_BUS___14_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ,
+                                    {}, 0., vscStation3, vscStation4, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
   };
-  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
+  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{
+      {"_BUS___11_TN", vscStation1.id}, {"_BUS___12_TN", vscStation2.id}, {"_BUS___13_TN", vscStation3.id}, {"_BUS___14_TN", vscStation4.id}};
   dfl::algo::HVDCLineDefinitions defs{map, vscIds};
   std::vector<dfl::algo::GeneratorDefinition> generators;
 
@@ -196,11 +198,11 @@ TEST(Diagram, writeVSC) {
   boost::filesystem::path reference("reference");
   reference.append(basename);
   reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
-  for (const auto& vscPair : vscIds) {
+  for (const auto &vscPair : vscIds) {
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);
-    dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(vscPair.second.id)).generic_string(),
-                               ref.append(dfl::outputs::constants::diagramFilename(vscPair.second.id)).generic_string());
+    dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(vscPair.second)).generic_string(),
+                               ref.append(dfl::outputs::constants::diagramFilename(vscPair.second)).generic_string());
   }
 }
 
@@ -220,18 +222,18 @@ TEST(Diagram, writeLCC) {
   const std::vector<std::string> lccIds{"LCCStation1", "LCCStation11", "LCCStation12", "LCCStation2"};
 
   dfl::algo::HVDCLineDefinitions::HvdcLineMap map{
-      std::make_pair(
-          "0", HVDCDefinition("HVDCLCCLine", HVDCDefinition::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation99", "_BUS___99_TN", false,
-                              HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 0., boost::none,
-                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
-      std::make_pair(
-          "1", HVDCDefinition("HVDCLCCLine1", HVDCDefinition::ConverterType::LCC, "LCCStation99", "_BUS___99_TN", false, "LCCStation11", "_BUS___11_TN", false,
-                              HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10., boost::none,
-                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
-      std::make_pair(
-          "2", HVDCDefinition("HVDCLCCLine2", HVDCDefinition::ConverterType::LCC, "LCCStation12", "_BUS___12_TN", false, "LCCStation2", "_BUS___22_TN", false,
-                              HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10., boost::none,
-                              boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair("0",
+                     HVDCDefinition("HVDCLCCLine", HVDCDefinition::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation99", "_BUS___99_TN",
+                                    false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 0.,
+                                    boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair("1",
+                     HVDCDefinition("HVDCLCCLine1", HVDCDefinition::ConverterType::LCC, "LCCStation99", "_BUS___99_TN", false, "LCCStation11", "_BUS___11_TN",
+                                    false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10.,
+                                    boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
+      std::make_pair("2",
+                     HVDCDefinition("HVDCLCCLine2", HVDCDefinition::ConverterType::LCC, "LCCStation12", "_BUS___12_TN", false, "LCCStation2", "_BUS___22_TN",
+                                    false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ, {0.5, 0.5}, 10.,
+                                    boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
   };
 
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
@@ -246,7 +248,7 @@ TEST(Diagram, writeLCC) {
   boost::filesystem::path reference("reference");
   reference.append(basename);
   reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
-  for (const auto& id : lccIds) {
+  for (const auto &id : lccIds) {
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);
     dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(id)).generic_string(),

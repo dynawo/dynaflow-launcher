@@ -16,30 +16,29 @@
 namespace dfl {
 namespace outputs {
 
-void
-ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const std::string& basename, const boost::filesystem::path& dirname,
-               dfl::inputs::Configuration::StartingPointMode startingPointMode) {
-  for (const auto& hvdcLine : hvdcDefinitions_.hvdcLines) {
+void ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
+                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+  for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
     paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode));
   }
   // adding parameters sets related to remote voltage control or multiple VSC regulating same bus
-  for (const auto& keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
+  for (const auto &keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
     if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
       paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
     }
-    paramSetCollection->addParametersSet(helper::writeVRRemote(keyValue.first, keyValue.second.id));
+    paramSetCollection->addParametersSet(helper::writeVRRemote(keyValue.first, keyValue.second));
   }
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::string& basename, const boost::filesystem::path& dirname,
-                       dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,
+                                                                    const boost::filesystem::path &dirname,
+                                                                    dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   auto dirnameDiagram = dirname;
   dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
   // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable
   auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram](boost::shared_ptr<parameters::ParametersSet> set,
-                                                             const algo::HVDCDefinition::ConverterId& converterId, unsigned int converterNumber,
+                                                             const algo::HVDCDefinition::ConverterId &converterId, unsigned int converterNumber,
                                                              unsigned int parameterNumber) {
     constexpr double factorPU = 100;
     std::size_t hashId = constants::hash(converterId);
@@ -51,7 +50,7 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
     set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableFile", dirnameDiagramLocal.generic_string()));
     set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
     if (hvdcDefinition.converterType == algo::HVDCDefinition::ConverterType::VSC) {
-      const auto& vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
+      const auto &vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (vscDefinition.qmin - 1) / factorPU));
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", (vscDefinition.qmax + 1) / factorPU));
     } else {
@@ -91,7 +90,7 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
     const double rdc = hvdcDefinition.rdc;
     const double pSetPoint = -hvdcDefinition.pSetPoint;
     const double vdcNom = hvdcDefinition.vdcNom;
-    const std::array<double, 2>& lossFactors = hvdcDefinition.lossFactors;
+    const std::array<double, 2> &lossFactors = hvdcDefinition.lossFactors;
 
     const double pdcLoss = rdc * (pSetPoint / vdcNom) * (pSetPoint / vdcNom) / 100.;
     const double p0dc = pSetPoint / 100.;
@@ -137,7 +136,7 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
     set->addParameter(helper::buildParameter("hvdc_Q2MinPu", std::numeric_limits<double>::lowest()));
     set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
   } else {
-    const auto& hvdcConverterIdMain =
+    const auto &hvdcConverterIdMain =
         (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2Id : hvdcDefinition.converter1Id;
     size_t converterNumber = (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? 2 : 1;
     constexpr size_t parameterMainNumber = 1;
@@ -197,7 +196,7 @@ ParHvdc::writeHdvcLine(const algo::HVDCDefinition& hvdcDefinition, const std::st
   if (hvdcDefinition.hasEmulationModel()) {
     set->addParameter(helper::buildParameter("acemulation_tFilter", 50.));
     auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)
-    auto pSet = computePSET(*hvdcDefinition.p0);  // since the model is an emulation one, the extension is defined (see algo)
+    auto pSet = computePSET(*hvdcDefinition.p0);   // since the model is an emulation one, the extension is defined (see algo)
     set->addParameter(helper::buildParameter("acemulation_KACEmulation", kac));
     set->addParameter(helper::buildParameter("acemulation_PRefSet0Pu", pSet));
   }

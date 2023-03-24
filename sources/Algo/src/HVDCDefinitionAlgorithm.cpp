@@ -17,26 +17,22 @@
 namespace dfl {
 namespace algo {
 
-std::size_t
-HVDCDefinitionAlgorithm::HVDCModelDefinition::VSCBusPairHash::operator()(const HVDCModelDefinition::VSCBusPair& pair) const noexcept {
+std::size_t HVDCDefinitionAlgorithm::HVDCModelDefinition::VSCBusPairHash::operator()(const HVDCModelDefinition::VSCBusPair &pair) const noexcept {
   std::size_t seed = 0;
   boost::hash_combine(seed, pair.first);
   boost::hash_combine(seed, pair.second);
   return seed;
 }
 
-HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions& hvdcLinesDefinitions, bool infiniteReactiveLimits,
-                                                 const std::unordered_set<std::shared_ptr<inputs::Converter>>& converters,
-                                                 const inputs::NetworkManager::BusMapRegulating& mapBusVSCConvertersBusId) :
-    hvdcLinesDefinitions_(hvdcLinesDefinitions),
-    infiniteReactiveLimits_(infiniteReactiveLimits),
-    mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId) {
+HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions, bool infiniteReactiveLimits,
+                                                 const std::unordered_set<std::shared_ptr<inputs::Converter>> &converters,
+                                                 const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId)
+    : hvdcLinesDefinitions_(hvdcLinesDefinitions), infiniteReactiveLimits_(infiniteReactiveLimits), mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId) {
   std::transform(converters.begin(), converters.end(), std::inserter(vscConverters_, vscConverters_.begin()),
-                 [](const std::shared_ptr<inputs::Converter>& converter) { return std::make_pair(converter->busId, converter); });
+                 [](const std::shared_ptr<inputs::Converter> &converter) { return std::make_pair(converter->busId, converter); });
 }
 
-auto
-HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hvdcLine, HVDCDefinition::Position position) const
+auto HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine &hvdcLine, HVDCDefinition::Position position) const
     -> HVDCModelDefinition::VSCBusPairSet {
   auto set = getBusesByPosition(hvdcLine, position);
   assert(set.size() <= 2);  // by definition of getBusesByPosition
@@ -63,8 +59,8 @@ HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine& hv
   return {};
 }
 
-auto
-HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine& hvdcLine, HVDCDefinition::Position position) const -> HVDCModelDefinition::VSCBusPairSet {
+auto HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine &hvdcLine, HVDCDefinition::Position position) const
+    -> HVDCModelDefinition::VSCBusPairSet {
   HVDCModelDefinition::VSCBusPairSet ret;
   switch (position) {
   case HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT: {
@@ -87,17 +83,16 @@ HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine& hvdcLine, HV
   return ret;
 }
 
-auto
-HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, const NodePtr& node) const
+auto HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, const NodePtr &node) const
     -> HVDCModelDefinition::VSCBusPairSet {
-  auto& buses = node->getBusesConnectedByVoltageLevel();
+  auto &buses = node->getBusesConnectedByVoltageLevel();
   HVDCModelDefinition::VSCBusPairSet ret;
 
   auto vl = node->voltageLevel.lock();
-  for (const auto& id : buses) {
-    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
+  for (const auto &id : buses) {
+    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr &nodeLocal) { return nodeLocal->id == id; });
     assert(found != vl->nodes.end());
-    for (const auto& converter_ptr : (*found)->converters) {
+    for (const auto &converter_ptr : (*found)->converters) {
       auto converter = converter_ptr.lock();
       if (converter->hvdcLine->converterType != inputs::HvdcLine::ConverterType::VSC) {
         continue;
@@ -115,11 +110,10 @@ HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine& hvdcl
   return ret;
 }
 
-auto
-HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position,
-                                         HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
-                                         HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive,
-                                         const NodePtr& node) const -> HVDCModelDefinition {
+auto HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position,
+                                              HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
+                                              HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive,
+                                              const NodePtr &node) const -> HVDCModelDefinition {
   auto vscBusIdsWithMultipleRegulation = getBusRegulatedByMultipleVSC(hvdcline, position);
   auto vscBusIdsConnectedBySwitches = getVSCConnectedBySwitches(hvdcline, position, node);
   vscBusIdsWithMultipleRegulation.insert(vscBusIdsConnectedBySwitches.begin(), vscBusIdsConnectedBySwitches.end());
@@ -130,9 +124,8 @@ HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine& hvdcline, HVDCD
   }
 }
 
-auto
-HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine& hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type,
-                                      const NodePtr& node) const -> HVDCModelDefinition {
+auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type,
+                                           const NodePtr &node) const -> HVDCModelDefinition {
   if (position == HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
     if (type == inputs::HvdcLine::ConverterType::LCC) {
       return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhi : HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ, {}};
@@ -159,9 +152,8 @@ HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine& hvdcline, HVDCDefi
   }
 }
 
-std::pair<std::reference_wrapper<HVDCDefinition>, bool>
-HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& hvdcLine) {
-  auto& hvdcLines = hvdcLinesDefinitions_.hvdcLines;
+std::pair<std::reference_wrapper<HVDCDefinition>, bool> HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine &hvdcLine) {
+  auto &hvdcLines = hvdcLinesDefinitions_.hvdcLines;
   auto it = hvdcLines.find(hvdcLine.id);
   bool alreadyInserted = it != hvdcLines.end();
   if (alreadyInserted) {
@@ -188,39 +180,21 @@ HVDCDefinitionAlgorithm::getOrCreateHvdcLineDefinition(const inputs::HvdcLine& h
 
     boost::optional<double> droop = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->droop : boost::optional<double>();
     boost::optional<double> p0 = (hvdcLine.activePowerControl) ? hvdcLine.activePowerControl->p0 : boost::optional<double>();
-    HVDCDefinition createdHvdcLine(hvdcLine.id,
-                                    hvdcLine.converterType,
-                                    hvdcLine.converter1->converterId,
-                                    hvdcLine.converter1->busId,
-                                    voltageRegulation1,
-                                    hvdcLine.converter2->converterId,
-                                    hvdcLine.converter2->busId,
-                                    voltageRegulation2,
-                                    HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT,
-                                    HVDCDefinition::HVDCModel::HvdcPTanPhi,
-                                    powerFactors,
-                                    hvdcLine.pMax,
-                                    def1,
-                                    def2,
-                                    droop,
-                                    p0,
-                                    hvdcLine.isConverter1Rectifier,
-                                    hvdcLine.vdcNom,
-                                    hvdcLine.pSetPoint,
-                                    hvdcLine.rdc,
-                                    hvdcLine.lossFactors);
+    HVDCDefinition createdHvdcLine(hvdcLine.id, hvdcLine.converterType, hvdcLine.converter1->converterId, hvdcLine.converter1->busId, voltageRegulation1,
+                                   hvdcLine.converter2->converterId, hvdcLine.converter2->busId, voltageRegulation2,
+                                   HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhi, powerFactors, hvdcLine.pMax, def1,
+                                   def2, droop, p0, hvdcLine.isConverter1Rectifier, hvdcLine.vdcNom, hvdcLine.pSetPoint, hvdcLine.rdc, hvdcLine.lossFactors);
     auto pair = hvdcLines.emplace(hvdcLine.id, createdHvdcLine);
     return {std::ref(pair.first->second), alreadyInserted};
   }
 }
 
-void
-HVDCDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
-  for (const auto& converterPtr : node->converters) {
+void HVDCDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &) {
+  for (const auto &converterPtr : node->converters) {
     auto converter = converterPtr.lock();
-    const auto& hvdcLine = converter->hvdcLine;
+    const auto &hvdcLine = converter->hvdcLine;
     auto hvdcLineDefPair = getOrCreateHvdcLineDefinition(*hvdcLine);
-    auto& hvdcLineDefinition = hvdcLineDefPair.first.get();
+    auto &hvdcLineDefinition = hvdcLineDefPair.first.get();
 
     if (hvdcLineDefPair.second) {
       // If we meet twice the same HVDC line with two different converters in nodes, it means that both extremities are
@@ -238,15 +212,7 @@ HVDCDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Algorit
     auto modelDef = computeModel(*hvdcLine, hvdcLineDefinition.position, hvdcLineDefinition.converterType, node);
     hvdcLineDefinition.model = modelDef.model;
 
-    std::transform(modelDef.vscBusIdsMultipleRegulated.begin(), modelDef.vscBusIdsMultipleRegulated.end(),
-                   std::inserter(hvdcLinesDefinitions_.vscBusVSCDefinitionsMap, hvdcLinesDefinitions_.vscBusVSCDefinitionsMap.end()),
-                   [this](const HVDCModelDefinition::VSCBusPair& pair) {
-                     // If VSC bus definitions map is defined, it means that the converter is a VSC and we can cast it. If not defined, the dynamic cast
-                     // returns a null pointer and the transform has no effect since the bus map is empty
-                     auto vscConverter = std::dynamic_pointer_cast<inputs::VSCConverter>(vscConverters_.at(pair.first));
-                     return std::make_pair(
-                         pair.first, VSCDefinition(pair.second, vscConverter->qMax, vscConverter->qMin, vscConverter->hvdcLine->pMax, vscConverter->points));
-                   });
+    hvdcLinesDefinitions_.vscBusVSCDefinitionsMap.insert(modelDef.vscBusIdsMultipleRegulated.begin(), modelDef.vscBusIdsMultipleRegulated.end());
   }
 }
 
