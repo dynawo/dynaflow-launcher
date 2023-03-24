@@ -10,7 +10,8 @@ from lxml import etree
 
 ### Regexes ####################################################################
 contingency_event_time = 10
-timeline_log_regex = re.compile("^" + str(contingency_event_time) + "\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
+contingency_event_time_nsa = 110
+timeline_log_regex = re.compile("^" + str(contingency_event_time) + "(\.0*)?\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$|^" + str(contingency_event_time_nsa) + "(\.0*)?\s\|\s([\w-]+)\s\|\s\w+\s[:\s]*[\w\s]+$", re.MULTILINE)
 
 ### Code #######################################################################
 def check_test_contingencies(tests_path, test_name, input_iidm_name):

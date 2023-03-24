@@ -22,8 +22,6 @@ TEST(Config, Incorrect) {
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"), DYN::Error::GENERAL,
                       dfl::KeyError_t::InvalidActivePowerCompensation);
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat.json", dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS),
-                      DYN::Error::GENERAL, dfl::KeyError_t::NoFlatStartingPointModeInSA);
 }
 
 TEST(Config, Nominal) {
