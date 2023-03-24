@@ -142,7 +142,7 @@ boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
   auto final_state = job::FinalStateEntryFactory::newInstance();
 
   final_state->setExportIIDMFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
-  final_state->setExportDumpFile(exportDumpFile_);
+  final_state->setExportDumpFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE));
   output->addFinalStateEntry(final_state);
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
@@ -278,7 +278,7 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
   }
 
   attrs.add("exportIIDMFile", config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
-  attrs.add("exportDumpFile", exportDumpFile_);
+  attrs.add("exportDumpFile", config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE));
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();
   formatter->endElement();  // finalState

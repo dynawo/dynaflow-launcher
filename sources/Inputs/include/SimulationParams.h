@@ -40,7 +40,7 @@ struct SimulationParams {
   boost::filesystem::path resourcesDirPath;                         ///< path to resource directory
   dfl::inputs::Configuration::SimulationKind simulationKind;        ///< type of simulation
   std::chrono::time_point<std::chrono::steady_clock> timeStart;     ///< time of the start of the simulation
-  dfl::common::Options::RuntimeConfiguration const* runtimeConfig;  ///< runtime configuration of the program
+  dfl::common::Options::RuntimeConfiguration const *runtimeConfig;  ///< runtime configuration of the program
 };
 
 }  // namespace inputs

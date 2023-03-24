@@ -26,10 +26,9 @@
 namespace dfl {
 namespace outputs {
 
-Solver::Solver(SolverDefinition&& def) : def_{std::forward<SolverDefinition>(def)} {}
+Solver::Solver(SolverDefinition &&def) : def_{std::forward<SolverDefinition>(def)} {}
 
-void
-Solver::write() const {
+void Solver::write() const {
   parameters::XmlExporter exporter;
   auto paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   paramSetCollection->addParametersSet(writeSolverSet());
@@ -38,8 +37,7 @@ Solver::write() const {
   exporter.exportToFile(paramSetCollection, solverFileName.generic_string(), constants::xmlEncoding);
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-Solver::writeSolverSet() const {
+boost::shared_ptr<parameters::ParametersSet> Solver::writeSolverSet() const {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("SimplifiedSolver"));
   set->addParameter(helper::buildParameter("fnormtol", 1e-4));
   set->addParameter(helper::buildParameter("fnormtolAlg", 1e-4));
