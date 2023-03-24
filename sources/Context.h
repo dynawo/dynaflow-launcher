@@ -50,10 +50,11 @@ namespace dfl {
 class Context {
  public:
   using ProcessNodeCallBackMainComponent =
-      std::function<void(const std::shared_ptr<inputs::Node>&,
-                         std::shared_ptr<dfl::algo::AlgorithmsResults>&)>;  ///< Callback for node algorithm on main topological island
-                                                                            /**
-   * @brief Context definition
+      std::function<void(const std::shared_ptr<inputs::Node> &,
+                         std::shared_ptr<dfl::algo::AlgorithmsResults> &)>;  ///< Callback for node algorithm on main topological island
+
+  /**
+    * @brief Context definition
    */
   struct ContextDef {
     dfl::inputs::Configuration::StartingPointMode startingPointMode;  ///< starting point mode of the simulation
@@ -74,16 +75,14 @@ class Context {
    * @param def The context definition
    * @param config configuration to use
    */
-  Context(const ContextDef& def, const inputs::Configuration& config);
+  Context(const ContextDef &def, const inputs::Configuration &config);
 
   /**
    * @brief Retrieve the basename of current simulation
    *
    * @returns basename used for current simulation
    */
-  const std::string& basename() const {
-    return basename_;
-  }
+  const std::string &basename() const { return basename_; }
 
   /**
    * @brief Process context
@@ -122,9 +121,7 @@ class Context {
    * @brief returns if the assembling data base contains one or more SVCs
    * @returns true if the assembling data base contains one or more SVCs, false otherwise
    */
-  bool dynamicDataBaseAssemblingContainsSVC() const {
-    return dynamicDataBaseManager_.assembling().containsSVC();
-  }
+  bool dynamicDataBaseAssemblingContainsSVC() const { return dynamicDataBaseManager_.assembling().containsSVC(); }
 
  private:
   /// @brief Slack node origin
@@ -148,7 +145,7 @@ class Context {
    *
    * @param cbk the callback to register
    */
-  void onNodeOnMainConnexComponent(ProcessNodeCallBackMainComponent&& cbk) {
+  void onNodeOnMainConnexComponent(ProcessNodeCallBackMainComponent &&cbk) {
     callbacksMainConnexComponent_.push_back(std::forward<ProcessNodeCallBackMainComponent>(cbk));
   }
 
@@ -176,14 +173,14 @@ class Context {
   /// @brief Prepare the output files required to simulate a given contingency
   /// @param contingency the contingency
   /// @param elementsNetworkType ids of network elements with a network type
-  void exportOutputsContingency(const inputs::Contingency& contingency, const std::unordered_set<std::string>& elementsNetworkType);
+  void exportOutputsContingency(const inputs::Contingency &contingency, const std::unordered_set<std::string> &elementsNetworkType);
 
  private:
   ContextDef def_;                                         ///< context definition
   inputs::NetworkManager networkManager_;                  ///< network manager
   inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
   inputs::ContingenciesManager contingenciesManager_;      ///< contingencies manager in a Security Analysis
-  const inputs::Configuration config_;                     ///< configuration
+  inputs::Configuration config_;                           ///< configuration
 
   std::string basename_;                                                        ///< basename for all files
   std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
