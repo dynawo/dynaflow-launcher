@@ -75,7 +75,7 @@ class Context {
    * @param def The context definition
    * @param config configuration to use
    */
-  Context(const ContextDef &def, const inputs::Configuration &config);
+  Context(const ContextDef &def, inputs::Configuration &config);
 
   /**
    * @brief Retrieve the basename of current simulation
@@ -180,7 +180,7 @@ class Context {
   inputs::NetworkManager networkManager_;                  ///< network manager
   inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
   inputs::ContingenciesManager contingenciesManager_;      ///< contingencies manager in a Security Analysis
-  inputs::Configuration config_;                           ///< configuration
+  inputs::Configuration &config_;                          ///< configuration
 
   std::string basename_;                                                        ///< basename for all files
   std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components

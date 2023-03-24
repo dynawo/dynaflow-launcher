@@ -200,7 +200,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, dfl::input
     helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn", saMode, parameterValueModified_);
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn", saMode, parameterValueModified_);
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn", saMode, parameterValueModified_);
-    helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile, saMode);
+    helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile, false);  // Not possible to override outputDir in SA
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel", saMode, parameterValueModified_);
     helper::updatePathValue(settingFilePath_, config, "SettingPath", prefixConfigFile, saMode);
     helper::updatePathValue(assemblingFilePath_, config, "AssemblingPath", prefixConfigFile, saMode);
@@ -224,10 +224,6 @@ Configuration::Configuration(const boost::filesystem::path &filepath, dfl::input
 
   if (startingPointMode_ == Configuration::StartingPointMode::FLAT && activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
     throw Error(InvalidActivePowerCompensation, filepath.generic_string());
-  }
-
-  if (startingPointMode_ == Configuration::StartingPointMode::FLAT && simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
-    throw Error(NoFlatStartingPointModeInSA);
   }
 }
 
@@ -300,6 +296,8 @@ void Configuration::updateChosenOutput(const boost::property_tree::ptree &tree,
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE);
       } else if (chosenOutputName == "LOSTEQ") {
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ);
+      } else if (chosenOutputName == "DUMPSTATE") {
+        chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE);
       } else {
         throw Error(ChosenOutputDoesntExist, chosenOutputName);
       }
