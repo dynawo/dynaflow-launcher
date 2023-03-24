@@ -23,7 +23,6 @@
         "SVCRegulationOn": "false",
         "ShuntRegulationOn": "false",
         "AutomaticSlackBusOn": "false",
-        "OutputDir": "/tmp",
         "DsoVoltageLevel": 83.0,
         "TfoVoltageLevel": 114.0,
         "ActivePowerCompensation": "targetP",
