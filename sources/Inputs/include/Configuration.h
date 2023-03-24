@@ -100,6 +100,13 @@ class Configuration {
   double getTfoVoltageLevel() const { return tfoVoltageLevel_; }
 
   /**
+   * @brief Set the Time at which the simulation will start
+   *
+   * @param startTime the new start time value
+   */
+  void setStartTime(double startTime) { startTime_ = startTime; }
+
+  /**
    * @brief Get the Time at which the simulation will start
    *
    * @returns the start time value
@@ -185,12 +192,18 @@ class Configuration {
    * @returns the starting dump file path
    */
   const boost::filesystem::path &startingDumpFilePath() const { return startingDumpFilePath_; }
+
+  /**
+   * @brief Set the starting dump file path
+   * @param startingDumpFilePath the new starting dump file path
+   */
+  void setStartingDumpFilePath(const boost::filesystem::path &startingDumpFilePath) { startingDumpFilePath_ = startingDumpFilePath; }
   /**
    * @brief Chosen outputs
    *
    * enum that gathers all possible chosen outputs
    */
-  enum class ChosenOutputEnum : size_t { STEADYSTATE = 0, CONSTRAINTS, LOSTEQ, TIMELINE };
+  enum class ChosenOutputEnum : size_t { STEADYSTATE = 0, CONSTRAINTS, LOSTEQ, TIMELINE, DUMPSTATE };
 
   /**
    * @brief Hash structure for chosenOutputEnum
@@ -206,6 +219,13 @@ class Configuration {
   };
 
   /**
+   * @brief Set the starting point mode
+   *
+   * @param startingPointMode the starting point mode
+   */
+  void setStartingPointMode(StartingPointMode startingPointMode) { startingPointMode_ = startingPointMode; }
+
+  /**
    * @brief Indicate the starting point mode
    *
    * @returns the starting point mode
@@ -219,6 +239,13 @@ class Configuration {
    * @returns true if the output is chosen, false otherwise
    */
   bool isChosenOutput(const ChosenOutputEnum output) const { return static_cast<bool>(chosenOutputs_.count(output)); }
+
+  /**
+   * @brief add an output
+   *
+   * @param output the chosen output to add
+   */
+  void addChosenOutput(const ChosenOutputEnum output) { chosenOutputs_.insert(output); }
 
   /**
    * @brief returns true if a parameter value was given in the configuration
@@ -267,12 +294,12 @@ class Configuration {
   double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
 
   // SA
-  double timeOfEvent_ = 10.;                      ///< time for contingency simulation (security analysis only)
-  boost::filesystem::path startingDumpFilePath_;  ///< starting dump file path
-                                                                                     ///< are already described in the static description
-  std::unordered_set<std::string> parameterValueModified_;                           ///< a parameter key is present in this if the
-                                                                                     ///< value was redefined in the configuration
-                                                                                     ///< file
+  double timeOfEvent_ = 10.;                                ///< time for contingency simulation (security analysis only)
+  boost::filesystem::path startingDumpFilePath_;            ///< starting dump file path
+                                                            ///< are already described in the static description
+  std::unordered_set<std::string> parameterValueModified_;  ///< a parameter key is present in this if the
+                                                            ///< value was redefined in the configuration
+                                                            ///< file
 };
 
 }  // namespace inputs
