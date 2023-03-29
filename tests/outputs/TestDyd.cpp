@@ -13,9 +13,9 @@
 
 #include <boost/filesystem.hpp>
 
-testing::Environment* initXmlEnvironment();
+testing::Environment *initXmlEnvironment();
 
-testing::Environment* const env = initXmlEnvironment();
+testing::Environment *const env = initXmlEnvironment();
 
 TEST(Dyd, write) {
   using dfl::algo::GeneratorDefinition;
@@ -126,7 +126,7 @@ TEST(Dyd, writeHvdc) {
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   dfl::algo::HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
-      std::make_pair("_BUS___10_TN", dfl::algo::VSCDefinition("VSCStation1", 0., 0., 0., {})),
+      std::make_pair("_BUS___10_TN", "VSCStation1"),
   };
   dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 

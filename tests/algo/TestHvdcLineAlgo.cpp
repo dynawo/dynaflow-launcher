@@ -30,9 +30,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   using MapKey = std::tuple<std::string, std::string>;
 
  public:
-  void clear() {
-    map_.clear();
-  }
+  void clear() { map_.clear(); }
 
   /**
    * @brief Add a switch connection
@@ -43,7 +41,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
    * @param VLId the voltage level id containing both buses
    * @param otherbusid the other bus id
    */
-  void add(const std::string& busId, const std::string& VLId, const std::string& otherbusid) {
+  void add(const std::string &busId, const std::string &VLId, const std::string &otherbusid) {
     map_[std::tie(busId, VLId)].push_back(otherbusid);
     map_[std::tie(otherbusid, VLId)].push_back(busId);
   }
@@ -51,14 +49,14 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getBusesConnectedBySwitch
    */
-  std::vector<std::string> getBusesConnectedBySwitch(const std::string& busId, const std::string& VLId) const final {
+  std::vector<std::string> getBusesConnectedBySwitch(const std::string &busId, const std::string &VLId) const final {
     auto it = map_.find(std::tie(busId, VLId));
     if (it == map_.end()) {
       return {};
     }
 
     std::set<std::string> set;
-    for (const auto& id : it->second) {
+    for (const auto &id : it->second) {
       updateSet(set, busId, VLId);
     }
     std::vector<std::string> ret(set.begin(), set.end());
@@ -69,12 +67,10 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getRegulatedBus
    */
-  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string& regulatingComponent) const final {
-    return boost::shared_ptr<DYN::BusInterface>();
-  }
+  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string &regulatingComponent) const final { return boost::shared_ptr<DYN::BusInterface>(); }
 
  private:
-  void updateSet(std::set<std::string>& set, const std::string& str, const std::string& vlid) const {
+  void updateSet(std::set<std::string> &set, const std::string &str, const std::string &vlid) const {
     if (set.count(str) > 0) {
       return;
     }
@@ -85,7 +81,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
       return;
     }
 
-    for (const auto& id : it->second) {
+    for (const auto &id : it->second) {
       updateSet(set, id, vlid);
     }
   }
@@ -95,8 +91,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
 };
 }  // namespace test
 
-static bool
-hvdcLineDefinitionEqual(const dfl::algo::HVDCDefinition& lhs, const dfl::algo::HVDCDefinition& rhs) {
+static bool hvdcLineDefinitionEqual(const dfl::algo::HVDCDefinition &lhs, const dfl::algo::HVDCDefinition &rhs) {
   // we do not check the model here as a dedicated test will check the compliance
   return lhs.id == rhs.id && lhs.converterType == rhs.converterType && lhs.converter1Id == rhs.converter1Id && lhs.converter1BusId == rhs.converter1BusId &&
          lhs.converter2VoltageRegulationOn == rhs.converter2VoltageRegulationOn && lhs.converter2Id == rhs.converter2Id &&
@@ -160,14 +155,14 @@ TEST(HvdcLine, base) {
   std::unordered_set<std::shared_ptr<dfl::inputs::Converter>> set{vscStation2};
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, map);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo(node, algoRes);
   }
 
-  const auto& hvdcLines = hvdcDefs.hvdcLines;
+  const auto &hvdcLines = hvdcDefs.hvdcLines;
   ASSERT_EQ(3, hvdcLines.size());
   size_t index = 0;
-  for (const auto& expected_hvdcLine : expected_hvdcLines) {
+  for (const auto &expected_hvdcLine : expected_hvdcLines) {
     auto it = hvdcLines.find(expected_hvdcLine.id);
     ASSERT_NE(hvdcLines.end(), it);
     ASSERT_TRUE(hvdcLineDefinitionEqual(expected_hvdcLine, it->second)) << " Fail for " << expected_hvdcLine.id;
@@ -175,28 +170,22 @@ TEST(HvdcLine, base) {
   ASSERT_EQ(hvdcDefs.vscBusVSCDefinitionsMap.size(), 0);
 }
 
-static bool
-compareVSCDefinition(const dfl::algo::VSCDefinition& lhs, const dfl::algo::VSCDefinition& rhs) {
+static bool compareVSCDefinition(const dfl::algo::VSCDefinition &lhs, const dfl::algo::VSCDefinition &rhs) {
   return lhs.id == rhs.id && lhs.qmax == rhs.qmax && lhs.qmin == rhs.qmin && lhs.points.size() == rhs.points.size() &&
          std::equal(lhs.points.begin(), lhs.points.end(), rhs.points.begin(),
-                    [](const dfl::algo::VSCDefinition::ReactiveCurvePoint& lhs, const dfl::algo::VSCDefinition::ReactiveCurvePoint& rhs) {
+                    [](const dfl::algo::VSCDefinition::ReactiveCurvePoint &lhs, const dfl::algo::VSCDefinition::ReactiveCurvePoint &rhs) {
                       return lhs.p == rhs.p && lhs.qmax == rhs.qmax && lhs.qmin == rhs.qmin;
                     });
 }
 
-static void
-checkVSCIds(const dfl::algo::HVDCLineDefinitions& hvdcDefs) {
-  static const dfl::algo::HVDCLineDefinitions::BusVSCMap expectedMap = {
-      std::make_pair("2", dfl::algo::VSCDefinition("VSCStation2", 2.1, 2., 2., {})),
-      std::make_pair("7", dfl::algo::VSCDefinition("VSCStation7", 7.1, 7., 2.7, {})),
-      std::make_pair("8", dfl::algo::VSCDefinition("VSCStation8", 8.1, 8., 2.8, {})),
-      std::make_pair("11", dfl::algo::VSCDefinition("VSCStation11", 11.1, 11., 11., {})),
-      std::make_pair("12", dfl::algo::VSCDefinition("VSCStation12", 12.1, 12., 12., {})),
-  };
+static void checkVSCIds(const dfl::algo::HVDCLineDefinitions &hvdcDefs) {
+  static const dfl::algo::HVDCLineDefinitions::BusVSCMap expectedMap = {std::make_pair("2", "VSCStation2"), std::make_pair("7", "VSCStation7"),
+                                                                        std::make_pair("8", "VSCStation8"), std::make_pair("11", "VSCStation11"),
+                                                                        std::make_pair("12", "VSCStation12")};
   ASSERT_EQ(hvdcDefs.vscBusVSCDefinitionsMap.size(), expectedMap.size());
-  for (const auto& pair : expectedMap) {
+  for (const auto &pair : expectedMap) {
     ASSERT_GT(hvdcDefs.vscBusVSCDefinitionsMap.count(pair.first), 0);
-    ASSERT_TRUE(compareVSCDefinition(hvdcDefs.vscBusVSCDefinitionsMap.at(pair.first), pair.second));
+    ASSERT_EQ(hvdcDefs.vscBusVSCDefinitionsMap.at(pair.first), pair.second);
   }
 }
 
@@ -285,11 +274,11 @@ TEST(hvdcLine, models) {
   };
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, useReactiveLimits, set, busMap);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo(node, algoRes);
   }
 
-  auto& hvdcLines = hvdcDefs.hvdcLines;
+  auto &hvdcLines = hvdcDefs.hvdcLines;
   ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling);
@@ -310,7 +299,7 @@ TEST(hvdcLine, models) {
   // case diagrams
   useReactiveLimits = false;
   dfl::algo::HVDCDefinitionAlgorithm algo2(hvdcDefs, useReactiveLimits, set, busMap);
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo2(node, algoRes);
   }
 
