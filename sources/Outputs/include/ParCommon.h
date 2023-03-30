@@ -43,9 +43,7 @@ namespace helper {
  *
  * @return Dynawo parameter with this name and value
  */
-template<class T>
-boost::shared_ptr<parameters::Parameter>
-buildParameter(const std::string& name, const T& value) {
+template <class T> boost::shared_ptr<parameters::Parameter> buildParameter(const std::string &name, const T &value) {
   return parameters::ParameterFactory::newParameter(name, value);
 }
 
@@ -58,10 +56,9 @@ buildParameter(const std::string& name, const T& value) {
  * @param componentId component where the reference should be found
  * @return the new reference
  */
-inline boost::shared_ptr<parameters::Reference>
-buildReference(const std::string& name, const std::string& origName, const std::string& type, const boost::optional<std::string>& componentId = {}) {
-  auto ref = parameters::ReferenceFactory::newReference(name);
-  ref->setOrigData("IIDM");
+inline boost::shared_ptr<parameters::Reference> buildReference(const std::string &name, const std::string &origName, const std::string &type,
+                                                               const boost::optional<std::string> &componentId = {}) {
+  auto ref = parameters::ReferenceFactory::newReference(name, parameters::Reference::OriginData::IIDM);
   ref->setOrigName(origName);
   ref->setType(type);
   if (componentId.is_initialized()) {
@@ -77,10 +74,7 @@ buildReference(const std::string& name, const std::string& origName, const std::
  * @param modelType string to identify the macro parameter
  * @return a the Macro Parameter Set Id
  */
-inline std::string
-getMacroParameterSetId(const std::string& modelType) {
-  return "macro_" + modelType;
-}
+inline std::string getMacroParameterSetId(const std::string &modelType) { return "macro_" + modelType; }
 
 /**
  * @brief Helper function to build a Dynawo macro parameter set for vrremote
@@ -88,8 +82,7 @@ getMacroParameterSetId(const std::string& modelType) {
  * @param modelType string to identify the macro parameter
  * @return a Dynawo macro parameter set for vrremote
  */
-inline boost::shared_ptr<parameters::MacroParameterSet>
-buildMacroParameterSetVRRemote(const std::string& modelType) {
+inline boost::shared_ptr<parameters::MacroParameterSet> buildMacroParameterSetVRRemote(const std::string &modelType) {
   boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
       boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
   if (modelType == getMacroParameterSetId(constants::remoteVControlParId + "_vr")) {
@@ -108,8 +101,7 @@ buildMacroParameterSetVRRemote(const std::string& modelType) {
  *
  * @returns the parameter set
  */
-inline boost::shared_ptr<parameters::ParametersSet>
-writeVRRemote(const std::string& busId, const std::string& elementId) {
+inline boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string &busId, const std::string &elementId) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
   set->addReference(buildReference("vrremote_U0", "targetV", "DOUBLE", elementId));
   set->addReference(buildReference("vrremote_URef0", "targetV", "DOUBLE", elementId));
@@ -123,8 +115,7 @@ writeVRRemote(const std::string& busId, const std::string& elementId) {
  * @param generator generator definition
  * @return Generator Parameter Set Id object
  */
-inline static std::string
-getGeneratorParameterSetId(const algo::GeneratorDefinition& generator) {
+inline static std::string getGeneratorParameterSetId(const algo::GeneratorDefinition &generator) {
   std::string id;
   bool fixedP = DYN::doubleIsZero(generator.targetP);
   switch (generator.model) {
@@ -163,8 +154,7 @@ getGeneratorParameterSetId(const algo::GeneratorDefinition& generator) {
  * @param generator generator definition
  * @return true if the generator shares its parameter set
  */
-inline static bool
-generatorSharesParId(const algo::GeneratorDefinition& generator) {
+inline static bool generatorSharesParId(const algo::GeneratorDefinition &generator) {
   std::string parId = getGeneratorParameterSetId(generator);
   std::size_t hashId = constants::hash(generator.id);
   return parId != std::to_string(hashId);
