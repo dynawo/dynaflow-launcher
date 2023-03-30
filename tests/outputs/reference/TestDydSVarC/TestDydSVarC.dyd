@@ -8,31 +8,31 @@
     <dyn:staticRef var="SVarC_QInjPu" staticVar="q"/>
     <dyn:staticRef var="SVarC_state" staticVar="state"/>
   </dyn:macroStaticReference>
-  <dyn:blackBoxModel id="SVARC0" staticId="SVARC0" lib="StaticVarCompensatorPV" parFile="TestDydSVarC.par" parId="11623643470094518027">
+  <dyn:blackBoxModel id="SVARC0" staticId="SVARC0" lib="StaticVarCompensatorPV" parFile="TestDydSVarC.par" parId="5af224bc-7a03-5bcd-af4e-25de959b69f6">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC1" staticId="SVARC1" lib="StaticVarCompensatorPVModeHandling" parFile="TestDydSVarC.par" parId="9422148340964418421">
+  <dyn:blackBoxModel id="SVARC1" staticId="SVARC1" lib="StaticVarCompensatorPVModeHandling" parFile="TestDydSVarC.par" parId="b197c5fc-97b7-5143-bc50-35b02265b61d">
     <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC2" staticId="SVARC2" lib="StaticVarCompensatorPVProp" parFile="TestDydSVarC.par" parId="17518669012454548346">
+  <dyn:blackBoxModel id="SVARC2" staticId="SVARC2" lib="StaticVarCompensatorPVProp" parFile="TestDydSVarC.par" parId="d8f150a8-5090-5b69-9819-9fbb92e6cd60">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC3" staticId="SVARC3" lib="StaticVarCompensatorPVPropModeHandling" parFile="TestDydSVarC.par" parId="533408261430783114">
+  <dyn:blackBoxModel id="SVARC3" staticId="SVARC3" lib="StaticVarCompensatorPVPropModeHandling" parFile="TestDydSVarC.par" parId="05979064-d216-56aa-81d5-5a7b963909f3">
     <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC4" staticId="SVARC4" lib="StaticVarCompensatorPVPropRemote" parFile="TestDydSVarC.par" parId="17998079684596356712">
+  <dyn:blackBoxModel id="SVARC4" staticId="SVARC4" lib="StaticVarCompensatorPVPropRemote" parFile="TestDydSVarC.par" parId="1b60c1a5-3894-5243-b3ce-faa1d08ca507">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC5" staticId="SVARC5" lib="StaticVarCompensatorPVPropRemoteModeHandling" parFile="TestDydSVarC.par" parId="2927585780575238260">
+  <dyn:blackBoxModel id="SVARC5" staticId="SVARC5" lib="StaticVarCompensatorPVPropRemoteModeHandling" parFile="TestDydSVarC.par" parId="cc648937-bb8a-5ce3-995d-7a41e11fc41b">
     <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC6" staticId="SVARC6" lib="StaticVarCompensatorPVRemote" parFile="TestDydSVarC.par" parId="14713165357655296201">
+  <dyn:blackBoxModel id="SVARC6" staticId="SVARC6" lib="StaticVarCompensatorPVRemote" parFile="TestDydSVarC.par" parId="3ec41c13-b32e-549c-b6b0-e05a368810d6">
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="SVARC7" staticId="SVARC7" lib="StaticVarCompensatorPVRemoteModeHandling" parFile="TestDydSVarC.par" parId="12385967634981995552">
+  <dyn:blackBoxModel id="SVARC7" staticId="SVARC7" lib="StaticVarCompensatorPVRemoteModeHandling" parFile="TestDydSVarC.par" parId="e99f1bbc-4dab-58d1-af6e-4a9a2e79f0fa">
     <dyn:staticRef var="SVarC_modeHandling_mode_value" staticVar="regulatingMode"/>
     <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
   </dyn:blackBoxModel>

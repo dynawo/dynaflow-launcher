@@ -20,9 +20,9 @@ if(NOT GMOCK_HOME AND NOT $ENV{GMOCK_ROOT} STREQUAL "")
 endif()
 
 find_path(GMOCK_INCLUDE_DIR NAME gmock/gmock.h gtest/gtest.h HINTS $ENV{GMOCK_HOME}/include ${GMOCK_HOME}/include)
-find_library(GMOCK_LIBRARY NAME gmock libgmock gtest libgtest HINTS ENV{GMOCK_HOME} ${GMOCK_HOME} PATH_SUFFIXES lib lib${CMAKE_LIBRARY_ARCHITECTURE} )
+find_library(GMOCK_LIBRARY NAME gmock libgmock gtest libgtest HINTS $ENV{GMOCK_HOME} ${GMOCK_HOME} PATH_SUFFIXES lib lib${CMAKE_LIBRARY_ARCHITECTURE} )
 find_library(GMOCK_MAIN_LIBRARY NAME gmock_main liggmock_main gtest_main libgtest_main
-             HINTS ENV{GMOCK_HOME} ${GMOCK_HOME} PATH_SUFFIXES lib lib${CMAKE_LIBRARY_ARCHITECTURE} )
+  HINTS ENV{GMOCK_HOME} ${GMOCK_HOME} PATH_SUFFIXES lib lib${CMAKE_LIBRARY_ARCHITECTURE} )
 find_library(GMOCK_LIBRARY_DEBUG NAME gmockd libgmockd gtestd libgtestd HINTS ENV{GMOCK_HOME} ${GMOCK_HOME} PATH_SUFFIXES lib lib${CMAKE_LIBRARY_ARCHITECTURE} )
 find_library(GMOCK_MAIN_LIBRARY_DEBUG NAME gmock_maind liggmock_maind gtest_maind libgtest_main
   HINTS ENV{GMOCK_HOME} ${GMOCK_HOME} PATH_SUFFIXES lib lib${CMAKE_LIBRARY_ARCHITECTURE} )
@@ -32,7 +32,7 @@ mark_as_advanced(GMOCK_INCLUDE_DIR GMOCK_LIBRARY GMOCK_MAIN_LIBRARY)
 # Handle the QUIETLY and REQUIRED arguments and set GMOCK_FOUND
 # to TRUE if all listed variables are TRUE.
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(GMock DEFAULT_MSG GMOCK_INCLUDE_DIR GMOCK_LIBRARY GMOCK_MAIN_LIBRARY)
+find_package_handle_standard_args(GMock DEFAULT_MSG GMOCK_LIBRARY GMOCK_INCLUDE_DIR GMOCK_MAIN_LIBRARY)
 
 if(GMOCK_FOUND)
   set(GMOCK_INCLUDE_DIRS ${GMOCK_INCLUDE_DIR})
@@ -70,10 +70,10 @@ if(GMOCK_FOUND)
         IMPORTED_LINK_INTERFACE_LIBRARIES "Threads::Threads;GTest::gmock"
         IMPORTED_LOCATION "${GMOCK_MAIN_LIBRARY_DEBUG}")
     elseif(EXISTS "${GMOCK_MAIN_LIBRARY}")
-        set_target_properties(GTest::gmock_main PROPERTIES
-          IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-          IMPORTED_LINK_INTERFACE_LIBRARIES "Threads::Threads;GTest::gmock"
-          IMPORTED_LOCATION "${GMOCK_MAIN_LIBRARY}")
+      set_target_properties(GTest::gmock_main PROPERTIES
+        IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+        IMPORTED_LINK_INTERFACE_LIBRARIES "Threads::Threads;GTest::gmock"
+        IMPORTED_LOCATION "${GMOCK_MAIN_LIBRARY}")
     endif()
   endif()
 endif()

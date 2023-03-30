@@ -21,19 +21,23 @@ src/SlackNodeAlgorithm.cpp
 src/TransfoDefinitionAlgorithm.cpp
 )
 
-add_library(algo SHARED ${SOURCES})
+add_library(dfl_Algo SHARED ${SOURCES})
 
-target_include_directories(algo
+target_include_directories(dfl_Algo
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_set_warnings(algo ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
-target_link_libraries(algo
+target_set_warnings(dfl_Algo ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
+target_link_libraries(dfl_Algo
 PUBLIC
 DynaFlowLauncher::inputs
 DynaFlowLauncher::common
 Boost::system
 )
-add_library(DynaFlowLauncher::algo ALIAS algo)
-install(TARGETS algo DESTINATION ${CMAKE_INSTALL_LIBDIR})
+add_library(DynaFlowLauncher::algo ALIAS dfl_Algo)
+install(TARGETS dfl_Algo
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

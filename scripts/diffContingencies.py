@@ -16,7 +16,10 @@ import argparse
 import json
 import iidmDiff
 import constraintsDiff
-import filecmp
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 
 from scriptsException import UnknownBuildType
 
@@ -103,7 +106,9 @@ def compare_file(options, contingency_folder, chosen_outputs):
             if options.verbose:
                 print("comparing " + result_path + " and " + reference_path)
 
-            identical = filecmp.cmp (result_path, reference_path, shallow=False)
+            # compare line per line with universal newline, stop at first diff
+            with open(result_path) as f1, open(reference_path) as f2:
+                identical = all(l1 == l2 for l1, l2 in zip_longest(f1, f2))
             if identical:
                 if options.verbose:
                     print("No difference")
@@ -151,7 +156,9 @@ if __name__ == "__main__":
             print("[ERROR] Aggregated results file " + results_aggr_res + " not found.")
             total_diffs += 1
         else:
-            identical = filecmp.cmp(reference_aggr_res, results_aggr_res, shallow=False)
+            # compare line per line with universal newline, stop at first diff
+            with open(reference_aggr_res) as f1, open(results_aggr_res) as f2:
+                identical = all(l1 == l2 for l1, l2 in zip_longest(f1, f2))
             if not identical:
                 print("[ERROR] Found differences when comparing result and reference aggregated results file.")
                 total_diffs += 1

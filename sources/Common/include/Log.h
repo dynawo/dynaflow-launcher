@@ -32,7 +32,12 @@ namespace common {
  */
 class Log {
  public:
-  static const char* dynaflowLauncherLogTag;  ///< Tag for dynaflow launcher log
+  /**
+   * @brief Get the tag for dynaflow launcher log
+   * 
+   * @returns the tag for dynaflow launcher log
+   */
+  static const std::string& getTag();
 
   /**
    * @brief Initialize log from runtime options
@@ -58,7 +63,7 @@ class Log {
  * @param key the log key from the dictionary
  */
 #define LOG(level, key, ...)                                                                                                      \
-  (DYNAlgorithms::mpi::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::dynaflowLauncherLogTag) : DYN::TraceStream()) \
+  (DYNAlgorithms::mpi::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::getTag()) : DYN::TraceStream()) \
       << (DYN::Message("DFLLOG", dfl::KeyLog_t::names(dfl::KeyLog_t::key)), ##__VA_ARGS__) << DYN::Trace::endline
 
 /**

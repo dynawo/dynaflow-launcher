@@ -26,6 +26,8 @@
 #include "SlackNodeAlgorithm.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
 #include <algorithm>
 #include <vector>
 
@@ -33,6 +35,8 @@
 testing::Environment* initXmlEnvironment();
 
 testing::Environment* const env = initXmlEnvironment();
+
+DYNAlgorithms::mpi::Context mpiContext;
 
 TEST(TestAlgoDynModel, base) {
   using dfl::algo::DynamicModelDefinitions;
@@ -100,7 +104,7 @@ TEST(TestAlgoDynModel, base) {
   ASSERT_NO_THROW(defs.models.at("MODELE_1_VL4"));
   const auto& dynModel = defs.models.at("MODELE_1_VL4");
   ASSERT_EQ(dynModel.id, "MODELE_1_VL4");
-  ASSERT_EQ(dynModel.lib, "libdummyLib");
+  ASSERT_EQ(dynModel.lib, "dummyLib");
   ASSERT_EQ(dynModel.nodeConnections.size(), 16);
 
   std::string searched = "ToUMeasurement";
@@ -122,7 +126,7 @@ TEST(TestAlgoDynModel, base) {
   ASSERT_NO_THROW(defs.models.at("DM_SALON"));
   const auto& dynModelCLA = defs.models.at("DM_SALON");
   ASSERT_EQ(dynModelCLA.id, "DM_SALON");
-  ASSERT_EQ(dynModelCLA.lib, "libdummyLib");
+  ASSERT_EQ(dynModelCLA.lib, "dummyLib");
   ASSERT_EQ(dynModelCLA.nodeConnections.size(), 3);
 
   searched = "CLAToControlledLineState";
@@ -136,7 +140,7 @@ TEST(TestAlgoDynModel, base) {
   ASSERT_NO_THROW(defs.models.at("DM_VL661"));
   const auto& dynModel_tfo = defs.models.at("DM_VL661");
   ASSERT_EQ(dynModel_tfo.id, "DM_VL661");
-  ASSERT_EQ(dynModel_tfo.lib, "libdummyLib");
+  ASSERT_EQ(dynModel_tfo.lib, "dummyLib");
   ASSERT_EQ(dynModel_tfo.nodeConnections.size(), 3);
   searched = "PhaseShifterToIMeasurement";
   found_connection = std::find_if(dynModel_tfo.nodeConnections.begin(), dynModel_tfo.nodeConnections.end(),
@@ -149,7 +153,7 @@ TEST(TestAlgoDynModel, base) {
   ASSERT_NO_THROW(defs.models.at("GeneratorAutomaton"));
   const auto& dynModel_gen = defs.models.at("GeneratorAutomaton");
   ASSERT_EQ(dynModel_gen.id, "GeneratorAutomaton");
-  ASSERT_EQ(dynModel_gen.lib, "libdummyLib");
+  ASSERT_EQ(dynModel_gen.lib, "dummyLib");
   ASSERT_EQ(dynModel_gen.nodeConnections.size(), 3);
   searched = "SVCToUMeasurement";
   found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
@@ -246,7 +250,7 @@ TEST(TestAlgoDynModel, noRegulation) {
   ASSERT_NO_THROW(defs.models.at("MODELE_1_VL4"));
   const auto& dynModel = defs.models.at("MODELE_1_VL4");
   ASSERT_EQ(dynModel.id, "MODELE_1_VL4");
-  ASSERT_EQ(dynModel.lib, "libdummyLib");
+  ASSERT_EQ(dynModel.lib, "dummyLib");
   ASSERT_EQ(dynModel.nodeConnections.size(), 1);  // only bus Umesurement is connected
 
   std::string searched = "ToUMeasurement";
@@ -268,7 +272,7 @@ TEST(TestAlgoDynModel, noRegulation) {
   ASSERT_NO_THROW(defs.models.at("DM_SALON"));
   const auto& dynModelCLA = defs.models.at("DM_SALON");
   ASSERT_EQ(dynModelCLA.id, "DM_SALON");
-  ASSERT_EQ(dynModelCLA.lib, "libdummyLib");
+  ASSERT_EQ(dynModelCLA.lib, "dummyLib");
   ASSERT_EQ(dynModelCLA.nodeConnections.size(), 3);
 
   searched = "CLAToControlledLineState";
@@ -282,12 +286,12 @@ TEST(TestAlgoDynModel, noRegulation) {
   ASSERT_NO_THROW(defs.models.at("DM_VL661"));
   const auto& dynModel_tfo = defs.models.at("DM_VL661");
   ASSERT_EQ(dynModel_tfo.id, "DM_VL661");
-  ASSERT_EQ(dynModel_tfo.lib, "libdummyLib");
+  ASSERT_EQ(dynModel_tfo.lib, "dummyLib");
   ASSERT_EQ(dynModel_tfo.nodeConnections.size(), 3);
   searched = "PhaseShifterToIMeasurement";
   found_connection = std::find_if(dynModel_tfo.nodeConnections.begin(), dynModel_tfo.nodeConnections.end(),
                                   [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection& connection) { return connection.id == searched; });
-  ASSERT_NE(found_connection, dynModelCLA.nodeConnections.end());
+  ASSERT_NE(found_connection, dynModel_tfo.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "TFO1");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO);
 
@@ -295,7 +299,7 @@ TEST(TestAlgoDynModel, noRegulation) {
   ASSERT_NO_THROW(defs.models.at("GeneratorAutomaton"));
   const auto& dynModel_gen = defs.models.at("GeneratorAutomaton");
   ASSERT_EQ(dynModel_gen.id, "GeneratorAutomaton");
-  ASSERT_EQ(dynModel_gen.lib, "libdummyLib");
+  ASSERT_EQ(dynModel_gen.lib, "dummyLib");
   ASSERT_EQ(dynModel_gen.nodeConnections.size(), 3);
   searched = "SVCToUMeasurement";
   found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),

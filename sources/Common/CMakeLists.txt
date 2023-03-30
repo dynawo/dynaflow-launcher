@@ -21,14 +21,12 @@ set_source_files_properties(include/DFLLog_keys.h PROPERTIES GENERATED 1)
 set_source_files_properties(src/DFLError_keys.cpp PROPERTIES GENERATED 1)
 set_source_files_properties(include/DFLError_keys.h PROPERTIES GENERATED 1)
 
-add_library(common SHARED ${SOURCES})
-target_include_directories(common
+add_library(dfl_Common SHARED ${SOURCES})
+target_include_directories(dfl_Common
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_set_warnings(common ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
-
-check_env_var(DYNAFLOW_LAUNCHER_LOCALE)
+target_set_warnings(dfl_Common ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
 
 # We use a target to ensure it will be executed at each build
 add_custom_target(dicokeys
@@ -45,9 +43,9 @@ COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/DFLErr
 COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_CURRENT_SOURCE_DIR}/DFLError_keys.h
 COMMENT "Generate key files for dictionaries")
 
-add_dependencies(common dicokeys)
+add_dependencies(dfl_Common dicokeys)
 
-target_link_libraries(common
+target_link_libraries(dfl_Common
   PUBLIC
     Boost::program_options
     Dynawo::dynawo_Common
@@ -56,6 +54,10 @@ target_link_libraries(common
   PRIVATE
     Boost::filesystem
 )
-add_library(DynaFlowLauncher::common ALIAS common)
+add_library(DynaFlowLauncher::common ALIAS dfl_Common)
 install(FILES ${CMAKE_SOURCE_DIR}/etc/Dictionaries/DFLLog_en_GB.dic ${CMAKE_SOURCE_DIR}/etc/Dictionaries/DFLError_en_GB.dic DESTINATION share)
-install(TARGETS common DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS dfl_Common
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

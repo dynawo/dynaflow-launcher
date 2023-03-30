@@ -125,7 +125,7 @@ void updateValue(bool &value, const boost::property_tree::ptree &tree, const std
   if (value_opt.is_initialized()) {
     parameterValueModified.insert(key);
     std::string value_str = value_opt->get_value<std::string>();
-    std::transform(value_str.begin(), value_str.end(), value_str.begin(), ::tolower);
+    std::transform(value_str.begin(), value_str.end(), value_str.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     if (value_str == "false") {
       value = false;
     } else if (value_str == "true") {
@@ -241,7 +241,8 @@ void Configuration::updateStartingPointMode(const boost::property_tree::ptree &t
     optionalStartingPointMode = tree.get_child_optional(key);
   if (optionalStartingPointMode.is_initialized()) {
     std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
-    std::transform(startingPointMode.begin(), startingPointMode.end(), startingPointMode.begin(), ::tolower);
+    std::transform(startingPointMode.begin(), startingPointMode.end(), startingPointMode.begin(),
+                   [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     if (startingPointMode == "warm") {
       startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::WARM;
     } else if (startingPointMode == "flat") {
@@ -289,7 +290,8 @@ void Configuration::updateChosenOutput(const boost::property_tree::ptree &tree,
   if (optionalChosenOutputs.is_initialized()) {
     for (auto &chosenOutputElement : optionalChosenOutputs.get()) {
       std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
-      std::transform(chosenOutputName.begin(), chosenOutputName.end(), chosenOutputName.begin(), ::toupper);
+      std::transform(chosenOutputName.begin(), chosenOutputName.end(), chosenOutputName.begin(),
+                     [](unsigned char c){ return static_cast<char>(std::toupper(c)); });
       if (chosenOutputName == "STEADYSTATE") {
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
       } else if (chosenOutputName == "CONSTRAINTS") {

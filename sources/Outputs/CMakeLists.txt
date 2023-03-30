@@ -29,15 +29,20 @@ src/ParSVarC.cpp
 src/Solver.cpp
 )
 
-add_library(outputs SHARED ${SOURCES})
+add_library(dfl_Outputs SHARED ${SOURCES})
 
-target_include_directories(outputs
+target_include_directories(dfl_Outputs
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_set_warnings(outputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
-target_link_libraries(outputs
+target_compile_definitions(dfl_Outputs
+PUBLIC
+  $<$<BOOL:${MSVC}>:_USE_MATH_DEFINES>  # expose macro definitions for common math constants (e.g. M_PI)
+)
+
+target_set_warnings(dfl_Outputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
+target_link_libraries(dfl_Outputs
 PUBLIC
 DynaFlowLauncher::algo
 
@@ -49,5 +54,9 @@ PRIVATE
 Boost::filesystem
 
 )
-add_library(DynaFlowLauncher::outputs ALIAS outputs)
-install(TARGETS outputs DESTINATION ${CMAKE_INSTALL_LIBDIR})
+add_library(DynaFlowLauncher::outputs ALIAS dfl_Outputs)
+install(TARGETS dfl_Outputs
+RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

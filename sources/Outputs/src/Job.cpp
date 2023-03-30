@@ -175,7 +175,7 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
   }
 
   path.append(jobEntry->getName() + ".jobs");
-  std::ofstream os(path.c_str());
+  std::ofstream os(path.c_str(), std::ios::binary);
 
   auto formatter = xml::sax::formatter::Formatter::createFormatter(os);
   formatter->addNamespace("dyn", "http://www.rte-france.com/dynawo");

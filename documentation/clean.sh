@@ -6,7 +6,7 @@
 # license. All rights reserved.
 
 folders=(introduction installation configuringDynaflowLauncher functionalDoc advancedDoc
-licenses/dynawo licenses/dynawo-algorithms licenses/dynaflow-launcher licenses/dynaflow-launcher-documentation)
+licenses/dynawo licenses/dynawo-algorithms licenses/dynaflow-launcher licenses/dynaflow-launcher-documentation licenses/mpich licenses/msmpi)
 
 for folder in ${folders[*]}; do
   if [ -d "$folder" ]; then

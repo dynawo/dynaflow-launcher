@@ -22,7 +22,10 @@ namespace file = boost::filesystem;
 namespace dfl {
 namespace common {
 
-const char* Log::dynaflowLauncherLogTag = "DYNAFLOW_LAUNCHER";
+const std::string& Log::getTag() {
+  static const std::string& dynaflowLauncherLogTag ="DYNAFLOW_LAUNCHER";
+  return dynaflowLauncherLogTag;
+}
 
 void
 Log::init(const common::Options& options, const std::string& outputDir) {
@@ -38,7 +41,7 @@ Log::init(const common::Options& options, const std::string& outputDir) {
 
   appender.setFilePath(outputPath.append(config.programName + ".log").generic_string());
   appender.setLvlFilter(Trace::severityLevelFromString(config.dynawoLogLevel));
-  appender.setTag(dynaflowLauncherLogTag);
+  appender.setTag(getTag());
   appender.setShowLevelTag(true);
   appender.setSeparator(" | ");
   appender.setShowTimeStamp(true);

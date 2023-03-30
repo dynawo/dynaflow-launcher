@@ -147,10 +147,16 @@ This command launches Dynaflow on a simple network and should succeed if your in
 
 \section{Third parties}
 
-To run a simulation, Dynaflow-launcher uses external libraries that are downloaded and compiled during the building process:
+To run a simulation on Linux, Dynaflow-launcher uses external libraries that are downloaded and compiled during the building process:
 \begin{itemize}
 \item \href{https://www.mpich.org/}{\underline{MPICH}}, an implementation of the Message Passing Interface (MPI) standard distributed under a BSD-like license.
 \Dynawo-algorithms is currently using the version 3.4.2.
+\end{itemize}
+
+To run a simulation on Windows, \Dynawo-algorithms uses an external librarie that has to be installed before the building process:
+\begin{itemize}
+\item \href{https://learn.microsoft.com/en-us/message-passing-interface/microsoft-mpi?redirectedfrom=MSDN}{\underline{MSMPI}}, a Microsoft implementation of the Message Passing Interface standard distributed under a MIT license.
+\Dynawo-algorithms is currently using the version 10.1.2.
 \end{itemize}
 
 Finally, Dynaflow-launcher also uses others libraries for the unit testing process or to build its source documentation.

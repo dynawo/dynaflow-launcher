@@ -63,13 +63,13 @@ AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path& assembling
   if (!in) {
     // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
     if (!assemblingFilePath.empty())
-      LOG(warn, DynModelFileNotFound, assemblingFilePath.c_str());
+      LOG(warn, DynModelFileNotFound, assemblingFilePath.generic_string());
     return;
   }
 
   auto xsd = computeXsdPath(assemblingFilePath);
   if (xsd.empty()) {
-    LOG(warn, DynModelFileXSDNotFound, assemblingFilePath.c_str());
+    LOG(warn, DynModelFileXSDNotFound, assemblingFilePath.generic_string());
     xsdValidation = false;
   } else {
     parser->addXmlSchema(xsd.generic_string());
@@ -78,7 +78,7 @@ AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path& assembling
   try {
     parser->parse(in, assemblingXml, xsdValidation);
   } catch (const xml::sax::parser::ParserException& e) {
-    throw Error(DynModelFileReadError, assemblingFilePath.c_str(), e.what());
+    throw Error(DynModelFileReadError, assemblingFilePath.generic_string(), e.what());
   }
 }
 

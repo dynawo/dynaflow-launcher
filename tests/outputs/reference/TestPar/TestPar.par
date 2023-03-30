@@ -70,53 +70,53 @@
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
   </macroParameterSet>
-  <set id="12811459763870767443">
-    <macroParSet id="macro_propSignalNGeneratorFixedPRectangular"/>
-  </set>
-  <set id="2751660957840315519">
-    <par name="generator_QMax0" type="DOUBLE" value="31"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G4_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="2751660957840315519_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="2"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G4_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="2751660957840315519_tableqmin"/>
-    <macroParSet id="macro_signalNGeneratorFixedP"/>
-  </set>
-  <set id="3459916906757134539">
+  <set id="3c4cdde8-fc12-5177-860a-b033252b5a42">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G10_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="3459916906757134539_tableqmax"/>
+    <par name="generator_QMaxTableName" type="STRING" value="3c4cdde8-fc12-5177-860a-b033252b5a42_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G10_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="3459916906757134539_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="3c4cdde8-fc12-5177-860a-b033252b5a42_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
-  <set id="4657367540483180226">
-    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
-    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
-    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
-    <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
+  <set id="625b3a25-dec7-53f7-93d8-2d9a3a3c9827">
+    <par name="generator_QMax0" type="DOUBLE" value="31"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="2"/>
+    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmin"/>
+    <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
-  <set id="6320417593396202500">
+  <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G2_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
+    <par name="generator_QMaxTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G2_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>
-  <set id="648475104231997810">
+  <set id="8ba719e7-0d85-5b06-b4e9-399db1215696">
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
   </set>
-  <set id="9965188665212998056">
+  <set id="de83c408-b7db-5e14-bae6-f629f6d84c21">
     <macroParSet id="macro_propSignalNGeneratorRectangular"/>
+  </set>
+  <set id="e4c4a114-4cc4-58b8-a2a5-cc865b2d21ad">
+    <macroParSet id="macro_propSignalNGeneratorFixedPRectangular"/>
+  </set>
+  <set id="f5256528-b984-55f5-bb31-aac7569c7e54">
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
   </set>
   <set id="signalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>

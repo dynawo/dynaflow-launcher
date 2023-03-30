@@ -62,7 +62,7 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
      * }
      */
 
-    LOG(info, ContingenciesReadingFrom, filepath.c_str());
+    LOG(info, ContingenciesReadingFrom, filepath.generic_string());
     contingencies_.reserve(tree.get_child("contingencies").size());
     for (const auto& contingencyPtree : tree.get_child("contingencies")) {
       const auto& contingencyId = contingencyPtree.second.get<std::string>("id");
@@ -101,7 +101,7 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
       }
     }
   } catch (std::exception& e) {
-    throw Error(ContingenciesReadError, filepath.c_str(), e.what());
+    throw Error(ContingenciesReadError, filepath.generic_string(), e.what());
   }
 }
 

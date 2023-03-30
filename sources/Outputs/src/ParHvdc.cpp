@@ -38,17 +38,16 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
 
   // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable
   auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram](boost::shared_ptr<parameters::ParametersSet> set,
-                                                             const algo::HVDCDefinition::ConverterId &converterId, unsigned int converterNumber,
-                                                             unsigned int parameterNumber) {
+                                                             const algo::HVDCDefinition::ConverterId &converterId, size_t converterNumber,
+                                                             size_t parameterNumber) {
     constexpr double factorPU = 100;
-    std::size_t hashId = constants::hash(converterId);
-    std::string hashIdStr = std::to_string(hashId);
+    std::string uuid = constants::uuid(converterId);
     auto dirnameDiagramLocal = dirnameDiagram;
     dirnameDiagramLocal.append(constants::diagramFilename(converterId));
     set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MinTableFile", dirnameDiagramLocal.generic_string()));
-    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MinTableName", hashIdStr + constants::diagramMinTableSuffix));
+    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MinTableName", uuid + constants::diagramMinTableSuffix));
     set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableFile", dirnameDiagramLocal.generic_string()));
-    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
+    set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "MaxTableName", uuid + constants::diagramMaxTableSuffix));
     if (hvdcDefinition.converterType == algo::HVDCDefinition::ConverterType::VSC) {
       const auto &vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (vscDefinition.qmin - 1) / factorPU));

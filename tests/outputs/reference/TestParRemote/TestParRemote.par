@@ -60,32 +60,15 @@
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
     <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
-  <set id="10160083025018531003">
-    <par name="generator_QMax0" type="DOUBLE" value="41"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G3_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="10160083025018531003_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="3"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G3_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="10160083025018531003_tableqmin"/>
-    <macroParSet id="macro_propSignalNGenerator"/>
-  </set>
-  <set id="12811459763870767443">
-    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
-    <macroParSet id="macro_remoteSignalNFixedPRectangular"/>
-  </set>
-  <set id="6320417593396202500">
+  <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
+    <par name="generator_QMaxTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmin"/>
     <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_1"/>
     <macroParSet id="macro_remoteVControl"/>
-  </set>
-  <set id="9965188665212998056">
-    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
-    <macroParSet id="macro_remoteVControlRectangular"/>
   </set>
   <set id="Model_Signal_NQ_BUS_1">
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
@@ -97,6 +80,23 @@
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
     <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="cce4f321-bf59-5464-b247-bda10c680360">
+    <par name="generator_QMax0" type="DOUBLE" value="41"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G3_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="cce4f321-bf59-5464-b247-bda10c680360_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="3"/>
+    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G3_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="cce4f321-bf59-5464-b247-bda10c680360_tableqmin"/>
+    <macroParSet id="macro_propSignalNGenerator"/>
+  </set>
+  <set id="de83c408-b7db-5e14-bae6-f629f6d84c21">
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
+    <macroParSet id="macro_remoteVControlRectangular"/>
+  </set>
+  <set id="e4c4a114-4cc4-58b8-a2a5-cc865b2d21ad">
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_2"/>
+    <macroParSet id="macro_remoteSignalNFixedPRectangular"/>
   </set>
   <set id="propSignalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>

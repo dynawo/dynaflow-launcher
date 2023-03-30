@@ -17,12 +17,16 @@
 #include "GeneratorDefinitionAlgorithm.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
 #include <boost/make_shared.hpp>
 
 // Required for testing unit tests
 testing::Environment* initXmlEnvironment();
 
 testing::Environment* const env = initXmlEnvironment();
+
+DYNAlgorithms::mpi::Context mpiContext;
 
 namespace test {
 /**

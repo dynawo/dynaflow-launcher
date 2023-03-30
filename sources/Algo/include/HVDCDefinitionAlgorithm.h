@@ -218,7 +218,7 @@ class HVDCDefinition {
 struct HVDCLineDefinitions {
   using HvdcLineId = std::string;  ///< HvdcLine id definition
 
-  using HvdcLineMap = std::unordered_map<HvdcLineId, HVDCDefinition>;  ///< Alias for map of hvdc line definition
+  using HvdcLineMap = std::map<HvdcLineId, HVDCDefinition>;  ///< Alias for map of hvdc line definition
 
   /**
    * @brief Alias for VSC map to their regulated bus
