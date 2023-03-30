@@ -70,13 +70,13 @@ SettingDataBase::SettingDataBase(const boost::filesystem::path& settingFilePath)
   if (!in) {
     // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
     if (!settingFilePath.empty())
-      LOG(warn, DynModelFileNotFound, settingFilePath.c_str());
+      LOG(warn, DynModelFileNotFound, settingFilePath.generic_string());
     return;
   }
 
   auto xsd = computeXsdPath(settingFilePath);
   if (xsd.empty()) {
-    LOG(warn, DynModelFileXSDNotFound, settingFilePath.c_str());
+    LOG(warn, DynModelFileXSDNotFound, settingFilePath.generic_string());
     xsdValidation = false;
   } else {
     parser->addXmlSchema(xsd.generic_string());
@@ -85,7 +85,7 @@ SettingDataBase::SettingDataBase(const boost::filesystem::path& settingFilePath)
   try {
     parser->parse(in, settingXml, xsdValidation);
   } catch (const xml::sax::parser::ParserException& e) {
-    throw Error(DynModelFileReadError, settingFilePath.c_str(), e.what());
+    throw Error(DynModelFileReadError, settingFilePath.generic_string(), e.what());
   }
 }
 

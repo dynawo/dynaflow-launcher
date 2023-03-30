@@ -18,6 +18,10 @@
 #include "ContingencyValidationAlgorithm.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
+DYNAlgorithms::mpi::Context mpiContext;
+
 static void
 addContingency(std::vector<dfl::inputs::Contingency>& contingencies, const std::string& id, const std::string elementId,
                dfl::inputs::ContingencyElement::Type elementType) {

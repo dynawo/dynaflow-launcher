@@ -6,7 +6,7 @@
 # license. All rights reserved.
 
 folders=(introduction installation configuringDynaflowLauncher functionalDoc advancedDoc
-licenses/dynawo licenses/dynawo-algorithms licenses/dynaflow-launcher licenses/dynaflow-launcher-documentation licenses/mpich)
+licenses/dynawo licenses/dynawo-algorithms licenses/dynaflow-launcher licenses/dynaflow-launcher-documentation licenses/mpich licenses/msmpi)
 pdflatex_options="-halt-on-error -interaction=nonstopmode"
 
 for folder in ${folders[*]}; do

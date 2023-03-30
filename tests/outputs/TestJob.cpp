@@ -8,6 +8,9 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+#include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
+
 #include "Job.h"
 #include "Log.h"
 #include "Tests.h"
@@ -162,8 +165,9 @@ TEST(Job, write) {
     std::stringstream ssVal;
     std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
     executeCommand(command, ssVal);
-    std::string commandRes = "Executing command : " + command + "\n" + outputPath.generic_string() + " validates\n";
-    ASSERT_EQ(ssVal.str(), commandRes);
+    std::string result = ssVal.str();
+    boost::range::remove_erase_if(result, boost::is_any_of("\r\n"));
+    ASSERT_EQ(result, "Executing command : " + command /*+ "\n"*/ + outputPath.generic_string() + " validates");
   }
 }
 

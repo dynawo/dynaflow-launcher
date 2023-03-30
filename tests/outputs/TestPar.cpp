@@ -13,14 +13,22 @@
 
 #include <boost/filesystem.hpp>
 
+#include <DYNMPIContext.h>
+
 testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
-TEST(TestPar, write) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
+DYNAlgorithms::mpi::Context mpiContext;
 
+using dfl::algo::GeneratorDefinition;
+using dfl::algo::LoadDefinition;
+using dfl::algo::HVDCLineDefinitions;
+using dfl::algo::GeneratorDefinitionAlgorithm;
+using dfl::algo::DynamicModelDefinitions;
+using dfl::algo::StaticVarCompensatorDefinition;
+
+TEST(TestPar, write) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestPar";
@@ -45,10 +53,14 @@ TEST(TestPar, write) {
       GeneratorDefinition("G9", GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR, "04", {}, 3., 30., -33., 330., 0, 0, bus1, true),
       GeneratorDefinition("G10", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN, "04", {}, 3., 30., -33., 330., 0, 0, bus1)};
 
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
+
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, {}, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+      basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -60,9 +72,6 @@ TEST(TestPar, write) {
 }
 
 TEST(TestPar, writeRemote) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
-
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestParRemote";
@@ -87,11 +96,15 @@ TEST(TestPar, writeRemote) {
       GeneratorDefinition("G6", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, 100, bus2),
       GeneratorDefinition("G7", GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR, "01", {}, 2., 20., 22., 220., 0, 0, bus2)};
 
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
+  DynamicModelDefinitions noModels;
+
   outputPath.append(filename);
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, busesRegulatedBySeveralGenerators,
-                                                               manager, {}, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+      basename, config, outputPath.generic_string(), generators, noHvdcDefs, busesRegulatedBySeveralGenerators, manager, {}, noModels, {}, {}, {}, {}));
+
   parWriter.write();
 
   boost::filesystem::path reference("reference");
@@ -158,12 +171,15 @@ TEST(TestPar, writeHdvc) {
       std::make_pair("_BUS___11_TN", vscStation2.id),
       std::make_pair("_BUS___12_TN", vscStation3.id),
   };
-  dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, {}, manager, {}, {}, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+      basename, config, outputPath.generic_string(), {}, hvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -175,9 +191,6 @@ TEST(TestPar, writeHdvc) {
 }
 
 TEST(TestPar, DynModel) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
-
   dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
 
   std::string basename = "TestParDynModel";
@@ -194,7 +207,7 @@ TEST(TestPar, DynModel) {
   counters.nbShunts["VL"] = 2;
   counters.nbShunts["VL2"] = 1;
 
-  dfl::algo::DynamicModelDefinitions defs;
+  DynamicModelDefinitions defs;
   dfl::algo::DynamicModelDefinition dynModel("DM_VL61", "DummyLib");
   dynModel.nodeConnections.insert(
       dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId"));
@@ -235,6 +248,9 @@ TEST(TestPar, DynModel) {
       GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
       GeneratorDefinition("G8", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
@@ -243,8 +259,8 @@ TEST(TestPar, DynModel) {
   auto tfo = dfl::inputs::Tfo::build("TFOId", nodes[0], nodes[1], "SUMMER", true, true);
   dfl::algo::TransformersByIdDefinitions tfosById;
   tfosById.tfosMap.insert({"TFOId", *tfo});
-  dfl::outputs::Par parWriter(
-      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, {}, {}, manager, counters, defs, {}, tfosById, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+      basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager, counters, defs, {}, tfosById, {}, {}));
 
   parWriter.write();
 
@@ -256,8 +272,6 @@ TEST(TestPar, DynModel) {
 }
 
 TEST(TestPar, writeStaticVarCompensator) {
-  using dfl::algo::StaticVarCompensatorDefinition;
-
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestParSVarC";
@@ -285,9 +299,15 @@ TEST(TestPar, writeStaticVarCompensator) {
       StaticVarCompensatorDefinition("SVARC7", StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING, 0., 10., 100, 230, 215, 230, 235, 245, 0.,
                                      10., 10.),
       StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
+
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
+
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, {}, svarcs, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+      basename, config, outputPath.generic_string(), {}, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, svarcs, {}));
 
   parWriter.write();
 
@@ -298,9 +318,7 @@ TEST(TestPar, writeStaticVarCompensator) {
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
-TEST(Dyd, writeLoad) {
-  using dfl::algo::LoadDefinition;
-
+TEST(TestPar, writeLoad) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
   std::string basename = "TestParLoad";
@@ -320,9 +338,14 @@ TEST(Dyd, writeLoad) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
+
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, {}, {}, manager, {}, {}, {}, {}, {}, loads));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+      basename, config, outputPath.generic_string(), {}, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, loads));
 
   parWriter.write();
 
@@ -334,10 +357,7 @@ TEST(Dyd, writeLoad) {
 }
 
 TEST(TestPar, startingPointMode) {
-  using dfl::algo::GeneratorDefinition;
   using dfl::algo::HVDCDefinition;
-  using dfl::algo::LoadDefinition;
-  using dfl::algo::StaticVarCompensatorDefinition;
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
@@ -410,7 +430,7 @@ TEST(TestPar, startingPointMode) {
         std::make_pair("_BUS___11_TN", vscStation2.id),
         std::make_pair("_BUS___12_TN", vscStation3.id),
     };
-    dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+    HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
     std::vector<StaticVarCompensatorDefinition> svarcs{
         StaticVarCompensatorDefinition("SVARC0", StaticVarCompensatorDefinition::ModelType::SVARCPV, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.),
@@ -428,14 +448,17 @@ TEST(TestPar, startingPointMode) {
                                        0., 10., 10.),
         StaticVarCompensatorDefinition("SVARC8", StaticVarCompensatorDefinition::ModelType::NETWORK, 0., 10., 100, 230, 215, 230, 235, 245, 0., 10., 10.)};
 
+    GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+    DynamicModelDefinitions noModels;
+
     boost::filesystem::path outputPath = directoryOutputPath;
     std::string filename = basename + startingPointModeName + ".par";
     outputPath.append(filename);
 
     std::string startingPointConfigFilePath = "res/" + startingPointModeFile;
     dfl::inputs::Configuration config(startingPointConfigFilePath);
-    dfl::outputs::Par startingPointModeParWriter(
-        dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs, {}, manager, {}, {}, {}, {}, svarcs, loads));
+    dfl::outputs::Par startingPointModeParWriter(dfl::outputs::Par::ParDefinition(
+          basename, config, outputPath.generic_string(), generators, hvdcDefs, noBuses, manager, {}, noModels, {}, {}, svarcs, loads));
 
     startingPointModeParWriter.write();
 

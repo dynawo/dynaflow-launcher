@@ -32,8 +32,9 @@ Dynaflow-launcher is an open-source project and as such, questions, discussions,
 
 ## Dynaflow-launcher Distribution
 
-You can download a pre-built Dynaflow-launcher release to start testing it. Pre-built releases are available for **Linux**:
+You can download a pre-built Dynaflow-launcher release to start testing it. Pre-built releases are available for **Linux** and **Windows**:
 - [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.4.0/DynaFlowLauncher_Linux_v1.4.0.zip)
+- Windows  *Coming soon*
 
 ### Linux Requirements for Distribution
 
@@ -51,6 +52,14 @@ $> apt install -y g++ unzip curl python
 $> dnf install -y gcc-c++ unzip curl python
 ```
 
+### Windows Requirements for Distribution
+
+- Runtime to be installed as administrator [Microsoft MPI v10.1.2](https://www.microsoft.com/en-us/download/details.aspx?id=100593)
+
+``` batch
+> msmpisetup
+```
+
 ### Using a distribution
 
 #### Linux
@@ -64,7 +73,15 @@ $> cd dynaflow-launcher
 $> ./dynaflow-launcher.sh help
 ```
 
-## Building Dynaflow-launcher
+#### Windows
+
+Download the zip of the distribution and unzip it somewhere. Then open either `Command Prompt` or `x64 Native Tools Command Prompt for VS2019` and use cd to go into the directory you previously unzipped. You should see a dynaflow-launcher.cmd file at the top of the folder. You can then launch:
+
+``` batch
+> dynaflow-launcher help
+```
+
+## Building Dynaflow-launcher on Linux
 
 ### Dyna&omega;o deploy
 
@@ -138,6 +155,79 @@ All commands described in the rest of this README are accessible throught this s
 $> ./myEnvDFL.sh help
 ```
 
+## Build and use Dynaflow-launcher on Windows
+
+### Requirements
+
+- SDK to be installed as administrator [Microsoft MPI v10.1.2](https://www.microsoft.com/en-us/download/details.aspx?id=100593)
+
+``` batch
+> msmpisdk.msi
+```
+
+### Build
+
+Open `x64 Native Tools Command Prompt for VS2019` and run the following commands (don't forget to adjust the path to the Dyna&omega;o deploy folder in the DYNAWO_HOME define and the path to the Dyna&omega;o-Algorithms deploy folder in the DYNAWO_ALGORITHMS_HOME define):
+
+``` batch
+> git config --global core.eol lf
+> git config --global core.autocrlf input
+> md dynawo-project
+> cd dynawo-project
+> git clone https://github.com/dynawo/dynaflow-launcher
+> cd dynaflow-launcher
+> cmake -S . -B b -DCMAKE_INSTALL_PREFIX=../dfl-i -DDYNAWO_ALGORITHMS_HOME=../deploy/dynawo-algorithms -DDYNAWO_HOME=../deploy/dynawo -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=. -G "NMake Makefiles" -Wno-dev
+> cmake --build b --target install
+```
+
+**Warning** We try to limit as far as possible the name of the build and install folders (for example dfl-i instead of dynaflow-launcher-install) because of Windows limitation of length of path for folders. We know it causes problems and the only solution is to install Dynaflow-launcher in a shorter length directory path.
+
+**Warning** Only the build directory (b) can be located in the `dynaflow-launcher` folder, the install (dfl-i) folder should be located outside to avoid problems with CMake.
+
+### Command utility
+
+A command file `dynaflow-launcher.cmd` (similar to myEnvDFL.sh or dynaflow-launcher.sh) is available:
+* from build environment: use `scripts\dynaflow-launcher`
+* from installation or deploy or distribution folder: use `dynaflow-launcher`
+
+```
+usage: dynaflow-launcher [VERBOSE] [DEBUG] [HELP | <command>]
+
+HELP command displays this message.
+Add VERBOSE option to echo environment variables used.
+All commands are run in Release mode by default. Add DEBUG option to turn in Debug mode.
+
+These are commands used by end-user:
+  N   <network> <config>                              Run steady state simulation
+  SA  <network> <config> <contingencies> [<nbprocs>]  Run systematic analysis
+  NSA <network> <config> <contingencies> [<nbprocs>]  Run steady state simulation followed by systematic analysis
+  version                                             Print dynaflowLauncher version
+
+where <network> is the path of IIDM network file
+      <config> is the path of DFL configuration file (JSON format)
+      <contingencies> is the path of SA contingencies file (JSON format)
+      <nbprocs> is the optional number of MPI processes to use for SA (default 1)
+
+These are commands used by developer only:
+  build [<install_dir>]           Build, install and deploy dynaflowLauncher
+  [SHOW] tests [<unit_test>]      Build and run unit tests or a specific unit test (option SHOW lists available unit tests)
+  clean                           Clean build directory
+```
+
+Not all options are available depending on whether the utility is run from the build environment or the installation/deployment/distribution folder.
+
+The utility tries to guess some environment variables from context and set other to default values (please set it to another value if not correct):
+```
+  DYNAWO_HOME=<found_in_distribution_or_in_a_known_place_for_deployment>
+  DYNAWO_USE_XSD_VALIDATION=false
+  DYNAWO_ALGORITHMS_HOME=<found_in_distribution_or_in_a_known_place_for_deployment>
+  DYNAFLOW_LAUNCHER_HOME=<found_in_a_known_place_for_building_environment>
+  DYNAFLOW_LAUNCHER_LOCALE=en_GB
+  DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO
+  DYNAWO_PYTHON_COMMAND=python
+```
+Then the utility automatically sets all other environment variables based on the commandline, above variables and context.
+
 ## Run steady-state simulation
 To run Dynaflow-launcher, you can use the script myEnvDFL.sh with the "launch" option:
 ```bash
@@ -209,7 +299,10 @@ A. Guironnet, M. Saugier, S. Petitrenaud, F. Xavier, and P. Panciatici, “Towar
 Dynaflow-launcher is licensed under the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0. You can also see the [LICENSE](LICENSE.txt) file for more information.
 
 Dynaflow-launcher is using some external libraries to run simulations:
-* [MPICH](https://www.mpich.org/), an implementation of the Message Passing Interface (MPI) standard distributed under a BSD-like license. Dynaflow-launcher currently using the version 3.4.2.
+* on Linux:
+  * [MPICH](https://www.mpich.org/), an implementation of the Message Passing Interface (MPI) standard distributed under a BSD-like license. Dynaflow-launcher currently using the version 3.4.2.
+* on Windows:
+  * [MSMPI](https://learn.microsoft.com/en-us/message-passing-interface/microsoft-mpi?redirectedfrom=MSDN), a Microsoft implementation of the Message Passing Interface standard distributed under a MIT license. Dynaflow-launcher currently using the version 10.1.2.
 
 ## Maintainers
 

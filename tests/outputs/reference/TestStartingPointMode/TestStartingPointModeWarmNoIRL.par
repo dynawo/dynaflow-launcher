@@ -35,20 +35,12 @@
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
   </macroParameterSet>
-  <set id="11623643470094518027">
+  <set id="05979064-d216-56aa-81d5-5a7b963909f3">
     <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
     <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
     <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
     <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
-    <macroParSet id="MacroParameterSetStaticCompensator"/>
-  </set>
-  <set id="12385967634981995552">
-    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
-    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
     <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
     <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
     <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
@@ -59,25 +51,7 @@
     <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
-  <set id="14713165357655296201">
-    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
-    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
-    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
-    <macroParSet id="MacroParameterSetStaticCompensator"/>
-  </set>
-  <set id="17518669012454548346">
-    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
-    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
-    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
-    <macroParSet id="MacroParameterSetStaticCompensator"/>
-  </set>
-  <set id="17998079684596356712">
+  <set id="1b60c1a5-3894-5243-b3ce-faa1d08ca507">
     <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
     <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
     <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
@@ -87,71 +61,40 @@
     <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
-  <set id="2751660957840315519">
+  <set id="3ec41c13-b32e-549c-b6b0-e05a368810d6">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="5af224bc-7a03-5bcd-af4e-25de959b69f6">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="625b3a25-dec7-53f7-93d8-2d9a3a3c9827">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G4_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="2751660957840315519_tableqmax"/>
+    <par name="generator_QMaxTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G4_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="2751660957840315519_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmin"/>
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
-  <set id="2927585780575238260">
-    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
-    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
-    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
-    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
-    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
-    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
-    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
-    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
-    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
-    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
-    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
-    <macroParSet id="MacroParameterSetStaticCompensator"/>
-  </set>
-  <set id="533408261430783114">
-    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
-    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
-    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
-    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
-    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
-    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
-    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
-    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
-    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
-    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
-    <macroParSet id="MacroParameterSetStaticCompensator"/>
-  </set>
-  <set id="6320417593396202500">
+  <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
     <par name="generator_QMax0" type="DOUBLE" value="31"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G2_Diagram.txt"/>
-    <par name="generator_QMaxTableName" type="STRING" value="6320417593396202500_tableqmax"/>
+    <par name="generator_QMaxTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="2"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G2_Diagram.txt"/>
-    <par name="generator_QMinTableName" type="STRING" value="6320417593396202500_tableqmin"/>
+    <par name="generator_QMinTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
-  </set>
-  <set id="9422148340964418421">
-    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
-    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
-    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
-    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
-    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
-    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
-    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
-    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
-    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
-    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
-    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
-    <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="GenericRestorativeLoad">
     <par name="load_Alpha" type="DOUBLE" value="1.5"/>
@@ -188,16 +131,16 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
-    <par name="hvdc_QInj1MaxTableName" type="STRING" value="12914068690953704580_tableqmax"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
     <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
-    <par name="hvdc_QInj1MinTableName" type="STRING" value="12914068690953704580_tableqmin"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation2_Diagram.txt"/>
-    <par name="hvdc_QInj2MaxTableName" type="STRING" value="7531727525973966584_tableqmax"/>
+    <par name="hvdc_QInj2MaxTableName" type="STRING" value="75349bf8-fc8b-5bd9-b09a-0fa669160396_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
     <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation2_Diagram.txt"/>
-    <par name="hvdc_QInj2MinTableName" type="STRING" value="7531727525973966584_tableqmin"/>
+    <par name="hvdc_QInj2MinTableName" type="STRING" value="75349bf8-fc8b-5bd9-b09a-0fa669160396_tableqmin"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation1"/>
     <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation2"/>
@@ -241,10 +184,10 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
-    <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
     <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
-    <par name="hvdc_QInj1MinTableName" type="STRING" value="4391011292660086723_tableqmin"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="false"/>
     <par name="hvdc_modeU20" type="BOOL" value="true"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
@@ -268,16 +211,16 @@
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
-    <par name="hvdc_QInj1MaxTableName" type="STRING" value="4391011292660086723_tableqmax"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
     <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
-    <par name="hvdc_QInj1MinTableName" type="STRING" value="4391011292660086723_tableqmin"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.040000000000000001"/>
     <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
-    <par name="hvdc_QInj2MaxTableName" type="STRING" value="8374048307509032961_tableqmax"/>
+    <par name="hvdc_QInj2MaxTableName" type="STRING" value="22c38c24-e943-5798-b70f-168c03610315_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.040000000000000001"/>
     <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
-    <par name="hvdc_QInj2MinTableName" type="STRING" value="8374048307509032961_tableqmin"/>
+    <par name="hvdc_QInj2MinTableName" type="STRING" value="22c38c24-e943-5798-b70f-168c03610315_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
     <par name="hvdc_modeU20" type="BOOL" value="false"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
@@ -368,6 +311,63 @@
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation3"/>
     <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="b197c5fc-97b7-5143-bc50-35b02265b61d">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="cc648937-bb8a-5ce3-995d-7a41e11fc41b">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="d8f150a8-5090-5b69-9819-9fbb92e6cd60">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_LambdaPu" type="DOUBLE" value="4.3478260869565215"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="e99f1bbc-4dab-58d1-af6e-4a9a2e79f0fa">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="5290"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="230"/>
+    <par name="SVarC_UNomRemote" type="DOUBLE" value="10"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="0.43478260869565216"/>
+    <par name="SVarC_URefDown" type="DOUBLE" value="235"/>
+    <par name="SVarC_URefUp" type="DOUBLE" value="245"/>
+    <par name="SVarC_UThresholdDown" type="DOUBLE" value="215"/>
+    <par name="SVarC_UThresholdUp" type="DOUBLE" value="230"/>
+    <par name="SVarC_tThresholdDown" type="DOUBLE" value="0"/>
+    <par name="SVarC_tThresholdUp" type="DOUBLE" value="60"/>
+    <reference type="INT" name="SVarC_Mode0" origData="IIDM" origName="regulatingMode"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="signalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>

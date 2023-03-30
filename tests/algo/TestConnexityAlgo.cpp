@@ -17,6 +17,10 @@
 #include "MainConnexComponentAlgorithm.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
+DYNAlgorithms::mpi::Context mpiContext;
+
 TEST(Connexity, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{

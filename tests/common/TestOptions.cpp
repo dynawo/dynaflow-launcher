@@ -15,7 +15,7 @@
 TEST(Options, help) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--help"};
   char* argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::HELP, options.parse(2, argv));
@@ -32,7 +32,7 @@ TEST(Options, help) {
 TEST(Options, version) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--version"};
   char* argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::VERSION, options.parse(2, argv));
@@ -41,7 +41,7 @@ TEST(Options, version) {
 TEST(Options, missingIIDM) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--config=test.json"};
   char* argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
@@ -50,7 +50,7 @@ TEST(Options, missingIIDM) {
 TEST(Options, missingCONFIG) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char* argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
@@ -59,7 +59,7 @@ TEST(Options, missingCONFIG) {
 TEST(Options, nominal) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm "};
   char argv2[] = {"--config=test.json"};
   char* argv[] = {argv0, argv1, argv2};
@@ -70,7 +70,7 @@ TEST(Options, nominal) {
 TEST(Options, nominalLogLevel) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm "};
   char argv2[] = {"--config=test.json "};
   char argv3[] = {"--log-level=DEBUG"};
@@ -82,7 +82,7 @@ TEST(Options, nominalLogLevel) {
 TEST(Options, wrongLogLevel) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--log-level=NO_LEVEL"};  // this level is not defined
@@ -96,7 +96,7 @@ TEST(Options, wrongLogLevel) {
 TEST(Options, systematicAnalysis) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
@@ -108,7 +108,7 @@ TEST(Options, systematicAnalysis) {
 TEST(Options, systematicAnalysisLogLevel) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
@@ -121,7 +121,7 @@ TEST(Options, systematicAnalysisLogLevel) {
 TEST(Options, systematicAnalysisWrongLogLevel) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
@@ -134,7 +134,7 @@ TEST(Options, systematicAnalysisWrongLogLevel) {
 TEST(Options, systematicAnalysisMissingConfig) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--contingencies=test.json"};
   char* argv[] = {argv0, argv1, argv2};
@@ -145,7 +145,7 @@ TEST(Options, systematicAnalysisMissingConfig) {
 TEST(Options, systematicAnalysisMissingIIDM) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--config=test.json"};
   char argv2[] = {"--contingencies=test.json"};
   char* argv[] = {argv0, argv1, argv2};
@@ -158,7 +158,7 @@ TEST(Options, systematicAnalysisMissingIIDM) {
 TEST(Options, NSA) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
@@ -171,7 +171,7 @@ TEST(Options, NSA) {
 TEST(Options, NSAMissingIIDM) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--config=test.json"};
   char argv2[] = {"--contingencies=test.json"};
   char argv3[] = {"--nsa"};
@@ -183,7 +183,7 @@ TEST(Options, NSAMissingIIDM) {
 TEST(Options, NSAMissingConfig) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--contingencies=test.json"};
   char argv3[] = {"--nsa"};
@@ -195,7 +195,7 @@ TEST(Options, NSAMissingConfig) {
 TEST(Options, NSALogLevel) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
@@ -209,7 +209,7 @@ TEST(Options, NSALogLevel) {
 TEST(Options, NSAWrongLogLevel) {
   dfl::common::Options options;
 
-  char argv0[] = {"DynawoLauncher"};
+  char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};

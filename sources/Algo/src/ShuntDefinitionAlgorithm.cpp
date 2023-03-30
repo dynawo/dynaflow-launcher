@@ -20,7 +20,7 @@ ShuntCounterAlgorithm::ShuntCounterAlgorithm(ShuntCounterDefinitions& defs) : sh
 void
 ShuntCounterAlgorithm::operator()(const NodePtr& node) {
   auto vl = node->voltageLevel.lock();
-  shuntCounterDefs_.nbShunts[vl->id] += node->shunts.size();
+  shuntCounterDefs_.nbShunts[vl->id] += static_cast<unsigned int>(node->shunts.size());
 }
 
 }  // namespace algo

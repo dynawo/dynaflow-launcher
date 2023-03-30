@@ -1,10 +1,10 @@
 #1
-double 14290416103996320663_tableqmin(4,2)
+double 0f0e789b-b1d6-57f2-a631-cddabaf82818_tableqmin(4,2)
 0.01 0.11
 0.02 0.22
 0.03 0.33
 0.04 0.44
-double 14290416103996320663_tableqmax(4,2)
+double 0f0e789b-b1d6-57f2-a631-cddabaf82818_tableqmax(4,2)
 0.01 1.1
 0.02 2.2
 0.03 3.3

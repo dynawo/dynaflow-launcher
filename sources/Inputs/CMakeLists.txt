@@ -19,15 +19,15 @@ set(SOURCES
   src/SettingDataBase.cpp
 )
 
-add_library(inputs SHARED ${SOURCES})
+add_library(dfl_Inputs SHARED ${SOURCES})
 
-target_include_directories(inputs
+target_include_directories(dfl_Inputs
 PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-target_set_warnings(inputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
-target_link_libraries(inputs
+target_set_warnings(dfl_Inputs ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
+target_link_libraries(dfl_Inputs
 PUBLIC
 DynaFlowLauncher::common
 Boost::filesystem
@@ -38,5 +38,9 @@ PRIVATE
 Dynawo::dynawo_DataInterface
 Dynawo::dynawo_DataInterfaceFactory
 )
-add_library(DynaFlowLauncher::inputs ALIAS inputs)
-install(TARGETS inputs DESTINATION ${CMAKE_INSTALL_LIBDIR})
+add_library(DynaFlowLauncher::inputs ALIAS dfl_Inputs)
+install(TARGETS dfl_Inputs
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

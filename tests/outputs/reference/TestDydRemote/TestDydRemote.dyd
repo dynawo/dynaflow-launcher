@@ -23,10 +23,10 @@
   <dyn:blackBoxModel id="G1" staticId="G1" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVRemoteDiagramPQSignalN" parFile="TestDydRemote.par" parId="6320417593396202500">
+  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVRemoteDiagramPQSignalN" parFile="TestDydRemote.par" parId="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G3" staticId="G3" lib="GeneratorPQPropDiagramPQSignalN" parFile="TestDydRemote.par" parId="10160083025018531003">
+  <dyn:blackBoxModel id="G3" staticId="G3" lib="GeneratorPQPropDiagramPQSignalN" parFile="TestDydRemote.par" parId="cce4f321-bf59-5464-b247-bda10c680360">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="G4" staticId="G4" lib="GeneratorPQPropSignalN" parFile="TestDydRemote.par" parId="propSignalNGenerator">
@@ -54,8 +54,8 @@
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G5" id2="Model_Signal_NQ_BUS_2" index2="2"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G5" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="5"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
   <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>

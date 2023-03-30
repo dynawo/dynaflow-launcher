@@ -48,7 +48,7 @@
   <multipleAssociation id="SHUNTS_MODELE_1_VL4">
     <shunt voltageLevel="VL"/>
   </multipleAssociation>
-  <dynamicAutomaton id="MODELE_1_VL4" lib="libdummyLib" type="VoltageControlShunt" access="T0|TFIN">
+  <dynamicAutomaton id="MODELE_1_VL4" lib="dummyLib" type="VoltageControlShunt" access="T0|TFIN">
     <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
     <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
   </dynamicAutomaton>
@@ -59,7 +59,7 @@
   <multipleAssociation id="SHUNTS_MODELE_1_TEST2">
     <shunt voltageLevel="VL"/>
   </multipleAssociation>
-  <dynamicAutomaton id="MODELE_1_TEST2" lib="libdummyLib" type="VoltageControlShunt" access="T0|TFIN">
+  <dynamicAutomaton id="MODELE_1_TEST2" lib="dummyLib" type="VoltageControlShunt" access="T0|TFIN">
     <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_TEST2"/>
     <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_TEST2"/>
   </dynamicAutomaton>
@@ -70,14 +70,14 @@
   <multipleAssociation id="SHUNTS_MODELE_1_TEST3">
     <shunt voltageLevel="VL"/>
   </multipleAssociation>
-  <dynamicAutomaton id="MODELE_1_TEST3" lib="libdummyLib" type="VoltageControlShunt" access="T0|TFIN">
+  <dynamicAutomaton id="MODELE_1_TEST3" lib="dummyLib" type="VoltageControlShunt" access="T0|TFIN">
     <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_TEST3"/>
     <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_TEST3"/>
   </dynamicAutomaton>
   <multipleAssociation id="SHUNTS_MODELE_1_VL6">
     <shunt voltageLevel="VL6"/>
   </multipleAssociation>
-  <dynamicAutomaton id="DM_SALON" lib="libdummyLib" type="CurrentLimitAutomaton" access="T0|TFIN">
+  <dynamicAutomaton id="DM_SALON" lib="dummyLib" type="CurrentLimitAutomaton" access="T0|TFIN">
     <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_SALON"/>
     <macroConnect macroConnection="CLAToControlledLineState" id="ORDER_SALON"/>
     <macroConnect macroConnection="CLAToAutomatonActivated" id="AUTOMATON_EXISTS_SALON"/>
@@ -100,7 +100,7 @@
   <singleAssociation id="AUTOMATON_EXISTS_VL661">
     <tfo name="TFO1"/>
   </singleAssociation>
-  <dynamicAutomaton id="DM_VL661" lib="libdummyLib" type="PhaseShifterI" access="T0|TFIN">
+  <dynamicAutomaton id="DM_VL661" lib="dummyLib" type="PhaseShifterI" access="T0|TFIN">
     <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_VL661"/>
     <macroConnect macroConnection="PhaseShifterToTap" id="TAP_VL661"/>
     <macroConnect macroConnection="PhaseShifterrToAutomatonActivated" id="AUTOMATON_EXISTS_VL661"/>
@@ -116,7 +116,7 @@
     <generator name="G3"/>
     <generator name="G4"/>
   </singleAssociation>
-  <dynamicAutomaton id="GeneratorAutomaton" lib="libdummyLib">
+  <dynamicAutomaton id="GeneratorAutomaton" lib="dummyLib">
     <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId2"/>

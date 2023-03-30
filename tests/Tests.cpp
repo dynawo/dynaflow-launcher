@@ -18,26 +18,25 @@ namespace test {
 
 void
 checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath) {
-  std::ofstream outFile((lfilepath + ".tmp").c_str());
-  std::ifstream readFile(lfilepath.c_str());
-  std::string readout;
-  bool replacement_done = false;
-  while (std::getline(readFile, readout)) {
-    if (readout.find("resultsTestsTmp") != std::string::npos) {
-      std::size_t pos = readout.find("value=\"");
-      outFile << readout.substr(0, pos + 7) << readout.substr(readout.find("resultsTestsTmp"), readout.size()) << std::endl;
-      replacement_done = true;
-    } else {
-      outFile << readout << std::endl;
+  {
+    std::ofstream outFile(lfilepath + ".tmp", std::ios::binary);
+    std::ifstream readFile(lfilepath);
+    std::string readout;
+    while (std::getline(readFile, readout)) {
+      if (readout.find("resultsTestsTmp") != std::string::npos) {
+        std::size_t pos = readout.find("value=\"");
+        outFile << readout.substr(0, pos + 7) << readout.substr(readout.find("resultsTestsTmp"), readout.size());
+      } else {
+        outFile << readout;
+      }
+      if (readFile.good()) {
+        outFile << '\n';
+      }
     }
   }
-  if (replacement_done) {
-    remove(lfilepath);
-    copy(lfilepath + ".tmp", lfilepath);
-    remove(lfilepath + ".tmp");
-  } else {
-    remove(lfilepath + ".tmp");
-  }
+  remove(lfilepath);
+  copy(lfilepath + ".tmp", lfilepath);
+  remove(lfilepath + ".tmp");
 
   try {
     std::ifstream liss(lfilepath, std::ifstream::binary | std::ifstream::ate);
@@ -45,8 +44,7 @@ checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath) {
 
     ASSERT_FALSE(liss.fail() || riss.fail()) << "checkFilesEqual fails for " << lfilepath << " and " << rfilepath << " : cannot open" << std::endl;
 
-    ASSERT_FALSE(liss.tellg() != riss.tellg()) << "checkFilesEqual fails for " << lfilepath << " and " << rfilepath << " : file sizes are different"
-                                               << std::endl;
+    ASSERT_EQ(liss.tellg(), riss.tellg()) << "checkFilesEqual fails for " << lfilepath << " and " << rfilepath << " : file sizes are different" << std::endl;
 
     // seek back to beginning and use std::equal to compare contents
     liss.seekg(0, std::ifstream::beg);

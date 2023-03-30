@@ -11,6 +11,8 @@
 #include "SettingDataBase.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
 #include <array>
 #include <fstream>
 #include <gtest_dynawo.h>
@@ -25,6 +27,8 @@ namespace parser = xml::sax::parser;
 testing::Environment* initXmlEnvironment();
 
 testing::Environment* const env = initXmlEnvironment();
+
+DYNAlgorithms::mpi::Context mpiContext;
 
 TEST(SettingXmlDocument, readFile) {
   const std::string filepath = "res/setting.xml";

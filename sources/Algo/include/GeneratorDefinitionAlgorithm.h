@@ -192,7 +192,7 @@ class GeneratorDefinitionAlgorithm {
   using Generators = std::vector<GeneratorDefinition>;  ///< alias for list of generators
   using BusId = std::string;                            ///< alias for bus id
   using GenId = std::string;                            ///< alias for generator id
-  using BusGenMap = std::unordered_map<BusId, GenId>;   ///< alias for map of bus id to generator id
+  using BusGenMap = std::map<BusId, GenId>;             ///< alias for map of bus id to generator id
   using ModelType = GeneratorDefinition::ModelType;     ///< alias for generator model type
 
   /**

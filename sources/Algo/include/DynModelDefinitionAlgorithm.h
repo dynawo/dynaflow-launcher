@@ -134,7 +134,7 @@ struct DynamicModelDefinition {
  * @brief Definition of models
  */
 struct DynamicModelDefinitions {
-  std::unordered_map<DynamicModelDefinition::DynModelId, DynamicModelDefinition> models;      ///< models by dynamic model id
+  std::map<DynamicModelDefinition::DynModelId, DynamicModelDefinition> models;                ///< models by dynamic model id
   std::unordered_set<DynamicModelDefinition::MacroConnection::MacroId> usedMacroConnections;  ///< list of macro connectors used for current set of models
 };
 

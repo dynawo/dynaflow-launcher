@@ -11,7 +11,10 @@
 #
 
 import os
-import filecmp
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 import iidmDiff
 import constraintsDiff
 import shutil
@@ -57,7 +60,9 @@ if __name__ == "__main__":
                 (nb_differences, msg) = constraintsDiff.output_constraints_close_enough(
                     filepath, filepathreference)
             elif file =="lostEquipments.xml":
-                identical = filecmp.cmp (filepath, filepathreference, shallow=False)
+                # compare line per line with universal newline, stop at first diff
+                with open(filepath) as f1, open(filepathreference) as f2:
+                    identical = all(l1 == l2 for l1, l2 in zip_longest(f1, f2))
                 if not identical:
                     nb_differences += 1
             if nb_differences > 0:

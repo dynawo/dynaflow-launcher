@@ -394,7 +394,7 @@ void Context::exportResults(bool simulationOk) {
 
     file::path resultsOutput(config_.outputDir());
     resultsOutput.append("results.json");
-    std::ofstream ofs(resultsOutput.c_str(), std::ios::out);
+    std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
     boost::property_tree::json_parser::write_json(ofs, resultsTree);
     break;
   }

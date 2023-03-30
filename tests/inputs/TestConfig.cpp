@@ -50,9 +50,9 @@ TEST(Config, Nominal) {
 
   std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config.json", current_path()));
 
-  ASSERT_EQ(config.settingFilePath().generic_string(), createAbsolutePath("setting.xml", prefixConfigFile));
-  ASSERT_EQ(config.assemblingFilePath().generic_string(), createAbsolutePath("assembling.xml", prefixConfigFile));
-  ASSERT_EQ("/tmp", config.outputDir());
+  ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
+  ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
+  ASSERT_EQ(absolute("/tmp"), absolute(config.outputDir().string()));
   ASSERT_DOUBLE_EQUALS_DYNAWO(63.0, config.getDsoVoltageLevel());
   ASSERT_DOUBLE_EQUALS_DYNAWO(150., config.getTfoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::P, config.getActivePowerCompensation());
@@ -113,9 +113,9 @@ TEST(Config, ConfigN) {
 
   std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config_N.json", current_path()));
 
-  ASSERT_EQ(config.settingFilePath().generic_string(), createAbsolutePath("setting.xml", prefixConfigFile));
-  ASSERT_EQ(config.assemblingFilePath().generic_string(), createAbsolutePath("assembling.xml", prefixConfigFile));
-  ASSERT_EQ("/tmp", config.outputDir());
+  ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
+  ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
+  ASSERT_EQ(absolute("/tmp"), absolute(config.outputDir().string()));
   ASSERT_DOUBLE_EQUALS_DYNAWO(74.0, config.getDsoVoltageLevel());
   ASSERT_DOUBLE_EQUALS_DYNAWO(160., config.getTfoVoltageLevel());
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P, config.getActivePowerCompensation());
@@ -149,9 +149,9 @@ TEST(Config, ConfigSA) {
 
     std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config_SA.json", current_path()));
 
-    ASSERT_EQ(config.settingFilePath().generic_string(), createAbsolutePath("setting.xml", prefixConfigFile));
-    ASSERT_EQ(config.assemblingFilePath().generic_string(), createAbsolutePath("assembling.xml", prefixConfigFile));
-    ASSERT_EQ("/tmp", config.outputDir());
+    ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
+    ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
+    ASSERT_EQ(absolute("/tmp"), absolute(config.outputDir().string()));
     ASSERT_DOUBLE_EQUALS_DYNAWO(83.0, config.getDsoVoltageLevel());
     ASSERT_DOUBLE_EQUALS_DYNAWO(114., config.getTfoVoltageLevel());
     ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::TARGET_P, config.getActivePowerCompensation());
@@ -161,7 +161,7 @@ TEST(Config, ConfigSA) {
     ASSERT_DOUBLE_EQUALS_DYNAWO(1.7, config.getTimeStep());
     ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
     if (configFile == "res/config_SA.json") {
-      ASSERT_EQ(createAbsolutePath("myStartingDumpFile.dmp", prefixConfigFile), config.startingDumpFilePath().generic_string());
+      ASSERT_EQ(canonical(config.startingDumpFilePath().string()), canonical("myStartingDumpFile.dmp", prefixConfigFile));
     } else {
       ASSERT_TRUE(config.startingDumpFilePath().empty());
     }
