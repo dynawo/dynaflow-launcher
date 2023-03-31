@@ -37,7 +37,7 @@ class DydDynModel {
    * @param dynamicModelsDefinitions reference to the list of load definitions
    * @param gens generators definition coming from algorithms
    */
-  explicit DydDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition>& gens);
+  explicit DydDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens);
 
   /**
    * @brief enrich the dynamic black models set collection for defined dynamic models
@@ -46,8 +46,8 @@ class DydDynModel {
    * @param basename the basename for current file
    * @param dynamicDataBaseManager the database manager to use
    */
-  void write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
-             const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename,
+             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
   /**
@@ -56,27 +56,19 @@ class DydDynModel {
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
    * @param dynModel defined dynamic model
    */
-  void writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::DynamicModelDefinition& dynModel);
-  /**
-   * @brief add the macro connector for defined secondary voltage control model
-   *
-   * @param dynamicModelsToConnect dynamic black models set collection to enrich
-   * @param dynModel defined dynamic model
-   * @param dynamicDataBaseManager the database manager to use
-   */
-  void writeSVCMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::DynamicModelDefinition& dynModel,
-                              const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const algo::DynamicModelDefinition &dynModel);
+
   /**
    * @brief add all the macro connectors for defined dynamic models
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
    * @param dynamicDataBaseManager the database manager to use
    */
-  void writeMacroConnectors(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                            const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void writeMacroConnectors(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect,
+                            const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
-  const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;  ///< list of defined dynamic models
+  const algo::DynamicModelDefinitions &dynamicModelsDefinitions_;  ///< list of defined dynamic models
   std::unordered_set<std::string> generatorsWithDynamicModels_;    ///< ids of generators with a dynamic model different from the network one
 };
 
