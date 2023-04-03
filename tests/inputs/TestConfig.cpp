@@ -147,9 +147,9 @@ TEST(Config, ConfigSA) {
     ASSERT_DOUBLE_EQUALS_DYNAWO(1.7, config.getTimeStep());
     ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
     if (configFile == "res/config_SA.json") {
-      ASSERT_EQ(createAbsolutePath("myInitialStatePath.dmp", prefixConfigFile), config.initialStateFilePath().generic_string());
+      ASSERT_EQ(createAbsolutePath("myStartingDumpFile.dmp", prefixConfigFile), config.startingDumpFilePath().generic_string());
     } else {
-      ASSERT_TRUE(config.initialStateFilePath().empty());
+      ASSERT_TRUE(config.startingDumpFilePath().empty());
     }
 #if _DEBUG_
     ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));

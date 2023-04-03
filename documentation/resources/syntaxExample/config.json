@@ -15,7 +15,7 @@
     "sa": {
       "TimeOfEvent": 50,
       "NumberOfThreads": 6,
-      "InitialStatePath" : "myInitialStatePathDoesNotExists.dmp"
+      "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp"
     },
     "TimeStep" : 2.6
   }
