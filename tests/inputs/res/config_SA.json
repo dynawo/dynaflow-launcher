@@ -34,7 +34,7 @@
       "Precision": 1e-5,
       "TimeStep": 1.7,
       "TimeOfEvent": 50,
-      "InitialStatePath" : "myInitialStatePath.dmp"
+      "StartingDumpFile" : "myStartingDumpFile.dmp"
     }
   }
 }
