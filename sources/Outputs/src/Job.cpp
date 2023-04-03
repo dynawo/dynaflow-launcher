@@ -53,10 +53,9 @@ const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
 
-Job::Job(JobDefinition&& def) : def_{std::forward<JobDefinition>(def)} {}
+Job::Job(JobDefinition &&def) : def_{std::forward<JobDefinition>(def)} {}
 
-boost::shared_ptr<job::JobEntry>
-Job::write() const {
+boost::shared_ptr<job::JobEntry> Job::write() const {
   auto job = job::JobEntryFactory::newInstance();
   job->setName(def_.filename);
 
@@ -68,8 +67,7 @@ Job::write() const {
   return job;
 }
 
-boost::shared_ptr<job::SolverEntry>
-Job::writeSolver() const {
+boost::shared_ptr<job::SolverEntry> Job::writeSolver() const {
   auto solver = job::SolverEntryFactory::newInstance();
   solver->setLib(solverName_);
   solver->setParametersFile(solverFilename_);
@@ -78,8 +76,7 @@ Job::writeSolver() const {
   return solver;
 }
 
-boost::shared_ptr<job::ModelerEntry>
-Job::writeModeler() const {
+boost::shared_ptr<job::ModelerEntry> Job::writeModeler() const {
   auto modeler = job::ModelerEntryFactory::newInstance();
   if (def_.contingencyId) {
     modeler->setCompileDir("outputs-" + def_.contingencyId.get() + "/compilation");
@@ -96,9 +93,9 @@ Job::writeModeler() const {
     modeler->addDynModelsEntry(modelsBase);
   }
 
-  if (!def_.configuration.initialStateFilePath().empty()) {
+  if (!def_.configuration.startingDumpFilePath().empty()) {
     auto initialState = job::InitialStateEntryFactory::newInstance();
-    initialState->setInitialStateFile(def_.configuration.initialStateFilePath().generic_string());
+    initialState->setInitialStateFile(def_.configuration.startingDumpFilePath().generic_string());
     modeler->setInitialStateEntry(initialState);
   }
 
@@ -116,8 +113,7 @@ Job::writeModeler() const {
   return modeler;
 }
 
-boost::shared_ptr<job::SimulationEntry>
-Job::writeSimulation() const {
+boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
@@ -126,8 +122,7 @@ Job::writeSimulation() const {
   return simu;
 }
 
-boost::shared_ptr<job::OutputsEntry>
-Job::writeOutputs() const {
+boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
   auto output = job::OutputsEntryFactory::newInstance();
   if (def_.contingencyId) {
     output->setOutputsDirectory("outputs-" + def_.contingencyId.get());
@@ -171,8 +166,8 @@ Job::writeOutputs() const {
   return output;
 }
 
-void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry, const dfl::inputs::Configuration& config) {
+void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry,
+                    const dfl::inputs::Configuration &config) {
   boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {
