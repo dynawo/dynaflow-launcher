@@ -54,12 +54,13 @@ struct DynamicModelDefinition {
 
     /// @brief Connected element type
     enum class ElementType {
-      NODE = 0,  ///< Node type
-      LINE,      ///< Line type
-      TFO,       ///< Transformer type
-      SHUNT,     ///< Shunt type
+      NODE = 0,   ///< Node type
+      LINE,       ///< Line type
+      TFO,        ///< Transformer type
+      SHUNT,      ///< Shunt type
       AUTOMATON,  ///< Dynamic Automaton
-      GENERATOR  ///< Generator type
+      GENERATOR,  ///< Generator type
+      LOAD        ///< Load type
     };
 
     /**
@@ -69,49 +70,49 @@ struct DynamicModelDefinition {
      * @param type type of the element to connect
      * @param id the element id to connect
      */
-    MacroConnection(const MacroId& macroid, const ElementType& type, const ElementId& id) : id(macroid), elementType(type), connectedElementId(id) {}
+    MacroConnection(const MacroId &macroid, const ElementType &type, const ElementId &id) : id(macroid), elementType(type), connectedElementId(id) {}
 
     /**
      * @brief Equality operator
      * @param other the macro connection to compare to
      * @returns true if they are equal, false if not
      */
-    bool operator==(const MacroConnection& other) const;
+    bool operator==(const MacroConnection &other) const;
 
     /**
      * @brief Non-equality operator
      * @param other the macro connection to compare to
      * @returns true if they are not equal, false if not
      */
-    bool operator!=(const MacroConnection& other) const;
+    bool operator!=(const MacroConnection &other) const;
 
     /**
      * @brief Less than operator
      * @param other the macro connection to compare to
      * @returns true if inferior than other, false if not
      */
-    bool operator<(const MacroConnection& other) const;
+    bool operator<(const MacroConnection &other) const;
 
     /**
      * @brief Less or equal than operator
      * @param other the macro connection to compare to
      * @returns true if inferior or equal than other, false if not
      */
-    bool operator<=(const MacroConnection& other) const;
+    bool operator<=(const MacroConnection &other) const;
 
     /**
      * @brief Greater than operator
      * @param other the macro connection to compare to
      * @returns true if superior than other, false if not
      */
-    bool operator>(const MacroConnection& other) const;
+    bool operator>(const MacroConnection &other) const;
 
     /**
      * @brief Greater or equal than operator
      * @param other the macro connection to compare to
      * @returns true if superior or equal than other, false if not
      */
-    bool operator>=(const MacroConnection& other) const;
+    bool operator>=(const MacroConnection &other) const;
 
     MacroId id;                    ///< Macro connector id
     ElementType elementType;       ///< Connected element type
@@ -124,7 +125,7 @@ struct DynamicModelDefinition {
    * @param dynModelId the dynamic model id
    * @param dynModelLib the library name
    */
-  DynamicModelDefinition(const DynModelId& dynModelId, const std::string& dynModelLib) : id(dynModelId), lib(dynModelLib) {}
+  DynamicModelDefinition(const DynModelId &dynModelId, const std::string &dynModelLib) : id(dynModelId), lib(dynModelLib) {}
 
   DynModelId id;                              ///< dynamic model id
   std::string lib;                            ///< library name
@@ -153,7 +154,7 @@ class DynModelAlgorithm {
    * @param manager the dynamic data base manager to use
    * @param shuntRegulationOn whether the shunt regulation is activated or not
    */
-  DynModelAlgorithm(DynamicModelDefinitions& models, const inputs::DynamicDataBaseManager& manager, bool shuntRegulationOn);
+  DynModelAlgorithm(DynamicModelDefinitions &models, const inputs::DynamicDataBaseManager &manager, bool shuntRegulationOn);
 
   /**
    * @brief Perform the algorithm
@@ -164,7 +165,7 @@ class DynModelAlgorithm {
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
+  void operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes);
 
  private:
   /**
@@ -180,23 +181,22 @@ class DynModelAlgorithm {
      * @param modelId dynamic model id
      * @param macroConnection macro connector id
      */
-    MacroConnect(const DynamicModelDefinition::DynModelId& modelId, const DynamicModelDefinition::MacroConnection::MacroId& macroConnection) :
-        dynModelId(modelId),
-        macroConnectionId(macroConnection) {}
+    MacroConnect(const DynamicModelDefinition::DynModelId &modelId, const DynamicModelDefinition::MacroConnection::MacroId &macroConnection)
+        : dynModelId(modelId), macroConnectionId(macroConnection) {}
 
     /**
      * @brief Equality operator
      * @param other the other macro connect to compare to
      * @returns true if they are equal, false if not
      */
-    bool operator==(const MacroConnect& other) const;
+    bool operator==(const MacroConnect &other) const;
 
     /**
      * @brief Non-equality operator
      * @param other the other macro connect to compare to
      * @returns true if they are not equal, false if not
      */
-    bool operator!=(const MacroConnect& other) const;
+    bool operator!=(const MacroConnect &other) const;
 
     DynamicModelDefinition::DynModelId dynModelId;                       ///< dynamic model id
     DynamicModelDefinition::MacroConnection::MacroId macroConnectionId;  ///< macro connection id
@@ -212,7 +212,7 @@ class DynModelAlgorithm {
      * @param connect target macro connect
      * @returns unique hash
      */
-    std::size_t operator()(const MacroConnect& connect) const noexcept;
+    std::size_t operator()(const MacroConnect &connect) const noexcept;
   };
 
  private:
@@ -221,7 +221,7 @@ class DynModelAlgorithm {
    * @param lib library name
    * @returns true if library could be loaded, false if not
    */
-  static bool libraryExists(const std::string& lib);
+  static bool libraryExists(const std::string &lib);
 
   /**
    * @brief Computes library path for library name
@@ -231,7 +231,7 @@ class DynModelAlgorithm {
    * @param lib the library name
    * @returns the filepath of the library, or nullopt if not found
    */
-  static boost::optional<boost::filesystem::path> findLibraryPath(const std::string& lib);
+  static boost::optional<boost::filesystem::path> findLibraryPath(const std::string &lib);
 
  private:
   /// @brief Extract models from configuration before processing the nodes
@@ -244,7 +244,7 @@ class DynModelAlgorithm {
    * @param automaton the dynamic automaton
    * @param macro the macro connection connected to the singleassociation
    */
-  void extractSingleAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro);
+  void extractSingleAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton &automaton, const inputs::AssemblingDataBase::MacroConnect &macro);
 
   /**
    * @brief Process multi association from configuration
@@ -253,7 +253,7 @@ class DynModelAlgorithm {
    * @param macro the macro connection connected to the multiassociation
    * @param shuntRegulationOn whether the shunt regulation is activated or not
    */
-  void extractMultiAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro,
+  void extractMultiAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton &automaton, const inputs::AssemblingDataBase::MacroConnect &macro,
                                    bool shuntRegulationOn);
 
 
@@ -269,7 +269,7 @@ class DynModelAlgorithm {
    * @brief Process node in case of dynamic automaton bus connection
    * @param node node to process
    */
-  void connectMacroConnectionForBus(const NodePtr& node);
+  void connectMacroConnectionForBus(const NodePtr &node);
 
   /**
    * @brief Process node in case of dynamic automaton shunt connection
@@ -281,7 +281,7 @@ class DynModelAlgorithm {
    * @brief Process node in case of dynamic automaton line connection
    * @param line line to process
    */
-  void connectMacroConnectionForLine(const std::shared_ptr<inputs::Line>& line);
+  void connectMacroConnectionForLine(const std::shared_ptr<inputs::Line> &line);
 
   /**
    * @brief Process node in case of dynamic automaton shunt connection
@@ -293,13 +293,19 @@ class DynModelAlgorithm {
    * @brief Process node in case of dynamic automaton transformer connection
    * @param tfo transformer to process
    */
-  void connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tfo>& tfo);
+  void connectMacroConnectionForTfo(const std::shared_ptr<inputs::Tfo> &tfo);
 
   /**
    * @brief Process node in case of dynamic automaton generator connection
    * @param generator to process
    */
-  void connectMacroConnectionForGenerator(const inputs::Generator& generator);
+  void connectMacroConnectionForGenerator(const inputs::Generator &generator);
+
+  /**
+   * @brief Process node in case of dynamic automaton load connection
+   * @param load to process
+   */
+  void connectMacroConnectionForLoad(const inputs::Load &load);
 
   /**
    * @brief Add macro connection to the dynamic model definition
@@ -310,11 +316,11 @@ class DynModelAlgorithm {
    * @param automaton the dynamic automaton
    * @param macroConnection the macro connection to add
    */
-  void addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingDataBase::DynamicAutomaton& automaton,
-                                            const DynamicModelDefinition::MacroConnection& macroConnection);
+  void addMacroConnectionToModelDefinitions(const dfl::inputs::AssemblingDataBase::DynamicAutomaton &automaton,
+                                            const DynamicModelDefinition::MacroConnection &macroConnection);
 
  private:
-  DynamicModelDefinitions& dynamicModels_;  ///< Dynamic model definitions to update
+  DynamicModelDefinitions &dynamicModels_;  ///< Dynamic model definitions to update
 
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::unordered_set<MacroConnect, MacroConnectHash>>
       macroConnectByVlForBusesId_;  ///< macro connections for buses, by voltage level
@@ -324,9 +330,10 @@ class DynModelAlgorithm {
   std::unordered_map<inputs::Shunt::ShuntId, std::vector<MacroConnect>> macroConnectByShuntName_;  ///< macro connections for shunts, by shunt id
   std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;     ///< macro connections for transformer, by transformer id
   std::unordered_map<inputs::Generator::GeneratorId, std::vector<MacroConnect>>
-      macroConnectByGeneratorName_;  ///< macro connections for generators, by generator id
+      macroConnectByGeneratorName_;                                                             ///< macro connections for generators, by generator id
+  std::unordered_map<inputs::Load::LoadId, std::vector<MacroConnect>> macroConnectByLoadName_;  ///< macro connections for loads, by load id
 
-  const inputs::DynamicDataBaseManager& manager_;  ///< dynamic database config manager
+  const inputs::DynamicDataBaseManager &manager_;  ///< dynamic database config manager
 };
 }  // namespace algo
 }  // namespace dfl
