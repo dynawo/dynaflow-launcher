@@ -44,115 +44,91 @@ class Configuration {
    * @param filepath the configuration file to use
    * @param simulationKind the simulation kind (Steady state or Security analysis)
    */
-  explicit Configuration(const boost::filesystem::path& filepath,
+  explicit Configuration(const boost::filesystem::path &filepath,
                          dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
   /**
    * @brief determines if we use infinite reactive limits
    *
    * @returns the parameter value
    */
-  bool useInfiniteReactiveLimits() const {
-    return useInfiniteReactiveLimits_;
-  }
+  bool useInfiniteReactiveLimits() const { return useInfiniteReactiveLimits_; }
 
   /**
    * @brief determines if SVarC regulation is on
    *
    * @returns the parameter value
    */
-  bool isSVarCRegulationOn() const {
-    return isSVarCRegulationOn_;
-  }
+  bool isSVarCRegulationOn() const { return isSVarCRegulationOn_; }
 
   /**
    * @brief determines if Shunt regulation is on
    *
    * @returns the parameter value
    */
-  bool isShuntRegulationOn() const {
-    return isShuntRegulationOn_;
-  }
+  bool isShuntRegulationOn() const { return isShuntRegulationOn_; }
 
   /**
    * @brief determines if slack bus is determined automatically
    *
    * @returns the parameter value
    */
-  bool isAutomaticSlackBusOn() const {
-    return isAutomaticSlackBusOn_;
-  }
+  bool isAutomaticSlackBusOn() const { return isAutomaticSlackBusOn_; }
 
   /**
    * @brief Retrieves the output directory
    *
    * @returns the parameter value
    */
-  const boost::filesystem::path& outputDir() const {
-    return outputDir_;
-  }
+  const boost::filesystem::path &outputDir() const { return outputDir_; }
 
   /**
    * @brief Retrieves the minimum voltage level of the load to be taken into account
    *
    * @returns the parameter value
    */
-  double getDsoVoltageLevel() const {
-    return dsoVoltageLevel_;
-  }
+  double getDsoVoltageLevel() const { return dsoVoltageLevel_; }
 
   /**
    * @brief Retrieves the maximum voltage level we assume that generator's transformers are already described in the static description
    *
    * @returns the parameter value
    */
-  double getTfoVoltageLevel() const {
-    return tfoVoltageLevel_;
-  }
+  double getTfoVoltageLevel() const { return tfoVoltageLevel_; }
 
   /**
    * @brief Get the Time at which the simulation will start
    *
    * @returns the start time value
    */
-  double getStartTime() const {
-    return startTime_;
-  }
+  double getStartTime() const { return startTime_; }
 
   /**
    * @brief Get the Time at which the simulation will end
    *
    * @returns the stop time value
    */
-  double getStopTime() const {
-    return stopTime_;
-  }
+  double getStopTime() const { return stopTime_; }
 
   /**
    * @brief Get the precision of the simulation
    *
    * @returns the precision value if set, boost::none otherwise
    */
-  const boost::optional<double> getPrecision() const {
-    return precision_;
-  }
+  const boost::optional<double> getPrecision() const { return precision_; }
 
   /**
    * @brief Retrieves the Time at which the events related to each contingency will be simulated
    *
    * @returns the time of event value
    */
-  double getTimeOfEvent() const {
-    return timeOfEvent_;
-  }
+  double getTimeOfEvent() const { return timeOfEvent_; }
 
   /**
    * @brief retrieves the maximum value of the solver timestep
    *
    * @return value of timestep
    */
-  double getTimeStep() const {
-    return timeStep_;
-  }
+  double getTimeStep() const { return timeStep_; }
 
   /**
    * @brief type of active power compensation for generator
@@ -168,33 +144,25 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  ActivePowerCompensation getActivePowerCompensation() const {
-    return activePowerCompensation_;
-  }
+  ActivePowerCompensation getActivePowerCompensation() const { return activePowerCompensation_; }
 
   /**
    * @brief Retrieves the setting file path
    * @returns the setting file path
    */
-  const boost::filesystem::path& settingFilePath() const {
-    return settingFilePath_;
-  }
+  const boost::filesystem::path &settingFilePath() const { return settingFilePath_; }
 
   /**
    * @brief Retrieves the assembling file path
    * @returns the assembling file path
    */
-  const boost::filesystem::path& assemblingFilePath() const {
-    return assemblingFilePath_;
-  }
+  const boost::filesystem::path &assemblingFilePath() const { return assemblingFilePath_; }
 
   /**
-   * @brief Retrieves the initial state file path
-   * @returns the initial state file path
+   * @brief Retrieves the starting dump file path
+   * @returns the starting dump file path
    */
-  const boost::filesystem::path& initialStateFilePath() const {
-    return initialStateFilePath_;
-  }
+  const boost::filesystem::path &startingDumpFilePath() const { return startingDumpFilePath_; }
   /**
    * @brief Chosen outputs
    *
@@ -212,9 +180,7 @@ class Configuration {
      * @param chosenOutputEnum the chosenOutputEnum to hash
      * @returns the hash value
      */
-    size_t operator()(ChosenOutputEnum chosenOutputEnum) const {
-      return static_cast<size_t>(chosenOutputEnum);
-    }
+    size_t operator()(ChosenOutputEnum chosenOutputEnum) const { return static_cast<size_t>(chosenOutputEnum); }
   };
 
   /**
@@ -222,9 +188,7 @@ class Configuration {
    *
    * @returns the starting point mode
    */
-  StartingPointMode getStartingPointMode() const {
-    return startingPointMode_;
-  }
+  StartingPointMode getStartingPointMode() const { return startingPointMode_; }
 
   /**
    * @brief Indicate if the output is chosen
@@ -232,26 +196,24 @@ class Configuration {
    * @param output the chosen output to check
    * @returns true if the output is chosen, false otherwise
    */
-  bool isChosenOutput(const ChosenOutputEnum output) const {
-    return static_cast<bool>(chosenOutputs_.count(output));
-  }
+  bool isChosenOutput(const ChosenOutputEnum output) const { return static_cast<bool>(chosenOutputs_.count(output)); }
 
  private:
   /**
-  * @brief Helper function to update the starting point mode
-  *
-  * @param tree the element of the boost tree
-  * @param saMode true if simulation is in SA, false otherwise
-  */
-  void updateStartingPointMode(const boost::property_tree::ptree& tree, const bool saMode);
+   * @brief Helper function to update the starting point mode
+   *
+   * @param tree the element of the boost tree
+   * @param saMode true if simulation is in SA, false otherwise
+   */
+  void updateStartingPointMode(const boost::property_tree::ptree &tree, const bool saMode);
   /**
-  * @brief Helper function to update the chosen outputs
-  *
-  * @param tree the element of the boost tree
-  * @param simulationKind simulation kind of the simulation
-  * @param saMode true if simulation is in SA, false otherwise
-  */
-  void updateChosenOutput(const boost::property_tree::ptree& tree, dfl::inputs::Configuration::SimulationKind simulationKind, const bool saMode);
+   * @brief Helper function to update the chosen outputs
+   *
+   * @param tree the element of the boost tree
+   * @param simulationKind simulation kind of the simulation
+   * @param saMode true if simulation is in SA, false otherwise
+   */
+  void updateChosenOutput(const boost::property_tree::ptree &tree, dfl::inputs::Configuration::SimulationKind simulationKind, const bool saMode);
 
   // General
   StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
@@ -273,7 +235,7 @@ class Configuration {
 
   // SA
   double timeOfEvent_ = 10.;                      ///< time for contingency simulation (security analysis only)
-  boost::filesystem::path initialStateFilePath_;  ///< initial state file path
+  boost::filesystem::path startingDumpFilePath_;  ///< starting dump file path
 };
 
 }  // namespace inputs

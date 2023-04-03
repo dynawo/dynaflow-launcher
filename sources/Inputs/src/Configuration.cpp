@@ -36,9 +36,7 @@ namespace helper {
  * @param key the key of the parameter to retrieve
  * @param saMode true if simulation is in SA, false otherwise
  */
-template<class T>
-static void
-updateValue(T& value, const boost::property_tree::ptree& tree, const std::string& key, const bool saMode) {
+template <class T> static void updateValue(T &value, const boost::property_tree::ptree &tree, const std::string &key, const bool saMode) {
   std::string jsonKey = key;
   if (saMode)
     jsonKey = "sa." + key;
@@ -57,9 +55,7 @@ updateValue(T& value, const boost::property_tree::ptree& tree, const std::string
  * @param key the key of the parameter to retrieve
  * @param saMode true if simulation is in SA, false otherwise
  */
-template<>
-void
-updateValue(boost::optional<double>& value, const boost::property_tree::ptree& tree, const std::string& key, const bool saMode) {
+template <> void updateValue(boost::optional<double> &value, const boost::property_tree::ptree &tree, const std::string &key, const bool saMode) {
   std::string jsonKey = key;
   if (saMode)
     jsonKey = "sa." + key;
@@ -79,9 +75,8 @@ updateValue(boost::optional<double>& value, const boost::property_tree::ptree& t
  * @param configDirectoryPath the absolute path of the directory containing the configuration file
  * @param saMode true if simulation is in SA, false otherwise
  */
-void
-updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptree& tree, const std::string& key, const std::string& configDirectoryPath,
-                const bool saMode) {
+void updatePathValue(boost::filesystem::path &value, const boost::property_tree::ptree &tree, const std::string &key, const std::string &configDirectoryPath,
+                     const bool saMode) {
   std::string jsonKey = key;
   if (saMode)
     jsonKey = "sa." + key;
@@ -102,9 +97,7 @@ updatePathValue(boost::filesystem::path& value, const boost::property_tree::ptre
  * @param key the key of the parameter to retrieve
  * @param saMode true if simulation is in SA, false otherwise
  */
-template<>
-void
-updateValue(bool& value, const boost::property_tree::ptree& tree, const std::string& key, const bool saMode) {
+template <> void updateValue(bool &value, const boost::property_tree::ptree &tree, const std::string &key, const bool saMode) {
   std::string jsonKey = key;
   if (saMode)
     jsonKey = "sa." + key;
@@ -132,9 +125,8 @@ updateValue(bool& value, const boost::property_tree::ptree& tree, const std::str
  * @param tree the element of the boost tree
  * @param saMode true if simulation is in SA, false otherwise
  */
-static void
-updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activePowerCompensation, const boost::property_tree::ptree& tree,
-                                   const bool saMode) {
+static void updateActivePowerCompensationValue(Configuration::ActivePowerCompensation &activePowerCompensation, const boost::property_tree::ptree &tree,
+                                               const bool saMode) {
   std::map<std::string, Configuration::ActivePowerCompensation> enumResolver = {{"P", Configuration::ActivePowerCompensation::P},
                                                                                 {"targetP", Configuration::ActivePowerCompensation::TARGET_P},
                                                                                 {"PMax", Configuration::ActivePowerCompensation::PMAX}};
@@ -150,7 +142,7 @@ updateActivePowerCompensationValue(Configuration::ActivePowerCompensation& activ
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path& filepath, dfl::inputs::Configuration::SimulationKind simulationKind) {
+Configuration::Configuration(const boost::filesystem::path &filepath, dfl::inputs::Configuration::SimulationKind simulationKind) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -196,13 +188,13 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode);
     if (simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
       helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true);
-      helper::updatePathValue(initialStateFilePath_, config, "InitialStatePath", prefixConfigFile, true);
+      helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
 
-      if (!initialStateFilePath_.empty() && !exists(initialStateFilePath_)) {
-        throw Error(InitialStatePathNotFound, initialStateFilePath_.generic_string());
+      if (!startingDumpFilePath_.empty() && !exists(startingDumpFilePath_)) {
+        throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
       }
     }
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     throw Error(ErrorConfigFileRead, e.what());
   }
 
@@ -215,13 +207,12 @@ Configuration::Configuration(const boost::filesystem::path& filepath, dfl::input
   }
 }
 
-void
-Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree, const bool saMode) {
+void Configuration::updateStartingPointMode(const boost::property_tree::ptree &tree, const bool saMode) {
   const std::string key = "StartingPointMode";
   std::string jsonKey = key;
   if (saMode)
     jsonKey = "sa." + key;
-  boost::optional<const boost::property_tree::ptree&> optionalStartingPointMode = tree.get_child_optional(jsonKey);
+  boost::optional<const boost::property_tree::ptree &> optionalStartingPointMode = tree.get_child_optional(jsonKey);
   if (!optionalStartingPointMode.is_initialized())
     optionalStartingPointMode = tree.get_child_optional(key);
   if (optionalStartingPointMode.is_initialized()) {
@@ -237,14 +228,13 @@ Configuration::updateStartingPointMode(const boost::property_tree::ptree& tree, 
   }
 }
 
-void
-Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
+void Configuration::updateChosenOutput(const boost::property_tree::ptree &tree,
 #if _DEBUG_
-                                  dfl::inputs::Configuration::SimulationKind,
+                                       dfl::inputs::Configuration::SimulationKind,
 #else
-                                  dfl::inputs::Configuration::SimulationKind simulationKind,
+                                       dfl::inputs::Configuration::SimulationKind simulationKind,
 #endif
-                                  const bool saMode) {
+                                       const bool saMode) {
 #if _DEBUG_
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
   chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS);
@@ -269,11 +259,11 @@ Configuration::updateChosenOutput(const boost::property_tree::ptree& tree,
   std::string jsonKey = key;
   if (saMode)
     jsonKey = "sa." + key;
-  boost::optional<const boost::property_tree::ptree&> optionalChosenOutputs = tree.get_child_optional(jsonKey);
+  boost::optional<const boost::property_tree::ptree &> optionalChosenOutputs = tree.get_child_optional(jsonKey);
   if (!optionalChosenOutputs.is_initialized())
     optionalChosenOutputs = tree.get_child_optional(key);
   if (optionalChosenOutputs.is_initialized()) {
-    for (auto& chosenOutputElement : optionalChosenOutputs.get()) {
+    for (auto &chosenOutputElement : optionalChosenOutputs.get()) {
       std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
       std::transform(chosenOutputName.begin(), chosenOutputName.end(), chosenOutputName.begin(), ::toupper);
       if (chosenOutputName == "STEADYSTATE") {

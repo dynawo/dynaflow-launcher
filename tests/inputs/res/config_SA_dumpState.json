@@ -1,7 +1,7 @@
 {
   "dfl-config": {
     "sa": {
-      "InitialStatePath" : "myInitialStatePathDoesNotExists.dmp"
+      "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp"
     }
   }
 }
