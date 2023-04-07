@@ -20,6 +20,7 @@
 #include <algorithm>
 
 #include <boost/uuid/name_generator_sha1.hpp>
+#include <boost/uuid/nil_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
 namespace dfl {
@@ -28,7 +29,7 @@ namespace constants {
 
 std::string
 uuid(const std::string& str) {
-  static boost::uuids::name_generator_sha1 gen(boost::uuids::uuid{});  // null root, change as necessary
+  static boost::uuids::name_generator_sha1 gen(boost::uuids::nil_uuid());  // null root, change as necessary
 
   return boost::uuids::to_string(gen(str));
 }
