@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: dynawo/dynawo-ci:latest
     env:
-      DYNAWO_VERSION: 1.5.0
+      DYNAWO_VERSION: 1.6.0
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Debug
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
       DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     container: dynawo/dynawo-ci:latest
     env:
-      DYNAWO_VERSION: 1.5.0
+      DYNAWO_VERSION: 1.6.0
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Debug
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
       DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
