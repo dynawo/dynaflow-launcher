@@ -159,7 +159,7 @@ boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
     auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
-    timeline->setExportMode("TXT");
+    timeline->setExportMode("XML");
     output->setTimelineEntry(timeline);
   }
 
