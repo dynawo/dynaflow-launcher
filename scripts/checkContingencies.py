@@ -6,6 +6,7 @@ import os
 import sys
 import re
 import xml.etree.ElementTree as ET
+from lxml import etree
 
 ### Regexes ####################################################################
 contingency_event_time = 10
@@ -61,7 +62,7 @@ def check_contingencies(contingencies_file, results_folder, input_iidm_name):
     for (contingency_id, contingency_elements) in load_contingencies(contingencies_file):
         dyd_file  = os.path.join(results_folder ,input_iidm_name + '-' + contingency_id + '.dyd')
         par_file  = os.path.join(results_folder ,input_iidm_name + '-' + contingency_id + '.par')
-        timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.log')
+        timeline_file  = os.path.join(results_folder , contingency_id, 'outputs/timeLine/timeline.xml')
         constraints_file  = os.path.join(results_folder , contingency_id, 'outputs/constraints/constraints.xml')
         finalState_file = os.path.join(results_folder , contingency_id, 'outputs/finalState/outputIIDM.xml')
 
@@ -113,20 +114,27 @@ def check_par(par_file, element):
 
 def check_timeline(timeline_log_file, element):
     (element_id, element_type) = element
-    with open(timeline_log_file) as f:
-        content = f.read()
-        for find in timeline_log_regex.finditer(content):
-            # For busbar sections, if we find a disconnected calculated bus it is ok
-            if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in find.group(1):
-                return True
-            # For the rest of element types we must find exactly the element identifier in the timeline log
-            if find.group(1) == element_id:
-                return True
-        else:
-            print("Check timeline '" + timeline_log_file + "' failed:")
-            print("  Element: " + element_id)
-            print("  Log: \n" + content)
-            return False
+    timeline = etree.parse(timeline_log_file)
+    timeline_root = timeline.getroot()
+    timeline_namespace = timeline_root.nsmap
+    timeline_prefix_root = timeline_root.prefix
+    if timeline_prefix_root is None:
+        timeline_prefix_root_string = ''
+    else:
+        timeline_prefix_root_string = timeline_prefix_root + ':'
+    for event in timeline_root.findall('.//' + timeline_prefix_root_string + 'event', timeline_namespace):
+        element_id_from_timeline = event.attrib['modelName']
+        # For busbar sections, if we find a disconnected calculated bus it is ok
+        if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in element_id_from_timeline:
+            return True
+        # For the rest of element types we must find exactly the element identifier in the timeline log
+        if element_id_from_timeline == element_id:
+            return True
+    else:
+        print("Check timeline '" + timeline_log_file + "' failed:")
+        print("  Element: " + element_id)
+        print("  Log: \n" + etree.tostring(timeline_root, pretty_print = True, xml_declaration = True, encoding='UTF-8'))
+        return False
 
 def check_finalState(iidm_file, element):
     """Check that in the final state output IIDM file the element of the contingency
