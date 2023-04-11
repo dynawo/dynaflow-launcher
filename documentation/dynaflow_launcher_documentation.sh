@@ -28,7 +28,7 @@ echo '%% Except where otherwise noted, content in this documentation is Copyrigh
 
 \begin{document}
 
-\title{\huge{Dynaflow-launcher Documentation} \\ \LARGE{v1.5.0} \\
+\title{\huge{Dynaflow-launcher Documentation} \\ \LARGE{v1.6.0} \\
 \includegraphics[width=0.5\textwidth]{../resources/dynaflowLauncher.png}}
 \date\today
 
