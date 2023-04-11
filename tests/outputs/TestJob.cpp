@@ -69,7 +69,7 @@ TEST(Job, write) {
 #if _DEBUG_
     // On debug we always ask for a timeline and a constraints output
     ASSERT_NE(nullptr, outputs->getTimelineEntry());
-    ASSERT_EQ("TXT", outputs->getTimelineEntry()->getExportMode());
+    ASSERT_EQ("XML", outputs->getTimelineEntry()->getExportMode());
     ASSERT_EQ("", outputs->getTimelineEntry()->getOutputFile());
     ASSERT_TRUE(outputs->getTimelineEntry()->getExportWithTime());
     ASSERT_NE(nullptr, outputs->getConstraintsEntry());
@@ -103,7 +103,7 @@ TEST(Job, write) {
     ASSERT_EQ(1, appenders.size());
 
     auto appender_it = appenders.begin();
-    auto& appender = *appender_it;
+    auto &appender = *appender_it;
     ASSERT_EQ("INFO", appender->getLvlFilter());
     ASSERT_EQ("", appender->getTag());
     ASSERT_EQ(" | ", appender->getSeparator());
@@ -237,11 +237,11 @@ TEST(Job, ChosenOutputs) {
       dfl::inputs::Configuration config(chosenOutputsPath, simulationKind);
       dfl::outputs::Job job(dfl::outputs::Job::JobDefinition("TestJobChosenOutputs", "INFO", config));
       boost::shared_ptr<job::JobEntry> jobEntry = job.write();
-      const boost::shared_ptr<job::OutputsEntry>& outputsEntry = jobEntry->getOutputsEntry();
-      const std::vector<boost::shared_ptr<job::FinalStateEntry>>& finalStateEntry = outputsEntry->getFinalStateEntries();
-      const boost::shared_ptr<job::ConstraintsEntry>& constraintsEntry = outputsEntry->getConstraintsEntry();
-      const boost::shared_ptr<job::TimelineEntry>& timelineEntry = outputsEntry->getTimelineEntry();
-      const boost::shared_ptr<job::LostEquipmentsEntry>& lostEquipmentsEntry = outputsEntry->getLostEquipmentsEntry();
+      const boost::shared_ptr<job::OutputsEntry> &outputsEntry = jobEntry->getOutputsEntry();
+      const std::vector<boost::shared_ptr<job::FinalStateEntry>> &finalStateEntry = outputsEntry->getFinalStateEntries();
+      const boost::shared_ptr<job::ConstraintsEntry> &constraintsEntry = outputsEntry->getConstraintsEntry();
+      const boost::shared_ptr<job::TimelineEntry> &timelineEntry = outputsEntry->getTimelineEntry();
+      const boost::shared_ptr<job::LostEquipmentsEntry> &lostEquipmentsEntry = outputsEntry->getLostEquipmentsEntry();
 
       if (chosenOutput.second & 0b1000) {
         ASSERT_TRUE(finalStateEntry.front()->getExportIIDMFile());
