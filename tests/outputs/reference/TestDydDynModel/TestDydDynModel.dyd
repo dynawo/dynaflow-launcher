@@ -48,13 +48,13 @@
   <dyn:blackBoxModel id="G0" staticId="G0" lib="GeneratorPVSignalN" parFile="TestDydDynModel.par" parId="signalNGenerator">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVDiagramPQSignalN" parFile="TestDydDynModel.par" parId="6320417593396202500">
+  <dyn:blackBoxModel id="G2" staticId="G2" lib="GeneratorPVDiagramPQSignalN" parFile="TestDydDynModel.par" parId="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="G4" staticId="G4" lib="GeneratorPVSignalN" parFile="TestDydDynModel.par" parId="signalNGeneratorFixedP">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPVRpclSignalN" parFile="TestDydDynModel.par" parId="17121589878100777463">
+  <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPVRpclSignalN" parFile="TestDydDynModel.par" parId="51629263-3f1c-580f-907d-8333de7c55aa">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="L0" staticId="L0" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
@@ -72,11 +72,11 @@
   <dyn:blackBoxModel id="MODELE_1_VL4" lib="DYNModel1" parFile="TestDydDynModel.par" parId="MODELE_1_VL4"/>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:blackBoxModel id="SVC" lib="SecondaryVoltageControlSimp" parFile="TestDydDynModel.par" parId="SVC"/>
-  <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="G5" index1="1"/>
-  <dyn:macroConnect connector="SVCToUMeasurement" id1="SVC" id2="NETWORK" name2="0"/>
   <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="1.1"/>
   <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="1" name2="1.2"/>
   <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>
+  <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="G5" index1="1"/>
+  <dyn:macroConnect connector="SVCToUMeasurement" id1="SVC" id2="NETWORK" name2="0"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L1" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>

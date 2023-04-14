@@ -57,9 +57,7 @@ ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration
 
 boost::shared_ptr<parameters::ParametersSet>
 ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc) {
-  std::size_t hashId = constants::hash(svarc.id);
-  std::string hashIdStr = std::to_string(hashId);
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::uuid(svarc.id)));
 
   set->addMacroParSet(boost::make_shared<parameters::MacroParSet>(macroParameterSetStaticCompensator_));
   double value;

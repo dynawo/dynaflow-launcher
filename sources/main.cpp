@@ -28,9 +28,8 @@
 #include <cstdlib>
 #include <sstream>
 
-static inline std::string
-getMandatoryEnvVar(const std::string& key) {
-  char* var = getenv(key.c_str());
+static inline std::string getMandatoryEnvVar(const std::string &key) {
+  char *var = getenv(key.c_str());
   if (var != NULL) {
     return std::string(var);
   } else {
@@ -39,23 +38,20 @@ getMandatoryEnvVar(const std::string& key) {
   }
 }
 
-static void
-initializeDynawo(const std::string& locale) {
-  DYN::IoDicos& dicos = DYN::IoDicos::instance();
+static void initializeDynawo(const std::string &locale) {
+  DYN::IoDicos &dicos = DYN::IoDicos::instance();
   dicos.addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
   dicos.addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"));
   dicos.addDico("DFLLOG", "DFLLog", locale);
   dicos.addDico("DFLERROR", "DFLError", locale);
 }
 
-static inline double
-elapsed(const std::chrono::steady_clock::time_point& timePoint) {
+static inline double elapsed(const std::chrono::steady_clock::time_point &timePoint) {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - timePoint);
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
-static inline boost::filesystem::path
-getOutputDir(const boost::filesystem::path& configFilepath) {
+static inline boost::filesystem::path getOutputDir(const boost::filesystem::path &configFilepath) {
   boost::property_tree::ptree tree;
   boost::property_tree::read_json(configFilepath.generic_string(), tree);
   boost::filesystem::path path = boost::filesystem::current_path();
@@ -68,10 +64,9 @@ getOutputDir(const boost::filesystem::path& configFilepath) {
   return path;
 }
 
-static boost::shared_ptr<dfl::Context>
-buildContext(dfl::common::Options::Request request, dfl::inputs::SimulationParams const& params) {
+static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const &params) {
   boost::filesystem::path configPath(params.runtimeConfig->configPath);
-  dfl::inputs::Configuration config(configPath, params.simulationKind, request);
+  dfl::inputs::Configuration config(configPath, params.simulationKind);
 
   dfl::Context::ContextDef def{config.getStartingPointMode(),
                                params.simulationKind,
@@ -80,25 +75,22 @@ buildContext(dfl::common::Options::Request request, dfl::inputs::SimulationParam
                                config.assemblingFilePath(),
                                params.runtimeConfig->contingenciesFilePath,
                                params.runtimeConfig->dynawoLogLevel,
-                               params.parametersDirPath,
                                params.resourcesDirPath,
                                params.locale};
 
   boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config));
 
-  if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT &&
-      context->dynamicDataBaseAssemblingContainsSVC()) {
+  if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT && context->dynamicDataBaseAssemblingContainsSVC()) {
     throw Error(NoSVCInFlatStartingPointMode);
   }
 
   return context;
 }
 
-static void
-execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationParams const& params) {
+static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationParams const &params) {
   std::string simuName =
       params.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS ? "Security analysis simulation" : "Steady state simulation";
-  DYNAlgorithms::mpi::Context& mpiContext = DYNAlgorithms::mpi::context();
+  DYNAlgorithms::mpi::Context &mpiContext = DYNAlgorithms::mpi::context();
   try {
     if (!context->process()) {
       LOG(info, InitEnd, elapsed(params.timeStart));
@@ -124,16 +116,16 @@ execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationP
 
     if (mpiContext.isRootProc()) {
       LOG(info, SimulationEnded, context->basename(), elapsed(timeSimuStart));
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       LOG(info, DFLEnded, context->basename(), elapsed(params.timeStart));
     }
-  } catch (DYN::Error&) {
+  } catch (DYN::Error &) {
     context->exportResults(false);
     throw;
-  } catch (DYN::MessageError&) {
+  } catch (DYN::MessageError &) {
     context->exportResults(false);
     throw;
-  } catch (std::exception&) {
+  } catch (std::exception &) {
     context->exportResults(false);
     throw;
   } catch (...) {
@@ -142,9 +134,8 @@ execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationP
   }
 }
 
-int
-main(int argc, char* argv[]) {
-  DYNAlgorithms::mpi::Context& mpiContext = DYNAlgorithms::mpi::context();  // MUST be at the beginning to initialize the instance
+int main(int argc, char *argv[]) {
+  DYNAlgorithms::mpi::Context mpiContext;  // Should only be used once per process in the main thread
   DYN::InitXerces xerces;
   DYN::InitLibXml2 libxml2;
   auto timeStart = std::chrono::steady_clock::now();
@@ -157,12 +148,12 @@ main(int argc, char* argv[]) {
   case dfl::common::Options::Request::HELP:
   case dfl::common::Options::Request::ERROR:
     if (mpiContext.isRootProc()) {
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << options.desc() << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag()) << options.desc() << DYN::Trace::endline;
     }
     return EXIT_SUCCESS;
   case dfl::common::Options::Request::VERSION:
     if (mpiContext.isRootProc()) {
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag)
+      DYN::Trace::info(dfl::common::Log::getTag())
           << DYNAFLOW_LAUNCHER_VERSION_STRING << " (rev:" << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << ")" << DYN::Trace::endline;
     }
     return EXIT_SUCCESS;
@@ -170,7 +161,7 @@ main(int argc, char* argv[]) {
     break;
   }
 
-  auto& runtimeConfig = options.config();
+  auto &runtimeConfig = options.config();
 
   std::string root;
   std::string locale;
@@ -181,13 +172,13 @@ main(int argc, char* argv[]) {
   try {
     if (mpiContext.isRootProc()) {
       dfl::common::Log::init(options, outputDir.generic_string());
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag)
+      DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag())
           << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag)
+      DYN::Trace::info(dfl::common::Log::getTag())
           << " "
           << " revision " << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
 
     resourcesDir = boost::filesystem::path(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
@@ -195,38 +186,38 @@ main(int argc, char* argv[]) {
     locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
 
     initializeDynawo(locale);
-  } catch (DYN::Error& e) {
+  } catch (DYN::Error &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (DYN::MessageError& e) {
+  } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
   } catch (...) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Initialization failed" << std::endl;
       std::cerr << "Unknown error" << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Initialization failed" << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Unknown error" << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed" << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
   }
@@ -262,7 +253,6 @@ main(int argc, char* argv[]) {
     dfl::inputs::SimulationParams params;
     params.runtimeConfig = &runtimeConfig;
     params.timeStart = timeStart;
-    params.parametersDirPath = parFilesDir;
     params.resourcesDirPath = resourcesDir;
     params.networkFilePath = runtimeConfig.networkFilePath;
     params.locale = locale;
@@ -270,7 +260,7 @@ main(int argc, char* argv[]) {
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_N || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       params.simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION;
 
-      boost::shared_ptr<dfl::Context> context = buildContext(dfl::common::Options::Request::RUN_SIMULATION_N, params);
+      boost::shared_ptr<dfl::Context> context = buildContext(params);
       execSimulation(context, params);
     }
 
@@ -282,41 +272,41 @@ main(int argc, char* argv[]) {
       if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
         params.networkFilePath = absolute("outputs/finalState/outputIIDM.xml", outputDir.string());
       }
-      boost::shared_ptr<dfl::Context> context = buildContext(dfl::common::Options::Request::RUN_SIMULATION_SA, params);
+      boost::shared_ptr<dfl::Context> context = buildContext(params);
       execSimulation(context, params);
     }
-  } catch (DYN::Error& e) {
+  } catch (DYN::Error &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Simulation failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (DYN::MessageError& e) {
+  } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Simulation failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Simulation failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
   } catch (...) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed" << std::endl;
       std::cerr << "Unknown error" << std::endl;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Simulation failed" << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " Unknown error" << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::dynaflowLauncherLogTag) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed" << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
+      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
     return EXIT_FAILURE;
   }

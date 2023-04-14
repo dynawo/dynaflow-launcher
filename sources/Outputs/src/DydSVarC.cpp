@@ -37,10 +37,7 @@ DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamic
     if (svarc.isNetwork()) {
       continue;
     }
-    std::string parId;
-    std::size_t hashId = constants::hash(svarc.id);
-    std::string hashIdStr = std::to_string(hashId);
-    parId = hashIdStr;
+    std::string parId = constants::uuid(svarc.id);
     auto blackBoxModel = helper::buildBlackBoxStaticId(svarc.id, svarc.id, svarcModelsNames_.at(svarc.model), basename + ".par", parId);
     blackBoxModel->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSVarCName_));
     switch (svarc.model) {

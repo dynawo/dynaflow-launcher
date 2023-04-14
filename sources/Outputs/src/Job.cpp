@@ -23,6 +23,7 @@
 #include <JOBDynModelsEntryFactory.h>
 #include <JOBFinalStateEntry.h>
 #include <JOBFinalStateEntryFactory.h>
+#include <JOBInitialStateEntryFactory.h>
 #include <JOBJobEntry.h>
 #include <JOBJobEntryFactory.h>
 #include <JOBLogsEntry.h>
@@ -52,10 +53,9 @@ const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
 
-Job::Job(JobDefinition&& def) : def_{std::forward<JobDefinition>(def)} {}
+Job::Job(JobDefinition &&def) : def_{std::forward<JobDefinition>(def)} {}
 
-boost::shared_ptr<job::JobEntry>
-Job::write() const {
+boost::shared_ptr<job::JobEntry> Job::write() const {
   auto job = job::JobEntryFactory::newInstance();
   job->setName(def_.filename);
 
@@ -67,8 +67,7 @@ Job::write() const {
   return job;
 }
 
-boost::shared_ptr<job::SolverEntry>
-Job::writeSolver() const {
+boost::shared_ptr<job::SolverEntry> Job::writeSolver() const {
   auto solver = job::SolverEntryFactory::newInstance();
   solver->setLib(solverName_);
   solver->setParametersFile(solverFilename_);
@@ -77,8 +76,7 @@ Job::writeSolver() const {
   return solver;
 }
 
-boost::shared_ptr<job::ModelerEntry>
-Job::writeModeler() const {
+boost::shared_ptr<job::ModelerEntry> Job::writeModeler() const {
   auto modeler = job::ModelerEntryFactory::newInstance();
   if (def_.contingencyId) {
     modeler->setCompileDir("outputs-" + def_.contingencyId.get() + "/compilation");
@@ -95,6 +93,12 @@ Job::writeModeler() const {
     modeler->addDynModelsEntry(modelsBase);
   }
 
+  if (!def_.configuration.startingDumpFilePath().empty()) {
+    auto initialState = job::InitialStateEntryFactory::newInstance();
+    initialState->setInitialStateFile(def_.configuration.startingDumpFilePath().generic_string());
+    modeler->setInitialStateEntry(initialState);
+  }
+
   auto network = job::NetworkEntryFactory::newInstance();
   network->setIidmFile("");  // not providing IIDM file here as data interface will be provided to simulation
   network->setNetworkParFile("Network.par");
@@ -109,8 +113,7 @@ Job::writeModeler() const {
   return modeler;
 }
 
-boost::shared_ptr<job::SimulationEntry>
-Job::writeSimulation() const {
+boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
@@ -119,8 +122,7 @@ Job::writeSimulation() const {
   return simu;
 }
 
-boost::shared_ptr<job::OutputsEntry>
-Job::writeOutputs() const {
+boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
   auto output = job::OutputsEntryFactory::newInstance();
   if (def_.contingencyId) {
     output->setOutputsDirectory("outputs-" + def_.contingencyId.get());
@@ -157,15 +159,15 @@ Job::writeOutputs() const {
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
     auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
-    timeline->setExportMode("TXT");
+    timeline->setExportMode("XML");
     output->setTimelineEntry(timeline);
   }
 
   return output;
 }
 
-void
-Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::filesystem::path& networkFileEntry, const dfl::inputs::Configuration& config) {
+void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry,
+                    const dfl::inputs::Configuration &config) {
   boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {
@@ -173,7 +175,7 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
   }
 
   path.append(jobEntry->getName() + ".jobs");
-  std::ofstream os(path.c_str());
+  std::ofstream os(path.c_str(), std::ios::binary);
 
   auto formatter = xml::sax::formatter::Formatter::createFormatter(os);
   formatter->addNamespace("dyn", "http://www.rte-france.com/dynawo");
@@ -218,6 +220,14 @@ Job::exportJob(const boost::shared_ptr<job::JobEntry>& jobEntry, const boost::fi
     formatter->startElement("dyn", "dynModels", attrs);
     attrs.clear();
     formatter->endElement();  // model
+  }
+
+  auto initialStateEntry = modeler->getInitialStateEntry();
+  if (initialStateEntry && !initialStateEntry->getInitialStateFile().empty()) {
+    attrs.add("file", initialStateEntry->getInitialStateFile());
+    formatter->startElement("dyn", "initialState", attrs);
+    attrs.clear();
+    formatter->endElement();  // initialState
   }
 
   auto pre_models = modeler->getPreCompiledModelsDirEntry();

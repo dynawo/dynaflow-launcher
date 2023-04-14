@@ -169,6 +169,7 @@ The parameters are described below:
 \bottomrule
 \end{tabular}
 \caption{Simulation parameters}
+\label{DFL_Simu_param}
 \end{table}
 
 \begin{table}[H]
@@ -202,14 +203,19 @@ The systematic analysis parameters are described below:
 TimeOfEvent & integer & Time when the contingency occurs & 10 \\
 \rowcolor{gray!10}
 NumberOfThreads & integer & Number of threads to use & 4 \\
+\rowcolor{white}
+StartingDumpFile & string & Path to a \Dynawo dump file &  \\
 \bottomrule
 \end{tabular}
 \caption{Systematic Analysis parameters}
 \end{table}
 
+
 \subsubsection{Apply a different configuration in security analysis}
 
-It is possible to have a different configuration for security analysis by adding parameters in the \textit{sa} array. The parameters contained in the \textit{sa} array will then override the parameters for N in the configuration file. If no parameters were previously specified for N, it will override the default parameters of the simulation.
+It is possible to have a different configuration for security analysis by adding any parameter from table \ref{DFL_Simu_param} in the \textit{sa} array.
+The parameters contained in the \textit{sa} array will then override the parameters for N in the configuration file.
+If no parameters were previously specified for N, it will override the default parameters of the simulation.
 
 \lstinputlisting[language=JSON,title=configuration file example for N and SA simulation]{../resources/syntaxExample/config_SA.json}
 

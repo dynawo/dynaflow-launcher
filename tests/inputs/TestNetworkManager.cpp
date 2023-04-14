@@ -11,6 +11,10 @@
 #include "NetworkManager.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
+DYNAlgorithms::mpi::Context mpiContext;
+
 static size_t count = 0;
 
 static void checkNode(const std::shared_ptr<dfl::inputs::Node> &node) {

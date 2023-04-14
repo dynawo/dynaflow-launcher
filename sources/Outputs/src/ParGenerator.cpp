@@ -265,11 +265,10 @@ void ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinit
 
 boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
                                                                           const boost::filesystem::path &dirname) {
-  std::size_t hashId = constants::hash(def.id);
-  std::string hashIdStr = std::to_string(hashId);
+  std::string uuid = constants::uuid(def.id);
 
   //  Use the hash id in exported files to prevent use of non-ascii characters
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hashIdStr));
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(uuid));
   // The macroParSet is associated to a macroParameterSet via the id
   set->addMacroParSet(
       boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
@@ -287,9 +286,9 @@ boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const 
     dirname_diagram.append(basename + common::constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
 
     set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));
-    set->addParameter(helper::buildParameter("generator_QMaxTableName", hashIdStr + constants::diagramMaxTableSuffix));
+    set->addParameter(helper::buildParameter("generator_QMaxTableName", uuid + constants::diagramMaxTableSuffix));
     set->addParameter(helper::buildParameter("generator_QMinTableFile", dirname_diagram.generic_string()));
-    set->addParameter(helper::buildParameter("generator_QMinTableName", hashIdStr + constants::diagramMinTableSuffix));
+    set->addParameter(helper::buildParameter("generator_QMinTableName", uuid + constants::diagramMinTableSuffix));
   }
   return set;
 }

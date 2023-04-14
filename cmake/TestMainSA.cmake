@@ -6,15 +6,28 @@
 # file, you can obtain one at http://mozilla.org/MPL/2.0/.
 # SPDX-License-Identifier: MPL-2.0
 #
-execute_process(COMMAND ${MPI_RUN} -np 4 ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json RESULT_VARIABLE EXE_RESULT)
-if(EXE_RESULT)
-    message(FATAL_ERROR "Execution failed: ${MPI_RUN} -np 4 ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}")
+
+set(_command ${MPI_RUN} -np 4 ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json)
+message(STATUS "Execute process: ${_command}")
+execute_process(COMMAND ${_command} RESULT_VARIABLE _result)
+if(_result)
+  message(FATAL_ERROR "Execution failed: ${_command}")
 endif()
-execute_process(COMMAND ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json RESULT_VARIABLE COMPARE_RESULT)
-if(COMPARE_RESULT)
+
+set(_command ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json)
+if(DEFINED DIFF_SCRIPT)
+  message(STATUS "Execute process: ${_command}")
+  execute_process(COMMAND ${_command} RESULT_VARIABLE _result)
+  if(_result)
     message(FATAL_ERROR "resultsTestsTmp/${TEST_NAME} has some different files from reference/${TEST_NAME}")
+  endif()
 endif()
-execute_process(COMMAND ${PYTHON_COMMAND} ${CHECK_SCRIPT} . ${TEST_NAME} "TestIIDM_${TEST_NAME}" RESULT_VARIABLE CHECKS_RESULT)
-if(CHECKS_RESULT)
+
+set(_command ${PYTHON_COMMAND} ${CHECK_SCRIPT} . ${TEST_NAME} "TestIIDM_${TEST_NAME}")
+if(DEFINED CHECK_SCRIPT)
+  message(STATUS "Execute process: ${_command}")
+  execute_process(COMMAND ${_command} RESULT_VARIABLE _result)
+  if(_result)
     message(FATAL_ERROR "resultsTestsTmp/${TEST_NAME} has some input or output files that contain errors")
+  endif()
 endif()

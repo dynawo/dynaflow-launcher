@@ -1,0 +1,7 @@
+{
+  "dfl-config": {
+    "sa": {
+      "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp"
+    }
+  }
+}

@@ -11,15 +11,24 @@
 #include "Dyd.h"
 #include "Tests.h"
 
+#include <DYNMPIContext.h>
+
 #include <boost/filesystem.hpp>
 
 testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
+DYNAlgorithms::mpi::Context mpiContext;
+
+using dfl::algo::GeneratorDefinition;
+using dfl::algo::LoadDefinition;
+using dfl::algo::HVDCLineDefinitions;
+using dfl::algo::GeneratorDefinitionAlgorithm;
+using dfl::algo::DynamicModelDefinitions;
+using dfl::algo::StaticVarCompensatorDefinition;
+
 TEST(Dyd, write) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
   std::string basename = "TestDyd";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -48,9 +57,13 @@ TEST(Dyd, write) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  outputPath.append(filename);
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, {}, {}));
+  outputPath.append(filename);
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
+      basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -62,9 +75,6 @@ TEST(Dyd, write) {
 }
 
 TEST(Dyd, writeRemote) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
-
   std::string basename = "TestDydRemote";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -89,10 +99,13 @@ TEST(Dyd, writeRemote) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
+  DynamicModelDefinitions noModels;
+
   outputPath.append(filename);
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
-  dfl::outputs::Dyd dydWriter(
-      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, {}, busesRegulatedBySeveralGenerators, manager, {}, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
+      basename, outputPath.generic_string(), generators, {}, node, noHvdcDefs, busesRegulatedBySeveralGenerators, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -124,18 +137,21 @@ TEST(Dyd, writeHvdc) {
                                     "_BUS___11_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
                                     0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   //  maybe watch out but you can't access the hdvLine from the converterInterface
-  dfl::algo::HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
-  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds = {
+  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
+  HVDCLineDefinitions::BusVSCMap vscIds = {
       std::make_pair("_BUS___10_TN", "VSCStation1"),
   };
-  dfl::algo::HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  outputPath.append(filename);
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, {}, manager, {}, {}));
+  outputPath.append(filename);
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
+      basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, noBuses, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -147,9 +163,6 @@ TEST(Dyd, writeHvdc) {
 }
 
 TEST(Dyd, writeDynamicModel) {
-  using dfl::algo::GeneratorDefinition;
-  using dfl::algo::LoadDefinition;
-
   std::string basename = "TestDydDynModel";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -161,9 +174,10 @@ TEST(Dyd, writeDynamicModel) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  dfl::algo::DynamicModelDefinitions models;
+  DynamicModelDefinitions models;
   models.usedMacroConnections.insert("ToUMeasurement");
   models.usedMacroConnections.insert("ToControlledShunts");
+  models.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
   models.models.insert({"MODELE_1_VL4", dfl::algo::DynamicModelDefinition("MODELE_1_VL4", "DYNModel1")});
 
   auto macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
@@ -177,7 +191,6 @@ TEST(Dyd, writeDynamicModel) {
 
   models.usedMacroConnections.insert("SVCToUMeasurement");
   models.usedMacroConnections.insert("SVCToGenerator");
-  models.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
 
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
   models.models.at("SVC").nodeConnections.insert(macro);
@@ -200,9 +213,12 @@ TEST(Dyd, writeDynamicModel) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  outputPath.append(filename);
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, {}, {}, manager, models, {}));
+  outputPath.append(filename);
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
+      basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, models, {}));
 
   dydWriter.write();
 
@@ -214,8 +230,6 @@ TEST(Dyd, writeDynamicModel) {
 }
 
 TEST(Dyd, writeStaticVarCompensator) {
-  using dfl::algo::StaticVarCompensatorDefinition;
-
   std::string basename = "TestDydSVarC";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -246,9 +260,13 @@ TEST(Dyd, writeStaticVarCompensator) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  outputPath.append(filename);
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, {}, {}, manager, {}, svarcs));
+  outputPath.append(filename);
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
+      basename, outputPath.generic_string(), {}, {}, node, noHvdcDefs, noBuses, manager, noModels, svarcs));
 
   dydWriter.write();
 
@@ -260,8 +278,6 @@ TEST(Dyd, writeStaticVarCompensator) {
 }
 
 TEST(Dyd, writeLoad) {
-  using dfl::algo::LoadDefinition;
-  using dfl::algo::StaticVarCompensatorDefinition;
   std::string basename = "TestDydLoad";
   std::string filename = basename + ".dyd";
   boost::filesystem::path outputPath(outputPathResults);
@@ -280,9 +296,13 @@ TEST(Dyd, writeLoad) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  outputPath.append(filename);
+  HVDCLineDefinitions noHvdcDefs;
+  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  DynamicModelDefinitions noModels;
 
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, loads, node, {}, {}, manager, {}, {}));
+  outputPath.append(filename);
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
+      basename, outputPath.generic_string(), {}, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
 
   dydWriter.write();
 

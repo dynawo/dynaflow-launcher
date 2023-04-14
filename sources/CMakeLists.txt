@@ -60,7 +60,7 @@ add_custom_command(TARGET revisiontag
     -P ${CMAKE_SOURCE_DIR}/cmake/getgitheadrevision.cmake
   )
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/etc DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 # The following will export the targets under the name ${PROJECT_NAME}_Targets, not install them yet
 # It will then need a call to `install(EXPORT)`

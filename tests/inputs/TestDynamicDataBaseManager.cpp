@@ -43,7 +43,11 @@ createManager() {
 TEST(TestDynamicDataBaseManager, wrong_xsd) {
   using dfl::inputs::DynamicDataBaseManager;
 
+#ifndef _MSC_VER
   setenv("DYNAFLOW_LAUNCHER_XSD", "res", 1);
+#else
+  _putenv_s("DYNAFLOW_LAUNCHER_XSD", "res");
+#endif
 
   ASSERT_THROW_DYNAWO(createManager(), DYN::Error::GENERAL, dfl::KeyError_t::DynModelFileReadError);
 }

@@ -13,11 +13,13 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "Do not build in-source. Please remove CMakeCache.txt and the CMakeFiles/ directory. Then build out-of-source.")
 endif()
 
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel (CMake defaults)")
+
 # Put the project early since modules might need to detect the compiler.
 # More information https://cmake.org/cmake/help/latest/command/project.html
 project(
     "DynaFlowLauncher" # This will exposed as the variable PROJECT_NAME.
-    VERSION 1.5.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
+    VERSION 1.6.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
 
@@ -30,6 +32,11 @@ project(
 include(CTest)                          # Must be called before adding tests but after calling project(). This automatically calls enable_testing() and configures ctest targets when using Make/Ninja
 include(CMakeDependentOption)           # This is a really useful scripts that creates options that depends on other options. It can even be used with generator expressions !
 include(GNUInstallDirs)                 # This will define the default values for installation directories (all platforms even if named GNU)
+if(CMAKE_BUILD_TYPE MATCHES "^Debug$")
+  set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)       # Install the debug runtime libraries
+  set(CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE)  # Do not install the release runtime libraries
+endif()
+set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)          # Install the Windows Universal CRT libraries
 include(InstallRequiredSystemLibraries) # Tell CMake that the `install` target needs to install required system libraries (eg: Windows SDK)
 include(CMakePackageConfigHelpers)      # Helper to create relocatable packages
 
@@ -38,7 +45,6 @@ include(CMakePackageConfigHelpers)      # Helper to create relocatable packages
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake") # Make our cmake scripts available
 
 include(Warnings)
-include(CopyDllsForDebug)
 include(Coverage)
 include(Policy)
 include(CheckVar)
@@ -48,6 +54,7 @@ include(BuildType)
 ## POLICIES ###
 ###############
 
+policy(CMP0054 NEW) # Only interpret if() arguments as variables or keywords when unquoted.
 policy(CMP0074 NEW) # find_package uses PackageName_ROOT variables.
 policy(CMP0075 NEW) # honor CMAKE_REQUIRED_LIBRARIES in the include file check macros
 
@@ -58,10 +65,7 @@ policy(CMP0075 NEW) # honor CMAKE_REQUIRED_LIBRARIES in the include file check m
 # You should try to give as much control over the project setup to the user.
 # When modifying compile flags for example, if they are not mandatory, provide an option.
 
-set(DYNAFLOW_LAUNCHER_LOCALE "en_GB" CACHE STRING "Localization for dictionnaries")
 set(FORCE_CXX11_ABI OFF CACHE BOOL "Choose either ON or OFF.")
-
-option(DYNAFLOW_LAUNCHER_USE_ADDITIONAL_SOURCEFILE "Use the additional source file" ON)
 
 # Use your own option for tests, in case people use your library through add_subdirectory
 cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
@@ -69,7 +73,6 @@ cmake_dependent_option(DYNAFLOW_LAUNCHER_BUILD_TESTS
     "BUILD_TESTING" OFF # Stay coherent with CTest variables
 )
 
-set(CMAKE_CXX_FLAGS_DEBUG "-D_DEBUG_=1")
 if(FORCE_CXX11_ABI)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=1")
 endif()
@@ -114,7 +117,7 @@ find_package(XercesC 3.2.2 REQUIRED)
 # libXML
 find_package(libXML 0.2.4 REQUIRED)
 find_package(LibXml2 "2.9" REQUIRED)
-find_package(LibIIDM "1.4.0" REQUIRED PATHS ${LIBIIDM_HOME})
+find_package(LibIIDM "1.4.0" REQUIRED)
 # Boost
 # Use only BOOST_ROOT by default to avoid conflicts between dynawo boost and default install
 option(DYNAFLOW_LAUNCHER_USE_BOOST_DEFAULT "Use default system boost installation" OFF)
@@ -125,12 +128,18 @@ else()
   # Use Boost_NO_BOOST_CMAKE to ensure that find_package uses MODULE mode and takes Boost_NO_SYSTEM_PATHS into account, instead of CONFIG mode
   set(Boost_NO_BOOST_CMAKE ON)
 endif()
+# Tell BOOST to link all libraries as DLL's rather than static libraries on Microsoft Windows
+add_definitions(-DBOOST_ALL_DYN_LINK)
 # Tell BOOST to disable auto linking
 add_definitions(-DBOOST_ALL_NO_LIB)
 find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
 
-install(DIRECTORY ${DYNAWO_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
-install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
+# install target is deploy too !
+option(DYNAFLOW_LAUNCHER_DEPLOY "Deploy dynawo and dynawo-algorithms while install dynaflow-launcher" ON)
+if(DYNAFLOW_LAUNCHER_DEPLOY)
+  install(DIRECTORY ${DYNAWO_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
+  install(DIRECTORY ${DYNAWO_ALGORITHMS_HOME}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/ USE_SOURCE_PERMISSIONS)
+endif()
 
 #concatenate dictionaries_mapping files
 function(cat IN_FILE OUT_FILE)
@@ -158,12 +167,12 @@ if(MPI_FOUND)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MPI_C_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MPI_CXX_FLAGS}")
 endif()
-find_program(MPI_RUN mpirun PATHS ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich/bin REQUIRED NO_CMAKE_PATH)
+find_program(MPI_RUN NAMES mpirun mpiexec.exe PATHS ${DYNAFLOW_LAUNCHER_THIRD_PARTY_DIR}/mpich/bin REQUIRED NO_CMAKE_PATH)
 message(STATUS "mpirun found: " ${MPI_RUN})
 
 ## Dynawo
-find_package(Dynawo 1.5.0 REQUIRED)
-find_package(DynawoAlgorithms 1.5.0 REQUIRED)
+find_package(Dynawo 1.6.0 REQUIRED)
+find_package(DynawoAlgorithms 1.6.0 REQUIRED)
 
 # Python Interpreter
 find_package(PythonInterp REQUIRED)
@@ -187,6 +196,9 @@ message(STATUS "Python command used: ${PYTHON_EXECUTABLE}")
 # set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 # set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)    # export all symbols from dll on Windows
+set(CMAKE_ENABLE_EXPORTS ON)                # export all symbols from exe on Windows
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -206,7 +218,6 @@ add_subdirectory(sources)
 
 # CMake scripts extensions
 target_set_warnings(DynaFlowLauncher ENABLE ALL AS_ERROR ALL DISABLE Annoying) # Helper that can set default warning flags for you
-copy_dlls_for_debug(DynaFlowLauncher "" "") # Copy dependencies next to the executable (DLLs for example)
 
 # Setup our project as the startup project for Visual so that people don't need to do it manually
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT DynaFlowLauncher)
@@ -215,20 +226,16 @@ set_directory_properties(PROPERTIES VS_STARTUP_PROJECT DynaFlowLauncher)
 #   Tests   #
 #===========#
 
-if(DYNAFLOW_LAUNCHER_BUILD_TESTS)
-    # Let the user add options to the test runner if needed
-    set(TEST_RUNNER_PARAMS "--force-colors=true" CACHE STRING "Options to add to our test runners commands")
-    # In a real project you most likely want to exclude test folders
-    list(APPEND CUSTOM_COVERAGE_EXCLUDE "/tests/")
-    add_subdirectory(tests)
-    # You can setup some custom variables and add them to the CTestCustom.cmake.in template to have custom ctest settings
-    # For example, you can exclude some directories from the coverage reports such as third-parties and tests
-    configure_file(
-        ${CMAKE_CURRENT_LIST_DIR}/cmake/CTestCustom.cmake.in
-        ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
-        @ONLY
-    )
-endif()
+# In a real project you most likely want to exclude test folders
+list(APPEND CUSTOM_COVERAGE_EXCLUDE "/tests/")
+add_subdirectory(tests)
+# You can setup some custom variables and add them to the CTestCustom.cmake.in template to have custom ctest settings
+# For example, you can exclude some directories from the coverage reports such as third-parties and tests
+configure_file(
+    ${CMAKE_CURRENT_LIST_DIR}/cmake/CTestCustom.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+    @ONLY
+)
 
 #############
 ## Doxygen ##
@@ -289,4 +296,8 @@ install(FILES
         ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
 )
 
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/dynaflow-launcher.sh DESTINATION .)
+if(MSVC)
+  install(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/dynaflow-launcher.cmd DESTINATION .)
+else()  # Linux
+  install(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/dynaflow-launcher.sh DESTINATION .)
+endif()

@@ -140,9 +140,7 @@ inline static std::string getGeneratorParameterSetId(const algo::GeneratorDefini
       id += "_Nuc";
     break;
   default:
-    std::size_t hashId = constants::hash(generator.id);
-    std::string hashIdStr = std::to_string(hashId);
-    id = hashIdStr;
+    id = constants::uuid(generator.id);
     break;
   }
   return id;
@@ -156,8 +154,7 @@ inline static std::string getGeneratorParameterSetId(const algo::GeneratorDefini
  */
 inline static bool generatorSharesParId(const algo::GeneratorDefinition &generator) {
   std::string parId = getGeneratorParameterSetId(generator);
-  std::size_t hashId = constants::hash(generator.id);
-  return parId != std::to_string(hashId);
+  return parId != constants::uuid(generator.id);
 }
 
 }  // namespace helper

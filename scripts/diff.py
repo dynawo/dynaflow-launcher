@@ -10,12 +10,14 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-# import iidmDiff
 import os
 import sys
 import argparse
 import json
-import filecmp
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 import iidmDiff
 import constraintsDiff
 
@@ -112,7 +114,9 @@ if __name__ == "__main__":
                 if options.verbose:
                     print("comparing " + result_path + " and " + reference_path)
 
-                identical = filecmp.cmp (result_path, reference_path, shallow=False)
+                # compare line per line with universal newline, stop at first diff
+                with open(result_path) as f1, open(reference_path) as f2:
+                    identical = all(l1 == l2 for l1, l2 in zip_longest(f1, f2))
                 if identical:
                     print("No difference")
                 else:

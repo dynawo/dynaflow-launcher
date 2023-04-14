@@ -8,9 +8,11 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "Log.h"
+#include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm_ext/erase.hpp>
 
 #include "Job.h"
+#include "Log.h"
 #include "Tests.h"
 
 #include <DYNExecUtils.h>
@@ -67,10 +69,10 @@ TEST(Job, write) {
     auto outputs = jobEntry->getOutputsEntry();
     ASSERT_EQ("outputs", outputs->getOutputsDirectory());
 
-    #if _DEBUG_
+#if _DEBUG_
     // On debug we always ask for a timeline and a constraints output
     ASSERT_NE(nullptr, outputs->getTimelineEntry());
-    ASSERT_EQ("TXT", outputs->getTimelineEntry()->getExportMode());
+    ASSERT_EQ("XML", outputs->getTimelineEntry()->getExportMode());
     ASSERT_EQ("", outputs->getTimelineEntry()->getOutputFile());
     ASSERT_TRUE(outputs->getTimelineEntry()->getExportWithTime());
     ASSERT_NE(nullptr, outputs->getConstraintsEntry());
@@ -78,33 +80,33 @@ TEST(Job, write) {
     ASSERT_EQ("", outputs->getConstraintsEntry()->getOutputFile());
     ASSERT_NE(nullptr, outputs->getLostEquipmentsEntry());
     ASSERT_TRUE(outputs->getLostEquipmentsEntry()->getDumpLostEquipments());
-    #else
+#else
 
     switch (simulationKind) {
-      case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
-        ASSERT_EQ(nullptr, outputs->getConstraintsEntry());
-        ASSERT_EQ(nullptr, outputs->getLostEquipmentsEntry());
-        break;
-      case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-        ASSERT_NE(nullptr, outputs->getConstraintsEntry());
-        ASSERT_NE(nullptr, outputs->getLostEquipmentsEntry());
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+      ASSERT_EQ(nullptr, outputs->getConstraintsEntry());
+      ASSERT_EQ(nullptr, outputs->getLostEquipmentsEntry());
+      break;
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+      ASSERT_NE(nullptr, outputs->getConstraintsEntry());
+      ASSERT_NE(nullptr, outputs->getLostEquipmentsEntry());
 
-        ASSERT_EQ("XML", outputs->getConstraintsEntry()->getExportMode());
-        ASSERT_EQ("", outputs->getConstraintsEntry()->getOutputFile());
-        ASSERT_NE(nullptr, outputs->getLostEquipmentsEntry());
-        ASSERT_TRUE(outputs->getLostEquipmentsEntry()->getDumpLostEquipments());
-        break;
+      ASSERT_EQ("XML", outputs->getConstraintsEntry()->getExportMode());
+      ASSERT_EQ("", outputs->getConstraintsEntry()->getOutputFile());
+      ASSERT_NE(nullptr, outputs->getLostEquipmentsEntry());
+      ASSERT_TRUE(outputs->getLostEquipmentsEntry()->getDumpLostEquipments());
+      break;
     }
 
     ASSERT_EQ(nullptr, outputs->getTimelineEntry());
-    #endif
+#endif
 
     ASSERT_EQ(nullptr, outputs->getInitValuesEntry());
     auto appenders = outputs->getLogsEntry()->getAppenderEntries();
     ASSERT_EQ(1, appenders.size());
 
     auto appender_it = appenders.begin();
-    auto& appender = *appender_it;
+    auto &appender = *appender_it;
     ASSERT_EQ("INFO", appender->getLvlFilter());
     ASSERT_EQ("", appender->getTag());
     ASSERT_EQ(" | ", appender->getSeparator());
@@ -112,38 +114,38 @@ TEST(Job, write) {
     ASSERT_EQ("dynawo.log", appender->getFilePath());
 
     auto finalstates = outputs->getFinalStateEntries();
-    #if _DEBUG_
+#if _DEBUG_
     ASSERT_EQ(finalstates.size(), 1);
     ASSERT_TRUE(finalstates.front()->getExportIIDMFile());
     ASSERT_FALSE(finalstates.front()->getExportDumpFile());
-    #else
+#else
     switch (simulationKind) {
-      case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
-        ASSERT_EQ(finalstates.size(), 1);
-        ASSERT_TRUE(finalstates.front()->getExportIIDMFile());
-        ASSERT_FALSE(finalstates.front()->getExportDumpFile());
-        break;
-      case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-        ASSERT_FALSE(finalstates.front()->getExportIIDMFile());
-        break;
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+      ASSERT_EQ(finalstates.size(), 1);
+      ASSERT_TRUE(finalstates.front()->getExportIIDMFile());
+      ASSERT_FALSE(finalstates.front()->getExportDumpFile());
+      break;
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+      ASSERT_FALSE(finalstates.front()->getExportIIDMFile());
+      break;
     }
-    #endif
+#endif
 
     std::string basename = "TestJob";
     std::string filename = basename + ".jobs";
     std::string filename_reference;
-    #if _DEBUG_
+#if _DEBUG_
     filename_reference = basename + "_debug.jobs";
-    #else
+#else
     switch (simulationKind) {
-      case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
-        filename_reference = basename + "_release.jobs";
-        break;
-      case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-        filename_reference = basename + "_release_sa.jobs";
-        break;
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+      filename_reference = basename + "_release.jobs";
+      break;
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+      filename_reference = basename + "_release_sa.jobs";
+      break;
     }
-    #endif
+#endif
     boost::filesystem::path outputPath(outputPathResults);
     outputPath.append(basename);
     if (!boost::filesystem::exists(outputPath)) {
@@ -163,8 +165,9 @@ TEST(Job, write) {
     std::stringstream ssVal;
     std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
     executeCommand(command, ssVal);
-    std::string commandRes = "Executing command : " + command + "\n" + outputPath.generic_string() + " validates\n";
-    ASSERT_EQ(ssVal.str(), commandRes);
+    std::string result = ssVal.str();
+    boost::range::remove_erase_if(result, boost::is_any_of("\r\n"));
+    ASSERT_EQ(result, "Executing command : " + command /*+ "\n"*/ + outputPath.generic_string() + " validates");
   }
 }
 
@@ -212,27 +215,24 @@ TEST(Job, ChosenOutputs) {
   */
 
   dfl::inputs::Configuration::SimulationKind simulationKindsArray[2] = {dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION,
-                                                                          dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS};
+                                                                        dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS};
   for (dfl::inputs::Configuration::SimulationKind simulationKind : simulationKindsArray) {
     std::map<const std::string, const int> configFileToChosenOutputMap;
-  #if _DEBUG_
-    configFileToChosenOutputMap = {{"res/config_empty.json", 0b1111},
-                                    {"res/config_only_lost_equipments_chosen.json", 0b1111},
-                                    {"res/config_all_chosen_outputs.json", 0b1111}};
-  #else
+#if _DEBUG_
+    configFileToChosenOutputMap = {
+        {"res/config_empty.json", 0b1111}, {"res/config_only_lost_equipments_chosen.json", 0b1111}, {"res/config_all_chosen_outputs.json", 0b1111}};
+#else
     switch (simulationKind) {
-      case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
-        configFileToChosenOutputMap = {{"res/config_empty.json", 0b1000},
-                                        {"res/config_only_lost_equipments_chosen.json", 0b1001},
-                                        {"res/config_all_chosen_outputs.json", 0b1111}};
-        break;
-      case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-        configFileToChosenOutputMap = {{"res/config_empty.json", 0b0101},
-                                        {"res/config_only_timeline_chosen.json", 0b0111},
-                                        {"res/config_all_chosen_outputs.json", 0b1111}};
-        break;
+    case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION:
+      configFileToChosenOutputMap = {
+          {"res/config_empty.json", 0b1000}, {"res/config_only_lost_equipments_chosen.json", 0b1001}, {"res/config_all_chosen_outputs.json", 0b1111}};
+      break;
+    case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
+      configFileToChosenOutputMap = {
+          {"res/config_empty.json", 0b0101}, {"res/config_only_timeline_chosen.json", 0b0111}, {"res/config_all_chosen_outputs.json", 0b1111}};
+      break;
     }
-  #endif
+#endif
 
     ASSERT_FALSE(configFileToChosenOutputMap.empty());
 
@@ -241,11 +241,11 @@ TEST(Job, ChosenOutputs) {
       dfl::inputs::Configuration config(chosenOutputsPath, simulationKind);
       dfl::outputs::Job job(dfl::outputs::Job::JobDefinition("TestJobChosenOutputs", "INFO", config));
       boost::shared_ptr<job::JobEntry> jobEntry = job.write();
-      const boost::shared_ptr<job::OutputsEntry>& outputsEntry = jobEntry->getOutputsEntry();
-      const std::vector<boost::shared_ptr<job::FinalStateEntry>>& finalStateEntry = outputsEntry->getFinalStateEntries();
-      const boost::shared_ptr<job::ConstraintsEntry>& constraintsEntry = outputsEntry->getConstraintsEntry();
-      const boost::shared_ptr<job::TimelineEntry>& timelineEntry = outputsEntry->getTimelineEntry();
-      const boost::shared_ptr<job::LostEquipmentsEntry>& lostEquipmentsEntry = outputsEntry->getLostEquipmentsEntry();
+      const boost::shared_ptr<job::OutputsEntry> &outputsEntry = jobEntry->getOutputsEntry();
+      const std::vector<boost::shared_ptr<job::FinalStateEntry>> &finalStateEntry = outputsEntry->getFinalStateEntries();
+      const boost::shared_ptr<job::ConstraintsEntry> &constraintsEntry = outputsEntry->getConstraintsEntry();
+      const boost::shared_ptr<job::TimelineEntry> &timelineEntry = outputsEntry->getTimelineEntry();
+      const boost::shared_ptr<job::LostEquipmentsEntry> &lostEquipmentsEntry = outputsEntry->getLostEquipmentsEntry();
 
       if (chosenOutput.second & 0b1000) {
         ASSERT_TRUE(finalStateEntry.front()->getExportIIDMFile());

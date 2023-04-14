@@ -65,7 +65,7 @@ void Diagram::writeGenerators() const {
     writeTable(generator, buffer, Tables::TABLE_QMAX);
     boost::filesystem::path dir(def_.directoryPath);
     std::string filename = dir.append(outputs::constants::diagramFilename(generator.id)).generic_string();
-    std::ofstream ofs(filename, std::ofstream::out);
+    std::ofstream ofs(filename, std::ios::binary);
     ofs << buffer.str();
     ofs.close();
   }
@@ -83,7 +83,7 @@ void Diagram::writeVSC(const algo::VSCDefinition &vscDefinition) const {
   writeTable(vscDefinition, buffer, Tables::TABLE_QMAX);
   boost::filesystem::path dir(def_.directoryPath);
   std::string filename = dir.append(outputs::constants::diagramFilename(vscDefinition.id)).generic_string();
-  std::ofstream ofs(filename, std::ofstream::out);
+  std::ofstream ofs(filename, std::ios::binary);
   ofs << buffer.str();
   ofs.close();
 }
@@ -103,7 +103,7 @@ void Diagram::writeLCC(const algo::HVDCDefinition::ConverterId &converterId, dou
   writeTable(lccDefinition, buffer, Tables::TABLE_QMAX);
   boost::filesystem::path dir(def_.directoryPath);
   std::string filename = dir.append(outputs::constants::diagramFilename(converterId)).generic_string();
-  std::ofstream ofs(filename, std::ofstream::out);
+  std::ofstream ofs(filename, std::ios::binary);
   ofs << buffer.str();
   ofs.close();
 }
@@ -155,8 +155,7 @@ void Diagram::writeConverters() const {
 
 template <class T> void Diagram::writeTable(const T &element, std::stringstream &buffer, Tables table) {
   buffer << "\ndouble ";
-  std::size_t hash = constants::hash(element.id);
-  buffer << hash;
+  buffer << constants::uuid(element.id);
   if (table == Tables::TABLE_QMIN)
     buffer << constants::diagramMinTableSuffix << '(';
   else

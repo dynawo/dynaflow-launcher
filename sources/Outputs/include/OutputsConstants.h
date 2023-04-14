@@ -27,14 +27,11 @@ namespace outputs {
 namespace constants {
 
 /**
- * @brief Return a hash number from a string as input
- * @param str The string that will serve as input for the hash function
- * @return The hash as a number
+ * @brief Return an uuid from a string as input
+ * @param str The string that will serve as input for uuid generation
+ * @return The uuid as a string
  */
-static inline std::size_t
-hash(const std::string& str) {
-  return std::hash<std::string>{}(str);
-}
+std::string uuid(const std::string& str);
 
 /**
  * @brief Computes Qmax
