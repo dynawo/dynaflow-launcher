@@ -119,11 +119,8 @@ def check_timeline(timeline_log_file, element):
     timeline_root = timeline.getroot()
     timeline_namespace = timeline_root.nsmap
     timeline_prefix_root = timeline_root.prefix
-    if timeline_prefix_root is None:
-        timeline_prefix_root_string = ''
-    else:
-        timeline_prefix_root_string = timeline_prefix_root + ':'
-    for event in timeline_root.findall('.//' + timeline_prefix_root_string + 'event', timeline_namespace):
+    prefix_str = "{" + str(timeline_namespace[timeline_prefix_root]) + "}" if timeline_prefix_root in timeline_namespace else ""
+    for event in timeline_root.findall('.//' + prefix_str + 'event'):
         element_id_from_timeline = event.attrib['modelName']
         # For busbar sections, if we find a disconnected calculated bus it is ok
         if element_type == 'BUSBAR_SECTION' and 'calculatedBus' in element_id_from_timeline:
