@@ -81,23 +81,20 @@ AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path &assembling
   }
 }
 
-/**
- * @brief Retrieve a macro connections with its id
- * @param id macro connection id
- * @returns the macro connection with the given id, throw if not found
- */
-const AssemblingDataBase::MacroConnection &AssemblingDataBase::getMacroConnection(const std::string &id) const {
+const AssemblingDataBase::MacroConnection &AssemblingDataBase::getMacroConnection(const std::string &id, bool network) const {
+  if (network) {
+    const auto it = networkMacroConnections_.find(id);
+    if (it != networkMacroConnections_.end())
+      return it->second;
+  }
   const auto it = macroConnections_.find(id);
   if (it != macroConnections_.end())
     return it->second;
   throw Error(UnknownMacroConnection, id);
 }
 
-/**
- * @brief Retrieve a single association with its id
- * @param id single association id
- * @returns the single associations element with the given id, throw if not found
- */
+bool AssemblingDataBase::hasNetworkMacroConnection(const std::string &id) const { return networkMacroConnections_.find(id) != networkMacroConnections_.end(); }
+
 const AssemblingDataBase::SingleAssociation &AssemblingDataBase::getSingleAssociation(const std::string &id) const {
   const auto it = singleAssociations_.find(id);
   if (it != singleAssociations_.end())
@@ -150,7 +147,11 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
 
   macroConnectionHandler_.onStart([this]() { macroConnectionHandler_.currentMacroConnection = AssemblingDataBase::MacroConnection(); });
   macroConnectionHandler_.onEnd([this, &db]() {
-    db.macroConnections_[macroConnectionHandler_.currentMacroConnection->id] = *macroConnectionHandler_.currentMacroConnection;
+    if (macroConnectionHandler_.currentMacroConnection->network) {
+      db.networkMacroConnections_[macroConnectionHandler_.currentMacroConnection->id] = *macroConnectionHandler_.currentMacroConnection;
+    } else {
+      db.macroConnections_[macroConnectionHandler_.currentMacroConnection->id] = *macroConnectionHandler_.currentMacroConnection;
+    }
     macroConnectionHandler_.currentMacroConnection.reset();
   });
 
@@ -234,7 +235,11 @@ AssemblingDataBase::AssemblingXmlDocument::MacroConnectionHandler::MacroConnecti
     : connectionHandler(parser::ElementName(ns, "connection")) {
   onElement(root + ns("connection"), connectionHandler);
 
-  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) { currentMacroConnection->id = attributes["id"].as_string(); });
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
+    currentMacroConnection->id = attributes["id"].as_string();
+    if (attributes.has("network"))
+      currentMacroConnection->network = attributes["network"].as<bool>();
+  });
 
   connectionHandler.onStart([this]() { connectionHandler.currentConnection = AssemblingDataBase::Connection(); });
   connectionHandler.onEnd([this]() {

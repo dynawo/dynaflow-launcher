@@ -42,8 +42,17 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(macro.connections.size(), 1);
   ASSERT_EQ(macro.connections.front().var1, "U_IMPIN");
   ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
+  ASSERT_FALSE(macro.network);
+  macro = assembling.getMacroConnection("ToUMeasurement", true);
+  ASSERT_EQ(macro.id, "ToUMeasurement");
+  ASSERT_EQ(macro.connections.size(), 1);
+  ASSERT_EQ(macro.connections.front().var1, "Network_U_IMPIN");
+  ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
+  ASSERT_TRUE(macro.network);
+  ASSERT_TRUE(assembling.hasNetworkMacroConnection("ToUMeasurement"));
   macro = assembling.getMacroConnection("ToControlledShunts");
   ASSERT_EQ(macro.id, "ToControlledShunts");
+  ASSERT_FALSE(assembling.hasNetworkMacroConnection("ToControlledShunts"));
   ASSERT_EQ(macro.connections.size(), 3);
   std::array<std::tuple<std::string, std::string>, 3> connect_values = {std::make_tuple("shunt_state_@INDEX@", "@NAME@_state"),
                                                                         std::make_tuple("shunt_isCapacitor_@INDEX@", "@NAME@_isCapacitor"),
@@ -113,7 +122,7 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(singleAssoc.loads[0].name, "LoadId");
   ASSERT_EQ(singleAssoc.loads[1].name, "LoadId_0");
 
-  const auto& dynamicAutomatons = assembling.dynamicAutomatons();
+  const auto &dynamicAutomatons = assembling.dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 4);
   ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.id, "MODELE_1_VL4");
   ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.lib, "DYNModel1");
@@ -126,7 +135,7 @@ TEST(AssemblingXmlDocument, readFile) {
   // Check model model connections
   ASSERT_EQ(dynamicAutomatons.find("VIRTUAL_MODEL")->second.id, "VIRTUAL_MODEL");
   ASSERT_EQ(dynamicAutomatons.find("VIRTUAL_MODEL")->second.lib, "DYNModelVirtual");
-  const auto& macroConnectsModelModel = dynamicAutomatons.find("VIRTUAL_MODEL")->second.macroConnects;
+  const auto &macroConnectsModelModel = dynamicAutomatons.find("VIRTUAL_MODEL")->second.macroConnects;
   ASSERT_EQ(macroConnectsModelModel.size(), 1);
   ASSERT_EQ(macroConnectsModelModel[0].id, "MODELE_1_VL6");
   ASSERT_EQ(macroConnectsModelModel[0].macroConnection, "ModelModelConnection");

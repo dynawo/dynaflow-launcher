@@ -201,6 +201,9 @@ TEST(Dyd, writeDynamicModel) {
   macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5");
   models.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6");
+  models.models.at("SVC").nodeConnections.insert(macro);
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
                                        LoadDefinition("L1", LoadDefinition::ModelType::NETWORK, "01"),
@@ -212,7 +215,8 @@ TEST(Dyd, writeDynamicModel) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
