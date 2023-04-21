@@ -63,6 +63,11 @@
     <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
   </macroConnection>
+  <macroConnection id="SVCToGenerator" index1="true" network="true">
+    <connection var1="secondaryVoltageControl_level" var2="Network_reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="Network_generator_limUQUp"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="Network_generator_limUQDown"/>
+  </macroConnection>
   <singleAssociation id="UMeasurement">
     <bus voltageLevel="VL"/>
   </singleAssociation>
