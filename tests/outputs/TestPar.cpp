@@ -21,11 +21,11 @@ testing::Environment *const env = initXmlEnvironment();
 
 DYNAlgorithms::mpi::Context mpiContext;
 
-using dfl::algo::GeneratorDefinition;
-using dfl::algo::LoadDefinition;
-using dfl::algo::HVDCLineDefinitions;
-using dfl::algo::GeneratorDefinitionAlgorithm;
 using dfl::algo::DynamicModelDefinitions;
+using dfl::algo::GeneratorDefinition;
+using dfl::algo::GeneratorDefinitionAlgorithm;
+using dfl::algo::HVDCLineDefinitions;
+using dfl::algo::LoadDefinition;
 using dfl::algo::StaticVarCompensatorDefinition;
 
 TEST(TestPar, write) {
@@ -59,8 +59,8 @@ TEST(TestPar, write) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-      basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -102,8 +102,8 @@ TEST(TestPar, writeRemote) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-      basename, config, outputPath.generic_string(), generators, noHvdcDefs, busesRegulatedBySeveralGenerators, manager, {}, noModels, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, noHvdcDefs,
+                                                               busesRegulatedBySeveralGenerators, manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -178,8 +178,8 @@ TEST(TestPar, writeHdvc) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-      basename, config, outputPath.generic_string(), {}, hvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
 
@@ -211,6 +211,7 @@ TEST(TestPar, DynModel) {
   dfl::algo::DynamicModelDefinition dynModel("DM_VL61", "DummyLib");
   dynModel.nodeConnections.insert(
       dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId"));
+
   defs.models.insert({dynModel.id, dynModel});
 
   defs.usedMacroConnections.insert("SVCToUMeasurement");
@@ -234,8 +235,11 @@ TEST(TestPar, DynModel) {
   macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8");
   defs.models.at("SVC").nodeConnections.insert(macro);
-  macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO,
-                                                             "MESURE_I_CLA_TEST");
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TFOId");
+  defs.models.at("DM_TEST").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TFOId2");
   defs.models.at("DM_TEST").nodeConnections.insert(macro);
 
   const std::string bus1 = "BUS_1";
@@ -257,10 +261,12 @@ TEST(TestPar, DynModel) {
   auto vl2 = std::make_shared<dfl::inputs::VoltageLevel>("VLb");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{dfl::inputs::Node::build("VL0", vl2, 0.0, {}), dfl::inputs::Node::build("VL1", vl, 1.0, {})};
   auto tfo = dfl::inputs::Tfo::build("TFOId", nodes[0], nodes[1], "SUMMER", true, true);
+  auto tfo2 = dfl::inputs::Tfo::build("TFOId2", nodes[0], nodes[1], "SUMMER", true, true);
   dfl::algo::TransformersByIdDefinitions tfosById;
   tfosById.tfosMap.insert({"TFOId", *tfo});
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-      basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager, counters, defs, {}, tfosById, {}, {}));
+  tfosById.tfosMap.insert({"TFOId2", *tfo});
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager,
+                                                               counters, defs, {}, tfosById, {}, {}));
 
   parWriter.write();
 
@@ -306,8 +312,8 @@ TEST(TestPar, writeStaticVarCompensator) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-      basename, config, outputPath.generic_string(), {}, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, svarcs, {}));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, svarcs, {}));
 
   parWriter.write();
 
@@ -344,8 +350,8 @@ TEST(TestPar, writeLoad) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-      basename, config, outputPath.generic_string(), {}, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, loads));
+  dfl::outputs::Par parWriter(
+      dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, noHvdcDefs, noBuses, manager, {}, noModels, {}, {}, {}, loads));
 
   parWriter.write();
 
@@ -457,8 +463,8 @@ TEST(TestPar, startingPointMode) {
 
     std::string startingPointConfigFilePath = "res/" + startingPointModeFile;
     dfl::inputs::Configuration config(startingPointConfigFilePath);
-    dfl::outputs::Par startingPointModeParWriter(dfl::outputs::Par::ParDefinition(
-          basename, config, outputPath.generic_string(), generators, hvdcDefs, noBuses, manager, {}, noModels, {}, {}, svarcs, loads));
+    dfl::outputs::Par startingPointModeParWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs, noBuses,
+                                                                                  manager, {}, noModels, {}, {}, svarcs, loads));
 
     startingPointModeParWriter.write();
 

@@ -35,7 +35,7 @@ void ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection> &
     if (dynModel.second.lib == common::constants::svcModelName) {
       new_set = writeSVCParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, dynModel.second);
     } else {
-      new_set = writeDynamicModelParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, shuntCounters,
+      new_set = writeDynamicModelParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, dynModel.second, shuntCounters,
                                               dynamicModelsDefinitions_, linesByIdDefinitions, transformersById);
     }
     if (new_set) {
@@ -132,8 +132,9 @@ boost::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(c
 
 boost::shared_ptr<parameters::ParametersSet>
 ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &set, const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
-                                           const algo::ShuntCounterDefinitions &counters, const algo::DynamicModelDefinitions &models,
-                                           const algo::LinesByIdDefinitions &linesById, const algo::TransformersByIdDefinitions &tfosById) {
+                                           const algo::DynamicModelDefinition &automaton, const algo::ShuntCounterDefinitions &counters,
+                                           const algo::DynamicModelDefinitions &models, const algo::LinesByIdDefinitions &linesById,
+                                           const algo::TransformersByIdDefinitions &tfosById) {
   if (models.models.count(set.id) == 0) {
     // model is not connected : ignore corresponding set
     return nullptr;
@@ -161,8 +162,30 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
     new_set->addParameter(helper::buildParameter(param.name, param.value));
   }
 
+  std::unordered_map<std::string, std::string> macroConnectionToStaticId;
   for (const auto &param : set.stringParameters) {
-    new_set->addParameter(helper::buildParameter(param.name, param.value));
+    auto value = param.value;
+    if (param.value.find(constants::connectedStaticId) != std::string::npos) {
+      if (macroConnectionToStaticId.empty()) {
+        std::unordered_map<std::string, unsigned int> indexes;
+        for (const auto &connection : automaton.nodeConnections) {
+          if (indexes.count(connection.id) == 0) {
+            indexes[connection.id] = 0;
+          }
+          macroConnectionToStaticId[connection.id + "_" + std::to_string(indexes.at(connection.id))] = connection.connectedElementId;
+          ++indexes.at(connection.id);
+        }
+      }
+      auto strIndex = value.find(constants::connectedStaticId);
+      value.replace(strIndex, constants::connectedStaticId.length() + 1, "");
+      auto macroConnectId = value.substr(strIndex, value.find('@', strIndex) - strIndex);
+      value.replace(strIndex, macroConnectId.length() + 2, "");
+      auto index = value.substr(strIndex, value.find('@', strIndex) - strIndex);
+      assert(macroConnectionToStaticId.find(macroConnectId + "_" + index) != macroConnectionToStaticId.end());
+      value = value.substr(0, strIndex) + macroConnectionToStaticId[macroConnectId + "_" + index] + value.substr(value.find('@', strIndex) + 1, value.length());
+    }
+
+    new_set->addParameter(helper::buildParameter(param.name, value));
   }
 
   for (const auto &ref : set.references) {

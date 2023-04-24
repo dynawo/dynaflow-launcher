@@ -80,7 +80,11 @@
   <singleAssociation id="MESURE_I_CLA_TEST">
     <tfo name="TFOId"/>
   </singleAssociation>
+  <singleAssociation id="MESURE_I_CLA_TEST2">
+    <tfo name="TFOId2"/>
+  </singleAssociation>
   <dynamicAutomaton id="DM_TEST" lib="PhaseShifterI">
     <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_CLA_TEST"/>
+    <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_CLA_TEST2"/>
   </dynamicAutomaton>
 </assembling>

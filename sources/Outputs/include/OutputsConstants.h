@@ -31,7 +31,7 @@ namespace constants {
  * @param str The string that will serve as input for uuid generation
  * @return The uuid as a string
  */
-std::string uuid(const std::string& str);
+std::string uuid(const std::string &str);
 
 /**
  * @brief Computes Qmax
@@ -42,10 +42,7 @@ std::string uuid(const std::string& str);
  * @param pMax the PMax to use
  * @returns the corresponding QMax value
  */
-static inline double
-computeQmax(double powerFactor, double pMax) {
-  return pMax * std::sqrt(1. / (powerFactor * powerFactor) - 1);
-}
+static inline double computeQmax(double powerFactor, double pMax) { return pMax * std::sqrt(1. / (powerFactor * powerFactor) - 1); }
 
 /**
  * @brief Return the filename of a diagram file
@@ -53,7 +50,7 @@ computeQmax(double powerFactor, double pMax) {
  * @param id the element id with the diagram name
  * @return The string filename of the diagram file
  */
-std::string diagramFilename(const std::string& id);
+std::string diagramFilename(const std::string &id);
 
 const std::string networkModelName{"NETWORK"};                               ///< Name of the model corresponding to network
 const std::string loadParId{"GenericRestorativeLoad"};                       ///< PAR id common to all loads
@@ -85,6 +82,7 @@ static constexpr double kGoverDefaultValue_ = 1.;                     ///< KGove
 const std::string solverParFileName{"solver.par"};                    ///< name of the solver par file
 const std::string componentTransformerIdTag{"@TFO@"};                 ///< TFO special tag for component id
 const std::string seasonTag{"@SAISON@"};                              ///< Season special tag
+const std::string connectedStaticId{"@CONNECTED_STATIC_ID@"};         ///< Connected static id special tag
 const double generatorXPuValue{0.1228};                               ///< value of XPu of generators
 const double generatorNucXPuValue{0.1426};                            ///< value of XPu of nuclear generators
 
