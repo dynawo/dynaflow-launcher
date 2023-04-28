@@ -33,7 +33,7 @@ Dynaflow-launcher is an open-source project and as such, questions, discussions,
 ## Dynaflow-launcher Distribution
 
 You can download a pre-built Dynaflow-launcher release to start testing it. Pre-built releases are available for **Linux** and **Windows**:
-- [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.4.0/DynaFlowLauncher_Linux_v1.4.0.zip)
+- [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.4.1/DynaFlowLauncher_Linux_v1.4.1.zip)
 - Windows  *Coming soon*
 
 ### Linux Requirements for Distribution
@@ -286,7 +286,7 @@ git commits have a standard pattern, similar to the one in Dynawo core. This pat
 This hook is installed automatically when using the script myEnvDFL.sh with any option.
 
 ## Dynaflow-launcher Documentation
-You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.4.0/DynaflowLauncherDocumentation.pdf).
+You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.4.1/DynaflowLauncherDocumentation.pdf).
 
 ## Quoting Dyna&omega;o
 
@@ -311,7 +311,9 @@ Dynaflow-launcher is currently maintained by the following people in RTE:
 * Gautier Bureau, [gautier.bureau@rte-france.com](mailto:gautier.bureau@rte-france.com)
 * Marco Chiaramello, [marco.chiaramello@rte-france.com](mailto:marco.chiaramello@rte-france.com)
 * Quentin Cossart, [quentin.cossart@rte-france.com](mailto:quentin.cossart@rte-france.com)
-* Adrien Guironnet, [adrien.guironnet@rte-france.com](mailto:adrien.guironnet@rte-france.com)
+* Joy El-Feghali, [joy.elfeghali@rte-france.com](mailto:joy.elfeghali@rte-france.com)
+* Baptiste Letellier, [baptiste.letellier@rte-france.com](mailto:baptiste.letellier@rte-france.com)
+* Ian Menezes, [ian.menezes@rte-france.com](mailto:ian.menezes@rte-france.com)
 * Florentine Rosiere, [florentine.rosiere@rte-france.com](mailto:florentine.rosiere@rte-france.com)
 
 In case of questions or issues, you can also send an e-mail to [rte-dynawo@rte-france.com](mailto:rte-dynawo@rte-france.com).
