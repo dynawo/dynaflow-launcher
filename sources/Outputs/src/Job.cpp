@@ -117,7 +117,7 @@ boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
   auto simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
-  simu->setPrecision(def_.configuration.getPrecision().value_or(1e-4));
+  simu->setPrecision(def_.configuration.getPrecision().value_or(1e-5));
 
   return simu;
 }
