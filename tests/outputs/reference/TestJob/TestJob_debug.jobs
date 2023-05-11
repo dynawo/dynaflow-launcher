@@ -8,7 +8,7 @@
       <dyn:precompiledModels useStandardModels="true"/>
       <dyn:modelicaModels useStandardModels="true"/>
     </dyn:modeler>
-    <dyn:simulation startTime="0" stopTime="100" precision="1.0000000000000001e-05"/>
+    <dyn:simulation startTime="0" stopTime="100" precision="0.0001"/>
     <dyn:outputs directory="outputs">
       <dyn:constraints exportMode="XML"/>
       <dyn:timeline exportMode="XML"/>

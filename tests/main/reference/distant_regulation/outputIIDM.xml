@@ -3596,7 +3596,7 @@
             <iidm:generator id="_3d3bac46-8907-11e8-80ec-00155d38aa06" name="668_H " energySource="HYDRO" minP="0" maxP="86.099999999999994" ratedS="87" voltageRegulatorOn="false" targetP="6.2000000000000002" targetQ="-0" bus="_2b6edf75-027e-11e7-afc1-94659cb4e466" connectableBus="_2b6edf75-027e-11e7-afc1-94659cb4e466" p="-6.2000000000000011" q="0">
                 <iidm:minMaxReactiveLimits minQ="0" maxQ="0"/>
             </iidm:generator>
-            <iidm:load id="_2b6ef19a-027e-11e7-afc1-94659cb4e466" name="668_1 " loadType="UNDEFINED" p0="18.042000000000002" q0="-0.002" bus="_2b6edf75-027e-11e7-afc1-94659cb4e466" connectableBus="_2b6edf75-027e-11e7-afc1-94659cb4e466" p="18.042000000000002" q="-0.002"/>
+            <iidm:load id="_2b6ef19a-027e-11e7-afc1-94659cb4e466" name="668_1 " loadType="UNDEFINED" p0="18.042000000000002" q0="-0.002" bus="_2b6edf75-027e-11e7-afc1-94659cb4e466" connectableBus="_2b6edf75-027e-11e7-afc1-94659cb4e466" p="18.042000000000002" q="0"/>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="_2b6eed20-027e-11e7-afc1-94659cb4e466" name="HF-_10" nominalV="10" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
