@@ -5,6 +5,9 @@ on:
   schedule:
     - cron:  "0 2 * * 1-5"
 
+env:
+  DYNAWO_VERSION: 1.6.0
+
 jobs:
   fedora:
     name: Linux Fedora (Release, GCC, cxx11)
@@ -13,7 +16,6 @@ jobs:
     strategy:
       fail-fast: false
     env:
-      DYNAWO_VERSION: 1.6.0
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
       DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
@@ -163,3 +165,99 @@ jobs:
 
       - name: INFO. Release assets
         run: eval $CURL_JSON $ASSETS_URL
+
+  windows:
+    name: Windows 2019 (Release, VS2019)
+    runs-on: windows-2019
+    needs: fedora
+    steps:
+      - name: No LF to CRLF conversion
+        shell: cmd
+        run: git config --global core.autocrlf input
+
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Download MS-MPI
+        shell: bash
+        run: |
+          curl -Os https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisdk.msi
+          curl -Os https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisetup.exe
+
+      - name: Install MS-MPI
+        shell: cmd
+        run: |
+          msmpisdk.msi /passive
+          msmpisetup.exe /unattend
+
+      - name: Fetch Dynawo
+        shell: bash
+        run: curl -LOs https://github.com/dynawo/dynawo/releases/download/nightly/Dynawo_Windows_v$DYNAWO_VERSION.zip
+
+      - name: Unzip Dynawo
+        shell: cmd
+        run: 7z x Dynawo_Windows_v%DYNAWO_VERSION%.zip -o..\deploy
+
+      - name: Dynawo version
+        shell: cmd
+        run: ..\deploy\dynawo\dynawo version
+
+      - name: Fetch Dynawo-Algorithms
+        shell: bash
+        run: curl -LOs https://github.com/dynawo/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_v$DYNAWO_VERSION.zip
+
+      - name: Unzip Dynawo-Algorithms
+        shell: cmd
+        run: 7z x DynawoAlgorithms_Windows_v%DYNAWO_VERSION%.zip -o..\deploy
+
+      - name: Dynawo-Algorithms version
+        shell: cmd
+        run: ..\deploy\dynawo-algorithms\dynawo-algorithms version
+
+      # use a minimal PATH to avoid too long command lines and conflict with Strawberry pkg-config !
+      - name: Build and install
+        shell: cmd
+        env:
+          MSMPI_INC: C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
+          MSMPI_LIB32: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
+          MSMPI_LIB64: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
+          MSMPI_BIN: C:\Program Files\Microsoft MPI\Bin\
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+        run: |
+          set PATH=%MSMPI_BIN%;%PATH%
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call scripts\dynaflow-launcher verbose build
+
+      - name: Dynaflow-Launcher version
+        shell: cmd
+        env:
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+        run: call ..\dfl-i\dynaflow-launcher verbose version
+
+      - name: Build and run NRT
+        shell: cmd
+        env:
+          MSMPI_INC: C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
+          MSMPI_LIB32: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
+          MSMPI_LIB64: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
+          MSMPI_BIN: C:\Program Files\Microsoft MPI\Bin\
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64;C:\hostedtoolcache\windows\Python\3.7.9\x64\Scripts
+        run: |
+          pip install lxml
+          set PATH=%MSMPI_BIN%;%PATH%
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call scripts\dynaflow-launcher verbose tests "^^M"
+
+      - name: Create distribution
+        shell: cmd
+        run: |
+          md ..\distrib
+          cd ..\distrib
+          move /y ..\dfl-i dynaflow-launcher
+          7z a DynaFlowLauncher_Windows_v%DYNAWO_VERSION%.zip dynaflow-launcher
+
+      - name: Upload distribution
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: nightly
+          files: ../distrib/DynaFlowLauncher_Windows_v${{env.DYNAWO_VERSION}}.zip
