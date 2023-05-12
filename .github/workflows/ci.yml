@@ -11,7 +11,6 @@ env:
 
 jobs:
   build-linux:
-    if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     container: dynawo/dynawo-ci:latest
     env:
@@ -59,7 +58,6 @@ jobs:
           scripts/envDFL.sh build-user
 
   coverage:
-    if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     container: dynawo/dynawo-ci:latest
     env:
