@@ -387,7 +387,7 @@ exit /B %ERRORLEVEL%
 echo.
 echo Available unit tests are :
 pushd "%DYNAFLOW_LAUNCHER_BUILD_DIR%"
-for /f "tokens=3" %%G in ('ctest -N  -R %_test% ^| find "  Test "') do echo     %%G
+for /f "tokens=3" %%G in ('ctest -N  -R "%_test%" ^| find "  Test "') do echo     %%G
 popd
 exit /B %ERRORLEVEL%
 
