@@ -58,7 +58,7 @@ struct DynamicModelDefinition {
       LINE,      ///< Line type
       TFO,       ///< Transformer type
       SHUNT,     ///< Shunt type
-      MODEL,      ///< Model type
+      AUTOMATON,  ///< Dynamic Automaton
       GENERATOR  ///< Generator type
     };
 
@@ -262,7 +262,8 @@ class DynModelAlgorithm {
    * @param automaton the dynamic automaton
    * @param macro macro connection to process
    */
-  void connectMacroConnectionForModel(const inputs::AssemblingDataBase::DynamicAutomaton& automaton, const inputs::AssemblingDataBase::MacroConnect& macro);
+  void connectMacroConnectionForDynAutomaton(const inputs::AssemblingDataBase::DynamicAutomaton& automaton,
+                                             const inputs::AssemblingDataBase::MacroConnect& macro);
 
   /**
    * @brief Process node in case of dynamic automaton bus connection

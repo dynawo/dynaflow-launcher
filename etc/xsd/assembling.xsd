@@ -17,7 +17,6 @@ SPDX-License-Identifier: MPL-2.0 -->
         <xs:element name="property" type="Property"/>
         <xs:element name="multipleAssociation" type="MultipleAssociation"/>
         <xs:element name="macroConnection" type="MacroConnection"/>
-        <xs:element name="modelAssociation" type="ModelAssociation"/>
       </xs:choice>
       <xs:attribute name="version" use="optional" type="xs:string"/>
     </xs:complexType>
@@ -47,11 +46,6 @@ SPDX-License-Identifier: MPL-2.0 -->
 
   <xs:complexType name="MultipleAssociation">
     <xs:group ref="MultipleNetworkItems"/>
-    <xs:attribute name="id" use="required" type="xs:string"/>
-  </xs:complexType>
-
-  <xs:complexType name="ModelAssociation">
-    <xs:group ref="ModelNetworkItems"/>
     <xs:attribute name="id" use="required" type="xs:string"/>
   </xs:complexType>
 
@@ -126,11 +120,6 @@ SPDX-License-Identifier: MPL-2.0 -->
 
   <xs:complexType name="Line">
     <xs:attribute name="name" use="required" type="xs:string"/>
-  </xs:complexType>
-
-  <xs:complexType name="Model">
-    <xs:attribute name="id" use="required" type="xs:string"/>
-    <xs:attribute name="lib" use="required" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="MacroConnect">
