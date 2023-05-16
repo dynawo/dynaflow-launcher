@@ -83,14 +83,6 @@ class AssemblingDataBase {
   };
 
   /**
-   * @brief Model XML element
-   */
-  struct Model {
-    std::string id;  ///< id of the model
-    std::string lib;  ///< lib of the model
-  };
-
-  /**
    * @brief Macro connect XML element defining a macro connection of a dynamic model
    */
   struct MacroConnect {
