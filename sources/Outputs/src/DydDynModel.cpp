@@ -69,7 +69,11 @@ void DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
       (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
       dynamicModelsToConnect->addMacroConnect(macroConnect);
     } else {
-      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, constants::networkModelName);
+      auto modelName2 = constants::networkModelName;
+      if (connection.elementType == dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::AUTOMATON) {
+        modelName2 = connection.connectedElementId;
+      }
+      auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, modelName2);
       macroConnect->setName2(connection.connectedElementId);
 #if _DEBUG_
       assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));

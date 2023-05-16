@@ -113,8 +113,8 @@ DynModelAlgorithm::extractDynModels(bool shuntRegulationOn) {
       } else if (manager_.assembling().isMultipleAssociation(macro.id)) {
         extractMultiAssociationInfo(automaton.second, macro, shuntRegulationOn);
         continue;
-      } else if (manager_.assembling().isModelAssociation(macro.id)) {
-        connectMacroConnectionForModel(automaton.second, macro);
+      } else if (manager_.assembling().dynamicAutomatons().count(macro.id) > 0) {
+        connectMacroConnectionForDynAutomaton(automaton.second, macro);
         continue;
       }
     }
@@ -163,15 +163,14 @@ DynamicModelDefinition::MacroConnection::operator>=(const MacroConnection& other
 }
 
 void
-DynModelAlgorithm::connectMacroConnectionForModel(const inputs::AssemblingDataBase::DynamicAutomaton& automaton,
+DynModelAlgorithm::connectMacroConnectionForDynAutomaton(const inputs::AssemblingDataBase::DynamicAutomaton& automaton,
                                                   const inputs::AssemblingDataBase::MacroConnect& macro) {
   dynamicModels_.usedMacroConnections.insert(macro.macroConnection);
-  auto& modelAssoc = manager_.assembling().getModelAssociation(macro.id);
   addMacroConnectionToModelDefinitions(
       automaton,
       DynamicModelDefinition::MacroConnection(macro.macroConnection,
-                                              DynamicModelDefinition::MacroConnection::ElementType::MODEL,
-                                              modelAssoc.model.id));
+                                              DynamicModelDefinition::MacroConnection::ElementType::AUTOMATON,
+                                              macro.id));
 }
 
 void

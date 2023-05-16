@@ -135,19 +135,6 @@ AssemblingDataBase::isMultipleAssociation(const std::string& id) const {
   return multipleAssociations_.find(id) != multipleAssociations_.end();
 }
 
-const AssemblingDataBase::ModelAssociation&
-AssemblingDataBase::getModelAssociation(const std::string& id) const {
-  const auto it = modelAssociations_.find(id);
-  if (it != modelAssociations_.end())
-    return it->second;
-  throw Error(UnknownMultiAssoc, id);
-}
-
-bool
-AssemblingDataBase::isModelAssociation(const std::string& id) const {
-  return modelAssociations_.find(id) != modelAssociations_.end();
-}
-
 const AssemblingDataBase::Property&
 AssemblingDataBase::getProperty(const std::string& id) const {
   const auto it = properties_.find(id);
@@ -170,13 +157,11 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
     macroConnectionHandler_(parser::ElementName(ns, "macroConnection")),
     singleAssociationHandler_(parser::ElementName(ns, "singleAssociation")),
     multipleAssociationHandler_(parser::ElementName(ns, "multipleAssociation")),
-    modelAssociationHandler_(parser::ElementName(ns, "modelAssociation")),
     dynamicAutomatonHandler_(parser::ElementName(ns, "dynamicAutomaton")),
     propertyHandler_(parser::ElementName(ns, "property")) {
   onElement(ns("assembling/macroConnection"), macroConnectionHandler_);
   onElement(ns("assembling/singleAssociation"), singleAssociationHandler_);
   onElement(ns("assembling/multipleAssociation"), multipleAssociationHandler_);
-  onElement(ns("assembling/modelAssociation"), modelAssociationHandler_);
   onElement(ns("assembling/dynamicAutomaton"), dynamicAutomatonHandler_);
   onElement(ns("assembling/property"), propertyHandler_);
 
@@ -201,11 +186,6 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
     multipleAssociationHandler_.currentMultipleAssociation.reset();
   });
 
-  modelAssociationHandler_.onStart([this]() { modelAssociationHandler_.currentModelAssociation = AssemblingDataBase::ModelAssociation(); });
-  modelAssociationHandler_.onEnd([this, &db]() {
-    db.modelAssociations_[modelAssociationHandler_.currentModelAssociation->id] = *modelAssociationHandler_.currentModelAssociation;
-    modelAssociationHandler_.currentModelAssociation.reset();
-  });
 
   dynamicAutomatonHandler_.onStart([this]() { dynamicAutomatonHandler_.currentDynamicAutomaton = AssemblingDataBase::DynamicAutomaton(); });
   dynamicAutomatonHandler_.onEnd([this, &db]() {
@@ -254,13 +234,6 @@ AssemblingDataBase::AssemblingXmlDocument::LineHandler::LineHandler(const elemen
 
 AssemblingDataBase::AssemblingXmlDocument::SingleShuntHandler::SingleShuntHandler(const elementName_type& root) {
   onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentSingleShunt->name = attributes["name"].as_string(); });
-}
-
-AssemblingDataBase::AssemblingXmlDocument::ModelHandler::ModelHandler(const elementName_type& root) {
-  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
-    currentModel->id = attributes["id"].as_string();
-    currentModel->lib = attributes["lib"].as_string();
-  });
 }
 
 AssemblingDataBase::AssemblingXmlDocument::MacroConnectHandler::MacroConnectHandler(const elementName_type& root) {
@@ -342,19 +315,6 @@ AssemblingDataBase::AssemblingXmlDocument::MultipleAssociationHandler::MultipleA
   });
 }
 
-AssemblingDataBase::AssemblingXmlDocument::ModelAssociationHandler::ModelAssociationHandler(const elementName_type& root) :
-    modelHandler(parser::ElementName(ns, "model")) {
-  onElement(root + ns("model"), modelHandler);
-
-  onStartElement(root,
-                 [this](const parser::ElementName&, const attributes_type& attributes) { currentModelAssociation->id = attributes["id"].as_string(); });
-
-  modelHandler.onStart([this]() { modelHandler.currentModel = AssemblingDataBase::Model(); });
-  modelHandler.onEnd([this]() {
-    currentModelAssociation->model = *modelHandler.currentModel;
-    modelHandler.currentModel.reset();
-  });
-}
 
 AssemblingDataBase::AssemblingXmlDocument::DynamicAutomatonHandler::DynamicAutomatonHandler(const elementName_type& root) :
     macroConnectHandler(parser::ElementName(ns, "macroConnect")) {

@@ -128,14 +128,6 @@ class AssemblingDataBase {
   };
 
   /**
-   * @brief Model association XML element
-   */
-  struct ModelAssociation {
-    std::string id;   ///< model connection id
-    Model model;      ///< model of the association
-  };
-
-  /**
    * @brief Dynamic automaton XML element
    */
   struct DynamicAutomaton {
@@ -266,19 +258,6 @@ class AssemblingDataBase {
     boost::optional<AssemblingDataBase::SingleShunt> currentSingleShunt;  ///< current shunt element
   };
 
-  /**
-   * @brief Model element handler
-   */
-  struct ModelHandler : public xml::sax::parser::ComposableElementHandler {
-    /**
-     * @brief Constructor
-     * @param root the root element to parse
-     */
-    explicit ModelHandler(const elementName_type& root);
-
-    boost::optional<AssemblingDataBase::Model> currentModel;  ///< current model element
-  };
-
     /**
      * @brief Macro connect element handler
      */
@@ -342,21 +321,6 @@ class AssemblingDataBase {
     };
 
     /**
-     * @brief Model association element handler
-     */
-    struct ModelAssociationHandler : public xml::sax::parser::ComposableElementHandler {
-      /**
-       * @brief Constructor
-       * @param root the root element to parse
-       */
-      explicit ModelAssociationHandler(const elementName_type& root);
-
-      boost::optional<ModelAssociation> currentModelAssociation;  ///< current model association element
-
-      ModelHandler modelHandler;  ///< model element handler
-    };
-
-    /**
      * @brief Automaton element handler
      */
     struct DynamicAutomatonHandler : public xml::sax::parser::ComposableElementHandler {
@@ -403,7 +367,6 @@ class AssemblingDataBase {
     MacroConnectionHandler macroConnectionHandler_;          ///< Macro connection handler
     SingleAssociationHandler singleAssociationHandler_;      ///< Single association handler
     MultipleAssociationHandler multipleAssociationHandler_;  ///< Multi association handler
-    ModelAssociationHandler modelAssociationHandler_;        ///< Model association handler
     DynamicAutomatonHandler dynamicAutomatonHandler_;        ///< Automaton handler
     PropertyHandler propertyHandler_;                        ///< Property handler
   };
@@ -459,20 +422,6 @@ class AssemblingDataBase {
   bool isMultipleAssociation(const std::string& id) const;
 
   /**
-   * @brief Retrieve a model association with its id
-   * @param id model association id
-   * @returns model association element with the given id, throw if not found
-   */
-  const ModelAssociation& getModelAssociation(const std::string& id) const;
-
-  /**
-   * @brief test if a model association with the given id exists
-   * @param id model association id
-   * @returns true if the model association exists, false otherwise
-   */
-  bool isModelAssociation(const std::string& id) const;
-
-  /**
    * @brief Retrieve the list of dynamic dynamic models
    * @returns the list of dynamic dynamic models elements
    */
@@ -506,7 +455,6 @@ class AssemblingDataBase {
   std::unordered_map<std::string, MacroConnection> macroConnections_;          ///< list of macro connections
   std::unordered_map<std::string, SingleAssociation> singleAssociations_;      ///< list of single associations
   std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;  ///< list of multiple associations
-  std::unordered_map<std::string, ModelAssociation> modelAssociations_;        ///< list of model associations
   std::unordered_map<std::string, std::string> generatorIdToSingleAssociationsId_;  ///< generator id associated to the single associations that contains it
   std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                       ///< list of dynamic automatons
   bool containsSVC_;                                      ///< true if the assembling data base contains one or more SVC, false otherwise
