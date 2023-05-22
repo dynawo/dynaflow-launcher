@@ -274,7 +274,7 @@ The conditions and models used are given below.
 
 A generic way to simulate components not defined in the static model (e.g. special protection schemes) is provided in Dynaflow-launcher through the optional xml assembling and setting files.
 
-\subsubsection{Defining an special protection scheme automaton in the assembling and setting files: general case}
+\subsubsection{Defining a special protection scheme automaton in the assembling and setting files: general case}
 \paragraph{Defining a dynamicAutomaton in the assembling and setting\\}
 
 To define any special protection scheme automaton in Dynaflow-launcher, the assembling should contains a dynamicAutomaton. An example is given below to define a PhaseShifter.
@@ -345,7 +345,7 @@ of connections to apply between the special protection scheme automaton and anot
 </assembling>
 \end{lstlisting}
 
-The \textit{id} of a \textit{macroConnect} refers to an association provided in the assembling.
+The \textit{id} of a \textit{macroConnect} refers to an association or a dynamic automaton's id provided in the assembling.
 
 An association allows to retrieve the network component connected to the special protection scheme automaton. \\
 

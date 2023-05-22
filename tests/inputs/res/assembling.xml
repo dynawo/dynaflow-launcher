@@ -8,6 +8,9 @@
     <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor"/>
     <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable"/>
   </macroConnection>
+  <macroConnection id="ModelModelConnection">
+    <connection var1="y" var2="U"/>
+  </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
     <bus voltageLevel="VLP6" />
   </singleAssociation>
@@ -40,6 +43,9 @@
   <singleAssociation id="ORDER_SALON">
     <line name="OBLA"/>
   </singleAssociation>
+  <singleAssociation id="SHUNT_MODELE_VL6">
+    <shunt name="VL6"/>
+  </singleAssociation>
   <singleAssociation id="MESURE_MODELE_2_VL7">
     <bus voltageLevel="VL7"/>
   </singleAssociation>
@@ -55,6 +61,9 @@
     <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_2_VL7"/>
     <macroConnect macroConnection="ToGenerator" id="GeneratorId"/>
     <macroConnect macroConnection="ToGenerator" id="GeneratorId2"/>
+  </dynamicAutomaton>
+  <dynamicAutomaton id="VIRTUAL_MODEL" lib="DYNModelVirtual">
+    <macroConnect macroConnection="ModelModelConnection" id="MODELE_1_VL6"/>
   </dynamicAutomaton>
   <property id="MyProp">
     <device id="MyDevice"/>

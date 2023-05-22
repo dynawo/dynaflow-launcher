@@ -52,7 +52,7 @@ SPDX-License-Identifier: MPL-2.0 -->
   <xs:group name="MultipleNetworkItems">
     <xs:choice>
       <xs:choice maxOccurs="1">
-        <xs:element name="shunt" type="Shunt"/>
+        <xs:element name="shunt" type="MultipleShunts"/>
       </xs:choice>
     </xs:choice>
   </xs:group>
@@ -63,6 +63,7 @@ SPDX-License-Identifier: MPL-2.0 -->
         <xs:element name="bus" type="Bus"/>
         <xs:element name="line" type="Line"/>
         <xs:element name="tfo" type="Transformer"/>
+        <xs:element name="shunt" type="SingleShunt"/>
       </xs:choice>
       <xs:choice maxOccurs="unbounded">
         <xs:element name="generator" type="GeneratorItem"/>
@@ -97,8 +98,12 @@ SPDX-License-Identifier: MPL-2.0 -->
     <xs:attribute name="voltageLevel" use="required" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="Shunt">
+  <xs:complexType name="MultipleShunts">
     <xs:attribute name="voltageLevel" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="SingleShunt">
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="Transformer">

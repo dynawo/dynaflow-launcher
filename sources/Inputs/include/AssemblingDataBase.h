@@ -47,10 +47,10 @@ class AssemblingDataBase {
     std::string voltageLevel;  ///< voltage level of the bus
   };
 
-  /**
-   * @brief Shunt XML element
+   /**
+   * @brief Multiple Shunts XML element
    */
-  struct Shunt {
+  struct MultipleShunts {
     std::string voltageLevel;  ///< id of the voltage level containing the shunts
   };
 
@@ -66,6 +66,13 @@ class AssemblingDataBase {
    */
   struct Tfo {
     std::string name;  ///< name of the transformer
+  };
+
+  /**
+   * @brief Single shunt XML element
+   */
+  struct SingleShunt {
+    std::string name;  ///< name of the shunt
   };
 
   /**
@@ -100,6 +107,7 @@ class AssemblingDataBase {
     boost::optional<Bus> bus;           ///< bus of the association
     boost::optional<Tfo> tfo;           ///< transformer of the association
     boost::optional<Line> line;         ///< line of the association
+    boost::optional<SingleShunt> shunt;  ///< single shunt of the association
     std::vector<Generator> generators;  ///< List of generators
   };
 
@@ -108,7 +116,7 @@ class AssemblingDataBase {
    */
   struct MultipleAssociation {
     std::string id;                ///< unique association id
-    boost::optional<Shunt> shunt;  ///< Shunt of the association
+    boost::optional<MultipleShunts> shunt;     ///< Id of the voltage level containing the shunts
   };
 
   /**
@@ -178,16 +186,16 @@ class AssemblingDataBase {
     };
 
     /**
-     * @brief Shunt element handler
+     * @brief Multiple Shunts element handler
      */
-    struct ShuntHandler : public xml::sax::parser::ComposableElementHandler {
+    struct MultipleShuntsHandler : public xml::sax::parser::ComposableElementHandler {
       /**
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit ShuntHandler(const elementName_type& root);
+      explicit MultipleShuntsHandler(const elementName_type& root);
 
-      boost::optional<AssemblingDataBase::Shunt> currentShunt;  ///< current shunt element
+      boost::optional<AssemblingDataBase::MultipleShunts> currentMultipleShunts;  ///< current multiple shunts element
     };
 
     /**
@@ -228,6 +236,19 @@ class AssemblingDataBase {
 
       boost::optional<AssemblingDataBase::Line> currentLine;  ///< current line element
     };
+
+  /**
+   * @brief Single shunt element handler
+   */
+  struct SingleShuntHandler : public xml::sax::parser::ComposableElementHandler {
+    /**
+     * @brief Constructor
+     * @param root the root element to parse
+     */
+    explicit SingleShuntHandler(const elementName_type& root);
+
+    boost::optional<AssemblingDataBase::SingleShunt> currentSingleShunt;  ///< current shunt element
+  };
 
     /**
      * @brief Macro connect element handler
@@ -272,6 +293,7 @@ class AssemblingDataBase {
       BusHandler busHandler;              ///< bus element handler
       LineHandler lineHandler;            ///< line element handler
       TfoHandler tfoHandler;              ///< transformer element handler
+      SingleShuntHandler singleShuntHandler;    ///< single shunt element handler
       GeneratorHandler generatorHandler;  ///< generator element handler
     };
 
@@ -287,7 +309,7 @@ class AssemblingDataBase {
 
       boost::optional<AssemblingDataBase::MultipleAssociation> currentMultipleAssociation;  ///< current multiple association element
 
-      ShuntHandler shuntHandler;  ///< shunt element handler
+      MultipleShuntsHandler multipleShuntsHandler;  ///< multiple shunts element handler
     };
 
     /**
@@ -355,6 +377,7 @@ class AssemblingDataBase {
    */
   const MacroConnection& getMacroConnection(const std::string& id) const;
 
+
   /**
    * @brief Retrieve a single association with its id
    * @param id single association id
@@ -421,9 +444,9 @@ class AssemblingDataBase {
   bool isProperty(const std::string& id) const;
 
  private:
-  std::unordered_map<std::string, MacroConnection> macroConnections_;               ///< list of macro connections
-  std::unordered_map<std::string, SingleAssociation> singleAssociations_;           ///< list of single associations
-  std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;       ///< list of multiple associations
+  std::unordered_map<std::string, MacroConnection> macroConnections_;          ///< list of macro connections
+  std::unordered_map<std::string, SingleAssociation> singleAssociations_;      ///< list of single associations
+  std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;  ///< list of multiple associations
   std::unordered_map<std::string, std::string> generatorIdToSingleAssociationsId_;  ///< generator id associated to the single associations that contains it
   std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                       ///< list of dynamic automatons
   bool containsSVC_;                                      ///< true if the assembling data base contains one or more SVC, false otherwise

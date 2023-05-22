@@ -64,20 +64,30 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(singleAssoc.id, "MESURE_MODELE_1_VL4");
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_FALSE(singleAssoc.tfo);
+  ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_TRUE(singleAssoc.bus);
   ASSERT_EQ(singleAssoc.bus->voltageLevel, "VLP6");
   singleAssoc = assembling.getSingleAssociation("MESURE_I_VL661");
   ASSERT_EQ(singleAssoc.id, "MESURE_I_VL661");
   ASSERT_FALSE(singleAssoc.bus);
   ASSERT_FALSE(singleAssoc.line);
+  ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_TRUE(singleAssoc.tfo);
   ASSERT_EQ(singleAssoc.tfo->name, "VL661");
   singleAssoc = assembling.getSingleAssociation("MESURE_I_SALON");
   ASSERT_EQ(singleAssoc.id, "MESURE_I_SALON");
   ASSERT_FALSE(singleAssoc.bus);
   ASSERT_FALSE(singleAssoc.tfo);
+  ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_TRUE(singleAssoc.line);
   ASSERT_EQ(singleAssoc.line->name, "QBLA");
+  singleAssoc = assembling.getSingleAssociation("SHUNT_MODELE_VL6");
+  ASSERT_EQ(singleAssoc.id, "SHUNT_MODELE_VL6");
+  ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_FALSE(singleAssoc.tfo);
+  ASSERT_FALSE(singleAssoc.line);
+  ASSERT_TRUE(singleAssoc.shunt);
+  ASSERT_EQ(singleAssoc.shunt->name, "VL6");
 
   ASSERT_THROW_DYNAWO(assembling.getMultipleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownMultiAssoc);
   ASSERT_NO_THROW(assembling.getMultipleAssociation("SHUNTS_MODELE_1_VL4"));
@@ -99,7 +109,7 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(singleAssoc.generators[1].name, "GeneratorId_2");
 
   const auto& dynamicAutomatons = assembling.dynamicAutomatons();
-  ASSERT_EQ(dynamicAutomatons.size(), 3);
+  ASSERT_EQ(dynamicAutomatons.size(), 4);
   ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.id, "MODELE_1_VL4");
   ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.lib, "DYNModel1");
   const auto& macroConnects = dynamicAutomatons.find("MODELE_1_VL4")->second.macroConnects;
@@ -108,6 +118,13 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(macroConnects[0].macroConnection, "ToUMeasurement");
   ASSERT_EQ(macroConnects[1].id, "SHUNTS_MODELE_1_VL4");
   ASSERT_EQ(macroConnects[1].macroConnection, "ToControlledShunts");
+  // Check model model connections
+  ASSERT_EQ(dynamicAutomatons.find("VIRTUAL_MODEL")->second.id, "VIRTUAL_MODEL");
+  ASSERT_EQ(dynamicAutomatons.find("VIRTUAL_MODEL")->second.lib, "DYNModelVirtual");
+  const auto& macroConnectsModelModel = dynamicAutomatons.find("VIRTUAL_MODEL")->second.macroConnects;
+  ASSERT_EQ(macroConnectsModelModel.size(), 1);
+  ASSERT_EQ(macroConnectsModelModel[0].id, "MODELE_1_VL6");
+  ASSERT_EQ(macroConnectsModelModel[0].macroConnection, "ModelModelConnection");
 
   ASSERT_FALSE(assembling.containsSVC());
 
