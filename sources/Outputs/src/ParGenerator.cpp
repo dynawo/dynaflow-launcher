@@ -102,7 +102,9 @@ std::string ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, b
   case ModelType::SIGNALN_RECTANGULAR:
   case ModelType::SIGNALN_TFO_RECTANGULAR:
   case ModelType::SIGNALN_TFO_RPCL_RECTANGULAR:
+  case ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR:
   case ModelType::SIGNALN_RPCL_RECTANGULAR:
+  case ModelType::SIGNALN_RPCL2_RECTANGULAR:
     id = fixedP ? helper::getMacroParameterSetId(constants::signalNGeneratorFixedPParIdRect)
                 : helper::getMacroParameterSetId(constants::signalNGeneratorParIdRect);
     break;
@@ -168,7 +170,9 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
   case ModelType::SIGNALN_RECTANGULAR:
   case ModelType::SIGNALN_TFO_RECTANGULAR:
   case ModelType::SIGNALN_TFO_RPCL_RECTANGULAR:
+  case ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR:
   case ModelType::SIGNALN_RPCL_RECTANGULAR:
+  case ModelType::SIGNALN_RPCL2_RECTANGULAR:
     macroParameterSet->addReference(helper::buildReference("generator_QMin", "qMin", "DOUBLE"));
     macroParameterSet->addReference(helper::buildReference("generator_QMax", "qMax", "DOUBLE"));
     macroParameterSet->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
