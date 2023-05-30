@@ -52,6 +52,8 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
       const auto &vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (vscDefinition.qmin - 1) / factorPU));
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", (vscDefinition.qmax + 1) / factorPU));
+      set->addParameter(helper::buildParameter("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(abs(vscDefinition.qmin), abs(vscDefinition.qmax))));
+      set->addParameter(helper::buildParameter("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu", 0.));
     } else {
       // assuming that converterNumber is 1 or 2 (pre-condition)
       auto qMax = constants::computeQmax(hvdcDefinition.powerFactors.at(converterNumber - 1), hvdcDefinition.pMax);
@@ -134,6 +136,12 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
     set->addParameter(helper::buildParameter("hvdc_Q1MaxPu", std::numeric_limits<double>::max()));
     set->addParameter(helper::buildParameter("hvdc_Q2MinPu", std::numeric_limits<double>::lowest()));
     set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
+    if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
+      set->addParameter(helper::buildParameter("hvdc_Q1Nom", 100.));
+      set->addParameter(helper::buildParameter("hvdc_Lambda1Pu", 0.));
+      set->addParameter(helper::buildParameter("hvdc_Q2Nom", 100.));
+      set->addParameter(helper::buildParameter("hvdc_Lambda2Pu", 0.));
+    }
   } else {
     const auto &hvdcConverterIdMain =
         (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2Id : hvdcDefinition.converter1Id;
