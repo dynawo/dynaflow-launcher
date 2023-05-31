@@ -52,7 +52,8 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
       const auto &vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (vscDefinition.qmin - 1) / factorPU));
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", (vscDefinition.qmax + 1) / factorPU));
-      set->addParameter(helper::buildParameter("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(abs(vscDefinition.qmin), abs(vscDefinition.qmax))));
+      set->addParameter(
+          helper::buildParameter<double>("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(abs(vscDefinition.qmin), abs(vscDefinition.qmax))));
       set->addParameter(helper::buildParameter<double>("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu", 0.));
     } else {
       // assuming that converterNumber is 1 or 2 (pre-condition)
