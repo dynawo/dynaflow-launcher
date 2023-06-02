@@ -57,17 +57,13 @@ class ParEvent {
      * @param networkElements set of contingency elements ids using network model
      * @param timeOfEvent time of event
      */
-    ParEventDefinition(const std::string& base, const std::string& filename, const inputs::Contingency& contingency,
-                       const std::unordered_set<std::string>& networkElements, const double timeOfEvent) :
-        basename(base),
-        filename(filename),
-        contingency(contingency),
-        networkElements_(networkElements),
-        timeOfEvent(timeOfEvent) {}
+    ParEventDefinition(const std::string &base, const std::string &filename, const inputs::Contingency &contingency,
+                       const std::unordered_set<std::string> &networkElements, const double timeOfEvent)
+        : basename(base), filename(filename), contingency(contingency), networkElements_(networkElements), timeOfEvent(timeOfEvent) {}
 
     std::string basename;                                    ///< basename
     std::string filename;                                    ///< filename of the output file to write
-    const inputs::Contingency& contingency;                  ///< contingency definition for the event parameters
+    const inputs::Contingency &contingency;                  ///< contingency definition for the event parameters
     const std::unordered_set<std::string> networkElements_;  ///< set of contingency elements ids using network model
     double timeOfEvent;                                      ///< time of event
   };
@@ -77,7 +73,7 @@ class ParEvent {
    *
    * @param def PAR event file definition
    */
-  explicit ParEvent(ParEventDefinition&& def);
+  explicit ParEvent(ParEventDefinition &&def);
 
   /**
    * @brief Export PAR event file
@@ -93,7 +89,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string& branchId, const double timeOfEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string &branchId, const double timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventSetPointBoolean dynamic model
@@ -103,17 +99,17 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string& elementId, const double timeOfEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string &elementId, const double timeOfEvent);
 
   /**
-   * @brief Build element disconnection parameter set for EventSetPointReal dynamic model
+   * @brief Build element disconnection parameter set for EventConnectedStatus dynamic model
    *
    * @param elementId the identifier of the element
    * @param timeOfEvent time of event
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointRealDisconnection(const std::string& elementId, const double timeOfEvent);
+  static boost::shared_ptr<parameters::ParametersSet> buildEventConnectedStatusDisconnection(const std::string &elementId, const double timeOfEvent);
 
   /**
    * @brief Determines if contingency element is using a network cpp model
@@ -122,7 +118,7 @@ class ParEvent {
    *
    * @returns true if contingency element is using a network cpp model
    */
-  bool isNetwork(const std::string& elementId) const;
+  bool isNetwork(const std::string &elementId) const;
 
  private:
   ParEventDefinition def_;  ///< PAR event file definition
