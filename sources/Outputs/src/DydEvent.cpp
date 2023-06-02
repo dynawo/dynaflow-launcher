@@ -35,10 +35,9 @@
 namespace dfl {
 namespace outputs {
 
-DydEvent::DydEvent(DydEventDefinition&& def) : def_{std::forward<DydEventDefinition>(def)} {}
+DydEvent::DydEvent(DydEventDefinition &&def) : def_{std::forward<DydEventDefinition>(def)} {}
 
-void
-DydEvent::write() const {
+void DydEvent::write() const {
   using Type = dfl::inputs::ContingencyElement::Type;
 
   dynamicdata::XmlExporter exporter;
@@ -46,12 +45,12 @@ DydEvent::write() const {
   auto dynamicModels = dynamicdata::DynamicModelsCollectionFactory::newCollection();
 
   // macro connectors
-  const auto& connector = dynamicdata::MacroConnectorFactory::newMacroConnector("MC_EventQuadripoleDisconnection");
+  const auto &connector = dynamicdata::MacroConnectorFactory::newMacroConnector("MC_EventQuadripoleDisconnection");
   connector->addConnect("event_state1_value", "@NAME@_state_value");
   dynamicModels->addMacroConnector(connector);
 
   // models and connections
-  for (const auto& element : def_.contingency.elements) {
+  for (const auto &element : def_.contingency.elements) {
     if (isNetwork(element.id)) {
       dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
       addNetworkStateDisconnectionConnect(dynamicModels, element.id);
@@ -90,8 +89,7 @@ DydEvent::write() const {
   exporter.exportToFile(dynamicModels, def_.filename, constants::xmlEncoding);
 }
 
-boost::shared_ptr<dynamicdata::BlackBoxModel>
-DydEvent::buildBranchDisconnection(const std::string& branchId, const std::string& basename) {
+boost::shared_ptr<dynamicdata::BlackBoxModel> DydEvent::buildBranchDisconnection(const std::string &branchId, const std::string &basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + branchId);
   model->setLib("EventQuadripoleDisconnection");
   model->setParFile(basename + ".par");
@@ -99,15 +97,13 @@ DydEvent::buildBranchDisconnection(const std::string& branchId, const std::strin
   return model;
 }
 
-boost::shared_ptr<dynamicdata::MacroConnect>
-DydEvent::buildBranchDisconnectionConnect(const std::string& branchId) {
+boost::shared_ptr<dynamicdata::MacroConnect> DydEvent::buildBranchDisconnectionConnect(const std::string &branchId) {
   auto connect = dynamicdata::MacroConnectFactory::newMacroConnect("MC_EventQuadripoleDisconnection", "Disconnect_" + branchId, constants::networkModelName);
   connect->setName2(branchId);
   return connect;
 }
 
-boost::shared_ptr<dynamicdata::BlackBoxModel>
-DydEvent::buildSwitchOffSignalDisconnection(const std::string& elementId, const std::string& basename) {
+boost::shared_ptr<dynamicdata::BlackBoxModel> DydEvent::buildSwitchOffSignalDisconnection(const std::string &elementId, const std::string &basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
   model->setLib("EventSetPointBoolean");
   model->setParFile(basename + ".par");
@@ -115,36 +111,29 @@ DydEvent::buildSwitchOffSignalDisconnection(const std::string& elementId, const 
   return model;
 }
 
-void
-DydEvent::addSwitchOffSignalDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId,
-                                                 const std::string& var2) {
+void DydEvent::addSwitchOffSignalDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId,
+                                                      const std::string &var2) {
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", elementId, var2);
 }
 
-boost::shared_ptr<dynamicdata::BlackBoxModel>
-DydEvent::buildNetworkStateDisconnection(const std::string& elementId, const std::string& basename) {
+boost::shared_ptr<dynamicdata::BlackBoxModel> DydEvent::buildNetworkStateDisconnection(const std::string &elementId, const std::string &basename) {
   auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
-  model->setLib("EventSetPointReal");
+  model->setLib("EventConnectedStatus");
   model->setParFile(basename + ".par");
   model->setParId("Disconnect_" + elementId);
   return model;
 }
 
-void
-DydEvent::addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
+void DydEvent::addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId) {
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state");
 }
 
-void
-DydEvent::addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId) {
+void DydEvent::addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId) {
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state1");
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state2");
 }
 
-bool
-DydEvent::isNetwork(const std::string& elementId) const {
-  return (def_.networkElements_.find(elementId) != def_.networkElements_.end());
-}
+bool DydEvent::isNetwork(const std::string &elementId) const { return (def_.networkElements_.find(elementId) != def_.networkElements_.end()); }
 
 }  // namespace outputs
 }  // namespace dfl
