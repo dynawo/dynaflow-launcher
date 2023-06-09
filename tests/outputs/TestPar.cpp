@@ -356,6 +356,43 @@ TEST(TestPar, writeLoad) {
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
+TEST(TestPar, writeVRRemote) {
+  using dfl::algo::HVDCDefinition;
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  std::string basename = "TestParVRRemote";
+  std::string filename = basename + ".par";
+
+  boost::filesystem::path outputPath(outputPathResults);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2",
+                                    "BUS_1", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
+                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2",
+                                    "BUS_3", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
+                                    0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
+  HVDCLineDefinitions::BusVSCMap vscIds = {std::make_pair("BUS_1", "VSCStation1"), std::make_pair("BUS_3", "VSCStation2")};
+  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+
+  std::string bus1 = "BUS_1";
+  std::string bus2 = "BUS_2";
+  GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
+  DynamicModelDefinitions noModels;
+
+  outputPath.append(filename);
+  dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
+    basename, config, outputPath.generic_string(), {}, hvdcDefs, busesRegulatedBySeveralGenerators, manager, {}, noModels, {}, {}, {}, {}));
+
+  parWriter.write();
+}
+
 TEST(TestPar, startingPointMode) {
   using dfl::algo::HVDCDefinition;
 

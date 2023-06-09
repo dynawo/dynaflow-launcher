@@ -64,17 +64,10 @@ DydHvdc::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicM
     dynamicModelsToConnect->addModel(blackBoxModel);
     writeConnect(dynamicModelsToConnect, hvdcLine);
   }
-  for (const auto& keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
-    std::string id = constants::modelSignalNQprefix_ + keyValue.first;
-    auto blackBoxModelVRRemote = helper::buildBlackBox(id, "VRRemote", basename + ".par", id);
-    dynamicModelsToConnect->addModel(blackBoxModelVRRemote);
-    dynamicModelsToConnect->addConnect(id, "vrremote_URegulated", constants::networkModelName, keyValue.first + "_U_value");
-  }
 }
 
 void
 DydHvdc::writeConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const algo::HVDCDefinition& hvdcLine) {
-  const std::string vrremoteNqValue("vrremote_NQ");
   if (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
@@ -82,13 +75,6 @@ DydHvdc::writeConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& d
     // case both : 1 <-> 1 and 2 <-> 2
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
-  }
-  if (hvdcLine.hasPQPropModel()) {
-    const auto& busId1 = (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcLine.converter2BusId : hvdcLine.converter1BusId;
-    dynamicModelsToConnect->addConnect(hvdcLine.id, "hvdc_NQ1", constants::modelSignalNQprefix_ + busId1, vrremoteNqValue);
-    if (hvdcLine.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
-      dynamicModelsToConnect->addConnect(hvdcLine.id, "hvdc_NQ2", constants::modelSignalNQprefix_ + hvdcLine.converter2BusId, vrremoteNqValue);
-    }
   }
 }
 }  // namespace outputs

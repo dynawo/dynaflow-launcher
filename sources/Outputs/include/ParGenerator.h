@@ -39,7 +39,7 @@ class ParGenerator {
   /**
    * @brief Construct a new Par Generators object
    *
-   * @param generatorDefinitions reference to the list of load definitions
+   * @param generatorDefinitions reference to the list of generator definitions
    */
   explicit ParGenerator(const std::vector<algo::GeneratorDefinition>& generatorDefinitions) : generatorDefinitions_(generatorDefinitions) {}
 
@@ -50,14 +50,16 @@ class ParGenerator {
    * @param activePowerCompensation the type of active power compensation
    * @param basename basename for current simulation
    * @param dirname the dirname of the output PAR file
-   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, ActivePowerCompensation activePowerCompensation,
-             const std::string& basename, const boost::filesystem::path& dirname,
-             const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, StartingPointMode startingPointMode,
-             const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void
+  write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+        ActivePowerCompensation activePowerCompensation,
+        const std::string& basename,
+        const boost::filesystem::path& dirname,
+        StartingPointMode startingPointMode,
+        const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   /**
@@ -83,14 +85,14 @@ class ParGenerator {
                                                                                    StartingPointMode startingPointMode);
 
   /**
-    * @brief Write constants parameter sets for generators
-    *
-    * @param activePowerCompensation the type of active power compensation
-    * @param generator generator definition
-    * @param startingPointMode starting point mode
-    *
-    * @returns the parameter set
-    */
+   * @brief Write constants parameter sets for generators
+   *
+   * @param activePowerCompensation the type of active power compensation
+   * @param generator generator definition
+   * @param startingPointMode starting point mode
+   *
+   * @returns the parameter set
+   */
   boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
                                                                            const algo::GeneratorDefinition& generator, StartingPointMode startingPointMode);
 
@@ -156,7 +158,7 @@ class ParGenerator {
   void updateRemoteRegulationParameters(const algo::GeneratorDefinition& def, boost::shared_ptr<parameters::ParametersSet> set);
 
  private:
-  std::vector<algo::GeneratorDefinition> generatorDefinitions_;  ///< list of generators definitions
+  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;  ///< list of generators definitions
 };
 
 }  // namespace outputs
