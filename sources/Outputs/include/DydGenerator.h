@@ -57,9 +57,9 @@ namespace outputs {
 class DydGenerator {
  public:
   /**
-   * @brief Construct a new Par Generator object
+   * @brief Construct a new Dyd Generator object
    *
-   * @param generatorDefinitions reference to the list of load definitions
+   * @param generatorDefinitions reference to the list of generator definitions
    */
   explicit DydGenerator(const std::vector<algo::GeneratorDefinition>& generatorDefinitions) : generatorDefinitions_(generatorDefinitions) {}
 
@@ -68,11 +68,11 @@ class DydGenerator {
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
    * @param basename the basename for current file
-   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param slackNodeId id of slack node
    */
-  void write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
-             const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, const std::string& slackNodeId);
+  void write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
+              const std::string& basename,
+              const std::string& slackNodeId);
 
  private:
   /**
@@ -112,14 +112,13 @@ class DydGenerator {
   void writeThetaRefConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& slackNodeId);
 
  private:
-  std::vector<algo::GeneratorDefinition> generatorDefinitions_;  ///< list of generators definitions
   static const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string>
       correspondence_lib_;                                                      ///< Correspondance between generator model type and library name in dyd file
   const std::string macroStaticRefSignalNGeneratorName_{"GeneratorStaticRef"};  ///< Name for the static ref macro for generators using signalN model
   const std::string macroConnectorGenName_{"GEN_NETWORK_CONNECTOR"};            ///< name for the macro connector for generators
   const std::string macroConnectorGenSignalNName_{"GEN_SIGNALN_CONNECTOR"};     ///< Name for the macro connector for SignalN
-  const std::string macroConnectorGenVRRemoteName_{"GEN_VRREMOTE_CONNECTOR"};   ///< name for the macro connector for generators
   const std::string signalNModelName_{"Model_Signal_N"};                        ///< Name of the SignalN model
+  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;          ///< list of generators definitions
 };
 
 }  // namespace outputs

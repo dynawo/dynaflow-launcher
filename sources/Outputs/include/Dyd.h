@@ -22,6 +22,7 @@
 #include "DydHvdc.h"
 #include "DydLoads.h"
 #include "DydSVarC.h"
+#include "DydVRRemote.h"
 #include "DynModelDefinitionAlgorithm.h"
 #include "DynamicDataBaseManager.h"
 #include "GeneratorDefinitionAlgorithm.h"
@@ -70,20 +71,31 @@ class Dyd {
      * @param models the list of dynamic models to use
      * @param svarcsDefs the SVarC definitions to use
      */
-    DydDefinition(const std::string &base, const std::string &filepath, const std::vector<algo::GeneratorDefinition> &gens,
-                  const std::vector<algo::LoadDefinition> &loaddefs, const std::shared_ptr<inputs::Node> &slacknode,
-                  const algo::HVDCLineDefinitions &hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators,
-                  const inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::DynamicModelDefinitions &models,
-                  const std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs)
-        : basename_(base), filename_(filepath), slackNode_(slacknode), hvdcDefinitions_(hvdcDefinitions),
-          busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators), dynamicDataBaseManager_(dynamicDataBaseManager),
-          dydLoads_(new DydLoads(loaddefs)), dydSVarC_(new DydSVarC(svarcsDefs)), dydHvdc_(new DydHvdc(hvdcDefinitions)), dydGenerator_(new DydGenerator(gens)),
-          dydDynModel_(new DydDynModel(models, gens, loaddefs)) {}
+    DydDefinition(const std::string &base,
+                  const std::string &filepath,
+                  const std::vector<algo::GeneratorDefinition> &gens,
+                  const std::vector<algo::LoadDefinition> &loaddefs,
+                  const std::shared_ptr<inputs::Node> &slacknode,
+                  const algo::HVDCLineDefinitions &hvdcDefinitions,
+                  const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators,
+                  const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
+                  const algo::DynamicModelDefinitions &models,
+                  const std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs) :
+        basename_(base),
+        filename_(filepath),
+        slackNode_(slacknode),
+        busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
+        dynamicDataBaseManager_(dynamicDataBaseManager),
+        dydLoads_(new DydLoads(loaddefs)),
+        dydSVarC_(new DydSVarC(svarcsDefs)),
+        dydHvdc_(new DydHvdc(hvdcDefinitions)),
+        dydGenerator_(new DydGenerator(gens)),
+        dydDynModel_(new DydDynModel(models, gens, loaddefs)),
+        dydVRRemote_(new DydVRRemote(gens, hvdcDefinitions)) {}
 
     std::string basename_;                                                                    ///< basename for file
     std::string filename_;                                                                    ///< filepath for file to write
     std::shared_ptr<inputs::Node> slackNode_;                                                 ///< slack node to use
-    const algo::HVDCLineDefinitions &hvdcDefinitions_;                                        ///< list of hvdc definitions
     const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager &dynamicDataBaseManager_;                            ///< dynamic database manager
     std::shared_ptr<DydLoads> dydLoads_;                                                      ///< reference to load dyd writer
@@ -91,6 +103,7 @@ class Dyd {
     std::shared_ptr<DydHvdc> dydHvdc_;                                                        ///< reference to hvdcs dyd writer
     std::shared_ptr<DydGenerator> dydGenerator_;                                              ///< reference to generators dyd writer
     std::shared_ptr<DydDynModel> dydDynModel_;                                                ///< reference to defined dynamic model dyd writer
+    std::shared_ptr<DydVRRemote> dydVRRemote_;                                                ///< reference to VRRemote dyd writer
   };
 
   /**
