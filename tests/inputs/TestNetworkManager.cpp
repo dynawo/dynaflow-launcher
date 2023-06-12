@@ -58,7 +58,7 @@ static bool hvdcLineEqual(const dfl::inputs::HvdcLine &lhs, const dfl::inputs::H
 TEST(NetworkManager, hvdcLines) {
   using dfl::inputs::NetworkManager;
   auto dummyStation = std::make_shared<dfl::inputs::LCCConverter>("StationN", "_BUS___99_TN", nullptr, 99.);
-  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0.,
+  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "_BUS___99_TN", nullptr, false, 0., 0., 0.,
                                                                      std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
   std::vector<std::shared_ptr<dfl::inputs::HvdcLine>> expected_hvdcLines = {
       dfl::inputs::HvdcLine::build("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, dummyStation, dummyStation, boost::none, 2000, false, 320, 322,

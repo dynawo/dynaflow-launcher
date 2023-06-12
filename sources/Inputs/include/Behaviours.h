@@ -38,7 +38,7 @@ struct Load {
    * @param isFictitious whether the load is fictitious or not
    * @param isNotInjecting  whether active and reactive power injected are zero (true), or different from zero (false)
    */
-  explicit Load(const LoadId& loadId, bool isFictitious, bool isNotInjecting) : id{loadId}, isFictitious{isFictitious}, isNotInjecting{isNotInjecting} {}
+  explicit Load(const LoadId &loadId, bool isFictitious, bool isNotInjecting) : id{loadId}, isFictitious{isFictitious}, isNotInjecting{isNotInjecting} {}
 
   LoadId id;            ///< load id
   bool isFictitious;    ///< whether the load is fictitious or not
@@ -70,22 +70,12 @@ struct Generator {
    * @param connectedBusId the Bus Id this generator is connected to
    * @param isNuclear true if the energy source of this generator is nuclear
    */
-  explicit Generator(const GeneratorId& genId, const bool isVoltageRegulationOn, const std::vector<ReactiveCurvePoint>& curvePoints, double qmin, double qmax,
-                     double pmin, double pmax, double q, double targetP, double VNom, const BusId& regulatedBusId, const BusId& connectedBusId,
-                     bool isNuclear = false) :
-      id{genId},
-      isVoltageRegulationOn{isVoltageRegulationOn},
-      points(curvePoints),
-      qmin{qmin},
-      qmax{qmax},
-      pmin{pmin},
-      pmax{pmax},
-      q{q},
-      targetP{targetP},
-      VNom{VNom},
-      regulatedBusId{regulatedBusId},
-      connectedBusId{connectedBusId},
-      isNuclear{isNuclear} {}
+  explicit Generator(const GeneratorId &genId, const bool isVoltageRegulationOn, const std::vector<ReactiveCurvePoint> &curvePoints, double qmin, double qmax,
+                     double pmin, double pmax, double q, double targetP, double VNom, const BusId &regulatedBusId, const BusId &connectedBusId,
+                     bool isNuclear = false)
+      : id{genId}, isVoltageRegulationOn{isVoltageRegulationOn},
+        points(curvePoints), qmin{qmin}, qmax{qmax}, pmin{pmin}, pmax{pmax}, q{q}, targetP{targetP}, VNom{VNom}, regulatedBusId{regulatedBusId},
+        connectedBusId{connectedBusId}, isNuclear{isNuclear} {}
 
   GeneratorId id;                          ///< generator id
   const bool isVoltageRegulationOn;        ///< determines if generator is regulating voltage or not
@@ -118,10 +108,8 @@ class Converter {
    * @param busId the id of the bus
    * @param hvdcLine the hvdc line this converter is contained into
    */
-  Converter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine) :
-      converterId{converterId},
-      busId{busId},
-      hvdcLine{hvdcLine} {}
+  Converter(const ConverterId &converterId, const BusId &busId, std::shared_ptr<HvdcLine> hvdcLine)
+      : converterId{converterId}, busId{busId}, hvdcLine{hvdcLine} {}
 
   /// @brief Destructor
   virtual ~Converter() {}
@@ -143,9 +131,8 @@ class LCCConverter : public Converter {
    * @param hvdcLine the hvdc line this converter is contained into
    * @param powerFactor the power factor of the LCC converter
    */
-  LCCConverter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine, double powerFactor) :
-      Converter(converterId, busId, hvdcLine),
-      powerFactor{powerFactor} {}
+  LCCConverter(const ConverterId &converterId, const BusId &busId, std::shared_ptr<HvdcLine> hvdcLine, double powerFactor)
+      : Converter(converterId, busId, hvdcLine), powerFactor{powerFactor} {}
 
   const double powerFactor;  ///< power factor
 };
@@ -164,18 +151,16 @@ struct VSCConverter : public Converter {
    * @param voltageRegulationOn optional boolean for the voltage regulation parameter, only used for VSC converters
    * @param qMax maximum reactive power of the converter
    * @param qMin minimum reactive power of the converter
+   * @param q reactive power of the converter
    * @param points the reactive curve points
    */
-  VSCConverter(const ConverterId& converterId, const BusId& busId, std::shared_ptr<HvdcLine> hvdcLine, bool voltageRegulationOn, double qMax, double qMin,
-               const std::vector<ReactiveCurvePoint>& points) :
-      Converter(converterId, busId, hvdcLine),
-      qMax{qMax},
-      qMin{qMin},
-      points(points),
-      voltageRegulationOn{voltageRegulationOn} {}
+  VSCConverter(const ConverterId &converterId, const BusId &busId, std::shared_ptr<HvdcLine> hvdcLine, bool voltageRegulationOn, double qMax, double qMin,
+               double q, const std::vector<ReactiveCurvePoint> &points)
+      : Converter(converterId, busId, hvdcLine), qMax{qMax}, qMin{qMin}, q{q}, points(points), voltageRegulationOn{voltageRegulationOn} {}
 
   const double qMax;                             ///< maximum q of the converter
   const double qMin;                             ///< minimum q of the converter
+  const double q;                                ///< q of the converter
   const std::vector<ReactiveCurvePoint> points;  ///< reactive points
   const bool voltageRegulationOn;                ///< determines if voltage regulation is enabled
 };
@@ -206,26 +191,13 @@ struct StaticVarCompensator {
    * @param connectedBusId connected Bus Id
    * @param UNomRemote the nominal voltage of the remotely regulated bus
    */
-  StaticVarCompensator(const SVarCid& id, const bool isRegulatingVoltage, double bMin, double bMax, double voltageSetPoint, double UNom, double UMinActivation,
+  StaticVarCompensator(const SVarCid &id, const bool isRegulatingVoltage, double bMin, double bMax, double voltageSetPoint, double UNom, double UMinActivation,
                        double UMaxActivation, double USetPointMin, double USetPointMax, double b0, double slope, bool hasStandByAutomaton,
-                       bool hasVoltagePerReactivePowerControl, const BusId& regulatedBusId, const BusId& connectedBusId, double UNomRemote) :
-      id(id),
-      isRegulatingVoltage(isRegulatingVoltage),
-      bMin(bMin),
-      bMax(bMax),
-      voltageSetPoint(voltageSetPoint),
-      UNom(UNom),
-      UMinActivation(UMinActivation),
-      UMaxActivation(UMaxActivation),
-      USetPointMin(USetPointMin),
-      USetPointMax(USetPointMax),
-      b0(b0),
-      slope(slope),
-      hasStandByAutomaton(hasStandByAutomaton),
-      hasVoltagePerReactivePowerControl(hasVoltagePerReactivePowerControl),
-      regulatedBusId(regulatedBusId),
-      connectedBusId(connectedBusId),
-      UNomRemote(UNomRemote) {}
+                       bool hasVoltagePerReactivePowerControl, const BusId &regulatedBusId, const BusId &connectedBusId, double UNomRemote)
+      : id(id), isRegulatingVoltage(isRegulatingVoltage), bMin(bMin), bMax(bMax), voltageSetPoint(voltageSetPoint), UNom(UNom), UMinActivation(UMinActivation),
+        UMaxActivation(UMaxActivation), USetPointMin(USetPointMin), USetPointMax(USetPointMax), b0(b0), slope(slope), hasStandByAutomaton(hasStandByAutomaton),
+        hasVoltagePerReactivePowerControl(hasVoltagePerReactivePowerControl), regulatedBusId(regulatedBusId), connectedBusId(connectedBusId),
+        UNomRemote(UNomRemote) {}
 
   const SVarCid id;                              ///< the id of the SVarC
   const bool isRegulatingVoltage;                ///< whether the SVarC is regulating the voltage

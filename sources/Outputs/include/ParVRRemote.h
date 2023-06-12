@@ -35,26 +35,23 @@ class ParVRRemote {
    *
    * @param generatorDefinitions reference to the list of generator definitions
    * @param busesRegulatedBySeveralGenerators reference to map of bus ids to a generator that regulates them
-   * @param vscBusVSCDefinitionsMap reference to mapping of buses that have multiple VSC connected and one of their VSC
+   * @param hvdcDefinitions reference to the list of hvdc definitions
    */
-  explicit ParVRRemote(const std::vector<algo::GeneratorDefinition>& generatorDefinitions,
-                        const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators,
-                        const algo::HVDCLineDefinitions::BusVSCMap& vscBusVSCDefinitionsMap) :
-    generatorDefinitions_(generatorDefinitions),
-    busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
-    vscBusVSCDefinitionsMap_(vscBusVSCDefinitionsMap) {}
+  explicit ParVRRemote(const std::vector<algo::GeneratorDefinition> &generatorDefinitions,
+                       const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators, const algo::HVDCLineDefinitions &hvdcDefinitions)
+      : generatorDefinitions_(generatorDefinitions), busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators), hvdcDefinitions_(hvdcDefinitions) {}
 
   /**
    * @brief enrich the parameter set collection for VRRemote
    *
    * @param paramSetCollection parameter set collection to enrich
    */
-  void writeVRRemotes(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection);
+  void writeVRRemotes(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection);
 
  private:
-  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;                      ///< list of generators definitions
-  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
-  const algo::HVDCLineDefinitions::BusVSCMap& vscBusVSCDefinitionsMap_;  ///< mapping of buses that have multiple VSC connected and one of their VSC
+  const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;                      ///< list of generators definitions
+  const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
+  const algo::HVDCLineDefinitions &hvdcDefinitions_;                                        ///< list of Hvdc definitions
 };
 
 }  // namespace outputs

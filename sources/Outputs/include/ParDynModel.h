@@ -19,6 +19,7 @@
 
 #include "DynModelDefinitionAlgorithm.h"
 #include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
 #include "LineDefinitionAlgorithm.h"
 #include "OutputsConstants.h"
 #include "ShuntDefinitionAlgorithm.h"
@@ -40,8 +41,10 @@ class ParDynModel {
    *
    * @param dynamicModelsDefinitions reference to the list of defined dynamic models definitions
    * @param gens generators definition coming from algorithms
+   * @param hvdcDefinitions hvdc definitions coming from algorithms
    */
-  explicit ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens);
+  explicit ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens,
+                       const algo::HVDCLineDefinitions &hvdcDefinitions);
 
   /**
    * @brief enrich the parameter set collection for defined dynamic models
@@ -114,6 +117,7 @@ class ParDynModel {
  private:
   const algo::DynamicModelDefinitions &dynamicModelsDefinitions_;       ///< list of defined dynamic models
   const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;  ///< list of generator definitions
+  const algo::HVDCLineDefinitions &hvdcDefinitions_;                    ///< hvdc definitions
   std::unordered_map<std::string, size_t> generatorIdToIndex_;          ///< map of generator ids to their index
 };
 

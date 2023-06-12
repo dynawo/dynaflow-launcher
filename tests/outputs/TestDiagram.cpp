@@ -160,16 +160,16 @@ TEST(Diagram, writeVSC) {
     boost::filesystem::create_directories(outputDirectory);
   }
   outputDirectory.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
-  dfl::algo::VSCDefinition vscStation1("VSCStation1", 51, -51, 21, {});
-  dfl::algo::VSCDefinition vscStation2("VSCStation2", 52, -52, 22,
+  dfl::algo::VSCDefinition vscStation1("VSCStation1", 51, -51, 50, 21, {});
+  dfl::algo::VSCDefinition vscStation2("VSCStation2", 52, -52, 50, 22,
                                        {
                                            dfl::algo::VSCDefinition::ReactiveCurvePoint(1., 11., 110.),
                                            dfl::algo::VSCDefinition::ReactiveCurvePoint(3., 33., 330.),
                                            dfl::algo::VSCDefinition::ReactiveCurvePoint(4., 44., 440.),
                                            dfl::algo::VSCDefinition::ReactiveCurvePoint(2., 22., 220.),
                                        });
-  dfl::algo::VSCDefinition vscStation3("VSCStation3", 53, -53, 23, {});
-  dfl::algo::VSCDefinition vscStation4("VSCStation4", 54, -54, 24, {});
+  dfl::algo::VSCDefinition vscStation3("VSCStation3", 53, -53, 50, 23, {});
+  dfl::algo::VSCDefinition vscStation4("VSCStation4", 54, -54, 50, 24, {});
 
   dfl::algo::HVDCLineDefinitions::HvdcLineMap map{
       std::make_pair("0",

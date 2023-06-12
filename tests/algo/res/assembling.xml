@@ -34,13 +34,18 @@
   <macroConnection id="SVCToUMeasurement">
     <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu"/>
   </macroConnection>
-  <macroConnection id="SVCToGenerator" index1="true">
+  <macroConnection id="SVCToGenerator" index1="true" indexId="SVCToRegulatingComponents">
     <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
     <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
   </macroConnection>
   <macroConnection id="SVCToLoad" index1="true">
     <connection var1="secondaryVoltageControl_U_value" var2="load_U"/>
+  </macroConnection>
+  <macroConnection id="SVCToHVDC" index1="true" indexId="SVCToRegulatingComponents">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
   </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
     <bus voltageLevel="VL" name="1"/>
@@ -106,7 +111,7 @@
   <dynamicAutomaton id="DM_VL661" lib="dummyLib" type="PhaseShifterI" access="T0|TFIN">
     <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_VL661"/>
     <macroConnect macroConnection="PhaseShifterToTap" id="TAP_VL661"/>
-    <macroConnect macroConnection="PhaseShifterrToAutomatonActivated" id="AUTOMATON_EXISTS_VL661"/>
+    <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_VL661"/>
   </dynamicAutomaton>
   <singleAssociation id="MESURE_MODELE_VL">
     <bus voltageLevel="VL"/>
@@ -127,9 +132,13 @@
     <load name="L3"/>
     <load name="L4"/>
   </singleAssociation>
+  <singleAssociation id="HVDCVSCLineId">
+    <hvdcLine name="HVDCVSCLine"/>
+  </singleAssociation>
   <dynamicAutomaton id="GeneratorAutomaton" lib="dummyLib">
     <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLineId"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId2"/>
     <macroConnect macroConnection="SVCToLoad" id="LoadId"/>
     <macroConnect macroConnection="SVCToLoad" id="LoadId2"/>

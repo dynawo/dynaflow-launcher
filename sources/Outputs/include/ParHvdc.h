@@ -37,7 +37,7 @@ class ParHvdc {
    *
    * @param hvdcDefinitions reference to the list of hvdcs definitions
    */
-  explicit ParHvdc(const algo::HVDCLineDefinitions& hvdcDefinitions) : hvdcDefinitions_(hvdcDefinitions) {}
+  explicit ParHvdc(const algo::HVDCLineDefinitions &hvdcDefinitions) : hvdcDefinitions_(hvdcDefinitions) {}
 
   /**
    * @brief enrich the parameter set collection for hvdcs
@@ -46,9 +46,10 @@ class ParHvdc {
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
    * @param startingPointMode starting point mode
+   * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const std::string& basename, const boost::filesystem::path& dirname,
-             dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename, const boost::filesystem::path &dirname,
+             dfl::inputs::Configuration::StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
   /**
@@ -58,12 +59,14 @@ class ParHvdc {
    * @param basename the basename for the simulation
    * @param dirname the dirname of the output directory
    * @param startingPointMode starting point mode
+   * @param dynamicDataBaseManager the dynamic DB manager to use
    *
    * @returns the parameter set
    */
-  boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition& hvdcLine, const std::string& basename,
-                                                             const boost::filesystem::path& dirname,
-                                                             dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition &hvdcLine, const std::string &basename,
+                                                             const boost::filesystem::path &dirname,
+                                                             dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                                                             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
   /**
    * @brief Computes KAC emulation parameter
@@ -71,9 +74,7 @@ class ParHvdc {
    * @param droop droop data, in MW/deg
    * @returns KAC, in p.u/rad (base SnRef=100MW)
    */
-  inline double computeKAC(double droop) {
-    return droop * 1.8 / constants::pi_;
-  }
+  inline double computeKAC(double droop) { return droop * 1.8 / constants::pi_; }
 
   /**
    * @brief Computes pSet emulation parameter
@@ -81,12 +82,10 @@ class ParHvdc {
    * @param p0 p0 data, in MW
    * @returns pSet, in pu (base SnRef=100MW)
    */
-  inline double computePSET(double p0) {
-    return p0 / 100.;
-  }
+  inline double computePSET(double p0) { return p0 / 100.; }
 
  private:
-  const algo::HVDCLineDefinitions& hvdcDefinitions_;  ///< list of hvdcs definitions
+  const algo::HVDCLineDefinitions &hvdcDefinitions_;  ///< list of hvdcs definitions
 };
 
 }  // namespace outputs

@@ -39,6 +39,7 @@ TEST(AssemblingXmlDocument, readFile) {
 
   auto macro = assembling.getMacroConnection("ToUMeasurement");
   ASSERT_EQ(macro.id, "ToUMeasurement");
+  ASSERT_TRUE(macro.indexId.empty());
   ASSERT_EQ(macro.connections.size(), 1);
   ASSERT_EQ(macro.connections.front().var1, "U_IMPIN");
   ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
@@ -53,6 +54,7 @@ TEST(AssemblingXmlDocument, readFile) {
   macro = assembling.getMacroConnection("ToControlledShunts");
   ASSERT_EQ(macro.id, "ToControlledShunts");
   ASSERT_FALSE(assembling.hasNetworkMacroConnection("ToControlledShunts"));
+  ASSERT_EQ(macro.indexId, "MyIndexId");
   ASSERT_EQ(macro.connections.size(), 3);
   std::array<std::tuple<std::string, std::string>, 3> connect_values = {std::make_tuple("shunt_state_@INDEX@", "@NAME@_state"),
                                                                         std::make_tuple("shunt_isCapacitor_@INDEX@", "@NAME@_isCapacitor"),
@@ -69,9 +71,11 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_NO_THROW(assembling.getSingleAssociation("TAP_VL661"));
   ASSERT_NO_THROW(assembling.getSingleAssociation("MESURE_I_SALON"));
   ASSERT_NO_THROW(assembling.getSingleAssociation("ORDER_SALON"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("HVDC_LINE"));
   auto singleAssoc = assembling.getSingleAssociation("MESURE_MODELE_1_VL4");
   ASSERT_EQ(singleAssoc.id, "MESURE_MODELE_1_VL4");
   ASSERT_FALSE(singleAssoc.line);
+  ASSERT_FALSE(singleAssoc.hvdcLine);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_TRUE(singleAssoc.bus);
@@ -79,6 +83,7 @@ TEST(AssemblingXmlDocument, readFile) {
   singleAssoc = assembling.getSingleAssociation("MESURE_I_VL661");
   ASSERT_EQ(singleAssoc.id, "MESURE_I_VL661");
   ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_FALSE(singleAssoc.hvdcLine);
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_TRUE(singleAssoc.tfo);
@@ -86,6 +91,7 @@ TEST(AssemblingXmlDocument, readFile) {
   singleAssoc = assembling.getSingleAssociation("MESURE_I_SALON");
   ASSERT_EQ(singleAssoc.id, "MESURE_I_SALON");
   ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_FALSE(singleAssoc.hvdcLine);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_TRUE(singleAssoc.line);
@@ -93,10 +99,19 @@ TEST(AssemblingXmlDocument, readFile) {
   singleAssoc = assembling.getSingleAssociation("SHUNT_MODELE_VL6");
   ASSERT_EQ(singleAssoc.id, "SHUNT_MODELE_VL6");
   ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_FALSE(singleAssoc.hvdcLine);
   ASSERT_FALSE(singleAssoc.tfo);
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_TRUE(singleAssoc.shunt);
   ASSERT_EQ(singleAssoc.shunt->name, "VL6");
+  singleAssoc = assembling.getSingleAssociation("HVDC_LINE");
+  ASSERT_EQ(singleAssoc.id, "HVDC_LINE");
+  ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_TRUE(singleAssoc.hvdcLine);
+  ASSERT_FALSE(singleAssoc.tfo);
+  ASSERT_FALSE(singleAssoc.line);
+  ASSERT_FALSE(singleAssoc.shunt);
+  ASSERT_EQ(singleAssoc.hvdcLine->name, "MyHvdc");
 
   ASSERT_THROW_DYNAWO(assembling.getMultipleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownMultiAssoc);
   ASSERT_NO_THROW(assembling.getMultipleAssociation("SHUNTS_MODELE_1_VL4"));

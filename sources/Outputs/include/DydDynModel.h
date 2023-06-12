@@ -19,6 +19,7 @@
 
 #include "DynModelDefinitionAlgorithm.h"
 #include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
 #include "LoadDefinitionAlgorithm.h"
 
 #include <DYDDynamicModelsCollection.h>
@@ -38,9 +39,10 @@ class DydDynModel {
    * @param dynamicModelsDefinitions reference to the list of load definitions
    * @param gens generators definition coming from algorithms
    * @param loaddefs definition coming from algorithms
+   * @param hvdcDefinitions hvdc definitions coming from algorithms
    */
   explicit DydDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens,
-                       const std::vector<algo::LoadDefinition> &loaddefs);
+                       const std::vector<algo::LoadDefinition> &loaddefs, const algo::HVDCLineDefinitions &hvdcDefinitions);
 
   /**
    * @brief enrich the dynamic black models set collection for defined dynamic models

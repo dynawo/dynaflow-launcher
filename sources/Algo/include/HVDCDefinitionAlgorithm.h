@@ -18,6 +18,7 @@
 #pragma once
 
 #include "AlgorithmsResults.h"
+#include "DynamicDataBaseManager.h"
 #include "HvdcLine.h"
 #include "NetworkManager.h"
 #include "Node.h"
@@ -40,11 +41,12 @@ class VSCDefinition {
    * @param id the id of the converter
    * @param qMax the maximum reactive power capability value of the converter
    * @param qMin the minimum reactive power capability value of the converter
+   * @param q the reactive power value of the converter
    * @param pMax the maximum active power capability value of the converter
    * @param points the reactive curve points of the converter, if any
    */
-  VSCDefinition(const VSCId &id, double qMax, double qMin, double pMax, const std::vector<ReactiveCurvePoint> &points)
-      : id(id), qmax{qMax}, qmin{qMin}, pmax(pMax), pmin(-pMax), points(points) {}
+  VSCDefinition(const VSCId &id, double qMax, double qMin, double q, double pMax, const std::vector<ReactiveCurvePoint> &points)
+      : id(id), qmax{qMax}, qmin{qMin}, q(q), pmax(pMax), pmin(-pMax), points(points) {}
 
   /**
    * @brief Equality operator for VSCDefinition
@@ -60,6 +62,7 @@ class VSCDefinition {
   VSCId id;                                ///< id of the converter
   double qmax;                             ///< maximum reactive power capability value
   double qmin;                             ///< minimum reactive power capability value
+  double q;                                ///< reactive power capability value
   double pmax;                             ///< maximum active power capability value
   double pmin;                             ///< minimum active power capability value, equals to -pmax
   std::vector<ReactiveCurvePoint> points;  ///< reactive curve points
@@ -115,6 +118,12 @@ class HVDCDefinition {
     HvdcPVDiagramPQ,
     HvdcPVDiagramPQEmulationSet,
     HvdcPVEmulationSet,
+    HvdcPVEmulationSetRpcl2Side1,
+    HvdcPVDiagramPQEmulationSetRpcl2Side1,
+    HvdcPVRpcl2Side1,
+    HvdcPVDiagramPQRpcl2Side1,
+    HvdcPVDanglingRpcl2Side1,
+    HvdcPVDanglingDiagramPQRpcl2Side1
   };
 
   /**
@@ -124,7 +133,9 @@ class HVDCDefinition {
   bool hasDiagramModel() const {
     return model == HVDCModel::HvdcPTanPhiDanglingDiagramPQ || model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDanglingDiagramPQ ||
            model == HVDCModel::HvdcPTanPhiDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet ||
-           model == HVDCModel::HvdcPVDiagramPQ || model == HVDCModel::HvdcPVDiagramPQEmulationSet;
+           model == HVDCModel::HvdcPVDiagramPQ || model == HVDCModel::HvdcPVDiagramPQEmulationSet ||
+           model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQRpcl2Side1 ||
+           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1;
   }
 
   /**
@@ -133,7 +144,8 @@ class HVDCDefinition {
    */
   bool hasEmulationModel() const {
     return model == HVDCModel::HvdcPQPropEmulationSet || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet || model == HVDCModel::HvdcPVEmulationSet ||
-           model == HVDCModel::HvdcPVDiagramPQEmulationSet;
+           model == HVDCModel::HvdcPVDiagramPQEmulationSet || model == HVDCModel::HvdcPVEmulationSetRpcl2Side1 ||
+           model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1;
   }
 
   /**
@@ -151,7 +163,18 @@ class HVDCDefinition {
    */
   bool hasDanglingModel() const {
     return model == HVDCModel::HvdcPTanPhiDangling || model == HVDCModel::HvdcPTanPhiDanglingDiagramPQ || model == HVDCModel::HvdcPQPropDangling ||
-           model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDangling || model == HVDCModel::HvdcPVDanglingDiagramPQ;
+           model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDangling || model == HVDCModel::HvdcPVDanglingDiagramPQ ||
+           model == HVDCModel::HvdcPVDanglingRpcl2Side1 || model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1;
+  }
+  /**
+   * @brief test is the  HVDC definition has a reactive power control loop 2 for connection to the secondary voltage control
+   *
+   * @return @b true if the  HVDC definition has a reactive power control loop 2 for connection to the secondary voltage control, @b false otherwise
+   */
+  bool hasRpcl2() const {
+    return model == HVDCModel::HvdcPVEmulationSetRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1 ||
+           model == HVDCModel::HvdcPVRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQRpcl2Side1 || model == HVDCModel::HvdcPVDanglingRpcl2Side1 ||
+           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1;
   }
 
   /**
@@ -244,10 +267,11 @@ class HVDCDefinitionAlgorithm {
    * @param infiniteReactiveLimits the configuration data of whether we use infinite reactive limits
    * @param vscConverters list of VSC converters
    * @param mapBusVSCConvertersBusId the mapping of buses and their number of VSC converters regulating them
+   * @param manager the dynamic data base manager to use
    */
   HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions, bool infiniteReactiveLimits,
                           const std::unordered_set<std::shared_ptr<inputs::Converter>> &vscConverters,
-                          const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId);
+                          const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId, const inputs::DynamicDataBaseManager &manager);
 
   /**
    * @brief Perform the algorithm
@@ -351,6 +375,7 @@ class HVDCDefinitionAlgorithm {
   const bool infiniteReactiveLimits_;                                         ///< whether we use infinite reactive limits
   const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId_;  ///< the map of buses and the number of VSC converters regulating them
   std::unordered_map<inputs::Converter::ConverterId, std::shared_ptr<inputs::Converter>> vscConverters_;  ///< List of VSC converters to use
+  std::unordered_set<std::string> hvdcLinesInSVC;  ///< If a hvdc line id is in this map then it belongs to a secondary voltage control area
 };
 
 }  // namespace algo

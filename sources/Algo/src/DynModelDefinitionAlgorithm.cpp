@@ -89,6 +89,8 @@ void DynModelAlgorithm::extractSingleAssociationInfo(const inputs::AssemblingDat
     macroConnectByVlForBusesId_[singleAssoc.bus->voltageLevel].insert(connection);
   } else if (singleAssoc.line) {
     macroConnectByLineName_[singleAssoc.line->name].push_back(connection);
+  } else if (singleAssoc.hvdcLine) {
+    macroConnectByHvdcName_[singleAssoc.hvdcLine->name].push_back(connection);
   } else if (singleAssoc.tfo) {
     macroConnectByTfoName_[singleAssoc.tfo->name].push_back(connection);
   } else if (singleAssoc.shunt) {
@@ -144,8 +146,10 @@ bool DynamicModelDefinition::MacroConnection::operator>=(const MacroConnection &
 void DynModelAlgorithm::connectMacroConnectionForDynAutomaton(const inputs::AssemblingDataBase::DynamicAutomaton &automaton,
                                                               const inputs::AssemblingDataBase::MacroConnect &macro) {
   dynamicModels_.usedMacroConnections.insert(macro.macroConnection);
-  addMacroConnectionToModelDefinitions(
-      automaton, DynamicModelDefinition::MacroConnection(macro.macroConnection, DynamicModelDefinition::MacroConnection::ElementType::AUTOMATON, macro.id));
+  const auto &macroConn = manager_.assembling().getMacroConnection(macro.macroConnection);
+  addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macro.macroConnection,
+                                                                                          DynamicModelDefinition::MacroConnection::ElementType::AUTOMATON,
+                                                                                          macro.id, macroConn.indexId));
 }
 
 void DynModelAlgorithm::connectMacroConnectionForMultipleShunts(const NodePtr &node) {
@@ -158,11 +162,12 @@ void DynModelAlgorithm::connectMacroConnectionForMultipleShunts(const NodePtr &n
     // dynamic model id is present in the map as for now macroConnectByVlForShuntsId_ is filled only by dynamic automatons data
     assert(manager_.assembling().dynamicAutomatons().count(macroConnection.dynModelId) > 0);
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
 
     for (const auto &shunt : node->shunts) {
-      addMacroConnectionToModelDefinitions(
-          automaton,
-          DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::SHUNT, shunt.id));
+      addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                              DynamicModelDefinition::MacroConnection::ElementType::SHUNT,
+                                                                                              shunt.id, macroConn.indexId));
     }
   }
 }
@@ -172,10 +177,11 @@ void DynModelAlgorithm::connectMacroConnectionForLine(const std::shared_ptr<inpu
   for (const auto &macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
 
-    addMacroConnectionToModelDefinitions(
-        automaton,
-        DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::LINE, line->id));
+    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                            DynamicModelDefinition::MacroConnection::ElementType::LINE,
+                                                                                            line->id, macroConn.indexId));
   }
 }
 
@@ -184,10 +190,11 @@ void DynModelAlgorithm::connectMacroConnectionForSingleShunt(const inputs::Shunt
   for (const auto &macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
 
-    addMacroConnectionToModelDefinitions(
-        automaton,
-        DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::SHUNT, shunt.id));
+    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                            DynamicModelDefinition::MacroConnection::ElementType::SHUNT,
+                                                                                            shunt.id, macroConn.indexId));
   }
 }
 
@@ -200,10 +207,12 @@ void DynModelAlgorithm::connectMacroConnectionForBus(const NodePtr &node) {
     const auto &nodeId = vl->nodes.front()->id;
 
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);  // Tag the used macro connection
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
 
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
-    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(
-                                                        macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::NODE, nodeId));
+    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                            DynamicModelDefinition::MacroConnection::ElementType::NODE, nodeId,
+                                                                                            macroConn.indexId));
   }
 }
 
@@ -212,9 +221,11 @@ void DynModelAlgorithm::connectMacroConnectionForTfo(const std::shared_ptr<input
   for (const auto &macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
 
-    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(
-                                                        macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::TFO, tfo->id));
+    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                            DynamicModelDefinition::MacroConnection::ElementType::TFO, tfo->id,
+                                                                                            macroConn.indexId));
   }
 }
 
@@ -223,9 +234,10 @@ void DynModelAlgorithm::connectMacroConnectionForGenerator(const inputs::Generat
   for (const auto &macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
     addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
                                                                                             DynamicModelDefinition::MacroConnection::ElementType::GENERATOR,
-                                                                                            generator.id));
+                                                                                            generator.id, macroConn.indexId));
   }
 }
 void DynModelAlgorithm::connectMacroConnectionForLoad(const inputs::Load &load) {
@@ -233,9 +245,22 @@ void DynModelAlgorithm::connectMacroConnectionForLoad(const inputs::Load &load) 
   for (const auto &macroConnection : macroConnections) {
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
     const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
-    addMacroConnectionToModelDefinitions(
-        automaton,
-        DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId, DynamicModelDefinition::MacroConnection::ElementType::LOAD, load.id));
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
+    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                            DynamicModelDefinition::MacroConnection::ElementType::LOAD, load.id,
+                                                                                            macroConn.indexId));
+  }
+}
+
+void DynModelAlgorithm::connectMacroConnectionForHvdc(const inputs::HvdcLine &hvdcLine) {
+  const auto &macroConnections = macroConnectByHvdcName_.at(hvdcLine.id);
+  for (const auto &macroConnection : macroConnections) {
+    dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);
+    const auto &automaton = manager_.assembling().dynamicAutomatons().at(macroConnection.dynModelId);
+    const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
+    addMacroConnectionToModelDefinitions(automaton, DynamicModelDefinition::MacroConnection(macroConnection.macroConnectionId,
+                                                                                            DynamicModelDefinition::MacroConnection::ElementType::HVDC,
+                                                                                            hvdcLine.id, macroConn.indexId));
   }
 }
 
@@ -285,6 +310,11 @@ void DynModelAlgorithm::operator()(const NodePtr &node, std::shared_ptr<Algorith
   for (const auto &load : node->loads) {
     if (macroConnectByLoadName_.count(load.id) > 0) {
       connectMacroConnectionForLoad(load);
+    }
+  }
+  for (const auto &converter : node->converters) {
+    if (macroConnectByHvdcName_.count(converter.lock()->hvdcLine->id) > 0) {
+      connectMacroConnectionForHvdc(*converter.lock()->hvdcLine);
     }
   }
 }

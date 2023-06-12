@@ -180,29 +180,38 @@ TEST(Dyd, writeDynamicModel) {
   models.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
   models.models.insert({"MODELE_1_VL4", dfl::algo::DynamicModelDefinition("MODELE_1_VL4", "DYNModel1")});
 
-  auto macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
+  auto macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT,
+                                                             "1.1", "");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT,
+                                                             "1.2", "");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.1");
+      dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L0", "");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
-  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
-  macro = dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L0");
-  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
-  macro = dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L1");
+      dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L1", "");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
 
   models.usedMacroConnections.insert("SVCToUMeasurement");
   models.usedMacroConnections.insert("SVCToGenerator");
+  models.usedMacroConnections.insert("SVCToHVDC");
 
-  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
-  models.models.at("SVC").nodeConnections.insert(macro);
   macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5");
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
   models.models.at("SVC").nodeConnections.insert(macro);
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6");
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5",
+                                                             "SVCToComponent");
+  models.models.at("SVC").nodeConnections.insert(macro);
+
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToHVDC", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::HVDC, "HVDCVSCLine",
+                                                             "SVCToComponent");
+  models.models.at("SVC").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6",
+                                                             "SVCToComponent");
   models.models.at("SVC").nodeConnections.insert(macro);
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
@@ -218,15 +227,23 @@ TEST(Dyd, writeDynamicModel) {
       GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
       GeneratorDefinition("G6", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
+  auto hvdcLineVSC =
+      dfl::algo::HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_2", false,
+                                dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1,
+                                {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  //  maybe watch out but you can't access the hdvLine from the converterInterface
+  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC)};
+  HVDCLineDefinitions::BusVSCMap vscIds = {};
+  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  HVDCLineDefinitions noHvdcDefs;
   GeneratorDefinitionAlgorithm::BusGenMap noBuses;
 
   outputPath.append(filename);
   dfl::outputs::Dyd dydWriter(
-      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, models, {}));
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, hvdcDefs, noBuses, manager, models, {}));
 
   dydWriter.write();
 
@@ -338,12 +355,12 @@ TEST(Dyd, writeVRRemote) {
   std::shared_ptr<dfl::inputs::VoltageLevel> vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2",
-                                    "BUS_1", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
-                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
-  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2",
-                                    "BUS_3", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
-                                    0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2", "BUS_1", false,
+                                    HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
+                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_3", false,
+                                    HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {}, 0., boost::none,
+                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   HVDCLineDefinitions::BusVSCMap vscIds = {std::make_pair("BUS_1", "VSCStation1"), std::make_pair("BUS_3", "VSCStation2")};
   HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
@@ -354,16 +371,8 @@ TEST(Dyd, writeVRRemote) {
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename,
-                                                                outputPath.generic_string(),
-                                                                {},
-                                                                {},
-                                                                node,
-                                                                hvdcDefs,
-                                                                busesRegulatedBySeveralGenerators,
-                                                                manager,
-                                                                noModels,
-                                                                {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, busesRegulatedBySeveralGenerators,
+                                                               manager, noModels, {}));
 
   dydWriter.write();
 

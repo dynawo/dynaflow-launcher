@@ -19,8 +19,9 @@
 namespace dfl {
 namespace outputs {
 
-ParDynModel::ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens)
-    : dynamicModelsDefinitions_(dynamicModelsDefinitions), generatorDefinitions_(gens) {
+ParDynModel::ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens,
+                         const algo::HVDCLineDefinitions &hvdcDefinitions)
+    : dynamicModelsDefinitions_(dynamicModelsDefinitions), generatorDefinitions_(gens), hvdcDefinitions_(hvdcDefinitions) {
   for (size_t i = 0; i < gens.size(); ++i) {
     generatorIdToIndex_[gens[i].id] = i;
   }
@@ -59,17 +60,24 @@ boost::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(c
                                                                                const algo::DynamicModelDefinition &automaton) {
   auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
 
-  std::unordered_map<std::string, unsigned> genIdToInitialIndex;
+  std::unordered_map<std::string, unsigned> regulatorIdToInitialIndex;
   auto itAutomaton = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
   assert(itAutomaton != dynamicDataBaseManager.assembling().dynamicAutomatons().end());
-  unsigned genIndex = 0;
+  unsigned regulatorIndex = 0;
   for (const auto &macroConn : itAutomaton->second.macroConnects) {
     if (dynamicDataBaseManager.assembling().isSingleAssociation(macroConn.id)) {
+      bool increment = false;
       for (const auto &gen : dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators) {
-        genIdToInitialIndex[gen.name] = genIndex;
+        regulatorIdToInitialIndex[gen.name] = regulatorIndex;
+        increment = true;
       }
-      if (!dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).generators.empty())
-        ++genIndex;
+      auto hvdcLine = dynamicDataBaseManager.assembling().getSingleAssociation(macroConn.id).hvdcLine;
+      if (hvdcLine) {
+        regulatorIdToInitialIndex[hvdcLine->name] = regulatorIndex;
+        increment = true;
+      }
+      if (increment)
+        ++regulatorIndex;
     }
   }
 
@@ -90,14 +98,16 @@ boost::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(c
   bool frozen = true;
   for (const auto &connection : automaton.nodeConnections) {
     const auto &generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
+    const auto &hvdcIt = hvdcDefinitions_.hvdcLines.find(connection.connectedElementId);
     if (generatorIdx != generatorIdToIndex_.end()) {
       const auto &genDefinition = generatorDefinitions_[generatorIdx->second];
       if (!genDefinition.isNetwork()) {
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
       }
 
-      auto it = genIdToInitialIndex.find(genDefinition.id);
-      if (it != genIdToInitialIndex.end()) {
+      auto it = regulatorIdToInitialIndex.find(genDefinition.id);
+      if (it != regulatorIdToInitialIndex.end()) {
+        assert(genInitialParamToValues.find("secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_") != genInitialParamToValues.end());
         new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Qr_" + std::to_string(idx) + "_",
                                                      genInitialParamToValues["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
         auto sNomIt = genInitialParamToValues.find("secondaryVoltageControl_SNom_" + std::to_string(it->second) + "_");
@@ -117,6 +127,36 @@ boost::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(c
 
       if (genDefinition.q < genDefinition.qmax && genDefinition.q > genDefinition.qmin) {
         frozen = false;
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_", false));
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_", false));
+      } else {
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_", genDefinition.q >= genDefinition.qmax));
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_", genDefinition.q <= genDefinition.qmin));
+      }
+      ++idx;
+    } else if (hvdcIt != hvdcDefinitions_.hvdcLines.end()) {
+      const auto &hvdcDefinition = hvdcIt->second;
+      auto it = regulatorIdToInitialIndex.find(hvdcDefinition.id);
+      if (it != regulatorIdToInitialIndex.end()) {
+        assert(genInitialParamToValues.find("secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_") != genInitialParamToValues.end());
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Qr_" + std::to_string(idx) + "_",
+                                                     genInitialParamToValues["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
+      }
+      new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p1_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q1_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v1_pu", "DOUBLE", hvdcDefinition.id));
+
+      assert(hvdcDefinition.vscDefinition1);
+      if (hvdcDefinition.vscDefinition1->q < hvdcDefinition.vscDefinition1->qmax && hvdcDefinition.vscDefinition1->q > hvdcDefinition.vscDefinition1->qmin) {
+        frozen = false;
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_", false));
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_", false));
+      } else {
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_",
+                                                     hvdcDefinition.vscDefinition1->q >= hvdcDefinition.vscDefinition1->qmax));
+        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_",
+                                                     hvdcDefinition.vscDefinition1->q <= hvdcDefinition.vscDefinition1->qmin));
       }
       ++idx;
     } else {

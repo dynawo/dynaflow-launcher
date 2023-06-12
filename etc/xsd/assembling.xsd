@@ -33,6 +33,7 @@ SPDX-License-Identifier: MPL-2.0 -->
     <xs:attribute name="id" use="required" type="xs:string"/>
     <xs:attribute name="index1" use="optional" type="xs:boolean"/>
     <xs:attribute name="network" use="optional" type="xs:boolean"/>
+    <xs:attribute name="indexId" use="optional" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="Connection">
@@ -63,6 +64,7 @@ SPDX-License-Identifier: MPL-2.0 -->
       <xs:choice maxOccurs="1">
         <xs:element name="bus" type="Bus"/>
         <xs:element name="line" type="Line"/>
+        <xs:element name="hvdcLine" type="HVDC"/>
         <xs:element name="tfo" type="Transformer"/>
         <xs:element name="shunt" type="SingleShunt"/>
       </xs:choice>
@@ -113,6 +115,10 @@ SPDX-License-Identifier: MPL-2.0 -->
   </xs:complexType>
 
   <xs:complexType name="Line">
+    <xs:attribute name="name" use="required" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="HVDC">
     <xs:attribute name="name" use="required" type="xs:string"/>
   </xs:complexType>
 

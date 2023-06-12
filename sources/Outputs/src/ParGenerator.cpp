@@ -17,12 +17,9 @@
 namespace dfl {
 namespace outputs {
 
-void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection,
-                    ActivePowerCompensation activePowerCompensation,
-                    const std::string &basename,
-                    const boost::filesystem::path &dirname,
-                    StartingPointMode startingPointMode,
-                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
+                         const std::string &basename, const boost::filesystem::path &dirname, StartingPointMode startingPointMode,
+                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {
@@ -310,7 +307,7 @@ void ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::Parameters
     if (paramIt != databaseSetting.doubleParameters.end())
       set->addParameter(helper::buildParameter(parameter, paramIt->value));
     else
-      throw Error(MissingGeneratorParameterInSettings, parameter, genId);
+      throw Error(MissingGeneratorHvdcParameterInSettings, parameter, genId);
   }
   std::unordered_map<std::string, std::string> parameterOrReference = {{"generator_QNomAlt", "qNom"}, {"generator_SNom", "sNom"}};
   for (auto parameter : parameterOrReference) {

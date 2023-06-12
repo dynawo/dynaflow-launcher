@@ -29,6 +29,11 @@
     <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="Network_generator_limUQUp"/>
     <dyn:connect var1="secondaryVoltageControl_level" var2="Network_reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
+  <dyn:macroConnector id="SVCToHVDC">
+    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
+    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
+    <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+  </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
     <dyn:connect var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
   </dyn:macroConnector>
@@ -65,6 +70,14 @@
   <dyn:blackBoxModel id="G5" staticId="G5" lib="GeneratorPVRpclSignalN" parFile="TestDydDynModel.par" parId="51629263-3f1c-580f-907d-8333de7c55aa">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="HVDCVSCLine" staticId="HVDCVSCLine" lib="HvdcPVDanglingRpcl2Side1" parFile="TestDydDynModel.par" parId="HVDCVSCLine">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
   <dyn:blackBoxModel id="L0" staticId="L0" lib="DYNModelLoadRestorativeWithLimits" parFile="TestDydDynModel.par" parId="GenericRestorativeLoad">
     <dyn:macroStaticRef id="LoadRef"/>
   </dyn:blackBoxModel>
@@ -84,6 +97,7 @@
   <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>
   <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="G5" index1="0"/>
   <dyn:macroConnect connector="SVCToGeneratorNetwork" id1="SVC" id2="NETWORK" index1="1" name2="G6"/>
+  <dyn:macroConnect connector="SVCToHVDC" id1="SVC" id2="HVDCVSCLine" index1="2"/>
   <dyn:macroConnect connector="SVCToUMeasurement" id1="SVC" id2="NETWORK" index1="0" name2="0"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>
@@ -97,4 +111,6 @@
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G5" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="3"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
+  <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="BUS_2_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
 </dyn:dynamicModelsArchitecture>

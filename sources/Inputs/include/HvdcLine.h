@@ -76,17 +76,10 @@ class HvdcLine {
    *
    * @return HVDC line object
    */
-  static std::shared_ptr<HvdcLine> build(const std::string& id,
-                                          const ConverterType converterType,
-                                          const std::shared_ptr<Converter>& converter1,
-                                          const std::shared_ptr<Converter>& converter2,
-                                          const boost::optional<ActivePowerControl>& activePowerControl,
-                                          double pMax,
-                                          bool isConverter1Rectifier,
-                                          const double vdcNom,
-                                          const double pSetPoint,
-                                          const double rdc,
-                                          const std::array<double, 2>& lossFactors);
+  static std::shared_ptr<HvdcLine> build(const std::string &id, const ConverterType converterType, const std::shared_ptr<Converter> &converter1,
+                                         const std::shared_ptr<Converter> &converter2, const boost::optional<ActivePowerControl> &activePowerControl,
+                                         double pMax, bool isConverter1Rectifier, const double vdcNom, const double pSetPoint, const double rdc,
+                                         const std::array<double, 2> &lossFactors);
 
  public:
   const HvdcLineId id;                                           ///< HvdcLine id
@@ -99,7 +92,7 @@ class HvdcLine {
   const double vdcNom;                                           ///< nominal dc voltage of the hvdc line in kV
   const double pSetPoint;                                        ///< active power set-point of the hvdc line in MW
   const double rdc;                                              ///< dc resistance of the hvdc line in Ohm
-  const std::array<double, 2> lossFactors;                      ///< loss factors for converters 1 and 2
+  const std::array<double, 2> lossFactors;                       ///< loss factors for converters 1 and 2
 
  private:
   /**
@@ -117,17 +110,9 @@ class HvdcLine {
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactors loss factors for converters 1 and 2
    */
-  HvdcLine(const std::string& id,
-            const ConverterType converterType,
-            const std::shared_ptr<Converter>& converter1,
-            const std::shared_ptr<Converter>& converter2,
-            const boost::optional<ActivePowerControl>& activePowerControl,
-            double pMax,
-            bool isConverter1Rectifier,
-            const double vdcNom,
-            const double pSetPoint,
-            const double rdc,
-            const std::array<double, 2>& lossFactors);
+  HvdcLine(const std::string &id, const ConverterType converterType, const std::shared_ptr<Converter> &converter1, const std::shared_ptr<Converter> &converter2,
+           const boost::optional<ActivePowerControl> &activePowerControl, double pMax, bool isConverter1Rectifier, const double vdcNom, const double pSetPoint,
+           const double rdc, const std::array<double, 2> &lossFactors);
 };
 }  // namespace inputs
 }  // namespace dfl
