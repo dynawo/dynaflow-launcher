@@ -90,6 +90,13 @@ class AssemblingDataBase {
   };
 
   /**
+   * @brief Hvdc line XML element
+   */
+  struct HvdcLine {
+    std::string name;  ///< name of the Hvdc line
+  };
+
+  /**
    * @brief Macro connect XML element defining a macro connection of a dynamic model
    */
   struct MacroConnect {
@@ -104,6 +111,7 @@ class AssemblingDataBase {
   struct MacroConnection {
     std::string id;                       ///< macro connection id
     bool network;                         ///< true if this macroConnection is adapted to network components
+    std::string indexId;                  ///< id for indexing the connections
     std::vector<Connection> connections;  ///< list of connections of the macro connections
   };
 
@@ -115,6 +123,7 @@ class AssemblingDataBase {
     boost::optional<Bus> bus;            ///< bus of the association
     boost::optional<Tfo> tfo;            ///< transformer of the association
     boost::optional<Line> line;          ///< line of the association
+    boost::optional<HvdcLine> hvdcLine;  ///< Hvdc line of the association
     boost::optional<SingleShunt> shunt;  ///< single shunt of the association
     std::vector<Generator> generators;   ///< List of generators
     std::vector<Load> loads;             ///< List of loads
@@ -260,6 +269,19 @@ class AssemblingDataBase {
     };
 
     /**
+     * @brief Hvdc line element handler
+     */
+    struct HvdcLineHandler : public xml::sax::parser::ComposableElementHandler {
+      /**
+       * @brief Constructor
+       * @param root the root element to parse
+       */
+      explicit HvdcLineHandler(const elementName_type &root);
+
+      boost::optional<AssemblingDataBase::HvdcLine> currentHvdcLine;  ///< current Hvdc line element
+    };
+
+    /**
      * @brief Single shunt element handler
      */
     struct SingleShuntHandler : public xml::sax::parser::ComposableElementHandler {
@@ -314,6 +336,7 @@ class AssemblingDataBase {
 
       BusHandler busHandler;                  ///< bus element handler
       LineHandler lineHandler;                ///< line element handler
+      HvdcLineHandler hvdcLineHandler;        ///< hvdc line element handler
       TfoHandler tfoHandler;                  ///< transformer element handler
       SingleShuntHandler singleShuntHandler;  ///< single shunt element handler
       GeneratorHandler generatorHandler;      ///< generator element handler
@@ -430,6 +453,13 @@ class AssemblingDataBase {
   std::string getSingleAssociationFromGenerator(const std::string &name) const;
 
   /**
+   * @brief Retrieve a single association id that contains the hvdc line with the given name
+   * @param name hvdc line id
+   * @returns single association id that contains the hvdc line with the given name, empty string if not found
+   */
+  std::string getSingleAssociationFromHvdcLine(const std::string &name) const;
+
+  /**
    * @brief Retrieve a multiple association with its id
    * @param id multi association id
    * @returns multiple association element with the given id, throw if not found
@@ -475,6 +505,7 @@ class AssemblingDataBase {
   std::unordered_map<std::string, SingleAssociation> singleAssociations_;           ///< list of single associations
   std::unordered_map<std::string, MultipleAssociation> multipleAssociations_;       ///< list of multiple associations
   std::unordered_map<std::string, std::string> generatorIdToSingleAssociationsId_;  ///< generator id associated to the single associations that contains it
+  std::unordered_map<std::string, std::string> HvdcIdToSingleAssociationsId_;       ///< hvdc line id associated to the single associations that contains it
   std::map<std::string, DynamicAutomaton> dynamicAutomatons_;                       ///< list of dynamic automatons
   bool containsSVC_;                                      ///< true if the assembling data base contains one or more SVC, false otherwise
   std::unordered_map<std::string, Property> properties_;  ///< list of properties

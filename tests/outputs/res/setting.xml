@@ -45,14 +45,15 @@
   </set>
   <set id="SVC">
     <!-- SVC parameters -->
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="280"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="290"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_3_" value="300"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_4_" value="310"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_0_" value="280"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="290"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="300"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_3_" value="310"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_Qr_4_" value="320"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_SNom_0_" value="110.45"/>
     <par type="DOUBLE" name="secondaryVoltageControl_SNom_1_" value="110.45"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_SNom_2_" value="110.45"/>
   </set>
   <set id="G5">
     <!-- G5 parameters -->
@@ -80,5 +81,14 @@
     <par type="DOUBLE" name="reactivePowerControlLoop_DerURefMaxPu" value="0.0005"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_QrPu" value="1.7"/>
     <par type="DOUBLE" name="reactivePowerControlLoop_TiQ" value="180"/>
+  </set>
+  <set id="HVDCVSCLine">
+    <par name="reactivePowerControlLoop_CqMaxPu" type="DOUBLE" value="43.0"/>
+    <par name="reactivePowerControlLoop_DeltaURefMaxPu" type="DOUBLE" value="0.002"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
+    <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
+    <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
+    <par name="hvdc_QNom" type="DOUBLE" value="70"/>
+    <par name="hvdc_LambdaPu" type="DOUBLE" value="80"/>
   </set>
 </setting>

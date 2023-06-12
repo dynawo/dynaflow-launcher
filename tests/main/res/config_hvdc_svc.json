@@ -1,0 +1,9 @@
+{
+    "dfl-config": {
+      "OutputDir": "../resultsTestsTmp/hvdc_svc",
+      "DsoVoltageLevel": 600,
+      "InfiniteReactiveLimits": true,
+      "SettingPath": "../res/setting_svc_hvdc.xml",
+      "AssemblingPath": "../res/assembling_svc_hvdc.xml"
+    }
+  }

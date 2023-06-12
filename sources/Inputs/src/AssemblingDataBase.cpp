@@ -119,6 +119,14 @@ std::string AssemblingDataBase::getSingleAssociationFromGenerator(const std::str
   return "";
 }
 
+std::string AssemblingDataBase::getSingleAssociationFromHvdcLine(const std::string &name) const {
+  const auto it = HvdcIdToSingleAssociationsId_.find(name);
+  if (it != HvdcIdToSingleAssociationsId_.end()) {
+    return it->second;
+  }
+  return "";
+}
+
 bool AssemblingDataBase::isMultipleAssociation(const std::string &id) const { return multipleAssociations_.find(id) != multipleAssociations_.end(); }
 
 const AssemblingDataBase::Property &AssemblingDataBase::getProperty(const std::string &id) const {
@@ -161,6 +169,9 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
     for (const auto &gen : singleAssociationHandler_.currentSingleAssociation->generators) {
       db.generatorIdToSingleAssociationsId_[gen.name] = singleAssociationHandler_.currentSingleAssociation->id;
     }
+    if (singleAssociationHandler_.currentSingleAssociation->hvdcLine)
+      db.HvdcIdToSingleAssociationsId_[singleAssociationHandler_.currentSingleAssociation->hvdcLine->name] =
+          singleAssociationHandler_.currentSingleAssociation->id;
     singleAssociationHandler_.currentSingleAssociation.reset();
   });
 
@@ -216,6 +227,10 @@ AssemblingDataBase::AssemblingXmlDocument::TfoHandler::TfoHandler(const elementN
   onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) { currentTfo->name = attributes["name"].as_string(); });
 }
 
+AssemblingDataBase::AssemblingXmlDocument::HvdcLineHandler::HvdcLineHandler(const elementName_type &root) {
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) { currentHvdcLine->name = attributes["name"].as_string(); });
+}
+
 AssemblingDataBase::AssemblingXmlDocument::SingleShuntHandler::SingleShuntHandler(const elementName_type &root) {
   onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) { currentSingleShunt->name = attributes["name"].as_string(); });
 }
@@ -239,6 +254,8 @@ AssemblingDataBase::AssemblingXmlDocument::MacroConnectionHandler::MacroConnecti
     currentMacroConnection->id = attributes["id"].as_string();
     if (attributes.has("network"))
       currentMacroConnection->network = attributes["network"].as<bool>();
+    if (attributes.has("indexId"))
+      currentMacroConnection->indexId = attributes["indexId"].as_string();
   });
 
   connectionHandler.onStart([this]() { connectionHandler.currentConnection = AssemblingDataBase::Connection(); });
@@ -249,11 +266,12 @@ AssemblingDataBase::AssemblingXmlDocument::MacroConnectionHandler::MacroConnecti
 }
 
 AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssociationHandler(const elementName_type &root)
-    : busHandler(parser::ElementName(ns, "bus")), lineHandler(parser::ElementName(ns, "line")), tfoHandler(parser::ElementName(ns, "tfo")),
-      singleShuntHandler(parser::ElementName(ns, "shunt")), generatorHandler(parser::ElementName(ns, "generator")),
+    : busHandler(parser::ElementName(ns, "bus")), lineHandler(parser::ElementName(ns, "line")), hvdcLineHandler(parser::ElementName(ns, "hvdcLine")),
+      tfoHandler(parser::ElementName(ns, "tfo")), singleShuntHandler(parser::ElementName(ns, "shunt")), generatorHandler(parser::ElementName(ns, "generator")),
       loadHandler(parser::ElementName(ns, "load")) {
   onElement(root + ns("bus"), busHandler);
   onElement(root + ns("line"), lineHandler);
+  onElement(root + ns("hvdcLine"), hvdcLineHandler);
   onElement(root + ns("tfo"), tfoHandler);
   onElement(root + ns("shunt"), singleShuntHandler);
   onElement(root + ns("generator"), generatorHandler);
@@ -271,6 +289,12 @@ AssemblingDataBase::AssemblingXmlDocument::SingleAssociationHandler::SingleAssoc
   lineHandler.onEnd([this]() {
     currentSingleAssociation->line = lineHandler.currentLine;
     lineHandler.currentLine.reset();
+  });
+
+  hvdcLineHandler.onStart([this]() { hvdcLineHandler.currentHvdcLine = AssemblingDataBase::HvdcLine(); });
+  hvdcLineHandler.onEnd([this]() {
+    currentSingleAssociation->hvdcLine = hvdcLineHandler.currentHvdcLine;
+    hvdcLineHandler.currentHvdcLine.reset();
   });
 
   tfoHandler.onStart([this]() { tfoHandler.currentTfo = AssemblingDataBase::Tfo(); });

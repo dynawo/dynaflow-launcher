@@ -380,6 +380,38 @@ cmake_tests() {
     return ${RETURN_CODE}
 }
 
+
+unittest_gdb() {
+    list_of_tests=($(find $DYNAFLOW_LAUNCHER_BUILD_DIR -executable -type f -exec basename {} \; | grep Test))
+    if [[ ${#list_of_tests[@]} == 0 ]]; then
+      echo "The list of tests is empty. This should not happen."
+      exit 1
+    fi
+    if [ -z "$2" ]; then
+      echo "You need to give the name of unittest to run."
+      echo "List of available unittests:"
+      for name in ${list_of_tests[@]}; do
+        echo "  $name"
+      done
+      exit 1
+    fi
+    unittest_exe=$(find $DYNAFLOW_LAUNCHER_BUILD_DIR -name "$2")
+    if [ -z "$unittest_exe" ]; then
+      echo "The unittest you gave is not available."
+      echo "List of available unittests:"
+      for name in ${list_of_tests[@]}; do
+        echo "  $name"
+      done
+      exit 1
+    fi
+
+    pushd $(dirname $unittest_exe) > /dev/null
+    gdb -q --args $unittest_exe
+    RETURN_CODE=$?
+    popd > /dev/null
+    return ${RETURN_CODE}
+
+}
 verify_browser() {
   if [ ! -x "$(command -v $DYNAFLOW_LAUNCHER_BROWSER)" ]; then
     error_exit "Specified browser DYNAFLOW_LAUNCHER_BROWSER=$DYNAFLOW_LAUNCHER_BROWSER not found."
@@ -441,10 +473,10 @@ build_tests_coverage() {
 
 launch() {
     if [ ! -f "$2" ]; then
-        error_exit "IIDM network file $1 doesn't exist"
+        error_exit "IIDM network file $2 doesn't exist"
     fi
     if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $2 doesn't exist"
+        error_exit "DFL configuration file $3 doesn't exist"
     fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
@@ -722,6 +754,9 @@ case $CMD in
         ;;
     tests)
         cmake_tests || error_exit "Failed to perform tests"
+        ;;
+    tests-gdb)
+        unittest_gdb $ARGS || error_exit "Failed to perform tests with gdb"
         ;;
     update-references)
         update_references || error_exit "Failed to update MAIN references"

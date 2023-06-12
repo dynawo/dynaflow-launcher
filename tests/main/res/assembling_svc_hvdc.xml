@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="SVCToUMeasurement">
+    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+  </macroConnection>
+  <macroConnection id="SVCToGenerator" index1="true" indexId="SVCToComponent">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
+  </macroConnection>
+  <macroConnection id="SVCToHvdc" index1="true" indexId="SVCToComponent">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
+  </macroConnection>
+  <singleAssociation id="UMeasurement">
+    <bus voltageLevel="HADESP6_S_VL6"/>
+  </singleAssociation>
+  <singleAssociation id="HERA9AJAX1">
+    <hvdcLine name="HERA9AJAX1"/>
+  </singleAssociation>
+  <singleAssociation id="HADES7HADES1_NGU_SM">
+    <generator name="HADES7HADES1_NGU_SM"/>
+  </singleAssociation>
+  <singleAssociation id="HADES7HADES2_NGU_SM">
+    <generator name="HADES7HADES2_NGU_SM"/>
+  </singleAssociation>
+  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+    <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
+    <macroConnect macroConnection="SVCToHvdc" id="HERA9AJAX1"/>
+    <macroConnect macroConnection="SVCToGenerator" id="HADES7HADES1_NGU_SM"/>
+    <macroConnect macroConnection="SVCToGenerator" id="HADES7HADES2_NGU_SM"/>
+  </dynamicAutomaton>
+</assembling>

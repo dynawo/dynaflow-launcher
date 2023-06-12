@@ -18,20 +18,17 @@
 namespace dfl {
 namespace algo {
 
-GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesRegulatedBySeveralGenerators,
-                                                           const inputs::NetworkManager::BusMapRegulating& busMap,
-                                                           const inputs::DynamicDataBaseManager& manager, bool infinitereactivelimits, double tfoVoltageLevel) :
-    generators_(gens),
-    busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
-    busMap_(busMap),
-    useInfiniteReactivelimits_{infinitereactivelimits},
-    tfoVoltageLevel_(tfoVoltageLevel) {
-  for (const auto& automaton : manager.assembling().dynamicAutomatons()) {
+GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators &gens, BusGenMap &busesRegulatedBySeveralGenerators,
+                                                           const inputs::NetworkManager::BusMapRegulating &busMap,
+                                                           const inputs::DynamicDataBaseManager &manager, bool infinitereactivelimits, double tfoVoltageLevel)
+    : generators_(gens), busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
+      busMap_(busMap), useInfiniteReactivelimits_{infinitereactivelimits}, tfoVoltageLevel_(tfoVoltageLevel) {
+  for (const auto &automaton : manager.assembling().dynamicAutomatons()) {
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
-      for (const auto& macroConn : automaton.second.macroConnects) {
+      for (const auto &macroConn : automaton.second.macroConnects) {
         if (manager.assembling().isSingleAssociation(macroConn.id)) {
-          const auto& assoc = manager.assembling().getSingleAssociation(macroConn.id);
-          for (const auto& generator : assoc.generators) {
+          const auto &assoc = manager.assembling().getSingleAssociation(macroConn.id);
+          for (const auto &generator : assoc.generators) {
             generatorsInSVC[generator.name] = false;
           }
         }
@@ -39,8 +36,8 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
     }
   }
   if (manager.assembling().isProperty(common::constants::rpcl2PropertyName)) {
-    for (const auto& device : manager.assembling().getProperty(common::constants::rpcl2PropertyName).devices) {
-      for (const auto& gen : manager.assembling().getSingleAssociation(device.id).generators) {
+    for (const auto &device : manager.assembling().getProperty(common::constants::rpcl2PropertyName).devices) {
+      for (const auto &gen : manager.assembling().getSingleAssociation(device.id).generators) {
         auto it = generatorsInSVC.find(gen.name);
         if (it != generatorsInSVC.end())
           generatorsInSVC[gen.name] = true;
@@ -49,11 +46,10 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
   }
 }
 
-void
-GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes) {
-  auto& node_generators = node->generators;
+void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes) {
+  auto &node_generators = node->generators;
 
-  for (const auto& generator : node_generators) {
+  for (const auto &generator : node_generators) {
     ModelType model = ModelType::NETWORK;
     if (isTargetPValid(generator) && generator.isVoltageRegulationOn && isDiagramValid(generator)) {
       dfl::inputs::NetworkManager::BusMapRegulating::const_iterator it = busMap_.find(generator.regulatedBusId);
@@ -156,8 +152,7 @@ GeneratorDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<Al
   }
 }
 
-bool
-GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator) {
+bool GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator &generator) {
   if (useInfiniteReactivelimits_) {
     return true;
   }
@@ -204,17 +199,16 @@ GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator& generator)
   return valid;
 }
 
-bool
-GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr& node) const {
-  auto& buses = node->getBusesConnectedByVoltageLevel();
+bool GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr &node) const {
+  auto &buses = node->getBusesConnectedByVoltageLevel();
 
   if (buses.size() == 0) {
     return false;
   }
   auto vl = node->voltageLevel.lock();
 
-  for (const auto& id : buses) {
-    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr& nodeLocal) { return nodeLocal->id == id; });
+  for (const auto &id : buses) {
+    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr &nodeLocal) { return nodeLocal->id == id; });
 #ifdef _DEBUG_
     // shouldn't happen by construction of the elements
     assert(found != vl->nodes.end());
@@ -227,19 +221,16 @@ GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr&
   return false;
 }
 
-bool
-GeneratorDefinitionAlgorithm::isTargetPValid(const inputs::Generator& generator) const {
+bool GeneratorDefinitionAlgorithm::isTargetPValid(const inputs::Generator &generator) const {
   return (DYN::doubleEquals(-generator.targetP, generator.pmin) || -generator.targetP > generator.pmin) &&
          (DYN::doubleEquals(-generator.targetP, generator.pmax) || -generator.targetP < generator.pmax);
 }
 
-bool
-notEqual(const inputs::Generator::ReactiveCurvePoint& firstPoint, const inputs::Generator::ReactiveCurvePoint& secondPoint) {
+bool notEqual(const inputs::Generator::ReactiveCurvePoint &firstPoint, const inputs::Generator::ReactiveCurvePoint &secondPoint) {
   return DYN::doubleNotEquals(firstPoint.qmax, secondPoint.qmax) || DYN::doubleNotEquals(firstPoint.qmin, secondPoint.qmin);
 }
 
-bool
-GeneratorDefinitionAlgorithm::isDiagramRectangular(const inputs::Generator& generator) const {
+bool GeneratorDefinitionAlgorithm::isDiagramRectangular(const inputs::Generator &generator) const {
   return (std::adjacent_find(generator.points.begin(), generator.points.end(), notEqual) == generator.points.end());
 }
 

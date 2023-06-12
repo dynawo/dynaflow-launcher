@@ -65,6 +65,13 @@ TEST(TestAlgoDynModel, base) {
       dfl::inputs::Line::build("6", nodes[5], nodes[6], "UNDEFINED", true, true),
   };
 
+  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "BUS_2", nullptr, false, 0., 0., 0.,
+                                                                     std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  auto vscStation2 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation2", "BUS_1", nullptr, false, 0., 0., 0.,
+                                                                 std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  auto hvdcLineVSC = dfl::inputs::HvdcLine::build("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, dummyStationVSC, vscStation2, boost::none, 10.,
+                                                  false, 320, 322, 0.125, {0.01, 0.01});
+
   auto tfo = dfl::inputs::Tfo::build("TFO1", nodes[2], nodes[3], "UNDEFINED", true, true);
 
   const std::string bus1 = "BUS_1";
@@ -81,6 +88,7 @@ TEST(TestAlgoDynModel, base) {
   nodes[1]->generators.emplace_back("G3", true, points, -1, 1, -1, 1, 0, 0, 0, bus1, bus3);
 
   nodes[0]->generators.emplace_back("G1", true, points, -2, 2, -2, 2, 0, 0, 0, bus2, bus2);
+  nodes[0]->converters.emplace_back(vscStation2);
 
   nodes[1]->loads.emplace_back("L0", false, false);
   nodes[1]->loads.emplace_back("L3", false, false);
@@ -94,19 +102,20 @@ TEST(TestAlgoDynModel, base) {
     algo(node, algoRes);
   }
 
-  ASSERT_EQ(defs.usedMacroConnections.size(), 11);
+  ASSERT_EQ(defs.usedMacroConnections.size(), 12);
   std::set<std::string> usedMacroConnections(defs.usedMacroConnections.begin(), defs.usedMacroConnections.end());
   const std::vector<std::string> usedMacroConnectionsRef = {"ToUMeasurement",
                                                             "ToControlledShunts",
                                                             "CLAToIMeasurement",
+                                                            "PhaseShifterToAutomatonActivated",
                                                             "CLAToControlledLineState",
                                                             "CLAToAutomatonActivated",
                                                             "PhaseShifterToIMeasurement",
                                                             "PhaseShifterToTap",
-                                                            "PhaseShifterrToAutomatonActivated",
                                                             "SVCToUMeasurement",
                                                             "SVCToGenerator",
-                                                            "SVCToLoad"};
+                                                            "SVCToLoad",
+                                                            "SVCToHVDC"};
   std::set<std::string> usedMacroConnectionsRefSet(usedMacroConnectionsRef.begin(), usedMacroConnectionsRef.end());
   ASSERT_EQ(usedMacroConnections, usedMacroConnectionsRefSet);
 
@@ -165,7 +174,7 @@ TEST(TestAlgoDynModel, base) {
   const auto &dynModel_gen = defs.models.at("GeneratorAutomaton");
   ASSERT_EQ(dynModel_gen.id, "GeneratorAutomaton");
   ASSERT_EQ(dynModel_gen.lib, "dummyLib");
-  ASSERT_EQ(dynModel_gen.nodeConnections.size(), 5);
+  ASSERT_EQ(dynModel_gen.nodeConnections.size(), 6);
   searched = "SVCToUMeasurement";
   found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
                                   [&searched](const dfl::algo::DynamicModelDefinition::MacroConnection &connection) { return connection.id == searched; });
@@ -207,6 +216,16 @@ TEST(TestAlgoDynModel, base) {
   ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
   ASSERT_EQ(found_connection->connectedElementId, "L3");
   ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD);
+
+  searched = "SVCToHVDC";
+  searched2 = "HVDCVSCLine";
+  found_connection = std::find_if(dynModel_gen.nodeConnections.begin(), dynModel_gen.nodeConnections.end(),
+                                  [&searched, &searched2](const dfl::algo::DynamicModelDefinition::MacroConnection &connection) {
+                                    return connection.id == searched && connection.connectedElementId == searched2;
+                                  });
+  ASSERT_NE(found_connection, dynModel_gen.nodeConnections.end());
+  ASSERT_EQ(found_connection->connectedElementId, "HVDCVSCLine");
+  ASSERT_EQ(found_connection->elementType, dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::HVDC);
 }
 
 TEST(TestAlgoDynModel, noRegulation) {
@@ -268,7 +287,7 @@ TEST(TestAlgoDynModel, noRegulation) {
                                                             "CLAToAutomatonActivated",
                                                             "PhaseShifterToIMeasurement",
                                                             "PhaseShifterToTap",
-                                                            "PhaseShifterrToAutomatonActivated",
+                                                            "PhaseShifterToAutomatonActivated",
                                                             "SVCToUMeasurement",
                                                             "SVCToGenerator"};
   std::set<std::string> usedMacroConnectionsRefSet(usedMacroConnectionsRef.begin(), usedMacroConnectionsRef.end());

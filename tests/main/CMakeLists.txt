@@ -52,6 +52,7 @@ DEFINE_LAUNCH_TEST(hvdc_HvdcPQProp_diagrams)
 DEFINE_LAUNCH_TEST(hvdc_HvdcPQPropDangling_diagrams)
 DEFINE_LAUNCH_TEST(hvdc_HvdcPV_HvdcPTanPhi_diagrams)
 DEFINE_LAUNCH_TEST(hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams)
+DEFINE_LAUNCH_TEST(hvdc_svc)
 
 DEFINE_LAUNCH_TEST(distant_regulation)
 

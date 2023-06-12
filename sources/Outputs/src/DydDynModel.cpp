@@ -24,7 +24,7 @@ namespace dfl {
 namespace outputs {
 
 DydDynModel::DydDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens,
-                         const std::vector<algo::LoadDefinition> &loaddefs)
+                         const std::vector<algo::LoadDefinition> &loaddefs, const algo::HVDCLineDefinitions &hvdcDefinitions)
     : dynamicModelsDefinitions_(dynamicModelsDefinitions) {
   for (const auto &generator : gens) {
     if (generator.isNetwork()) {
@@ -37,6 +37,9 @@ DydDynModel::DydDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefin
       continue;
     }
     componentsWithDynamicModels_.insert(load.id);
+  }
+  for (const auto &hvdc : hvdcDefinitions.hvdcLines) {
+    componentsWithDynamicModels_.insert(hvdc.first);
   }
 }
 
@@ -59,21 +62,23 @@ void DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
   std::unordered_map<std::string, std::tuple<unsigned int, unsigned int>> indexes;
   enum { INDEXES_NB_CONNECTIONS = 0, INDEXES_CURRENT_INDEX };
   for (const auto &connection : connections) {
-    if (indexes.count(connection.id) > 0) {
-      (std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)))++;
+    std::string indexId = (connection.indexId.empty()) ? connection.id : connection.indexId;
+    if (indexes.count(indexId) > 0) {
+      (std::get<INDEXES_NB_CONNECTIONS>(indexes.at(indexId)))++;
     } else {
-      indexes[connection.id] = std::make_tuple(1, 0);
+      indexes[indexId] = std::make_tuple(1, 0);
     }
   }
 
   for (const auto &connection : connections) {
+    std::string indexId = (connection.indexId.empty()) ? connection.id : connection.indexId;
     if (componentsWithDynamicModels_.find(connection.connectedElementId) != componentsWithDynamicModels_.end()) {
       auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, connection.connectedElementId);
 #if _DEBUG_
-      assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
+      assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(indexId)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(indexId)));
 #endif
-      macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
-      (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
+      macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(indexId))));
+      (std::get<INDEXES_CURRENT_INDEX>(indexes.at(indexId)))++;
       dynamicModelsToConnect->addMacroConnect(macroConnect);
     } else {
       auto modelName2 = constants::networkModelName;
@@ -86,11 +91,11 @@ void DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
       auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connectionId, dynModel.id, modelName2);
       macroConnect->setName2(connection.connectedElementId);
 #if _DEBUG_
-      assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));
+      assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(indexId)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(indexId)));
 #endif
       // We set index1 to 0 even in case there is only one connection, for consistency in the output file
-      macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id))));
-      (std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)))++;
+      macroConnect->setIndex1(std::to_string(std::get<INDEXES_CURRENT_INDEX>(indexes.at(indexId))));
+      (std::get<INDEXES_CURRENT_INDEX>(indexes.at(indexId)))++;
       dynamicModelsToConnect->addMacroConnect(macroConnect);
     }
   }

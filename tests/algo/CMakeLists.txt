@@ -18,7 +18,7 @@ set_property(TEST ALGO.TestGeneratorsAlgo APPEND PROPERTY ENVIRONMENT "DYNAFLOW_
 set_property(TEST ALGO.TestGeneratorsAlgo APPEND PROPERTY ENVIRONMENT "DYNAWO_INSTALL_DIR=${DYNAWO_HOME}")
 DEFINE_TEST(TestLoadsAlgo ALGO)
 target_link_libraries(ALGO.TestLoadsAlgo DynaFlowLauncher::algo)
-DEFINE_TEST(TestHvdcLineAlgo ALGO)
+DEFINE_TEST_XML(TestHvdcLineAlgo ALGO)
 target_link_libraries(ALGO.TestHvdcLineAlgo DynaFlowLauncher::algo)
 DEFINE_TEST(TestShuntCounterAlgo ALGO)
 target_link_libraries(ALGO.TestShuntCounterAlgo DynaFlowLauncher::algo)

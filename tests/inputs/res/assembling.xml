@@ -6,7 +6,7 @@
   <macroConnection id="ToUMeasurement" network="true">
     <connection var1="Network_U_IMPIN" var2="@NAME@_U"/>
   </macroConnection>
-  <macroConnection id="ToControlledShunts">
+  <macroConnection id="ToControlledShunts" indexId="MyIndexId">
     <connection var1="shunt_state_@INDEX@" var2="@NAME@_state"/>
     <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor"/>
     <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable"/>
@@ -51,6 +51,9 @@
   </singleAssociation>
   <singleAssociation id="MESURE_MODELE_2_VL7">
     <bus voltageLevel="VL7"/>
+  </singleAssociation>
+  <singleAssociation id="HVDC_LINE">
+    <hvdcLine name="MyHvdc"/>
   </singleAssociation>
   <singleAssociation id="GeneratorId">
     <generator name="GeneratorId1"/>

@@ -68,6 +68,11 @@
     <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="Network_generator_limUQUp"/>
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="Network_generator_limUQDown"/>
   </macroConnection>
+  <macroConnection id="SVCToHVDC" index1="true">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
+  </macroConnection>
   <singleAssociation id="UMeasurement">
     <bus voltageLevel="VL"/>
   </singleAssociation>
@@ -83,10 +88,14 @@
   <singleAssociation id="G8">
     <generator name="G8"/>
   </singleAssociation>
+  <singleAssociation id="HVDCVSCLine">
+    <hvdcLine name="HVDCVSCLine"/>
+  </singleAssociation>
   <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
     <macroConnect macroConnection="SVCToGenerator" id="G5"/>
     <macroConnect macroConnection="SVCToGenerator" id="G6"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLine"/>
     <macroConnect macroConnection="SVCToGenerator" id="G7"/>
     <macroConnect macroConnection="SVCToGenerator" id="G8"/>
   </dynamicAutomaton>

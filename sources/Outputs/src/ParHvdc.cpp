@@ -11,28 +11,31 @@
 #include "ParHvdc.h"
 
 #include "Constants.h"
+#include "Log.h"
 #include "ParCommon.h"
 
 namespace dfl {
 namespace outputs {
 
 void ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
-                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
-    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode));
+    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode, dynamicDataBaseManager));
   }
 }
 
 boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,
                                                                     const boost::filesystem::path &dirname,
-                                                                    dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+                                                                    dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                                                                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   auto dirnameDiagram = dirname;
   dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
   // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable
-  auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram](boost::shared_ptr<parameters::ParametersSet> set,
-                                                             const algo::HVDCDefinition::ConverterId &converterId, size_t converterNumber,
-                                                             size_t parameterNumber) {
+  auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram, &dynamicDataBaseManager](boost::shared_ptr<parameters::ParametersSet> set,
+                                                                                      const algo::HVDCDefinition::ConverterId &converterId,
+                                                                                      size_t converterNumber, size_t parameterNumber) {
     constexpr double factorPU = 100;
     std::string uuid = constants::uuid(converterId);
     auto dirnameDiagramLocal = dirnameDiagram;
@@ -45,9 +48,29 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
       const auto &vscDefinition = (converterId == hvdcDefinition.converter1Id) ? *hvdcDefinition.vscDefinition1 : *hvdcDefinition.vscDefinition2;
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Min0Pu", (vscDefinition.qmin - 1) / factorPU));
       set->addParameter(helper::buildParameter("hvdc_QInj" + std::to_string(parameterNumber) + "Max0Pu", (vscDefinition.qmax + 1) / factorPU));
-      set->addParameter(
-          helper::buildParameter<double>("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(abs(vscDefinition.qmin), abs(vscDefinition.qmax))));
-      set->addParameter(helper::buildParameter<double>("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu", 0.));
+
+      if (hvdcDefinition.hasRpcl2()) {
+        const auto &databaseSetting =
+            dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getSingleAssociationFromHvdcLine(hvdcDefinition.id));
+        std::string parameter = "hvdc_QNom";
+        auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                    [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+        if (paramIt != databaseSetting.doubleParameters.end()) {
+          set->addParameter(helper::buildParameter<double>("hvdc_Q" + std::to_string(parameterNumber) + "Nom", paramIt->value));
+        }
+        parameter = "hvdc_LambdaPu";
+        paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                               [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+        if (paramIt != databaseSetting.doubleParameters.end()) {
+          set->addParameter(helper::buildParameter<double>("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu", paramIt->value));
+        }
+      }
+
+      if (!set->hasParameter("hvdc_Q" + std::to_string(parameterNumber) + "Nom"))
+        set->addParameter(
+            helper::buildParameter<double>("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(abs(vscDefinition.qmin), abs(vscDefinition.qmax))));
+      if (!set->hasParameter("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu"))
+        set->addParameter(helper::buildParameter<double>("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu", 0.));
     } else {
       // assuming that converterNumber is 1 or 2 (pre-condition)
       auto qMax = constants::computeQmax(hvdcDefinition.powerFactors.at(converterNumber - 1), hvdcDefinition.pMax);
@@ -130,12 +153,6 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
     set->addParameter(helper::buildParameter("hvdc_Q1MaxPu", std::numeric_limits<double>::max()));
     set->addParameter(helper::buildParameter("hvdc_Q2MinPu", std::numeric_limits<double>::lowest()));
     set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
-    if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
-      set->addParameter(helper::buildParameter<double>("hvdc_Q1Nom", 100.));
-      set->addParameter(helper::buildParameter<double>("hvdc_Lambda1Pu", 0.));
-      set->addParameter(helper::buildParameter<double>("hvdc_Q2Nom", 100.));
-      set->addParameter(helper::buildParameter<double>("hvdc_Lambda2Pu", 0.));
-    }
   } else {
     const auto &hvdcConverterIdMain =
         (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2Id : hvdcDefinition.converter1Id;
@@ -165,6 +182,54 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
       set->addReference(helper::buildReference("hvdc_U1Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter1Id));
       set->addReference(helper::buildReference("hvdc_U2Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter2Id));
     }
+  }
+
+  if (hvdcDefinition.hasRpcl2()) {
+    std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_CqMaxPu", "reactivePowerControlLoop_DeltaURefMaxPu",
+                                           "reactivePowerControlLoop_Tech", "reactivePowerControlLoop_Ti"};
+
+    const auto &databaseSetting =
+        dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getSingleAssociationFromHvdcLine(hvdcDefinition.id));
+    for (auto parameter : parameters) {
+      auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                  [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+      if (paramIt != databaseSetting.doubleParameters.end())
+        set->addParameter(helper::buildParameter(parameter, paramIt->value));
+      else
+        throw Error(MissingGeneratorHvdcParameterInSettings, parameter, hvdcDefinition.id);
+    }
+
+    // Try to use values from the setting ddb (for the case with no diagram, otherwise done in updateHVDCParams)
+    std::string parameter = "hvdc_QNom";
+    auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+    if (paramIt != databaseSetting.doubleParameters.end()) {
+      if (!set->hasParameter("hvdc_Q1Nom"))
+        set->addParameter(helper::buildParameter<double>("hvdc_Q1Nom", paramIt->value));
+      if (!set->hasParameter("hvdc_Q2Nom"))
+        set->addParameter(helper::buildParameter<double>("hvdc_Q2Nom", paramIt->value));
+    }
+    parameter = "hvdc_LambdaPu";
+    paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                           [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+    if (paramIt != databaseSetting.doubleParameters.end()) {
+      if (!set->hasParameter("hvdc_Lambda1Pu"))
+        set->addParameter(helper::buildParameter<double>("hvdc_Lambda1Pu", paramIt->value));
+      if (!set->hasParameter("hvdc_Lambda2Pu"))
+        set->addParameter(helper::buildParameter<double>("hvdc_Lambda2Pu", paramIt->value));
+    }
+  }
+  if (!hvdcDefinition.hasDiagramModel() && hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
+    // final chance: no diagram and no value in the setting ddb, put default value
+    if (!set->hasParameter("hvdc_Q1Nom")) {
+      set->addParameter(helper::buildParameter<double>("hvdc_Q1Nom", 100.));
+    }
+    if (!set->hasParameter("hvdc_Lambda1Pu"))
+      set->addParameter(helper::buildParameter<double>("hvdc_Lambda1Pu", 0.));
+    if (!set->hasParameter("hvdc_Q2Nom"))
+      set->addParameter(helper::buildParameter<double>("hvdc_Q2Nom", 100.));
+    if (!set->hasParameter("hvdc_Lambda2Pu"))
+      set->addParameter(helper::buildParameter<double>("hvdc_Lambda2Pu", 0.));
   }
 
   if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::LCC) {

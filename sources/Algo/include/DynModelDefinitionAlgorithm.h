@@ -60,7 +60,8 @@ struct DynamicModelDefinition {
       SHUNT,      ///< Shunt type
       AUTOMATON,  ///< Dynamic Automaton
       GENERATOR,  ///< Generator type
-      LOAD        ///< Load type
+      LOAD,       ///< Load type
+      HVDC        ///< HVDC type
     };
 
     /**
@@ -69,8 +70,10 @@ struct DynamicModelDefinition {
      * @param macroid the macro connector id to use
      * @param type type of the element to connect
      * @param id the element id to connect
+     * @param indexId used to index the macroConnections
      */
-    MacroConnection(const MacroId &macroid, const ElementType &type, const ElementId &id) : id(macroid), elementType(type), connectedElementId(id) {}
+    MacroConnection(const MacroId &macroid, const ElementType &type, const ElementId &id, const std::string &indexId)
+        : id(macroid), elementType(type), connectedElementId(id), indexId(indexId) {}
 
     /**
      * @brief Equality operator
@@ -117,6 +120,7 @@ struct DynamicModelDefinition {
     MacroId id;                    ///< Macro connector id
     ElementType elementType;       ///< Connected element type
     ElementId connectedElementId;  ///< Element id connected throught the macro connection
+    std::string indexId;           ///< Id used to index the macroConnections
   };
 
   /**
@@ -256,14 +260,13 @@ class DynModelAlgorithm {
   void extractMultiAssociationInfo(const inputs::AssemblingDataBase::DynamicAutomaton &automaton, const inputs::AssemblingDataBase::MacroConnect &macro,
                                    bool shuntRegulationOn);
 
-
   /**
    * @brief Process model in case of dynamic automaton model connection
    * @param automaton the dynamic automaton
    * @param macro macro connection to process
    */
-  void connectMacroConnectionForDynAutomaton(const inputs::AssemblingDataBase::DynamicAutomaton& automaton,
-                                             const inputs::AssemblingDataBase::MacroConnect& macro);
+  void connectMacroConnectionForDynAutomaton(const inputs::AssemblingDataBase::DynamicAutomaton &automaton,
+                                             const inputs::AssemblingDataBase::MacroConnect &macro);
 
   /**
    * @brief Process node in case of dynamic automaton bus connection
@@ -275,7 +278,7 @@ class DynModelAlgorithm {
    * @brief Process node in case of dynamic automaton shunt connection
    * @param node node to process
    */
-  void connectMacroConnectionForMultipleShunts(const NodePtr& node);
+  void connectMacroConnectionForMultipleShunts(const NodePtr &node);
 
   /**
    * @brief Process node in case of dynamic automaton line connection
@@ -287,7 +290,7 @@ class DynModelAlgorithm {
    * @brief Process node in case of dynamic automaton shunt connection
    * @param shunt shunt to process
    */
-  void connectMacroConnectionForSingleShunt(const inputs::Shunt& shunt);
+  void connectMacroConnectionForSingleShunt(const inputs::Shunt &shunt);
 
   /**
    * @brief Process node in case of dynamic automaton transformer connection
@@ -308,6 +311,12 @@ class DynModelAlgorithm {
   void connectMacroConnectionForLoad(const inputs::Load &load);
 
   /**
+   * @brief Process node in case of dynamic automaton hvdc line connection
+   * @param hvdcLine to process
+   */
+  void connectMacroConnectionForHvdc(const inputs::HvdcLine &hvdcLine);
+
+  /**
    * @brief Add macro connection to the dynamic model definition
    *
    * Creates the dynamic model definition if not already existing
@@ -325,13 +334,14 @@ class DynModelAlgorithm {
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::unordered_set<MacroConnect, MacroConnectHash>>
       macroConnectByVlForBusesId_;  ///< macro connections for buses, by voltage level
   std::unordered_map<inputs::VoltageLevel::VoltageLevelId, std::vector<MacroConnect>>
-      macroConnectByVlForShuntsId_;                                                             ///< macro connections for shunts, by voltage level
-  std::unordered_map<inputs::Line::LineId, std::vector<MacroConnect>> macroConnectByLineName_;  ///< macro connections for lines, by line id
+      macroConnectByVlForShuntsId_;                                                                ///< macro connections for shunts, by voltage level
+  std::unordered_map<inputs::Line::LineId, std::vector<MacroConnect>> macroConnectByLineName_;     ///< macro connections for lines, by line id
   std::unordered_map<inputs::Shunt::ShuntId, std::vector<MacroConnect>> macroConnectByShuntName_;  ///< macro connections for shunts, by shunt id
-  std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;     ///< macro connections for transformer, by transformer id
+  std::unordered_map<inputs::Tfo::TfoId, std::vector<MacroConnect>> macroConnectByTfoName_;        ///< macro connections for transformer, by transformer id
   std::unordered_map<inputs::Generator::GeneratorId, std::vector<MacroConnect>>
-      macroConnectByGeneratorName_;                                                             ///< macro connections for generators, by generator id
-  std::unordered_map<inputs::Load::LoadId, std::vector<MacroConnect>> macroConnectByLoadName_;  ///< macro connections for loads, by load id
+      macroConnectByGeneratorName_;                                                                     ///< macro connections for generators, by generator id
+  std::unordered_map<inputs::Load::LoadId, std::vector<MacroConnect>> macroConnectByLoadName_;          ///< macro connections for loads, by load id
+  std::unordered_map<inputs::HvdcLine::HvdcLineId, std::vector<MacroConnect>> macroConnectByHvdcName_;  ///< macro connections for hvdc lines, by hvdc line id
 
   const inputs::DynamicDataBaseManager &manager_;  ///< dynamic database config manager
 };

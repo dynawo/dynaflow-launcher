@@ -128,9 +128,9 @@ TEST(TestPar, writeHdvc) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  dfl::algo::VSCDefinition vscStation1("VSCStation1", 1., -1., 0., {});
-  dfl::algo::VSCDefinition vscStation2("VSCStation2", 2., -2., 0., {});
-  dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., {});
+  dfl::algo::VSCDefinition vscStation1("VSCStation1", 1., -1., 0., 0., {});
+  dfl::algo::VSCDefinition vscStation2("VSCStation2", 2., -2., 0., 0., {});
+  dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., 0., {});
 
   auto hvdcLineLCC =
       HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___21_TN", false, "LCCStation2", "_BUS___22_TN", false,
@@ -210,36 +210,38 @@ TEST(TestPar, DynModel) {
   DynamicModelDefinitions defs;
   dfl::algo::DynamicModelDefinition dynModel("DM_VL61", "DummyLib");
   dynModel.nodeConnections.insert(
-      dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId"));
-
+      dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId", ""));
   defs.models.insert({dynModel.id, dynModel});
 
   defs.usedMacroConnections.insert("SVCToUMeasurement");
   defs.usedMacroConnections.insert("SVCToGenerator");
+  defs.usedMacroConnections.insert("SVCToHvdc");
   defs.usedMacroConnections.insert("CLAToIMeasurement");
   defs.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
   defs.models.insert({"DM_TEST", dfl::algo::DynamicModelDefinition("DM_TEST", "PhaseShifterI")});
   auto macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0");
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5",
+                                                             "");
+  defs.models.at("SVC").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6",
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5");
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToHvdc", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::HVDC, "HVDCVSCLine", "");
   defs.models.at("SVC").nodeConnections.insert(macro);
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6");
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G7",
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8",
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G7");
-  defs.models.at("SVC").nodeConnections.insert(macro);
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8");
-  defs.models.at("SVC").nodeConnections.insert(macro);
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TFOId");
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TFOId",
+                                                             "");
   defs.models.at("DM_TEST").nodeConnections.insert(macro);
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TFOId2");
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO,
+                                                             "TFOId2", "");
   defs.models.at("DM_TEST").nodeConnections.insert(macro);
 
   const std::string bus1 = "BUS_1";
@@ -252,7 +254,20 @@ TEST(TestPar, DynModel) {
       GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
       GeneratorDefinition("G8", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
-  HVDCLineDefinitions noHvdcDefs;
+  auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "BUS_2", nullptr, false, 0., 0., 0.,
+                                                                     std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  auto vscStation2 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation2", "BUS_1", nullptr, false, 0., 0., 0.,
+                                                                 std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
+  auto hvdcLineVSC = dfl::algo::HVDCDefinition(
+      "HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_2", false,
+      dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1, {}, 0.,
+      dfl::algo::VSCDefinition(dummyStationVSC->converterId, dummyStationVSC->qMax, dummyStationVSC->qMin, dummyStationVSC->qMin, 10., dummyStationVSC->points),
+      dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, vscStation2->qMin, 10., vscStation2->points), boost::none,
+      boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  //  maybe watch out but you can't access the hdvLine from the converterInterface
+  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC)};
+  HVDCLineDefinitions::BusVSCMap vscIds = {};
+  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
   GeneratorDefinitionAlgorithm::BusGenMap noBuses;
 
   outputPath.append(filename);
@@ -265,9 +280,8 @@ TEST(TestPar, DynModel) {
   dfl::algo::TransformersByIdDefinitions tfosById;
   tfosById.tfosMap.insert({"TFOId", *tfo});
   tfosById.tfosMap.insert({"TFOId2", *tfo});
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, noHvdcDefs, noBuses, manager,
-                                                               counters, defs, {}, tfosById, {}, {}));
-
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs, noBuses, manager, counters,
+                                                               defs, {}, tfosById, {}, {}));
   parWriter.write();
 
   boost::filesystem::path reference("reference");
@@ -376,12 +390,12 @@ TEST(TestPar, writeVRRemote) {
     boost::filesystem::create_directories(outputPath);
   }
 
-  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2",
-                                    "BUS_1", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
-                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
-  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2",
-                                    "BUS_3", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
-                                    0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2", "BUS_1", false,
+                                    HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
+                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_3", false,
+                                    HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {}, 0., boost::none,
+                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   HVDCLineDefinitions::BusVSCMap vscIds = {std::make_pair("BUS_1", "VSCStation1"), std::make_pair("BUS_3", "VSCStation2")};
   HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
@@ -393,8 +407,8 @@ TEST(TestPar, writeVRRemote) {
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(
-    basename, config, outputPath.generic_string(), {}, hvdcDefs, busesRegulatedBySeveralGenerators, manager, {}, noModels, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, busesRegulatedBySeveralGenerators,
+                                                               manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
 }
@@ -430,9 +444,9 @@ TEST(TestPar, startingPointMode) {
         GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
         GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
         GeneratorDefinition("G4", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "04", {}, 3., 30., -33., 330., 0, 0, bus1)};
-    dfl::algo::VSCDefinition vscStation1("VSCStation1", 1., -1., 0., {});
-    dfl::algo::VSCDefinition vscStation2("VSCStation2", 2., -2., 0., {});
-    dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., {});
+    dfl::algo::VSCDefinition vscStation1("VSCStation1", 1., -1., 0., 0., {});
+    dfl::algo::VSCDefinition vscStation2("VSCStation2", 2., -2., 0., 0., {});
+    dfl::algo::VSCDefinition vscStation3("VSCStation3", 3., -3., 0., 0., {});
 
     auto hvdcLineLCC =
         HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___21_TN", false, "LCCStation2", "_BUS___22_TN", false,
