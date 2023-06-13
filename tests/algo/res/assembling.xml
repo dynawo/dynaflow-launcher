@@ -39,6 +39,9 @@
     <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
   </macroConnection>
+  <macroConnection id="SVCToLoad" index1="true">
+    <connection var1="secondaryVoltageControl_U_value" var2="load_U"/>
+  </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
     <bus voltageLevel="VL" name="1"/>
     <bus voltageLevel="VL" name="2"/>
@@ -116,9 +119,19 @@
     <generator name="G3"/>
     <generator name="G4"/>
   </singleAssociation>
+  <singleAssociation id="LoadId">
+    <load name="L0"/>
+    <load name="L5"/>
+  </singleAssociation>
+  <singleAssociation id="LoadId2">
+    <load name="L3"/>
+    <load name="L4"/>
+  </singleAssociation>
   <dynamicAutomaton id="GeneratorAutomaton" lib="dummyLib">
     <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId"/>
     <macroConnect macroConnection="SVCToGenerator" id="GeneratorId2"/>
+    <macroConnect macroConnection="SVCToLoad" id="LoadId"/>
+    <macroConnect macroConnection="SVCToLoad" id="LoadId2"/>
   </dynamicAutomaton>
 </assembling>

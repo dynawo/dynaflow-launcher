@@ -25,9 +25,9 @@
 
 namespace parser = xml::sax::parser;
 
-testing::Environment* initXmlEnvironment();
+testing::Environment *initXmlEnvironment();
 
-testing::Environment* const env = initXmlEnvironment();
+testing::Environment *const env = initXmlEnvironment();
 
 DYNAlgorithms::mpi::Context mpiContext;
 
@@ -107,12 +107,17 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(singleAssoc.generators.size(), 2);
   ASSERT_EQ(singleAssoc.generators[0].name, "GeneratorId2");
   ASSERT_EQ(singleAssoc.generators[1].name, "GeneratorId_2");
+  singleAssoc = assembling.getSingleAssociation("LoadId");
+  ASSERT_EQ(singleAssoc.id, "LoadId");
+  ASSERT_EQ(singleAssoc.loads.size(), 2);
+  ASSERT_EQ(singleAssoc.loads[0].name, "LoadId");
+  ASSERT_EQ(singleAssoc.loads[1].name, "LoadId_0");
 
   const auto& dynamicAutomatons = assembling.dynamicAutomatons();
   ASSERT_EQ(dynamicAutomatons.size(), 4);
   ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.id, "MODELE_1_VL4");
   ASSERT_EQ(dynamicAutomatons.find("MODELE_1_VL4")->second.lib, "DYNModel1");
-  const auto& macroConnects = dynamicAutomatons.find("MODELE_1_VL4")->second.macroConnects;
+  const auto &macroConnects = dynamicAutomatons.find("MODELE_1_VL4")->second.macroConnects;
   ASSERT_EQ(macroConnects.size(), 2);
   ASSERT_EQ(macroConnects[0].id, "MESURE_MODELE_1_VL4");
   ASSERT_EQ(macroConnects[0].macroConnection, "ToUMeasurement");
@@ -130,7 +135,7 @@ TEST(AssemblingXmlDocument, readFile) {
 
   ASSERT_THROW_DYNAWO(assembling.getProperty("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownProperty);
   ASSERT_TRUE(assembling.isProperty("MyProp"));
-  const auto& prop = assembling.getProperty("MyProp");
+  const auto &prop = assembling.getProperty("MyProp");
   ASSERT_EQ(prop.devices.size(), 2);
   ASSERT_EQ(prop.devices[0].id, "MyDevice");
   ASSERT_EQ(prop.devices[1].id, "MyDevice2");

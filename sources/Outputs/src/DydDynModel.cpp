@@ -23,13 +23,20 @@
 namespace dfl {
 namespace outputs {
 
-DydDynModel::DydDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens)
+DydDynModel::DydDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens,
+                         const std::vector<algo::LoadDefinition> &loaddefs)
     : dynamicModelsDefinitions_(dynamicModelsDefinitions) {
   for (const auto &generator : gens) {
     if (generator.isNetwork()) {
       continue;
     }
-    generatorsWithDynamicModels_.insert(generator.id);
+    componentsWithDynamicModels_.insert(generator.id);
+  }
+  for (const auto &load : loaddefs) {
+    if (load.isNetwork()) {
+      continue;
+    }
+    componentsWithDynamicModels_.insert(load.id);
   }
 }
 
@@ -60,7 +67,7 @@ void DydDynModel::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
   }
 
   for (const auto &connection : connections) {
-    if (generatorsWithDynamicModels_.find(connection.connectedElementId) != generatorsWithDynamicModels_.end()) {
+    if (componentsWithDynamicModels_.find(connection.connectedElementId) != componentsWithDynamicModels_.end()) {
       auto macroConnect = dynamicdata::MacroConnectFactory::newMacroConnect(connection.id, dynModel.id, connection.connectedElementId);
 #if _DEBUG_
       assert(std::get<INDEXES_CURRENT_INDEX>(indexes.at(connection.id)) < std::get<INDEXES_NB_CONNECTIONS>(indexes.at(connection.id)));

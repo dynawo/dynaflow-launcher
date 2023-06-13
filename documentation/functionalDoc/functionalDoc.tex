@@ -405,6 +405,21 @@ To define a connection to a generator, a generator singleAssociation is used:
 
 The association above will define a connection to the first generator found in the IIDM based on the list. \\
 
+To define a connection to a load, a load singleAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <load name="LoadId"/>
+    <load name="LoadId_AlternativeName"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to the first load found in the IIDM based on the list. \\
+
 To define a connection to a set of shunt compensators, a shunt multiAssociation is used:
 
  \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
@@ -418,6 +433,20 @@ To define a connection to a set of shunt compensators, a shunt multiAssociation 
 \end{lstlisting}
 
 The association above will define a connection to \textbf{all} the shunts compensator from the voltage level named VoltageLevelId in the IIDM. \\
+
+To define a connection to a specific shunt compensators, a shunt singleAssociation is used:
+
+ \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+<assembling>
+...
+  <singleAssociation id="MyAssoc">
+    <shunt name="ShuntId"/>
+  </singleAssociation>
+...
+</assembling>
+\end{lstlisting}
+
+The association above will define a connection to the shunt compensator named ShuntId in the IIDM. \\
 
 If we complete our current example with the following associations we will end up with the equivalent connections in the dyd file of the \Dynawo simulation:
  \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
