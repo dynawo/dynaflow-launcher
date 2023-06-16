@@ -75,7 +75,7 @@ jobs:
           target_commitish: "refs/heads/master"
 
   fedora:
-    if: github.event.action == 'nightly-linux' || github.event_name != 'workflow_dispatch' || inputs.perform-linux
+    if: github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch')
     name: Linux Fedora (Release, GCC, cxx11)
     runs-on: ubuntu-latest
     container: dynawo/dynawo-distribution-cxx11:latest
@@ -120,7 +120,7 @@ jobs:
             DynaFlowLauncher*.zip
 
   windows:
-    if: github.event.action == 'nightly-windows' || github.event_name != 'workflow_dispatch' || inputs.perform-windows
+    if: github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch')
     name: Windows 2019 (Release, VS2019)
     runs-on: windows-2019
     needs: nightly
