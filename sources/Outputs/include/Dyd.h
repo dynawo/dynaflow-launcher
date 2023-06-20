@@ -84,19 +84,17 @@ class Dyd {
         basename_(base),
         filename_(filepath),
         slackNode_(slacknode),
-        busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
         dynamicDataBaseManager_(dynamicDataBaseManager),
         dydLoads_(new DydLoads(loaddefs)),
         dydSVarC_(new DydSVarC(svarcsDefs)),
         dydHvdc_(new DydHvdc(hvdcDefinitions)),
         dydGenerator_(new DydGenerator(gens)),
         dydDynModel_(new DydDynModel(models, gens, loaddefs)),
-        dydVRRemote_(new DydVRRemote(gens, hvdcDefinitions)) {}
+        dydVRRemote_(new DydVRRemote(gens, busesRegulatedBySeveralGenerators, hvdcDefinitions)) {}
 
     std::string basename_;                                                                    ///< basename for file
     std::string filename_;                                                                    ///< filepath for file to write
     std::shared_ptr<inputs::Node> slackNode_;                                                 ///< slack node to use
-    const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
     const inputs::DynamicDataBaseManager &dynamicDataBaseManager_;                            ///< dynamic database manager
     std::shared_ptr<DydLoads> dydLoads_;                                                      ///< reference to load dyd writer
     std::shared_ptr<DydSVarC> dydSVarC_;                                                      ///< reference to svarcs dyd writer

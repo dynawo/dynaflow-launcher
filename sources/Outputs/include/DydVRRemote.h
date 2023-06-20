@@ -34,22 +34,23 @@ class DydVRRemote {
    * @brief Construct a new DydVRRemote object
    *
    * @param generatorDefinitions reference to the list of generator definitions
+   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param hvdcDefinitions reference to the list of Hvdc definitions
    */
   explicit DydVRRemote(const std::vector<algo::GeneratorDefinition>& generatorDefinitions,
+                        const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators,
                         const algo::HVDCLineDefinitions& hvdcDefinitions) :
     generatorDefinitions_(generatorDefinitions),
+    busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
     hvdcDefinitions_(hvdcDefinitions) {}
 
   /**
    * @brief enrich the dynamic black models set collection for VRRemote
    *
    * @param dynamicModelsToConnect dynamic black models set collection to enrich
-   * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
    * @param basename the basename for current file
    */
   void writeVRRemotes(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                      const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators,
                       const std::string& basename);
 
  private:
@@ -67,9 +68,10 @@ class DydVRRemote {
    */
   void writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect);
 
-  const std::string macroConnectorGenVRRemoteName_{"GEN_VRREMOTE_CONNECTOR"};  ///< name for the macro connector for generators
-  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;         ///< list of generators definitions
-  const algo::HVDCLineDefinitions& hvdcDefinitions_;                           ///< list of Hvdc definitions
+  const std::string macroConnectorGenVRRemoteName_{"GEN_VRREMOTE_CONNECTOR"};               ///< name for the macro connector for generators
+  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;                      ///< list of generators definitions
+  const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
+  const algo::HVDCLineDefinitions& hvdcDefinitions_;                                        ///< list of Hvdc definitions
 };
 
 }  // namespace outputs
