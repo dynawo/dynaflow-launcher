@@ -21,11 +21,11 @@ testing::Environment *const env = initXmlEnvironment();
 
 DYNAlgorithms::mpi::Context mpiContext;
 
-using dfl::algo::GeneratorDefinition;
-using dfl::algo::LoadDefinition;
-using dfl::algo::HVDCLineDefinitions;
-using dfl::algo::GeneratorDefinitionAlgorithm;
 using dfl::algo::DynamicModelDefinitions;
+using dfl::algo::GeneratorDefinition;
+using dfl::algo::GeneratorDefinitionAlgorithm;
+using dfl::algo::HVDCLineDefinitions;
+using dfl::algo::LoadDefinition;
 using dfl::algo::StaticVarCompensatorDefinition;
 
 TEST(Dyd, write) {
@@ -62,8 +62,8 @@ TEST(Dyd, write) {
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
-      basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -104,8 +104,8 @@ TEST(Dyd, writeRemote) {
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
-      basename, outputPath.generic_string(), generators, {}, node, noHvdcDefs, busesRegulatedBySeveralGenerators, manager, noModels, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, noHvdcDefs,
+                                                               busesRegulatedBySeveralGenerators, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -150,8 +150,7 @@ TEST(Dyd, writeHvdc) {
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
-      basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, noBuses, manager, noModels, {}));
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, noBuses, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -177,6 +176,7 @@ TEST(Dyd, writeDynamicModel) {
   DynamicModelDefinitions models;
   models.usedMacroConnections.insert("ToUMeasurement");
   models.usedMacroConnections.insert("ToControlledShunts");
+  models.usedMacroConnections.insert("TestLoadConnection");
   models.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
   models.models.insert({"MODELE_1_VL4", dfl::algo::DynamicModelDefinition("MODELE_1_VL4", "DYNModel1")});
 
@@ -187,6 +187,10 @@ TEST(Dyd, writeDynamicModel) {
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT, "1.2");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L0");
+  models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L1");
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
 
   models.usedMacroConnections.insert("SVCToUMeasurement");
@@ -199,7 +203,7 @@ TEST(Dyd, writeDynamicModel) {
   models.models.at("SVC").nodeConnections.insert(macro);
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
-                                       LoadDefinition("L1", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "01"),
+                                       LoadDefinition("L1", LoadDefinition::ModelType::NETWORK, "01"),
                                        LoadDefinition("L2", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "02"),
                                        LoadDefinition("L3", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "03")};
 
@@ -217,8 +221,8 @@ TEST(Dyd, writeDynamicModel) {
   GeneratorDefinitionAlgorithm::BusGenMap noBuses;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
-      basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, models, {}));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, loads, node, noHvdcDefs, noBuses, manager, models, {}));
 
   dydWriter.write();
 
@@ -265,8 +269,8 @@ TEST(Dyd, writeStaticVarCompensator) {
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
-      basename, outputPath.generic_string(), {}, {}, node, noHvdcDefs, noBuses, manager, noModels, svarcs));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, noHvdcDefs, noBuses, manager, noModels, svarcs));
 
   dydWriter.write();
 
@@ -301,8 +305,8 @@ TEST(Dyd, writeLoad) {
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(
-      basename, outputPath.generic_string(), {}, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
 
   dydWriter.write();
 
