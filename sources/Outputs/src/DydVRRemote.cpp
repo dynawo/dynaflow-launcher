@@ -15,6 +15,7 @@
 
 #include <DYDMacroConnectorFactory.h>
 #include <DYDMacroConnectFactory.h>
+#include <set>
 
 namespace dfl {
 namespace outputs {
