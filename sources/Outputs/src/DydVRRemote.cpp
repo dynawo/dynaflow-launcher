@@ -22,11 +22,10 @@ namespace outputs {
 
 void
 DydVRRemote::writeVRRemotes(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                            const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators,
                             const std::string& basename) {
   using BusId = std::string;
   std::set<BusId> regulatedBusIds;
-  for (const auto& busToGenerator : busesRegulatedBySeveralGenerators)
+  for (const auto& busToGenerator : busesRegulatedBySeveralGenerators_)
     regulatedBusIds.insert(busToGenerator.first);
   for (const auto& busToVSC : hvdcDefinitions_.vscBusVSCDefinitionsMap)
     regulatedBusIds.insert(busToVSC.first);

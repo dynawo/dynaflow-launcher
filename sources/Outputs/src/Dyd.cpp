@@ -47,9 +47,7 @@ Dyd::write() const {
   def_.dydGenerator_->write(dynamicModelsToConnect, def_.basename_, def_.slackNode_->id);
   def_.dydHvdc_->write(dynamicModelsToConnect, def_.basename_);
   def_.dydSVarC_->write(dynamicModelsToConnect, def_.basename_);
-  def_.dydVRRemote_->writeVRRemotes(dynamicModelsToConnect,
-                                    def_.busesRegulatedBySeveralGenerators_,
-                                    def_.basename_);
+  def_.dydVRRemote_->writeVRRemotes(dynamicModelsToConnect, def_.basename_);
 
   exporter.exportToFile(dynamicModelsToConnect, def_.filename_, constants::xmlEncoding);
 }
