@@ -43,7 +43,7 @@ struct VoltageLevel {
    *
    * @param vlid voltage level id
    */
-  explicit VoltageLevel(const VoltageLevelId& vlid);
+  explicit VoltageLevel(const VoltageLevelId &vlid);
 
   const VoltageLevelId id;                   ///< id
   std::vector<std::shared_ptr<Node>> nodes;  ///< nodes contained in the voltage level
@@ -68,7 +68,7 @@ class Line {
    * @param isConnectedOnNode2 whether the lien is initially connected on node 2
    * @returns the built line
    */
-  static std::shared_ptr<Line> build(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season,
+  static std::shared_ptr<Line> build(const LineId &lineId, const std::shared_ptr<Node> &node1, const std::shared_ptr<Node> &node2, const std::string &season,
                                      bool isConnectedOnNode1, bool isConnectedOnNode2);
 
   const LineId id;                                   ///< line id
@@ -84,7 +84,7 @@ class Line {
    * @param node2 the extremity of the line
    * @param season the active season of the line
    */
-  Line(const LineId& lineId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season);
+  Line(const LineId &lineId, const std::shared_ptr<Node> &node1, const std::shared_ptr<Node> &node2, const std::string &season);
 };
 
 /**
@@ -106,7 +106,7 @@ class Tfo {
    * @param isConnectedOnNode2 whether the two windings transformer is initially connected on node 2
    * @returns the built transformer
    */
-  static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season,
+  static std::shared_ptr<Tfo> build(const TfoId &tfoId, const std::shared_ptr<Node> &node1, const std::shared_ptr<Node> &node2, const std::string &season,
                                     bool isConnectedOnNode1, bool isConnectedOnNode2);
 
   /**
@@ -123,8 +123,8 @@ class Tfo {
    * @param isConnectedOnNode3 whether the three windings transformer is initially connected on node 3
    * @returns the built transformer
    */
-  static std::shared_ptr<Tfo> build(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2,
-                                    const std::shared_ptr<Node>& node3, const std::string& season, bool isConnectedOnNode1, bool isConnectedOnNode2,
+  static std::shared_ptr<Tfo> build(const TfoId &tfoId, const std::shared_ptr<Node> &node1, const std::shared_ptr<Node> &node2,
+                                    const std::shared_ptr<Node> &node3, const std::string &season, bool isConnectedOnNode1, bool isConnectedOnNode2,
                                     bool isConnectedOnNode3);
 
   const TfoId id;                                  ///< transformer id
@@ -140,7 +140,7 @@ class Tfo {
    * @param node2 the second node
    * @param season the active season of the transformer
    */
-  Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::string& season);
+  Tfo(const TfoId &tfoId, const std::shared_ptr<Node> &node1, const std::shared_ptr<Node> &node2, const std::string &season);
 
   /**
    * @brief Constructor
@@ -151,8 +151,8 @@ class Tfo {
    * @param node3 the third node
    * @param season the active season of the transformer
    */
-  Tfo(const TfoId& tfoId, const std::shared_ptr<Node>& node1, const std::shared_ptr<Node>& node2, const std::shared_ptr<Node>& node3,
-      const std::string& season);
+  Tfo(const TfoId &tfoId, const std::shared_ptr<Node> &node1, const std::shared_ptr<Node> &node2, const std::shared_ptr<Node> &node3,
+      const std::string &season);
 };
 
 /// @brief Topological shunt
@@ -164,7 +164,7 @@ struct Shunt {
    *
    * @param id the shunt id
    */
-  explicit Shunt(const ShuntId& id) : id(id) {}
+  explicit Shunt(const ShuntId &id) : id(id) {}
 
   const ShuntId id;  ///< Shunt id
 };
@@ -178,7 +178,7 @@ struct DanglingLine {
    *
    * @param id the dangling line id
    */
-  explicit DanglingLine(const DanglingLineId& id) : id(id) {}
+  explicit DanglingLine(const DanglingLineId &id) : id(id) {}
 
   const DanglingLineId id;  ///< Dangling line id
 };
@@ -192,7 +192,7 @@ struct BusBarSection {
    *
    * @param id the bus bar section id
    */
-  explicit BusBarSection(const BusBarSectionId& id) : id(id) {}
+  explicit BusBarSection(const BusBarSectionId &id) : id(id) {}
 
   const BusBarSectionId id;  ///< Bus bar section id
 };
@@ -200,7 +200,8 @@ struct BusBarSection {
 /**
  * @brief topological node structure
  *
- * This implement a graph node concept. It contains only the information required to perform the algorithms and not all information extractable from network file
+ * This implement a graph node concept. It contains only the information required to perform the algorithms and not all information extractable from network
+ * file
  */
 class Node {
  public:
@@ -220,13 +221,18 @@ class Node {
    *
    * @returns the built node
    */
-  static std::shared_ptr<Node> build(const NodeId& id, const std::shared_ptr<VoltageLevel>& vl, double nominalVoltage, const std::vector<Shunt>& shunts,
+  static std::shared_ptr<Node> build(const NodeId &id, const std::shared_ptr<VoltageLevel> &vl, double nominalVoltage, const std::vector<Shunt> &shunts,
                                      bool fictitious = false, boost::shared_ptr<DYN::ServiceManagerInterface> serviceManagerNode = nullptr);
   /**
    * @brief Retrieve the buses linked to this node through its voltage level
    * @returns the list of the bus ids linked to this node
    */
-  const std::vector<std::string>& getBusesConnectedByVoltageLevel();
+  const std::vector<std::string> &getBusesConnectedByVoltageLevel();
+  /**
+   * @brief Returns true if this node is connected to the network
+   * @returns true if this node is connected to the network
+   */
+  bool isBusConnected();
 
   const NodeId id;                                                 ///< node id
   const std::weak_ptr<VoltageLevel> voltageLevel;                  ///< voltage level containing the node
@@ -257,7 +263,7 @@ class Node {
    * @param fictitious the flag to mark if node is fictitious
    * @param serviceManagerNode the dynawo service manager to use
    */
-  Node(const NodeId& id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, const std::vector<Shunt>& shunts, bool fictitious,
+  Node(const NodeId &id, const std::shared_ptr<VoltageLevel> vl, double nominalVoltage, const std::vector<Shunt> &shunts, bool fictitious,
        boost::shared_ptr<DYN::ServiceManagerInterface> serviceManagerNode);
 
  private:
@@ -275,7 +281,7 @@ class Node {
  *
  * @returns status of the comparaison
  */
-bool operator==(const Node& lhs, const Node& rhs);
+bool operator==(const Node &lhs, const Node &rhs);
 
 /**
  * @brief Determines if two nodes are different
@@ -287,7 +293,7 @@ bool operator==(const Node& lhs, const Node& rhs);
  *
  * @returns status of the comparaison
  */
-bool operator!=(const Node& lhs, const Node& rhs);
+bool operator!=(const Node &lhs, const Node &rhs);
 
 /**
  * @brief Determines if a node is inferior to another node
@@ -299,7 +305,7 @@ bool operator!=(const Node& lhs, const Node& rhs);
  *
  * @returns status of the comparaison
  */
-bool operator<(const Node& lhs, const Node& rhs);
+bool operator<(const Node &lhs, const Node &rhs);
 
 /**
  * @brief Determines if a node is inferior or equal to another node
@@ -311,7 +317,7 @@ bool operator<(const Node& lhs, const Node& rhs);
  *
  * @returns status of the comparaison
  */
-bool operator<=(const Node& lhs, const Node& rhs);
+bool operator<=(const Node &lhs, const Node &rhs);
 
 /**
  * @brief Determines if a node is superior to another node
@@ -323,7 +329,7 @@ bool operator<=(const Node& lhs, const Node& rhs);
  *
  * @returns status of the comparaison
  */
-bool operator>(const Node& lhs, const Node& rhs);
+bool operator>(const Node &lhs, const Node &rhs);
 
 /**
  * @brief Determines if a node is superior or equal to another node
@@ -335,7 +341,7 @@ bool operator>(const Node& lhs, const Node& rhs);
  *
  * @returns status of the comparaison
  */
-bool operator>=(const Node& lhs, const Node& rhs);
+bool operator>=(const Node &lhs, const Node &rhs);
 
 }  // namespace inputs
 }  // namespace dfl
