@@ -48,10 +48,7 @@
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
   </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
-    <bus voltageLevel="VL" name="1"/>
-    <bus voltageLevel="VL" name="2"/>
-    <busbarSection id="VL_1"/>
-    <busbarSection id="VL_2"/>
+    <bus voltageLevel="VL"/>/>
   </singleAssociation>
   <multipleAssociation id="SHUNTS_MODELE_1_VL4">
     <shunt voltageLevel="VL"/>

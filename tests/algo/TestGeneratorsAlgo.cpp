@@ -76,14 +76,14 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   }
 
   /**
+   * @copydoc DYN::ServiceManagerInterface::getBusesConnectedBySwitch
+   */
+  bool isBusConnected(const std::string &busId, const std::string &VLId) const final { return false; }
+
+  /**
    * @copydoc DYN::ServiceManagerInterface::getRegulatedBus
    */
   boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string &regulatingComponent) const final { return boost::shared_ptr<DYN::BusInterface>(); }
-
-  /**
-   * @copydoc ServiceManagerInterface::isBusConnected
-   */
-  bool isBusConnected(const std::string &busId, const std::string &VLId) const final { return true; }
 
  private:
   void updateSet(std::set<std::string> &set, const std::string &str, const std::string &vlid) const {

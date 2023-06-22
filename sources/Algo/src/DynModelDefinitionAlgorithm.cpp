@@ -203,8 +203,15 @@ void DynModelAlgorithm::connectMacroConnectionForBus(const NodePtr &node) {
   const auto &macroConnections = macroConnectByVlForBusesId_.at(vl->id);
 
   for (const auto &macroConnection : macroConnections) {
-    // We use the first node available in the voltage level
-    const auto &nodeId = vl->nodes.front()->id;
+    dfl::inputs::Node::NodeId nodeId;
+    for (const auto &nodeVL : vl->nodes) {
+      if (nodeVL->isBusConnected()) {
+        nodeId = nodeVL->id;
+        break;
+      }
+    }
+    if (nodeId.empty())
+      return;  // ignore this connection
 
     dynamicModels_.usedMacroConnections.insert(macroConnection.macroConnectionId);  // Tag the used macro connection
     const auto &macroConn = manager_.assembling().getMacroConnection(macroConnection.macroConnectionId);
