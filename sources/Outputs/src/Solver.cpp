@@ -26,7 +26,7 @@
 namespace dfl {
 namespace outputs {
 
-Solver::Solver(SolverDefinition &&def) : def_{std::forward<SolverDefinition>(def)} {}
+Solver::Solver(SolverDefinition &&def) : def_{std::move(def)} {}
 
 void Solver::write() const {
   parameters::XmlExporter exporter;

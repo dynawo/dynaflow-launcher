@@ -53,7 +53,7 @@ const std::string Job::solverFilename_ = "solver.par";
 const std::string Job::solverName_ = "dynawo_SolverSIM";
 const std::string Job::solverParId_ = "SimplifiedSolver";
 
-Job::Job(JobDefinition &&def) : def_{std::forward<JobDefinition>(def)} {}
+Job::Job(JobDefinition &&def) : def_{std::move(def)} {}
 
 boost::shared_ptr<job::JobEntry> Job::write() const {
   auto job = job::JobEntryFactory::newInstance();

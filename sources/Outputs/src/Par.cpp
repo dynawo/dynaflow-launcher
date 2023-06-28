@@ -27,7 +27,7 @@
 namespace dfl {
 namespace outputs {
 
-Par::Par(ParDefinition&& def) : def_{std::forward<ParDefinition>(def)} {}
+Par::Par(ParDefinition&& def) : def_{std::move(def)} {}
 
 void
 Par::write() const {

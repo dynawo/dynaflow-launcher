@@ -146,7 +146,7 @@ class Context {
    * @param cbk the callback to register
    */
   void onNodeOnMainConnexComponent(ProcessNodeCallBackMainComponent &&cbk) {
-    callbacksMainConnexComponent_.push_back(std::forward<ProcessNodeCallBackMainComponent>(cbk));
+    callbacksMainConnexComponent_.push_back(std::move(cbk));
   }
 
   /**
