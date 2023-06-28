@@ -64,7 +64,7 @@ class NetworkManager {
    * @param callback callback
    */
   void onNode(ProcessNodeCallback&& callback) {
-    nodesCallbacks_.push_back(std::forward<ProcessNodeCallback>(callback));
+    nodesCallbacks_.push_back(std::move(callback));
   }
 
   /**

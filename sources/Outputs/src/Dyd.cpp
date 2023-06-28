@@ -35,7 +35,7 @@
 namespace dfl {
 namespace outputs {
 
-Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
+Dyd::Dyd(DydDefinition&& def) : def_{std::move(def)} {}
 
 void
 Dyd::write() const {

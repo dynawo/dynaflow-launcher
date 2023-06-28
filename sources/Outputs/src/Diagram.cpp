@@ -25,7 +25,7 @@
 namespace dfl {
 namespace outputs {
 
-Diagram::Diagram(DiagramDefinition &&def) : def_{std::forward<DiagramDefinition>(def)} {
+Diagram::Diagram(DiagramDefinition &&def) : def_{std::move(def)} {
   for (auto &generator : def_.generators) {
     std::sort(generator.points.begin(), generator.points.end(),
               [](const DYN::GeneratorInterface::ReactiveCurvePoint &lhs, const DYN::GeneratorInterface::ReactiveCurvePoint &rhs) { return lhs.p < rhs.p; });
