@@ -62,6 +62,13 @@ class AssemblingDataBase {
   };
 
   /**
+   * @brief Load XML element
+   */
+  struct Load {
+    std::string name;  ///< name of the load
+  };
+
+  /**
    * @brief Tfo XML element
    */
   struct Tfo {
@@ -109,6 +116,7 @@ class AssemblingDataBase {
     boost::optional<Line> line;         ///< line of the association
     boost::optional<SingleShunt> shunt;  ///< single shunt of the association
     std::vector<Generator> generators;  ///< List of generators
+    std::vector<Load> loads;            ///< List of loads
   };
 
   /**
@@ -155,7 +163,7 @@ class AssemblingDataBase {
      * @brief Constructor
      * @param db assembling data base to update
      */
-    explicit AssemblingXmlDocument(AssemblingDataBase& db);
+    explicit AssemblingXmlDocument(AssemblingDataBase &db);
 
    private:
     /**
@@ -166,7 +174,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit ConnectionHandler(const elementName_type& root);
+      explicit ConnectionHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Connection> currentConnection;  ///< the current conection element
     };
@@ -180,7 +188,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit BusHandler(const elementName_type& root);
+      explicit BusHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Bus> currentBus;  ///< current bus element
     };
@@ -206,9 +214,22 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit GeneratorHandler(const elementName_type& root);
+      explicit GeneratorHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Generator> currentGenerator;  ///< current generator element
+    };
+
+    /**
+     * @brief Load element handler
+     */
+    struct LoadHandler : public xml::sax::parser::ComposableElementHandler {
+      /**
+       * @brief Constructor
+       * @param root the root element to parse
+       */
+      explicit LoadHandler(const elementName_type &root);
+
+      boost::optional<AssemblingDataBase::Load> currentLoad;  ///< current load element
     };
 
     /**
@@ -219,7 +240,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit TfoHandler(const elementName_type& root);
+      explicit TfoHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Tfo> currentTfo;  ///< current transformer element
     };
@@ -232,7 +253,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit LineHandler(const elementName_type& root);
+      explicit LineHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Line> currentLine;  ///< current line element
     };
@@ -258,7 +279,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit MacroConnectHandler(const elementName_type& root);
+      explicit MacroConnectHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::MacroConnect> currentMacroConnect;  ///< current macro connect element
     };
@@ -271,7 +292,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit MacroConnectionHandler(const elementName_type& root);
+      explicit MacroConnectionHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::MacroConnection> currentMacroConnection;  ///< current macro connection element
 
@@ -286,7 +307,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit SingleAssociationHandler(const elementName_type& root);
+      explicit SingleAssociationHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::SingleAssociation> currentSingleAssociation;  ///< current single association
 
@@ -295,6 +316,7 @@ class AssemblingDataBase {
       TfoHandler tfoHandler;              ///< transformer element handler
       SingleShuntHandler singleShuntHandler;    ///< single shunt element handler
       GeneratorHandler generatorHandler;  ///< generator element handler
+      LoadHandler loadHandler;            ///< load element handler
     };
 
     /**
@@ -305,7 +327,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit MultipleAssociationHandler(const elementName_type& root);
+      explicit MultipleAssociationHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::MultipleAssociation> currentMultipleAssociation;  ///< current multiple association element
 
@@ -320,7 +342,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit DynamicAutomatonHandler(const elementName_type& root);
+      explicit DynamicAutomatonHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::DynamicAutomaton> currentDynamicAutomaton;  ///< current dynamic model element
 
@@ -335,7 +357,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit DeviceHandler(const elementName_type& root);
+      explicit DeviceHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Device> currentDevice;  ///< current device element
     };
@@ -348,7 +370,7 @@ class AssemblingDataBase {
        * @brief Constructor
        * @param root the root element to parse
        */
-      explicit PropertyHandler(const elementName_type& root);
+      explicit PropertyHandler(const elementName_type &root);
 
       boost::optional<AssemblingDataBase::Property> currentProperty;  ///< current property
 
@@ -368,14 +390,14 @@ class AssemblingDataBase {
    * @brief Constructor
    * @param assemblingFilePath the assembling document file path
    */
-  explicit AssemblingDataBase(const boost::filesystem::path& assemblingFilePath);
+  explicit AssemblingDataBase(const boost::filesystem::path &assemblingFilePath);
 
   /**
    * @brief Retrieve a macro connection with its id
    * @param id macro connection id
    * @returns the macro connection with the given id, throw if not found
    */
-  const MacroConnection& getMacroConnection(const std::string& id) const;
+  const MacroConnection &getMacroConnection(const std::string &id) const;
 
 
   /**
@@ -383,65 +405,61 @@ class AssemblingDataBase {
    * @param id single association id
    * @returns the single associations element with the given id, throw if not found
    */
-  const SingleAssociation& getSingleAssociation(const std::string& id) const;
+  const SingleAssociation &getSingleAssociation(const std::string &id) const;
 
   /**
    * @brief test if a single association with the given id exists
    * @param id single association id
    * @returns true if the single association exists, false otherwise
    */
-  bool isSingleAssociation(const std::string& id) const;
+  bool isSingleAssociation(const std::string &id) const;
 
   /**
    * @brief Retrieve a single association id that contains the generator with the given name
    * @param name generator id
    * @returns single association id that contains the generator with the given name, empty string if not found
    */
-  std::string getSingleAssociationFromGenerator(const std::string& name) const;
+  std::string getSingleAssociationFromGenerator(const std::string &name) const;
 
   /**
    * @brief Retrieve a multiple association with its id
    * @param id multi association id
    * @returns multiple association element with the given id, throw if not found
    */
-  const MultipleAssociation& getMultipleAssociation(const std::string& id) const;
+  const MultipleAssociation &getMultipleAssociation(const std::string &id) const;
 
   /**
    * @brief test if a multiple association with the given id exists
    * @param id multiple association id
    * @returns true if the multiple association exists, false otherwise
    */
-  bool isMultipleAssociation(const std::string& id) const;
+  bool isMultipleAssociation(const std::string &id) const;
 
   /**
    * @brief Retrieve the list of dynamic dynamic models
    * @returns the list of dynamic dynamic models elements
    */
-  const std::map<std::string, DynamicAutomaton>& dynamicAutomatons() const {
-    return dynamicAutomatons_;
-  }
+  const std::map<std::string, DynamicAutomaton> &dynamicAutomatons() const { return dynamicAutomatons_; }
 
   /**
    * @brief determines if the assembling data base contains one or more SVCs
    * @returns true if the assembling data base contains one or more SVCs, false otherwise
    */
-  bool containsSVC() const {
-    return containsSVC_;
-  }
+  bool containsSVC() const { return containsSVC_; }
 
   /**
    * @brief Retrieve a property with its id
    * @param id property id
    * @returns property with the given id, empty property if not found
    */
-  const Property& getProperty(const std::string& id) const;
+  const Property &getProperty(const std::string &id) const;
 
   /**
    * @brief test if a property with the given id exists
    * @param id property id
    * @returns true if theproperty exists, false otherwise
    */
-  bool isProperty(const std::string& id) const;
+  bool isProperty(const std::string &id) const;
 
  private:
   std::unordered_map<std::string, MacroConnection> macroConnections_;          ///< list of macro connections

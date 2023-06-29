@@ -8,15 +8,26 @@
     <connection var1="shunt_isCapacitor_@INDEX@" var2="@NAME@_isCapacitor" required="true" internal="true"/>
     <connection var1="shunt_isAvailable_@INDEX@" var2="@NAME@_isAvailable" required="true" internal="false"/>
   </macroConnection>
+  <macroConnection id="TestLoadConnection">
+    <connection var1="U_IMPIN" var2="U_value" required="true" internal="false"/>
+  </macroConnection>
   <multipleAssociation id="SHUNTS_MODELE_1_VL4">
     <shunt voltageLevel="VL"/>
   </multipleAssociation>
+  <singleAssociation id="LOADS">
+    <load name="L0"/>
+  </singleAssociation>
+  <singleAssociation id="LOADS2">
+    <load name="L1"/>
+  </singleAssociation>
   <multipleAssociation id="SHUNTS_MODELE_1_VL3">
     <shunt voltageLevel="VL2"/>
   </multipleAssociation>
   <dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1" type="VoltageControlShunt" access="T0|TFIN">
     <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
     <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
+    <macroConnect macroConnection="TestLoadConnection" id="LOADS"/>
+    <macroConnect macroConnection="TestLoadConnection" id="LOADS2"/>
   </dynamicAutomaton>
   <singleAssociation id="MESURE_I_VL661">
     <tfo name="VL661"/>
@@ -80,7 +91,11 @@
   <singleAssociation id="MESURE_I_CLA_TEST">
     <tfo name="TFOId"/>
   </singleAssociation>
+  <singleAssociation id="MESURE_I_CLA_TEST2">
+    <tfo name="TFOId2"/>
+  </singleAssociation>
   <dynamicAutomaton id="DM_TEST" lib="PhaseShifterI">
     <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_CLA_TEST"/>
+    <macroConnect macroConnection="CLAToIMeasurement" id="MESURE_I_CLA_TEST2"/>
   </dynamicAutomaton>
 </assembling>

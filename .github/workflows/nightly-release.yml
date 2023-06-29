@@ -2,42 +2,101 @@ name: Nightly Release
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  "0 2 * * 1-5"
+    inputs:
+      perform-nightly:
+        description: Prepare nightly tag and release
+        type: boolean
+        default: true
+      perform-linux:
+        description: Build Linux release
+        type: boolean
+        default: true
+      perform-windows:
+        description: Build Windows release
+        type: boolean
+        default: true
+      perform-nrt:
+        description: Run NRT on Windows
+        type: boolean
+        default: true
+  repository_dispatch:
+    types: [nightly-linux, nightly-windows]
+  # schedule:
+  #   - cron:  "30 4 * * 2-6"  # 30 minutes later after Dynawo-algorithms nightly-release.yml
+
+env:
+  DYNAWO_VERSION: 1.6.0
+  DYNAWO_TAG: nightly
 
 jobs:
+  nightly:
+    if: github.event_name != 'workflow_dispatch' || inputs.perform-nightly
+    name: Prepare nightly tag and release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete previous nightly tag and release if necessary
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            try {
+              const { data: { object: { sha: sha_nightly } } } = await github.rest.git.getRef({ owner, repo, ref: "tags/${{ env.DYNAWO_TAG }}" });
+              const { data: { object: { sha: sha_master } } } = await github.rest.git.getRef({ owner, repo, ref: "heads/master" });
+              console.log("Current nightly tag SHA is:", sha_nightly);
+              console.log("Current master SHA is:", sha_master);
+
+              if (sha_nightly !== sha_master) {
+                try {
+                  const { data: { id: release_id } } = await github.rest.repos.getReleaseByTag({ owner, repo, tag: "${{ env.DYNAWO_TAG }}" });
+                  await github.rest.repos.deleteRelease({ owner, repo, release_id });
+                  console.log("Previous nightly release id", release_id, "was deleted.")
+                } catch (e) {
+                  console.log("Previous nightly release not found !");
+                }
+    
+                await github.rest.git.deleteRef({ owner, repo, ref: "tags/${{ env.DYNAWO_TAG }}" });
+                console.log("Previous nightly tag was deleted.")
+              }
+            } catch (e) {
+              console.log("Previous nightly tag not found !");
+            }
+
+      - name: Create newly nightly tag and release if necessary
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            DynaFlowLauncher's nightly release. Compiled on *release* settings.
+            
+            **Don't use it for production**
+          draft: false
+          prerelease: true
+          name: Nightly
+          tag_name: ${{ env.DYNAWO_TAG }}
+          target_commitish: "refs/heads/master"
+
   fedora:
+    if: github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch')
     name: Linux Fedora (Release, GCC, cxx11)
     runs-on: ubuntu-latest
     container: dynawo/dynawo-distribution-cxx11:latest
-    strategy:
-      fail-fast: false
+    needs: nightly
     env:
-      DYNAWO_VERSION: 1.6.0
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
       DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
-      GH_API: ${{ github.api_url }}/repos/${{ github.repository }}
-      GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
-      GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CURL_JSON: 'curl --silent -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type": "application/json"'
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Fetch Dynawo and Dynawo algorithms
+      - name: Fetch Dynawo's and Dynawo-algorithms's nightly releases
         run: |
-          source .github/workflows/tools.sh
+          curl -LOs https://github.com/dynawo/dynawo/releases/download/nightly/Dynawo_headers_V$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/dynawo/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_headers_V$DYNAWO_VERSION.zip
 
-          download_asset $GH_API_DYNAWO nightly Dynawo_headers_V${DYNAWO_VERSION}.zip $GITHUB_TOKEN
-          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip $GITHUB_TOKEN
-
-      - name: Unzip Dynawo and Dynawo algorithms
+      - name: Unzip Dynawo and Dynawo-algorithms
         run: |
           unzip -qq "Dynawo_headers_V${DYNAWO_VERSION}.zip"
           unzip -qq "DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip"
@@ -53,113 +112,107 @@ jobs:
       - name: Prepare files for distribution
         run: zip -r DynaFlowLauncher_V${DYNAWO_VERSION}.zip dynaflow-launcher
 
-      - name: Delete previous nightly release
-        run: |
-          source .github/workflows/tools.sh
-
-          echo "Obtain previous release id and delete it"
-          RELEASE_ID=$(eval $CURL_JSON "$GH_API/releases" | python3 -c 'import sys, json; releases=[release["id"] for release in json.load(sys.stdin) if release["tag_name"]=="nightly"]; print(releases[0] if releases else "")')
-          if [ ! -z "$RELEASE_ID" ]; then
-            echo "Release id with tag 'nightly' found: $RELEASE_ID"
-            echo "Delete release $RELEASE_ID ..."
-            curl \
-              --request DELETE \
-              --url "$GH_API/releases/$RELEASE_ID" \
-              --header "authorization: Bearer $GITHUB_TOKEN"
-            echo "Wait for release to be deleted ..."
-            wait_for_http_code "$GH_API/releases/$RELEASE_ID" 404 $GITHUB_TOKEN
-          else
-            echo "Previous nightly release not found"
-          fi
-
-      - name: INFO. List of all releases after deleting nightly
-        run: eval $CURL_JSON "$GH_API/releases"
-
-      - name: Delete previous nightly tag
-        run: |
-          source .github/workflows/tools.sh
-
-          echo "Delete previous tag. Won't fail if it does not exist"
-          curl \
-            --request DELETE \
-            --url "$GH_API/git/refs/tags/nightly" \
-            --header "authorization: Bearer $GITHUB_TOKEN" \
-            --header "Content-Type: application/json"
-
-          echo "Wait for tag to be deleted ..."
-          wait_for_http_code "$GH_API/git/refs/tags/nightly" 404 $GITHUB_TOKEN
-
-      - name: INFO. Nightly tag should not be found
-        run: eval $CURL_JSON "$GH_API/git/refs/tags/nightly"
-
-      - name: Get last commit in master
-        run: |
-          echo "Obtaining refs/heads/master ..."
-          HEAD_MASTER=$(eval $CURL_JSON "$GH_API/git/refs/heads/master")
-          echo "Head master:"
-          echo $HEAD_MASTER
-          SHA_HEAD_MASTER=$(echo $HEAD_MASTER | python3 -c 'import sys, json; print(json.load(sys.stdin)["object"]["sha"])')
-          echo "Last commit in master has SHA = $SHA_HEAD_MASTER"
-          echo "MASTER_COMMIT_ID=$SHA_HEAD_MASTER" >> $GITHUB_ENV
-
-      - name: INFO. Check last commit in master
-        run: echo "Last commit in master SHA = $MASTER_COMMIT_ID"
-
-      - name: Create tag nightly
-        run: |
-          source .github/workflows/tools.sh
-          echo "Create tag nightly based on last commit in master branch"
-          curl \
-            --request POST \
-            --url "$GH_API/git/refs" \
-            --header "authorization: Bearer $GITHUB_TOKEN" \
-            --header "Content-Type: application/json" \
-            --data '{
-                "ref": "refs/tags/nightly",
-                "sha": "'$MASTER_COMMIT_ID'"
-                }'
-          echo "Wait for tag to be created ..."
-          wait_for_http_code "$GH_API/git/refs/tags/nightly" 200 $GITHUB_TOKEN
-
-      - name: INFO. Tag nightly created"
-        run: eval $CURL_JSON "$GH_API/git/refs/tags/nightly"
-
-      - name: Create release nightly
-        run: |
-          source .github/workflows/tools.sh
-          echo "Create release nightly"
-          curl \
-            --request POST \
-            --url "$GH_API/releases" \
-            --header "authorization: Bearer $GITHUB_TOKEN" \
-            --header "Content-Type: application/json" \
-            --data '{
-                "tag_name" : "nightly",
-                "target_commitish" : "'$MASTER_COMMIT_ID'",
-                "name" : "Nightly",
-                "body" : "Dynawo'"'"'s nightly release. Compiled on *release* settings.\n\n**Don'"'"'t use it for production**",
-                "draft" : false,
-                "prerelease" : true
-                }'
-          echo "Wait for the release to be published ..."
-          wait_for_http_code "$GH_API/releases/tags/nightly" 200 $GITHUB_TOKEN
-
-      - name: INFO. Release object created for tag nightly"
-        run: eval $CURL_JSON "$GH_API/releases/tags/nightly"
-
       - name: Upload assets for release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.DYNAWO_TAG }}
+          files: |
+            DynaFlowLauncher*.zip
+
+  windows:
+    if: github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch')
+    name: Windows 2019 (Release, VS2019)
+    runs-on: windows-2019
+    needs: nightly
+    steps:
+      - name: No LF to CRLF conversion
+        shell: cmd
+        run: git config --global core.autocrlf input
+
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Download MS-MPI
+        shell: bash
         run: |
-          source .github/workflows/tools.sh
-          echo "Obtain upload and assets urls from created release:"
-          RELEASE=$(eval $CURL_JSON "$GH_API/releases/tags/nightly")
-          UPLOAD_URL=$(echo ${RELEASE} | python3 -c 'import sys, json; release = json.load(sys.stdin); print(str(release["upload_url"]))' | grep -o ".*assets")
-          echo "Release upload URL = $UPLOAD_URL"
-          ASSETS_URL=$(echo ${RELEASE} | python3 -c 'import sys, json; release = json.load(sys.stdin); print(str(release["assets_url"]))')
-          echo "Release assets URL = $ASSETS_URL"
-          echo "ASSETS_URL=$ASSETS_URL" >> $GITHUB_ENV
+          curl -Os https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisdk.msi
+          curl -Os https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisetup.exe
 
-          echo "Upload asset"
-          upload_zip_file $UPLOAD_URL DynaFlowLauncher_V${DYNAWO_VERSION}.zip $GITHUB_TOKEN
+      - name: Install MS-MPI
+        shell: cmd
+        run: |
+          msmpisdk.msi /passive
+          msmpisetup.exe /unattend
 
-      - name: INFO. Release assets
-        run: eval $CURL_JSON $ASSETS_URL
+      - name: Fetch Dynawo's nightly release
+        shell: bash
+        run: curl -LOs https://github.com/dynawo/dynawo/releases/download/nightly/Dynawo_Windows_V$DYNAWO_VERSION.zip
+
+      - name: Unzip Dynawo
+        shell: cmd
+        run: 7z x Dynawo_Windows_V%DYNAWO_VERSION%.zip -o..\deploy
+
+      - name: Dynawo version
+        shell: cmd
+        run: ..\deploy\dynawo\dynawo version
+
+      - name: Fetch Dynawo-algorithms' nightly release
+        shell: bash
+        run: curl -LOs https://github.com/dynawo/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_V$DYNAWO_VERSION.zip
+
+      - name: Unzip Dynawo-algorithms
+        shell: cmd
+        run: 7z x DynawoAlgorithms_Windows_V%DYNAWO_VERSION%.zip -o..\deploy
+
+      - name: Dynawo-algorithms version
+        shell: cmd
+        run: ..\deploy\dynawo-algorithms\dynawo-algorithms version
+
+      # use a minimal PATH to avoid too long command lines and conflict with Strawberry pkg-config !
+      - name: Build and install
+        shell: cmd
+        env:
+          MSMPI_INC: C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
+          MSMPI_LIB32: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
+          MSMPI_LIB64: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
+          MSMPI_BIN: C:\Program Files\Microsoft MPI\Bin\
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+        run: |
+          set PATH=%MSMPI_BIN%;%PATH%
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call scripts\dynaflow-launcher verbose build
+
+      - name: Dynaflow-launcher version
+        shell: cmd
+        env:
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+        run: call ..\dfl-i\dynaflow-launcher verbose version
+
+      - name: Build and run NRT
+        if: github.event_name != 'workflow_dispatch' || inputs.perform-nrt
+        shell: cmd
+        env:
+          MSMPI_INC: C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
+          MSMPI_LIB32: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
+          MSMPI_LIB64: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
+          MSMPI_BIN: C:\Program Files\Microsoft MPI\Bin\
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64;C:\hostedtoolcache\windows\Python\3.7.9\x64\Scripts
+        run: |
+          pip install lxml
+          set PATH=%MSMPI_BIN%;%PATH%
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call scripts\dynaflow-launcher verbose tests "^^M"
+
+      - name: Create distribution
+        shell: cmd
+        run: |
+          md ..\distrib
+          cd ..\distrib
+          move /y ..\dfl-i dynaflow-launcher
+          7z a DynaFlowLauncher_Windows_V%DYNAWO_VERSION%.zip dynaflow-launcher
+
+      - name: Upload distribution
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.DYNAWO_TAG }}
+          files: ../distrib/DynaFlowLauncher*.zip

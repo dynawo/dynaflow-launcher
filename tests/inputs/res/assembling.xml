@@ -57,10 +57,15 @@
     <generator name="GeneratorId2"/>
     <generator name="GeneratorId_2"/>
   </singleAssociation>
+  <singleAssociation id="LoadId">
+    <load name="LoadId"/>
+    <load name="LoadId_0"/>
+  </singleAssociation>
   <dynamicAutomaton id="GeneratorAutomaton" lib="GeneratorAutomatonModel">
     <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_2_VL7"/>
     <macroConnect macroConnection="ToGenerator" id="GeneratorId"/>
     <macroConnect macroConnection="ToGenerator" id="GeneratorId2"/>
+    <macroConnect macroConnection="ToLoad" id="LoadId"/>
   </dynamicAutomaton>
   <dynamicAutomaton id="VIRTUAL_MODEL" lib="DYNModelVirtual">
     <macroConnect macroConnection="ModelModelConnection" id="MODELE_1_VL6"/>

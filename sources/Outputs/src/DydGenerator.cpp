@@ -49,8 +49,9 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> DydG
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "GeneratorPQPropDiagramPQSignalN")};
 
 void
-DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename,
-                    const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators, const std::string& slackNodeId) {
+DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
+                    const std::string& basename,
+                    const std::string& slackNodeId) {
   for (const auto& generator : generatorDefinitions_) {
     if (generator.isNetwork()) {
       continue;
@@ -59,12 +60,6 @@ DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dyn
     auto blackBoxModel = helper::buildBlackBoxStaticId(generator.id, generator.id, correspondence_lib_.at(generator.model), basename + ".par", parId);
     blackBoxModel->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSignalNGeneratorName_));
     dynamicModelsToConnect->addModel(blackBoxModel);
-  }
-  for (const auto& keyValue : busesRegulatedBySeveralGenerators) {
-    std::string id = constants::modelSignalNQprefix_ + keyValue.first;
-    auto blackBoxModelVRRemote = helper::buildBlackBox(id, "VRRemote", basename + ".par", id);
-    dynamicModelsToConnect->addModel(blackBoxModelVRRemote);
-    dynamicModelsToConnect->addConnect(id, "vrremote_URegulated", constants::networkModelName, keyValue.first + "_U_value");
   }
   writeThetaRefConnect(dynamicModelsToConnect, slackNodeId);
   writeMacroConnector(dynamicModelsToConnect);
@@ -83,12 +78,6 @@ DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCo
 
     connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
     connector->addConnect("generator_N", "signalN_N");
-    dynamicModelsToConnect->addMacroConnector(connector);
-
-    connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenVRRemoteName_);
-    connector->addConnect("generator_NQ", "vrremote_NQ");
-    connector->addConnect("generator_limUQUp", "vrremote_limUQUp_@INDEX@_");
-    connector->addConnect("generator_limUQDown", "vrremote_limUQDown_@INDEX@_");
     dynamicModelsToConnect->addMacroConnector(connector);
   }
 }
@@ -124,14 +113,6 @@ DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsColl
         it->model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
         it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR) {
       dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U_value");
-    } else if (it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE ||
-               it->model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN ||
-               it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR) {
-      std::string modelNQId = constants::modelSignalNQprefix_ + it->regulatedBusId;
-      ++modelNQIdGenNumber[modelNQId];
-      auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenVRRemoteName_, it->id, modelNQId);
-      connection->setIndex2(std::to_string(modelNQIdGenNumber[modelNQId]));
-      dynamicModelsToConnect->addMacroConnect(connection);
     }
 
     auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenName_, it->id, constants::networkModelName);

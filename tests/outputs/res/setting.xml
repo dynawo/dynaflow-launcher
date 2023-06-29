@@ -40,6 +40,8 @@
   </set>
   <set id="DM_TEST">
     <ref id="MESURE_I_CLA_TEST" name="currentLimitAutomaton_Season" tag="@SAISON@" type="STRING"/>
+    <par name="test_Par_0_" type="STRING" value="TFO_@CONNECTED_STATIC_ID@@CLAToIMeasurement@@0@_param"/>
+    <par name="test_Par_1_" type="STRING" value="TFO_@CONNECTED_STATIC_ID@@CLAToIMeasurement@@1@_param"/>
   </set>
   <set id="SVC">
     <!-- SVC parameters -->
