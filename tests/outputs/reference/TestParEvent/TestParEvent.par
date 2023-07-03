@@ -10,19 +10,19 @@
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
   <set id="Disconnect_TestGeneratorNetwork">
-    <par name="event_stateEvent1" type="DOUBLE" value="1"/>
+    <par name="event_open" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
   <set id="Disconnect_TestLoadNetwork">
-    <par name="event_stateEvent1" type="DOUBLE" value="1"/>
+    <par name="event_open" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
   <set id="Disconnect_TestShuntCompensator">
-    <par name="event_stateEvent1" type="DOUBLE" value="1"/>
+    <par name="event_open" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
   <set id="Disconnect_TestStaticVarCompensatorNetwork">
-    <par name="event_stateEvent1" type="DOUBLE" value="1"/>
+    <par name="event_open" type="BOOL" value="true"/>
     <par name="event_tEvent" type="DOUBLE" value="80"/>
   </set>
 </parametersSet>
