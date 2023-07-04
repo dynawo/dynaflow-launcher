@@ -56,3 +56,5 @@ __pycache__
 .history
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+cpplint/1.4.4.tar.gz
+cpplint/cpplint.py
