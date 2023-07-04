@@ -21,13 +21,6 @@ void ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection> &para
   for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
     paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode));
   }
-  // adding parameters sets related to remote voltage control or multiple VSC regulating same bus
-  for (const auto &keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
-    if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-      paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
-    }
-    paramSetCollection->addParametersSet(helper::writeVRRemote(keyValue.first, keyValue.second));
-  }
 }
 
 boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,

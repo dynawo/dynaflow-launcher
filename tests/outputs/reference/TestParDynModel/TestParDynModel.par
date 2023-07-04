@@ -68,6 +68,8 @@
   </set>
   <set id="DM_TEST">
     <par name="currentLimitAutomaton_Season" type="STRING" value="SUMMER"/>
+    <par name="test_Par_0_" type="STRING" value="TFO_TFOId_param"/>
+    <par name="test_Par_1_" type="STRING" value="TFO_TFOId2_param"/>
   </set>
   <set id="DM_VL61">
     <par name="phaseShifter_sign" type="DOUBLE" value="-1"/>

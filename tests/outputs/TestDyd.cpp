@@ -201,6 +201,9 @@ TEST(Dyd, writeDynamicModel) {
   macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5");
   models.models.at("SVC").nodeConnections.insert(macro);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6");
+  models.models.at("SVC").nodeConnections.insert(macro);
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),
                                        LoadDefinition("L1", LoadDefinition::ModelType::NETWORK, "01"),
@@ -212,7 +215,8 @@ TEST(Dyd, writeDynamicModel) {
       GeneratorDefinition("G0", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
       GeneratorDefinition("G2", GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN, "02", {}, 3., 30., 33., 330., 0, 100, bus1),
       GeneratorDefinition("G4", GeneratorDefinition::ModelType::SIGNALN_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
-      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
+      GeneratorDefinition("G5", GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
+      GeneratorDefinition("G6", GeneratorDefinition::ModelType::NETWORK, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
@@ -307,6 +311,59 @@ TEST(Dyd, writeLoad) {
   outputPath.append(filename);
   dfl::outputs::Dyd dydWriter(
       dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, loads, node, noHvdcDefs, noBuses, manager, noModels, {}));
+
+  dydWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Dyd, writeVRRemote) {
+  using dfl::algo::HVDCDefinition;
+
+  std::string basename = "TestDydVRRemote";
+  std::string filename = basename + ".dyd";
+  boost::filesystem::path outputPath(outputPathResults);
+  outputPath.append(basename);
+
+  dfl::inputs::DynamicDataBaseManager manager("", "");
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  std::shared_ptr<dfl::inputs::VoltageLevel> vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
+  std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("Slack", vl, 100., {});
+
+  auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2",
+                                    "BUS_1", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
+                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2",
+                                    "BUS_3", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
+                                    0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
+  HVDCLineDefinitions::BusVSCMap vscIds = {std::make_pair("BUS_1", "VSCStation1"), std::make_pair("BUS_3", "VSCStation2")};
+  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+
+  const std::string bus1 = "BUS_1";
+  const std::string bus2 = "BUS_2";
+  GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
+  DynamicModelDefinitions noModels;
+
+  outputPath.append(filename);
+  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename,
+                                                                outputPath.generic_string(),
+                                                                {},
+                                                                {},
+                                                                node,
+                                                                hvdcDefs,
+                                                                busesRegulatedBySeveralGenerators,
+                                                                manager,
+                                                                noModels,
+                                                                {}));
 
   dydWriter.write();
 

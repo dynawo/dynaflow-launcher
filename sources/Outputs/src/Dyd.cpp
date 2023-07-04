@@ -35,18 +35,19 @@
 namespace dfl {
 namespace outputs {
 
-Dyd::Dyd(DydDefinition&& def) : def_{std::forward<DydDefinition>(def)} {}
+Dyd::Dyd(DydDefinition&& def) : def_{std::move(def)} {}
 
 void
 Dyd::write() const {
   dynamicdata::XmlExporter exporter;
   auto dynamicModelsToConnect = dynamicdata::DynamicModelsCollectionFactory::newCollection();
-  def_.dydDynModel_->write(dynamicModelsToConnect, def_.basename_, def_.dynamicDataBaseManager_);
 
+  def_.dydDynModel_->write(dynamicModelsToConnect, def_.basename_, def_.dynamicDataBaseManager_);
   def_.dydLoads_->write(dynamicModelsToConnect, def_.basename_);
-  def_.dydGenerator_->write(dynamicModelsToConnect, def_.basename_, def_.busesRegulatedBySeveralGenerators_, def_.slackNode_->id);
+  def_.dydGenerator_->write(dynamicModelsToConnect, def_.basename_, def_.slackNode_->id);
   def_.dydHvdc_->write(dynamicModelsToConnect, def_.basename_);
   def_.dydSVarC_->write(dynamicModelsToConnect, def_.basename_);
+  def_.dydVRRemote_->writeVRRemotes(dynamicModelsToConnect, def_.basename_);
 
   exporter.exportToFile(dynamicModelsToConnect, def_.filename_, constants::xmlEncoding);
 }

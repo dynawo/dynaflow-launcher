@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:blackBoxModel id="HVDCLCCLine" staticId="HVDCLCCLine" lib="HvdcPTanPhiDangling" parFile="TestDydVRRemote.par" parId="HVDCLCCLine">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="HVDCVSCLine" staticId="HVDCVSCLine" lib="HvdcPVDangling" parFile="TestDydVRRemote.par" parId="HVDCVSCLine">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_1" lib="VRRemote" parFile="TestDydVRRemote.par" parId="Model_Signal_NQ_BUS_1"/>
+  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_2" lib="VRRemote" parFile="TestDydVRRemote.par" parId="Model_Signal_NQ_BUS_2"/>
+  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_3" lib="VRRemote" parFile="TestDydVRRemote.par" parId="Model_Signal_NQ_BUS_3"/>
+  <dyn:connect id1="NETWORK" var1="BUS_3_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="BUS_3_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_3" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_3_U_value"/>
+</dyn:dynamicModelsArchitecture>

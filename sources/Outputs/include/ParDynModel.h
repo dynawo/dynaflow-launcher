@@ -41,7 +41,7 @@ class ParDynModel {
    * @param dynamicModelsDefinitions reference to the list of defined dynamic models definitions
    * @param gens generators definition coming from algorithms
    */
-  explicit ParDynModel(const algo::DynamicModelDefinitions& dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition>& gens);
+  explicit ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefinitions, const std::vector<algo::GeneratorDefinition> &gens);
 
   /**
    * @brief enrich the parameter set collection for defined dynamic models
@@ -52,9 +52,9 @@ class ParDynModel {
    * @param linesByIdDefinitions lines by id to use
    * @param transformersById transformers by id to use
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-             const algo::ShuntCounterDefinitions& shuntCounters, const algo::LinesByIdDefinitions& linesByIdDefinitions,
-             const algo::TransformersByIdDefinitions& transformersById);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
+             const algo::ShuntCounterDefinitions &shuntCounters, const algo::LinesByIdDefinitions &linesByIdDefinitions,
+             const algo::TransformersByIdDefinitions &transformersById);
 
  private:
   /**
@@ -63,13 +63,14 @@ class ParDynModel {
    * @param dynModelDef the dynamic model to process
    * @returns the transformer id connected to the dynamic model, nullopt if not found
    */
-  boost::optional<std::string> getTransformerComponentId(const algo::DynamicModelDefinition& dynModelDef);
+  boost::optional<std::string> getTransformerComponentId(const algo::DynamicModelDefinition &dynModelDef);
 
   /**
    * @brief Write setting set for dynamic models
    *
    * @param set the configuration set to write
    * @param dynamicDataBaseManager the dynamic DB manager to use
+   * @param automaton the current secondary voltage control automaton
    * @param counters the counters to use
    * @param models the models definitions to use
    * @param linesById lines by id to use
@@ -78,9 +79,10 @@ class ParDynModel {
    * @returns the parameter set to add
    */
   boost::shared_ptr<parameters::ParametersSet>
-  writeDynamicModelParameterSet(const inputs::SettingDataBase::Set& set, const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                                const algo::ShuntCounterDefinitions& counters, const algo::DynamicModelDefinitions& models,
-                                const algo::LinesByIdDefinitions& linesById, const algo::TransformersByIdDefinitions& transformersById);
+  writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &set, const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
+                                const algo::DynamicModelDefinition &automaton, const algo::ShuntCounterDefinitions &counters,
+                                const algo::DynamicModelDefinitions &models, const algo::LinesByIdDefinitions &linesById,
+                                const algo::TransformersByIdDefinitions &transformersById);
 
   /**
    * @brief Write setting set for secondary voltage controller models
@@ -91,9 +93,9 @@ class ParDynModel {
    *
    * @returns the parameter set to add
    */
-  boost::shared_ptr<parameters::ParametersSet> writeSVCParameterSet(const inputs::SettingDataBase::Set& set,
-                                                                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                                                                    const algo::DynamicModelDefinition& automaton);
+  boost::shared_ptr<parameters::ParametersSet> writeSVCParameterSet(const inputs::SettingDataBase::Set &set,
+                                                                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
+                                                                    const algo::DynamicModelDefinition &automaton);
 
   /**
    * @brief Retrieve active season
@@ -105,13 +107,13 @@ class ParDynModel {
    *
    * @return active season value
    */
-  boost::optional<std::string> getActiveSeason(const inputs::SettingDataBase::Ref& ref, const algo::LinesByIdDefinitions& linesById,
-                                               const algo::TransformersByIdDefinitions& transformersById,
-                                               const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  boost::optional<std::string> getActiveSeason(const inputs::SettingDataBase::Ref &ref, const algo::LinesByIdDefinitions &linesById,
+                                               const algo::TransformersByIdDefinitions &transformersById,
+                                               const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
-  const algo::DynamicModelDefinitions& dynamicModelsDefinitions_;       ///< list of defined dynamic models
-  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;  ///< list of generator definitions
+  const algo::DynamicModelDefinitions &dynamicModelsDefinitions_;       ///< list of defined dynamic models
+  const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;  ///< list of generator definitions
   std::unordered_map<std::string, size_t> generatorIdToIndex_;          ///< map of generator ids to their index
 };
 

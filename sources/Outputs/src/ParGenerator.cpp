@@ -17,14 +17,12 @@
 namespace dfl {
 namespace outputs {
 
-void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
-                         const std::string &basename, const boost::filesystem::path &dirname,
-                         const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators, StartingPointMode startingPointMode,
-                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
-  std::unordered_map<algo::GeneratorDefinitionAlgorithm::BusId, bool> busesRegulategBySeveralGeneratorsToFrozen;
-  for (const auto &keyValue : busesRegulatedBySeveralGenerators) {
-    busesRegulategBySeveralGeneratorsToFrozen.insert({keyValue.first, true});
-  }
+void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection,
+                    ActivePowerCompensation activePowerCompensation,
+                    const std::string &basename,
+                    const boost::filesystem::path &dirname,
+                    StartingPointMode startingPointMode,
+                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {
@@ -63,21 +61,6 @@ void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> 
     if (paramSet && !paramSetCollection->hasParametersSet(paramSet->getId())) {
       paramSetCollection->addParametersSet(paramSet);
     }
-
-    if (busesRegulategBySeveralGeneratorsToFrozen.find(generator.regulatedBusId) != busesRegulategBySeveralGeneratorsToFrozen.end() &&
-        generator.q < generator.qmax && generator.q > generator.qmin) {
-      busesRegulategBySeveralGeneratorsToFrozen[generator.regulatedBusId] = false;
-    }
-  }
-  // adding parameters sets related to remote voltage control or multiple generator regulating same bus
-  for (const auto &keyValue : busesRegulatedBySeveralGenerators) {
-    if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-      paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
-    }
-    auto VRRemoteParamSet = helper::writeVRRemote(keyValue.first, keyValue.second);
-    if (busesRegulategBySeveralGeneratorsToFrozen[keyValue.first])
-      VRRemoteParamSet->addParameter(helper::buildParameter("vrremote_frozen0", true));
-    paramSetCollection->addParametersSet(VRRemoteParamSet);
   }
 }
 

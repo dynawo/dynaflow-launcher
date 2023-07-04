@@ -57,9 +57,9 @@ namespace outputs {
 class DydHvdc {
  public:
   /**
-   * @brief Construct a new Par Hvdc object
+   * @brief Construct a new Dyd Hvdc object
    *
-   * @param hvdcDefinitions reference to the list of load definitions
+   * @param hvdcDefinitions reference to the list of Hvdc definitions
    */
   explicit DydHvdc(const algo::HVDCLineDefinitions& hvdcDefinitions) : hvdcDefinitions_(hvdcDefinitions) {}
 

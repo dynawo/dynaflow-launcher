@@ -28,7 +28,7 @@
 namespace dfl {
 namespace outputs {
 
-Network::Network(NetworkDefinition&& def) : def_{std::forward<NetworkDefinition>(def)} {}
+Network::Network(NetworkDefinition&& def) : def_{std::move(def)} {}
 
 void
 Network::write() const {

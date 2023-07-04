@@ -24,6 +24,11 @@
     <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
     <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
+  <dyn:macroConnector id="SVCToGeneratorNetwork">
+    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="Network_generator_limUQDown"/>
+    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="Network_generator_limUQUp"/>
+    <dyn:connect var1="secondaryVoltageControl_level" var2="Network_reactivePowerControlLoop_level"/>
+  </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
     <dyn:connect var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
   </dyn:macroConnector>
@@ -78,6 +83,7 @@
   <dyn:macroConnect connector="ToControlledShunts" id1="MODELE_1_VL4" id2="NETWORK" index1="1" name2="1.2"/>
   <dyn:macroConnect connector="ToUMeasurement" id1="MODELE_1_VL4" id2="NETWORK" index1="0" name2="0"/>
   <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="G5" index1="0"/>
+  <dyn:macroConnect connector="SVCToGeneratorNetwork" id1="SVC" id2="NETWORK" index1="1" name2="G6"/>
   <dyn:macroConnect connector="SVCToUMeasurement" id1="SVC" id2="NETWORK" index1="0" name2="0"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L0" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>

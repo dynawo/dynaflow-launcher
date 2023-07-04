@@ -30,17 +30,16 @@
 namespace dfl {
 namespace outputs {
 
-ParEvent::ParEvent(ParEventDefinition&& def) : def_{std::forward<ParEventDefinition>(def)} {}
+ParEvent::ParEvent(ParEventDefinition &&def) : def_{std::forward<ParEventDefinition>(def)} {}
 
-void
-ParEvent::write() {
+void ParEvent::write() {
   using Type = dfl::inputs::ContingencyElement::Type;
   parameters::XmlExporter exporter;
 
   auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
-  for (const auto& element : def_.contingency.elements) {
+  for (const auto &element : def_.contingency.elements) {
     if (isNetwork(element.id)) {
-      parametersSets->addParametersSet(buildEventSetPointRealDisconnection(element.id, def_.timeOfEvent));
+      parametersSets->addParametersSet(buildEventConnectedStatusDisconnection(element.id, def_.timeOfEvent));
       continue;
     }
     switch (element.type) {
@@ -56,15 +55,14 @@ ParEvent::write() {
       parametersSets->addParametersSet(buildEventSetPointBooleanDisconnection(element.id, def_.timeOfEvent));
       break;
     default:
-      parametersSets->addParametersSet(buildEventSetPointRealDisconnection(element.id, def_.timeOfEvent));
+      parametersSets->addParametersSet(buildEventConnectedStatusDisconnection(element.id, def_.timeOfEvent));
     }
   }
 
   exporter.exportToFile(parametersSets, def_.filename, constants::xmlEncoding);
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-ParEvent::buildBranchDisconnection(const std::string& branchId, const double timeOfEvent) {
+boost::shared_ptr<parameters::ParametersSet> ParEvent::buildBranchDisconnection(const std::string &branchId, const double timeOfEvent) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + branchId));
   set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_disconnectOrigin", true));
@@ -72,26 +70,21 @@ ParEvent::buildBranchDisconnection(const std::string& branchId, const double tim
   return set;
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-ParEvent::buildEventSetPointBooleanDisconnection(const std::string& elementId, const double timeOfEvent) {
+boost::shared_ptr<parameters::ParametersSet> ParEvent::buildEventSetPointBooleanDisconnection(const std::string &elementId, const double timeOfEvent) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
   set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_stateEvent1", true));
   return set;
 }
 
-boost::shared_ptr<parameters::ParametersSet>
-ParEvent::buildEventSetPointRealDisconnection(const std::string& elementId, const double timeOfEvent) {
+boost::shared_ptr<parameters::ParametersSet> ParEvent::buildEventConnectedStatusDisconnection(const std::string &elementId, const double timeOfEvent) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
   set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
-  set->addParameter(helper::buildParameter("event_stateEvent1", 1.0));
+  set->addParameter(helper::buildParameter("event_open", true));
   return set;
 }
 
-bool
-ParEvent::isNetwork(const std::string& elementId) const {
-  return (def_.networkElements_.find(elementId) != def_.networkElements_.end());
-}
+bool ParEvent::isNetwork(const std::string &elementId) const { return (def_.networkElements_.find(elementId) != def_.networkElements_.end()); }
 
 }  // namespace outputs
 }  // namespace dfl
