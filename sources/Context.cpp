@@ -329,7 +329,32 @@ void Context::execute() {
     // For a power flow calculation it is ok to directly run here a single simulation
     auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
     simu->init();
-    simu->simulate();
+    try {
+      simu->simulate();
+    } catch (const DYN::Error& err) {
+      // Needed as otherwise terminate might crash due to missing staticRef variables
+      if (err.key() == DYN::KeyError_t::StateVariableNoReference) {
+        simu->disableExportIIDM();
+        simu->setLostEquipmentsExportMode(DYN::Simulation::EXPORT_LOSTEQUIPMENTS_NONE);
+      }
+      simu->terminate();
+      throw;
+    } catch (const DYN::Terminate& e) {
+      simu->terminate();
+      throw;
+    } catch (const DYN::MessageError& e) {
+      simu->terminate();
+      throw;
+    } catch (const char *s) {
+      simu->terminate();
+      throw;
+    } catch (const std::string& Msg) {
+      simu->terminate();
+      throw;
+    } catch (const std::exception& exc) {
+      simu->terminate();
+      throw;
+    }
     simu->terminate();
     simu->clean();
     break;
@@ -410,5 +435,4 @@ void Context::walkNodesMain() {
     }
   }
 }
-
 }  // namespace dfl
