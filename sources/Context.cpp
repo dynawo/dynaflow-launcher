@@ -339,19 +339,19 @@ void Context::execute() {
       }
       simu->terminate();
       throw;
-    } catch (const DYN::Terminate& e) {
+    } catch (const DYN::Terminate&) {
       simu->terminate();
       throw;
-    } catch (const DYN::MessageError& e) {
+    } catch (const DYN::MessageError&) {
       simu->terminate();
       throw;
-    } catch (const char *s) {
+    } catch (const char*) {
       simu->terminate();
       throw;
-    } catch (const std::string& Msg) {
+    } catch (const std::string&) {
       simu->terminate();
       throw;
-    } catch (const std::exception& exc) {
+    } catch (const std::exception&) {
       simu->terminate();
       throw;
     }
