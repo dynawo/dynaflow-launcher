@@ -10,6 +10,7 @@
 set(SOURCES
 src/ContingencyValidationAlgorithm.cpp
 src/DynModelDefinitionAlgorithm.cpp
+src/DynModelFilterAlgorithm.cpp
 src/GeneratorDefinitionAlgorithm.cpp
 src/HVDCDefinitionAlgorithm.cpp
 src/LineDefinitionAlgorithm.cpp
