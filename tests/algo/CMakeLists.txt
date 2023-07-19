@@ -41,3 +41,8 @@ add_dependencies(ALGO.TestAlgoDynModel dummyLib)
 set_property(TEST ALGO.TestAlgoDynModel APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_LIBRARIES=${CMAKE_CURRENT_BINARY_DIR}")
 set_property(TEST ALGO.TestAlgoDynModel APPEND PROPERTY ENVIRONMENT "DYNAWO_INSTALL_DIR=${DYNAWO_HOME}")
 set_property(TEST ALGO.TestAlgoDynModel APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_XSD=")  # to avoid parse validation error
+
+DEFINE_TEST_XML(TestDynModelFilterAlgo ALGO)
+target_link_libraries(ALGO.TestDynModelFilterAlgo DynaFlowLauncher::algo)
+set_property(TEST ALGO.TestDynModelFilterAlgo APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_LIBRARIES=${CMAKE_CURRENT_BINARY_DIR}")
+set_property(TEST ALGO.TestDynModelFilterAlgo APPEND PROPERTY ENVIRONMENT "DYNAWO_INSTALL_DIR=${DYNAWO_HOME}")

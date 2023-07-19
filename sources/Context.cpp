@@ -22,6 +22,7 @@
 #include "Diagram.h"
 #include "Dyd.h"
 #include "DydEvent.h"
+#include "DynModelFilterAlgorithm.h"
 #include "Job.h"
 #include "Log.h"
 #include "Network.h"
@@ -131,8 +132,10 @@ bool Context::process() {
   }
   walkNodesMain();
 
-  // Check models generated with algorithm
-  filterPartiallyConnectedDynamicModels();
+  algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(dynamicDataBaseManager_.assembling(),
+                                                        generators_,
+                                                        dynamicModels_.models);
+  dynModelFilterAlgorithm.filter();
 
   // the validation of contingencies on algorithm definitions must be done after walking all nodes
   // on main topological island, because this is where we fill the algorithms definitions
@@ -150,56 +153,6 @@ bool Context::process() {
   }
 
   return true;
-}
-
-void Context::filterPartiallyConnectedDynamicModels() {
-  const auto &automatonsConfig = dynamicDataBaseManager_.assembling().dynamicAutomatons();
-  for (const auto &automaton : automatonsConfig) {
-    if (dynamicModels_.models.count(automaton.second.id) == 0) {
-      continue;
-    }
-
-    auto &modelDef = dynamicModels_.models.at(automaton.second.id);
-
-    // Filtering generators with default model or regulating a node regulated by several generators from SVCs
-    if (automaton.second.lib == dfl::common::constants::svcModelName) {
-      std::vector<algo::DynamicModelDefinition::MacroConnection> toRemove;
-      for (const auto &connection : modelDef.nodeConnections) {
-        auto compId = connection.connectedElementId;
-        auto found = std::find_if(generators_.begin(), generators_.end(),
-                                  [&compId](const algo::GeneratorDefinition &genDefinition) { return genDefinition.id == compId; });
-        if (found != generators_.end() && found->isNetwork()) {
-          LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
-          toRemove.push_back(connection);
-        } else if (found != generators_.end() && !found->hasRpcl()) {
-          LOG(debug, SVCConnectedToGenRegulatingNode, connection.connectedElementId, automaton.second.id);
-          toRemove.push_back(connection);
-        }
-      }
-      for (const auto &connection : toRemove) {
-        modelDef.nodeConnections.erase(connection);
-      }
-      if (modelDef.nodeConnections.size() <= 1) {
-        LOG(debug, EmptySVC, automaton.second.id);
-        dynamicModels_.models.erase(automaton.second.id);
-      }
-      continue;
-    }
-
-    if (dynamicModels_.models.find(automaton.second.id) == dynamicModels_.models.end())
-      continue;
-
-    for (const auto &macroConnect : automaton.second.macroConnects) {
-      auto found = std::find_if(
-          modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
-          [&macroConnect](const algo::DynamicModelDefinition::MacroConnection &macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
-      if (found == modelDef.nodeConnections.end()) {
-        LOG(debug, ModelPartiallyConnected, automaton.second.id);
-        dynamicModels_.models.erase(automaton.second.id);
-        break;  // element doesn't exist any more, go to next automaton
-      }
-    }
-  }
 }
 
 void Context::exportOutputs() {

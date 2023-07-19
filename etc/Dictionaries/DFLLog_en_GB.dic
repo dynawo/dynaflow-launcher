@@ -27,6 +27,7 @@ NodeConnectionByLine          =     node %1% connected to %2% by line %3%
 NodeConnectionBy2WT           =     node %1% connected to %2% by two windings transformer %3%
 NodeConnectionBy3WT           =     node %1% connected to %2% and %3% by three windings transformer %3%
 HvdcLineInNetwork             =     network contains hvdcLine %1% with converterStation %2% and converterStation %3%
+SVCNotConnectectedToBus       =     secondary voltage control %1% is ignored as it is not connected to any bus
 
 //------------------ Algo ---------------------------
 InvalidDiagramAllPEqual       =     the diagram of the generator %1% is invalid, all reactive curve points have the same p. The default model will be used for this generator

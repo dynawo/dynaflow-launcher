@@ -139,6 +139,11 @@ class GeneratorDefinition {
   }
 
   /**
+   * @brief change the model of the generator to remove RPCL
+   */
+  void removeRpclFromModel();
+
+  /**
    * @brief Constructor
    *
    * @param genId generator id

@@ -54,7 +54,7 @@ class Context {
                          std::shared_ptr<dfl::algo::AlgorithmsResults> &)>;  ///< Callback for node algorithm on main topological island
 
   /**
-    * @brief Context definition
+   * @brief Context definition
    */
   struct ContextDef {
     dfl::inputs::Configuration::StartingPointMode startingPointMode;  ///< starting point mode of the simulation
@@ -153,13 +153,6 @@ class Context {
    * @brief Walk through all nodes in main connex components and apply callbacks
    */
   void walkNodesMain();
-
-  /**
-   * @brief Filter partially connected dynamic models
-   *
-   * Remove models definitions with partial connectivity
-   */
-  void filterPartiallyConnectedDynamicModels();
 
   /// @brief Execute security analysis by running simulations for the base case and all the valid contingencies
   void executeSecurityAnalysis();
