@@ -2,8 +2,11 @@ name: Nightly
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 2 * * 1-5'
+  repository_dispatch:
+    types: [nightly-linux]
+
+env:
+  DYNAWO_VERSION: 1.6.0
 
 jobs:
   fedora:
@@ -15,32 +18,25 @@ jobs:
         build-type: [Release, Debug]
       fail-fast: false
     env:
-      DYNAWO_VERSION: 1.6.0
       DYNAFLOW_LAUNCHER_BUILD_TYPE: ${{ matrix.build-type }}
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
       DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "ON"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "ON"
-      GH_API: ${{ github.api_url }}/repos/${{ github.repository }}
-      GH_API_DYNAWO: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo
-      GH_API_DYNAWO_ALGORITHMS: ${{ github.api_url }}/repos/${{ github.repository_owner }}/dynawo-algorithms
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CURL_JSON: 'curl --silent -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" --header "Content-Type: application/json"'
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Fetch Dynawo
         run: |
-          source .github/workflows/tools.sh
-          download_asset $GH_API_DYNAWO nightly Dynawo_headers_v${DYNAWO_VERSION}.zip $GITHUB_TOKEN
-          download_asset $GH_API_DYNAWO_ALGORITHMS nightly DynawoAlgorithms_headers_v${DYNAWO_VERSION}.zip $GITHUB_TOKEN
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/nightly/Dynawo_headers_v$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_headers_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo and Dynawo algorithms
         run: |
-          unzip "Dynawo_headers_v${DYNAWO_VERSION}.zip"
+          unzip -qq "Dynawo_headers_v${DYNAWO_VERSION}.zip"
           unzip -qq "DynawoAlgorithms_headers_v${DYNAWO_VERSION}.zip"
 
       - name: Dynawo and Dynawo algorithms versions
