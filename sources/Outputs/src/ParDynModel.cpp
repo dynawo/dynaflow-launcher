@@ -200,6 +200,26 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
         continue;
       }
     }
+    if (componentId && componentId->find(constants::connectedStaticId) != std::string::npos) {
+      if (macroConnectionToStaticId.empty()) {
+        std::unordered_map<std::string, unsigned int> indexes;
+        for (const auto &connection : automaton.nodeConnections) {
+          if (indexes.count(connection.id) == 0) {
+            indexes[connection.id] = 0;
+          }
+          macroConnectionToStaticId[connection.id + "_" + std::to_string(indexes.at(connection.id))] = connection.connectedElementId;
+          ++indexes.at(connection.id);
+        }
+      }
+      auto strIndex = componentId->find(constants::connectedStaticId);
+      componentId->replace(strIndex, constants::connectedStaticId.length() + 1, "");
+      auto macroConnectId = componentId->substr(strIndex, componentId->find('@', strIndex) - strIndex);
+      componentId->replace(strIndex, macroConnectId.length() + 2, "");
+      auto index = componentId->substr(strIndex, componentId->find('@', strIndex) - strIndex);
+      assert(macroConnectionToStaticId.find(macroConnectId + "_" + index) != macroConnectionToStaticId.end());
+      componentId = componentId->substr(0, strIndex) + macroConnectionToStaticId[macroConnectId + "_" + index] +
+              componentId->substr(componentId->find('@', strIndex) + 1, componentId->length());
+    }
     new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingDataBase::Reference::toString(ref.dataType), componentId));
   }
 
