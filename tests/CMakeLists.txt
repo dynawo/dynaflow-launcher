@@ -93,7 +93,7 @@ if(DYNAFLOW_LAUNCHER_BUILD_TESTS)
     $<TARGET_FILE_DIR:DynaFlowLauncher::algo>
     $<TARGET_FILE_DIR:DynaFlowLauncher::outputs>
     $<$<TARGET_EXISTS:GTest::gmock_main>:$<TARGET_FILE_DIR:GTest::gmock_main>>
-    $<$<TARGET_EXISTS:GTest::Main>:$<TARGET_FILE_DIR:GTest::Main>>
+    $<$<TARGET_EXISTS:GTest::Main>:$<$<NOT:$<STREQUAL:$<TARGET_PROPERTY:GTest::Main,TYPE>,INTERFACE_LIBRARY>>:$<TARGET_FILE_DIR:GTest::Main>>>
     ${GTEST_ROOT}/${_lib_path}
     ${GMOCK_HOME}/${_lib_path}
     ${DYNAWO_HOME}/${_lib_path}

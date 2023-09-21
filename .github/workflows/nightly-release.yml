@@ -34,48 +34,33 @@ jobs:
     name: Prepare nightly tag and release
     runs-on: ubuntu-latest
     steps:
-      - name: Delete previous nightly tag and release if necessary
+      - name: Fetch release script
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/dynawo
+          sparse-checkout: .github/release.js
+          sparse-checkout-cone-mode: false
+
+      - name: Create nightly tag and release if necessary
         uses: actions/github-script@v6
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            try {
-              const { data: { object: { sha: sha_nightly } } } = await github.rest.git.getRef({ owner, repo, ref: "tags/${{ env.DYNAWO_TAG }}" });
-              const { data: { object: { sha: sha_master } } } = await github.rest.git.getRef({ owner, repo, ref: "heads/master" });
-              console.log("Current nightly tag SHA is:", sha_nightly);
-              console.log("Current master SHA is:", sha_master);
-
-              if (sha_nightly !== sha_master) {
-                try {
-                  const { data: { id: release_id } } = await github.rest.repos.getReleaseByTag({ owner, repo, tag: "${{ env.DYNAWO_TAG }}" });
-                  await github.rest.repos.deleteRelease({ owner, repo, release_id });
-                  console.log("Previous nightly release id", release_id, "was deleted.")
-                } catch (e) {
-                  console.log("Previous nightly release not found !");
-                }
-    
-                await github.rest.git.deleteRef({ owner, repo, ref: "tags/${{ env.DYNAWO_TAG }}" });
-                console.log("Previous nightly tag was deleted.")
-              }
-            } catch (e) {
-              console.log("Previous nightly tag not found !");
-            }
-
-      - name: Create newly nightly tag and release if necessary
-        uses: softprops/action-gh-release@v1
-        with:
+        env:
           body: |
             DynaFlowLauncher's nightly release. Compiled on *release* settings.
             
             **Don't use it for production**
           draft: false
           prerelease: true
-          name: Nightly
+          release_name: Nightly
           tag_name: ${{ env.DYNAWO_TAG }}
-          target_commitish: "refs/heads/master"
-
+          target_commitish: heads/master
+        with:
+          retries: 3
+          script: |
+            const release = require('.github/release.js')
+            await release({github, context, core, glob})
+  
   fedora:
-    if: github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch')
+    if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch'))
     name: Linux Fedora (Release, GCC, cxx11)
     runs-on: ubuntu-latest
     container: dynawo/dynawo-distribution-cxx11:latest
@@ -93,13 +78,13 @@ jobs:
 
       - name: Fetch Dynawo's and Dynawo-algorithms's nightly releases
         run: |
-          curl -LOs https://github.com/dynawo/dynawo/releases/download/nightly/Dynawo_headers_V$DYNAWO_VERSION.zip
-          curl -LOs https://github.com/dynawo/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_headers_V$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/nightly/Dynawo_headers_v$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_headers_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo and Dynawo-algorithms
         run: |
-          unzip -qq "Dynawo_headers_V${DYNAWO_VERSION}.zip"
-          unzip -qq "DynawoAlgorithms_headers_V${DYNAWO_VERSION}.zip"
+          unzip -qq "Dynawo_headers_v${DYNAWO_VERSION}.zip"
+          unzip -qq "DynawoAlgorithms_headers_v${DYNAWO_VERSION}.zip"
 
       - name: Build
         run: |
@@ -109,18 +94,47 @@ jobs:
           export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
           scripts/envDFL.sh build-user
 
+      - name: Build documentation
+        run: |
+          export DYNAWO_HOME=$(pwd)/dynawo
+          export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
+          export DYNAFLOW_LAUNCHER_HOME=$(pwd)
+          export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
+          scripts/envDFL.sh build-doc
+
       - name: Prepare files for distribution
-        run: zip -r DynaFlowLauncher_V${DYNAWO_VERSION}.zip dynaflow-launcher
+        run: |
+          mkdir distributions
+          zip -r distributions/DynaFlowLauncher_v${DYNAWO_VERSION}.zip dynaflow-launcher
+
+      - name: INFO. Files created in distributions folder
+        run: du -hs distributions/*
+
+      - name: Fetch release script
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/dynawo
+          sparse-checkout: .github/release.js
+          sparse-checkout-cone-mode: false
+          path: dynawo
 
       - name: Upload assets for release
-        uses: softprops/action-gh-release@v1
-        with:
+        uses: actions/github-script@v6
+        env:
           tag_name: ${{ env.DYNAWO_TAG }}
+          draft: false
+          prerelease: true
           files: |
-            DynaFlowLauncher*.zip
-
+            distributions/*.zip
+            documentation/dynaflowLauncherDocumentation/DynaflowLauncherDocumentation.pdf
+        with:
+          retries: 3
+          script: |
+            const release = require('./dynawo/.github/release.js')
+            await release({github, context, core, glob})
+    
   windows:
-    if: github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch')
+    if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch'))
     name: Windows 2019 (Release, VS2019)
     runs-on: windows-2019
     needs: nightly
@@ -146,11 +160,11 @@ jobs:
 
       - name: Fetch Dynawo's nightly release
         shell: bash
-        run: curl -LOs https://github.com/dynawo/dynawo/releases/download/nightly/Dynawo_Windows_V$DYNAWO_VERSION.zip
+        run: curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/nightly/Dynawo_Windows_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo
         shell: cmd
-        run: 7z x Dynawo_Windows_V%DYNAWO_VERSION%.zip -o..\deploy
+        run: 7z x Dynawo_Windows_v%DYNAWO_VERSION%.zip -o..\deploy
 
       - name: Dynawo version
         shell: cmd
@@ -158,15 +172,17 @@ jobs:
 
       - name: Fetch Dynawo-algorithms' nightly release
         shell: bash
-        run: curl -LOs https://github.com/dynawo/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_V$DYNAWO_VERSION.zip
+        run: curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo-algorithms
         shell: cmd
-        run: 7z x DynawoAlgorithms_Windows_V%DYNAWO_VERSION%.zip -o..\deploy
+        run: 7z x DynawoAlgorithms_Windows_v%DYNAWO_VERSION%.zip -o..\deploy
 
       - name: Dynawo-algorithms version
         shell: cmd
-        run: ..\deploy\dynawo-algorithms\dynawo-algorithms version
+        env:
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+        run: call ..\deploy\dynawo-algorithms\dynawo-algorithms verbose version || exit /b 1
 
       # use a minimal PATH to avoid too long command lines and conflict with Strawberry pkg-config !
       - name: Build and install
@@ -180,13 +196,13 @@ jobs:
         run: |
           set PATH=%MSMPI_BIN%;%PATH%
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          call scripts\dynaflow-launcher verbose build
+          call scripts\dynaflow-launcher verbose build || exit /b 1
 
       - name: Dynaflow-launcher version
         shell: cmd
         env:
           PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
-        run: call ..\dfl-i\dynaflow-launcher verbose version
+        run: call ..\dfl-i\dynaflow-launcher verbose version || exit /b 1
 
       - name: Build and run NRT
         if: github.event_name != 'workflow_dispatch' || inputs.perform-nrt
@@ -201,18 +217,38 @@ jobs:
           pip install lxml
           set PATH=%MSMPI_BIN%;%PATH%
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          call scripts\dynaflow-launcher verbose tests "^^M"
+          call scripts\dynaflow-launcher verbose tests "^^M" || exit /b 1
 
       - name: Create distribution
         shell: cmd
         run: |
-          md ..\distrib
-          cd ..\distrib
-          move /y ..\dfl-i dynaflow-launcher
-          7z a DynaFlowLauncher_Windows_V%DYNAWO_VERSION%.zip dynaflow-launcher
+          md distrib
+          cd distrib
+          move /y ..\..\dfl-i dynaflow-launcher
+          7z a DynaFlowLauncher_Windows_v%DYNAWO_VERSION%.zip dynaflow-launcher
+
+      - name: INFO. Files created in distrib folder
+        shell: bash
+        run: du -hs distrib/*
+  
+      - name: Fetch release script
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/dynawo
+          sparse-checkout: .github/release.js
+          sparse-checkout-cone-mode: false
+          path: dynawo
 
       - name: Upload distribution
-        uses: softprops/action-gh-release@v1
-        with:
+        uses: actions/github-script@v6
+        env:
           tag_name: ${{ env.DYNAWO_TAG }}
-          files: ../distrib/DynaFlowLauncher*.zip
+          draft: false
+          prerelease: true
+          files: distrib/DynaFlowLauncher*.zip
+        with:
+          retries: 3
+          script: |
+            const release = require('./dynawo/.github/release.js')
+            await release({github, context, core, glob})
+  
