@@ -13,8 +13,7 @@
       "StartTime": 10,
       "StopTime": 120,
       "sa": {
-        "TimeOfEvent": 50,
-        "NumberOfThreads": 6
+        "TimeOfEvent": 50
       },
       "TimeStep" : 2.6
     }
