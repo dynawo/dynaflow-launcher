@@ -16,7 +16,6 @@
     "StopTime": 120,
     "sa": {
       "TimeOfEvent": 50,
-      "NumberOfThreads": 6,
       "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp"
     },
     "TimeStep" : 2.6
