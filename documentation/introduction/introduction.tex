@@ -34,6 +34,67 @@ The source code is hosted into a \href{https://github.com/dynawo/dynaflow-launch
 
 \section{Changes from previous versions}
 
+\subsection{Changes from v1.5.0}
+
+\underline{General:}
+
+\begin{itemize}
+\item Dynaflow-launcher is now available on windows
+\item Miscellanous fixes in generators parameters
+\end{itemize}
+
+\underline{Platform integration:}
+DynaFlow launcher integration into PowSybl was tested with the following versions:
+\begin{itemize}
+\item \href{https://github.com/powsybl/powsybl-core/releases/tag/v5.3.2}{powsybl-core v5.3.2}
+\item \href{https://github.com/powsybl/powsybl-dynawo/releases/tag/v1.14.1}{powsybl-dynawo v1.14.1}
+\end{itemize}
+
+\subsection{Changes from v1.4.1}
+
+\underline{New features:}
+
+\begin{itemize}
+\item SA: Add an option in the configuration file to start from an initial state binary file (dumpstate)
+\item NSA: Allow having a different configuration in the same JSON file for N and SA
+\item NSA: automatically read the N final state file in SA for initialization (instead of IIDM)
+\end{itemize}
+
+\underline{Outputs:}
+
+\begin{itemize}
+\item Properly initialize frozen0 parameter of VRemote and SVC
+\item Use the same precision in dynawo and in the simplified solver to avoid unstabilities in the curves
+\item Default stop time of N and SA in presence of a SVC is automatically increased to be sure the simulation is stabilized before the event
+\item timeline is now exported in XML format (for coherency with others result files)
+\end{itemize}
+
+\underline{Bug fixes:}
+
+\begin{itemize}
+\item Fixed wrong MPI path used in distribution (which was causing crashes at runtime when MPI was installed on the system)
+\item Fix crash when filtering automaton that needs to be removed as not fully functional with the current configuration
+\item Make sure QNomAlt and SNon parameters are coherent in the SVC model and the generators in the SVC area
+\item Dump an error if a simulation contains SVC areas and is using a flat start
+\item Shunts initially disconnected in NODE_BREAKER topology are taken into account in automaton connections (allowing the automatons to connect them during the simulation)
+\end{itemize}
+
+\underline{New features:}
+\begin{itemize}
+\item Improved modeling of Hvdcs
+\item Added the possibility to model secondary voltage controls
+\item Added the NSA flow that allows to launch first a N and then a systematic analysis based on the N outputs
+\item Added an option to select between warm and flat initialization
+\item Added an option to model transformers within generators models when voltage is above a threshold
+\end{itemize}
+
+\underline{Platform integration:}
+DynaFlow launcher integration into PowSybl was tested with the following versions:
+\begin{itemize}
+\item \href{https://github.com/powsybl/powsybl-core/releases/tag/v5.2.0}{powsybl-core v5.2.0}
+\item \href{https://github.com/powsybl/powsybl-dynawo/releases/tag/v1.13.0}{powsybl-dynawo v1.13.0}
+\end{itemize}
+
 \subsection{Changes from v1.4.0}
 
 \underline{New features:}
