@@ -50,10 +50,10 @@
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="4"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G5" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="5"/>
-  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G1" id2="Model_Signal_NQ_BUS_1" index2="1"/>
-  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G3" id2="Model_Signal_NQ_BUS_1" index2="2"/>
-  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G4" id2="Model_Signal_NQ_BUS_2" index2="1"/>
-  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G5" id2="Model_Signal_NQ_BUS_2" index2="2"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G1" id2="Model_Signal_NQ_BUS_1" index2="0"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G3" id2="Model_Signal_NQ_BUS_1" index2="1"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G4" id2="Model_Signal_NQ_BUS_2" index2="0"/>
+  <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G5" id2="Model_Signal_NQ_BUS_2" index2="1"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
