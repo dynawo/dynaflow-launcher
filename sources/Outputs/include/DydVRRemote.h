@@ -69,6 +69,8 @@ class DydVRRemote {
   void writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect);
 
   const std::string macroConnectorGenVRRemoteName_{"GEN_VRREMOTE_CONNECTOR"};               ///< name for the macro connector for generators
+  const std::string macroConnectorHvdcVRRemoteSide1Name_{"HVDC_VRREMOTE_CONNECTOR_SIDE1"};  ///< name for the macro connector for side 1 of hvdcs
+  const std::string macroConnectorHvdcVRRemoteSide2Name_{"HVDC_VRREMOTE_CONNECTOR_SIDE2"};  ///< name for the macro connector for side 2 of hvdcs
   const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;                      ///< list of generators definitions
   const algo::GeneratorDefinitionAlgorithm::BusGenMap& busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
   const algo::HVDCLineDefinitions& hvdcDefinitions_;                                        ///< list of Hvdc definitions

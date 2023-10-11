@@ -3,9 +3,9 @@
     <iidm:substation id="_BUS____1_SS" name="BUS    1_SS" country="AF">
         <iidm:voltageLevel id="_BUS____1_VL" name="BUS    1_VL" nominalV="400" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="_BUS____1_TN" v="400.00860776061921" angle="0.014640262046403705"/>
+                <iidm:bus id="_BUS____1_TN" v="400.01542740975145" angle="0.014644752472735421"/>
             </iidm:busBreakerTopology>
-            <iidm:generator id="_Generator___1" name="GEN    1" energySource="OTHER" minP="-9999" maxP="9999" voltageRegulatorOn="true" targetP="1000" targetV="400" targetQ="0" bus="_BUS____1_TN" connectableBus="_BUS____1_TN" p="-800.0749428979185" q="170.7173552702447">
+            <iidm:generator id="_Generator___1" name="GEN    1" energySource="OTHER" minP="-9999" maxP="9999" voltageRegulatorOn="true" targetP="1000" targetV="400" targetQ="0" bus="_BUS____1_TN" connectableBus="_BUS____1_TN" p="-800.07495788218284" q="172.11532322486252">
                 <iidm:minMaxReactiveLimits minQ="-999" maxQ="999"/>
             </iidm:generator>
         </iidm:voltageLevel>
@@ -13,7 +13,7 @@
     <iidm:substation id="_BUS____5_SS" name="BUS    5_SS" country="AF">
         <iidm:voltageLevel id="_BUS____5_VL" name="BUS    5_VL" nominalV="400" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="_BUS____5_TN" v="399.999624363446" angle="0"/>
+                <iidm:bus id="_BUS____5_TN" v="400.00661856077306" angle="0"/>
             </iidm:busBreakerTopology>
             <iidm:load id="_Load___5" name="LOAD   5" loadType="UNDEFINED" p0="500" q0="0" bus="_BUS____5_TN" connectableBus="_BUS____5_TN" p="499.99998377264887" q="0"/>
         </iidm:voltageLevel>
@@ -21,17 +21,17 @@
     <iidm:substation id="_BUS___10_SS" name="BUS   10_SS" country="AF">
         <iidm:voltageLevel id="_BUS___10_VL" name="BUS   10_VL" nominalV="400" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
-                <iidm:bus id="_BUS___10_TN" v="399.99282181710225" angle="-0.0053921530290858086"/>
+                <iidm:bus id="_BUS___10_TN" v="399.99999017478166" angle="-0.0053969479593756449"/>
             </iidm:busBreakerTopology>
             <iidm:load id="_Load__10" name="LOAD  10" loadType="UNDEFINED" p0="500" q0="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="500.02884066975162" q="0"/>
-            <iidm:vscConverterStation id="VSCStation1" name="VSCS1" voltageRegulatorOn="true" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="-100" q="-2.8002723391359217">
+            <iidm:vscConverterStation id="VSCStation1" name="VSCS1" voltageRegulatorOn="true" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="-100" q="-3.4964386784456236">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="-1011" minQ="-300" maxQ="300"/>
                     <iidm:point p="0" minQ="-600" maxQ="400"/>
                     <iidm:point p="1011" minQ="-300" maxQ="300"/>
                 </iidm:reactiveCapabilityCurve>
             </iidm:vscConverterStation>
-            <iidm:vscConverterStation id="VSCStation1bis" name="VSCS1bis" voltageRegulatorOn="true" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="-100" q="-2.8002723391359217">
+            <iidm:vscConverterStation id="VSCStation1bis" name="VSCS1bis" voltageRegulatorOn="true" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___10_TN" connectableBus="_BUS___10_TN" p="-100" q="-3.4964386784456236">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="-1011" minQ="-300" maxQ="300"/>
                     <iidm:point p="0" minQ="-600" maxQ="400"/>
@@ -61,10 +61,10 @@
             </iidm:vscConverterStation>
         </iidm:voltageLevel>
     </iidm:substation>
-    <iidm:line id="_BUS____1-BUS____5-1_AC" name="BUS    1-BUS    5-1" r="0.01" x="0.050000000000000003" g1="0" b1="0.00051670000000000004" g2="0" b2="0.00051670000000000004" bus1="_BUS____1_TN" connectableBus1="_BUS____1_TN" voltageLevelId1="_BUS____1_VL" bus2="_BUS____5_TN" connectableBus2="_BUS____5_TN" voltageLevelId2="_BUS____5_VL" p1="800.07494289813815" q1="-170.7173552606443" p2="-800.03445268633425" q2="5.5724034506552602">
+    <iidm:line id="_BUS____1-BUS____5-1_AC" name="BUS    1-BUS    5-1" r="0.01" x="0.050000000000000003" g1="0" b1="0.00051670000000000004" g2="0" b2="0.00051670000000000004" bus1="_BUS____1_TN" connectableBus1="_BUS____1_TN" voltageLevelId1="_BUS____1_VL" bus2="_BUS____5_TN" connectableBus2="_BUS____5_TN" voltageLevelId2="_BUS____5_VL" p1="800.07495787953667" q1="-172.11532375026798" p2="-800.03445357237229" q2="6.9647322181547882">
         <iidm:currentLimits1 permanentLimit="836.74000000000001"/>
     </iidm:line>
-    <iidm:line id="_BUS____5-BUS___10-1_AC" name="BUS    5-BUS   10-1" r="0.01" x="0.050000000000000003" g1="0" b1="0" g2="0" b2="0" bus1="_BUS____5_TN" connectableBus1="_BUS____5_TN" voltageLevelId1="_BUS____5_VL" bus2="_BUS___10_TN" connectableBus2="_BUS___10_TN" voltageLevelId2="_BUS___10_VL" p1="300.03446891355242" q1="-5.5724034507095501" p2="-300.02884066959302" q2="5.6005446705065252">
+    <iidm:line id="_BUS____5-BUS___10-1_AC" name="BUS    5-BUS   10-1" r="0.01" x="0.050000000000000003" g1="0" b1="0" g2="0" b2="0" bus1="_BUS____5_TN" connectableBus1="_BUS____5_TN" voltageLevelId1="_BUS____5_VL" bus2="_BUS___10_TN" connectableBus2="_BUS___10_TN" voltageLevelId2="_BUS___10_VL" p1="300.03446980313214" q1="-6.9647322180936042" p2="-300.02884066500735" q2="6.9928779087176123">
         <iidm:currentLimits1 permanentLimit="4183.6999999999998"/>
     </iidm:line>
     <iidm:hvdcLine id="HVDCVSCLine" r="0.02" nominalV="400" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="100" maxP="2000" converterStation1="VSCStation2" converterStation2="VSCStation1"/>
