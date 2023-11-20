@@ -95,6 +95,11 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
     }
   }
 
+  /**
+   * @copydoc ServiceManagerInterface::isBusConnected
+   */
+  bool isBusConnected(const std::string &busId, const std::string &VLId) const final { return true; }
+
  private:
   std::map<MapKey, std::vector<std::string>> map_;
 };
