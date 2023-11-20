@@ -22,9 +22,9 @@
 #include <boost/make_shared.hpp>
 
 // Required for testing unit tests
-testing::Environment* initXmlEnvironment();
+testing::Environment *initXmlEnvironment();
 
-testing::Environment* const env = initXmlEnvironment();
+testing::Environment *const env = initXmlEnvironment();
 
 DYNAlgorithms::mpi::Context mpiContext;
 
@@ -41,9 +41,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   using MapKey = std::tuple<std::string, std::string>;
 
  public:
-  void clear() {
-    map_.clear();
-  }
+  void clear() { map_.clear(); }
 
   /**
    * @brief Add a switch connection
@@ -54,7 +52,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
    * @param VLId the voltage level id containing both buses
    * @param otherbusid the other bus id
    */
-  void add(const std::string& busId, const std::string& VLId, const std::string& otherbusid) {
+  void add(const std::string &busId, const std::string &VLId, const std::string &otherbusid) {
     map_[std::tie(busId, VLId)].push_back(otherbusid);
     map_[std::tie(otherbusid, VLId)].push_back(busId);
   }
@@ -62,14 +60,14 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getBusesConnectedBySwitch
    */
-  std::vector<std::string> getBusesConnectedBySwitch(const std::string& busId, const std::string& VLId) const final {
+  std::vector<std::string> getBusesConnectedBySwitch(const std::string &busId, const std::string &VLId) const final {
     auto it = map_.find(std::tie(busId, VLId));
     if (it == map_.end()) {
       return {};
     }
 
     std::set<std::string> set;
-    for (const auto& id : it->second) {
+    for (const auto &id : it->second) {
       updateSet(set, busId, VLId);
     }
     std::vector<std::string> ret(set.begin(), set.end());
@@ -80,12 +78,15 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getRegulatedBus
    */
-  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string& regulatingComponent) const final {
-    return boost::shared_ptr<DYN::BusInterface>();
-  }
+  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string &regulatingComponent) const final { return boost::shared_ptr<DYN::BusInterface>(); }
+
+  /**
+   * @copydoc ServiceManagerInterface::isBusConnected
+   */
+  bool isBusConnected(const std::string &busId, const std::string &VLId) const final { return true; }
 
  private:
-  void updateSet(std::set<std::string>& set, const std::string& str, const std::string& vlid) const {
+  void updateSet(std::set<std::string> &set, const std::string &str, const std::string &vlid) const {
     if (set.count(str) > 0) {
       return;
     }
@@ -96,7 +97,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
       return;
     }
 
-    for (const auto& id : it->second) {
+    for (const auto &id : it->second) {
       updateSet(set, id, vlid);
     }
   }
@@ -106,8 +107,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
 };
 }  // namespace test
 
-static void
-generatorsEquals(const dfl::algo::GeneratorDefinition& lhs, const dfl::algo::GeneratorDefinition& rhs) {
+static void generatorsEquals(const dfl::algo::GeneratorDefinition &lhs, const dfl::algo::GeneratorDefinition &rhs) {
   ASSERT_EQ(lhs.id, rhs.id);
   ASSERT_EQ(lhs.model, rhs.model);
   ASSERT_EQ(lhs.points.size(), rhs.points.size());
@@ -177,7 +177,7 @@ TEST(Generators, base) {
 
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -192,7 +192,7 @@ TEST(Generators, base) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -259,7 +259,7 @@ TEST(Generators, baseSVC) {
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -274,7 +274,7 @@ TEST(Generators, baseSVC) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -341,7 +341,7 @@ TEST(Generators, baseSVCRpcl2) {
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -356,7 +356,7 @@ TEST(Generators, baseSVCRpcl2) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -423,7 +423,7 @@ TEST(Generators, baseSVCTfo) {
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -438,7 +438,7 @@ TEST(Generators, baseSVCTfo) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -505,7 +505,7 @@ TEST(Generators, baseSVCTfoRpcl2) {
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -520,7 +520,7 @@ TEST(Generators, baseSVCTfoRpcl2) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -585,7 +585,7 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -600,7 +600,7 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -664,7 +664,7 @@ TEST(Generators, generatorWithTfo) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -679,7 +679,7 @@ TEST(Generators, generatorWithTfo) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -712,7 +712,7 @@ TEST(Generators, noGeneratorRegulating) {
   dfl::inputs::DynamicDataBaseManager manager("", "");
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -723,7 +723,7 @@ TEST(Generators, noGeneratorRegulating) {
   busesRegulatedBySeveralGenerators.clear();
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoRes);
   }
 
@@ -785,7 +785,7 @@ TEST(Generators, SwitchConnexity) {
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
 
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
   }
 
@@ -799,7 +799,7 @@ TEST(Generators, SwitchConnexity) {
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoResFinite(new dfl::algo::AlgorithmsResults());
   dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
 
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algo_finite(node, algoResFinite);
   }
 
@@ -811,8 +811,7 @@ TEST(Generators, SwitchConnexity) {
   }
 }
 
-static void
-testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points, bool isDiagramValid) {
+static void testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurvePoint> points, bool isDiagramValid) {
   using dfl::inputs::Generator;
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   const std::string bus1 = "BUS_1";
