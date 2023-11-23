@@ -14,6 +14,7 @@
 #include "Log.h"
 
 #include <DYNCommon.h>
+#include <DYNTimer.h>
 
 namespace dfl {
 namespace algo {
@@ -218,6 +219,9 @@ std::pair<std::reference_wrapper<HVDCDefinition>, bool> HVDCDefinitionAlgorithm:
 }
 
 void HVDCDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &) {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::HVDCDefinitionAlgorithm::operator()");
+#endif
   for (const auto &converterPtr : node->converters) {
     auto converter = converterPtr.lock();
     const auto &hvdcLine = converter->hvdcLine;

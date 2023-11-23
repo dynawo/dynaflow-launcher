@@ -37,6 +37,7 @@
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
 #include <DYNSystematicAnalysisLauncher.h>
+#include <DYNTimer.h>
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
@@ -90,6 +91,9 @@ bool Context::checkConnexity() const {
 }
 
 bool Context::process() {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::Context::process()");
+#endif
   // Process all algorithms on nodes
   networkManager_.walkNodes();
 
@@ -132,9 +136,7 @@ bool Context::process() {
   }
   walkNodesMain();
 
-  algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(dynamicDataBaseManager_.assembling(),
-                                                        generators_,
-                                                        dynamicModels_.models);
+  algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(dynamicDataBaseManager_.assembling(), generators_, dynamicModels_.models);
   dynModelFilterAlgorithm.filter();
 
   // the validation of contingencies on algorithm definitions must be done after walking all nodes
@@ -156,6 +158,9 @@ bool Context::process() {
 }
 
 void Context::exportOutputs() {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::Context::exportOutputs()");
+#endif
   LOG(info, ExportInfo, basename_);
 
   // create output directory
@@ -266,6 +271,9 @@ void Context::exportOutputsContingency(const inputs::Contingency &contingency, c
 }
 
 void Context::execute() {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::Context::execute()");
+#endif
   auto simu_context = boost::make_shared<DYN::SimulationContext>();
   simu_context->setResourcesDirectory(def_.dynawoResDir.generic_string());
   simu_context->setLocale(def_.locale);
@@ -287,7 +295,7 @@ void Context::execute() {
     simu->init();
     try {
       simu->simulate();
-    } catch (const DYN::Error& err) {
+    } catch (const DYN::Error &err) {
       // Needed as otherwise terminate might crash due to missing staticRef variables
       if (err.key() == DYN::KeyError_t::StateVariableNoReference) {
         simu->disableExportIIDM();
@@ -295,19 +303,19 @@ void Context::execute() {
       }
       simu->terminate();
       throw;
-    } catch (const DYN::Terminate&) {
+    } catch (const DYN::Terminate &) {
       simu->terminate();
       throw;
-    } catch (const DYN::MessageError&) {
+    } catch (const DYN::MessageError &) {
       simu->terminate();
       throw;
-    } catch (const char*) {
+    } catch (const char *) {
       simu->terminate();
       throw;
-    } catch (const std::string&) {
+    } catch (const std::string &) {
       simu->terminate();
       throw;
-    } catch (const std::exception&) {
+    } catch (const std::exception &) {
       simu->terminate();
       throw;
     }
@@ -385,6 +393,9 @@ void Context::exportResults(bool simulationOk) {
 }
 
 void Context::walkNodesMain() {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::Context::walkNodesMain()");
+#endif
   for (const auto &node : mainConnexNodes_) {
     for (const auto &cbk : callbacksMainConnexComponent_) {
       cbk(node, algoResults_);

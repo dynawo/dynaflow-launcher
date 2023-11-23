@@ -148,6 +148,15 @@ void NetworkManager::buildTree() {
 
     const auto &switches = networkVL->getSwitches();
     for (const auto &sw : switches) {
+      if (sw->isOpen() && sw->isRetained()) {
+        // only keep opened retained switch if they are connected to a shunt
+        auto bus1 = sw->getBusInterface1();
+        auto bus2 = sw->getBusInterface2();
+        auto found1 = shuntsMap.find(bus1->getID());
+        auto found2 = shuntsMap.find(bus1->getID());
+        if (found1 == shuntsMap.end() && found2 == shuntsMap.end())
+          continue;
+      }
       if (!sw->isOpen() || sw->isRetained()) {
         auto bus1 = sw->getBusInterface1();
         auto bus2 = sw->getBusInterface2();

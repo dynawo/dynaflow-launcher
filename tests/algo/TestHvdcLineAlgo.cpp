@@ -205,7 +205,7 @@ static void checkVSCIds(const dfl::algo::HVDCLineDefinitions &hvdcDefs) {
   }
 }
 
-TEST(hvdcLine, models) {
+TEST(HvdcLine, models) {
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
@@ -336,7 +336,7 @@ TEST(hvdcLine, models) {
   checkVSCIds(hvdcDefs);
 }
 
-TEST(hvdcLineSVC, models) {
+TEST(HvdcLine, modelsSVC) {
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{

@@ -499,6 +499,20 @@ launch_gdb() {
     --config $3
 }
 
+launch_valgrind() {
+    if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $1 doesn't exist"
+    fi
+    if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $2 doesn't exist"
+    fi
+    valgrind --tool=callgrind --dump-instr=yes --collect-jumps=yes $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $2 \
+    --config $3
+}
+
+
 launch_sa() {
     if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
@@ -729,6 +743,9 @@ case $CMD in
         ;;
     launch-gdb)
         launch_gdb $ARGS || error_exit "Failed to perform launch with network=$2, config=$3"
+        ;;
+    launch-valgrind)
+        launch_valgrind $ARGS || error_exit "Failed to perform valgrind with network=$2, config=$3"
         ;;
     launch-sa)
         launch_sa $ARGS || error_exit "Failed to perform launch-sa"
