@@ -14,6 +14,7 @@
 
 #include <DYNCommon.h>
 #include <DYNExecUtils.h>
+#include <DYNTimer.h>
 #include <boost/dll/import.hpp>
 #include <boost/functional.hpp>
 #include <tuple>
@@ -285,6 +286,9 @@ void DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::
 }
 
 void DynModelAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &) {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::DynModelAlgorithm::operator()");
+#endif
   auto vl = node->voltageLevel.lock();
   if (macroConnectByVlForBusesId_.count(vl->id) > 0) {
     connectMacroConnectionForBus(node);

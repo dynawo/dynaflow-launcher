@@ -14,50 +14,48 @@
 #include "Log.h"
 
 #include <DYNCommon.h>
+#include <DYNTimer.h>
 
 namespace dfl {
 namespace algo {
 
 void GeneratorDefinition::removeRpclFromModel() {
   switch (model) {
-    case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE:
-    case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE:
-      model = algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE;
-      break;
-    case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR:
-    case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_RECTANGULAR:
-      model = algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR;
-      break;
-    case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN:
-    case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL2_SIGNALN:
-      model = algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
-      break;
-    case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE:
-    case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE:
-      model = algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE;
-      break;
-    case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR:
-    case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR:
-      model = algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR;
-      break;
-    case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN:
-    case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN:
-      model = algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN;
-      break;
-    default:
-      break;  // nothing to do
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_INFINITE:
+    model = algo::GeneratorDefinition::ModelType::SIGNALN_INFINITE;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_RPCL2_RECTANGULAR:
+    model = algo::GeneratorDefinition::ModelType::SIGNALN_RECTANGULAR;
+    break;
+  case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL2_SIGNALN:
+    model = algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_SIGNALN;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_INFINITE:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_INFINITE:
+    model = algo::GeneratorDefinition::ModelType::SIGNALN_TFO_INFINITE;
+    break;
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL_RECTANGULAR:
+  case algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR:
+    model = algo::GeneratorDefinition::ModelType::SIGNALN_TFO_RECTANGULAR;
+    break;
+  case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN:
+  case algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN:
+    model = algo::GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_SIGNALN;
+    break;
+  default:
+    break;  // nothing to do
   }
 }
 
-GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, BusGenMap& busesRegulatedBySeveralGenerators,
-                                                           const inputs::NetworkManager::BusMapRegulating& busMap,
-                                                           const inputs::DynamicDataBaseManager& manager, bool infinitereactivelimits, double tfoVoltageLevel) :
-    generators_(gens),
-    busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
-    busMap_(busMap),
-    useInfiniteReactivelimits_{infinitereactivelimits},
-    tfoVoltageLevel_(tfoVoltageLevel) {
-  for (const auto& automaton : manager.assembling().dynamicAutomatons()) {
+GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators &gens, BusGenMap &busesRegulatedBySeveralGenerators,
+                                                           const inputs::NetworkManager::BusMapRegulating &busMap,
+                                                           const inputs::DynamicDataBaseManager &manager, bool infinitereactivelimits, double tfoVoltageLevel)
+    : generators_(gens), busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
+      busMap_(busMap), useInfiniteReactivelimits_{infinitereactivelimits}, tfoVoltageLevel_(tfoVoltageLevel) {
+  for (const auto &automaton : manager.assembling().dynamicAutomatons()) {
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       for (const auto &macroConn : automaton.second.macroConnects) {
         if (manager.assembling().isSingleAssociation(macroConn.id)) {
@@ -81,6 +79,9 @@ GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators& gens, Bus
 }
 
 void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes) {
+#if defined(_DEBUG_) || defined(PRINT_TIMERS)
+  DYN::Timer timer("DFL::GeneratorDefinitionAlgorithm::operator()");
+#endif
   auto &node_generators = node->generators;
 
   for (const auto &generator : node_generators) {
