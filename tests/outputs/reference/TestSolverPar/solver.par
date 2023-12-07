@@ -10,7 +10,6 @@
     <par name="initialaddtolAlg" type="DOUBLE" value="0.10000000000000001"/>
     <par name="initialaddtolAlgJ" type="DOUBLE" value="0.10000000000000001"/>
     <par name="kReduceStep" type="DOUBLE" value="0.5"/>
-    <par name="linearSolverName" type="STRING" value="KLU"/>
     <par name="maxNewtonTry" type="INT" value="10"/>
     <par name="minimumModeChangeTypeForAlgebraicRestoration" type="STRING" value="ALGEBRAIC_J_UPDATE"/>
     <par name="minimumModeChangeTypeForAlgebraicRestorationInit" type="STRING" value="ALGEBRAIC_J_UPDATE"/>

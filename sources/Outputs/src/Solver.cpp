@@ -48,7 +48,6 @@ boost::shared_ptr<parameters::ParametersSet> Solver::writeSolverSet() const {
   set->addParameter(helper::buildParameter("initialaddtolAlg", 0.1));
   set->addParameter(helper::buildParameter("initialaddtolAlgJ", 0.1));
   set->addParameter(helper::buildParameter("kReduceStep", 0.5));
-  set->addParameter(helper::buildParameter("linearSolverName", std::string("KLU")));
   set->addParameter(helper::buildParameter("maxNewtonTry", 10));
   set->addParameter(helper::buildParameter("msbset", 0));
   set->addParameter(helper::buildParameter("msbsetAlg", 1));

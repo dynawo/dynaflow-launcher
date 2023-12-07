@@ -52,13 +52,13 @@
     <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle1_pu"/>
   </set>
   <set id="Model_Signal_NQ_BUS_1">
-    <par name="vrremote_frozen0" type="BOOL" value="true"/>
+    <par name="vrremote_Frozen0" type="BOOL" value="true"/>
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G1"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ_BUS_2">
-    <par name="vrremote_frozen0" type="BOOL" value="true"/>
+    <par name="vrremote_Frozen0" type="BOOL" value="true"/>
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
     <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
     <macroParSet id="macro_remoteVControl_vr"/>
