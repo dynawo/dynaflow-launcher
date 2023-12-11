@@ -38,15 +38,11 @@ void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetColl
     if (hvdcDefinition.vscDefinition1 && hvdcDefinition.vscDefinition1->q < hvdcDefinition.vscDefinition1->qmax &&
         hvdcDefinition.vscDefinition1->q > hvdcDefinition.vscDefinition1->qmin) {
       componentToFrozen[hvdcDefinition.converter1BusId] = false;
-      std::cout << "BUBU?? " << hvdcDefinition.vscDefinition1->q << " " << hvdcDefinition.vscDefinition1->qmin << " " << hvdcDefinition.vscDefinition1->qmax
-                << std::endl;
     }
 
     if (hvdcDefinition.vscDefinition2 && hvdcDefinition.vscDefinition2->q < hvdcDefinition.vscDefinition2->qmax &&
         hvdcDefinition.vscDefinition2->q > hvdcDefinition.vscDefinition2->qmin) {
       componentToFrozen[hvdcDefinition.converter2BusId] = false;
-      std::cout << "BUBU2?? " << hvdcDefinition.vscDefinition1->q << " " << hvdcDefinition.vscDefinition1->qmin << " " << hvdcDefinition.vscDefinition1->qmax
-                << std::endl;
     }
   }
 
