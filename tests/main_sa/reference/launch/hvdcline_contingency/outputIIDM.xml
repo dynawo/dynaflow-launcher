@@ -4722,7 +4722,7 @@
                 <iidm:internalConnection node1="11" node2="3"/>
                 <iidm:bus v="378.48349826238626" angle="0" nodes="0,1,2,3,4,5,6,7,8,9,10,11,13,14,15"/>
             </iidm:nodeBreakerTopology>
-            <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0" powerFactor="0.85749292570000002" node="12" p="-0" q="-0">
+            <iidm:lccConverterStation id="_7393a68e-c4e6-48dd-9347-543858363fdb" name="Conv1" lossFactor="0" powerFactor="0.85749292570000002" node="12">
                 <iidm:alias>_739658a7-e08b-4395-8d79-93e87b7855e3</iidm:alias>
             </iidm:lccConverterStation>
         </iidm:voltageLevel>
@@ -6371,7 +6371,7 @@
                 <iidm:internalConnection node1="12" node2="0"/>
                 <iidm:bus v="351.44766636806708" angle="-13.104834890930299" nodes="0,1,4,5,7,8,12"/>
             </iidm:nodeBreakerTopology>
-            <iidm:lccConverterStation id="_9793118d-5ba1-4a9c-b2e0-db1d15be5913" name="Conv2" lossFactor="0" powerFactor="-0.75740996159999996" node="12" p="-0" q="-0">
+            <iidm:lccConverterStation id="_9793118d-5ba1-4a9c-b2e0-db1d15be5913" name="Conv2" lossFactor="0" powerFactor="-0.75740996159999996" node="12">
                 <iidm:alias>_453bdc57-5855-4eb5-8712-d6a0255e0da8</iidm:alias>
             </iidm:lccConverterStation>
         </iidm:voltageLevel>
