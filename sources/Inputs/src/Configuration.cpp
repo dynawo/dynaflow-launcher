@@ -222,6 +222,14 @@ Configuration::Configuration(const boost::filesystem::path &filepath, dfl::input
     throw Error(ErrorConfigFileRead, e.what());
   }
 
+  if (!settingFilePath_.empty() && assemblingFilePath_.empty()) {
+    throw Error(SettingFileWithoutAssemblingFile, filepath.generic_string());
+  }
+
+  if (!assemblingFilePath_.empty() && settingFilePath_.empty()) {
+    throw Error(AssemblingFileWithoutSettingFile, filepath.generic_string());
+  }
+
   if (startingPointMode_ == Configuration::StartingPointMode::FLAT && activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
     throw Error(InvalidActivePowerCompensation, filepath.generic_string());
   }
