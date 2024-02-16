@@ -123,6 +123,18 @@ class Context {
    */
   bool dynamicDataBaseAssemblingContainsSVC() const { return dynamicDataBaseManager_.assembling().containsSVC(); }
 
+  /**
+   * @brief determines if the network has at least one component with initial conditions
+   * @returns true if the network has at least one component with intitial conditions, false otherwise
+   */
+  bool isPartiallyConditioned() const { return networkManager_.isPartiallyConditioned(); }
+
+  /**
+   * @brief determines if the network's components all have initial conditions set
+   * @returns true if the network's component all have initial conditions set, false otherwise
+   */
+  bool isFullyConditioned() const { return networkManager_.isFullyConditioned(); }
+
  private:
   /// @brief Slack node origin
   enum class SlackNodeOrigin {

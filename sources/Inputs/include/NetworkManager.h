@@ -125,6 +125,18 @@ class NetworkManager {
     return mapBusVSCConvertersBusId_;
   }
 
+  /**
+   * @brief determines if the network is at least partially conditioned
+   * @returns true if at least one component has initial conditions set, false otherwise
+   */
+  bool isPartiallyConditioned() const { return isPartiallyConditioned_; }
+
+  /**
+   * @brief determines if the network is fully conditioned
+   * @returns true if all components have initial conditions set, false otherwise
+   */
+  bool isFullyConditioned() const { return isFullyConditioned_; }
+
  private:
   /**
    * @brief Build node tree from data interface
@@ -150,6 +162,8 @@ class NetworkManager {
   std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transformers
   BusMapRegulating mapBusGeneratorsBusId_;                    ///< mapping of busId and the number of generators that regulate them
   BusMapRegulating mapBusVSCConvertersBusId_;                 ///< mapping of busId and the number of VSC converters that regulate them
+  bool   isPartiallyConditioned_;                             ///< true if the network is at last prtially conditioned, false otherwise
+  bool   isFullyConditioned_;                                 ///< true if the network is fully conditioned, false otherwise
 };
 
 }  // namespace inputs

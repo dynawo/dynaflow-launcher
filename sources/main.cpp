@@ -68,6 +68,16 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
     throw Error(NoSVCInFlatStartingPointMode);
   }
 
+  if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::WARM) {
+    if (!context->isPartiallyConditioned()) {
+      throw Error(MissingICInWarmStartingMode, "");
+    } else {
+        if (!context->isFullyConditioned()) {
+          DYN::Trace::info(dfl::common::Log::getTag()) << " Network is not fully conditioned  " << DYN::Trace::endline;
+        }
+    }
+  }
+
   return context;
 }
 

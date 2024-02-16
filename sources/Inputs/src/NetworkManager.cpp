@@ -43,8 +43,11 @@ namespace dfl {
 namespace inputs {
 
 NetworkManager::NetworkManager(const boost::filesystem::path &filepath)
-    : interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())), slackNode_{}, nodes_{},
-      nodesCallbacks_{} {
+    : interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())),
+    slackNode_{}, nodes_{},
+    nodesCallbacks_{},
+    isPartiallyConditioned_(false),
+    isFullyConditioned_(true) {
   buildTree();
 }
 
@@ -68,6 +71,11 @@ void NetworkManager::buildTree() {
     const auto &shunts = networkVL->getShuntCompensators();
     std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
     for (const auto &shunt : shunts) {
+      if (shunt->hasInitialConditions()) {
+          isPartiallyConditioned_ = true;
+      } else {
+          isFullyConditioned_ = false;
+      }
       // We take into account even disconnected shunts as dynamic models may aim to connect them
       (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));
     }
@@ -77,6 +85,11 @@ void NetworkManager::buildTree() {
 
     const auto &buses = networkVL->getBuses();
     for (const auto &bus : buses) {
+      if (bus->hasInitialConditions()) {
+          isPartiallyConditioned_ = true;
+      } else {
+          isFullyConditioned_ = false;
+      }
       const auto &nodeId = bus->getID();
 #if _DEBUG_
       // ids of nodes should be unique
