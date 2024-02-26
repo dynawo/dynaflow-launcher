@@ -70,10 +70,11 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
 
   if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::WARM) {
     if (!context->isPartiallyConditioned()) {
-      throw Error(MissingICInWarmStartingMode, "");
+      throw Error(MissingICInWarmStartingPointMode);
     } else {
         if (!context->isFullyConditioned()) {
-          DYN::Trace::info(dfl::common::Log::getTag()) << " Network is not fully conditioned  " << DYN::Trace::endline;
+          // DYN::Trace::info(dfl::common::Log::getTag()) << " Network is not fully conditioned  " << DYN::Trace::endline;
+          LOG(info, NetworkNotFullyConditioned);
         }
     }
   }
