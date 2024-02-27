@@ -117,4 +117,9 @@ TEST(NetworkManager, initialConditions) {
 
   ASSERT_FALSE(manager2.isFullyConditioned());
   ASSERT_FALSE(manager2.isPartiallyConditioned());
+
+  NetworkManager manager3("res/initial_conditions_partially_OK.iidm");
+
+  ASSERT_FALSE(manager3.isFullyConditioned());
+  ASSERT_TRUE(manager3.isPartiallyConditioned());
 }

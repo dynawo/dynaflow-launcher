@@ -21,6 +21,7 @@
 #include "Node.h"
 
 #include <DYNDataInterface.h>
+#include <DYNComponentInterface.h>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
@@ -150,6 +151,12 @@ class NetworkManager {
    * @param dataInterface the data interface to use
    */
   static void updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
+
+  /**
+   * @brief Update the network conditioning status based on a component conditioning status
+   * @param componentInterface the data interface to use
+   */
+  void updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface>& componentInterface);
 
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface

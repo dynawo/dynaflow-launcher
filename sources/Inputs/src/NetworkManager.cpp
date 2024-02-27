@@ -61,6 +61,14 @@ void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::
   }
 }
 
+void NetworkManager::updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface>& componentInterface) {
+  if (componentInterface->hasInitialConditions()) {
+    isPartiallyConditioned_ = true;
+  } else {
+    isFullyConditioned_ = false;
+  }
+}
+
 void NetworkManager::buildTree() {
   auto network = interface_->getNetwork();
 
@@ -71,11 +79,7 @@ void NetworkManager::buildTree() {
     const auto &shunts = networkVL->getShuntCompensators();
     std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
     for (const auto &shunt : shunts) {
-      if (shunt->hasInitialConditions()) {
-          isPartiallyConditioned_ = true;
-      } else {
-          isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(shunt);
       // We take into account even disconnected shunts as dynamic models may aim to connect them
       (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));
     }
@@ -85,11 +89,7 @@ void NetworkManager::buildTree() {
 
     const auto &buses = networkVL->getBuses();
     for (const auto &bus : buses) {
-      if (bus->hasInitialConditions()) {
-          isPartiallyConditioned_ = true;
-      } else {
-          isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(bus);
       const auto &nodeId = bus->getID();
 #if _DEBUG_
       // ids of nodes should be unique
@@ -114,11 +114,7 @@ void NetworkManager::buildTree() {
 
     const auto &loads = networkVL->getLoads();
     for (const auto &load : loads) {
-      if (load->hasInitialConditions()) {
-          isPartiallyConditioned_ = true;
-      } else {
-          isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(load);
       // if load is not connected, it is ignored
       if (!load->getInitialConnected())
         continue;
@@ -134,11 +130,7 @@ void NetworkManager::buildTree() {
 
     const auto &generators = networkVL->getGenerators();
     for (const auto &generator : generators) {
-      if (generator->hasInitialConditions()) {
-          isPartiallyConditioned_ = true;
-      } else {
-          isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(generator);
       // if generator is not connected, it is ignored
       if (!generator->getInitialConnected())
         continue;
@@ -196,11 +188,7 @@ void NetworkManager::buildTree() {
 
     const auto &svarcs = networkVL->getStaticVarCompensators();
     for (const auto &svarc : svarcs) {
-      if (svarc->hasInitialConditions()) {
-          isPartiallyConditioned_ = true;
-      } else {
-          isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(svarc);
       if (!svarc->getInitialConnected()) {
         continue;
       }
@@ -225,11 +213,7 @@ void NetworkManager::buildTree() {
 
     const auto &dangling_lines = networkVL->getDanglingLines();
     for (const auto &dline : dangling_lines) {
-      if (dline->hasInitialConditions()) {
-          isPartiallyConditioned_ = true;
-      } else {
-          isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(dline);
       nodes_[dline->getBusInterface()->getID()]->danglingLines.emplace_back(dline->getID());
     }
   }
@@ -237,11 +221,7 @@ void NetworkManager::buildTree() {
   // perform connections
   const auto &lines = network->getLines();
   for (const auto &line : lines) {
-    if (line->hasInitialConditions()) {
-        isPartiallyConditioned_ = true;
-    } else {
-        isFullyConditioned_ = false;
-    }
+    updateConditioningStatus(line);
     auto bus1 = line->getBusInterface1();
     auto bus2 = line->getBusInterface2();
     if (line->getInitialConnected1() || line->getInitialConnected2()) {
@@ -261,11 +241,7 @@ void NetworkManager::buildTree() {
 
   const auto &transfos = network->getTwoWTransformers();
   for (const auto &transfo : transfos) {
-    if (transfo->hasInitialConditions()) {
-        isPartiallyConditioned_ = true;
-    } else {
-        isFullyConditioned_ = false;
-    }
+    updateConditioningStatus(transfo);
     auto bus1 = transfo->getBusInterface1();
     auto bus2 = transfo->getBusInterface2();
     if (transfo->getInitialConnected1() || transfo->getInitialConnected2()) {
@@ -307,11 +283,7 @@ void NetworkManager::buildTree() {
     if (converterDyn1->getConverterType() == DYN::ConverterInterface::ConverterType_t::VSC_CONVERTER) {
       converterType = HvdcLine::ConverterType::VSC;
       auto vscConverterDyn1 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn1);
-      if (vscConverterDyn1->hasInitialConditions()) {
-        isPartiallyConditioned_ = true;
-      } else {
-        isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(vscConverterDyn1);
       bool voltageRegulationOn = vscConverterDyn1->getVoltageRegulatorOn();
       converter1 = std::make_shared<VSCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn1->getQMax(), vscConverterDyn1->getQMin(), vscConverterDyn1->getQ(),
@@ -319,11 +291,7 @@ void NetworkManager::buildTree() {
       updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn1->getID(), interface_);
 
       auto vscConverterDyn2 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn2);
-      if (vscConverterDyn2->hasInitialConditions()) {
-        isPartiallyConditioned_ = true;
-      } else {
-        isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(vscConverterDyn2);
       voltageRegulationOn = vscConverterDyn2->getVoltageRegulatorOn();
       converter2 = std::make_shared<VSCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn2->getQMax(), vscConverterDyn2->getQMin(), vscConverterDyn2->getQ(),
@@ -341,11 +309,7 @@ void NetworkManager::buildTree() {
           std::make_shared<LCCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, lccConverterDyn1->getPowerFactor());
 
       auto lccConverterDyn2 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn2);
-      if (lccConverterDyn1->hasInitialConditions()) {
-        isPartiallyConditioned_ = true;
-      } else {
-        isFullyConditioned_ = false;
-      }
+      updateConditioningStatus(lccConverterDyn1);
       converter2 =
           std::make_shared<LCCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, lccConverterDyn2->getPowerFactor());
     }
