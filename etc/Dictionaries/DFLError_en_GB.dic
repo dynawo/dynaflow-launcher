@@ -10,6 +10,8 @@
 //------------------ Inputs -------------------------
 ErrorConfigFileRead           =     error while reading configuration file: %1%
 StartingPointModeDoesntExist  =     starting point mode %1% doesn't exist
+SettingFileWithoutAssemblingFile =  %1% contains a setting file but not an assembling file
+AssemblingFileWithoutSettingFile =  %1% contains an assembling file but not a setting file
 InvalidActivePowerCompensation =    parameter ActivePowerCompensation can't be set on P in flat starting point mode in the input config file : %1%
 ChosenOutputDoesntExist       =     chosen output %1% doesn't exist
 NoFlatStartingPointModeInSA   =     flat mode cannot be used in security analysis

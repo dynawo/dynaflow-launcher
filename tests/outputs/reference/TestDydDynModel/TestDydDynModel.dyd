@@ -113,4 +113,5 @@
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="BUS_2_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="BUS_2_switchOff" id2="HVDCVSCLine" var2="hvdc_switchOffSignal1Side1"/>
 </dyn:dynamicModelsArchitecture>

@@ -116,11 +116,17 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
     double p01 = std::numeric_limits<double>::min();
     double p02 = std::numeric_limits<double>::min();
     if (first == "1" && second == "2") {
-      p01 = -p0dc;
-      p02 = ((p0dc * (1 - lossFactors.at(0))) - pdcLoss) * (1. - lossFactors.at(1));
+      double factor = 1.;
+      if (!hvdcDefinition.isConverter1Rectifier)
+        factor = -1.;
+      p01 = -factor * p0dc;
+      p02 = factor * ((p0dc * (1 - lossFactors.at(0))) - pdcLoss) * (1. - lossFactors.at(1));
     } else {
-      p01 = ((p0dc * (1 - lossFactors.at(1))) - pdcLoss) * (1. - lossFactors.at(0));
-      p02 = -p0dc;
+      double factor = 1.;
+      if (hvdcDefinition.isConverter1Rectifier)
+        factor = -1.;
+      p01 = factor * ((p0dc * (1 - lossFactors.at(1))) - pdcLoss) * (1. - lossFactors.at(0));
+      p02 = -factor * p0dc;
     }
     set->addParameter(helper::buildParameter("hvdc_P10Pu", p01));
     set->addParameter(helper::buildParameter("hvdc_P1RefSetPu", p01));

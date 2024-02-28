@@ -21,6 +21,10 @@ using DYN::doubleEquals;
 TEST(Config, Incorrect) {
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config_2.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_setting_file_without_assembling_file.json"), DYN::Error::GENERAL,
+                      dfl::KeyError_t::SettingFileWithoutAssemblingFile);
+  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_assembling_file_without_setting_file.json"), DYN::Error::GENERAL,
+                      dfl::KeyError_t::AssemblingFileWithoutSettingFile);
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"), DYN::Error::GENERAL,
                       dfl::KeyError_t::InvalidActivePowerCompensation);
 }
