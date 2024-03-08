@@ -104,3 +104,22 @@ TEST(NetworkManager, shunts) {
   manager.walkNodes();
   ASSERT_EQ(nbShunts, 1);
 }
+
+TEST(NetworkManager, initialConditions) {
+  using dfl::inputs::NetworkManager;
+
+  NetworkManager manager("res/initial_conditions_OK.iidm");
+
+  ASSERT_TRUE(manager.isFullyConditioned());
+  ASSERT_TRUE(manager.isPartiallyConditioned());
+
+  NetworkManager manager2("res/initial_conditions_NOK.iidm");
+
+  ASSERT_FALSE(manager2.isFullyConditioned());
+  ASSERT_FALSE(manager2.isPartiallyConditioned());
+
+  NetworkManager manager3("res/initial_conditions_partially_OK.iidm");
+
+  ASSERT_FALSE(manager3.isFullyConditioned());
+  ASSERT_TRUE(manager3.isPartiallyConditioned());
+}
