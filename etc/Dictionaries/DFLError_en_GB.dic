@@ -10,8 +10,6 @@
 //------------------ Inputs -------------------------
 ErrorConfigFileRead           =     error while reading configuration file: %1%
 StartingPointModeDoesntExist  =     starting point mode %1% doesn't exist
-SettingFileWithoutAssemblingFile =  %1% contains a setting file but not an assembling file
-AssemblingFileWithoutSettingFile =  %1% contains an assembling file but not a setting file
 InvalidActivePowerCompensation =    parameter ActivePowerCompensation can't be set on P in flat starting point mode in the input config file : %1%
 ChosenOutputDoesntExist       =     chosen output %1% doesn't exist
 NoFlatStartingPointModeInSA   =     flat mode cannot be used in security analysis
@@ -27,6 +25,7 @@ UnknownSingleAssoc            =     couldn't find the singleAssociation %1% in a
 UnknownMultiAssoc             =     couldn't find the multiAssociation %1% in assembling file
 UnknownParamSet               =     couldn't find the parameter set %1% in setting file
 UnknownProperty               =     couldn't find the property %1% in assembling file
+MissingICInWarmStartingPointMode =  no initial condition (p, q, v or theta) was given in the input network file whereas it is mandatory when using 'WARM' starting point mode
 
 //------------------ Algo ---------------------------
 
