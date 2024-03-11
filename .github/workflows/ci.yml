@@ -7,7 +7,7 @@ defaults:
     shell: bash
 
 env:
-  DYNAWO_VERSION: 1.6.0
+  DYNAWO_VERSION: 1.7.0
 
 jobs:
   build-linux:

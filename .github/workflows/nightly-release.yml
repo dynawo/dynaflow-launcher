@@ -25,7 +25,7 @@ on:
   #   - cron:  "30 4 * * 2-6"  # 30 minutes later after Dynawo-algorithms nightly-release.yml
 
 env:
-  DYNAWO_VERSION: 1.6.0
+  DYNAWO_VERSION: 1.7.0
   DYNAWO_TAG: nightly
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
         env:
           body: |
             DynaFlowLauncher's nightly release. Compiled on *release* settings.
-            
+
             **Don't use it for production**
           draft: false
           prerelease: true
@@ -58,7 +58,7 @@ jobs:
           script: |
             const release = require('.github/release.js')
             await release({github, context, core, glob})
-  
+
   fedora:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch'))
     name: Linux Fedora (Release, GCC, cxx11)
@@ -132,7 +132,7 @@ jobs:
           script: |
             const release = require('./dynawo/.github/release.js')
             await release({github, context, core, glob})
-    
+
   windows:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch'))
     name: Windows 2019 (Release, VS2019)
@@ -230,7 +230,7 @@ jobs:
       - name: INFO. Files created in distrib folder
         shell: bash
         run: du -hs distrib/*
-  
+
       - name: Fetch release script
         uses: actions/checkout@v3
         with:
@@ -251,4 +251,4 @@ jobs:
           script: |
             const release = require('./dynawo/.github/release.js')
             await release({github, context, core, glob})
-  
+
