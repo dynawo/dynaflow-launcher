@@ -21,6 +21,7 @@
 #include "Node.h"
 
 #include <DYNDataInterface.h>
+#include <DYNComponentInterface.h>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
@@ -125,6 +126,18 @@ class NetworkManager {
     return mapBusVSCConvertersBusId_;
   }
 
+  /**
+   * @brief determines if the network is at least partially conditioned
+   * @returns true if at least one component has initial conditions set, false otherwise
+   */
+  bool isPartiallyConditioned() const { return isPartiallyConditioned_; }
+
+  /**
+   * @brief determines if the network is fully conditioned
+   * @returns true if all components have initial conditions set, false otherwise
+   */
+  bool isFullyConditioned() const { return isFullyConditioned_; }
+
  private:
   /**
    * @brief Build node tree from data interface
@@ -139,6 +152,12 @@ class NetworkManager {
    */
   static void updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
 
+  /**
+   * @brief Update the network conditioning status based on a component conditioning status
+   * @param componentInterface the data interface to use
+   */
+  void updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface>& componentInterface);
+
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface
   std::shared_ptr<Node> slackNode_;                           ///< Slack node defined in network, if any
@@ -150,6 +169,8 @@ class NetworkManager {
   std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transformers
   BusMapRegulating mapBusGeneratorsBusId_;                    ///< mapping of busId and the number of generators that regulate them
   BusMapRegulating mapBusVSCConvertersBusId_;                 ///< mapping of busId and the number of VSC converters that regulate them
+  bool   isPartiallyConditioned_;                             ///< true if the network is at last partially conditioned, false otherwise
+  bool   isFullyConditioned_;                                 ///< true if the network is fully conditioned, false otherwise
 };
 
 }  // namespace inputs
