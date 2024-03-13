@@ -65,12 +65,10 @@ void NetworkManager::updateSVCMapRegulatingBuses(BusMapRegulating &SVCmap,
                                                  const std::string &SVCId,
                                                  const std::string &VLId,
                                                  const boost::shared_ptr<DYN::DataInterface> &dataInterface) {
-  DYN::Trace::info(dfl::common::Log::getTag()) << "SVCId : " << SVCId << DYN::Trace::endline;
   auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(SVCId)->getID();
   std::vector<std::string> busesConnected = dataInterface->getServiceManager()->getBusesConnectedBySwitch(regulatedBus, VLId);
   busesConnected.push_back(regulatedBus);
   for (const std::string& busId : busesConnected) {
-    DYN::Trace::info(dfl::common::Log::getTag()) << "busId : " << busId << DYN::Trace::endline;
     auto it = SVCmap.find(busId);
     if (it == SVCmap.end()) {
       SVCmap.insert({busId, NbOfRegulating::ONE});

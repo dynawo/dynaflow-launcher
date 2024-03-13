@@ -156,6 +156,7 @@ class NetworkManager {
    * @brief Update an SVC regulating map according to internal interface
    * @param SVCmap the mapping to update
    * @param SVCId the element id to add to the map
+   * @param VLId  id of the voltagelevel to which the element belong
    * @param dataInterface the data interface to use
    */
   static void updateSVCMapRegulatingBuses(BusMapRegulating& SVCmap,

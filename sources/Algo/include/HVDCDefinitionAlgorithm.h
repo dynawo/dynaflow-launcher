@@ -311,11 +311,9 @@ class HVDCDefinitionAlgorithm {
    * @param hvdcline the HVDC line to process
    * @param position the position of the extremities
    * @param type the converter type (VSC or LCC)
-   * @param node the node currently processed (one of the ends of the HVDC line)
    * @returns the model definition to use
    */
-  HVDCModelDefinition computeModel(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type,
-                                   const NodePtr &node) const;
+  HVDCModelDefinition computeModel(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type) const;
 
   /**
    * @brief Compute the model definition for VSC converters
@@ -325,24 +323,11 @@ class HVDCDefinitionAlgorithm {
    * @param multipleVSCFiniteReactive model to use in case of multiple VSC and finite reactive limits used
    * @param oneVSCInfiniteReactive model to use in case of only one VSC and infinite reactive limits used
    * @param oneVSCFiniteReactive model to use in case of only one VSC and finite reactive limits used
-   * @param node the node currently processed
    * @returns the model definition to use
    */
   HVDCModelDefinition computeModelVSC(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position,
                                       HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
-                                      HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive,
-                                      const NodePtr &node) const;
-
-  /**
-   * @brief Get the VSC converters Connected By Switches
-   *
-   * @param hvdcline the HVDC line to process
-   * @param position the position of the extremities
-   * @param node the node currently processed
-   *
-   * @return The set, if relevant, of VSC bus pair listing the VSC converters connected by switch on current line and node
-   */
-  HVDCModelDefinition::VSCBusPairSet getVSCConnectedBySwitches(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, const NodePtr &node) const;
+                                      HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive) const;
 
   /**
    * @brief Get the Buses By Position

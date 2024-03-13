@@ -99,51 +99,21 @@ auto HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine &hvdcLin
   return ret;
 }
 
-auto HVDCDefinitionAlgorithm::getVSCConnectedBySwitches(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, const NodePtr &node) const
-    -> HVDCModelDefinition::VSCBusPairSet {
-  auto &buses = node->getBusesConnectedByVoltageLevel();
-  HVDCModelDefinition::VSCBusPairSet ret;
-
-  auto vl = node->voltageLevel.lock();
-  for (const auto &id : buses) {
-    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr &nodeLocal) { return nodeLocal->id == id; });
-    assert(found != vl->nodes.end());
-    for (const auto &converter_ptr : (*found)->converters) {
-      auto converter = converter_ptr.lock();
-      if (converter->hvdcLine->converterType != inputs::HvdcLine::ConverterType::VSC) {
-        continue;
-      }
-      ret.insert(std::make_pair(converter->busId, converter->converterId));
-    }
-  }
-
-  if (!ret.empty()) {
-    // Add itself to ensure all converters are taken into account
-    auto set = getBusesByPosition(hvdcline, position);
-    ret.insert(set.begin(), set.end());
-  }
-
-  return ret;
-}
-
 auto HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position,
                                               HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
-                                              HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive,
-                                              const NodePtr &node) const -> HVDCModelDefinition {
+                                              HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive)
+                                              const -> HVDCModelDefinition {
   auto vscBusIdsWithMultipleRegulation = getBusRegulatedByMultipleVSC(hvdcline, position);
-  auto vscBusIdsConnectedBySwitches = getVSCConnectedBySwitches(hvdcline, position, node);
-  // vscBusIdsWithMultipleRegulation.insert(vscBusIdsConnectedBySwitches.begin(), vscBusIdsConnectedBySwitches.end());
   if (vscBusIdsWithMultipleRegulation.size() > 0) {
-    DYN::Trace::info(dfl::common::Log::getTag()) << hvdcline.id << " is multiple " << DYN::Trace::endline;
     return HVDCModelDefinition{infiniteReactiveLimits_ ? multipleVSCInfiniteReactive : multipleVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
   } else {
-    DYN::Trace::info(dfl::common::Log::getTag()) << hvdcline.id << " is single " << DYN::Trace::endline;
     return HVDCModelDefinition{infiniteReactiveLimits_ ? oneVSCInfiniteReactive : oneVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
   }
 }
 
-auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type,
-                                           const NodePtr &node) const -> HVDCModelDefinition {
+auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline,
+                                           HVDCDefinition::Position position,
+                                           inputs::HvdcLine::ConverterType type) const -> HVDCModelDefinition {
   const bool isInSVC = hvdcLinesInSVC.find(hvdcline.id) != hvdcLinesInSVC.end();
   if (position == HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
     if (type == inputs::HvdcLine::ConverterType::LCC) {
@@ -156,7 +126,7 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
               infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side1 : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1, {}};
         else
           return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
-                                 HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ, node);
+                                 HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
       } else {
         if (isInSVC)
           return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side1
@@ -165,7 +135,7 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
         else
           return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
                                  HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
-                                 HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet, node);
+                                 HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
       }
     }
   } else {
@@ -179,7 +149,7 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
             infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1 : HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1, {}};
       else
         return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropDangling, HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ,
-                               HVDCDefinition::HVDCModel::HvdcPVDangling, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ, node);
+                               HVDCDefinition::HVDCModel::HvdcPVDangling, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
     }
   }
 }
@@ -244,7 +214,7 @@ void HVDCDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<Al
       continue;
     }
 
-    auto modelDef = computeModel(*hvdcLine, hvdcLineDefinition.position, hvdcLineDefinition.converterType, node);
+    auto modelDef = computeModel(*hvdcLine, hvdcLineDefinition.position, hvdcLineDefinition.converterType);
     hvdcLineDefinition.model = modelDef.model;
 
     hvdcLinesDefinitions_.vscBusVSCDefinitionsMap.insert(modelDef.vscBusIdsMultipleRegulated.begin(), modelDef.vscBusIdsMultipleRegulated.end());
