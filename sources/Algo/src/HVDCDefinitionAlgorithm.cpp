@@ -26,7 +26,8 @@ std::size_t HVDCDefinitionAlgorithm::HVDCModelDefinition::VSCBusPairHash::operat
   return seed;
 }
 
-HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions, bool infiniteReactiveLimits,
+HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions,
+                                                 bool infiniteReactiveLimits,
                                                  const std::unordered_set<std::shared_ptr<inputs::Converter>> &converters,
                                                  const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId,
                                                  const inputs::DynamicDataBaseManager &manager)
@@ -131,10 +132,12 @@ auto HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine &hvdcline, 
                                               const NodePtr &node) const -> HVDCModelDefinition {
   auto vscBusIdsWithMultipleRegulation = getBusRegulatedByMultipleVSC(hvdcline, position);
   auto vscBusIdsConnectedBySwitches = getVSCConnectedBySwitches(hvdcline, position, node);
-  vscBusIdsWithMultipleRegulation.insert(vscBusIdsConnectedBySwitches.begin(), vscBusIdsConnectedBySwitches.end());
+  // vscBusIdsWithMultipleRegulation.insert(vscBusIdsConnectedBySwitches.begin(), vscBusIdsConnectedBySwitches.end());
   if (vscBusIdsWithMultipleRegulation.size() > 0) {
+    DYN::Trace::info(dfl::common::Log::getTag()) << hvdcline.id << " is multiple " << DYN::Trace::endline;
     return HVDCModelDefinition{infiniteReactiveLimits_ ? multipleVSCInfiniteReactive : multipleVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
   } else {
+    DYN::Trace::info(dfl::common::Log::getTag()) << hvdcline.id << " is single " << DYN::Trace::endline;
     return HVDCModelDefinition{infiniteReactiveLimits_ ? oneVSCInfiniteReactive : oneVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
   }
 }

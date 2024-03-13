@@ -17,6 +17,7 @@
 #include "HVDCDefinitionAlgorithm.h"
 #include "Tests.h"
 
+#include <iostream>
 #include <DYNMPIContext.h>
 
 // Required for testing unit tests
@@ -280,7 +281,9 @@ TEST(HvdcLine, models) {
 
   testServiceManager->add("11", vl->id, "12");
 
-  dfl::inputs::NetworkManager::BusMapRegulating busMap{std::make_pair("2", dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)};
+  dfl::inputs::NetworkManager::BusMapRegulating busMap{std::make_pair("2",dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES),
+                                                       std::make_pair("11",dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES),
+                                                       std::make_pair("12",dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)};
 
   dfl::algo::HVDCLineDefinitions hvdcDefs;
   bool useReactiveLimits = true;
@@ -411,7 +414,9 @@ TEST(HvdcLine, modelsSVC) {
 
   testServiceManager->add("11", vl->id, "12");
 
-  dfl::inputs::NetworkManager::BusMapRegulating busMap{std::make_pair("2", dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)};
+   dfl::inputs::NetworkManager::BusMapRegulating busMap{std::make_pair("2",dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES),
+                                                       std::make_pair("11",dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES),
+                                                       std::make_pair("12",dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)};
 
   dfl::algo::HVDCLineDefinitions hvdcDefs;
   bool useReactiveLimits = true;
