@@ -1,0 +1,7 @@
+{
+    "dfl-config": {
+      "OutputDir": "../resultsTestsTmp/hvdc_HvdcPQProp_multiple_bus",
+      "DsoVoltageLevel": 600,
+      "InfiniteReactiveLimits": true
+    }
+  }
