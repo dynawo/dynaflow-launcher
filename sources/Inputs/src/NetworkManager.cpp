@@ -304,7 +304,6 @@ void NetworkManager::buildTree() {
       converter1 = std::make_shared<VSCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn1->getQMax(), vscConverterDyn1->getQMin(), vscConverterDyn1->getQ(),
                                                   vscConverterDyn1->getReactiveCurvesPoints());
-      // updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn1->getID(), interface_);
       std::string converter1VLId = nodes_[converterDyn1->getBusInterface()->getID()]->voltageLevel.lock()->id;
       updateSVCMapRegulatingBuses(mapBusVSCConvertersBusId_,
                                   converterDyn1->getID(),
@@ -316,7 +315,6 @@ void NetworkManager::buildTree() {
       converter2 = std::make_shared<VSCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn2->getQMax(), vscConverterDyn2->getQMin(), vscConverterDyn2->getQ(),
                                                   vscConverterDyn2->getReactiveCurvesPoints());
-      // updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn2->getID(), interface_);
       std::string converter2VLId = nodes_[converterDyn2->getBusInterface()->getID()]->voltageLevel.lock()->id;
       updateSVCMapRegulatingBuses(mapBusVSCConvertersBusId_,
                                   converterDyn2->getID(),
