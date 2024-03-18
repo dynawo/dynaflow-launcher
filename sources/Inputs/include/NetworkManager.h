@@ -153,7 +153,7 @@ class NetworkManager {
   static void updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
 
   /**
-   * @brief Update an SVC regulating map according to internal interface
+   * @brief Update a VSC regulating map according to internal interface
    * @param SVCmap the mapping to update
    * @param SVCId the element id to add to the map
    * @param VLId  id of the voltagelevel to which the element belong
