@@ -61,17 +61,17 @@ void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::
   }
 }
 
-void NetworkManager::updateSVCMapRegulatingBuses(BusMapRegulating &SVCmap,
-                                                 const std::string &SVCId,
+void NetworkManager::updateVSCMapRegulatingBuses(BusMapRegulating &VSCmap,
+                                                 const std::string &VSCId,
                                                  const std::string &VLId,
                                                  const boost::shared_ptr<DYN::DataInterface> &dataInterface) {
-  auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(SVCId)->getID();
+  auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(VSCId)->getID();
   std::vector<std::string> busesConnected = dataInterface->getServiceManager()->getBusesConnectedBySwitch(regulatedBus, VLId);
   busesConnected.push_back(regulatedBus);
   for (const std::string& busId : busesConnected) {
-    auto it = SVCmap.find(busId);
-    if (it == SVCmap.end()) {
-      SVCmap.insert({busId, NbOfRegulating::ONE});
+    auto it = VSCmap.find(busId);
+    if (it == VSCmap.end()) {
+      VSCmap.insert({busId, NbOfRegulating::ONE});
     } else {
       it->second = NbOfRegulating::MULTIPLES;
     }
@@ -305,7 +305,7 @@ void NetworkManager::buildTree() {
                                                   vscConverterDyn1->getQMax(), vscConverterDyn1->getQMin(), vscConverterDyn1->getQ(),
                                                   vscConverterDyn1->getReactiveCurvesPoints());
       std::string converter1VLId = nodes_[converterDyn1->getBusInterface()->getID()]->voltageLevel.lock()->id;
-      updateSVCMapRegulatingBuses(mapBusVSCConvertersBusId_,
+      updateVSCMapRegulatingBuses(mapBusVSCConvertersBusId_,
                                   converterDyn1->getID(),
                                   converter1VLId,
                                   interface_);
@@ -316,7 +316,7 @@ void NetworkManager::buildTree() {
                                                   vscConverterDyn2->getQMax(), vscConverterDyn2->getQMin(), vscConverterDyn2->getQ(),
                                                   vscConverterDyn2->getReactiveCurvesPoints());
       std::string converter2VLId = nodes_[converterDyn2->getBusInterface()->getID()]->voltageLevel.lock()->id;
-      updateSVCMapRegulatingBuses(mapBusVSCConvertersBusId_,
+      updateVSCMapRegulatingBuses(mapBusVSCConvertersBusId_,
                                   converterDyn2->getID(),
                                   converter2VLId,
                                   interface_);
