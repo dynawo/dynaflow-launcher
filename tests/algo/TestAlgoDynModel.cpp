@@ -26,7 +26,7 @@
 #include "SlackNodeAlgorithm.h"
 #include "Tests.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
 #include <algorithm>
 #include <vector>
@@ -36,7 +36,7 @@ testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 namespace test {
 /**

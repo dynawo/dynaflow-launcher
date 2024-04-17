@@ -18,9 +18,9 @@
 #include "ContingencyValidationAlgorithm.h"
 #include "Tests.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 static void
 addContingency(std::vector<dfl::inputs::Contingency>& contingencies, const std::string& id, const std::string elementId,

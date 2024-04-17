@@ -19,7 +19,8 @@
 
         "DYNAFLOW_LAUNCHER_USE_DOXYGEN": "OFF",
         "GTEST_ROOT": "${workspaceFolder}/../dynawo/build-code/deploy/Debug/dynawo",
-        "GMOCK_HOME": "${workspaceFolder}/../dynawo/build-code/deploy/Debug/dynawo"
+        "GMOCK_HOME": "${workspaceFolder}/../dynawo/build-code/deploy/Debug/dynawo",
+        "USE_MPI": "YES"
     },
 
     "files.exclude": {

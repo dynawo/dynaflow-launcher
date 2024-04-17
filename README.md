@@ -176,7 +176,7 @@ Open `x64 Native Tools Command Prompt for VS2019` and run the following commands
 > cd dynawo-project
 > git clone https://github.com/dynawo/dynaflow-launcher
 > cd dynaflow-launcher
-> cmake -S . -B b -DCMAKE_INSTALL_PREFIX=../dfl-i -DDYNAWO_ALGORITHMS_HOME=../deploy/dynawo-algorithms -DDYNAWO_HOME=../deploy/dynawo -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=. -G "NMake Makefiles" -Wno-dev
+> cmake -S . -B b -DUSE_MPI=YES -DCMAKE_INSTALL_PREFIX=../dfl-i -DDYNAWO_ALGORITHMS_HOME=../deploy/dynawo-algorithms -DDYNAWO_HOME=../deploy/dynawo -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=. -G "NMake Makefiles" -Wno-dev
 > cmake --build b --target install
 ```
 

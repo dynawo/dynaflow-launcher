@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
 #include "Constants.h"
 #include "DynModelFilterAlgorithm.h"
@@ -20,7 +20,7 @@ testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 using dfl::algo::DynamicModelDefinition;
 

@@ -11,7 +11,7 @@
 #include "Dyd.h"
 #include "Tests.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
 #include <boost/filesystem.hpp>
 
@@ -19,7 +19,7 @@ testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 using dfl::algo::DynamicModelDefinitions;
 using dfl::algo::GeneratorDefinition;

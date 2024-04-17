@@ -21,26 +21,31 @@ error_exit() {
 }
 
 export_var_env() {
-    local var="$@"
-    local name=${var%%=*}
-    local value="${var#*=}"
+  local var="$@"
+  local name=${var%%=*}
+  local value="${var#*=}"
 
-    if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
-        if [ "$name" != "DYNAWO_HOME" -a "$name" != "DYNAWO_ALGORITHMS_HOME" -a "$name" != "DYNAWO_DDB_DIR" -a "$name" != "DYNAWO_PYTHON_COMMAND" -a "$name" != "DYNAWO_DICTIONARIES" ]; then
-            error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
-        fi
+  if ! `expr $name : "DYNAFLOW_LAUNCHER_.*" > /dev/null`; then
+    if [ "$name" != "DYNAWO_HOME" ] &&
+        [ "$name" != "DYNAWO_ALGORITHMS_HOME" ] &&
+        [ "$name" != "DYNAWO_DDB_DIR" ] &&
+        [ "$name" != "DYNAWO_PYTHON_COMMAND" ] &&
+        [ "$name" != "DYNAWO_DICTIONARIES" ] &&
+        [ "$name" != "DYNAWO_USE_MPI" ]; then
+      error_exit "You must export variables with DYNAFLOW_LAUNCHER_ prefix for $name."
     fi
+  fi
 
-    if eval "[ \"\$$name\" ]"; then
-      eval "value=\${$name}"
-      ##echo "Environment variable for $name already set : $value"
-      return
-    fi
+  if eval "[ \"\$$name\" ]"; then
+    eval "value=\${$name}"
+    ##echo "Environment variable for $name already set : $value"
+    return
+  fi
 
-    if [ "$value" = UNDEFINED ]; then
-      error_exit "You must define the value of $name"
-    fi
-    export $name="$value"
+  if [ "$value" = UNDEFINED ]; then
+    error_exit "You must define the value of $name"
+  fi
+  export $name="$value"
 }
 
 export_var_env_force() {
@@ -224,6 +229,7 @@ set_environment() {
     export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 
     # miscellaneous
+    export_var_env DYNAWO_USE_MPI=YES
     export_var_env DYNAWO_PYTHON_COMMAND="python"
     if [ ! -x "$(command -v ${DYNAWO_PYTHON_COMMAND})" ]; then
       error_exit "Your python interpreter \"${DYNAWO_PYTHON_COMMAND}\" does not work. Use export DYNAWO_PYTHON_COMMAND=<Python Interpreter> in your myEnvDynawo.sh."
@@ -269,7 +275,7 @@ set_environment() {
         export_var_env DYNAFLOW_LAUNCHER_LOG_LEVEL=INFO # INFO by default
     fi
 
-    if [ -z "$MPIRUN_PATH" ]
+    if [ "${DYNAWO_USE_MPI}" == "YES" -a -z "${MPIRUN_PATH}" ]
     then
         MPIRUN_PATH="$DYNAWO_ALGORITHMS_HOME/bin/mpirun"
     fi
@@ -333,6 +339,7 @@ cmake_configure() {
         -DBOOST_ROOT:STRING=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_LOCALE:STRING=$DYNAFLOW_LAUNCHER_LOCALE \
         -DDYNAFLOW_LAUNCHER_BUILD_TESTS:BOOL=$DYNAFLOW_LAUNCHER_BUILD_TESTS \
+        -DUSE_MPI=$DYNAWO_USE_MPI \
         $CMAKE_OPTIONAL
     RETURN_CODE=$?
     popd > /dev/null
@@ -349,6 +356,7 @@ cmake_configure_3rdParty() {
     -DCMAKE_BUILD_TYPE:STRING=$DYNAFLOW_LAUNCHER_BUILD_TYPE \
     -DCMAKE_INSTALL_PREFIX=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
     -DDYNAWO_HOME:STRING=$DYNAWO_HOME \
+    -DUSE_MPI=$DYNAWO_USE_MPI \
     $DYNAFLOW_LAUNCHER_THIRD_PARTY_SRC_DIR
   RETURN_CODE=$?
   popd > /dev/null
@@ -430,6 +438,7 @@ cmake_coverage() {
         -DBOOST_ROOT=$DYNAWO_HOME \
         -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=$DYNAFLOW_LAUNCHER_THIRD_PARTY_INSTALL_DIR \
         -DDYNAWO_PYTHON_COMMAND:STRING=${DYNAWO_PYTHON_COMMAND} \
+        -DDYNAWO_USE_MPI=${DYNAWO_USE_MPI} \
         -VV
 
     RETURN_CODE=$?
@@ -524,11 +533,17 @@ launch_sa() {
         error_exit "Security Analysis contingencies file $4 doesn't exist"
     fi
     export_preload
-    "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
-    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $2 \
-    --config $3 \
-    --contingencies $4
+    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+      "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                      --network $2 \
+                                                                                      --config $3 \
+                                                                                      --contingencies $4
+    else
+      $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                          --network $2 \
+                                                          --config $3 \
+                                                          --contingencies $4
+    fi
     unset LD_PRELOAD
 }
 
@@ -543,12 +558,19 @@ launch_nsa() {
         error_exit "Security Analysis contingencies file $4 doesn't exist"
     fi
     export_preload
-    "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
-    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $2 \
-    --config $3 \
-    --contingencies $4 \
-    --nsa # Steady state calculations.
+    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+      "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                      --network $2 \
+                                                                                      --config $3 \
+                                                                                      --contingencies $4 \
+                                                                                      --nsa # Steady state calculations.
+    else
+      $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                          --network $2 \
+                                                          --config $3 \
+                                                          --contingencies $4 \
+                                                          --nsa # Steady state calculations.
+    fi
     unset LD_PRELOAD
 }
 
@@ -563,11 +585,17 @@ launch_sa_gdb() {
         error_exit "Security Analysis contingencies file $4 doesn't exist"
     fi
     export_preload
-    "$MPIRUN_PATH" -np $NBPROCS xterm -e gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
-    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $2 \
-    --config $3 \
-    --contingencies $4
+    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+      "$MPIRUN_PATH" -np $NBPROCS xterm -e gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                                              --network $2 \
+                                                                                                              --config $3 \
+                                                                                                              --contingencies $4
+    else
+      gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                        --network $2 \
+                                                                        --config $3 \
+                                                                        --contingencies $4
+    fi
     unset LD_PRELOAD
 }
 
