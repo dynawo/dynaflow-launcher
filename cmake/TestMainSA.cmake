@@ -7,7 +7,18 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-set(_command ${MPI_RUN} -np 4 ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json)
+set(_dfl_cmd ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json)
+if(NOT DEFINED USE_MPI OR USE_MPI STREQUAL "")
+  message(FATAL_ERROR "USE_MPI is not defined")
+endif()
+if(${USE_MPI} STREQUAL "YES")
+  if(NOT DEFINED MPI_RUN OR MPI_RUN STREQUAL "")
+    message(FATAL_ERROR "mpirun is not found")
+  endif()
+  set(_command ${MPI_RUN} -np 4 ${_dfl_cmd})
+else()
+  set(_command ${_dfl_cmd})
+endif()
 message(STATUS "Execute process: ${_command}")
 execute_process(COMMAND ${_command} RESULT_VARIABLE _result)
 if(_result)

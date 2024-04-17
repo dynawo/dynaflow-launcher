@@ -30,7 +30,7 @@
 #include "ParEvent.h"
 #include "Solver.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 #include <DYNMultipleJobsFactory.h>
 #include <DYNScenario.h>
 #include <DYNScenarios.h>
@@ -170,7 +170,7 @@ void Context::exportOutputs() {
   exportOutputJob();
 
   // Only the root process is allowed to export files
-  auto &mpiContext = DYNAlgorithms::mpi::context();
+  auto &mpiContext = DYNAlgorithms::multiprocessing::context();
   if (!mpiContext.isRootProc())
     return;
 
@@ -213,7 +213,7 @@ void Context::exportOutputJob() {
   outputs::Job jobWriter(outputs::Job::JobDefinition(basename_, def_.dynawoLogLevel, config_));
   jobEntry_ = jobWriter.write();
 
-  auto &mpiContext = DYNAlgorithms::mpi::context();
+  auto &mpiContext = DYNAlgorithms::multiprocessing::context();
   // Only the root process is allowed to export files
   if (!mpiContext.isRootProc())
     return;

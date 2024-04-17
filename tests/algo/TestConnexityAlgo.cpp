@@ -17,9 +17,9 @@
 #include "MainConnexComponentAlgorithm.h"
 #include "Tests.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 TEST(Connexity, base) {
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");

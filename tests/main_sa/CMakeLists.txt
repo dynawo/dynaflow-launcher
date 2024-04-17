@@ -17,6 +17,7 @@ macro(DEFINE_LAUNCH_TEST_SA _name)
                       COMMAND ${CMAKE_COMMAND}
                               -DPYTHON_COMMAND=${PYTHON_EXECUTABLE}
                               -DEXE=$<TARGET_FILE:DynaFlowLauncher>
+                              -DUSE_MPI=${USE_MPI}
                               -DMPI_RUN=${MPI_RUN}
                               -DTEST_NAME=${_name}
                               -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diffContingencies.py

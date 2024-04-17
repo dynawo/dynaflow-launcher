@@ -12,7 +12,7 @@
 #include "Log.h"
 #include "Tests.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
 #include <array>
 #include <fstream>
@@ -29,7 +29,7 @@ testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 TEST(AssemblingXmlDocument, readFile) {
   const std::string filepath = "res/assembling.xml";

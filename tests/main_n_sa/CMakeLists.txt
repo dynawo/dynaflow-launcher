@@ -17,6 +17,7 @@ macro(DEFINE_LAUNCH_TEST_NSA _name)
                       COMMAND ${CMAKE_COMMAND}
                               -DPYTHON_COMMAND=${PYTHON_EXECUTABLE}
                               -DEXE=$<TARGET_FILE:DynaFlowLauncher>
+                              -DUSE_MPI=${USE_MPI}
                               -DMPI_RUN=${MPI_RUN}
                               -DTEST_NAME=${_name}
                               -DN_DIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diff.py

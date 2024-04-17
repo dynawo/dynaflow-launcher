@@ -20,7 +20,7 @@
 #include "Options.h"
 
 #include <DYNError.h>
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 #include <DYNMessage.h>
 #include <DYNTrace.h>
 
@@ -34,7 +34,7 @@ class Log {
  public:
   /**
    * @brief Get the tag for dynaflow launcher log
-   * 
+   *
    * @returns the tag for dynaflow launcher log
    */
   static const std::string& getTag();
@@ -63,7 +63,7 @@ class Log {
  * @param key the log key from the dictionary
  */
 #define LOG(level, key, ...)                                                                                                      \
-  (DYNAlgorithms::mpi::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::getTag()) : DYN::TraceStream()) \
+  (DYNAlgorithms::multiprocessing::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::getTag()) : DYN::TraceStream()) \
       << (DYN::Message("DFLLOG", dfl::KeyLog_t::names(dfl::KeyLog_t::key)), ##__VA_ARGS__) << DYN::Trace::endline
 
 /**
