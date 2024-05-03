@@ -404,7 +404,7 @@ unittest_gdb() {
       done
       exit 1
     fi
-    unittest_exe=$(find $DYNAFLOW_LAUNCHER_BUILD_DIR -name "$2")
+    unittest_exe=$(find $DYNAFLOW_LAUNCHER_BUILD_DIR -name "$2" -executable -type f)
     if [ -z "$unittest_exe" ]; then
       echo "The unittest you gave is not available."
       echo "List of available unittests:"

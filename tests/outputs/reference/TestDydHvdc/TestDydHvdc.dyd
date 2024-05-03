@@ -16,12 +16,10 @@
     <dyn:staticRef var="hvdc_state" staticVar="state1"/>
     <dyn:staticRef var="hvdc_state" staticVar="state2"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="Model_Signal_NQ__BUS___10_TN" lib="VRRemote" parFile="TestDydHvdc.par" parId="Model_Signal_NQ__BUS___10_TN"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_switchOff" id2="HVDCLCCLine" var2="hvdc_switchOffSignal1Side1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_switchOff" id2="HVDCVSCLine" var2="hvdc_switchOffSignal1Side1"/>
-  <dyn:connect id1="Model_Signal_NQ__BUS___10_TN" var1="vrremote_URegulated" id2="NETWORK" var2="_BUS___10_TN_U_value"/>
 </dyn:dynamicModelsArchitecture>

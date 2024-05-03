@@ -289,7 +289,7 @@
           <point p="1011" minQ="-300" maxQ="300"/>
         </reactiveCapabilityCurve>
       </vscConverterStation>
-      <vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="false" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1">
+      <vscConverterStation id="HERAP7_HERA_TER_2" name="HERA_TER_2" voltageRegulatorOn="true" lossFactor="1" voltageSetpoint="403.86336477401227" reactivePowerSetpoint="270" bus="HERAP7_S_VL7_TN1" connectableBus="HERAP7_S_VL7_TN1">
         <reactiveCapabilityCurve>
           <point p="-1011" minQ="-300" maxQ="300"/>
           <point p="0" minQ="-600" maxQ="400"/>

@@ -19,19 +19,12 @@
 namespace dfl {
 namespace algo {
 
-std::size_t HVDCDefinitionAlgorithm::HVDCModelDefinition::VSCBusPairHash::operator()(const HVDCModelDefinition::VSCBusPair &pair) const noexcept {
-  std::size_t seed = 0;
-  boost::hash_combine(seed, pair.first);
-  boost::hash_combine(seed, pair.second);
-  return seed;
-}
-
 HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions,
-                                                 bool infiniteReactiveLimits,
+                                                 const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap, bool infiniteReactiveLimits,
                                                  const std::unordered_set<std::shared_ptr<inputs::Converter>> &converters,
-                                                 const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId,
                                                  const inputs::DynamicDataBaseManager &manager)
-    : hvdcLinesDefinitions_(hvdcLinesDefinitions), infiniteReactiveLimits_(infiniteReactiveLimits), mapBusVSCConvertersBusId_(mapBusVSCConvertersBusId) {
+    : hvdcLinesDefinitions_(hvdcLinesDefinitions), busesToNumberOfRegulationMap_(busesToNumberOfRegulationMap),
+      infiniteReactiveLimits_(infiniteReactiveLimits) {
   std::transform(converters.begin(), converters.end(), std::inserter(vscConverters_, vscConverters_.begin()),
                  [](const std::shared_ptr<inputs::Converter> &converter) { return std::make_pair(converter->busId, converter); });
   for (const auto &automaton : manager.assembling().dynamicAutomatons()) {
@@ -48,90 +41,62 @@ HVDCDefinitionAlgorithm::HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesD
   }
 }
 
-auto HVDCDefinitionAlgorithm::getBusRegulatedByMultipleVSC(const inputs::HvdcLine &hvdcLine, HVDCDefinition::Position position) const
-    -> HVDCModelDefinition::VSCBusPairSet {
-  auto set = getBusesByPosition(hvdcLine, position);
-  assert(set.size() <= 2);  // by definition of getBusesByPosition
-  if (set.empty()) {
-    return set;
-  }
-
-  auto it = set.begin();
-  auto found = mapBusVSCConvertersBusId_.find(set.begin()->first);
-  if (found != mapBusVSCConvertersBusId_.end() && found->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
-    // always put both converters of the hvdc link even if only one of them is connected to a bus regulated by several VSC
-    return set;
-  }
-
-  if (set.size() == 2) {
-    ++it;
-    auto found2 = mapBusVSCConvertersBusId_.find(it->first);
-    if (found2 != mapBusVSCConvertersBusId_.end() && found2->second == inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
-      // always put both converters of the hvdc link even if only one of them is connected to a bus regulated by several VSC
-      return set;
-    }
-  }
-
-  return {};
-}
-
-auto HVDCDefinitionAlgorithm::getBusesByPosition(const inputs::HvdcLine &hvdcLine, HVDCDefinition::Position position) const
-    -> HVDCModelDefinition::VSCBusPairSet {
-  HVDCModelDefinition::VSCBusPairSet ret;
+auto HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position,
+                                              HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
+                                              HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive) const
+    -> HVDCModelDefinition {
+  auto regulation = dfl::inputs::NetworkManager::NbOfRegulating::ONE;
   switch (position) {
   case HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT: {
-    ret.insert(std::make_pair(hvdcLine.converter1->busId, hvdcLine.converter1->converterId));
+    auto found = busesToNumberOfRegulationMap_.find(hvdcline.converter1->busId);
+    if (found != busesToNumberOfRegulationMap_.end())
+      regulation = found->second;
     break;
   }
   case HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT: {
-    ret.insert(std::make_pair(hvdcLine.converter2->busId, hvdcLine.converter2->converterId));
+    auto found = busesToNumberOfRegulationMap_.find(hvdcline.converter2->busId);
+    if (found != busesToNumberOfRegulationMap_.end())
+      regulation = found->second;
     break;
   }
   case HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT: {
-    ret.insert(std::make_pair(hvdcLine.converter1->busId, hvdcLine.converter1->converterId));
-    ret.insert(std::make_pair(hvdcLine.converter2->busId, hvdcLine.converter2->converterId));
+    auto found1 = busesToNumberOfRegulationMap_.find(hvdcline.converter1->busId);
+    auto found2 = busesToNumberOfRegulationMap_.find(hvdcline.converter2->busId);
+    if ((found1 != busesToNumberOfRegulationMap_.end() && found1->second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES) ||
+        (found2 != busesToNumberOfRegulationMap_.end() && found2->second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES))
+      regulation = dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES;
     break;
   }
   default:  // impossible case by definition of the enum
     break;
   }
 
-  return ret;
-}
-
-auto HVDCDefinitionAlgorithm::computeModelVSC(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position,
-                                              HVDCDefinition::HVDCModel multipleVSCInfiniteReactive, HVDCDefinition::HVDCModel multipleVSCFiniteReactive,
-                                              HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive)
-                                              const -> HVDCModelDefinition {
-  auto vscBusIdsWithMultipleRegulation = getBusRegulatedByMultipleVSC(hvdcline, position);
-  if (vscBusIdsWithMultipleRegulation.size() > 0) {
-    return HVDCModelDefinition{infiniteReactiveLimits_ ? multipleVSCInfiniteReactive : multipleVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
+  if (regulation == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
+    return HVDCModelDefinition{infiniteReactiveLimits_ ? multipleVSCInfiniteReactive : multipleVSCFiniteReactive};
   } else {
-    return HVDCModelDefinition{infiniteReactiveLimits_ ? oneVSCInfiniteReactive : oneVSCFiniteReactive, vscBusIdsWithMultipleRegulation};
+    return HVDCModelDefinition{infiniteReactiveLimits_ ? oneVSCInfiniteReactive : oneVSCFiniteReactive};
   }
 }
 
-auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline,
-                                           HVDCDefinition::Position position,
-                                           inputs::HvdcLine::ConverterType type) const -> HVDCModelDefinition {
+auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position, inputs::HvdcLine::ConverterType type) const
+    -> HVDCModelDefinition {
   const bool isInSVC = hvdcLinesInSVC.find(hvdcline.id) != hvdcLinesInSVC.end();
   if (position == HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
     if (type == inputs::HvdcLine::ConverterType::LCC) {
-      return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhi : HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ, {}};
+      return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhi : HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ};
     } else {
       const bool hvdcAngleDroopActivePowerControlIsEnabled = hvdcline.activePowerControl.has_value();
       if (!hvdcAngleDroopActivePowerControlIsEnabled) {
         if (isInSVC)
-          return HVDCModelDefinition{
-              infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side1 : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1, {}};
+          return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side1
+                                                             : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1};
         else
           return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
                                  HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
       } else {
         if (isInSVC)
           return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side1
-                                                             : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1,
-                                     {}};
+                                                             : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1};
         else
           return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
                                  HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
@@ -141,12 +106,12 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline,
   } else {
     // case only one of them is in the main connex component
     if (type == inputs::HvdcLine::ConverterType::LCC) {
-      return HVDCModelDefinition{
-          infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhiDangling : HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ, {}};
+      return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhiDangling
+                                                         : HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ};
     } else {
       if (isInSVC)
-        return HVDCModelDefinition{
-            infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1 : HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1, {}};
+        return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1
+                                                           : HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1};
       else
         return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropDangling, HVDCDefinition::HVDCModel::HvdcPQPropDanglingDiagramPQ,
                                HVDCDefinition::HVDCModel::HvdcPVDangling, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
@@ -216,8 +181,6 @@ void HVDCDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<Al
 
     auto modelDef = computeModel(*hvdcLine, hvdcLineDefinition.position, hvdcLineDefinition.converterType);
     hvdcLineDefinition.model = modelDef.model;
-
-    hvdcLinesDefinitions_.vscBusVSCDefinitionsMap.insert(modelDef.vscBusIdsMultipleRegulated.begin(), modelDef.vscBusIdsMultipleRegulated.end());
   }
 }
 

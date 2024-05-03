@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="HVDC_VRREMOTE_CONNECTOR_SIDE1">
+    <dyn:connect var1="hvdc_NQ1" var2="vrremote_NQ"/>
+    <dyn:connect var1="hvdc_limUQDown1" var2="vrremote_limUQDown_@INDEX@_"/>
+    <dyn:connect var1="hvdc_limUQUp1" var2="vrremote_limUQUp_@INDEX@_"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="HVDC_VRREMOTE_CONNECTOR_SIDE2">
+    <dyn:connect var1="hvdc_NQ2" var2="vrremote_NQ"/>
+    <dyn:connect var1="hvdc_limUQDown2" var2="vrremote_limUQDown_@INDEX@_"/>
+    <dyn:connect var1="hvdc_limUQUp2" var2="vrremote_limUQUp_@INDEX@_"/>
+  </dyn:macroConnector>
   <dyn:blackBoxModel id="HVDCLCCLine" staticId="HVDCLCCLine" lib="HvdcPTanPhiDangling" parFile="TestDydVRRemote.par" parId="HVDCLCCLine">
     <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
     <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
@@ -8,7 +18,7 @@
     <dyn:staticRef var="hvdc_state" staticVar="state1"/>
     <dyn:staticRef var="hvdc_state" staticVar="state2"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="HVDCVSCLine" staticId="HVDCVSCLine" lib="HvdcPVDangling" parFile="TestDydVRRemote.par" parId="HVDCVSCLine">
+  <dyn:blackBoxModel id="HVDCVSCLine" staticId="HVDCVSCLine" lib="HvdcPQPropDangling" parFile="TestDydVRRemote.par" parId="HVDCVSCLine">
     <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p2"/>
     <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p1"/>
     <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q2"/>
@@ -16,16 +26,13 @@
     <dyn:staticRef var="hvdc_state" staticVar="state1"/>
     <dyn:staticRef var="hvdc_state" staticVar="state2"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_1" lib="VRRemote" parFile="TestDydVRRemote.par" parId="Model_Signal_NQ_BUS_1"/>
-  <dyn:blackBoxModel id="Model_Signal_NQ_BUS_2" lib="VRRemote" parFile="TestDydVRRemote.par" parId="Model_Signal_NQ_BUS_2"/>
   <dyn:blackBoxModel id="Model_Signal_NQ_BUS_3" lib="VRRemote" parFile="TestDydVRRemote.par" parId="Model_Signal_NQ_BUS_3"/>
+  <dyn:macroConnect connector="HVDC_VRREMOTE_CONNECTOR_SIDE1" id1="HVDCVSCLine" id2="Model_Signal_NQ_BUS_3" index2="0"/>
   <dyn:connect id1="NETWORK" var1="BUS_3_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCLCCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="BUS_3_switchOff" id2="HVDCLCCLine" var2="hvdc_switchOffSignal1Side1"/>
   <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="BUS_3_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="BUS_3_switchOff" id2="HVDCVSCLine" var2="hvdc_switchOffSignal1Side1"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
   <dyn:connect id1="Model_Signal_NQ_BUS_3" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_3_U_value"/>
 </dyn:dynamicModelsArchitecture>

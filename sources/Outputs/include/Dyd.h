@@ -66,20 +66,20 @@ class Dyd {
      * @param loaddefs load definitions coming from algorithms
      * @param slacknode the slack node to use
      * @param hvdcDefinitions hvdc definitions coming from algorithms
-     * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
+     * @param busesToNumberOfRegulationMap mapping of busId and the number of generators/VSCs that regulates them
      * @param dynamicDataBaseManager the database manager to use
      * @param models the list of dynamic models to use
      * @param svarcsDefs the SVarC definitions to use
      */
     DydDefinition(const std::string &base, const std::string &filepath, const std::vector<algo::GeneratorDefinition> &gens,
                   const std::vector<algo::LoadDefinition> &loaddefs, const std::shared_ptr<inputs::Node> &slacknode,
-                  const algo::HVDCLineDefinitions &hvdcDefinitions, const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators,
+                  const algo::HVDCLineDefinitions &hvdcDefinitions, const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap,
                   const inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::DynamicModelDefinitions &models,
                   const std::vector<algo::StaticVarCompensatorDefinition> svarcsDefs)
         : basename_(base), filename_(filepath), slackNode_(slacknode), dynamicDataBaseManager_(dynamicDataBaseManager), dydLoads_(new DydLoads(loaddefs)),
           dydSVarC_(new DydSVarC(svarcsDefs)), dydHvdc_(new DydHvdc(hvdcDefinitions)), dydGenerator_(new DydGenerator(gens)),
           dydDynModel_(new DydDynModel(models, gens, loaddefs, hvdcDefinitions)),
-          dydVRRemote_(new DydVRRemote(gens, busesRegulatedBySeveralGenerators, hvdcDefinitions)) {}
+          dydVRRemote_(new DydVRRemote(gens, busesToNumberOfRegulationMap, hvdcDefinitions)) {}
 
     std::string basename_;                                          ///< basename for file
     std::string filename_;                                          ///< filepath for file to write

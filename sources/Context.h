@@ -157,9 +157,7 @@ class Context {
    *
    * @param cbk the callback to register
    */
-  void onNodeOnMainConnexComponent(ProcessNodeCallBackMainComponent &&cbk) {
-    callbacksMainConnexComponent_.push_back(std::move(cbk));
-  }
+  void onNodeOnMainConnexComponent(ProcessNodeCallBackMainComponent &&cbk) { callbacksMainConnexComponent_.push_back(std::move(cbk)); }
 
   /**
    * @brief Walk through all nodes in main connex components and apply callbacks
@@ -190,20 +188,19 @@ class Context {
   std::string basename_;                                                        ///< basename for all files
   std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
 
-  std::shared_ptr<inputs::Node> slackNode_;                                          ///< computed slack node
-  SlackNodeOrigin slackNodeOrigin_;                                                  ///< slack node origin
-  std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;                       ///< main connex component
-  std::vector<algo::GeneratorDefinition> generators_;                                ///< generators found
-  std::vector<algo::LoadDefinition> loads_;                                          ///< loads found
-  std::vector<algo::StaticVarCompensatorDefinition> staticVarCompensators_;          ///< svarcs definitions
-  algo::HVDCLineDefinitions hvdcLineDefinitions_;                                    ///< hvdc definitions
-  algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
-  algo::DynamicModelDefinitions dynamicModels_;                                      ///< model definitions
-  algo::ShuntCounterDefinitions counters_;                                           ///< shunt counters definitions
-  algo::LinesByIdDefinitions linesById_;                                             ///< Lines by ids definition
-  algo::TransformersByIdDefinitions tfosById_;                                       ///< Transformers by ids definition
-  boost::optional<algo::ValidContingencies> validContingencies_;                     ///< contingencies accepted for simulation in a Security Analyasis
-  std::shared_ptr<algo::AlgorithmsResults> algoResults_;                             ///< reference to algorithms results class
+  std::shared_ptr<inputs::Node> slackNode_;                                  ///< computed slack node
+  SlackNodeOrigin slackNodeOrigin_;                                          ///< slack node origin
+  std::vector<std::shared_ptr<inputs::Node>> mainConnexNodes_;               ///< main connex component
+  std::vector<algo::GeneratorDefinition> generators_;                        ///< generators found
+  std::vector<algo::LoadDefinition> loads_;                                  ///< loads found
+  std::vector<algo::StaticVarCompensatorDefinition> staticVarCompensators_;  ///< svarcs definitions
+  algo::HVDCLineDefinitions hvdcLineDefinitions_;                            ///< hvdc definitions
+  algo::DynamicModelDefinitions dynamicModels_;                              ///< model definitions
+  algo::ShuntCounterDefinitions counters_;                                   ///< shunt counters definitions
+  algo::LinesByIdDefinitions linesById_;                                     ///< Lines by ids definition
+  algo::TransformersByIdDefinitions tfosById_;                               ///< Transformers by ids definition
+  boost::optional<algo::ValidContingencies> validContingencies_;             ///< contingencies accepted for simulation in a Security Analyasis
+  std::shared_ptr<algo::AlgorithmsResults> algoResults_;                     ///< reference to algorithms results class
 
   boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
   std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies

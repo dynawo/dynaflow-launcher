@@ -17,16 +17,12 @@ namespace outputs {
 
 void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection) {
   std::unordered_map<algo::GeneratorDefinitionAlgorithm::BusId, bool> componentToFrozen;
-  for (const auto &keyValue : busesRegulatedBySeveralGenerators_)
-    componentToFrozen.insert({keyValue.first, true});
-  for (const auto &keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap)
-    componentToFrozen.insert({keyValue.first, true});
+  for (const auto &busId2Number : busesToNumberOfRegulationMap_)
+    if (busId2Number.second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)
+      componentToFrozen.insert({busId2Number.first, true});
 
   for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
-    if (generator.isNetwork()) {
-      continue;
-    }
     if (componentToFrozen.find(generator.regulatedBusId) != componentToFrozen.end() && generator.q < generator.qmax && generator.q > generator.qmin) {
       componentToFrozen[generator.regulatedBusId] = false;
     }
@@ -46,29 +42,56 @@ void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetColl
     }
   }
 
-  // adding parameters sets related to remote voltage control or multiple generator regulating same bus
-  for (const auto &keyValue : busesRegulatedBySeveralGenerators_) {
-    if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-      paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+  std::set<std::string> handledBus;
+  for (const auto &keyValue : generatorDefinitions_) {
+    if (keyValue.isRegulatingLocallyWithOthers()) {
+      assert(busesToNumberOfRegulationMap_.find(keyValue.regulatedBusId) != busesToNumberOfRegulationMap_.end() &&
+             busesToNumberOfRegulationMap_.find(keyValue.regulatedBusId)->second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES);
+      assert(busesToNumberOfRegulationMap_.find(keyValue.regulatedBusId) != busesToNumberOfRegulationMap_.end());
+      if (handledBus.find(keyValue.regulatedBusId) != handledBus.end())
+        continue;
+      if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
+        paramSetCollection->addMacroParameterSet(
+            helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+      }
+      auto VRRemoteParamSet = helper::writeVRRemote(keyValue.regulatedBusId, keyValue.id);
+      if (componentToFrozen[keyValue.regulatedBusId])
+        VRRemoteParamSet->addParameter(helper::buildParameter("vrremote_Frozen0", true));
+      paramSetCollection->addParametersSet(VRRemoteParamSet);
+      handledBus.insert(keyValue.regulatedBusId);
     }
-    auto VRRemoteParamSet = helper::writeVRRemote(keyValue.first, keyValue.second);
-    if (componentToFrozen[keyValue.first])
-      VRRemoteParamSet->addParameter(helper::buildParameter("vrremote_Frozen0", true));
-    paramSetCollection->addParametersSet(VRRemoteParamSet);
   }
 
-  // adding parameters sets related to remote voltage control or multiple VSC regulating same bus
-  for (const auto &keyValue : hvdcDefinitions_.vscBusVSCDefinitionsMap) {
-    if (busesRegulatedBySeveralGenerators_.find(keyValue.first) != busesRegulatedBySeveralGenerators_.end()) {
-      continue;
+  for (const auto &keyValue : hvdcDefinitions_.hvdcLines) {
+    algo::HVDCDefinition hvdcLine = keyValue.second;
+    if (hvdcLine.hasPQPropModel()) {
+      const algo::HVDCDefinition::BusId &busId1 =
+          (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcLine.converter2BusId : hvdcLine.converter1BusId;
+      const auto &vscStation = (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcLine.converter2Id : hvdcLine.converter1Id;
+      if (handledBus.find(busId1) == handledBus.end()) {
+        if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
+          paramSetCollection->addMacroParameterSet(
+              helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+        }
+        auto VRRemoteParamSet = helper::writeVRRemote(busId1, vscStation);
+        if (componentToFrozen[busId1])
+          VRRemoteParamSet->addParameter(helper::buildParameter("vrremote_Frozen0", true));
+        paramSetCollection->addParametersSet(VRRemoteParamSet);
+        handledBus.insert(busId1);
+      }
+
+      if (hvdcLine.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT && handledBus.find(hvdcLine.converter2BusId) == handledBus.end()) {
+        if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
+          paramSetCollection->addMacroParameterSet(
+              helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+        }
+        auto VRRemoteParamSet = helper::writeVRRemote(hvdcLine.converter2BusId, hvdcLine.converter2Id);
+        if (componentToFrozen[hvdcLine.converter2BusId])
+          VRRemoteParamSet->addParameter(helper::buildParameter("vrremote_Frozen0", true));
+        paramSetCollection->addParametersSet(VRRemoteParamSet);
+        handledBus.insert(hvdcLine.converter2BusId);
+      }
     }
-    if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-      paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
-    }
-    auto VRRemoteParamSet = helper::writeVRRemote(keyValue.first, keyValue.second);
-    if (componentToFrozen[keyValue.first])
-      VRRemoteParamSet->addParameter(helper::buildParameter("vrremote_Frozen0", true));
-    paramSetCollection->addParametersSet(VRRemoteParamSet);
   }
 }
 
