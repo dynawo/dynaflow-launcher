@@ -50,11 +50,10 @@ void GeneratorDefinition::removeRpclFromModel() {
   }
 }
 
-GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators &gens, BusGenMap &busesRegulatedBySeveralGenerators,
-                                                           const inputs::NetworkManager::BusMapRegulating &busMap,
+GeneratorDefinitionAlgorithm::GeneratorDefinitionAlgorithm(Generators &gens, const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap,
                                                            const inputs::DynamicDataBaseManager &manager, bool infinitereactivelimits, double tfoVoltageLevel)
-    : generators_(gens), busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators),
-      busMap_(busMap), useInfiniteReactivelimits_{infinitereactivelimits}, tfoVoltageLevel_(tfoVoltageLevel) {
+    : generators_(gens), busesToNumberOfRegulationMap_(busesToNumberOfRegulationMap), useInfiniteReactivelimits_{infinitereactivelimits},
+      tfoVoltageLevel_(tfoVoltageLevel) {
   for (const auto &automaton : manager.assembling().dynamicAutomatons()) {
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       for (const auto &macroConn : automaton.second.macroConnects) {
@@ -87,9 +86,9 @@ void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_p
   for (const auto &generator : node_generators) {
     ModelType model = ModelType::NETWORK;
     if (isTargetPValid(generator) && generator.isVoltageRegulationOn && isDiagramValid(generator)) {
-      dfl::inputs::NetworkManager::BusMapRegulating::const_iterator it = busMap_.find(generator.regulatedBusId);
-      assert(it != busMap_.end());
-      dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGenerators = it->second;
+      dfl::inputs::NetworkManager::BusMapRegulating::const_iterator it = busesToNumberOfRegulationMap_.find(generator.regulatedBusId);
+      dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGenerators =
+          (it != busesToNumberOfRegulationMap_.end()) ? it->second : dfl::inputs::NetworkManager::NbOfRegulating::ONE;
       auto svcIt = generatorsInSVC.find(generator.id);
       const bool isInSVC = svcIt != generatorsInSVC.end();
       const bool isRPCL2 = isInSVC && svcIt->second;
@@ -123,62 +122,51 @@ void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_p
       } else {
         // Generator is assumed to have its transformer in the static model description
         // or regulatedBus different from connectedBus
-        if (node_generators.size() == 1 && IsOtherGeneratorConnectedBySwitches(node)) {
+        switch (nbOfRegulatingGenerators) {
+        case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
+          // Only one generator regulates this node
+          if (generator.regulatedBusId == generator.connectedBusId) {
+            // local regulation
+            if (useInfiniteReactivelimits_) {
+              if (isInSVC) {
+                if (isRPCL2) {
+                  model = ModelType::SIGNALN_RPCL2_INFINITE;
+                } else {
+                  model = ModelType::SIGNALN_RPCL_INFINITE;
+                }
+              } else {
+                model = ModelType::SIGNALN_INFINITE;
+              }
+            } else {
+              if (isInSVC) {
+                if (isRPCL2) {
+                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL2_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL2_SIGNALN;
+                } else {
+                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL_SIGNALN;
+                }
+              } else {
+                model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
+              }
+            }
+          } else {
+            // remote regulation
+            if (useInfiniteReactivelimits_) {
+              model = ModelType::REMOTE_SIGNALN_INFINITE;
+            } else {
+              model = isDiagramRectangular(generator) ? ModelType::REMOTE_SIGNALN_RECTANGULAR : ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
+            }
+          }
+          break;
+        case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
           // Several generators regulate this node
           if (useInfiniteReactivelimits_) {
             model = ModelType::PROP_SIGNALN_INFINITE;
           } else {
             model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
           }
-          busesRegulatedBySeveralGenerators_.insert({generator.regulatedBusId, generator.id});
-        } else {
-          switch (nbOfRegulatingGenerators) {
-          case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
-            // Only one generator regulates this node
-            if (generator.regulatedBusId == generator.connectedBusId) {
-              // local regulation
-              if (useInfiniteReactivelimits_) {
-                if (isInSVC) {
-                  if (isRPCL2) {
-                    model = ModelType::SIGNALN_RPCL2_INFINITE;
-                  } else {
-                    model = ModelType::SIGNALN_RPCL_INFINITE;
-                  }
-                } else {
-                  model = ModelType::SIGNALN_INFINITE;
-                }
-              } else {
-                if (isInSVC) {
-                  if (isRPCL2) {
-                    model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL2_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL2_SIGNALN;
-                  } else {
-                    model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL_SIGNALN;
-                  }
-                } else {
-                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
-                }
-              }
-            } else {
-              // remote regulation
-              if (useInfiniteReactivelimits_) {
-                model = ModelType::REMOTE_SIGNALN_INFINITE;
-              } else {
-                model = isDiagramRectangular(generator) ? ModelType::REMOTE_SIGNALN_RECTANGULAR : ModelType::REMOTE_DIAGRAM_PQ_SIGNALN;
-              }
-            }
-            break;
-          case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
-            // Several generators regulate this node
-            if (useInfiniteReactivelimits_) {
-              model = ModelType::PROP_SIGNALN_INFINITE;
-            } else {
-              model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
-            }
-            busesRegulatedBySeveralGenerators_.insert({generator.regulatedBusId, generator.id});
-            break;
-          default:  //  impossible by definition of the enum
-            break;
-          }
+          break;
+        default:  //  impossible by definition of the enum
+          break;
         }
       }
     }
@@ -232,28 +220,6 @@ bool GeneratorDefinitionAlgorithm::isDiagramValid(const inputs::Generator &gener
     }
   }
   return valid;
-}
-
-bool GeneratorDefinitionAlgorithm::IsOtherGeneratorConnectedBySwitches(const NodePtr &node) const {
-  auto &buses = node->getBusesConnectedByVoltageLevel();
-
-  if (buses.size() == 0) {
-    return false;
-  }
-  auto vl = node->voltageLevel.lock();
-
-  for (const auto &id : buses) {
-    auto found = std::find_if(vl->nodes.begin(), vl->nodes.end(), [&id](const NodePtr &nodeLocal) { return nodeLocal->id == id; });
-#ifdef _DEBUG_
-    // shouldn't happen by construction of the elements
-    assert(found != vl->nodes.end());
-#endif
-    if ((*found)->generators.size() != 0) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 bool GeneratorDefinitionAlgorithm::isTargetPValid(const inputs::Generator &generator) const {

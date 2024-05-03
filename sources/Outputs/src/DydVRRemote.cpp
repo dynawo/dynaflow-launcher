@@ -23,29 +23,26 @@ namespace outputs {
 void DydVRRemote::writeVRRemotes(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename) {
   using BusId = std::string;
   std::set<BusId> regulatedBusIds;
-  for (const auto &busToGenerator : busesRegulatedBySeveralGenerators_)
-    regulatedBusIds.insert(busToGenerator.first);
-  for (const auto &busToVSC : hvdcDefinitions_.vscBusVSCDefinitionsMap)
-    regulatedBusIds.insert(busToVSC.first);
-
-  for (const BusId &regulatedBusId : regulatedBusIds) {
-    std::string id = constants::modelSignalNQprefix_ + regulatedBusId;
-    boost::shared_ptr<dynamicdata::BlackBoxModel> blackBoxModelVRRemote = helper::buildBlackBox(id, "VRRemote", basename + ".par", id);
-    dynamicModelsToConnect->addModel(blackBoxModelVRRemote);
-    dynamicModelsToConnect->addConnect(id, "vrremote_URegulated", constants::networkModelName, regulatedBusId + "_U_value");
+  for (const auto &busId2Number : busesToNumberOfRegulationMap_) {
+    if (busId2Number.second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
+      regulatedBusIds.insert(busId2Number.first);
+    }
   }
 
   writeMacroConnector(dynamicModelsToConnect);
-  writeConnections(dynamicModelsToConnect);
+  writeConnections(dynamicModelsToConnect, basename);
 }
 
 void DydVRRemote::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
-  if (!generatorDefinitions_.empty()) {
-    auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenVRRemoteName_);
-    connector->addConnect("generator_NQ", "vrremote_NQ");
-    connector->addConnect("generator_limUQUp", "vrremote_limUQUp_@INDEX@_");
-    connector->addConnect("generator_limUQDown", "vrremote_limUQDown_@INDEX@_");
-    dynamicModelsToConnect->addMacroConnector(connector);
+  for (auto it = generatorDefinitions_.cbegin(); it != generatorDefinitions_.cend(); ++it) {
+    if (it->isRegulatingLocallyWithOthers()) {
+      auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenVRRemoteName_);
+      connector->addConnect("generator_NQ", "vrremote_NQ");
+      connector->addConnect("generator_limUQUp", "vrremote_limUQUp_@INDEX@_");
+      connector->addConnect("generator_limUQDown", "vrremote_limUQDown_@INDEX@_");
+      dynamicModelsToConnect->addMacroConnector(connector);
+      break;
+    }
   }
   for (const auto &keyValue : hvdcDefinitions_.hvdcLines) {
     algo::HVDCDefinition hvdcLine = keyValue.second;
@@ -55,7 +52,6 @@ void DydVRRemote::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
       connector->addConnect("hvdc_limUQUp1", "vrremote_limUQUp_@INDEX@_");
       connector->addConnect("hvdc_limUQDown1", "vrremote_limUQDown_@INDEX@_");
       dynamicModelsToConnect->addMacroConnector(connector);
-
       connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorHvdcVRRemoteSide2Name_);
       connector->addConnect("hvdc_NQ2", "vrremote_NQ");
       connector->addConnect("hvdc_limUQUp2", "vrremote_limUQUp_@INDEX@_");
@@ -66,19 +62,16 @@ void DydVRRemote::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
   }
 }
 
-void DydVRRemote::writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
-  std::unordered_map<std::string, unsigned int> modelNQIdGenNumber;
+void DydVRRemote::writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename) {
+  std::unordered_map<std::string, unsigned int> modelBusIdToNumber;
   for (auto it = generatorDefinitions_.cbegin(); it != generatorDefinitions_.cend(); ++it) {
-    if (it->isNetwork()) {
-      continue;
-    }
-    if (it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE ||
-        it->model == algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN ||
-        it->model == algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR) {
+    if (it->isRegulatingLocallyWithOthers()) {
+      assert(busesToNumberOfRegulationMap_.find(it->regulatedBusId) != busesToNumberOfRegulationMap_.end() &&
+             busesToNumberOfRegulationMap_.find(it->regulatedBusId)->second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES);
       std::string modelNQId = constants::modelSignalNQprefix_ + it->regulatedBusId;
       auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenVRRemoteName_, it->id, modelNQId);
-      connection->setIndex2(std::to_string(modelNQIdGenNumber[modelNQId]));
-      ++modelNQIdGenNumber[modelNQId];
+      connection->setIndex2(std::to_string(modelBusIdToNumber[it->regulatedBusId]));
+      ++modelBusIdToNumber[it->regulatedBusId];
       dynamicModelsToConnect->addMacroConnect(connection);
     }
   }
@@ -90,17 +83,25 @@ void DydVRRemote::writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsC
           (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcLine.converter2BusId : hvdcLine.converter1BusId;
       std::string modelNQId = constants::modelSignalNQprefix_ + busId1;
       auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorHvdcVRRemoteSide1Name_, hvdcLine.id, modelNQId);
-      connection->setIndex2(std::to_string(modelNQIdGenNumber[modelNQId]));
-      ++modelNQIdGenNumber[modelNQId];
+      connection->setIndex2(std::to_string(modelBusIdToNumber[busId1]));
+      ++modelBusIdToNumber[busId1];
       dynamicModelsToConnect->addMacroConnect(connection);
 
       if (hvdcLine.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
-        modelNQId = constants::modelSignalNQprefix_ + hvdcLine.converter2BusId;
-        auto connectionSide2 = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorHvdcVRRemoteSide2Name_, hvdcLine.id, modelNQId);
-        connectionSide2->setIndex2(std::to_string(modelNQIdGenNumber[modelNQId]));
-        ++modelNQIdGenNumber[modelNQId];
+        std::string modelNQId2 = constants::modelSignalNQprefix_ + hvdcLine.converter2BusId;
+        auto connectionSide2 = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorHvdcVRRemoteSide2Name_, hvdcLine.id, modelNQId2);
+        connectionSide2->setIndex2(std::to_string(modelBusIdToNumber[hvdcLine.converter2BusId]));
+        ++modelBusIdToNumber[hvdcLine.converter2BusId];
         dynamicModelsToConnect->addMacroConnect(connectionSide2);
       }
+    }
+  }
+  for (const auto &busId : modelBusIdToNumber) {
+    if (busId.second > 0) {
+      std::string id = constants::modelSignalNQprefix_ + busId.first;
+      boost::shared_ptr<dynamicdata::BlackBoxModel> blackBoxModelVRRemote = helper::buildBlackBox(id, "VRRemote", basename + ".par", id);
+      dynamicModelsToConnect->addModel(blackBoxModelVRRemote);
+      dynamicModelsToConnect->addConnect(id, "vrremote_URegulated", constants::networkModelName, busId.first + "_U_value");
     }
   }
 }

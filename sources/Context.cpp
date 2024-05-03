@@ -116,11 +116,11 @@ bool Context::process() {
     }
   }
 
-  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, busesRegulatedBySeveralGenerators_, networkManager_.getMapBusGeneratorsBusId(),
-                                                                 dynamicDataBaseManager_, config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
+  onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, networkManager_.getBusRegulationMap(), dynamicDataBaseManager_,
+                                                                 config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
-  onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, config_.useInfiniteReactiveLimits(), networkManager_.computeVSCConverters(),
-                                                            networkManager_.getMapBusVSCConvertersBusId(), dynamicDataBaseManager_));
+  onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, networkManager_.getBusRegulationMap(), config_.useInfiniteReactiveLimits(),
+                                                            networkManager_.computeVSCConverters(), dynamicDataBaseManager_));
   onNodeOnMainConnexComponent(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_, config_.isShuntRegulationOn()));
 
   if (config_.isSVarCRegulationOn()) {
@@ -178,7 +178,7 @@ void Context::exportOutputs() {
   file::path dydOutput(config_.outputDir());
   dydOutput.append(basename_ + ".dyd");
   outputs::Dyd dydWriter(outputs::Dyd::DydDefinition(basename_, dydOutput.generic_string(), generators_, loads_, slackNode_, hvdcLineDefinitions_,
-                                                     busesRegulatedBySeveralGenerators_, dynamicDataBaseManager_, dynamicModels_, staticVarCompensators_));
+                                                     networkManager_.getBusRegulationMap(), dynamicDataBaseManager_, dynamicModels_, staticVarCompensators_));
   dydWriter.write();
 
   // create Network.par
@@ -190,7 +190,7 @@ void Context::exportOutputs() {
   // create specific par
   file::path parOutput(config_.outputDir());
   parOutput.append(basename_ + ".par");
-  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_, parOutput, generators_, hvdcLineDefinitions_, busesRegulatedBySeveralGenerators_,
+  outputs::Par parWriter(outputs::Par::ParDefinition(basename_, config_, parOutput, generators_, hvdcLineDefinitions_, networkManager_.getBusRegulationMap(),
                                                      dynamicDataBaseManager_, counters_, dynamicModels_, linesById_, tfosById_, staticVarCompensators_,
                                                      loads_));
   parWriter.write();

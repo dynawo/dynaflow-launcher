@@ -185,9 +185,7 @@ TEST(Diagram, writeVSC) {
                                     "_BUS___14_TN", false, HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ,
                                     {}, 0., vscStation3, vscStation4, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
   };
-  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{
-      {"_BUS___11_TN", vscStation1.id}, {"_BUS___12_TN", vscStation2.id}, {"_BUS___13_TN", vscStation3.id}, {"_BUS___14_TN", vscStation4.id}};
-  dfl::algo::HVDCLineDefinitions defs{map, vscIds};
+  dfl::algo::HVDCLineDefinitions defs{map};
   std::vector<dfl::algo::GeneratorDefinition> generators;
 
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));
@@ -198,11 +196,13 @@ TEST(Diagram, writeVSC) {
   boost::filesystem::path reference("reference");
   reference.append(basename);
   reference.append(prefixDir + dfl::common::constants::diagramDirectorySuffix);
-  for (const auto &vscPair : vscIds) {
+  std::vector<std::string> vscIds{vscStation1.id, vscStation2.id, vscStation3.id, vscStation4.id};
+
+  for (const auto &vsc : vscIds) {
     boost::filesystem::path ref(reference);
     boost::filesystem::path outputDir(outputDirectory);
-    dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(vscPair.second)).generic_string(),
-                               ref.append(dfl::outputs::constants::diagramFilename(vscPair.second)).generic_string());
+    dfl::test::checkFilesEqual(outputDir.append(dfl::outputs::constants::diagramFilename(vsc)).generic_string(),
+                               ref.append(dfl::outputs::constants::diagramFilename(vsc)).generic_string());
   }
 }
 
@@ -236,8 +236,7 @@ TEST(Diagram, writeLCC) {
                                     boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01})),
   };
 
-  dfl::algo::HVDCLineDefinitions::BusVSCMap vscIds{};
-  dfl::algo::HVDCLineDefinitions defs{map, vscIds};
+  dfl::algo::HVDCLineDefinitions defs{map};
   std::vector<dfl::algo::GeneratorDefinition> generators;
 
   dfl::outputs::Diagram DiagramWriter(dfl::outputs::Diagram::DiagramDefinition(basename, outputDirectory.generic_string(), generators, defs));

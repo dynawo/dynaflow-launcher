@@ -72,9 +72,9 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
     if (!context->isPartiallyConditioned()) {
       throw Error(MissingICInWarmStartingPointMode);
     } else {
-        if (!context->isFullyConditioned()) {
-          LOG(warn, NetworkNotFullyConditioned);
-        }
+      if (!context->isFullyConditioned()) {
+        LOG(warn, NetworkNotFullyConditioned);
+      }
     }
   }
 
@@ -148,8 +148,8 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
   case dfl::common::Options::Request::VERSION:
     if (mpiContext.isRootProc()) {
-      DYN::Trace::info(dfl::common::Log::getTag())
-          << DYNAFLOW_LAUNCHER_VERSION_STRING << " (rev:" << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << ")" << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag()) << DYNAFLOW_LAUNCHER_VERSION_STRING << " (rev:" << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-"
+                                                   << DYNAFLOW_LAUNCHER_GIT_HASH << ")" << DYN::Trace::endline;
     }
     return EXIT_SUCCESS;
   default:
@@ -170,11 +170,9 @@ int main(int argc, char *argv[]) {
     if (mpiContext.isRootProc()) {
       dfl::common::Log::init(options, outputDir.generic_string());
       DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::getTag())
-          << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::getTag())
-          << " "
-          << " revision " << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag()) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
+      DYN::Trace::info(dfl::common::Log::getTag()) << " "
+                                                   << " revision " << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << DYN::Trace::endline;
       DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
 

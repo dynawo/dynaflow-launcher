@@ -55,7 +55,7 @@ class Par {
      * @param filename file path for output PAR file (corresponds to basename)
      * @param gens list of the generators taken into account
      * @param hvdcDefinitions HVDC lines definitions
-     * @param busesRegulatedBySeveralGenerators map of bus ids to a generator that regulates them
+     * @param busesToNumberOfRegulationMap mapping of busId and the number of generators/VSCs that regulates them
      * @param dynamicDataBaseManager dynamic database manager to use
      * @param counters the counters definitions to use
      * @param models list of dynamic models definitions
@@ -66,7 +66,7 @@ class Par {
      */
     ParDefinition(const std::string &base, const inputs::Configuration &config, const boost::filesystem::path &filename,
                   const std::vector<algo::GeneratorDefinition> &gens, const algo::HVDCLineDefinitions &hvdcDefinitions,
-                  const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators,
+                  const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap,
                   const dfl::inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::ShuntCounterDefinitions &counters,
                   const algo::DynamicModelDefinitions &models, const algo::LinesByIdDefinitions &linesById, const algo::TransformersByIdDefinitions &tfosById,
                   const std::vector<algo::StaticVarCompensatorDefinition> &svarcsDefinitions, const std::vector<algo::LoadDefinition> &loadsDefinitions)
@@ -74,7 +74,7 @@ class Par {
           dynamicDataBaseManager_(dynamicDataBaseManager), shuntCounters_(counters), linesByIdDefinitions_(linesById), tfosByIdDefinitions_(tfosById),
           parLoads_(new ParLoads(loadsDefinitions)), parSVarC_(new ParSVarC(svarcsDefinitions)), parHvdc_(new ParHvdc(hvdcDefinitions)),
           parGenerator_(new ParGenerator(gens)), parDynModel_(new ParDynModel(models, gens, hvdcDefinitions)),
-          parVRRemote_(new ParVRRemote(gens, busesRegulatedBySeveralGenerators, hvdcDefinitions)), startingPointMode_(config.getStartingPointMode()) {}
+          parVRRemote_(new ParVRRemote(gens, busesToNumberOfRegulationMap, hvdcDefinitions)), startingPointMode_(config.getStartingPointMode()) {}
 
     std::string basename_;                                                         ///< basename
     boost::filesystem::path dirname_;                                              ///< Dirname of output file relative to execution dir

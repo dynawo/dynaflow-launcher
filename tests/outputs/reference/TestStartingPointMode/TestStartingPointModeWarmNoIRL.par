@@ -150,8 +150,6 @@
     <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
     <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
     <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
-    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="LCCStation1"/>
-    <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="LCCStation2"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
@@ -232,7 +230,7 @@
     <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="22c38c24-e943-5798-b70f-168c03610315_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
-    <par name="hvdc_modeU20" type="BOOL" value="false"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
@@ -265,7 +263,7 @@
     <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="hvdc_Q2Nom" type="DOUBLE" value="100"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
-    <par name="hvdc_modeU20" type="BOOL" value="false"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
     <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
@@ -314,11 +312,6 @@
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
     <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
-  </set>
-  <set id="Model_Signal_NQ__BUS___10_TN">
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation1"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation1"/>
-    <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__BUS___11_TN">
     <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>

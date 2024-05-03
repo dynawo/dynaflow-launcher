@@ -86,8 +86,10 @@ TEST(NetworkManager, generators) {
   NetworkManager manager("res/Generators.iidm");
   NetworkManager::BusMapRegulating expected_busMap = {{"_BUS____1_TN", NetworkManager::NbOfRegulating::ONE},
                                                       {"_BUS____5_TN", NetworkManager::NbOfRegulating::MULTIPLES},
-                                                      {"_BUS___10_TN", NetworkManager::NbOfRegulating::ONE}};
-  auto busMapId = manager.getMapBusGeneratorsBusId();
+                                                      {"_BUS___10_TN", NetworkManager::NbOfRegulating::MULTIPLES},
+                                                      {"_BUS___12_TN", NetworkManager::NbOfRegulating::MULTIPLES},
+                                                      {"_BUS___13_TN", NetworkManager::NbOfRegulating::MULTIPLES}};
+  auto busMapId = manager.getBusRegulationMap();
   for (auto it_expected : expected_busMap) {
     auto it_map = busMapId.find(it_expected.first);
     ASSERT_FALSE(it_map == busMapId.end());

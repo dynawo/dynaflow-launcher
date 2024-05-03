@@ -171,11 +171,10 @@ TEST(Generators, base) {
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
 
   dfl::inputs::DynamicDataBaseManager manager("", "");
 
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -189,8 +188,7 @@ TEST(Generators, base) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 10.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -255,9 +253,8 @@ TEST(Generators, baseSVC) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -271,8 +268,7 @@ TEST(Generators, baseSVC) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 5.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -337,9 +333,8 @@ TEST(Generators, baseSVCRpcl2) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -353,8 +348,7 @@ TEST(Generators, baseSVCRpcl2) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 5.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -419,9 +413,8 @@ TEST(Generators, baseSVCTfo) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -435,8 +428,7 @@ TEST(Generators, baseSVCTfo) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 5.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -501,9 +493,8 @@ TEST(Generators, baseSVCTfoRpcl2) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -517,8 +508,7 @@ TEST(Generators, baseSVCTfoRpcl2) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 5.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -581,9 +571,8 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -597,8 +586,7 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 10.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -660,9 +648,8 @@ TEST(Generators, generatorWithTfo) {
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -676,8 +663,7 @@ TEST(Generators, generatorWithTfo) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 5.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 5.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -708,9 +694,8 @@ TEST(Generators, noGeneratorRegulating) {
   nodes[0]->generators.emplace_back("01", false, points, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap;
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
     algo_infinite(node, algoRes);
@@ -720,8 +705,7 @@ TEST(Generators, noGeneratorRegulating) {
   ASSERT_FALSE(algoRes->isAtLeastOneGeneratorRegulating);
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 10.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoRes);
@@ -777,12 +761,11 @@ TEST(Generators, SwitchConnexity) {
 
   nodes[4]->generators.emplace_back("04", true, points, -5, 5, -5, 5, 5, 0, 0, bus3, bus3);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
-  dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
-                                                          {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
+  dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
+                                                          {bus2, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, true, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
 
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -795,9 +778,8 @@ TEST(Generators, SwitchConnexity) {
   }
 
   generators.clear();
-  busesRegulatedBySeveralGenerators.clear();
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoResFinite(new dfl::algo::AlgorithmsResults());
-  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_finite(generators, busMap, manager, false, 10.);
 
   for (const auto &node : nodes) {
     algo_finite(node, algoResFinite);
@@ -822,10 +804,9 @@ static void testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurv
   std::shared_ptr<dfl::inputs::Node> node = dfl::inputs::Node::build("0", vl, 0.0, {}, false, testServiceManager);
 
   const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::algo::GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators;
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   dfl::inputs::DynamicDataBaseManager manager("", "");
-  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busesRegulatedBySeveralGenerators, busMap, manager, false, 10.);
+  dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, false, 10.);
 
   node->generators.emplace_back(generator);
   algo_infinite(node, algoRes);

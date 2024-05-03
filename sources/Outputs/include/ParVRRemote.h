@@ -34,12 +34,12 @@ class ParVRRemote {
    * @brief Construct a new Par VRRemote object
    *
    * @param generatorDefinitions reference to the list of generator definitions
-   * @param busesRegulatedBySeveralGenerators reference to map of bus ids to a generator that regulates them
+   * @param busesToNumberOfRegulationMap reference to map of bus ids to a generator that regulates them
    * @param hvdcDefinitions reference to the list of hvdc definitions
    */
   explicit ParVRRemote(const std::vector<algo::GeneratorDefinition> &generatorDefinitions,
-                       const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators, const algo::HVDCLineDefinitions &hvdcDefinitions)
-      : generatorDefinitions_(generatorDefinitions), busesRegulatedBySeveralGenerators_(busesRegulatedBySeveralGenerators), hvdcDefinitions_(hvdcDefinitions) {}
+                       const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap, const algo::HVDCLineDefinitions &hvdcDefinitions)
+      : generatorDefinitions_(generatorDefinitions), busesToNumberOfRegulationMap_(busesToNumberOfRegulationMap), hvdcDefinitions_(hvdcDefinitions) {}
 
   /**
    * @brief enrich the parameter set collection for VRRemote
@@ -49,9 +49,9 @@ class ParVRRemote {
   void writeVRRemotes(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection);
 
  private:
-  const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;                      ///< list of generators definitions
-  const algo::GeneratorDefinitionAlgorithm::BusGenMap &busesRegulatedBySeveralGenerators_;  ///< map of bus ids to a generator that regulates them
-  const algo::HVDCLineDefinitions &hvdcDefinitions_;                                        ///< list of Hvdc definitions
+  const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;            ///< list of generators definitions
+  const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap_;  ///< mapping of busId and the number of generators/VSCs that regulates them
+  const algo::HVDCLineDefinitions &hvdcDefinitions_;                              ///< list of Hvdc definitions
 };
 
 }  // namespace outputs
