@@ -16,8 +16,7 @@
 namespace dfl {
 namespace test {
 
-void
-checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath) {
+void checkFilesEqual(const std::string &lfilepath, const std::string &rfilepath) {
   {
     std::ofstream outFile(lfilepath + ".tmp", std::ios::binary);
     std::ifstream readFile(lfilepath);
@@ -51,7 +50,7 @@ checkFilesEqual(const std::string& lfilepath, const std::string& rfilepath) {
     riss.seekg(0, std::ifstream::beg);
     bool result = std::equal(std::istreambuf_iterator<char>(liss.rdbuf()), std::istreambuf_iterator<char>(), std::istreambuf_iterator<char>(riss.rdbuf()));
     ASSERT_TRUE(result) << "checkFilesEqual fails for " << lfilepath << " and " << rfilepath << " : files are not equal" << std::endl;
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     ASSERT_TRUE(false) << "checkFilesEqual fails for " << lfilepath << " and " << rfilepath << " : " << e.what() << std::endl;
   }
 }

@@ -63,7 +63,7 @@ void DydVRRemote::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMode
 }
 
 void DydVRRemote::writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename) {
-  std::unordered_map<std::string, unsigned int> modelBusIdToNumber;
+  std::map<std::string, unsigned int> modelBusIdToNumber;
   for (auto it = generatorDefinitions_.cbegin(); it != generatorDefinitions_.cend(); ++it) {
     if (it->isRegulatingLocallyWithOthers()) {
       assert(busesToNumberOfRegulationMap_.find(it->regulatedBusId) != busesToNumberOfRegulationMap_.end() &&

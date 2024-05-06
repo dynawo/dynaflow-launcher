@@ -388,7 +388,7 @@ cmake -S "%DYNAFLOW_LAUNCHER_HOME%" -B "%DYNAFLOW_LAUNCHER_BUILD_DIR%" -DUSE_MPI
 if defined _show goto:LIST_TESTS
 cmake --build "%DYNAFLOW_LAUNCHER_BUILD_DIR%" --target tests
 pushd "%DYNAFLOW_LAUNCHER_BUILD_DIR%"
-ctest -R "%_test%"
+ctest -R "%_test%" --output-on-failure
 popd
 exit /B %ERRORLEVEL%
 
