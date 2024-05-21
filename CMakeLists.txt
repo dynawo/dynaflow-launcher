@@ -19,7 +19,7 @@ set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options a
 # More information https://cmake.org/cmake/help/latest/command/project.html
 project(
     "DynaFlowLauncher" # This will exposed as the variable PROJECT_NAME.
-    VERSION 1.6.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
+    VERSION 1.6.1 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
 
@@ -171,8 +171,8 @@ find_program(MPI_RUN NAMES mpirun mpiexec.exe PATHS ${DYNAFLOW_LAUNCHER_THIRD_PA
 message(STATUS "mpirun found: " ${MPI_RUN})
 
 ## Dynawo
-find_package(Dynawo 1.6.0 REQUIRED)
-find_package(DynawoAlgorithms 1.6.0 REQUIRED)
+find_package(Dynawo 1.6.1 REQUIRED)
+find_package(DynawoAlgorithms 1.6.1 REQUIRED)
 
 # Python Interpreter
 find_package(PythonInterp REQUIRED)

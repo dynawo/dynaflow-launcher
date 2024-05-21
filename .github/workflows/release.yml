@@ -23,7 +23,7 @@ on:
         default: true
 
 env:
-  DYNAWO_VERSION: 1.6.0
+  DYNAWO_VERSION: 1.6.1
 
 jobs:
   distribution-cxx11:
