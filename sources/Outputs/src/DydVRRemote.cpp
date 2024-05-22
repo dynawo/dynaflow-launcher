@@ -21,14 +21,6 @@ namespace dfl {
 namespace outputs {
 
 void DydVRRemote::writeVRRemotes(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename) {
-  using BusId = std::string;
-  std::set<BusId> regulatedBusIds;
-  for (const auto &busId2Number : busesToNumberOfRegulationMap_) {
-    if (busId2Number.second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES) {
-      regulatedBusIds.insert(busId2Number.first);
-    }
-  }
-
   writeMacroConnector(dynamicModelsToConnect);
   writeConnections(dynamicModelsToConnect, basename);
 }

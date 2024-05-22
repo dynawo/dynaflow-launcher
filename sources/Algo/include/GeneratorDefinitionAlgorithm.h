@@ -137,9 +137,9 @@ class GeneratorDefinition {
     return model == ModelType::REMOTE_DIAGRAM_PQ_SIGNALN || model == ModelType::REMOTE_SIGNALN_INFINITE || model == ModelType::REMOTE_SIGNALN_RECTANGULAR;
   }
   /**
-   * @brief determines if the generator is regulating remotely
+   * @brief determines if the generator is regulating locally a bus regulated by others component
    *
-   * @return true when generator is regulating remotely
+   * @return true when generator is regulating locally a bus regulated by others component
    */
   bool isRegulatingLocallyWithOthers() const {
     return model == ModelType::PROP_SIGNALN_INFINITE || model == ModelType::PROP_DIAGRAM_PQ_SIGNALN || model == ModelType::PROP_SIGNALN_RECTANGULAR;
@@ -214,12 +214,9 @@ class GeneratorDefinitionAlgorithm {
    * Add the generators of the nodes and deducing the model to use.
    * Validity of the generator is checked whenever it makes sense.
    * If the diagram is not valid, the generator is ignored by the algorithm and the default dynawo behavior is used.
-   * For each generator, we look in the busMap_ the number of generators that are regulating the same bus as this generator,
+   * For each generator, we look the number of generators that are regulating the same bus as this generator,
    * If this generator is the only one regulating the bus, then we decide which model to use based on whether this generator
    * regulates the bus in local or not. Otherwise we use the prop model.
-   * In order to create later on in the dyd and the par specific models based on the buses that are regulated by multiples
-   * generators, we fill the busesRegulatedBySeveralGenerators_ map. Each time we found a bus regulated by multiples generators we add in the
-   * busesRegulatedBySeveralGenerators_ map an element mapping the regulated bus to a generator id that regulates that bus.
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */

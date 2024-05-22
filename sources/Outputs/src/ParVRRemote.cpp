@@ -22,7 +22,6 @@ void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetColl
       componentToFrozen.insert({busId2Number.first, true});
 
   for (const auto &generator : generatorDefinitions_) {
-    // if network model, nothing to do
     if (componentToFrozen.find(generator.regulatedBusId) != componentToFrozen.end() && generator.q < generator.qmax && generator.q > generator.qmin) {
       componentToFrozen[generator.regulatedBusId] = false;
     }

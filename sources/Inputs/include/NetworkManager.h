@@ -102,9 +102,9 @@ class NetworkManager {
   std::unordered_set<std::shared_ptr<Converter>> computeVSCConverters() const;
 
   /**
-   * @brief Retrieve the mapping of busId and the number of generators that regulate them
+   * @brief Retrieve the mapping of busId and the number of generators/VSCs that regulate them
    *
-   * @returns map of bus id to nbOfRegulatingGenerators
+   * @returns map of bus id to number of regulating components
    */
   const BusMapRegulating &getBusRegulationMap() const { return mapBusIdToNumberOfRegulation_; }
 
