@@ -1,7 +1,7 @@
 {
   "dfl-config": {
-    "OutputDir": "resultsTestsTmp/launch_svc_regulation",
-    "SettingPath": "res/setting_svc.xml",
-    "AssemblingPath": "res/assembling_svc.xml"
+    "OutputDir": "../resultsTestsTmp/launch_svc_regulation",
+    "SettingPath": "../res/setting_svc.xml",
+    "AssemblingPath": "../res/assembling_svc.xml"
   }
 }

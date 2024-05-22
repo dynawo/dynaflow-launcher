@@ -20,7 +20,7 @@
 #include <DYNFileSystemUtils.h>
 #include <DYNInitXml.h>
 #include <DYNIoDico.h>
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -84,7 +84,7 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
 static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs::SimulationParams const &params) {
   std::string simuName =
       params.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS ? "Security analysis simulation" : "Steady state simulation";
-  DYNAlgorithms::mpi::Context &mpiContext = DYNAlgorithms::mpi::context();
+  DYNAlgorithms::multiprocessing::Context &mpiContext = DYNAlgorithms::multiprocessing::context();
   try {
     if (!context->process()) {
       LOG(info, InitEnd, elapsed(params.timeStart));
@@ -94,7 +94,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
     context->exportOutputs();
     LOG(info, FilesEnd, elapsed(timeFilesStart));
 
-    DYNAlgorithms::mpi::Context::sync();
+    DYNAlgorithms::multiprocessing::Context::sync();
 
     auto timeSimuStart = std::chrono::steady_clock::now();
     if (params.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
@@ -130,7 +130,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
 }
 
 int main(int argc, char *argv[]) {
-  DYNAlgorithms::mpi::Context mpiContext;  // Should only be used once per process in the main thread
+  DYNAlgorithms::multiprocessing::Context mpiContext;  // Should only be used once per process in the main thread
   DYN::InitXerces xerces;
   DYN::InitLibXml2 libxml2;
   auto timeStart = std::chrono::steady_clock::now();
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]) {
       execSimulation(context, params);
     }
 
-    DYNAlgorithms::mpi::Context::sync();
+    DYNAlgorithms::multiprocessing::Context::sync();
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_SA || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       dfl::inputs::Configuration configSA(configPath, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);

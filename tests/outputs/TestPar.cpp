@@ -13,13 +13,13 @@
 
 #include <boost/filesystem.hpp>
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
 testing::Environment *initXmlEnvironment();
 
 testing::Environment *const env = initXmlEnvironment();
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 using dfl::algo::DynamicModelDefinitions;
 using dfl::algo::GeneratorDefinition;

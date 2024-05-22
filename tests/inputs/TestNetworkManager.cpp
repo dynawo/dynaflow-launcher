@@ -11,9 +11,9 @@
 #include "NetworkManager.h"
 #include "Tests.h"
 
-#include <DYNMPIContext.h>
+#include <DYNMultiProcessingContext.h>
 
-DYNAlgorithms::mpi::Context mpiContext;
+DYNAlgorithms::multiprocessing::Context mpiContext;
 
 static size_t count = 0;
 

@@ -61,6 +61,22 @@ void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::
   }
 }
 
+void NetworkManager::updateVSCMapRegulatingBuses(BusMapRegulating &VSCmap,
+                                                 const std::string &VSCId,
+                                                 const std::string &VLId,
+                                                 const boost::shared_ptr<DYN::DataInterface> &dataInterface) {
+  auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(VSCId)->getID();
+  std::vector<std::string> busesConnected = dataInterface->getServiceManager()->getBusesConnectedBySwitch(regulatedBus, VLId);
+  busesConnected.push_back(regulatedBus);
+  for (const std::string& busId : busesConnected) {
+    auto it = VSCmap.find(busId);
+    if (it == VSCmap.end()) {
+      VSCmap.insert({busId, NbOfRegulating::ONE});
+    } else {
+      it->second = NbOfRegulating::MULTIPLES;
+    }
+  }
+}
 void NetworkManager::updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface>& componentInterface) {
   if (componentInterface->hasInitialConditions()) {
     isPartiallyConditioned_ = true;
@@ -288,15 +304,22 @@ void NetworkManager::buildTree() {
       converter1 = std::make_shared<VSCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn1->getQMax(), vscConverterDyn1->getQMin(), vscConverterDyn1->getQ(),
                                                   vscConverterDyn1->getReactiveCurvesPoints());
-      updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn1->getID(), interface_);
-
+      std::string converter1VLId = nodes_[converterDyn1->getBusInterface()->getID()]->voltageLevel.lock()->id;
+      updateVSCMapRegulatingBuses(mapBusVSCConvertersBusId_,
+                                  converterDyn1->getID(),
+                                  converter1VLId,
+                                  interface_);
       auto vscConverterDyn2 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn2);
       updateConditioningStatus(vscConverterDyn2);
       voltageRegulationOn = vscConverterDyn2->getVoltageRegulatorOn();
       converter2 = std::make_shared<VSCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn2->getQMax(), vscConverterDyn2->getQMin(), vscConverterDyn2->getQ(),
                                                   vscConverterDyn2->getReactiveCurvesPoints());
-      updateMapRegulatingBuses(mapBusVSCConvertersBusId_, converterDyn2->getID(), interface_);
+      std::string converter2VLId = nodes_[converterDyn2->getBusInterface()->getID()]->voltageLevel.lock()->id;
+      updateVSCMapRegulatingBuses(mapBusVSCConvertersBusId_,
+                                  converterDyn2->getID(),
+                                  converter2VLId,
+                                  interface_);
     } else {
       converterType = HvdcLine::ConverterType::LCC;
       auto lccConverterDyn1 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn1);

@@ -33,8 +33,8 @@ Dynaflow-launcher is an open-source project and as such, questions, discussions,
 ## Dynaflow-launcher Distribution
 
 You can download a pre-built Dynaflow-launcher release to start testing it. Pre-built releases are available for **Linux** and **Windows**:
-- [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.5.0/DynaFlowLauncher_Linux_v1.5.0.zip)
-- [Windows](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.5.0/DynaFlowLauncher_Windows_v1.5.0.zip)
+- [Linux](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.6.0/DynaFlowLauncher_Linux_v1.6.0.zip)
+- [Windows](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.6.0/DynaFlowLauncher_Windows_v1.6.0.zip)
 
 ### Linux Requirements for Distribution
 
@@ -176,7 +176,7 @@ Open `x64 Native Tools Command Prompt for VS2019` and run the following commands
 > cd dynawo-project
 > git clone https://github.com/dynawo/dynaflow-launcher
 > cd dynaflow-launcher
-> cmake -S . -B b -DCMAKE_INSTALL_PREFIX=../dfl-i -DDYNAWO_ALGORITHMS_HOME=../deploy/dynawo-algorithms -DDYNAWO_HOME=../deploy/dynawo -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=. -G "NMake Makefiles" -Wno-dev
+> cmake -S . -B b -DUSE_MPI=YES -DCMAKE_INSTALL_PREFIX=../dfl-i -DDYNAWO_ALGORITHMS_HOME=../deploy/dynawo-algorithms -DDYNAWO_HOME=../deploy/dynawo -DDYNAFLOW_LAUNCHER_THIRD_PARTY_DIR=. -G "NMake Makefiles" -Wno-dev
 > cmake --build b --target install
 ```
 
@@ -286,7 +286,7 @@ git commits have a standard pattern, similar to the one in Dynawo core. This pat
 This hook is installed automatically when using the script myEnvDFL.sh with any option.
 
 ## Dynaflow-launcher Documentation
-You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.5.0/DynaflowLauncherDocumentation.pdf).
+You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.6.0/DynaflowLauncherDocumentation.pdf).
 
 ## Quoting Dyna&omega;o
 

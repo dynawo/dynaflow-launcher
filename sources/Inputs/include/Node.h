@@ -23,6 +23,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 
 namespace dfl {
 /// @brief Namespace for inputs of Dynaflow launcher
