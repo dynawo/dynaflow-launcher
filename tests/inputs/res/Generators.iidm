@@ -36,6 +36,9 @@
       <generator id="_Generator___5" name="GEN    5" energySource="OTHER" minP="-9999" maxP="9999" voltageRegulatorOn="true" targetP="1000" targetQ="0" targetV="400" bus="_BUS____5_TN" connectableBus="_BUS____5_TN" p="-900.0898860722275" q="165.03365280797095">
         <regulatingTerminal id="_Generator___2"/>
       </generator>
+      <generator id="_Generator___6" name="GEN    6" energySource="OTHER" minP="-9999" maxP="9999" voltageRegulatorOn="true" targetP="1000" targetQ="0" targetV="400" bus="_BUS____5_TN" connectableBus="_BUS____5_TN" p="-900.0898860722275" q="165.03365280797095">
+        <regulatingTerminal id="VSCStation4"/>
+      </generator>
     </voltageLevel>
   </substation>
   <substation id="_BUS___10_SS" name="BUS   10_SS" country="AF">
@@ -54,4 +57,50 @@
       </vscConverterStation>
     </voltageLevel>
   </substation>
+  <substation id="_BUS___11_SS" name="BUS   11_SS" country="AF">
+    <voltageLevel id="_BUS___11_VL" name="BUS   11_VL" nominalV="400" topologyKind="BUS_BREAKER">
+      <busBreakerTopology>
+        <bus id="_BUS___11_TN" v="400" angle="0"/>
+      </busBreakerTopology>
+      <lccConverterStation id="LCCStation2" name="S2" lossFactor="0" powerFactor="0" bus="_BUS___11_TN" connectableBus="_BUS___11_TN" p="100" q="-0"/>
+      <vscConverterStation id="VSCStation2" name="VSCS2" voltageRegulatorOn="false" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___11_TN" connectableBus="_BUS___11_TN" p="100" q="0">
+        <reactiveCapabilityCurve>
+          <point p="-1011" minQ="-300" maxQ="300"/>
+          <point p="0" minQ="-600" maxQ="400"/>
+          <point p="1011" minQ="-300" maxQ="300"/>
+        </reactiveCapabilityCurve>
+      </vscConverterStation>
+    </voltageLevel>
+  </substation>
+  <substation id="_BUS___12_SS" name="BUS   11_SS" country="AF">
+    <voltageLevel id="_BUS___12_VL" name="BUS   11_VL" nominalV="400" topologyKind="BUS_BREAKER">
+      <busBreakerTopology>
+        <bus id="_BUS___12_TN" v="400" angle="0"/>
+      </busBreakerTopology>
+      <vscConverterStation id="VSCStation3" name="VSCS3" voltageRegulatorOn="true" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___12_TN" connectableBus="_BUS___12_TN" p="100" q="0">
+        <reactiveCapabilityCurve>
+          <point p="-1011" minQ="-300" maxQ="300"/>
+          <point p="0" minQ="-600" maxQ="400"/>
+          <point p="1011" minQ="-300" maxQ="300"/>
+        </reactiveCapabilityCurve>
+      </vscConverterStation>
+      <generator id="_Generator___7" name="GEN    7" energySource="OTHER" minP="-9999" maxP="9999" voltageRegulatorOn="true" targetP="1000" targetQ="0" targetV="400" bus="_BUS___12_TN" connectableBus="_BUS___12_TN" p="-900.0898860722275" q="165.03365280797095"/>
+    </voltageLevel>
+  </substation>
+  <substation id="_BUS___13_SS" name="BUS   11_SS" country="AF">
+    <voltageLevel id="_BUS___13_VL" name="BUS   11_VL" nominalV="400" topologyKind="BUS_BREAKER">
+      <busBreakerTopology>
+        <bus id="_BUS___13_TN" v="400" angle="0"/>
+      </busBreakerTopology>
+      <vscConverterStation id="VSCStation4" name="VSCS4" voltageRegulatorOn="true" lossFactor="0" voltageSetpoint="400" reactivePowerSetpoint="0" bus="_BUS___13_TN" connectableBus="_BUS___13_TN" p="100" q="0">
+        <reactiveCapabilityCurve>
+          <point p="-1011" minQ="-300" maxQ="300"/>
+          <point p="0" minQ="-600" maxQ="400"/>
+          <point p="1011" minQ="-300" maxQ="300"/>
+        </reactiveCapabilityCurve>
+      </vscConverterStation>
+    </voltageLevel>
+  </substation>
+  <hvdcLine id="HVDCVSCLine" r="0.02" nominalV="400" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="100" maxP="2000" converterStation1="VSCStation2" converterStation2="VSCStation1"/>
+  <hvdcLine id="HVDCVSCLine2" r="0.02" nominalV="400" convertersMode="SIDE_1_INVERTER_SIDE_2_RECTIFIER" activePowerSetpoint="100" maxP="2000" converterStation1="VSCStation4" converterStation2="VSCStation3"/>
 </network>

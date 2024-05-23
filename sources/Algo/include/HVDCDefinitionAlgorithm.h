@@ -251,8 +251,7 @@ struct HVDCLineDefinitions {
    */
   using BusVSCMap = std::unordered_map<HVDCDefinition::BusId, VSCDefinition::VSCId>;
 
-  HvdcLineMap hvdcLines;              ///< the set of hvdc lines
-  BusVSCMap vscBusVSCDefinitionsMap;  ///< mapping of buses that have multiple VSC connected and one of their VSC
+  HvdcLineMap hvdcLines;  ///< the set of hvdc lines
 };
 
 /**
@@ -264,14 +263,14 @@ class HVDCDefinitionAlgorithm {
    * @brief Constructor
    *
    * @param hvdcLinesDefinitions the HVDC line definitions to update
+   * @param busesToNumberOfRegulationMap mapping of busId and the number of generators/VSCs that regulates them
    * @param infiniteReactiveLimits the configuration data of whether we use infinite reactive limits
    * @param vscConverters list of VSC converters
-   * @param mapBusVSCConvertersBusId the mapping of buses and their number of VSC converters regulating them
    * @param manager the dynamic data base manager to use
    */
-  HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions, bool infiniteReactiveLimits,
-                          const std::unordered_set<std::shared_ptr<inputs::Converter>> &vscConverters,
-                          const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId, const inputs::DynamicDataBaseManager &manager);
+  HVDCDefinitionAlgorithm(HVDCLineDefinitions &hvdcLinesDefinitions, const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap,
+                          bool infiniteReactiveLimits, const std::unordered_set<std::shared_ptr<inputs::Converter>> &vscConverters,
+                          const inputs::DynamicDataBaseManager &manager);
 
   /**
    * @brief Perform the algorithm
@@ -288,21 +287,7 @@ class HVDCDefinitionAlgorithm {
  private:
   /// @brief HVDC model definition
   struct HVDCModelDefinition {
-    using VSCBusPair = std::pair<HVDCDefinition::BusId, VSCDefinition::VSCId>;  ///< Alias for pair of bus id and VSC id
-    /// @brief Hash structure for VSCBusPair
-    struct VSCBusPairHash {
-      /**
-       * @brief Operator to retrieve hash value
-       *
-       * @param pair the VSCBusPair to hash
-       * @return the computed hash
-       */
-      std::size_t operator()(const VSCBusPair &pair) const noexcept;
-    };
-    using VSCBusPairSet = std::unordered_set<VSCBusPair, VSCBusPairHash>;  ///< Alias for set of VSCBusPair
-
-    HVDCDefinition::HVDCModel model;           ///< the model to use
-    VSCBusPairSet vscBusIdsMultipleRegulated;  ///< the VSCs and their bus that are involved in multiple VSC regulations
+    HVDCDefinition::HVDCModel model;  ///< the model to use
   };
 
  private:
@@ -330,23 +315,6 @@ class HVDCDefinitionAlgorithm {
                                       HVDCDefinition::HVDCModel oneVSCInfiniteReactive, HVDCDefinition::HVDCModel oneVSCFiniteReactive) const;
 
   /**
-   * @brief Get the Buses By Position
-   *
-   * @param hvdcline the HVDC line to process
-   * @param position the position of the extremities
-   * @return The set of VSC bus pair according to the position
-   */
-  HVDCModelDefinition::VSCBusPairSet getBusesByPosition(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position) const;
-
-  /**
-   * @brief Get the list of buses regulated by multiple VSC
-   * @param hvdcline the hvdc line to process
-   * @param position the position of the extremities
-   * @returns the list of pairs (bus, VSC) involved in multiple VSC regulation
-   */
-  HVDCModelDefinition::VSCBusPairSet getBusRegulatedByMultipleVSC(const inputs::HvdcLine &hvdcline, HVDCDefinition::Position position) const;
-
-  /**
    * @brief Get or create HVDC line definition
    *
    * Creates the element if not already existing
@@ -356,9 +324,9 @@ class HVDCDefinitionAlgorithm {
   std::pair<std::reference_wrapper<HVDCDefinition>, bool> getOrCreateHvdcLineDefinition(const inputs::HvdcLine &hvdcLine);
 
  private:
-  HVDCLineDefinitions &hvdcLinesDefinitions_;                                 ///< The HVDC lines definitions to update
-  const bool infiniteReactiveLimits_;                                         ///< whether we use infinite reactive limits
-  const inputs::NetworkManager::BusMapRegulating &mapBusVSCConvertersBusId_;  ///< the map of buses and the number of VSC converters regulating them
+  HVDCLineDefinitions &hvdcLinesDefinitions_;                                     ///< The HVDC lines definitions to update
+  const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap_;  ///< mapping of busId and the number of generators that regulates them
+  const bool infiniteReactiveLimits_;                                             ///< whether we use infinite reactive limits
   std::unordered_map<inputs::Converter::ConverterId, std::shared_ptr<inputs::Converter>> vscConverters_;  ///< List of VSC converters to use
   std::unordered_set<std::string> hvdcLinesInSVC;  ///< If a hvdc line id is in this map then it belongs to a secondary voltage control area
 };

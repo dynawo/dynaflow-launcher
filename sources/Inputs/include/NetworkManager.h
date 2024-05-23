@@ -20,8 +20,8 @@
 #include "HvdcLine.h"
 #include "Node.h"
 
-#include <DYNDataInterface.h>
 #include <DYNComponentInterface.h>
+#include <DYNDataInterface.h>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
@@ -40,33 +40,31 @@ namespace inputs {
 class NetworkManager {
  public:
   /**
-  * @brief Enum representing the number of regulating elements for one bus
-  */
+   * @brief Enum representing the number of regulating elements for one bus
+   */
   enum class NbOfRegulating {
     ONE = 0,   ///< There is one element regulating the bus
     MULTIPLES  ///< There are more than one element regulating the bus
   };
 
-  using ProcessNodeCallback = std::function<void(const std::shared_ptr<Node>&)>;  ///< Callback for node algorithm
-  using BusId = std::string;                                                      ///< alias of BusId
-  using BusMapRegulating = std::unordered_map<BusId, NbOfRegulating>;             ///< alias for the bus map
+  using ProcessNodeCallback = std::function<void(const std::shared_ptr<Node> &)>;  ///< Callback for node algorithm
+  using BusId = std::string;                                                       ///< alias of BusId
+  using BusMapRegulating = std::unordered_map<BusId, NbOfRegulating>;              ///< alias for the bus map
 
  public:
   /**
-  * @brief Constructor
-  *
-  * @param filepath network file path
-  */
-  explicit NetworkManager(const boost::filesystem::path& filepath);
+   * @brief Constructor
+   *
+   * @param filepath network file path
+   */
+  explicit NetworkManager(const boost::filesystem::path &filepath);
 
   /**
    * @brief Register a callback to call at each node
    *
    * @param callback callback
    */
-  void onNode(ProcessNodeCallback&& callback) {
-    nodesCallbacks_.push_back(std::move(callback));
-  }
+  void onNode(ProcessNodeCallback &&callback) { nodesCallbacks_.push_back(std::move(callback)); }
 
   /**
    * @brief Walk through nodes
@@ -80,27 +78,21 @@ class NetworkManager {
    *
    * @returns the information of the slack node, if present
    */
-  boost::optional<std::shared_ptr<Node>> getSlackNode() const {
-    return slackNode_ ? boost::make_optional(slackNode_) : boost::none;
-  }
+  boost::optional<std::shared_ptr<Node>> getSlackNode() const { return slackNode_ ? boost::make_optional(slackNode_) : boost::none; }
 
   /**
    * @brief Retrieve data interface
    *
    * @returns data interface
    */
-  boost::shared_ptr<DYN::DataInterface> dataInterface() const {
-    return interface_;
-  }
+  boost::shared_ptr<DYN::DataInterface> dataInterface() const { return interface_; }
 
   /**
    * @brief Retrieve the hvdc lines of the network
    *
    * @returns hvdc line
    */
-  const std::vector<std::shared_ptr<HvdcLine>>& getHvdcLine() const {
-    return hvdcLines_;
-  }
+  const std::vector<std::shared_ptr<HvdcLine>> &getHvdcLine() const { return hvdcLines_; }
 
   /**
    * @brief Computes total list of VSC converters accross all HVDClines
@@ -110,21 +102,11 @@ class NetworkManager {
   std::unordered_set<std::shared_ptr<Converter>> computeVSCConverters() const;
 
   /**
-   * @brief Retrieve the mapping of busId and the number of generators that regulate them
+   * @brief Retrieve the mapping of busId and the number of generators/VSCs that regulate them
    *
-   * @returns map of bus id to nbOfRegulatingGenerators
+   * @returns map of bus id to number of regulating components
    */
-  const BusMapRegulating& getMapBusGeneratorsBusId() const {
-    return mapBusGeneratorsBusId_;
-  }
-
-  /**
-   * @brief Rerieve the mapping of busId and the number of VSC converters that regulate it
-   * @returns map of bus id to nbOfRegulatingGenerators
-   */
-  const BusMapRegulating& getMapBusVSCConvertersBusId() const {
-    return mapBusVSCConvertersBusId_;
-  }
+  const BusMapRegulating &getBusRegulationMap() const { return mapBusIdToNumberOfRegulation_; }
 
   /**
    * @brief determines if the network is at least partially conditioned
@@ -147,28 +129,15 @@ class NetworkManager {
   /**
    * @brief Update a bus regulating map according to internal interface
    * @param map the mapping to update
-   * @param elementId the element id to add to the map
-   * @param dataInterface the data interface to use
+   * @param node the reference regulated node
    */
-  static void updateMapRegulatingBuses(BusMapRegulating& map, const std::string& elementId, const boost::shared_ptr<DYN::DataInterface>& dataInterface);
-
-  /**
-   * @brief Update a VSC regulating map according to internal interface
-   * @param VSCmap the mapping to update
-   * @param VSCId the element id to add to the map
-   * @param VLId  id of the voltagelevel to which the element belong
-   * @param dataInterface the data interface to use
-   */
-  static void updateVSCMapRegulatingBuses(BusMapRegulating& VSCmap,
-                                          const std::string& VSCId,
-                                          const std::string& VLId,
-                                          const boost::shared_ptr<DYN::DataInterface>& dataInterface);
+  static void updateMapRegulatingBuses(BusMapRegulating &map, const std::shared_ptr<Node> &node);
 
   /**
    * @brief Update the network conditioning status based on a component conditioning status
    * @param componentInterface the data interface to use
    */
-  void updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface>& componentInterface);
+  void updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface> &componentInterface);
 
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface
@@ -179,10 +148,9 @@ class NetworkManager {
   std::vector<std::shared_ptr<VoltageLevel>> voltagelevels_;  ///< Voltage levels elements
   std::vector<std::shared_ptr<Line>> lines_;                  ///< List of the lines
   std::vector<std::shared_ptr<Tfo>> tfos_;                    ///< List of transformers
-  BusMapRegulating mapBusGeneratorsBusId_;                    ///< mapping of busId and the number of generators that regulate them
-  BusMapRegulating mapBusVSCConvertersBusId_;                 ///< mapping of busId and the number of VSC converters that regulate them
-  bool   isPartiallyConditioned_;                             ///< true if the network is at last partially conditioned, false otherwise
-  bool   isFullyConditioned_;                                 ///< true if the network is fully conditioned, false otherwise
+  BusMapRegulating mapBusIdToNumberOfRegulation_;             ///< mapping of busId and the number of generators or VSC converters that regulate them
+  bool isPartiallyConditioned_;                               ///< true if the network is at last partially conditioned, false otherwise
+  bool isFullyConditioned_;                                   ///< true if the network is fully conditioned, false otherwise
 };
 
 }  // namespace inputs

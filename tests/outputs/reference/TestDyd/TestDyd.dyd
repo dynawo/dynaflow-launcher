@@ -7,11 +7,6 @@
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
     <dyn:connect var1="generator_N" var2="signalN_N"/>
   </dyn:macroConnector>
-  <dyn:macroConnector id="GEN_VRREMOTE_CONNECTOR">
-    <dyn:connect var1="generator_NQ" var2="vrremote_NQ"/>
-    <dyn:connect var1="generator_limUQDown" var2="vrremote_limUQDown_@INDEX@_"/>
-    <dyn:connect var1="generator_limUQUp" var2="vrremote_limUQUp_@INDEX@_"/>
-  </dyn:macroConnector>
   <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
     <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
     <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>

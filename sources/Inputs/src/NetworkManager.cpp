@@ -43,41 +43,25 @@ namespace dfl {
 namespace inputs {
 
 NetworkManager::NetworkManager(const boost::filesystem::path &filepath)
-    : interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())),
-    slackNode_{}, nodes_{},
-    nodesCallbacks_{},
-    isPartiallyConditioned_(false),
-    isFullyConditioned_(true) {
+    : interface_(DYN::DataInterfaceFactory::build(DYN::DataInterfaceFactory::DATAINTERFACE_IIDM, filepath.generic_string())), slackNode_{}, nodes_{},
+      nodesCallbacks_{}, isPartiallyConditioned_(false), isFullyConditioned_(true) {
   buildTree();
 }
 
-void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::string &elementId, const boost::shared_ptr<DYN::DataInterface> &dataInterface) {
-  auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(elementId)->getID();
-  auto it = map.find(regulatedBus);
-  if (it == map.end()) {
-    map.insert({regulatedBus, NbOfRegulating::ONE});
-  } else {
-    it->second = NbOfRegulating::MULTIPLES;
-  }
-}
-
-void NetworkManager::updateVSCMapRegulatingBuses(BusMapRegulating &VSCmap,
-                                                 const std::string &VSCId,
-                                                 const std::string &VLId,
-                                                 const boost::shared_ptr<DYN::DataInterface> &dataInterface) {
-  auto regulatedBus = dataInterface->getServiceManager()->getRegulatedBus(VSCId)->getID();
-  std::vector<std::string> busesConnected = dataInterface->getServiceManager()->getBusesConnectedBySwitch(regulatedBus, VLId);
-  busesConnected.push_back(regulatedBus);
-  for (const std::string& busId : busesConnected) {
-    auto it = VSCmap.find(busId);
-    if (it == VSCmap.end()) {
-      VSCmap.insert({busId, NbOfRegulating::ONE});
+void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::shared_ptr<Node> &node) {
+  std::vector<std::string> busesConnected = node->getBusesConnectedByVoltageLevel();
+  busesConnected.push_back(node->id);
+  for (const std::string &busId : busesConnected) {
+    auto it = map.find(busId);
+    if (it == map.end()) {
+      map.insert({busId, NbOfRegulating::ONE});
     } else {
       it->second = NbOfRegulating::MULTIPLES;
     }
   }
 }
-void NetworkManager::updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface>& componentInterface) {
+
+void NetworkManager::updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface> &componentInterface) {
   if (componentInterface->hasInitialConditions()) {
     isPartiallyConditioned_ = true;
   } else {
@@ -91,6 +75,7 @@ void NetworkManager::buildTree() {
   auto opt_id = network->getSlackNodeBusId();
 
   const auto &voltageLevels = network->getVoltageLevels();
+  // We first initialize all nodes
   for (const auto &networkVL : voltageLevels) {
     const auto &shunts = networkVL->getShuntCompensators();
     std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
@@ -126,6 +111,16 @@ void NetworkManager::buildTree() {
       for (const auto &busBarSection : bus->getBusBarSectionIdentifiers()) {
         nodes_[bus->getID()]->busBarSections.emplace_back(busBarSection);
       }
+    }
+  }
+  // And then we update others elements
+  for (const auto &networkVL : voltageLevels) {
+    const auto &shunts = networkVL->getShuntCompensators();
+    std::unordered_map<Node::NodeId, std::vector<Shunt>> shuntsMap;
+    for (const auto &shunt : shunts) {
+      updateConditioningStatus(shunt);
+      // We take into account even disconnected shunts as dynamic models may aim to connect them
+      (shuntsMap[shunt->getBusInterface()->getID()]).push_back(std::move(Shunt(shunt->getID())));
     }
 
     const auto &loads = networkVL->getLoads();
@@ -168,7 +163,7 @@ void NetworkManager::buildTree() {
       // The reason it is checked also here is to avoid to go through all the nodes later on
       if (generator->isVoltageRegulationOn()) {
         // We don't use dynamic models for generators with voltage regulation disabled
-        updateMapRegulatingBuses(mapBusGeneratorsBusId_, generator->getID(), interface_);
+        updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[regulatedBusId]);
       }
       nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
                                               generator->getQMin(), generator->getQMax(), pmin, pmax, generator->getQ(), targetP,
@@ -304,22 +299,18 @@ void NetworkManager::buildTree() {
       converter1 = std::make_shared<VSCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn1->getQMax(), vscConverterDyn1->getQMin(), vscConverterDyn1->getQ(),
                                                   vscConverterDyn1->getReactiveCurvesPoints());
-      std::string converter1VLId = nodes_[converterDyn1->getBusInterface()->getID()]->voltageLevel.lock()->id;
-      updateVSCMapRegulatingBuses(mapBusVSCConvertersBusId_,
-                                  converterDyn1->getID(),
-                                  converter1VLId,
-                                  interface_);
+      if (voltageRegulationOn) {
+        updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[converterDyn1->getBusInterface()->getID()]);
+      }
       auto vscConverterDyn2 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn2);
       updateConditioningStatus(vscConverterDyn2);
       voltageRegulationOn = vscConverterDyn2->getVoltageRegulatorOn();
       converter2 = std::make_shared<VSCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, voltageRegulationOn,
                                                   vscConverterDyn2->getQMax(), vscConverterDyn2->getQMin(), vscConverterDyn2->getQ(),
                                                   vscConverterDyn2->getReactiveCurvesPoints());
-      std::string converter2VLId = nodes_[converterDyn2->getBusInterface()->getID()]->voltageLevel.lock()->id;
-      updateVSCMapRegulatingBuses(mapBusVSCConvertersBusId_,
-                                  converterDyn2->getID(),
-                                  converter2VLId,
-                                  interface_);
+      if (voltageRegulationOn) {
+        updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[converterDyn2->getBusInterface()->getID()]);
+      }
     } else {
       converterType = HvdcLine::ConverterType::LCC;
       auto lccConverterDyn1 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn1);

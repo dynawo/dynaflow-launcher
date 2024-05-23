@@ -58,7 +58,7 @@ TEST(Dyd, write) {
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   HVDCLineDefinitions noHvdcDefs;
-  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  dfl::inputs::NetworkManager::BusMapRegulating noBuses;
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
@@ -100,8 +100,9 @@ TEST(Dyd, writeRemote) {
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   HVDCLineDefinitions noHvdcDefs;
-  GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
   DynamicModelDefinitions noModels;
+  dfl::inputs::NetworkManager::BusMapRegulating busesRegulatedBySeveralGenerators = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
+                                                                                     {bus2, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES}};
 
   outputPath.append(filename);
   dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), generators, {}, node, noHvdcDefs,
@@ -138,19 +139,16 @@ TEST(Dyd, writeHvdc) {
                                     0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
-  HVDCLineDefinitions::BusVSCMap vscIds = {
-      std::make_pair("_BUS___10_TN", "VSCStation1"),
-  };
-  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+  HVDCLineDefinitions hvdcDefs{hvdcLines};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
-
-  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  dfl::inputs::NetworkManager::BusMapRegulating busesToNumberOfRegulationMap = {{"_BUS___10_TN", dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES}};
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, noBuses, manager, noModels, {}));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, busesToNumberOfRegulationMap, manager, noModels, {}));
 
   dydWriter.write();
 
@@ -233,13 +231,12 @@ TEST(Dyd, writeDynamicModel) {
                                 {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC)};
-  HVDCLineDefinitions::BusVSCMap vscIds = {};
-  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+  HVDCLineDefinitions hvdcDefs{hvdcLines};
 
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
-  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  dfl::inputs::NetworkManager::BusMapRegulating noBuses;
 
   outputPath.append(filename);
   dfl::outputs::Dyd dydWriter(
@@ -286,7 +283,7 @@ TEST(Dyd, writeStaticVarCompensator) {
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   HVDCLineDefinitions noHvdcDefs;
-  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  dfl::inputs::NetworkManager::BusMapRegulating noBuses;
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
@@ -322,7 +319,7 @@ TEST(Dyd, writeLoad) {
   auto node = dfl::inputs::Node::build("Slack", vl, 100., {});
 
   HVDCLineDefinitions noHvdcDefs;
-  GeneratorDefinitionAlgorithm::BusGenMap noBuses;
+  dfl::inputs::NetworkManager::BusMapRegulating noBuses;
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
@@ -358,21 +355,23 @@ TEST(Dyd, writeVRRemote) {
   auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2", "BUS_1", false,
                                     HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
                                     boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
-  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_3", false,
-                                    HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {}, 0., boost::none,
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_3", true,
+                                    HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDangling, {}, 0., boost::none,
                                     boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
-  HVDCLineDefinitions::BusVSCMap vscIds = {std::make_pair("BUS_1", "VSCStation1"), std::make_pair("BUS_3", "VSCStation2")};
-  HVDCLineDefinitions hvdcDefs{hvdcLines, vscIds};
+  HVDCLineDefinitions hvdcDefs{hvdcLines};
 
   const std::string bus1 = "BUS_1";
   const std::string bus2 = "BUS_2";
-  GeneratorDefinitionAlgorithm::BusGenMap busesRegulatedBySeveralGenerators = {{bus1, "G1"}, {bus2, "G4"}};
+  const std::string bus3 = "BUS_3";
+  dfl::inputs::NetworkManager::BusMapRegulating busesToNumberOfRegulationMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
+                                                                                {bus2, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
+                                                                                {bus3, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES}};
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
-  dfl::outputs::Dyd dydWriter(dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, busesRegulatedBySeveralGenerators,
-                                                               manager, noModels, {}));
+  dfl::outputs::Dyd dydWriter(
+      dfl::outputs::Dyd::DydDefinition(basename, outputPath.generic_string(), {}, {}, node, hvdcDefs, busesToNumberOfRegulationMap, manager, noModels, {}));
 
   dydWriter.write();
 
