@@ -13,6 +13,7 @@
 import os
 import sys
 import argparse
+import filecmp
 import json
 try:
     from itertools import zip_longest
@@ -34,6 +35,19 @@ def get_argparser():
     parser.add_argument("config", type=str, help="Simulation configuration file")
 
     return parser
+
+
+def compare_input_files(result_input_file_path, reference_input_file_path, file_type, verbose, nb_differences):
+    if verbose:
+        print("comparing " + result_input_file_path + " and " + reference_input_file_path)
+
+    files_are_equal = filecmp.cmp(result_input_file_path, reference_input_file_path)
+    if (files_are_equal):
+        print("No difference")
+    else:
+        print("[ERROR] " + file_type + " file " + result_input_file_path + " different from reference file " + reference_input_file_path)
+        nb_differences += 1
+
 
 if __name__ == "__main__":
     parser = get_argparser()
@@ -76,6 +90,18 @@ if __name__ == "__main__":
             elif options.verbose:
                 print("No difference")
             nb_differences += nb_differences_local
+
+        #dyd
+        dyd_input_filename = "TestIIDM_" + options.testdir + ".dyd"
+        dyd_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename))
+        dyd_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, dyd_input_filename))
+        compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose, nb_differences)
+
+        #par
+        par_input_filename = "TestIIDM_" + options.testdir + ".par"
+        par_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, par_input_filename))
+        par_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, par_input_filename))
+        compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose, nb_differences)
 
         if is_constraints_generated:
             #constraints

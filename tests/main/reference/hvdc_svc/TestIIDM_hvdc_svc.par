@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="macro_remoteVControl_vr">
+    <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
+    <par name="vrremote_Gain" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
+  </macroParameterSet>
+  <macroParameterSet id="macro_signalNGenerator"/>
+  <set id="3390034e-b251-5828-952e-f85234690b61">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_svc/TestIIDM_hvdc_svc_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmax"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_svc/TestIIDM_hvdc_svc_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmin"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00020000000000000001"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.3999999999999999"/>
+    <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="150"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+  <set id="GenericRestorativeLoad">
+    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
+    <par name="load_Beta" type="DOUBLE" value="2.5"/>
+    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
+    <par name="load_tFilter" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="HERA9AJAX1">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Lambda1Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Lambda2Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q1Nom" type="DOUBLE" value="100"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2Nom" type="DOUBLE" value="100"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
+    <par name="reactivePowerControlLoop_CqMaxPu" type="DOUBLE" value="9.6899999999999995"/>
+    <par name="reactivePowerControlLoop_DeltaURefMaxPu" type="DOUBLE" value="0.039469999999999998"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
+    <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
+    <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="HERAP7_HERA_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="AJAXP7_AJAX_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="HERAP7_HERA_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="AJAXP7_AJAX_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="HERA9AJAX1bis">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Lambda1Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Lambda2Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q1Nom" type="DOUBLE" value="100"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2Nom" type="DOUBLE" value="100"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="false"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="HERAP7_HERA_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="AJAXP7_AJAX_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="HERAP7_HERA_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="AJAXP7_AJAX_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="HERAP7_HERA_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="AJAXP7_AJAX_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="Model_Signal_NQ_AJAXP7_S_VL7_TN1">
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="AJAXP7_AJAX_TER_2"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="AJAXP7_AJAX_TER_2"/>
+    <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="Model_Signal_NQ_HERAP7_S_VL7_TN1">
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="HERAP7_HERA_TER_2"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="HERAP7_HERA_TER_2"/>
+    <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="SVC">
+    <par name="secondaryVoltageControl_Alpha" type="DOUBLE" value="0.030864197499999999"/>
+    <par name="secondaryVoltageControl_Beta" type="DOUBLE" value="1.2345679000000001"/>
+    <par name="secondaryVoltageControl_DerLevelMaxPu" type="DOUBLE" value="0.085000000000000006"/>
+    <par name="secondaryVoltageControl_FreezingActivated" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Participate0_0_" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Participate0_1_" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Participate0_2_" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Qr_0_" type="DOUBLE" value="290"/>
+    <par name="secondaryVoltageControl_Qr_1_" type="DOUBLE" value="300"/>
+    <par name="secondaryVoltageControl_Qr_2_" type="DOUBLE" value="280"/>
+    <par name="secondaryVoltageControl_SNom_0_" type="DOUBLE" value="2401.27"/>
+    <par name="secondaryVoltageControl_XTfoPu_0_" type="DOUBLE" value="0.1426"/>
+    <par name="secondaryVoltageControl_XTfoPu_1_" type="DOUBLE" value="0.1426"/>
+    <par name="secondaryVoltageControl_limUQDown0_0_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQDown0_1_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQDown0_2_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQUp0_0_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQUp0_1_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQUp0_2_" type="BOOL" value="false"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_0_" origData="IIDM" origName="p_pu" componentId="HADES7HADES1_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_1_" origData="IIDM" origName="p_pu" componentId="HADES7HADES2_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_2_" origData="IIDM" origName="p1_pu" componentId="HERA9AJAX1"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_0_" origData="IIDM" origName="q_pu" componentId="HADES7HADES1_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_1_" origData="IIDM" origName="q_pu" componentId="HADES7HADES2_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_2_" origData="IIDM" origName="q1_pu" componentId="HERA9AJAX1"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_SNom_1_" origData="IIDM" origName="sNom" componentId="HADES7HADES2_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_0_" origData="IIDM" origName="v_pu" componentId="HADES7HADES1_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_1_" origData="IIDM" origName="v_pu" componentId="HADES7HADES2_NGU_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_2_" origData="IIDM" origName="v1_pu" componentId="HERA9AJAX1"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Up0Pu" origData="IIDM" origName="Upu" componentId="HADESP6_S_VL6_TN1"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_UpRef0Pu" origData="IIDM" origName="Upu" componentId="HADESP6_S_VL6_TN1"/>
+  </set>
+  <set id="c47386f5-a7c0-5d36-85a9-90d1666a0495">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_svc/TestIIDM_hvdc_svc_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmax"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_svc/TestIIDM_hvdc_svc_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmin"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00020000000000000001"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.3999999999999999"/>
+    <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="150"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+  <set id="signalNTfoGenerator_Nuc">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+  </set>
+</parametersSet>
