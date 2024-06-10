@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
+    <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
+    <dyn:connect var1="generator_N" var2="signalN_N"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
+    <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
+    <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
+    <dyn:connect var1="Ii_value" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
+    <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
+    <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
+  </dyn:macroConnector>
+  <dyn:macroStaticReference id="GeneratorStaticRef">
+    <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
+    <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
+    <dyn:staticRef var="generator_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="LoadRef">
+    <dyn:staticRef var="PPu_value" staticVar="p"/>
+    <dyn:staticRef var="QPu_value" staticVar="q"/>
+    <dyn:staticRef var="state_value" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
+  <dyn:blackBoxModel id="_0447ee05-c766-11e1-8775-005056c00008" staticId="_0447ee05-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04481515-c766-11e1-8775-005056c00008" staticId="_04481515-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04488a49-c766-11e1-8775-005056c00008" staticId="_04488a49-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0448b150-c766-11e1-8775-005056c00008" staticId="_0448b150-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0448d863-c766-11e1-8775-005056c00008" staticId="_0448d863-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0448d86a-c766-11e1-8775-005056c00008" staticId="_0448d86a-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044974a8-c766-11e1-8775-005056c00008" staticId="_044974a8-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0449e9d7-c766-11e1-8775-005056c00008" staticId="_0449e9d7-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044a5f05-c766-11e1-8775-005056c00008" staticId="_044a5f05-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044a5f08-c766-11e1-8775-005056c00008" staticId="_044a5f08-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044aad24-c766-11e1-8775-005056c00008" staticId="_044aad24-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044afb44-c766-11e1-8775-005056c00008" staticId="_044afb44-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044afb49-c766-11e1-8775-005056c00008" staticId="_044afb49-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044b2251-c766-11e1-8775-005056c00008" staticId="_044b2251-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044b2257-c766-11e1-8775-005056c00008" staticId="_044b2257-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044bbe92-c766-11e1-8775-005056c00008" staticId="_044bbe92-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044c0cb3-c766-11e1-8775-005056c00008" staticId="_044c0cb3-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044c81e4-c766-11e1-8775-005056c00008" staticId="_044c81e4-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044c81e5-c766-11e1-8775-005056c00008" staticId="_044c81e5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044ca8f0-c766-11e1-8775-005056c00008" staticId="_044ca8f0-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="1cfce919-aa49-5068-bebb-ed412712a442">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044ca8f2-c766-11e1-8775-005056c00008" staticId="_044ca8f2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044cd00a-c766-11e1-8775-005056c00008" staticId="_044cd00a-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="219adbf0-18ba-5a64-8881-20c12fd92bbf">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044d1e22-c766-11e1-8775-005056c00008" staticId="_044d1e22-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044ea4c0-c766-11e1-8775-005056c00008" staticId="_044ea4c0-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044ecbd1-c766-11e1-8775-005056c00008" staticId="_044ecbd1-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0450a093-c766-11e1-8775-005056c00008" staticId="_0450a093-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045163e2-c766-11e1-8775-005056c00008" staticId="_045163e2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0451d918-c766-11e1-8775-005056c00008" staticId="_0451d918-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04524e46-c766-11e1-8775-005056c00008" staticId="_04524e46-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04524e4a-c766-11e1-8775-005056c00008" staticId="_04524e4a-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0452ea80-c766-11e1-8775-005056c00008" staticId="_0452ea80-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="23160ef8-fd99-552f-9531-1a2cee631ea7">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0453add4-c766-11e1-8775-005056c00008" staticId="_0453add4-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0453d4e2-c766-11e1-8775-005056c00008" staticId="_0453d4e2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04547126-c766-11e1-8775-005056c00008" staticId="_04547126-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04555b82-c766-11e1-8775-005056c00008" staticId="_04555b82-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04555b89-c766-11e1-8775-005056c00008" staticId="_04555b89-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045645e2-c766-11e1-8775-005056c00008" staticId="_045645e2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04566cf3-c766-11e1-8775-005056c00008" staticId="_04566cf3-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04566cf5-c766-11e1-8775-005056c00008" staticId="_04566cf5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045868c0-c766-11e1-8775-005056c00008" staticId="_045868c0-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="2cd2df2d-522f-5ca4-ae4c-d32f523dfd4f">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045868c1-c766-11e1-8775-005056c00008" staticId="_045868c1-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="b4b6e326-9cef-5391-be3f-7b2aad2a65be">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0458ddf1-c766-11e1-8775-005056c00008" staticId="_0458ddf1-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="2be57e7f-fb2e-5854-bccb-8b0b3181d874">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0458ddf4-c766-11e1-8775-005056c00008" staticId="_0458ddf4-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0458ddf5-c766-11e1-8775-005056c00008" staticId="_0458ddf5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045ab2b0-c766-11e1-8775-005056c00008" staticId="_045ab2b0-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="4fc66d71-52b9-5a21-8444-e28536ff4154">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045b00d5-c766-11e1-8775-005056c00008" staticId="_045b00d5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045c8777-c766-11e1-8775-005056c00008" staticId="_045c8777-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045cae82-c766-11e1-8775-005056c00008" staticId="_045cae82-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045cfca7-c766-11e1-8775-005056c00008" staticId="_045cfca7-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045d4ac9-c766-11e1-8775-005056c00008" staticId="_045d4ac9-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045dbff2-c766-11e1-8775-005056c00008" staticId="_045dbff2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045dbff4-c766-11e1-8775-005056c00008" staticId="_045dbff4-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045f6da2-c766-11e1-8775-005056c00008" staticId="_045f6da2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045f94b4-c766-11e1-8775-005056c00008" staticId="_045f94b4-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045f94ba-c766-11e1-8775-005056c00008" staticId="_045f94ba-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0461b790-c766-11e1-8775-005056c00008" staticId="_0461b790-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046205b5-c766-11e1-8775-005056c00008" staticId="_046205b5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0462c904-c766-11e1-8775-005056c00008" staticId="_0462c904-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04633e31-c766-11e1-8775-005056c00008" staticId="_04633e31-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="0f291649-8387-51c5-9db0-fa41afc9ccb6">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0463da70-c766-11e1-8775-005056c00008" staticId="_0463da70-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0466246a-c766-11e1-8775-005056c00008" staticId="_0466246a-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04682035-c766-11e1-8775-005056c00008" staticId="_04682035-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04689566-c766-11e1-8775-005056c00008" staticId="_04689566-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04697fc9-c766-11e1-8775-005056c00008" staticId="_04697fc9-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046a4319-c766-11e1-8775-005056c00008" staticId="_046a4319-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046adf5a-c766-11e1-8775-005056c00008" staticId="_046adf5a-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046b0665-c766-11e1-8775-005056c00008" staticId="_046b0665-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046b7b95-c766-11e1-8775-005056c00008" staticId="_046b7b95-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046c3ee3-c766-11e1-8775-005056c00008" staticId="_046c3ee3-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046c3ee7-c766-11e1-8775-005056c00008" staticId="_046c3ee7-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="41fb44e3-e362-56d5-8ebf-0265bbdc0b81">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046d0232-c766-11e1-8775-005056c00008" staticId="_046d0232-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046dc585-c766-11e1-8775-005056c00008" staticId="_046dc585-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046efe03-c766-11e1-8775-005056c00008" staticId="_046efe03-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04716f06-c766-11e1-8775-005056c00008" staticId="_04716f06-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0472a789-c766-11e1-8775-005056c00008" staticId="_0472a789-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="eae59a8a-8bbf-5867-9a02-a42334495566">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04742e27-c766-11e1-8775-005056c00008" staticId="_04742e27-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04747c44-c766-11e1-8775-005056c00008" staticId="_04747c44-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0474f170-c766-11e1-8775-005056c00008" staticId="_0474f170-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0476781a-c766-11e1-8775-005056c00008" staticId="_0476781a-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0476ed42-c766-11e1-8775-005056c00008" staticId="_0476ed42-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0477627b-c766-11e1-8775-005056c00008" staticId="_0477627b-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04778989-c766-11e1-8775-005056c00008" staticId="_04778989-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04791028-c766-11e1-8775-005056c00008" staticId="_04791028-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04798556-c766-11e1-8775-005056c00008" staticId="_04798556-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0479fa87-c766-11e1-8775-005056c00008" staticId="_0479fa87-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047a219a-c766-11e1-8775-005056c00008" staticId="_047a219a-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047a48a2-c766-11e1-8775-005056c00008" staticId="_047a48a2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047a48a5-c766-11e1-8775-005056c00008" staticId="_047a48a5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047a48a8-c766-11e1-8775-005056c00008" staticId="_047a48a8-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047abdd7-c766-11e1-8775-005056c00008" staticId="_047abdd7-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047b0bf0-c766-11e1-8775-005056c00008" staticId="_047b0bf0-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047d7cf6-c766-11e1-8775-005056c00008" staticId="_047d7cf6-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047dcb12-c766-11e1-8775-005056c00008" staticId="_047dcb12-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047e1936-c766-11e1-8775-005056c00008" staticId="_047e1936-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047fedf2-c766-11e1-8775-005056c00008" staticId="_047fedf2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04812679-c766-11e1-8775-005056c00008" staticId="_04812679-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04817492-c766-11e1-8775-005056c00008" staticId="_04817492-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04819ba4-c766-11e1-8775-005056c00008" staticId="_04819ba4-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0481c2b3-c766-11e1-8775-005056c00008" staticId="_0481c2b3-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0482fb36-c766-11e1-8775-005056c00008" staticId="_0482fb36-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0483224a-c766-11e1-8775-005056c00008" staticId="_0483224a-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="22ed5ba5-3454-5cd2-8e02-f66058978e0b">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04839777-c766-11e1-8775-005056c00008" staticId="_04839777-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="bb75ae6d-fb08-5c5c-a9a8-b6da1e0ff4aa">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0483be82-c766-11e1-8775-005056c00008" staticId="_0483be82-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048433b6-c766-11e1-8775-005056c00008" staticId="_048433b6-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0484cffb-c766-11e1-8775-005056c00008" staticId="_0484cffb-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04854520-c766-11e1-8775-005056c00008" staticId="_04854520-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04854525-c766-11e1-8775-005056c00008" staticId="_04854525-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04856c34-c766-11e1-8775-005056c00008" staticId="_04856c34-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="19f9f251-1578-5c61-a3de-5c2fa7e45570">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04859346-c766-11e1-8775-005056c00008" staticId="_04859346-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="d3c2717a-6ee2-532b-9153-e66f95644a8b">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0485e168-c766-11e1-8775-005056c00008" staticId="_0485e168-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04867dab-c766-11e1-8775-005056c00008" staticId="_04867dab-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048740f1-c766-11e1-8775-005056c00008" staticId="_048740f1-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04887973-c766-11e1-8775-005056c00008" staticId="_04887973-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0489b1f2-c766-11e1-8775-005056c00008" staticId="_0489b1f2-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0489b1fa-c766-11e1-8775-005056c00008" staticId="_0489b1fa-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="5ea119ff-ea50-5654-8c15-7079ff09bd0a">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048a9c51-c766-11e1-8775-005056c00008" staticId="_048a9c51-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048aea70-c766-11e1-8775-005056c00008" staticId="_048aea70-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="TestIIDM_no_SVarC_regulation.par" parId="355bd11e-a83d-5cd8-a751-ccc160dee727">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048b5fa5-c766-11e1-8775-005056c00008" staticId="_048b5fa5-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048bfbe0-c766-11e1-8775-005056c00008" staticId="_048bfbe0-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="TestIIDM_no_SVarC_regulation.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" staticId="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" lib="HvdcPTanPhiDiagramPQ" parFile="TestIIDM_no_SVarC_regulation.par" parId="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" staticId="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" lib="HvdcPVDiagramPQ" parFile="TestIIDM_no_SVarC_regulation.par" parId="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04524e4a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_048a9c51-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046c3ee3-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045163e2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046dc585-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0474f170-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0450a093-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044afb44-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04798556-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04547126-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0453add4-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047e1936-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04778989-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04819ba4-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04555b89-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0489b1f2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047a219a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04488a49-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045cfca7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04697fc9-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045dbff4-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045f6da2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0479fa87-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0453d4e2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047abdd7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04887973-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046205b5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0476ed42-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0448d86a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045dbff2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044b2251-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04742e27-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044aad24-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04481515-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0448d863-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046efe03-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04716f06-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04747c44-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044c81e4-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04566cf5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0476781a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0484cffb-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04566cf3-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0482fb36-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044ecbd1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045f94b4-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04682035-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0463da70-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0448b150-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_048433b6-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046b0665-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047b0bf0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044c0cb3-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0458ddf4-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0466246a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044ca8f2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04817492-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0483be82-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046b7b95-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044a5f05-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047a48a5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044b2257-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04524e46-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044afb49-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045cae82-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045c8777-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0451d918-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0461b790-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046adf5a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045f94ba-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04791028-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047d7cf6-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047a48a2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045b00d5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04689566-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04867dab-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_048b5fa5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_048740f1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0485e168-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045645e2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044a5f08-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_048bfbe0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046a4319-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044ea4c0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04812679-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047fedf2-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0447ee05-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047a48a8-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0462c904-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044c81e5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_046d0232-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04854520-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_047dcb12-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044bbe92-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0449e9d7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_045d4ac9-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0458ddf5-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04555b82-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044974a8-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0481c2b3-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04854525-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_044d1e22-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_0477627b-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="3"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="4"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="5"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="6"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="7"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="8"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="10"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="11"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="12"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="13"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="14"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="15"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="16"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_phi_value"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_0_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_0_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_3_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_2_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_3_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_2_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side2"/>
+</dyn:dynamicModelsArchitecture>

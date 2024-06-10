@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="macro_signalNGenerator">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+  </macroParameterSet>
+  <set id="3390034e-b251-5828-952e-f85234690b61">
+    <par name="generator_QMax0" type="DOUBLE" value="267.41885603019887"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="-270.89644530984538"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmin"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+  <set id="59896c5f-4189-5f1d-9f44-ea12acd9b8fc">
+    <par name="generator_QMax0" type="DOUBLE" value="304.9174717892804"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="59896c5f-4189-5f1d-9f44-ea12acd9b8fc_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="-79.017147283154486"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="59896c5f-4189-5f1d-9f44-ea12acd9b8fc_tableqmin"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+  <set id="GenericRestorativeLoad">
+    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
+    <par name="load_Beta" type="DOUBLE" value="2.5"/>
+    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
+    <par name="load_tFilter" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="HERA9AJAX1">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Lambda1Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Lambda2Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Q1Nom" type="DOUBLE" value="362.61127596439167"/>
+    <par name="hvdc_Q2Nom" type="DOUBLE" value="362.61127596439172"/>
+    <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="3.2187042532146393"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HERAP7_HERA_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="51b83326-230d-5a99-aa35-ce9bbd0d7757_tableqmax"/>
+    <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-3.6361127596439164"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HERAP7_HERA_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="51b83326-230d-5a99-aa35-ce9bbd0d7757_tableqmin"/>
+    <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="3.2187042532146393"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/AJAXP7_AJAX_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableName" type="STRING" value="b6eee063-e826-5caf-945a-71952bde1cc6_tableqmax"/>
+    <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-3.6361127596439173"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/AJAXP7_AJAX_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableName" type="STRING" value="b6eee063-e826-5caf-945a-71952bde1cc6_tableqmin"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="HERAP7_HERA_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="AJAXP7_AJAX_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="HERAP7_HERA_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="AJAXP7_AJAX_TER_1"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="HERA9AJAX1bis">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="3.4221249995491947"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HERAP7_HERA_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableName" type="STRING" value="60954756-71dc-5e78-b7a1-868dd8f2f8a0_tableqmax"/>
+    <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-3.4221249995491947"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HERAP7_HERA_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableName" type="STRING" value="60954756-71dc-5e78-b7a1-868dd8f2f8a0_tableqmin"/>
+    <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="2.1583750009077787"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/AJAXP7_AJAX_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableName" type="STRING" value="7848a0a1-d9ab-5c0a-980c-9ab5cfee25d8_tableqmax"/>
+    <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-2.1583750009077787"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/AJAXP7_AJAX_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableName" type="STRING" value="7848a0a1-d9ab-5c0a-980c-9ab5cfee25d8_tableqmin"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="HERAP7_HERA_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="AJAXP7_AJAX_TER_2"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="c47386f5-a7c0-5d36-85a9-90d1666a0495">
+    <par name="generator_QMax0" type="DOUBLE" value="267.41885603019892"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="-270.89644530984526"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPV_HvdcPTanPhi_diagrams/TestIIDM_hvdc_HvdcPV_HvdcPTanPhi_diagrams_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmin"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+</parametersSet>

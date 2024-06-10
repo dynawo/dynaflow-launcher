@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="macro_signalNGenerator">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+  </macroParameterSet>
+  <macroParameterSet id="macro_signalNGeneratorFixedPRectangular">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin" origData="IIDM" origName="qMin"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="0"/>
+  </macroParameterSet>
+  <macroParameterSet id="macro_signalNGeneratorRectangular">
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PMax" origData="IIDM" origName="pMax"/>
+    <reference type="DOUBLE" name="generator_PMin" origData="IIDM" origName="pMin"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin" origData="IIDM" origName="qMin"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+  </macroParameterSet>
+  <set id="1b13108d-9c1d-5212-b286-f2a17bb5477c">
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
+  </set>
+  <set id="57210c3f-56c3-5ec0-adca-9a3ab9caa88d">
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
+  </set>
+  <set id="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d">
+    <par name="generator_QMax0" type="DOUBLE" value="689.82608695652175"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo/TestIIDM_launch_svc_tfo_Diagram/_GEN____2_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmax"/>
+    <par name="generator_QMin0" type="DOUBLE" value="-689.82608695652175"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo/TestIIDM_launch_svc_tfo_Diagram/_GEN____2_SM_Diagram.txt"/>
+    <par name="generator_QMinTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmin"/>
+    <par name="generator_QNomAlt" type="DOUBLE" value="690"/>
+    <par name="generator_SNom" type="DOUBLE" value="2401.27"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <par name="reactivePowerControlLoop_CqMaxPu" type="DOUBLE" value="15"/>
+    <par name="reactivePowerControlLoop_DeltaURefMaxPu" type="DOUBLE" value="0.002"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
+    <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
+    <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
+    <macroParSet id="macro_signalNGenerator"/>
+  </set>
+  <set id="99c2bba2-a805-50f1-9d84-49b63951bae6">
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00020000000000000001"/>
+    <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.3999999999999999"/>
+    <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="150"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGeneratorRectangular"/>
+  </set>
+  <set id="GenericRestorativeLoad">
+    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
+    <par name="load_Beta" type="DOUBLE" value="2.5"/>
+    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
+    <par name="load_tFilter" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="SVC">
+    <par name="secondaryVoltageControl_Alpha" type="DOUBLE" value="0.030864197499999999"/>
+    <par name="secondaryVoltageControl_Beta" type="DOUBLE" value="1.2345679000000001"/>
+    <par name="secondaryVoltageControl_DerLevelMaxPu" type="DOUBLE" value="0.085000000000000006"/>
+    <par name="secondaryVoltageControl_FreezingActivated" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Participate0_0_" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Participate0_1_" type="BOOL" value="true"/>
+    <par name="secondaryVoltageControl_Qr_0_" type="DOUBLE" value="280"/>
+    <par name="secondaryVoltageControl_Qr_1_" type="DOUBLE" value="290"/>
+    <par name="secondaryVoltageControl_SNom_1_" type="DOUBLE" value="2401.27"/>
+    <par name="secondaryVoltageControl_XTfoPu_0_" type="DOUBLE" value="0.12280000000000001"/>
+    <par name="secondaryVoltageControl_XTfoPu_1_" type="DOUBLE" value="0.12280000000000001"/>
+    <par name="secondaryVoltageControl_limUQDown0_0_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQDown0_1_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQUp0_0_" type="BOOL" value="false"/>
+    <par name="secondaryVoltageControl_limUQUp0_1_" type="BOOL" value="false"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_0_" origData="IIDM" origName="p_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_1_" origData="IIDM" origName="p_pu" componentId="_GEN____2_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_0_" origData="IIDM" origName="q_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_1_" origData="IIDM" origName="q_pu" componentId="_GEN____2_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_SNom_0_" origData="IIDM" origName="sNom" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_0_" origData="IIDM" origName="v_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_1_" origData="IIDM" origName="v_pu" componentId="_GEN____2_SM"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_Up0Pu" origData="IIDM" origName="Upu" componentId="_BUS____1_TN"/>
+    <reference type="DOUBLE" name="secondaryVoltageControl_UpRef0Pu" origData="IIDM" origName="Upu" componentId="_BUS____1_TN"/>
+  </set>
+  <set id="decba20f-146d-56a3-848f-6ecf94043607">
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
+  </set>
+</parametersSet>
