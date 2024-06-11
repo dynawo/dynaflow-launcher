@@ -21,6 +21,8 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
+from diffCommon import compare_input_files
+
 from scriptsException import UnknownBuildType
 
 
@@ -68,6 +70,19 @@ def compare_file(options, contingency_folder, chosen_outputs):
                 elif options.verbose:
                     print(contingency_folder + ": No difference")
                 nb_differences += nb_differences_local
+
+        if contingency_folder not in ["logs", "timeLine", "lostEquipments", "constraints"]:
+            # dyd
+            dyd_input_filename = "TestIIDM_" + options.testdir + "-" + contingency_folder + ".dyd"
+            dyd_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename)
+            dyd_reference_input_file_path = full_path(options.root, "reference", options.testdir, dyd_input_filename)
+            compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose, nb_differences)
+
+            # par
+            par_input_filename = "TestIIDM_" + options.testdir + "-" + contingency_folder + ".par"
+            par_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, par_input_filename)
+            par_reference_input_file_path = full_path(options.root, "reference", options.testdir, par_input_filename)
+            compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose, nb_differences)
 
         # constraints
         result_path = full_path(
