@@ -13,7 +13,6 @@
 import os
 import sys
 import argparse
-import filecmp
 import json
 try:
     from itertools import zip_longest
@@ -21,6 +20,8 @@ except ImportError:
     from itertools import izip_longest as zip_longest
 import iidmDiff
 import constraintsDiff
+
+from diffCommon import compare_input_files
 
 from scriptsException import UnknownBuildType
 
@@ -35,18 +36,6 @@ def get_argparser():
     parser.add_argument("config", type=str, help="Simulation configuration file")
 
     return parser
-
-
-def compare_input_files(result_input_file_path, reference_input_file_path, file_type, verbose, nb_differences):
-    if verbose:
-        print("comparing " + result_input_file_path + " and " + reference_input_file_path)
-
-    files_are_equal = filecmp.cmp(result_input_file_path, reference_input_file_path)
-    if (files_are_equal):
-        print("No difference")
-    else:
-        print("[ERROR] " + file_type + " file " + result_input_file_path + " different from reference file " + reference_input_file_path)
-        nb_differences += 1
 
 
 if __name__ == "__main__":
