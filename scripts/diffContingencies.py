@@ -34,8 +34,34 @@ def get_argparser():
     parser.add_argument("root", type=str, help="Root directory to process")
     parser.add_argument("testdir", type=str, help="Test directory to process")
     parser.add_argument("config", type=str, help="Simulation configuration file")
+    parser.add_argument("iidm_name", type=str, help="IIDM input file")
 
     return parser
+
+
+def compare_dyd_and_par(contingency_folder):
+    nb_differences_dyd_and_par = 0
+
+    if len(contingency_folder) > 0:
+        dyd_input_filename = options.iidm_name + "-" + contingency_folder + ".dyd"
+    else:
+        dyd_input_filename = options.iidm_name + ".dyd"
+    dyd_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename)
+    dyd_reference_input_file_path = full_path(options.root, "reference", options.testdir, dyd_input_filename)
+    nb_differences_dyd_and_par_local_1 = compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
+    nb_differences_dyd_and_par += nb_differences_dyd_and_par_local_1
+
+    if len(contingency_folder) > 0:
+        par_input_filename = options.iidm_name + "-" + contingency_folder + ".par"
+    else:
+        par_input_filename = options.iidm_name + ".par"
+    par_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, par_input_filename)
+    par_reference_input_file_path = full_path(options.root, "reference", options.testdir, par_input_filename)
+    nb_differences_dyd_and_par_local_2 = compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
+    nb_differences_dyd_and_par += nb_differences_dyd_and_par_local_2
+
+    return nb_differences_dyd_and_par
+
 
 def compare_file(options, contingency_folder, chosen_outputs):
     """ Will compare a reference file and a result file"""
@@ -71,18 +97,10 @@ def compare_file(options, contingency_folder, chosen_outputs):
                     print(contingency_folder + ": No difference")
                 nb_differences += nb_differences_local
 
+        # dyd and par
         if contingency_folder not in ["logs", "timeLine", "lostEquipments", "constraints"]:
-            # dyd
-            dyd_input_filename = "TestIIDM_" + options.testdir + "-" + contingency_folder + ".dyd"
-            dyd_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename)
-            dyd_reference_input_file_path = full_path(options.root, "reference", options.testdir, dyd_input_filename)
-            compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose, nb_differences)
-
-            # par
-            par_input_filename = "TestIIDM_" + options.testdir + "-" + contingency_folder + ".par"
-            par_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, par_input_filename)
-            par_reference_input_file_path = full_path(options.root, "reference", options.testdir, par_input_filename)
-            compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose, nb_differences)
+            nb_differences_dyd_and_par = compare_dyd_and_par(contingency_folder)
+            nb_differences += nb_differences_dyd_and_par
 
         # constraints
         result_path = full_path(
@@ -163,6 +181,9 @@ if __name__ == "__main__":
             nb_differences = compare_file(options, folder, chosen_outputs)
 
             total_diffs += nb_differences
+
+    nb_differences_dyd_par = compare_dyd_and_par("")
+    total_diffs += nb_differences_dyd_par
 
     reference_aggr_res = os.path.join(reference_root, "aggregatedResults.xml")
     results_aggr_res = os.path.join(results_root, "aggregatedResults.xml")

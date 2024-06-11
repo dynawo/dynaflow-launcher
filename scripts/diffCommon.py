@@ -1,7 +1,9 @@
 import filecmp
 
 
-def compare_input_files(result_input_file_path, reference_input_file_path, file_type, verbose, nb_differences):
+def compare_input_files(result_input_file_path, reference_input_file_path, file_type, verbose):
+    nb_differences = 0
+
     if verbose:
         print("comparing " + result_input_file_path + " and " + reference_input_file_path)
 
@@ -11,3 +13,5 @@ def compare_input_files(result_input_file_path, reference_input_file_path, file_
     else:
         print("[ERROR] " + file_type + " file " + result_input_file_path + " different from reference file " + reference_input_file_path)
         nb_differences += 1
+
+    return nb_differences
