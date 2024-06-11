@@ -34,7 +34,7 @@ if(DEFINED N_DIFF_SCRIPT)
   endif()
 endif()
 
-set(_command ${PYTHON_COMMAND} ${SA_DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json)
+set(_command ${PYTHON_COMMAND} ${SA_DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json "outputIIDM")
 if(DEFINED SA_DIFF_SCRIPT)
   message(STATUS "Execute process: ${_command}")
   execute_process(COMMAND ${_command} RESULT_VARIABLE _result)

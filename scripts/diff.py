@@ -84,13 +84,15 @@ if __name__ == "__main__":
         dyd_input_filename = "TestIIDM_" + options.testdir + ".dyd"
         dyd_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename))
         dyd_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, dyd_input_filename))
-        compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose, nb_differences)
+        nb_differences_dyd = compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
+        nb_differences += nb_differences_dyd
 
         #par
         par_input_filename = "TestIIDM_" + options.testdir + ".par"
         par_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, par_input_filename))
         par_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, par_input_filename))
-        compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose, nb_differences)
+        nb_differences_par = compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
+        nb_differences += nb_differences_par
 
         if is_constraints_generated:
             #constraints
