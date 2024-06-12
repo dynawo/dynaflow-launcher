@@ -98,7 +98,7 @@ def compare_file(options, contingency_folder, chosen_outputs):
                 nb_differences += nb_differences_local
 
         # dyd and par
-        if contingency_folder not in ["logs", "timeLine", "lostEquipments", "constraints"]:
+        if contingency_folder not in ["logs", "timeLine", "lostEquipments", "constraints", "outputs"]:
             nb_differences_dyd_and_par = compare_dyd_and_par(contingency_folder)
             nb_differences += nb_differences_dyd_and_par
 
