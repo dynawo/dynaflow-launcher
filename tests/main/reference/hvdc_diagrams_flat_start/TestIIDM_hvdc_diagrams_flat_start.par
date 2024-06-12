@@ -19,10 +19,10 @@
   </macroParameterSet>
   <set id="3390034e-b251-5828-952e-f85234690b61">
     <par name="generator_QMax0" type="DOUBLE" value="320"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="-230"/>
-    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
@@ -31,10 +31,10 @@
   </set>
   <set id="59896c5f-4189-5f1d-9f44-ea12acd9b8fc">
     <par name="generator_QMax0" type="DOUBLE" value="360"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="59896c5f-4189-5f1d-9f44-ea12acd9b8fc_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="-5"/>
-    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="59896c5f-4189-5f1d-9f44-ea12acd9b8fc_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
@@ -63,16 +63,16 @@
     <par name="hvdc_Q1Nom" type="DOUBLE" value="600"/>
     <par name="hvdc_Q2Nom" type="DOUBLE" value="600"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="4.0099999999999998"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="51b83326-230d-5a99-aa35-ce9bbd0d7757_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-6.0099999999999998"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_1_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="51b83326-230d-5a99-aa35-ce9bbd0d7757_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="4.0099999999999998"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_1_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="b6eee063-e826-5caf-945a-71952bde1cc6_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-6.0099999999999998"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_1_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_1_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="b6eee063-e826-5caf-945a-71952bde1cc6_tableqmin"/>
     <par name="hvdc_U10Pu" type="DOUBLE" value="1"/>
     <par name="hvdc_U20Pu" type="DOUBLE" value="1"/>
@@ -101,16 +101,16 @@
     <par name="hvdc_Q1Nom" type="DOUBLE" value="600"/>
     <par name="hvdc_Q2Nom" type="DOUBLE" value="600"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="4.0099999999999998"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_2_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="60954756-71dc-5e78-b7a1-868dd8f2f8a0_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-6.0099999999999998"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HERAP7_HERA_TER_2_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="60954756-71dc-5e78-b7a1-868dd8f2f8a0_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="4.0099999999999998"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_2_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="7848a0a1-d9ab-5c0a-980c-9ab5cfee25d8_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-6.0099999999999998"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_2_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/AJAXP7_AJAX_TER_2_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="7848a0a1-d9ab-5c0a-980c-9ab5cfee25d8_tableqmin"/>
     <par name="hvdc_U10Pu" type="DOUBLE" value="1"/>
     <par name="hvdc_U20Pu" type="DOUBLE" value="1"/>
@@ -141,10 +141,10 @@
   </set>
   <set id="c47386f5-a7c0-5d36-85a9-90d1666a0495">
     <par name="generator_QMax0" type="DOUBLE" value="320"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="-230"/>
-    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>

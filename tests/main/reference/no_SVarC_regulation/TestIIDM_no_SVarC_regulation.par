@@ -101,16 +101,16 @@
   <set id="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.46936000002538625"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_7393a68e-c4e6-48dd-9347-543858363fdb_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_7393a68e-c4e6-48dd-9347-543858363fdb_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="7a2ae2fd-4e2a-586a-bf5a-912934fd7534_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.46936000002538625"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_7393a68e-c4e6-48dd-9347-543858363fdb_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_7393a68e-c4e6-48dd-9347-543858363fdb_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="7a2ae2fd-4e2a-586a-bf5a-912934fd7534_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.67000000000117899"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_9793118d-5ba1-4a9c-b2e0-db1d15be5913_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_9793118d-5ba1-4a9c-b2e0-db1d15be5913_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="e125c539-34c9-56b1-b63f-8e091e78c181_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.67000000000117899"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_9793118d-5ba1-4a9c-b2e0-db1d15be5913_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_9793118d-5ba1-4a9c-b2e0-db1d15be5913_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="e125c539-34c9-56b1-b63f-8e091e78c181_tableqmin"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="_7393a68e-c4e6-48dd-9347-543858363fdb"/>
@@ -133,16 +133,16 @@
     <par name="hvdc_Q1Nom" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_Q2Nom" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="1.7976931348623156e+306"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b46bfb8e-7af6-459e-acf3-53a42c943a7c_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b46bfb8e-7af6-459e-acf3-53a42c943a7c_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="c97e97e6-4216-5feb-9480-8e0ee3307069_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-1.7976931348623156e+306"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b46bfb8e-7af6-459e-acf3-53a42c943a7c_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b46bfb8e-7af6-459e-acf3-53a42c943a7c_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="c97e97e6-4216-5feb-9480-8e0ee3307069_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="1.7976931348623156e+306"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="f7b6f190-a894-5551-8a4b-e11d13969c79_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-1.7976931348623156e+306"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/no_SVarC_regulation/TestIIDM_no_SVarC_regulation_Diagram/_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="f7b6f190-a894-5551-8a4b-e11d13969c79_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
     <par name="hvdc_modeU20" type="BOOL" value="true"/>

@@ -6,10 +6,10 @@
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____2_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____2_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmax"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____2_SM_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____2_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmin"/>
     <par name="generator_QNomAlt" type="DOUBLE" value="690"/>
     <par name="generator_SNom" type="DOUBLE" value="2401.27"/>
@@ -33,10 +33,10 @@
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____1_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____1_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="99c2bba2-a805-50f1-9d84-49b63951bae6_tableqmax"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____1_SM_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_tfo_infinite/TestIIDM_launch_svc_tfo_infinite_Diagram/_GEN____1_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="99c2bba2-a805-50f1-9d84-49b63951bae6_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00020000000000000001"/>

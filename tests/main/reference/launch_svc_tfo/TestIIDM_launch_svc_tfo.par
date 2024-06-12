@@ -54,10 +54,10 @@
   </set>
   <set id="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d">
     <par name="generator_QMax0" type="DOUBLE" value="689.82608695652175"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo/TestIIDM_launch_svc_tfo_Diagram/_GEN____2_SM_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_tfo/TestIIDM_launch_svc_tfo_Diagram/_GEN____2_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmax"/>
     <par name="generator_QMin0" type="DOUBLE" value="-689.82608695652175"/>
-    <par name="generator_QMinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/launch_svc_tfo/TestIIDM_launch_svc_tfo_Diagram/_GEN____2_SM_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_tfo/TestIIDM_launch_svc_tfo_Diagram/_GEN____2_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmin"/>
     <par name="generator_QNomAlt" type="DOUBLE" value="690"/>
     <par name="generator_SNom" type="DOUBLE" value="2401.27"/>

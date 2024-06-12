@@ -29,10 +29,10 @@
   <set id="HVDCLCCLine">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.01"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.01"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmin"/>
     <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation1"/>
     <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation2"/>
@@ -52,10 +52,10 @@
     <par name="hvdc_Lambda1Pu" type="DOUBLE" value="0"/>
     <par name="hvdc_Q1Nom" type="DOUBLE" value="570.326409495549"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="3.9110880316518295"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/VSCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/VSCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="60eebf37-7079-5285-9411-515b0b3a8acf_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-5.7132640949554903"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/home/barondim/Projects/DFL/DFL3/dynaflow-launcher/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/VSCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/VSCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="60eebf37-7079-5285-9411-515b0b3a8acf_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
     <par name="hvdc_modeU20" type="BOOL" value="false"/>
