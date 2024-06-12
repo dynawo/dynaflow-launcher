@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <macroParameterSet id="MacroParameterSetStaticCompensator">
+    <reference type="DOUBLE" name="SVarC_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="SVarC_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="SVarC_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="SVarC_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </macroParameterSet>
+  <set id="GenericRestorativeLoad">
+    <par name="load_Alpha" type="DOUBLE" value="1.5"/>
+    <par name="load_Beta" type="DOUBLE" value="2.5"/>
+    <par name="load_UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <par name="load_UMax0Pu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="load_UMin0Pu" type="DOUBLE" value="0.84999999999999998"/>
+    <par name="load_tFilter" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="load_P0Pu" origData="IIDM" origName="p0_pu"/>
+    <reference type="DOUBLE" name="load_Q0Pu" origData="IIDM" origName="q0_pu"/>
+    <reference type="DOUBLE" name="load_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="_7393a68e-c4e6-48dd-9347-543858363fdb"/>
+    <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="_9793118d-5ba1-4a9c-b2e0-db1d15be5913"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b">
+    <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_Lambda1Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Lambda2Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_Q1MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q1MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q1Nom" type="DOUBLE" value="100"/>
+    <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="hvdc_Q2Nom" type="DOUBLE" value="100"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="true"/>
+    <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
+    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
+    <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="_b46bfb8e-7af6-459e-acf3-53a42c943a7c"/>
+    <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
+    <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd"/>
+    <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
+    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="_b46bfb8e-7af6-459e-acf3-53a42c943a7c"/>
+    <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
+    <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="_b48ce7cf-abf5-413f-bc51-9e1d3103c9bd"/>
+    <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
+    <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
+  </set>
+  <set id="fe1399cb-0b68-5f0e-b350-353232179f46">
+    <par name="SVarC_BMaxPu" type="DOUBLE" value="108.90000000000001"/>
+    <par name="SVarC_BMinPu" type="DOUBLE" value="-108.90000000000001"/>
+    <par name="SVarC_BShuntPu" type="DOUBLE" value="0"/>
+    <par name="SVarC_UNom" type="DOUBLE" value="33"/>
+    <par name="SVarC_URef0Pu" type="DOUBLE" value="1.0149999999999999"/>
+    <macroParSet id="MacroParameterSetStaticCompensator"/>
+  </set>
+  <set id="signalNTfoGenerator">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
+    <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
+  </set>
+</parametersSet>
