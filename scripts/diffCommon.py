@@ -1,4 +1,6 @@
-import filecmp
+import os
+
+from itertools import zip_longest
 
 
 def compare_input_files(result_input_file_path, reference_input_file_path, file_type, verbose):
@@ -7,8 +9,11 @@ def compare_input_files(result_input_file_path, reference_input_file_path, file_
     if verbose:
         print("comparing " + result_input_file_path + " and " + reference_input_file_path)
 
-    files_are_equal = filecmp.cmp(result_input_file_path, reference_input_file_path)
-    if (files_are_equal):
+    dfl_home = os.getenv("DYNAFLOW_LAUNCHER_HOME")
+    with open(result_input_file_path) as result_file, open(reference_input_file_path) as reference_file:
+        identical = all(result_line.replace(dfl_home, "") == reference_line for result_line, reference_line in zip_longest(result_file, reference_file))
+
+    if (identical):
         print("No difference")
     else:
         print("[ERROR] " + file_type + " file " + result_input_file_path + " different from reference file " + reference_input_file_path)
