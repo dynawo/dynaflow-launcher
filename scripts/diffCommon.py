@@ -1,6 +1,9 @@
 import os
 
-from itertools import zip_longest
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 
 
 def compare_input_files(result_input_file_path, reference_input_file_path, file_type, verbose):
