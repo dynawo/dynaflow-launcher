@@ -433,6 +433,7 @@ cmake_coverage() {
     export GTEST_COLOR=1
     ctest \
         -S cmake/CTestScript.cmake \
+        -DDYNAFLOW_LAUNCHER_HOME=$DYNAFLOW_LAUNCHER_HOME \
         -DDYNAWO_HOME=$DYNAWO_HOME \
         -DDYNAWO_ALGORITHMS_HOME=$DYNAWO_ALGORITHMS_HOME \
         -DBOOST_ROOT=$DYNAWO_HOME \
