@@ -33,8 +33,8 @@ def get_argparser():
                         help="Print comparing result", action="store_true")
     parser.add_argument("root", type=str, help="Root directory to process")
     parser.add_argument("testdir", type=str, help="Test directory to process")
-    parser.add_argument("config", type=str, help="Simulation configuration file")
     parser.add_argument("iidm_name", type=str, help="IIDM input file")
+    parser.add_argument("config", type=str, help="Simulation configuration file")
 
     return parser
 
