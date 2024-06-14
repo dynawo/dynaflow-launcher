@@ -48,8 +48,7 @@ def compare_dyd_and_par(contingency_folder):
         dyd_input_filename = options.iidm_name + ".dyd"
     dyd_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename)
     dyd_reference_input_file_path = full_path(options.root, "reference", options.testdir, dyd_input_filename)
-    nb_differences_dyd_and_par_local_1 = compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
-    nb_differences_dyd_and_par += nb_differences_dyd_and_par_local_1
+    nb_differences_dyd_and_par += compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
 
     if len(contingency_folder) > 0:
         par_input_filename = options.iidm_name + "-" + contingency_folder + ".par"
@@ -57,8 +56,7 @@ def compare_dyd_and_par(contingency_folder):
         par_input_filename = options.iidm_name + ".par"
     par_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, par_input_filename)
     par_reference_input_file_path = full_path(options.root, "reference", options.testdir, par_input_filename)
-    nb_differences_dyd_and_par_local_2 = compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
-    nb_differences_dyd_and_par += nb_differences_dyd_and_par_local_2
+    nb_differences_dyd_and_par += compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
 
     return nb_differences_dyd_and_par
 
