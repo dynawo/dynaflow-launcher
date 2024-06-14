@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <set id="Network">
+    <par name="capacitor_no_reclosing_delay" type="DOUBLE" value="300"/>
+    <par name="dangling_line_currentLimit_maxTimeOperation" type="DOUBLE" value="90"/>
+    <par name="line_currentLimit_maxTimeOperation" type="DOUBLE" value="90"/>
+    <par name="load_Tp" type="DOUBLE" value="90"/>
+    <par name="load_Tq" type="DOUBLE" value="90"/>
+    <par name="load_alpha" type="DOUBLE" value="0"/>
+    <par name="load_alphaLong" type="DOUBLE" value="0"/>
+    <par name="load_beta" type="DOUBLE" value="0"/>
+    <par name="load_betaLong" type="DOUBLE" value="0"/>
+    <par name="load_isControllable" type="BOOL" value="false"/>
+    <par name="load_isRestorative" type="BOOL" value="false"/>
+    <par name="load_zPMax" type="DOUBLE" value="100"/>
+    <par name="load_zQMax" type="DOUBLE" value="100"/>
+    <par name="reactance_no_reclosing_delay" type="DOUBLE" value="0"/>
+    <par name="startingPointMode" type="STRING" value="flat"/>
+    <par name="transformer_currentLimit_maxTimeOperation" type="DOUBLE" value="90"/>
+    <par name="transformer_t1st_HT" type="DOUBLE" value="60"/>
+    <par name="transformer_t1st_THT" type="DOUBLE" value="30"/>
+    <par name="transformer_tNext_HT" type="DOUBLE" value="10"/>
+    <par name="transformer_tNext_THT" type="DOUBLE" value="10"/>
+    <par name="transformer_tolV" type="DOUBLE" value="0.014999999700000001"/>
+  </set>
+</parametersSet>
