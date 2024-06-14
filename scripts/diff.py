@@ -34,6 +34,7 @@ def get_argparser():
     parser.add_argument("root", type=str, help="Root directory to process")
     parser.add_argument("testdir", type=str, help="Test directory to process")
     parser.add_argument("config", type=str, help="Simulation configuration file")
+    parser.add_argument("iidm_name", type=str, help="IIDM input file")
 
     return parser
 
@@ -81,14 +82,14 @@ if __name__ == "__main__":
             nb_differences += nb_differences_local
 
         #dyd
-        dyd_input_filename = "TestIIDM_" + options.testdir + ".dyd"
+        dyd_input_filename = options.iidm_name + ".dyd"
         dyd_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename))
         dyd_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, dyd_input_filename))
         nb_differences_dyd = compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
         nb_differences += nb_differences_dyd
 
         #par
-        par_input_filename = "TestIIDM_" + options.testdir + ".par"
+        par_input_filename = options.iidm_name + ".par"
         par_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, par_input_filename))
         par_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, par_input_filename))
         nb_differences_par = compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
