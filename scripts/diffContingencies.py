@@ -202,13 +202,13 @@ if __name__ == "__main__":
     network_par_filename = "Network.par"
     result_network_par_file_path = os.path.join(results_root, network_par_filename)
     reference_network_par_file_path = os.path.join(reference_root, network_par_filename)
-    nb_differences += compare_input_files(result_network_par_file_path, reference_network_par_file_path, "par", options.verbose)
+    total_diffs += compare_input_files(result_network_par_file_path, reference_network_par_file_path, "par", options.verbose)
 
     # solver.par
     solver_par_filename = "solver.par"
     result_solver_par_file_path = os.path.join(results_root, solver_par_filename)
     reference_solver_par_file_path = os.path.join(reference_root, solver_par_filename)
-    nb_differences += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path)
+    total_diffs += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path, "par", options.verbose)
 
     for folder in os.listdir(reference_root):
         if os.path.isdir(os.path.join(reference_root, folder)):
