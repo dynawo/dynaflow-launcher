@@ -103,7 +103,7 @@ if __name__ == "__main__":
         solver_par_filename = "solver.par"
         result_solver_par_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, solver_par_filename))
         reference_solver_par_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, solver_par_filename))
-        nb_differences += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path)
+        nb_differences += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path, "par", options.verbose)
 
         if is_constraints_generated:
             #constraints
