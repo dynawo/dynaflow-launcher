@@ -183,6 +183,7 @@ if __name__ == "__main__":
     nb_differences_dyd_par = compare_dyd_and_par("")
     total_diffs += nb_differences_dyd_par
 
+    # aggregatedResults.xml
     reference_aggr_res = os.path.join(reference_root, "aggregatedResults.xml")
     results_aggr_res = os.path.join(results_root, "aggregatedResults.xml")
     if os.path.isfile(results_aggr_res):
@@ -196,6 +197,18 @@ if __name__ == "__main__":
             if not identical:
                 print("[ERROR] Found differences when comparing result and reference aggregated results file.")
                 total_diffs += 1
+
+    # Network.par
+    network_par_filename = "Network.par"
+    result_network_par_file_path = os.path.join(results_root, network_par_filename)
+    reference_network_par_file_path = os.path.join(reference_root, network_par_filename)
+    nb_differences += compare_input_files(result_network_par_file_path, reference_network_par_file_path, "par", options.verbose)
+
+    # solver.par
+    solver_par_filename = "solver.par"
+    result_solver_par_file_path = os.path.join(results_root, solver_par_filename)
+    reference_solver_par_file_path = os.path.join(reference_root, solver_par_filename)
+    nb_differences += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path)
 
     for folder in os.listdir(reference_root):
         if os.path.isdir(os.path.join(reference_root, folder)):
