@@ -14,7 +14,7 @@ if(_result)
   message(FATAL_ERROR "Execution failed: ${_command}")
 endif()
 
-set(_command ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} TestIIDM_${TEST_NAME} res/config_${TEST_NAME}.json)
+set(_command ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json)
 if(DEFINED DIFF_SCRIPT)
   message(STATUS "Execute process: ${_command}")
   execute_process(COMMAND ${_command} RESULT_VARIABLE _result)

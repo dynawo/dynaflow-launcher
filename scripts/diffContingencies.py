@@ -21,7 +21,7 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
-from diffCommon import compare_input_files
+from diffCommon import compare_dyd_and_par_files
 
 from scriptsException import UnknownBuildType
 
@@ -34,31 +34,8 @@ def get_argparser():
     parser.add_argument("root", type=str, help="Root directory to process")
     parser.add_argument("testdir", type=str, help="Test directory to process")
     parser.add_argument("config", type=str, help="Simulation configuration file")
-    parser.add_argument("iidm_name", type=str, help="IIDM input file")
 
     return parser
-
-
-def compare_dyd_and_par(contingency_folder):
-    nb_differences_dyd_and_par = 0
-
-    if len(contingency_folder) > 0:
-        dyd_input_filename = options.iidm_name + "-" + contingency_folder + ".dyd"
-    else:
-        dyd_input_filename = options.iidm_name + ".dyd"
-    dyd_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename)
-    dyd_reference_input_file_path = full_path(options.root, "reference", options.testdir, dyd_input_filename)
-    nb_differences_dyd_and_par += compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
-
-    if len(contingency_folder) > 0:
-        par_input_filename = options.iidm_name + "-" + contingency_folder + ".par"
-    else:
-        par_input_filename = options.iidm_name + ".par"
-    par_result_input_file_path = full_path(options.root, "resultsTestsTmp", options.testdir, par_input_filename)
-    par_reference_input_file_path = full_path(options.root, "reference", options.testdir, par_input_filename)
-    nb_differences_dyd_and_par += compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
-
-    return nb_differences_dyd_and_par
 
 
 def compare_file(options, contingency_folder, chosen_outputs):
@@ -94,11 +71,6 @@ def compare_file(options, contingency_folder, chosen_outputs):
                 elif options.verbose:
                     print(contingency_folder + ": No difference")
                 nb_differences += nb_differences_local
-
-        # dyd and par
-        if contingency_folder not in ["logs", "timeLine", "lostEquipments", "constraints", "outputs"]:
-            nb_differences_dyd_and_par = compare_dyd_and_par(contingency_folder)
-            nb_differences += nb_differences_dyd_and_par
 
         # constraints
         result_path = full_path(
@@ -180,8 +152,8 @@ if __name__ == "__main__":
 
             total_diffs += nb_differences
 
-    nb_differences_dyd_par = compare_dyd_and_par("")
-    total_diffs += nb_differences_dyd_par
+    # dyd and par
+    total_diffs += compare_dyd_and_par_files(results_root, reference_root, options.verbose)
 
     # aggregatedResults.xml
     reference_aggr_res = os.path.join(reference_root, "aggregatedResults.xml")
@@ -197,18 +169,6 @@ if __name__ == "__main__":
             if not identical:
                 print("[ERROR] Found differences when comparing result and reference aggregated results file.")
                 total_diffs += 1
-
-    # Network.par
-    network_par_filename = "Network.par"
-    result_network_par_file_path = os.path.join(results_root, network_par_filename)
-    reference_network_par_file_path = os.path.join(reference_root, network_par_filename)
-    total_diffs += compare_input_files(result_network_par_file_path, reference_network_par_file_path, "par", options.verbose)
-
-    # solver.par
-    solver_par_filename = "solver.par"
-    result_solver_par_file_path = os.path.join(results_root, solver_par_filename)
-    reference_solver_par_file_path = os.path.join(reference_root, solver_par_filename)
-    total_diffs += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path, "par", options.verbose)
 
     for folder in os.listdir(reference_root):
         if os.path.isdir(os.path.join(reference_root, folder)):
