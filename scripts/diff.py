@@ -21,7 +21,7 @@ except ImportError:
 import iidmDiff
 import constraintsDiff
 
-from diffCommon import compare_input_files
+from diffCommon import compare_dyd_and_par_files
 
 from scriptsException import UnknownBuildType
 
@@ -33,7 +33,6 @@ def get_argparser():
                         help="Print comparing result", action="store_true")
     parser.add_argument("root", type=str, help="Root directory to process")
     parser.add_argument("testdir", type=str, help="Test directory to process")
-    parser.add_argument("iidm_name", type=str, help="IIDM input file")
     parser.add_argument("config", type=str, help="Simulation configuration file")
 
     return parser
@@ -81,29 +80,10 @@ if __name__ == "__main__":
                 print("No difference")
             nb_differences += nb_differences_local
 
-        # dyd
-        dyd_input_filename = options.iidm_name + ".dyd"
-        dyd_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, dyd_input_filename))
-        dyd_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, dyd_input_filename))
-        nb_differences += compare_input_files(dyd_result_input_file_path, dyd_reference_input_file_path, "dyd", options.verbose)
-
-        # par
-        par_input_filename = options.iidm_name + ".par"
-        par_result_input_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, par_input_filename))
-        par_reference_input_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, par_input_filename))
-        nb_differences += compare_input_files(par_result_input_file_path, par_reference_input_file_path, "par", options.verbose)
-
-        # Network.par
-        network_par_filename = "Network.par"
-        result_network_par_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, network_par_filename))
-        reference_network_par_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, network_par_filename))
-        nb_differences += compare_input_files(result_network_par_file_path, reference_network_par_file_path, "par", options.verbose)
-
-        # solver.par
-        solver_par_filename = "solver.par"
-        result_solver_par_file_path = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir, solver_par_filename))
-        reference_solver_par_file_path = os.path.realpath(os.path.join(options.root, "reference", options.testdir, solver_par_filename))
-        nb_differences += compare_input_files(result_solver_par_file_path, reference_solver_par_file_path, "par", options.verbose)
+        # dyd and par
+        results_root = os.path.realpath(os.path.join(options.root, "resultsTestsTmp", options.testdir))
+        reference_root = os.path.realpath(os.path.join(options.root, "reference", options.testdir))
+        nb_differences += compare_dyd_and_par_files(results_root, reference_root, options.verbose)
 
         if is_constraints_generated:
             #constraints
