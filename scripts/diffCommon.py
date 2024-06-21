@@ -5,6 +5,8 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
+from scriptsException import MissingEnvironmentVariable
+
 
 def compare_dyd_and_par_files(results_root, reference_root, verbose):
     dyd_par_nb_differences = 0
@@ -27,6 +29,8 @@ def compare_files(result_input_file_path, reference_input_file_path, verbose):
         print("comparing " + result_input_file_path + " and " + reference_input_file_path)
 
     dfl_home = os.getenv("DYNAFLOW_LAUNCHER_HOME")
+    if not dfl_home:
+        MissingEnvironmentVariable("DYNAFLOW_LAUNCHER_HOME")
     with open(result_input_file_path) as result_file, open(reference_input_file_path) as reference_file:
         identical = all(result_line.replace(dfl_home, "") == reference_line for result_line, reference_line in zip_longest(result_file, reference_file))
 
