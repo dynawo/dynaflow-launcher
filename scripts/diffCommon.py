@@ -31,6 +31,8 @@ def compare_files(result_input_file_path, reference_input_file_path, verbose):
     dfl_home = os.getenv("DYNAFLOW_LAUNCHER_HOME")
     if not dfl_home:
         MissingEnvironmentVariable("DYNAFLOW_LAUNCHER_HOME")
+    dfl_home = dfl_home.replace("\\", "/")  # replace backslashes by slashes (for Windows compatibility)
+
     with open(result_input_file_path) as result_file, open(reference_input_file_path) as reference_file:
         identical = all(result_line.replace(dfl_home, "") == reference_line for result_line, reference_line in zip_longest(result_file, reference_file))
 
