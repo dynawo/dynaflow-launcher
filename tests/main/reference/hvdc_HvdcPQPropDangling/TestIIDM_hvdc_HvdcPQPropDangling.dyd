@@ -56,7 +56,7 @@
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_Generator___1" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_Generator___1" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_Generator___1" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="HVDC_VRREMOTE_CONNECTOR_SIDE1" id1="HVDCVSCLine" id2="Model_Signal_NQ__BUS___10_TN" index2="0"/>
   <dyn:macroConnect connector="HVDC_VRREMOTE_CONNECTOR_SIDE1" id1="HVDCVSCLinebis" id2="Model_Signal_NQ__BUS___10_TN" index2="1"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="_BUS____5_TN_phi_value"/>

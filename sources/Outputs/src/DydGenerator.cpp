@@ -48,11 +48,9 @@ const std::unordered_map<algo::GeneratorDefinition::ModelType, std::string> DydG
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_SIGNALN_RECTANGULAR, "GeneratorPQPropSignalN"),
     std::make_pair(algo::GeneratorDefinition::ModelType::PROP_DIAGRAM_PQ_SIGNALN, "GeneratorPQPropDiagramPQSignalN")};
 
-void
-DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect,
-                    const std::string& basename,
-                    const std::string& slackNodeId) {
-  for (const auto& generator : generatorDefinitions_) {
+void DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename,
+                         const std::string &slackNodeId) {
+  for (const auto &generator : generatorDefinitions_) {
     if (generator.isNetwork()) {
       continue;
     }
@@ -68,8 +66,7 @@ DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dyn
   writeMacroConnect(dynamicModelsToConnect);
 }
 
-void
-DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+void DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!generatorDefinitions_.empty()) {
     auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
     connector->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
@@ -82,8 +79,7 @@ DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCo
   }
 }
 
-void
-DydGenerator::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+void DydGenerator::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!generatorDefinitions_.empty()) {
     auto macroStaticReference = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
     macroStaticReference->addStaticRef("generator_PGenPu", "p");
@@ -93,8 +89,7 @@ DydGenerator::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicMo
   }
 }
 
-void
-DydGenerator::writeSignalNBlackBox(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+void DydGenerator::writeSignalNBlackBox(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!generatorDefinitions_.empty()) {
     auto blackBoxModelSignalN = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
     blackBoxModelSignalN->setLib("SignalN");
@@ -102,8 +97,7 @@ DydGenerator::writeSignalNBlackBox(boost::shared_ptr<dynamicdata::DynamicModelsC
   }
 }
 
-void
-DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+void DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   std::unordered_map<std::string, unsigned int> modelNQIdGenNumber;
   for (auto it = generatorDefinitions_.cbegin(); it != generatorDefinitions_.cend(); ++it) {
     if (it->isNetwork()) {
@@ -117,14 +111,12 @@ DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModelsColl
 
     auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenName_, it->id, constants::networkModelName);
     auto signal = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenSignalNName_, it->id, signalNModelName_);
-    signal->setIndex2(std::to_string(static_cast<unsigned int>(it - generatorDefinitions_.cbegin())));
     dynamicModelsToConnect->addMacroConnect(connection);
     dynamicModelsToConnect->addMacroConnect(signal);
   }
 }
 
-void
-DydGenerator::writeThetaRefConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& slackNodeId) {
+void DydGenerator::writeThetaRefConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &slackNodeId) {
   if (!generatorDefinitions_.empty()) {
     dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, slackNodeId + "_phi_value");
   }
