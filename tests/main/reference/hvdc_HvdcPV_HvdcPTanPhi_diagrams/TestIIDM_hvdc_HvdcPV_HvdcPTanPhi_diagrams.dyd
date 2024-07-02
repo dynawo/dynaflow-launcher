@@ -51,11 +51,11 @@
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="HADES7HADES1_NGU_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES1_NGU_SM" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES1_NGU_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="HADES7HADES2_NGU_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES2_NGU_SM" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES2_NGU_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="ATHEN7ATHEN1_NGU_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="ATHEN7ATHEN1_NGU_SM" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="ATHEN7ATHEN1_NGU_SM" id2="Model_Signal_N"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="HADESP7_S_VL7_TN1_phi_value"/>
   <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1" var2="hvdc_terminal2"/>

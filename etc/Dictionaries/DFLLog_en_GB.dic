@@ -58,6 +58,7 @@ ConnexityErrorReCompute       =     slack node of id %1% not present in main con
 SimulateInfo                  =     initializing %1% simulation
 SimulationEnded               =     simulation %1% ended successfully (wall-time: %2%s)
 DFLEnded                      =     dynaFlowLauncher %1% ended successfully (wall-time: %2%s)
+StaticEnd                     =     end of initialization of static model (wall-time: %1%s)
 InitEnd                       =     end of initialization (wall-time: %1%s)
 FilesEnd                      =     end of files generation (wall-time: %1%s)
 ContingencySimulationDefined  =     contingency simulation defined for %1%

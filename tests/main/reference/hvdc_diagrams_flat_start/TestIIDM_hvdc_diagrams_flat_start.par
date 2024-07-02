@@ -12,16 +12,16 @@
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="pMax_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="targetQ_pu"/>
+    <reference type="DOUBLE" name="generator_QMax0" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_U0Pu" type="DOUBLE" value="1"/>
     <par name="generator_UPhase0" type="DOUBLE" value="0"/>
   </macroParameterSet>
   <set id="3390034e-b251-5828-952e-f85234690b61">
-    <par name="generator_QMax0" type="DOUBLE" value="320"/>
     <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="-230"/>
     <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES2_NGU_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="3390034e-b251-5828-952e-f85234690b61_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
@@ -30,10 +30,8 @@
     <macroParSet id="macro_signalNGenerator"/>
   </set>
   <set id="59896c5f-4189-5f1d-9f44-ea12acd9b8fc">
-    <par name="generator_QMax0" type="DOUBLE" value="360"/>
     <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="59896c5f-4189-5f1d-9f44-ea12acd9b8fc_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="-5"/>
     <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/ATHEN7ATHEN1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="59896c5f-4189-5f1d-9f44-ea12acd9b8fc_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>
@@ -140,10 +138,8 @@
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="c47386f5-a7c0-5d36-85a9-90d1666a0495">
-    <par name="generator_QMax0" type="DOUBLE" value="320"/>
     <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="-230"/>
     <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_diagrams_flat_start/TestIIDM_hvdc_diagrams_flat_start_Diagram/HADES7HADES1_NGU_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="c47386f5-a7c0-5d36-85a9-90d1666a0495_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.1426"/>

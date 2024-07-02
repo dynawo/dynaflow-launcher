@@ -7,6 +7,8 @@
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="pMax_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax0" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_QPercent" origData="IIDM" origName="qMax_pu"/>
     <reference type="DOUBLE" name="generator_QRef0Pu" origData="IIDM" origName="targetQ_pu"/>
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
@@ -55,10 +57,8 @@
     <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>
   </set>
   <set id="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d">
-    <par name="generator_QMax0" type="DOUBLE" value="689.82608695652175"/>
     <par name="generator_QMaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_regulation/TestIIDM_launch_svc_regulation_Diagram/_GEN____2_SM_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="-689.82608695652175"/>
     <par name="generator_QMinTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/launch_svc_regulation/TestIIDM_launch_svc_regulation_Diagram/_GEN____2_SM_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="8c26fd60-7f94-5b1a-8b7d-fbad7ca3902d_tableqmin"/>
     <macroParSet id="macro_propSignalNGenerator"/>

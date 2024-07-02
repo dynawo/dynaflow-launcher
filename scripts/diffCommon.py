@@ -37,7 +37,8 @@ def compare_files(result_input_file_path, reference_input_file_path, verbose):
         identical = all(result_line.replace(dfl_home, "") == reference_line for result_line, reference_line in zip_longest(result_file, reference_file))
 
     if (identical):
-        print("No difference")
+        if (verbose):
+            print("No difference")
     else:
         print("[ERROR] file " + result_input_file_path + " different from reference file " + reference_input_file_path)
         nb_differences += 1
