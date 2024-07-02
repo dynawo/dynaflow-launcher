@@ -52,6 +52,7 @@ static inline double elapsed(const std::chrono::steady_clock::time_point &timePo
 }
 
 static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const &params, dfl::inputs::Configuration &config) {
+  auto timeContextStart = std::chrono::steady_clock::now();
   dfl::Context::ContextDef def{config.getStartingPointMode(),
                                params.simulationKind,
                                params.networkFilePath,
@@ -77,6 +78,7 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
       }
     }
   }
+  LOG(info, StaticEnd, elapsed(timeContextStart));
 
   return context;
 }
@@ -90,6 +92,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
       LOG(info, InitEnd, elapsed(params.timeStart));
       throw Error(ContextProcessError, context->basename());
     }
+    LOG(info, InitEnd, elapsed(params.timeStart));
     auto timeFilesStart = std::chrono::steady_clock::now();
     context->exportOutputs();
     LOG(info, FilesEnd, elapsed(timeFilesStart));

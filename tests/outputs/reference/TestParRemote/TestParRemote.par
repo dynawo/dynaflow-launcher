@@ -7,6 +7,8 @@
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax0" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_QPercent" origData="IIDM" origName="qMax_pu"/>
     <reference type="DOUBLE" name="generator_QRef0Pu" origData="IIDM" origName="targetQ_pu"/>
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
@@ -35,6 +37,8 @@
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QMax0" origData="IIDM" origName="qMax"/>
+    <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
@@ -61,10 +65,8 @@
     <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
   <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
-    <par name="generator_QMax0" type="DOUBLE" value="30"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="3"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmin"/>
     <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="BUS_1"/>
@@ -82,10 +84,8 @@
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="cce4f321-bf59-5464-b247-bda10c680360">
-    <par name="generator_QMax0" type="DOUBLE" value="40"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G3_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="cce4f321-bf59-5464-b247-bda10c680360_tableqmax"/>
-    <par name="generator_QMin0" type="DOUBLE" value="4"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G3_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="cce4f321-bf59-5464-b247-bda10c680360_tableqmin"/>
     <macroParSet id="macro_propSignalNGenerator"/>

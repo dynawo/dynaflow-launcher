@@ -98,13 +98,13 @@
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L2" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="L3" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G0" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G0" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G0" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G2" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G2" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G4" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G4" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="G5" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N" index2="3"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="G5" id2="Model_Signal_N"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="NETWORK" var1="BUS_1_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="BUS_2_ACPIN" id2="HVDCVSCLine" var2="hvdc_terminal1"/>

@@ -65,11 +65,11 @@
   <dyn:blackBoxModel id="Model_Signal_NQ_HERAP7_S_VL7_TN1" lib="VRRemote" parFile="TestIIDM_hvdc_HvdcPQProp_multiple_bus.par" parId="Model_Signal_NQ_HERAP7_S_VL7_TN1"/>
   <dyn:blackBoxModel id="Model_Signal_NQ_HERAP7_S_VL7_TN2" lib="VRRemote" parFile="TestIIDM_hvdc_HvdcPQProp_multiple_bus.par" parId="Model_Signal_NQ_HERAP7_S_VL7_TN2"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="HADES7HADES1_NGU_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES1_NGU_SM" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES1_NGU_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="HADES7HADES2_NGU_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES2_NGU_SM" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="HADES7HADES2_NGU_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="ATHEN7ATHEN1_NGU_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="ATHEN7ATHEN1_NGU_SM" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="ATHEN7ATHEN1_NGU_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="HVDC_VRREMOTE_CONNECTOR_SIDE1" id1="HERA9AJAX1" id2="Model_Signal_NQ_HERAP7_S_VL7_TN1" index2="0"/>
   <dyn:macroConnect connector="HVDC_VRREMOTE_CONNECTOR_SIDE2" id1="HERA9AJAX1" id2="Model_Signal_NQ_AJAXP7_S_VL7_TN1" index2="0"/>
   <dyn:macroConnect connector="HVDC_VRREMOTE_CONNECTOR_SIDE1" id1="HERA9AJAX1bis" id2="Model_Signal_NQ_HERAP7_S_VL7_TN2" index2="0"/>

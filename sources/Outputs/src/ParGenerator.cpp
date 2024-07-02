@@ -135,6 +135,11 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
       macroParameterSet->addReference(helper::buildReference("generator_PNom", "pMax_pu", "DOUBLE"));
       break;
     }
+
+    if (!def.isUsingRectangularDiagram()) {
+      macroParameterSet->addReference(helper::buildReference("generator_QMin0", "qMin", "DOUBLE"));
+      macroParameterSet->addReference(helper::buildReference("generator_QMax0", "qMax", "DOUBLE"));
+    }
   }
 
   switch (def.model) {
@@ -256,14 +261,6 @@ boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const 
   // The macroParSet is associated to a macroParameterSet via the id
   set->addMacroParSet(
       boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
-
-  if (def.isUsingDiagram() && !def.isUsingRectangularDiagram()) {
-    // Qmax and QMin are determined in dynawo according to reactive capabilities curves and min max
-    // we need a small numerical tolerance in case the starting point of the reactive injection is exactly
-    // on the limit of the reactive capability curve
-    set->addParameter(helper::buildParameter("generator_QMin0", def.qmin));
-    set->addParameter(helper::buildParameter("generator_QMax0", def.qmax));
-  }
 
   if (!def.isUsingRectangularDiagram()) {
     auto dirname_diagram = dirname;

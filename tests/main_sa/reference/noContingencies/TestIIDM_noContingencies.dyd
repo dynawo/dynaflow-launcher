@@ -105,37 +105,37 @@
   </dyn:blackBoxModel>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04867dab-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="3"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="4"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="6"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="7"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="8"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="9"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="10"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="11"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="12"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="13"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="14"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="15"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="Model_Signal_N" index2="16"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="_047fc6e6-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_0_phi_value"/>
   <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_0_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal1"/>

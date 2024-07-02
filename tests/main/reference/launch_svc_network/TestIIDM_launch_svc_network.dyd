@@ -65,12 +65,12 @@
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_LOAD___5_EC" id2="NETWORK"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_LOAD___3_EC" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_GEN____6_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____6_SM" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____6_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_GEN____8_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____8_SM" id2="Model_Signal_N" index2="1"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____8_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_GEN____2_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____2_SM" id2="Model_Signal_N" index2="2"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____2_SM" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_GEN____3_SM" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____3_SM" id2="Model_Signal_N" index2="4"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_GEN____3_SM" id2="Model_Signal_N"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="_BUS____4_TN_phi_value"/>
 </dyn:dynamicModelsArchitecture>

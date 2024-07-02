@@ -55,6 +55,6 @@
   <dyn:macroConnect connector="PhaseShifterToTap" id1="PhaseShifter_5_7" id2="NETWORK" index1="0" name2="_BUS____5-BUS____7-2_PS"/>
   <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_Load__10" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_Generator___1" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_Generator___1" id2="Model_Signal_N" index2="0"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_Generator___1" id2="Model_Signal_N"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="_BUS___10_TN_phi_value"/>
 </dyn:dynamicModelsArchitecture>
