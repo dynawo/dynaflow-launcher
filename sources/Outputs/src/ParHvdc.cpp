@@ -68,7 +68,7 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
 
       if (!set->hasParameter("hvdc_Q" + std::to_string(parameterNumber) + "Nom"))
         set->addParameter(
-            helper::buildParameter<double>("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(abs(vscDefinition.qmin), abs(vscDefinition.qmax))));
+            helper::buildParameter<double>("hvdc_Q" + std::to_string(parameterNumber) + "Nom", std::max(fabs(vscDefinition.qmin), fabs(vscDefinition.qmax))));
       if (!set->hasParameter("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu"))
         set->addParameter(helper::buildParameter<double>("hvdc_Lambda" + std::to_string(parameterNumber) + "Pu", 0.));
     } else {
