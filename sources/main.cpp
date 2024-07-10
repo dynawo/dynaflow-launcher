@@ -41,7 +41,7 @@ static inline std::string getMandatoryEnvVar(const std::string &key) {
 static void initializeDynawo(const std::string &locale) {
   DYN::IoDicos &dicos = DYN::IoDicos::instance();
   dicos.addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
-  dicos.addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"));
+  dicos.addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"), locale);
   dicos.addDico("DFLLOG", "DFLLog", locale);
   dicos.addDico("DFLERROR", "DFLError", locale);
 }

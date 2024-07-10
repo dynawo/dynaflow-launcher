@@ -157,6 +157,8 @@ endfunction()
 file(WRITE dictionaries_mapping.dic "")
 cat(${DYNAWO_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic)
 cat_filter(${DYNAWO_ALGORITHMS_HOME}/share/dictionaries_mapping.dic dictionaries_mapping.dic "Algorithms")
+file(APPEND dictionaries_mapping.dic "DFLLog                          = LOG\n")
+file(APPEND dictionaries_mapping.dic "DFLError                        = ERROR\n")
 install(FILES dictionaries_mapping.dic DESTINATION  ${CMAKE_INSTALL_PREFIX}/share/)
 
 # MPI (required by algorithms)
