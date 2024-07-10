@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch release script
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/dynawo
           sparse-checkout: .github/release.js
@@ -63,7 +63,7 @@ jobs:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch'))
     name: Linux Fedora (Release, GCC, cxx11)
     runs-on: ubuntu-latest
-    container: dynawo/dynawo-distribution-cxx11:latest
+    container: dynawo/dynawo-ci-nightly-fedora:latest
     needs: nightly
     env:
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
@@ -74,7 +74,7 @@ jobs:
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch Dynawo's and Dynawo-algorithms's nightly releases
         run: |
@@ -111,7 +111,7 @@ jobs:
         run: du -hs distributions/*
 
       - name: Fetch release script
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/dynawo
           sparse-checkout: .github/release.js
@@ -144,7 +144,7 @@ jobs:
         run: git config --global core.autocrlf input
 
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download MS-MPI
         shell: bash
@@ -232,7 +232,7 @@ jobs:
         run: du -hs distrib/*
 
       - name: Fetch release script
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/dynawo
           sparse-checkout: .github/release.js
@@ -251,4 +251,3 @@ jobs:
           script: |
             const release = require('./dynawo/.github/release.js')
             await release({github, context, core, glob})
-
