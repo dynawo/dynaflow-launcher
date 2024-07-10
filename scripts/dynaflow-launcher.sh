@@ -6,6 +6,18 @@ error_exit() {
   exit ${RETURN_CODE}
 }
 
+export_var_env() {
+  local var=$@
+  local name=${var%%=*}
+  local value=${var#*=}
+
+  if eval "[ \$$name ]"; then
+    eval "value=\${$name}"
+    return
+  fi
+  export $name="$value"
+}
+
 export_preload() {
   lib="tcmalloc"
   # uncomment to activate tcmalloc in debug when build is in debug
@@ -34,7 +46,7 @@ export DYNAWO_HOME=$INSTALL
 export DYNAWO_ALGORITHMS_HOME=$INSTALL
 export LD_LIBRARY_PATH=$INSTALL/lib64:$INSTALL/lib:$LD_LIBRARY_PATH
 export IIDM_XML_XSD_PATH=$DYNAWO_HOME/share/iidm/xsd
-export DYNAFLOW_LAUNCHER_LOCALE=en_GB
+export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
 export DYNAFLOW_LAUNCHER_INSTALL=$INSTALL
 export DYNAWO_RESOURCES_DIR=$DYNAWO_HOME/share:$DYNAWO_HOME/share/xsd
 export DYNAWO_DICTIONARIES=dictionaries_mapping
