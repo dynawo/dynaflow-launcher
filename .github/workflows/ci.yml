@@ -22,7 +22,7 @@ jobs:
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch Dynawo and Dynawo algorithms
         run: |
@@ -84,7 +84,7 @@ jobs:
           tar xzf openjdk-17.0.2_linux-x64_bin.tar.gz
 
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch Dynawo and Dynawo algorithms
         run: |
@@ -128,7 +128,7 @@ jobs:
         run: git config --global core.autocrlf input
 
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download MS-MPI
         shell: bash
