@@ -165,86 +165,87 @@ int main(int argc, char *argv[]) {
   std::string locale;
   boost::filesystem::path resourcesDir;
   boost::filesystem::path configPath(runtimeConfig.configPath);
-  dfl::inputs::Configuration configN(configPath, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
-
-  boost::filesystem::path outputDir = configN.outputDir();
-
   try {
-    if (mpiContext.isRootProc()) {
-      dfl::common::Log::init(options, outputDir.generic_string());
-      DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::getTag()) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::getTag()) << " "
-                                                   << " revision " << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH << DYN::Trace::endline;
-      DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+    dfl::inputs::Configuration configN(configPath, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
+
+    boost::filesystem::path outputDir = configN.outputDir();
+
+    try {
+      if (mpiContext.isRootProc()) {
+        dfl::common::Log::init(options, outputDir.generic_string());
+        DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        DYN::Trace::info(dfl::common::Log::getTag()) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
+        DYN::Trace::info(dfl::common::Log::getTag()) << " "
+                                                     << " revision " << DYNAFLOW_LAUNCHER_GIT_BRANCH << "-" << DYNAFLOW_LAUNCHER_GIT_HASH
+                                                     << DYN::Trace::endline;
+        DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      }
+
+      resourcesDir = boost::filesystem::path(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
+      root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
+      locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
+
+      initializeDynawo(locale);
+    } catch (DYN::Error &e) {
+      if (mpiContext.isRootProc()) {
+        std::cerr << "Initialization failed: " << e.what() << std::endl;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      }
+      return EXIT_FAILURE;
+    } catch (DYN::MessageError &e) {
+      if (mpiContext.isRootProc()) {
+        std::cerr << "Initialization failed: " << e.what() << std::endl;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      }
+      return EXIT_FAILURE;
+    } catch (std::exception &e) {
+      if (mpiContext.isRootProc()) {
+        std::cerr << "Initialization failed: " << e.what() << std::endl;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      }
+      return EXIT_FAILURE;
+    } catch (...) {
+      if (mpiContext.isRootProc()) {
+        std::cerr << "Initialization failed" << std::endl;
+        std::cerr << "Unknown error" << std::endl;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed" << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
+        DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+      }
+      return EXIT_FAILURE;
     }
 
-    resourcesDir = boost::filesystem::path(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
-    root = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_INSTALL");
-    locale = getMandatoryEnvVar("DYNAFLOW_LAUNCHER_LOCALE");
-
-    initializeDynawo(locale);
-  } catch (DYN::Error &e) {
-    if (mpiContext.isRootProc()) {
-      std::cerr << "Initialization failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+    if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
+      throw Error(NetworkFileNotFound, runtimeConfig.networkFilePath);
     }
-    return EXIT_FAILURE;
-  } catch (DYN::MessageError &e) {
-    if (mpiContext.isRootProc()) {
-      std::cerr << "Initialization failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+    if (!runtimeConfig.contingenciesFilePath.empty() && !boost::filesystem::exists(boost::filesystem::path(runtimeConfig.contingenciesFilePath))) {
+      throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
-    return EXIT_FAILURE;
-  } catch (std::exception &e) {
-    if (mpiContext.isRootProc()) {
-      std::cerr << "Initialization failed: " << e.what() << std::endl;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+    if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA && runtimeConfig.contingenciesFilePath.empty()) {
+      throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
-    return EXIT_FAILURE;
-  } catch (...) {
-    if (mpiContext.isRootProc()) {
-      std::cerr << "Initialization failed" << std::endl;
-      std::cerr << "Unknown error" << std::endl;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed" << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
-      DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+
+    switch (userRequest) {
+    case dfl::common::Options::Request::RUN_SIMULATION_N:
+      LOG(info, SteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath);
+      break;
+    case dfl::common::Options::Request::RUN_SIMULATION_SA:
+      LOG(info, SecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath);
+      break;
+    case dfl::common::Options::Request::RUN_SIMULATION_NSA:
+      LOG(info, SteadyStateAndSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath);
+      break;
+    default:
+      break;
     }
-    return EXIT_FAILURE;
-  }
 
-  if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
-    throw Error(NetworkFileNotFound, runtimeConfig.networkFilePath);
-  }
-  if (!runtimeConfig.contingenciesFilePath.empty() && !boost::filesystem::exists(boost::filesystem::path(runtimeConfig.contingenciesFilePath))) {
-    throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
-  }
-  if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA && runtimeConfig.contingenciesFilePath.empty()) {
-    throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
-  }
-
-  switch (userRequest) {
-  case dfl::common::Options::Request::RUN_SIMULATION_N:
-    LOG(info, SteadyStateInfo, runtimeConfig.networkFilePath, runtimeConfig.configPath);
-    break;
-  case dfl::common::Options::Request::RUN_SIMULATION_SA:
-    LOG(info, SecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath);
-    break;
-  case dfl::common::Options::Request::RUN_SIMULATION_NSA:
-    LOG(info, SteadyStateAndSecurityAnalysisInfo, runtimeConfig.networkFilePath, runtimeConfig.contingenciesFilePath, runtimeConfig.configPath);
-    break;
-  default:
-    break;
-  }
-
-  try {
     boost::filesystem::path parFilesDir(root);
     parFilesDir.append("etc");
 
