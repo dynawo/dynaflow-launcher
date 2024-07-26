@@ -243,6 +243,8 @@ AssemblingDataBase::AssemblingXmlDocument::MacroConnectHandler::MacroConnectHand
   onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
     currentMacroConnect->id = attributes["id"].as_string();
     currentMacroConnect->macroConnection = attributes["macroConnection"].as_string();
+    if (attributes.has("mandatory"))
+      currentMacroConnect->mandatory = attributes["mandatory"].as<bool>();
   });
 }
 

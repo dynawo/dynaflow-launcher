@@ -102,6 +102,7 @@ class AssemblingDataBase {
   struct MacroConnect {
     std::string macroConnection;  ///< macro connection id
     std::string id;               ///< association id to use
+    bool mandatory;               ///< true if macroconnect is mandatory, false otherwise
   };
 
   /**
