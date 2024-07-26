@@ -125,5 +125,6 @@ SPDX-License-Identifier: MPL-2.0 -->
   <xs:complexType name="MacroConnect">
     <xs:attribute name="macroConnection" use="required" type="xs:string"/>
     <xs:attribute name="id" use="required" type="xs:string"/>
+    <xs:attribute name="mandatory" type="xs:boolean"/>
   </xs:complexType>
 </xs:schema>
