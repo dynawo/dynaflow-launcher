@@ -189,7 +189,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
 
     auto config = tree.get_child("dfl-config");
 
-    std::string prefixConfigFile = absolute(remove_file_name(filepath_.generic_string()));
+    std::string prefixConfigFile = absolute(removeFileName(filepath_.generic_string()));
 
     bool saMode = false;
     if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
