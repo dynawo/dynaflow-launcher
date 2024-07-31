@@ -179,37 +179,52 @@ TEST(Dyd, writeDynamicModel) {
   models.models.insert({"MODELE_1_VL4", dfl::algo::DynamicModelDefinition("MODELE_1_VL4", "DYNModel1")});
 
   auto macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("ToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
+      dfl::algo::DynamicModelDefinition::MacroConnection("ToUMeasurement",
+                                                          dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE,
+                                                          "0",
+                                                          "",
+                                                          false);
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT,
-                                                             "1.1", "");
+                                                             "1.1", "", false);
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("ToControlledShunts", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::SHUNT,
-                                                             "1.2", "");
+                                                             "1.2", "", false);
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L0", "");
+      dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection",
+                                                          dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD,
+                                                          "L0",
+                                                          "",
+                                                          false);
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
   macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD, "L1", "");
+      dfl::algo::DynamicModelDefinition::MacroConnection("TestLoadConnection",
+                                                          dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::LOAD,
+                                                          "L1",
+                                                          "",
+                                                          false);
   models.models.at("MODELE_1_VL4").nodeConnections.insert(macro);
 
   models.usedMacroConnections.insert("SVCToUMeasurement");
   models.usedMacroConnections.insert("SVCToGenerator");
   models.usedMacroConnections.insert("SVCToHVDC");
 
-  macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
+  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement",
+                                                              dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE,
+                                                              "0",
+                                                              "",
+                                                              false);
   models.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5",
-                                                             "SVCToComponent");
+                                                             "SVCToComponent", false);
   models.models.at("SVC").nodeConnections.insert(macro);
 
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToHVDC", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::HVDC, "HVDCVSCLine",
-                                                             "SVCToComponent");
+                                                             "SVCToComponent", false);
   models.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6",
-                                                             "SVCToComponent");
+                                                             "SVCToComponent", false);
   models.models.at("SVC").nodeConnections.insert(macro);
 
   std::vector<LoadDefinition> loads = {LoadDefinition("L0", LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS, "00"),

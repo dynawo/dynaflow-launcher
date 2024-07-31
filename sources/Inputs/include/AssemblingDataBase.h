@@ -100,6 +100,11 @@ class AssemblingDataBase {
    * @brief Macro connect XML element defining a macro connection of a dynamic model
    */
   struct MacroConnect {
+    /**
+   * @brief Default constructor
+   */
+    MacroConnect() : mandatory(false) {}
+
     std::string macroConnection;  ///< macro connection id
     std::string id;               ///< association id to use
     bool mandatory;               ///< true if macroconnect is mandatory, false otherwise
