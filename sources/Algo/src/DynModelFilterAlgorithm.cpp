@@ -43,6 +43,14 @@ DynModelFilterAlgorithm::removeRpclInGeneratorsAndSvcIfMissingConnexionToSvc() {
     }
   }
   for (const DynamicModelDefinition::DynModelId& svcId : svcToRemove) {
+    DynamicModelDefinition& modelDef = dynamicModelsToFilter_.at(svcId);
+    auto found = std::find_if(modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
+                              [](const DynamicModelDefinition::MacroConnection& macroConnection){
+                                return macroConnection.isMandatory;
+                              });
+    if (found != modelDef.nodeConnections.end()) {
+      continue;
+    }
     LOG(debug, SVCNotConnectectedToBus, svcId);
     dynamicModelsToFilter_.erase(svcId);
   }
@@ -85,15 +93,17 @@ DynModelFilterAlgorithm::filterPartiallyConnectedDynamicModels() {
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       std::vector<algo::DynamicModelDefinition::MacroConnection> toRemove;
       for (const DynamicModelDefinition::MacroConnection& connection : modelDef.nodeConnections) {
-        DynamicModelDefinition::MacroConnection::ElementId compId = connection.connectedElementId;
-        auto found = std::find_if(generators_.begin(), generators_.end(),
-                                  [&compId](const algo::GeneratorDefinition& genDefinition) { return genDefinition.id == compId; });
-        if (found != generators_.end() && found->isNetwork()) {
-          LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
-          toRemove.push_back(connection);
-        } else if (found != generators_.end() && !found->hasRpcl()) {
-          LOG(debug, SVCConnectedToGenRegulatingNode, connection.connectedElementId, automaton.second.id);
-          toRemove.push_back(connection);
+        if (!connection.isMandatory) {
+          DynamicModelDefinition::MacroConnection::ElementId compId = connection.connectedElementId;
+          auto found = std::find_if(generators_.begin(), generators_.end(),
+                                    [&compId](const algo::GeneratorDefinition& genDefinition) { return genDefinition.id == compId; });
+          if (found != generators_.end() && found->isNetwork()) {
+            LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
+            toRemove.push_back(connection);
+          } else if (found != generators_.end() && !found->hasRpcl()) {
+            LOG(debug, SVCConnectedToGenRegulatingNode, connection.connectedElementId, automaton.second.id);
+            toRemove.push_back(connection);
+          }
         }
       }
       for (const DynamicModelDefinition::MacroConnection& connection : toRemove) {
