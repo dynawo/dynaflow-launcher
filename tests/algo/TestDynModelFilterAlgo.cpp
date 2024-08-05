@@ -51,7 +51,11 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
     for (const auto &gen : gensArray) {
       generators.push_back(dfl::algo::GeneratorDefinition(gen.first, gen.second, "0", points, 0, 0, 0, 0, 0, 0, "4"));
       DynamicModelDefinition::MacroConnection genMacroConnection =
-          DynamicModelDefinition::MacroConnection("SVCToGenerator", DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, gen.first, "");
+          DynamicModelDefinition::MacroConnection("SVCToGenerator",
+                                                    DynamicModelDefinition::MacroConnection::ElementType::GENERATOR,
+                                                    gen.first,
+                                                    "",
+                                                    false);
       dynModel.nodeConnections.insert(genMacroConnection);
     }
 
@@ -59,11 +63,15 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
     switch (testConfig) {
     case TestConfig::ConnexionToSvc:
       busMacroConnection = std::unique_ptr<DynamicModelDefinition::MacroConnection>(
-          new DynamicModelDefinition::MacroConnection("SVCToUMeasurement", DynamicModelDefinition::MacroConnection::ElementType::NODE, "_BUS____1_TN", ""));
+          new DynamicModelDefinition::MacroConnection("SVCToUMeasurement",
+                                                      DynamicModelDefinition::MacroConnection::ElementType::NODE,
+                                                      "_BUS____1_TN",
+                                                      "",
+                                                      false));
       break;
     case TestConfig::MissingConnexionToSvc:
       busMacroConnection = std::unique_ptr<DynamicModelDefinition::MacroConnection>(new DynamicModelDefinition::MacroConnection(
-          "SVCToUMeasurementNotFound", DynamicModelDefinition::MacroConnection::ElementType::NODE, "_BUS____1_TN", ""));
+          "SVCToUMeasurementNotFound", DynamicModelDefinition::MacroConnection::ElementType::NODE, "_BUS____1_TN", "", false));
       break;
     }
     dynModel.nodeConnections.insert(*busMacroConnection);
