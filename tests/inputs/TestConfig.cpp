@@ -50,7 +50,7 @@ TEST(Config, Nominal) {
   ASSERT_FALSE(config.isShuntRegulationOn());
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
 
-  std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config.json", current_path()));
+  std::string prefixConfigFile = removeFileName(createAbsolutePath("./res/config.json", currentPath()));
 
   ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
   ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
@@ -113,7 +113,7 @@ TEST(Config, ConfigN) {
   ASSERT_FALSE(config.isShuntRegulationOn());
   ASSERT_FALSE(config.isAutomaticSlackBusOn());
 
-  std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config_N.json", current_path()));
+  std::string prefixConfigFile = removeFileName(createAbsolutePath("./res/config_N.json", currentPath()));
 
   ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
   ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
@@ -149,7 +149,7 @@ TEST(Config, ConfigSA) {
     ASSERT_FALSE(config.isShuntRegulationOn());
     ASSERT_FALSE(config.isAutomaticSlackBusOn());
 
-    std::string prefixConfigFile = remove_file_name(createAbsolutePath("./res/config_SA.json", current_path()));
+    std::string prefixConfigFile = removeFileName(createAbsolutePath("./res/config_SA.json", currentPath()));
 
     ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
     ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
