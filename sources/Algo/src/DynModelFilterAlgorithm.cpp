@@ -110,13 +110,17 @@ DynModelFilterAlgorithm::filterPartiallyConnectedDynamicModels() {
       continue;
 
     for (const inputs::AssemblingDataBase::MacroConnect& macroConnect : automaton.second.macroConnects) {
-      auto found = std::find_if(
+      if (!macroConnect.mandatory) {
+        auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
-          [&macroConnect](const algo::DynamicModelDefinition::MacroConnection &macroConnection) { return macroConnection.id == macroConnect.macroConnection; });
-      if (found == modelDef.nodeConnections.end()) {
-        LOG(debug, ModelPartiallyConnected, automaton.second.id);
-        dynamicModelsToFilter_.erase(automaton.second.id);
-        break;  // element doesn't exist any more, go to next automaton
+          [&macroConnect](const algo::DynamicModelDefinition::MacroConnection &macroConnection) {
+            return macroConnection.id == macroConnect.macroConnection;
+          });
+        if (found == modelDef.nodeConnections.end()) {
+          LOG(debug, ModelPartiallyConnected, automaton.second.id);
+          dynamicModelsToFilter_.erase(automaton.second.id);
+          break;  // element doesn't exist any more, go to next automaton
+        }
       }
     }
   }
