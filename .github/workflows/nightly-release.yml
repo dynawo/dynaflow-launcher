@@ -42,7 +42,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Create nightly tag and release if necessary
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           body: |
             DynaFlowLauncher's nightly release. Compiled on *release* settings.
@@ -89,9 +89,10 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: dynawo/dynawo-distribution-cxx11:latest
-          options: -v ${{ github.workspace }}:/dynawo-algorithms -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS
+          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS
           shell: bash
           run: |
+            cd /dynaflow-launcher
             export DYNAWO_HOME=$(pwd)/dynawo
             export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
             export DYNAFLOW_LAUNCHER_HOME=$(pwd)
@@ -116,7 +117,7 @@ jobs:
           path: dynawo
 
       - name: Upload assets for release
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           tag_name: ${{ env.DYNAWO_TAG }}
           draft: false
@@ -237,7 +238,7 @@ jobs:
           path: dynawo
 
       - name: Upload distribution
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           tag_name: ${{ env.DYNAWO_TAG }}
           draft: false
