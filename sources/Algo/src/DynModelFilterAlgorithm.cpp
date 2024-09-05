@@ -110,7 +110,7 @@ DynModelFilterAlgorithm::filterPartiallyConnectedDynamicModels() {
       continue;
 
     for (const inputs::AssemblingDataBase::MacroConnect& macroConnect : automaton.second.macroConnects) {
-      if (!macroConnect.mandatory) {
+      if (macroConnect.mandatory) {
         auto found = std::find_if(
           modelDef.nodeConnections.begin(), modelDef.nodeConnections.end(),
           [&macroConnect](const algo::DynamicModelDefinition::MacroConnection &macroConnection) {
