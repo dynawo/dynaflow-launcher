@@ -173,6 +173,11 @@ int main(int argc, char *argv[]) {
     try {
       if (mpiContext.isRootProc()) {
         dfl::common::Log::init(options, outputDir.generic_string());
+
+        // IMPORTANT: Call inputs::Configuration::sanityCheck() after the constructor to ensure configuration is correct.
+        // Sanity checks are performed after log initialization so that any potential errors in the configuration can be logged.
+        configN.sanityCheck();
+
         DYN::Trace::info(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
         DYN::Trace::info(dfl::common::Log::getTag()) << " " << runtimeConfig.programName << " v" << DYNAFLOW_LAUNCHER_VERSION_STRING << DYN::Trace::endline;
         DYN::Trace::info(dfl::common::Log::getTag()) << " "
@@ -270,6 +275,8 @@ int main(int argc, char *argv[]) {
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_SA || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       dfl::inputs::Configuration configSA(configPath, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
+      // IMPORTANT: Call inputs::Configuration::sanityCheck() after the constructor to ensure configuration is correct.
+      configSA.sanityCheck();
       if (configSA.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT) {
         if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA)
           configSA.setStartingPointMode(dfl::inputs::Configuration::StartingPointMode::WARM);  // In NSA starting point mode for SA is forced to warm
