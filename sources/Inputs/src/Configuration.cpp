@@ -164,7 +164,9 @@ static void updateActivePowerCompensationValue(Configuration::ActivePowerCompens
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path &filepath, dfl::inputs::Configuration::SimulationKind simulationKind) {
+Configuration::Configuration(const boost::filesystem::path &filepath, SimulationKind simulationKind) :
+    filepath_(filepath),
+    simulationKind_(simulationKind) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -189,13 +191,13 @@ Configuration::Configuration(const boost::filesystem::path &filepath, dfl::input
 
     auto config = tree.get_child("dfl-config");
 
-    std::string prefixConfigFile = absolute(remove_file_name(filepath.generic_string()));
+    std::string prefixConfigFile = absolute(remove_file_name(filepath_.generic_string()));
 
     bool saMode = false;
-    if (simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
+    if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
       saMode = true;
     updateStartingPointMode(config, saMode);
-    updateChosenOutput(config, simulationKind, saMode);
+    updateChosenOutput(config, simulationKind_, saMode);
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits", saMode, parameterValueModified_);
     helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn", saMode, parameterValueModified_);
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn", saMode, parameterValueModified_);
@@ -210,28 +212,33 @@ Configuration::Configuration(const boost::filesystem::path &filepath, dfl::input
     helper::updateValue(timeStep_, config, "TimeStep", saMode, parameterValueModified_);
     helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode, parameterValueModified_);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode, parameterValueModified_);
-    if (simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
+    if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
       helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true, parameterValueModified_);
       helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
-
-      if (!startingDumpFilePath_.empty() && !exists(startingDumpFilePath_)) {
-        throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
-      }
     }
   } catch (std::exception &e) {
     throw Error(ErrorConfigFileRead, e.what());
   }
+}
+
+void
+Configuration::sanityCheck() const {
+  if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS &&
+      !startingDumpFilePath_.empty() &&
+      !exists(startingDumpFilePath_)) {
+    throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
+  }
 
   if (!settingFilePath_.empty() && assemblingFilePath_.empty()) {
-    throw Error(SettingFileWithoutAssemblingFile, filepath.generic_string());
+    throw Error(SettingFileWithoutAssemblingFile, filepath_.generic_string());
   }
 
   if (!assemblingFilePath_.empty() && settingFilePath_.empty()) {
-    throw Error(AssemblingFileWithoutSettingFile, filepath.generic_string());
+    throw Error(AssemblingFileWithoutSettingFile, filepath_.generic_string());
   }
 
   if (startingPointMode_ == Configuration::StartingPointMode::FLAT && activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
-    throw Error(InvalidActivePowerCompensation, filepath.generic_string());
+    throw Error(InvalidActivePowerCompensation, filepath_.generic_string());
   }
 }
 
