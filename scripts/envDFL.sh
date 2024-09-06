@@ -172,6 +172,14 @@ where [option] can be:
                                                   - contingencies: filepath (JSON file)
                                                   - nbprocs: number of MPI processes to use for SA (default 1)
 
+        launch-nsa [network] [config] [contingencies] --nbThreads [nbprocs]
+                                                  launch DynaFlow Launcher to run a steadystate calculcation followed by a security Analysis:
+                                                  - network: filepath (only IIDM is supported)
+                                                  - config: filepath (JSON configuration file)
+                                                  - contingencies: filepath (JSON file)
+                                                  - nbprocs: number of MPI processes to use for SA (default 1)
+
+
         launch-gdb [network] [config]             launch DynaFlow Launcher with debugger:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
