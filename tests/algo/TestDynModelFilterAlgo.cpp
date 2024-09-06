@@ -68,8 +68,22 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
     }
     dynModel.nodeConnections.insert(*busMacroConnection);
 
+    const std::string dynModelId2 = "PhaseShifter_5_6";
+    DynamicModelDefinition dynModel2(dynModelId2, "PhaseShifterI");
+    DynamicModelDefinition::MacroConnection busMacroConnection2("PhaseShifterToP",
+                                                                DynamicModelDefinition::MacroConnection::ElementType::TFO,
+                                                                "_BUS____5-BUS____6-1_PS",
+                                                                "");
+    dynModel2.nodeConnections.insert(busMacroConnection2);
+    DynamicModelDefinition::MacroConnection busMacroConnection3("PhaseShifterToIMeasurement",
+                                                                DynamicModelDefinition::MacroConnection::ElementType::TFO,
+                                                                "_BUS____5-BUS____6-1_PS",
+                                                                "");
+    dynModel2.nodeConnections.insert(busMacroConnection3);
+
     std::map<DynamicModelDefinition::DynModelId, DynamicModelDefinition> models;
     models.insert({dynModelId, dynModel});
+    models.insert({dynModelId2, dynModel2});
     dfl::inputs::AssemblingDataBase assembling("res/assembling_svc.xml");
     dfl::algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(assembling, generators, models);
     dynModelFilterAlgorithm.filter();
@@ -88,5 +102,7 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
         ASSERT_FALSE(gen.hasRpcl());
       break;
     }
+    auto modelsIt2 = models.find(dynModelId2);
+    ASSERT_EQ(modelsIt2, models.end());
   }
 }

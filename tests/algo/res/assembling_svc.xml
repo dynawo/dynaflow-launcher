@@ -22,6 +22,21 @@
     <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>
     <macroConnect macroConnection="SVCToGenerator" id="GEN2"/>
   </dynamicAutomaton>
+  <singleAssociation id="MESURE_I_PHASE_5_6">
+    <tfo name="_BUS____5-BUS____6-1_PS"/>
+  </singleAssociation>
+  <singleAssociation id="TAP_PHASE_5_6">
+    <tfo name="_BUS____5-BUS____6-1_PS"/>
+  </singleAssociation>
+  <singleAssociation id="AUTOMATON_EXISTS_PHASE_5_6">
+    <tfo name="_BUS____5-BUS____6-1_PS"/>
+  </singleAssociation>
+  <dynamicAutomaton id="PhaseShifter_5_6" lib="PhaseShifterI">
+    <macroConnect macroConnection="PhaseShifterToP" id="MESURE_I_PHASE_5_6" mandatory="true"/>
+    <macroConnect macroConnection="PhaseShifterToIMeasurement" id="MESURE_I_PHASE_5_6" mandatory="false"/>
+    <macroConnect macroConnection="PhaseShifterToTap" id="TAP_PHASE_5_6"/>
+    <macroConnect macroConnection="PhaseShifterToAutomatonActivated" id="AUTOMATON_EXISTS_PHASE_5_6" mandatory="true"/>
+  </dynamicAutomaton>
   <property id="ReactivePowerControlLoop2">
     <device id="GEN2"/>
   </property>
