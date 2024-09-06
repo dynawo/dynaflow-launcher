@@ -101,8 +101,8 @@ class AssemblingDataBase {
    */
   struct MacroConnect {
     /**
-   * @brief Default constructor
-   */
+     * @brief Default constructor
+     */
     MacroConnect() : mandatory(false) {}
 
     std::string macroConnection;  ///< macro connection id
