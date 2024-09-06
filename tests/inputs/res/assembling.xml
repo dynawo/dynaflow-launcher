@@ -20,9 +20,13 @@
   <multipleAssociation id="SHUNTS_MODELE_1_VL4">
     <shunt voltageLevel="VL4"/>
   </multipleAssociation>
+  <singleAssociation id="GEN1">
+    <generator name="_GEN____1_SM"/>
+  </singleAssociation>
   <dynamicAutomaton id="MODELE_1_VL4" lib="DYNModel1">
-    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4"/>
-    <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4"/>
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL4" mandatory="false"/>
+    <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL4" mandatory="true"/>
+    <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>
   </dynamicAutomaton>
   <singleAssociation id="MESURE_MODELE_1_VL6">
     <bus voltageLevel="VL6" />
