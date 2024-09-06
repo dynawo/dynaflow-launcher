@@ -206,11 +206,7 @@ TEST(TestPar, DynModel) {
   DynamicModelDefinitions defs;
   dfl::algo::DynamicModelDefinition dynModel("DM_VL61", "DummyLib");
   dynModel.nodeConnections.insert(
-      dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest",
-                                                          dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO,
-                                                          "TfoId",
-                                                          "",
-                                                          false));
+      dfl::algo::DynamicModelDefinition::MacroConnection("MacroTest", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TfoId", ""));
   defs.models.insert({dynModel.id, dynModel});
 
   defs.usedMacroConnections.insert("SVCToUMeasurement");
@@ -220,35 +216,28 @@ TEST(TestPar, DynModel) {
   defs.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
   defs.models.insert({"DM_TEST", dfl::algo::DynamicModelDefinition("DM_TEST", "PhaseShifterI")});
   auto macro =
-      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement",
-                                                          dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE,
-                                                          "0",
-                                                          "",
-                                                          false);
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G5",
-                                                             "", false);
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G6",
-                                                             "", false);
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
-  macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToHvdc",
-                                                              dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::HVDC,
-                                                              "HVDCVSCLine",
-                                                              "",
-                                                              false);
+  macro =
+      dfl::algo::DynamicModelDefinition::MacroConnection("SVCToHvdc", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::HVDC, "HVDCVSCLine", "");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G7",
-                                                             "", false);
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("SVCToGenerator", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::GENERATOR, "G8",
-                                                             "", false);
+                                                             "");
   defs.models.at("SVC").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO, "TFOId",
-                                                             "", false);
+                                                             "");
   defs.models.at("DM_TEST").nodeConnections.insert(macro);
   macro = dfl::algo::DynamicModelDefinition::MacroConnection("CLAToIMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::TFO,
-                                                             "TFOId2", "", false);
+                                                             "TFOId2", "");
   defs.models.at("DM_TEST").nodeConnections.insert(macro);
 
   const std::string bus1 = "BUS_1";

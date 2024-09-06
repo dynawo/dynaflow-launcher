@@ -71,14 +71,9 @@ struct DynamicModelDefinition {
      * @param type type of the element to connect
      * @param id the element id to connect
      * @param indexId used to index the macroConnections
-     * @param mandatory true if macroconnect is mandatory, false otherwise
      */
-    MacroConnection(const MacroId &macroid,
-                    const ElementType &type,
-                    const ElementId &id,
-                    const std::string &indexId,
-                    bool mandatory)
-        : id(macroid), elementType(type), connectedElementId(id), indexId(indexId), isMandatory(mandatory) {}
+    MacroConnection(const MacroId &macroid, const ElementType &type, const ElementId &id, const std::string &indexId)
+        : id(macroid), elementType(type), connectedElementId(id), indexId(indexId) {}
 
     /**
      * @brief Equality operator
@@ -126,7 +121,6 @@ struct DynamicModelDefinition {
     ElementType elementType;       ///< Connected element type
     ElementId connectedElementId;  ///< Element id connected throught the macro connection
     std::string indexId;           ///< Id used to index the macroConnections
-    bool isMandatory;              ///< true if macroconnect is mandatory, false otherwise
   };
 
   /**
@@ -190,14 +184,9 @@ class DynModelAlgorithm {
      *
      * @param modelId dynamic model id
      * @param macroConnection macro connector id
-     * @param mandatory true if macroconnect is mandatory, false otherwise
      */
-    MacroConnect(const DynamicModelDefinition::DynModelId& modelId,
-                  const DynamicModelDefinition::MacroConnection::MacroId& macroConnection,
-                  bool mandatory) :
-      dynModelId(modelId),
-      macroConnectionId(macroConnection),
-      isMandatory(mandatory) {}
+    MacroConnect(const DynamicModelDefinition::DynModelId &modelId, const DynamicModelDefinition::MacroConnection::MacroId &macroConnection)
+        : dynModelId(modelId), macroConnectionId(macroConnection) {}
 
     /**
      * @brief Equality operator
@@ -215,7 +204,6 @@ class DynModelAlgorithm {
 
     DynamicModelDefinition::DynModelId dynModelId;                       ///< dynamic model id
     DynamicModelDefinition::MacroConnection::MacroId macroConnectionId;  ///< macro connection id
-    bool isMandatory;                                                    ///< true if macroconnect is mandatory, false otherwise
   };
 
   /**
