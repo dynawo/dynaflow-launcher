@@ -103,7 +103,7 @@ class AssemblingDataBase {
     /**
      * @brief Default constructor
      */
-    MacroConnect() : mandatory(false) {}
+    MacroConnect() : mandatory(true) {}
 
     std::string macroConnection;  ///< macro connection id
     std::string id;               ///< association id to use

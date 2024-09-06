@@ -151,7 +151,7 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_EQ(macroConnects[1].mandatory, true);
   ASSERT_EQ(macroConnects[2].id, "GEN1");
   ASSERT_EQ(macroConnects[2].macroConnection, "SVCToGenerator");
-  ASSERT_EQ(macroConnects[2].mandatory, false);
+  ASSERT_EQ(macroConnects[2].mandatory, true);
   // Check model model connections
   ASSERT_EQ(dynamicAutomatons.find("VIRTUAL_MODEL")->second.id, "VIRTUAL_MODEL");
   ASSERT_EQ(dynamicAutomatons.find("VIRTUAL_MODEL")->second.lib, "DYNModelVirtual");
