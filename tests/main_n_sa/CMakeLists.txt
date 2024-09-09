@@ -29,3 +29,5 @@ endmacro()
 
 DEFINE_LAUNCH_TEST_NSA(launch)
 DEFINE_LAUNCH_TEST_NSA(noContingencies)
+DEFINE_LAUNCH_TEST_NSA(badN)
+set_tests_properties(MAIN_NSA.badN PROPERTIES WILL_FAIL TRUE)
