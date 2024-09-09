@@ -48,6 +48,16 @@ class Configuration {
    */
   explicit Configuration(const boost::filesystem::path &filepath,
                          dfl::inputs::Configuration::SimulationKind simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
+
+  /**
+   * @brief performs sanity checks on the configuration
+   * 
+   * @attention This method should be called after the constructor to verify that the configuration is properly set up.
+   * 
+   * @attention The sanity checks should be executed after log initialization to ensure that any potential errors in the configuration are logged appropriately.
+   */
+  void sanityCheck() const;
+
   /**
    * @brief determines if we use infinite reactive limits
    *
@@ -272,9 +282,12 @@ class Configuration {
    * @param simulationKind simulation kind of the simulation
    * @param saMode true if simulation is in SA, false otherwise
    */
-  void updateChosenOutput(const boost::property_tree::ptree &tree, dfl::inputs::Configuration::SimulationKind simulationKind, const bool saMode);
+  void updateChosenOutput(const boost::property_tree::ptree &tree, SimulationKind simulationKind, const bool saMode);
 
  private:
+  boost::filesystem::path filepath_;                                                 ///< the configuration file path
+  SimulationKind simulationKind_;                                                    ///< the simulation kind (Steady state or Security analysis)
+
   // General
   StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
   bool useInfiniteReactiveLimits_ = false;                                           ///< infinite reactive limits

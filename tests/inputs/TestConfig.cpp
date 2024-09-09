@@ -21,12 +21,22 @@ using DYN::doubleEquals;
 TEST(Config, Incorrect) {
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
   ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/incorrect_config_2.json"), DYN::Error::GENERAL, dfl::KeyError_t::ErrorConfigFileRead);
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_setting_file_without_assembling_file.json"), DYN::Error::GENERAL,
-                      dfl::KeyError_t::SettingFileWithoutAssemblingFile);
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_assembling_file_without_setting_file.json"), DYN::Error::GENERAL,
-                      dfl::KeyError_t::AssemblingFileWithoutSettingFile);
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config("res/config_flat_activepowercompensation_p.json"), DYN::Error::GENERAL,
-                      dfl::KeyError_t::InvalidActivePowerCompensation);
+
+  dfl::inputs::Configuration config1("res/config_setting_file_without_assembling_file.json");
+  ASSERT_THROW_DYNAWO(config1.sanityCheck(), DYN::Error::GENERAL, dfl::KeyError_t::SettingFileWithoutAssemblingFile);
+
+  dfl::inputs::Configuration config2("res/config_assembling_file_without_setting_file.json");
+  ASSERT_THROW_DYNAWO(config2.sanityCheck(), DYN::Error::GENERAL, dfl::KeyError_t::AssemblingFileWithoutSettingFile);
+
+  dfl::inputs::Configuration config3("res/config_flat_activepowercompensation_p.json");
+  ASSERT_THROW_DYNAWO(config3.sanityCheck(), DYN::Error::GENERAL, dfl::KeyError_t::InvalidActivePowerCompensation);
+
+  std::string configFile = "res/config_SA_dumpState.json";
+  dfl::inputs::Configuration config4(configFile, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
+  ASSERT_NO_THROW(config4.sanityCheck());
+
+  dfl::inputs::Configuration config5(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
+  ASSERT_THROW_DYNAWO(config5.sanityCheck(), DYN::Error::GENERAL, dfl::KeyError_t::StartingDumpFileNotFound);
 }
 
 TEST(Config, CaseInsensitive) {
@@ -179,13 +189,6 @@ TEST(Config, ConfigSA) {
     ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ));
 #endif
   }
-}
-
-TEST(Config, ConfigSAWrongDumpState) {
-  std::string configFile = "res/config_SA_dumpState.json";
-  ASSERT_NO_THROW(dfl::inputs::Configuration config(configFile, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION));
-  ASSERT_THROW_DYNAWO(dfl::inputs::Configuration config2(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS), DYN::Error::GENERAL,
-                      dfl::KeyError_t::ErrorConfigFileRead);
 }
 
 TEST(Config, ChosenOutputTest) {
