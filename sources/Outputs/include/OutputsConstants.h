@@ -85,6 +85,7 @@ const std::string seasonTag{"@SAISON@"};                              ///< Seaso
 const std::string connectedStaticId{"@CONNECTED_STATIC_ID@"};         ///< Connected static id special tag
 const double generatorXPuValue{0.1228};                               ///< value of XPu of generators
 const double generatorNucXPuValue{0.1426};                            ///< value of XPu of nuclear generators
+const double hvdcACEmulationTFilterDefaultValue{50.};                 ///< default value of tFilter for hvdc with AC emulation
 
 }  // namespace constants
 }  // namespace outputs
