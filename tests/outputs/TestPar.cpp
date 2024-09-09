@@ -250,6 +250,9 @@ TEST(TestPar, DynModel) {
       GeneratorDefinition("G7", GeneratorDefinition::ModelType::DIAGRAM_PQ_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1),
       GeneratorDefinition("G8", GeneratorDefinition::ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN, "00", {}, 1., 10., -11., 110., 0, 0., bus1)};
 
+  dfl::algo::VSCDefinition vscStation22("VSCStation22", 2., -2., 0., 0., {});
+  dfl::algo::VSCDefinition vscStation33("VSCStation33", 2., -3., 0., 0., {});
+  dfl::algo::VSCDefinition vscStation44("VSCStation44", 2., -4., 0., 0., {});
   auto dummyStationVSC = std::make_shared<dfl::inputs::VSCConverter>("StationN", "BUS_2", nullptr, false, 0., 0., 0.,
                                                                      std::vector<dfl::inputs::VSCConverter::ReactiveCurvePoint>{});
   auto vscStation2 = std::make_shared<dfl::inputs::VSCConverter>("VSCStation2", "BUS_1", nullptr, false, 0., 0., 0.,
@@ -260,8 +263,20 @@ TEST(TestPar, DynModel) {
       dfl::algo::VSCDefinition(dummyStationVSC->converterId, dummyStationVSC->qMax, dummyStationVSC->qMin, dummyStationVSC->qMin, 10., dummyStationVSC->points),
       dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, vscStation2->qMin, 10., vscStation2->points), boost::none,
       boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSCACEmulation1 =
+      dfl::algo::HVDCDefinition("HVDCVSCLine1", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation22", "BUS_22",
+      true, "VSCStation33", "BUS_33", true,
+      dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, {0., 0.}, 0.,
+      vscStation22, vscStation33, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
+  auto hvdcLineVSCACEmulation2 =
+      dfl::algo::HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation22", "BUS_22",
+      true, "VSCStation44", "BUS_44", true,
+      dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, {0., 0.}, 0.,
+      vscStation22, vscStation44, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
   //  maybe watch out but you can't access the hdvLine from the converterInterface
-  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC)};
+  HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC),
+                                                std::make_pair(hvdcLineVSCACEmulation1.id, hvdcLineVSCACEmulation1),
+                                                std::make_pair(hvdcLineVSCACEmulation2.id, hvdcLineVSCACEmulation2)};
   HVDCLineDefinitions hvdcDefs{hvdcLines};
   dfl::inputs::NetworkManager::BusMapRegulating noBuses;
 
