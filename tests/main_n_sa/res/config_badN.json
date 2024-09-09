@@ -1,0 +1,7 @@
+{
+  "dfl-config": {
+      "AutomaticSlackBusOn": "true",
+      "OutputDir": "../resultsTestsTmp/badN",
+      "DsoVoltageLevel": 133.0
+  }
+}
