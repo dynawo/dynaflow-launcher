@@ -91,6 +91,12 @@
   <singleAssociation id="HVDCVSCLine">
     <hvdcLine name="HVDCVSCLine"/>
   </singleAssociation>
+  <singleAssociation id="HVDCVSCLine1">
+    <hvdcLine name="HVDCVSCLine1"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCVSCLine2">
+    <hvdcLine name="HVDCVSCLine2"/>
+  </singleAssociation>
   <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
     <macroConnect macroConnection="SVCToGenerator" id="G5"/>

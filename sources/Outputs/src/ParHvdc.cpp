@@ -266,7 +266,21 @@ boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::
     set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
   }
   if (hvdcDefinition.hasEmulationModel()) {
-    set->addParameter(helper::buildParameter("acemulation_tFilter", 50.));
+    // Try to use AC emulation tFilter from the setting ddb (if provided in the ddb, otherwise defaulted to 50 s)
+    std::string parameter = "acemulation_tFilter";
+    if (dynamicDataBaseManager.assembling().getSingleAssociationFromHvdcLine(hvdcDefinition.id).empty()) {
+      set->addParameter(helper::buildParameter(parameter, 50.));
+    } else {
+      const auto &databaseSetting =
+          dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getSingleAssociationFromHvdcLine(hvdcDefinition.id));
+      auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                  [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+      if (paramIt != databaseSetting.doubleParameters.end())
+        set->addParameter(helper::buildParameter(parameter, paramIt->value));
+      else
+        set->addParameter(helper::buildParameter(parameter, 50.));
+    }
+
     auto kac = computeKAC(*hvdcDefinition.droop);  // since the model is an emulation one, the extension is defined (see algo)
     auto pSet = computePSET(*hvdcDefinition.p0);   // since the model is an emulation one, the extension is defined (see algo)
     set->addParameter(helper::buildParameter("acemulation_KACEmulation", kac));
