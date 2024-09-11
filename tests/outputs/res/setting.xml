@@ -91,4 +91,10 @@
     <par name="hvdc_QNom" type="DOUBLE" value="70"/>
     <par name="hvdc_LambdaPu" type="DOUBLE" value="80"/>
   </set>
+  <set id="HVDCVSCLine1">
+    <par name="hvdc_QNom" type="DOUBLE" value="70"/>
+  </set>
+  <set id="HVDCVSCLine2">
+    <par name="acemulation_tFilter" type="DOUBLE" value="70"/>
+  </set>
 </setting>

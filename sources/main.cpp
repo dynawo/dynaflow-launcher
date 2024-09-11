@@ -260,6 +260,7 @@ int main(int argc, char *argv[]) {
     params.resourcesDirPath = resourcesDir;
     params.networkFilePath = runtimeConfig.networkFilePath;
     params.locale = locale;
+    bool successN = true;
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_N || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       params.simulationKind = dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION;
@@ -268,10 +269,51 @@ int main(int argc, char *argv[]) {
       }
 
       boost::shared_ptr<dfl::Context> context = buildContext(params, configN);
-      execSimulation(context, params);
+      try {
+        execSimulation(context, params);
+      } catch (DYN::Error &e) {
+        if (mpiContext.isRootProc()) {
+          std::cerr << "Simulation failed: " << e.what() << std::endl;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        }
+        successN = false;
+      } catch (DYN::MessageError &e) {
+        if (mpiContext.isRootProc()) {
+          std::cerr << "Simulation failed: " << e.what() << std::endl;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        }
+        successN = false;
+      } catch (std::exception &e) {
+        if (mpiContext.isRootProc()) {
+          std::cerr << "Simulation failed: " << e.what() << std::endl;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        }
+        successN = false;
+      } catch (...) {
+        if (mpiContext.isRootProc()) {
+          std::cerr << "Simulation failed" << std::endl;
+          std::cerr << "Unknown error" << std::endl;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed" << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
+          DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
+        }
+        successN = false;
+      }
     }
 
+    // NSA: wait so that the steady state computation is over for everyone and the results written by root process
     DYNAlgorithms::multiprocessing::Context::sync();
+    mpiContext.broadcast(successN);
+    // NSA: Every process has to fail if the N ran by the root process failed
+    if (!successN)
+      return EXIT_FAILURE;
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_SA || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       dfl::inputs::Configuration configSA(configPath, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
