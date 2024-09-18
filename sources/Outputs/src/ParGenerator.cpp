@@ -296,6 +296,7 @@ void ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::Parameters
     parameters.push_back("reactivePowerControlLoop_Ti");
   } else {
     parameters.push_back("reactivePowerControlLoop_DerURefMaxPu");
+    parameters.push_back("reactivePowerControlLoop_QDeadBand");
     parameters.push_back("reactivePowerControlLoop_TiQ");
   }
   for (auto parameter : parameters) {

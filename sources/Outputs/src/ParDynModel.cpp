@@ -94,6 +94,8 @@ boost::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(c
 
   unsigned idx = 0;
   new_set->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
+  new_set->addParameter(helper::buildParameter("secondaryVoltageControl_tFilterU", 10.0));
+  new_set->addParameter(helper::buildParameter("secondaryVoltageControl_tSampling", 10.0));
   new_set->addParameter(helper::buildParameter("secondaryVoltageControl_FreezingActivated", true));
   bool frozen = true;
   for (const auto &connection : automaton.nodeConnections) {
