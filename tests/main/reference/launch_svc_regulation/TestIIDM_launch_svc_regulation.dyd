@@ -83,5 +83,5 @@
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="_GEN____1_SM" id2="Model_Signal_NQ__BUS____1_TN" index2="0"/>
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="_GEN____2_SM" id2="Model_Signal_NQ__BUS____1_TN" index2="1"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="_BUS____4_TN_phi_value"/>
-  <dyn:connect id1="Model_Signal_NQ__BUS____1_TN" var1="vrremote_URegulated" id2="NETWORK" var2="_BUS____1_TN_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ__BUS____1_TN" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_BUS____1_TN_Upu_value"/>
 </dyn:dynamicModelsArchitecture>

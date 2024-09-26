@@ -3,7 +3,7 @@
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="0.01"/>
   </macroParameterSet>
   <macroParameterSet id="macro_signalNGeneratorRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -88,8 +88,8 @@
     <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
   </set>
   <set id="Model_Signal_NQ__BUS___10_TN">
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation1"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation1"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="c89c148d-0159-577b-a55a-f630617d67a6">

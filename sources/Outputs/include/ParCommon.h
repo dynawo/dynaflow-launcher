@@ -87,7 +87,7 @@ inline boost::shared_ptr<parameters::MacroParameterSet> buildMacroParameterSetVR
       boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
   if (modelType == getMacroParameterSetId(constants::remoteVControlParId + "_vr")) {
     macroParameterSet->addParameter(buildParameter("vrremote_Gain", 1.));
-    macroParameterSet->addParameter(buildParameter("vrremote_tIntegral", 1.));
+    macroParameterSet->addParameter(buildParameter("vrremote_tIntegral", 0.01));
     macroParameterSet->addParameter(buildParameter("vrremote_FreezingActivated", true));
   }
   return macroParameterSet;
@@ -103,8 +103,8 @@ inline boost::shared_ptr<parameters::MacroParameterSet> buildMacroParameterSetVR
  */
 inline boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string &busId, const std::string &elementId) {
   auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
-  set->addReference(buildReference("vrremote_U0", "targetV", "DOUBLE", elementId));
-  set->addReference(buildReference("vrremote_URef0", "targetV", "DOUBLE", elementId));
+  set->addReference(buildReference("vrremote_U0Pu", "targetV_pu", "DOUBLE", elementId));
+  set->addReference(buildReference("vrremote_URef0Pu", "targetV_pu", "DOUBLE", elementId));
   set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getMacroParameterSetId(constants::remoteVControlParId + "_vr"))));
   return set;
 }
