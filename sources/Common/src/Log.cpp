@@ -50,7 +50,7 @@ Log::init(const common::Options& options, const std::string& outputDir) {
 
   appenders.push_back(appender);
 
-  Trace::addAppenders(appenders);
+  Trace::clearAndAddAppenders(appenders);
 }
 
 }  // namespace common
