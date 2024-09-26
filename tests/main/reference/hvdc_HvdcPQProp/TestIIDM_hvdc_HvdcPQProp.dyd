@@ -81,6 +81,6 @@
   <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1bis" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_switchOff" id2="HERA9AJAX1bis" var2="hvdc_switchOffSignal1Side1"/>
   <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_switchOff" id2="HERA9AJAX1bis" var2="hvdc_switchOffSignal1Side2"/>
-  <dyn:connect id1="Model_Signal_NQ_AJAXP7_S_VL7_TN1" var1="vrremote_URegulated" id2="NETWORK" var2="AJAXP7_S_VL7_TN1_U_value"/>
-  <dyn:connect id1="Model_Signal_NQ_HERAP7_S_VL7_TN1" var1="vrremote_URegulated" id2="NETWORK" var2="HERAP7_S_VL7_TN1_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ_AJAXP7_S_VL7_TN1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="AJAXP7_S_VL7_TN1_Upu_value"/>
+  <dyn:connect id1="Model_Signal_NQ_HERAP7_S_VL7_TN1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="HERAP7_S_VL7_TN1_Upu_value"/>
 </dyn:dynamicModelsArchitecture>

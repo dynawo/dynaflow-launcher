@@ -258,7 +258,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
       auto index = componentId->substr(strIndex, componentId->find('@', strIndex) - strIndex);
       assert(macroConnectionToStaticId.find(macroConnectId + "_" + index) != macroConnectionToStaticId.end());
       componentId = componentId->substr(0, strIndex) + macroConnectionToStaticId[macroConnectId + "_" + index] +
-              componentId->substr(componentId->find('@', strIndex) + 1, componentId->length());
+                    componentId->substr(componentId->find('@', strIndex) + 1, componentId->length());
     }
     new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingDataBase::Reference::toString(ref.dataType), componentId));
   }

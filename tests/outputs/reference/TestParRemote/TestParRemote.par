@@ -62,7 +62,7 @@
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="0.01"/>
   </macroParameterSet>
   <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParRemote_Diagram/G2_Diagram.txt"/>
@@ -73,14 +73,14 @@
     <macroParSet id="macro_remoteVControl"/>
   </set>
   <set id="Model_Signal_NQ_BUS_1">
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G1"/>
+    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="G1"/>
+    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="G1"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ_BUS_2">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
+    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="G4"/>
+    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="G4"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="cce4f321-bf59-5464-b247-bda10c680360">
