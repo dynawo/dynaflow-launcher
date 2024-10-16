@@ -339,10 +339,10 @@ void Context::executeSecurityAnalysis() {
   if (validContingencies_) {
     for (const auto &contingencyRef : validContingencies_->get()) {
       auto scenario = boost::make_shared<DYNAlgorithms::Scenario>();
-      scenario->setId(contingencyRef.get().id);
-      scenario->setDydFile(basename_ + "-" + contingencyRef.get().id + ".dyd");
+      scenario->setId(contingencyRef.id);
+      scenario->setDydFile(basename_ + "-" + contingencyRef.id + ".dyd");
       scenarios->addScenario(scenario);
-      LOG(info, ContingencySimulationDefined, contingencyRef.get().id);
+      LOG(info, ContingencySimulationDefined, contingencyRef.id);
     }
   }
   // Use dynawo-algorithms Systematic Analysis Launcher to simulate all the scenarios

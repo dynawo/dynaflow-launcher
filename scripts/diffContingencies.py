@@ -167,7 +167,7 @@ if __name__ == "__main__":
             with open(reference_aggr_res) as f1, open(results_aggr_res) as f2:
                 identical = all(l1 == l2 for l1, l2 in zip_longest(f1, f2))
             if not identical:
-                print("[ERROR] Found differences when comparing result and reference aggregated results file.")
+                print("[ERROR] Found differences when comparing result and reference aggregated results file " + results_aggr_res)
                 total_diffs += 1
 
     for folder in os.listdir(reference_root):

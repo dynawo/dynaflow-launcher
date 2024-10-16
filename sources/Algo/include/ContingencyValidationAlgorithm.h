@@ -44,7 +44,7 @@ class ValidContingencies {
    * @brief Constructor
    * @param contingencies The list of contingencies given in the inputs
    */
-  explicit ValidContingencies(const std::vector<inputs::Contingency>& contingencies);
+  explicit ValidContingencies(const std::vector<inputs::Contingency> &contingencies);
 
   /**
    * @brief Mark the element given by id and type as valid in all contingencies where it is referred
@@ -53,7 +53,7 @@ class ValidContingencies {
    * @param type the type of the element as it has been found in the network
    * @param isNetwork if element is network model
    */
-  void markElementValid(const ElementId& id, inputs::ContingencyElement::Type type, const bool isNetwork);
+  void markElementValid(const ElementId &id, inputs::ContingencyElement::Type type, const bool isNetwork);
 
   /**
    * @brief Keep as valid contingencies only the ones that have all elements marked as valid
@@ -64,18 +64,14 @@ class ValidContingencies {
    * @brief All valid contigencies
    * @return valid contingencies
    */
-  const std::vector<ContingencyRef>& get() {
-    return validContingencies_;
-  }
+  const std::vector<dfl::inputs::Contingency> &get() { return validContingencies_; }
 
   /**
    * @brief Get the networkElements_ object
    *
    * @return set containing contingencies elements id using network model
    */
-  const std::unordered_set<ElementId>& getNetworkElements() const {
-    return networkElements_;
-  }
+  const std::unordered_set<ElementId> &getNetworkElements() const { return networkElements_; }
 
  private:
   using ContingenciesRef = std::reference_wrapper<const std::vector<inputs::Contingency>>;     ///< Alias for a reference to the list of contingencies
@@ -83,11 +79,11 @@ class ValidContingencies {
   using ElementIds = std::unordered_set<ElementId>;                                            ///< Alias for set of element ids
   using ValidatingContingenciesMap = std::unordered_map<ContingencyId, ElementIds>;            ///< Alias for map of contingencies with valid elements found
 
-  ContingenciesRef contingencies_;                      ///< Contingencies requested in the inputs
-  ElementContingenciesMap elementContingencies_;        ///< For each element identifier, all the contingencies where it is referenced
-  ValidatingContingenciesMap validatingContingencies_;  ///< All contingencies with valid elements found, indexed by contingencyId
-  std::vector<ContingencyRef> validContingencies_;      ///< Only valid contingencies
-  ElementIds networkElements_;                          ///< Set containing contingencies elements id using network model
+  ContingenciesRef contingencies_;                            ///< Contingencies requested in the inputs
+  ElementContingenciesMap elementContingencies_;              ///< For each element identifier, all the contingencies where it is referenced
+  ValidatingContingenciesMap validatingContingencies_;        ///< All contingencies with valid elements found, indexed by contingencyId
+  std::vector<dfl::inputs::Contingency> validContingencies_;  ///< Only valid contingencies
+  ElementIds networkElements_;                                ///< Set containing contingencies elements id using network model
 };
 
 /**
@@ -99,7 +95,7 @@ class ContingencyValidationAlgorithmOnNodes {
    * @brief Constructor
    * @param validContingencies The class keeping track of valid contingencies
    */
-  explicit ContingencyValidationAlgorithmOnNodes(ValidContingencies& validContingencies) : validContingencies_(validContingencies) {}
+  explicit ContingencyValidationAlgorithmOnNodes(ValidContingencies &validContingencies) : validContingencies_(validContingencies) {}
 
   /**
    * @brief Application operator.
@@ -109,10 +105,10 @@ class ContingencyValidationAlgorithmOnNodes {
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
+  void operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes);
 
  private:
-  ValidContingencies& validContingencies_;  ///< the contingencies being validated by the algorithm
+  ValidContingencies &validContingencies_;  ///< the contingencies being validated by the algorithm
 };
 
 /**
@@ -125,7 +121,7 @@ class ContingencyValidationAlgorithmOnDefs {
    *
    * @param validContingencies The class keeping track of valid contingencies
    */
-  explicit ContingencyValidationAlgorithmOnDefs(ValidContingencies& validContingencies) : validContingencies_(validContingencies) {}
+  explicit ContingencyValidationAlgorithmOnDefs(ValidContingencies &validContingencies) : validContingencies_(validContingencies) {}
 
   /**
    * @brief reports algo definitions as valid contingencies
@@ -134,11 +130,11 @@ class ContingencyValidationAlgorithmOnDefs {
    * @param generators list of generator definitions
    * @param svarcs list of staticVarCompensator definitions
    */
-  void fillValidContingenciesOnDefs(const std::vector<algo::LoadDefinition>& loads, const std::vector<algo::GeneratorDefinition>& generators,
-                                    const std::vector<algo::StaticVarCompensatorDefinition>& svarcs);
+  void fillValidContingenciesOnDefs(const std::vector<algo::LoadDefinition> &loads, const std::vector<algo::GeneratorDefinition> &generators,
+                                    const std::vector<algo::StaticVarCompensatorDefinition> &svarcs);
 
  private:
-  ValidContingencies& validContingencies_;  ///< the contingencies being validated by the algorithm
+  ValidContingencies &validContingencies_;  ///< the contingencies being validated by the algorithm
 };
 }  // namespace algo
 }  // namespace dfl

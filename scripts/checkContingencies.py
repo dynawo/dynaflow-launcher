@@ -182,10 +182,11 @@ def check_finalState(iidm_file, element):
     return check_attrs(e, attrs_to_check[element_type], allowed_values)
 
 def check_file_with(checker, name, file, elm_id, id):
+    if 'XXX' in elm_id[0] or 'XXX' in elm_id[1]: return True
     if os.path.isfile(file):
         res = checker(file, elm_id)
         if not res:
-            print(name + " check failed for " + id)
+            print(name + " check failed for " + id + " " + str(elm_id))
         return res
 
     return False

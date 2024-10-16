@@ -38,7 +38,7 @@ InvalidDiagramBothError       =     the diagram of the generator %1% is invalid,
 HvdcLineBadInitialization     =     the hvdcLine %1%'s converters were badly initialized
 CannotLoadLibrary             =     cannot load library %1% : %2%
 DynModelLibraryNotFound       =     library %1% not found : model %2% will be skipped
-ContingencyInvalidForSimulation =     contingency %1% is invalid for simulation. Element %2% is not in main connected component or has an invalid type
+ContingencyInvalidForSimulation =   element %1% from contingency %2% is not valid: not in main connected component or has an invalid type. It will be ignored.
 ContingencyInvalidForSimulationNoValidElements =     contingency %1% is invalid for simulation. All elements are invalid (not in main connected component or invalid type)
 
 //------------------ Outputs -----------------------
