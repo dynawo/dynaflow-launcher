@@ -30,6 +30,20 @@
       ]
     },
     {
+      "id": "load_multiple_elements_one_bad",
+      "elements": [
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008",
+          "type": "LOAD"
+        },
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008XXX",
+          "type": "LOAD"
+        }
+
+      ]
+    },
+    {
       "id": "generator_contingency",
       "elements": [
         {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <aggregatedResults xmlns="http://www.rte-france.com/dynawo" status="CONVERGENCE">
   <scenarioResults id="load_contingency" status="CONVERGENCE"/>
+  <scenarioResults id="load_multiple_elements_one_bad" status="CONVERGENCE"/>
   <scenarioResults id="generator_contingency" status="CONVERGENCE"/>
   <scenarioResults id="generator_network_contingency" status="CONVERGENCE"/>
   <scenarioResults id="shunt_compensator_contingency" status="CONVERGENCE"/>

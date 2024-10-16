@@ -22,9 +22,8 @@
 
 DYNAlgorithms::multiprocessing::Context mpiContext;
 
-static void
-addContingency(std::vector<dfl::inputs::Contingency>& contingencies, const std::string& id, const std::string elementId,
-               dfl::inputs::ContingencyElement::Type elementType) {
+static void addContingency(std::vector<dfl::inputs::Contingency> &contingencies, const std::string &id, const std::string elementId,
+                           dfl::inputs::ContingencyElement::Type elementType) {
   contingencies.emplace_back(id);
   contingencies[contingencies.size() - 1].elements.emplace_back(elementId, elementType);
 }
@@ -123,7 +122,7 @@ TEST(ContingencyValidation, base) {
   auto algoOnInputs = dfl::algo::ContingencyValidationAlgorithmOnNodes(validContingencies);
 
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  for (const auto& node : nodes) {
+  for (const auto &node : nodes) {
     algoOnInputs(node, algoRes);
   }
   auto algoOnDefs = dfl::algo::ContingencyValidationAlgorithmOnDefs(validContingencies);
@@ -134,6 +133,7 @@ TEST(ContingencyValidation, base) {
   auto expectedValidContingencies = std::set<std::string>();
   expectedValidContingencies.emplace("load");
   expectedValidContingencies.emplace("loadnetwork");
+  expectedValidContingencies.emplace("load_multiple_elements_one_bad");
   expectedValidContingencies.emplace("generator");
   expectedValidContingencies.emplace("generatornetwork");
   expectedValidContingencies.emplace("shunt_compensator");
@@ -149,7 +149,7 @@ TEST(ContingencyValidation, base) {
   expectedValidContingencies.emplace("hvdcline");
 
   for (auto validContingency : validContingencies.get()) {
-    auto expected = expectedValidContingencies.find(validContingency.get().id);
+    auto expected = expectedValidContingencies.find(validContingency.id);
     ASSERT_TRUE(expected != expectedValidContingencies.end());
     expectedValidContingencies.erase(expected);
   }
