@@ -54,7 +54,7 @@ class ParLoads {
    *
    * @return the new parameter set for loads
    */
-  boost::shared_ptr<parameters::ParametersSet> writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  std::shared_ptr<parameters::ParametersSet> writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:
   std::vector<algo::LoadDefinition> loadsDefinitions_;  ///< list of loads definitions

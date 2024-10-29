@@ -63,7 +63,7 @@ class ParHvdc {
    *
    * @returns the parameter set
    */
-  boost::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition &hvdcLine, const std::string &basename,
+  std::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition &hvdcLine, const std::string &basename,
                                                              const boost::filesystem::path &dirname,
                                                              dfl::inputs::Configuration::StartingPointMode startingPointMode,
                                                              const inputs::DynamicDataBaseManager &dynamicDataBaseManager);

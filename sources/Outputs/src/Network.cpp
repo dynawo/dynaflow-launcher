@@ -39,10 +39,10 @@ Network::write() const {
   exporter.exportToFile(paramSetCollection, networkFileName.generic_string(), constants::xmlEncoding);
 }
 
-boost::shared_ptr<parameters::ParametersSet>
+std::shared_ptr<parameters::ParametersSet>
 Network::writeNetworkSet() const {
   // Network
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::networkParId));
+  auto set = parameters::ParametersSetFactory::newParametersSet(constants::networkParId);
 
   set->addParameter(helper::buildParameter("capacitor_no_reclosing_delay", 300.));
   set->addParameter(helper::buildParameter("dangling_line_currentLimit_maxTimeOperation", 90.));

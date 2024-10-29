@@ -60,7 +60,7 @@ class ParSVarC {
    * @param svarc the static var compensator to use
    * @returns the parameter set to add to the exported file
    */
-  boost::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc);
+  std::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc);
 
   /**
    * @brief Computes the susceptance value in PU unit

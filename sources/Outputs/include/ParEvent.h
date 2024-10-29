@@ -31,7 +31,6 @@
 #include "SlackNodeAlgorithm.h"
 
 #include <PARParametersSet.h>
-#include <boost/shared_ptr.hpp>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -89,7 +88,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string &branchId, const double timeOfEvent);
+  static std::shared_ptr<parameters::ParametersSet> buildBranchDisconnection(const std::string &branchId, const double timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventSetPointBoolean dynamic model
@@ -99,7 +98,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string &elementId, const double timeOfEvent);
+  static std::shared_ptr<parameters::ParametersSet> buildEventSetPointBooleanDisconnection(const std::string &elementId, const double timeOfEvent);
 
   /**
    * @brief Build element disconnection parameter set for EventConnectedStatus dynamic model
@@ -109,7 +108,7 @@ class ParEvent {
    *
    * @returns the parameter set
    */
-  static boost::shared_ptr<parameters::ParametersSet> buildEventConnectedStatusDisconnection(const std::string &elementId, const double timeOfEvent);
+  static std::shared_ptr<parameters::ParametersSet> buildEventConnectedStatusDisconnection(const std::string &elementId, const double timeOfEvent);
 
   /**
    * @brief Determines if contingency element is using a network cpp model

@@ -62,23 +62,23 @@ void ParEvent::write() {
   exporter.exportToFile(parametersSets, def_.filename, constants::xmlEncoding);
 }
 
-boost::shared_ptr<parameters::ParametersSet> ParEvent::buildBranchDisconnection(const std::string &branchId, const double timeOfEvent) {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + branchId));
+std::shared_ptr<parameters::ParametersSet> ParEvent::buildBranchDisconnection(const std::string &branchId, const double timeOfEvent) {
+  auto set = parameters::ParametersSetFactory::newParametersSet("Disconnect_" + branchId);
   set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_disconnectOrigin", true));
   set->addParameter(helper::buildParameter("event_disconnectExtremity", true));
   return set;
 }
 
-boost::shared_ptr<parameters::ParametersSet> ParEvent::buildEventSetPointBooleanDisconnection(const std::string &elementId, const double timeOfEvent) {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
+std::shared_ptr<parameters::ParametersSet> ParEvent::buildEventSetPointBooleanDisconnection(const std::string &elementId, const double timeOfEvent) {
+  auto set = parameters::ParametersSetFactory::newParametersSet("Disconnect_" + elementId);
   set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_stateEvent1", true));
   return set;
 }
 
-boost::shared_ptr<parameters::ParametersSet> ParEvent::buildEventConnectedStatusDisconnection(const std::string &elementId, const double timeOfEvent) {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Disconnect_" + elementId));
+std::shared_ptr<parameters::ParametersSet> ParEvent::buildEventConnectedStatusDisconnection(const std::string &elementId, const double timeOfEvent) {
+  auto set = parameters::ParametersSetFactory::newParametersSet("Disconnect_" + elementId);
   set->addParameter(helper::buildParameter("event_tEvent", timeOfEvent));
   set->addParameter(helper::buildParameter("event_open", true));
   return set;

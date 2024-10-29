@@ -64,7 +64,7 @@ class Network {
    *
    * @return the new parameter set for network
    */
-  boost::shared_ptr<parameters::ParametersSet> writeNetworkSet() const;
+  std::shared_ptr<parameters::ParametersSet> writeNetworkSet() const;
 
   NetworkDefinition def_;  ///< Network model parameters file description
 };
