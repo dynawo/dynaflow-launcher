@@ -20,7 +20,6 @@
 #include "Configuration.h"
 
 #include <PARParametersSet.h>
-#include <boost/shared_ptr.hpp>
 #include <string>
 
 namespace dfl {
@@ -63,7 +62,7 @@ class Solver {
   *
   * @return reference to the new created parameter set
   */
-  boost::shared_ptr<parameters::ParametersSet> writeSolverSet() const;
+  std::shared_ptr<parameters::ParametersSet> writeSolverSet() const;
 
   SolverDefinition def_;  ///< solver par definition
 };

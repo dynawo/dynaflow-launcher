@@ -37,8 +37,8 @@ void Solver::write() const {
   exporter.exportToFile(paramSetCollection, solverFileName.generic_string(), constants::xmlEncoding);
 }
 
-boost::shared_ptr<parameters::ParametersSet> Solver::writeSolverSet() const {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("SimplifiedSolver"));
+std::shared_ptr<parameters::ParametersSet> Solver::writeSolverSet() const {
+  auto set = parameters::ParametersSetFactory::newParametersSet("SimplifiedSolver");
   set->addParameter(helper::buildParameter("fnormtol", 1e-4));
   set->addParameter(helper::buildParameter("fnormtolAlg", 1e-4));
   set->addParameter(helper::buildParameter("fnormtolAlgJ", 1e-4));

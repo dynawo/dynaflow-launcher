@@ -23,6 +23,7 @@
 #include <DYNCommon.h>
 #include <PARParameter.h>
 #include <PARParameterFactory.h>
+#include <PARParametersSetFactory.h>
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
 #include <PARReference.h>
@@ -101,8 +102,8 @@ inline boost::shared_ptr<parameters::MacroParameterSet> buildMacroParameterSetVR
  *
  * @returns the parameter set
  */
-inline boost::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string &busId, const std::string &elementId) {
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet("Model_Signal_NQ_" + busId));
+inline std::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string &busId, const std::string &elementId) {
+  auto set = parameters::ParametersSetFactory::newParametersSet("Model_Signal_NQ_" + busId);
   set->addReference(buildReference("vrremote_U0Pu", "targetV_pu", "DOUBLE", elementId));
   set->addReference(buildReference("vrremote_URef0Pu", "targetV_pu", "DOUBLE", elementId));
   set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getMacroParameterSetId(constants::remoteVControlVRParId))));

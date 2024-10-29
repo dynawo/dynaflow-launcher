@@ -23,10 +23,10 @@ ParLoads::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSet
   }
 }
 
-boost::shared_ptr<parameters::ParametersSet>
+std::shared_ptr<parameters::ParametersSet>
 ParLoads::writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   // Load
-  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::loadParId));
+  auto set = parameters::ParametersSetFactory::newParametersSet(constants::loadParId);
   set->addParameter(helper::buildParameter("load_Alpha", 1.5));
   set->addParameter(helper::buildParameter("load_Beta", 2.5));
   set->addParameter(helper::buildParameter("load_UMax0Pu", 1.15));
