@@ -133,9 +133,16 @@ jobs:
 
   windows:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch'))
-    name: Windows 2019 (Release, VS2019)
+    name: Windows 2019 (Release, VS2019) (${{ matrix.use-mpi.text }})
     runs-on: windows-2019
+    strategy:
+      matrix:
+        use-mpi:
+          - { value: YES, text: 'with MPI' }
+          - { value: NO, text: 'without MPI' }
     needs: nightly
+    env:
+      DYNAWO_USE_MPI: ${{ matrix.use-mpi.value }}
     steps:
       - name: No LF to CRLF conversion
         shell: cmd
@@ -145,12 +152,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download MS-MPI
+        if: ${{ matrix.use-mpi.value == 'YES' }}
         shell: bash
         run: |
           curl -Os https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisdk.msi
           curl -Os https://download.microsoft.com/download/a/5/2/a5207ca5-1203-491a-8fb8-906fd68ae623/msmpisetup.exe
 
       - name: Install MS-MPI
+        if: ${{ matrix.use-mpi.value == 'YES' }}
         shell: cmd
         run: |
           msmpisdk.msi /passive
@@ -170,11 +179,21 @@ jobs:
 
       - name: Fetch Dynawo-algorithms' nightly release
         shell: bash
-        run: curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_v$DYNAWO_VERSION.zip
+        run: |
+          if [ "${{ matrix.use-mpi.value }}" == "YES" ]; then
+            curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_v$DYNAWO_VERSION.zip
+          else
+            curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_without_mpi_v$DYNAWO_VERSION.zip
+          fi
 
       - name: Unzip Dynawo-algorithms
         shell: cmd
-        run: 7z x DynawoAlgorithms_Windows_v%DYNAWO_VERSION%.zip -o..\deploy
+        run: |
+          if "${{ matrix.use-mpi.value }}" == "YES" (
+            7z x DynawoAlgorithms_Windows_v%DYNAWO_VERSION%.zip -o..\deploy
+          ) else (
+            7z x DynawoAlgorithms_Windows_without_mpi_v%DYNAWO_VERSION%.zip -o..\deploy
+          )
 
       - name: Dynawo-algorithms version
         shell: cmd
@@ -186,13 +205,16 @@ jobs:
       - name: Build and install
         shell: cmd
         env:
-          MSMPI_INC: C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
-          MSMPI_LIB32: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
-          MSMPI_LIB64: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
-          MSMPI_BIN: C:\Program Files\Microsoft MPI\Bin\
           PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
         run: |
-          set PATH=%MSMPI_BIN%;%PATH%
+          setlocal enableDelayedExpansion
+          if "${{ matrix.use-mpi.value }}" == "YES" (
+            set "MSMPI_INC=C:\Program Files (x86)\Microsoft SDKs\MPI\Include\"
+            set "MSMPI_LIB32=C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\"
+            set "MSMPI_LIB64=C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\"
+            set "MSMPI_BIN=C:\Program Files\Microsoft MPI\Bin\"
+            set "PATH=!MSMPI_BIN!;%PATH%"
+          )
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           call scripts\dynaflow-launcher verbose build || exit /b 1
 
@@ -206,14 +228,17 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.perform-nrt
         shell: cmd
         env:
-          MSMPI_INC: C:\Program Files (x86)\Microsoft SDKs\MPI\Include\
-          MSMPI_LIB32: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\
-          MSMPI_LIB64: C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\
-          MSMPI_BIN: C:\Program Files\Microsoft MPI\Bin\
           PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64;C:\hostedtoolcache\windows\Python\3.7.9\x64\Scripts
         run: |
+          setlocal enableDelayedExpansion
+          if "${{ matrix.use-mpi.value }}" == "YES" (
+            set "MSMPI_INC=C:\Program Files (x86)\Microsoft SDKs\MPI\Include\"
+            set "MSMPI_LIB32=C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86\"
+            set "MSMPI_LIB64=C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64\"
+            set "MSMPI_BIN=C:\Program Files\Microsoft MPI\Bin\"
+            set "PATH=!MSMPI_BIN!;%PATH%"
+          )
           pip install lxml
-          set PATH=%MSMPI_BIN%;%PATH%
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           call scripts\dynaflow-launcher verbose tests "^^M" || exit /b 1
 
@@ -223,7 +248,11 @@ jobs:
           md distrib
           cd distrib
           move /y ..\..\dfl-i dynaflow-launcher
-          7z a DynaFlowLauncher_Windows_v%DYNAWO_VERSION%.zip dynaflow-launcher
+          if "${{ matrix.use-mpi.value }}" == "YES" (
+            7z a DynaFlowLauncher_Windows_v%DYNAWO_VERSION%.zip dynaflow-launcher
+          ) else (
+            7z a DynaFlowLauncher_Windows_without_mpi_v%DYNAWO_VERSION%.zip dynaflow-launcher
+          )
 
       - name: INFO. Files created in distrib folder
         shell: bash
