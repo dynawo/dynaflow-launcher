@@ -215,6 +215,7 @@ set_environment() {
     export_var_env DYNAFLOW_LAUNCHER_BROWSER=firefox
     export_var_env DYNAFLOW_LAUNCHER_BROWSER_SHOW=true
     export_var_env DYNAFLOW_LAUNCHER_PDFVIEWER=xdg-open
+    export_var_env DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION="true"
 
     # dynawo vars
     export_var_env DYNAWO_HOME=UNDEFINED
