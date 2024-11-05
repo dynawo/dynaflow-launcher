@@ -33,6 +33,10 @@ namespace inputs {
  * @return the corresponding xsd filepath or an empty path if not found
  */
 static file::path computeXsdPath(const file::path &filepath) {
+  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
+  if (validation != NULL && std::string(validation) != "true") {
+    return file::path("");
+  }
   auto basename = filepath.filename().replace_extension().generic_string();
 
   auto var = getenv("DYNAFLOW_LAUNCHER_XSD");
@@ -43,7 +47,7 @@ static file::path computeXsdPath(const file::path &filepath) {
     xsdFile = file::current_path();
   }
 
-  xsdFile.append("assembling.xsd");
+  xsdFile.append("assembling_dynaflow.xsd");
 
   if (!file::exists(xsdFile)) {
     return file::path("");

@@ -39,8 +39,11 @@ const std::string SettingDataBase::SettingXmlDocument::origData_("IIDM");
  * @param filepath xml file path
  * @return the corresponding xsd filepath or an empty path if not found
  */
-static file::path
-computeXsdPath(const file::path& filepath) {
+static file::path computeXsdPath(const file::path &filepath) {
+  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
+  if (validation != NULL && std::string(validation) != "true") {
+    return file::path("");
+  }
   auto basename = filepath.filename().replace_extension().generic_string();
 
   auto var = getenv("DYNAFLOW_LAUNCHER_XSD");
@@ -51,7 +54,7 @@ computeXsdPath(const file::path& filepath) {
     xsdFile = file::current_path();
   }
 
-  xsdFile.append("setting.xsd");
+  xsdFile.append("setting_dynaflow.xsd");
 
   if (!file::exists(xsdFile)) {
     return file::path("");
@@ -60,7 +63,7 @@ computeXsdPath(const file::path& filepath) {
   return xsdFile;
 }
 
-SettingDataBase::SettingDataBase(const boost::filesystem::path& settingFilePath) {
+SettingDataBase::SettingDataBase(const boost::filesystem::path &settingFilePath) {
   parser::ParserFactory factory;
   SettingXmlDocument settingXml(*this);
   auto parser = factory.createParser();
@@ -84,13 +87,12 @@ SettingDataBase::SettingDataBase(const boost::filesystem::path& settingFilePath)
 
   try {
     parser->parse(in, settingXml, xsdValidation);
-  } catch (const xml::sax::parser::ParserException& e) {
+  } catch (const xml::sax::parser::ParserException &e) {
     throw Error(DynModelFileReadError, settingFilePath.generic_string(), e.what());
   }
 }
 
-const SettingDataBase::Set&
-SettingDataBase::getSet(const std::string& id) const {
+const SettingDataBase::Set &SettingDataBase::getSet(const std::string &id) const {
   const auto it = sets_.find(id);
   if (it != sets_.end())
     return it->second;
@@ -102,15 +104,15 @@ SettingDataBase::getSet(const std::string& id) const {
  * @param param the parameter to update
  * @param attributes the xml attributes to use to create the parameter
  */
-template<>
-void
-SettingDataBase::SettingXmlDocument::createOptionalParameter<std::string>(boost::optional<Parameter<std::string>>& param, const attributes_type& attributes) {
+template <>
+void SettingDataBase::SettingXmlDocument::createOptionalParameter<std::string>(boost::optional<Parameter<std::string>> &param,
+                                                                               const attributes_type &attributes) {
   param = Parameter<std::string>();
   param->value = attributes["value"].as_string();
   param->name = attributes["name"].as_string();
 }
 
-SettingDataBase::SettingXmlDocument::SettingXmlDocument(SettingDataBase& db) : setHandler_(parser::ElementName(ns, "set")) {
+SettingDataBase::SettingXmlDocument::SettingXmlDocument(SettingDataBase &db) : setHandler_(parser::ElementName(ns, "set")) {
   onElement(ns("setting/set"), setHandler_);
 
   setHandler_.onStart([this]() { setHandler_.currentSet = Set(); });
@@ -120,17 +122,15 @@ SettingDataBase::SettingXmlDocument::SettingXmlDocument(SettingDataBase& db) : s
   });
 }
 
-SettingDataBase::SettingXmlDocument::SetHandler::SetHandler(const elementName_type& root) :
-    countHandler(parser::ElementName(ns, "count")),
-    refHandler(parser::ElementName(ns, "ref")),
-    referenceHandler(parser::ElementName(ns, "reference")),
-    parameterHandler(parser::ElementName(ns, "par")) {
+SettingDataBase::SettingXmlDocument::SetHandler::SetHandler(const elementName_type &root)
+    : countHandler(parser::ElementName(ns, "count")), refHandler(parser::ElementName(ns, "ref")), referenceHandler(parser::ElementName(ns, "reference")),
+      parameterHandler(parser::ElementName(ns, "par")) {
   onElement(root + ns("count"), countHandler);
   onElement(root + ns("ref"), refHandler);
   onElement(root + ns("reference"), referenceHandler);
   onElement(root + ns("par"), parameterHandler);
 
-  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) { currentSet->id = attributes["id"].as_string(); });
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) { currentSet->id = attributes["id"].as_string(); });
 
   countHandler.onStart([this]() { countHandler.currentCount = Count(); });
   countHandler.onEnd([this]() {
@@ -174,17 +174,16 @@ SettingDataBase::SettingXmlDocument::SetHandler::SetHandler(const elementName_ty
   });
 }
 
-bool
-SettingDataBase::SettingXmlDocument::CountHandler::check(const std::string& name) {
+bool SettingDataBase::SettingXmlDocument::CountHandler::check(const std::string &name) {
   static const std::vector<std::string> keys = {"nbShunts", "nbShuntsLV", "nbShuntsHV"};
 
   return std::find(keys.begin(), keys.end(), name) != keys.end();
 }
 
-SettingDataBase::SettingXmlDocument::CountHandler::CountHandler(const elementName_type& root) {
-  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
+SettingDataBase::SettingXmlDocument::CountHandler::CountHandler(const elementName_type &root) {
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
     currentCount->id = attributes["id"].as_string();
-    const auto& name = attributes["name"].as_string();
+    const auto &name = attributes["name"].as_string();
     if (!check(name)) {
       throw Error(UnsupportedCountName, name);
     }
@@ -192,8 +191,8 @@ SettingDataBase::SettingXmlDocument::CountHandler::CountHandler(const elementNam
   });
 }
 
-SettingDataBase::SettingXmlDocument::RefHandler::RefHandler(const elementName_type& root) {
-  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
+SettingDataBase::SettingXmlDocument::RefHandler::RefHandler(const elementName_type &root) {
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
     currentRef->id = attributes["id"].as_string();
     currentRef->name = attributes["name"].as_string();
     currentRef->tag = attributes["tag"].as_string();
@@ -201,8 +200,8 @@ SettingDataBase::SettingXmlDocument::RefHandler::RefHandler(const elementName_ty
   });
 }
 
-SettingDataBase::SettingXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type& root) {
-  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
+SettingDataBase::SettingXmlDocument::ReferenceHandler::ReferenceHandler(const elementName_type &root) {
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
     if (attributes.has("componentId")) {
       currentReference->componentId = attributes["componentId"].as_string();
     }
@@ -228,8 +227,8 @@ SettingDataBase::SettingXmlDocument::ReferenceHandler::ReferenceHandler(const el
   });
 }
 
-SettingDataBase::SettingXmlDocument::ParameterHandler::ParameterHandler(const elementName_type& root) {
-  onStartElement(root, [this](const parser::ElementName&, const attributes_type& attributes) {
+SettingDataBase::SettingXmlDocument::ParameterHandler::ParameterHandler(const elementName_type &root) {
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
     auto type = attributes["type"].as_string();
     if (type == "INT") {
       createOptionalParameter(currentIntegerParameter, attributes);
@@ -245,8 +244,7 @@ SettingDataBase::SettingXmlDocument::ParameterHandler::ParameterHandler(const el
   });
 }
 
-std::string
-SettingDataBase::Reference::toString(DataType type) {
+std::string SettingDataBase::Reference::toString(DataType type) {
   switch (type) {
   case DataType::DOUBLE:
     return "DOUBLE";
