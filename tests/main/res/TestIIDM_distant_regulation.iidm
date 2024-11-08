@@ -8568,7 +8568,7 @@
             <iidm:busBreakerTopology>
                 <iidm:bus id="_2b6ef01f-027e-11e7-afc1-94659cb4e466" name="TG-RJ1" v="20.07775" angle="8.665288"/>
             </iidm:busBreakerTopology>
-            <iidm:generator id="_2b6efa1b-027e-11e7-afc1-94659cb4e466" name="9801_1 " energySource="THERMAL" minP="0.0" maxP="392.0" ratedS="420.0" voltageRegulatorOn="true" targetP="330.0" targetV="220.0" targetQ="19.8621464" bus="_2b6ef01f-027e-11e7-afc1-94659cb4e466" connectableBus="_2b6ef01f-027e-11e7-afc1-94659cb4e466" p="-330.0" q="-19.8621464">
+            <iidm:generator id="_2b6efa1b-027e-11e7-afc1-94659cb4e466" name="9801_1 " energySource="NUCLEAR" minP="0.0" maxP="392.0" ratedS="420.0" voltageRegulatorOn="true" targetP="330.0" targetV="220.0" targetQ="19.8621464" bus="_2b6ef01f-027e-11e7-afc1-94659cb4e466" connectableBus="_2b6ef01f-027e-11e7-afc1-94659cb4e466" p="-330.0" q="-19.8621464">
                 <iidm:regulatingTerminal id="_63b04c37-db70-11e8-80ee-00155d38aa06" side="TWO"/>
                 <iidm:minMaxReactiveLimits minQ="-130.0" maxQ="150.0"/>
             </iidm:generator>

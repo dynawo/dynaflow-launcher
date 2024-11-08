@@ -172,6 +172,21 @@
     <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
     <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="_2b6ee37f-027e-11e7-afc1-94659cb4e466"/>
   </set>
+  <set id="remoteVControl_Nuc">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0" origData="IIDM" origName="targetV"/>
+    <reference type="DOUBLE" name="generator_URegulated0" origData="IIDM" origName="U" componentId="_2b6eda54-027e-11e7-afc1-94659cb4e466"/>
+  </set>
   <set id="signalNGenerator">
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
