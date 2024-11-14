@@ -264,7 +264,7 @@
   <dyn:blackBoxModel id="_2b6efa13-027e-11e7-afc1-94659cb4e466" staticId="_2b6efa13-027e-11e7-afc1-94659cb4e466" lib="GeneratorPVRemoteSignalN" parFile="TestIIDM_distant_regulation.par" parId="remoteVControl">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
-  <dyn:blackBoxModel id="_2b6efa1b-027e-11e7-afc1-94659cb4e466" staticId="_2b6efa1b-027e-11e7-afc1-94659cb4e466" lib="GeneratorPVRemoteSignalN" parFile="TestIIDM_distant_regulation.par" parId="remoteVControl">
+  <dyn:blackBoxModel id="_2b6efa1b-027e-11e7-afc1-94659cb4e466" staticId="_2b6efa1b-027e-11e7-afc1-94659cb4e466" lib="GeneratorPVRemoteSignalN" parFile="TestIIDM_distant_regulation.par" parId="remoteVControl_Nuc">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
   <dyn:blackBoxModel id="_2b6efa2b-027e-11e7-afc1-94659cb4e466" staticId="_2b6efa2b-027e-11e7-afc1-94659cb4e466" lib="GeneratorPVRemoteSignalN" parFile="TestIIDM_distant_regulation.par" parId="remoteVControl">

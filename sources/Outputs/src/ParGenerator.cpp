@@ -223,7 +223,7 @@ void ParGenerator::updateSignalNGenerator(boost::shared_ptr<parameters::Paramete
   }
 
   set->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-  if (set->getId() == constants::remoteVControlParId) {
+  if (set->getId() == constants::remoteVControlParId || set->getId() == constants::remoteVControlNucParId) {
     set->addReference(helper::buildReference("generator_URef0", "targetV", "DOUBLE"));
   } else if (set->getId() != constants::propSignalNGeneratorParId) {
     set->addReference(helper::buildReference("generator_URef0Pu", "targetV_pu", "DOUBLE"));
