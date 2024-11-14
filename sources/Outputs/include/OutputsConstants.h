@@ -69,6 +69,8 @@ const std::string propSignalNGeneratorFixedPParId{"propSignalNGeneratorFixedP"};
 const std::string propSignalNGeneratorFixedPParIdRect{
     "propSignalNGeneratorFixedPRectangular"};                            ///< PAR id for generators using prop signal N with fixed P and rectangular diagram
 const std::string remoteVControlParId{"remoteVControl"};                 ///< PAR id for using remote voltage control
+const std::string remoteVControlNucParId{"remoteVControl_Nuc"};          ///< PAR id for a nuclear using remote voltage control
+const std::string remoteVControlVRParId{"remoteVControl_vr"};            ///< PAR id for vr remote
 const std::string remoteVControlParIdRect{"remoteVControlRectangular"};  ///< PAR id for using remote voltage control with rectangular diagram
 const std::string remoteSignalNGeneratorFixedP{"remoteSignalNFixedP"};   ///< PAR id for using remote signal N with fixed P
 const std::string remoteSignalNGeneratorFixedPRect{

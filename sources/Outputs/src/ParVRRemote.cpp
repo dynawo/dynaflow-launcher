@@ -49,9 +49,8 @@ void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetColl
       assert(busesToNumberOfRegulationMap_.find(keyValue.regulatedBusId) != busesToNumberOfRegulationMap_.end());
       if (handledBus.find(keyValue.regulatedBusId) != handledBus.end())
         continue;
-      if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-        paramSetCollection->addMacroParameterSet(
-            helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+      if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlVRParId))) {
+        paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlVRParId)));
       }
       auto VRRemoteParamSet = helper::writeVRRemote(keyValue.regulatedBusId, keyValue.id);
       if (componentToFrozen[keyValue.regulatedBusId])
@@ -68,9 +67,8 @@ void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetColl
           (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcLine.converter2BusId : hvdcLine.converter1BusId;
       const auto &vscStation = (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcLine.converter2Id : hvdcLine.converter1Id;
       if (handledBus.find(busId1) == handledBus.end()) {
-        if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-          paramSetCollection->addMacroParameterSet(
-              helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+        if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlVRParId))) {
+          paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlVRParId)));
         }
         auto VRRemoteParamSet = helper::writeVRRemote(busId1, vscStation);
         if (componentToFrozen[busId1])
@@ -80,9 +78,8 @@ void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetColl
       }
 
       if (hvdcLine.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT && handledBus.find(hvdcLine.converter2BusId) == handledBus.end()) {
-        if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr"))) {
-          paramSetCollection->addMacroParameterSet(
-              helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlParId + "_vr")));
+        if (!paramSetCollection->hasMacroParametersSet(helper::getMacroParameterSetId(constants::remoteVControlVRParId))) {
+          paramSetCollection->addMacroParameterSet(helper::buildMacroParameterSetVRRemote(helper::getMacroParameterSetId(constants::remoteVControlVRParId)));
         }
         auto VRRemoteParamSet = helper::writeVRRemote(hvdcLine.converter2BusId, hvdcLine.converter2Id);
         if (componentToFrozen[hvdcLine.converter2BusId])
