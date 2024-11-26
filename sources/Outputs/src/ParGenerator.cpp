@@ -142,6 +142,10 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
     }
   }
 
+  if (!def.hasRpcl() || def.isUsingDiagram()) {
+    macroParameterSet->addParameter(helper::buildParameter("generator_QDeadBand", 0.0001));
+    macroParameterSet->addParameter(helper::buildParameter("generator_UDeadBand", 0.0001));
+  }
   switch (def.model) {
   case ModelType::PROP_SIGNALN_INFINITE:
   case ModelType::PROP_DIAGRAM_PQ_SIGNALN:
@@ -194,6 +198,8 @@ void ParGenerator::updateSignalNGenerator(std::shared_ptr<parameters::Parameters
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMax", constants::powerValueMax));
+  set->addParameter(helper::buildParameter("generator_QDeadBand", 0.0001));
+  set->addParameter(helper::buildParameter("generator_UDeadBand", 0.0001));
 
   switch (activePowerCompensation) {
   case ActivePowerCompensation::P:

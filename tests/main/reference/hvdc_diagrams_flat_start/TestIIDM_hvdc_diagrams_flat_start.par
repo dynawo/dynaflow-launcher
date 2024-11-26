@@ -16,7 +16,9 @@
     <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_U0Pu" type="DOUBLE" value="1"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_UPhase0" type="DOUBLE" value="0"/>
   </macroParameterSet>
   <set id="3390034e-b251-5828-952e-f85234690b61">

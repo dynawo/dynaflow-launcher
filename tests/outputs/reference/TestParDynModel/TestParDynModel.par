@@ -13,6 +13,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_signalNGeneratorFixedP">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -27,11 +29,14 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <set id="51629263-3f1c-580f-907d-8333de7c55aa">
     <par name="generator_KGover" type="DOUBLE" value="0"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G5_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="51629263-3f1c-580f-907d-8333de7c55aa_tableqmax"/>
@@ -40,6 +45,7 @@
     <par name="generator_QMinTableName" type="STRING" value="51629263-3f1c-580f-907d-8333de7c55aa_tableqmin"/>
     <par name="generator_QNomAlt" type="DOUBLE" value="10"/>
     <par name="generator_SNom" type="DOUBLE" value="110.45"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00020000000000000001"/>
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.3999999999999999"/>
     <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="150"/>
@@ -230,12 +236,14 @@
     <par name="generator_KGover" type="DOUBLE" value="0"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G6_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="de83c408-b7db-5e14-bae6-f629f6d84c21_tableqmax"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G6_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="de83c408-b7db-5e14-bae6-f629f6d84c21_tableqmin"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00029999999999999997"/>
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.5"/>
@@ -280,8 +288,10 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
