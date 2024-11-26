@@ -14,6 +14,8 @@
     <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_propSignalNGeneratorRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -30,6 +32,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
@@ -49,6 +53,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <set id="1b13108d-9c1d-5212-b286-f2a17bb5477c">
     <macroParSet id="macro_signalNGeneratorFixedPRectangular"/>

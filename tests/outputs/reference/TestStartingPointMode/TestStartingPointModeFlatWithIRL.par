@@ -22,7 +22,9 @@
     <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_U0Pu" type="DOUBLE" value="1"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_UPhase0" type="DOUBLE" value="0"/>
   </macroParameterSet>
   <macroParameterSet id="macro_signalNGeneratorFixedP">
@@ -36,7 +38,9 @@
     <reference type="DOUBLE" name="generator_QMin0" origData="IIDM" origName="qMin"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_U0Pu" type="DOUBLE" value="1"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_UPhase0" type="DOUBLE" value="0"/>
   </macroParameterSet>
   <set id="05979064-d216-56aa-81d5-5a7b963909f3">
@@ -384,9 +388,11 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_U0Pu" type="DOUBLE" value="1"/>
+    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
     <par name="generator_UPhase0" type="DOUBLE" value="0"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="targetP_pu"/>
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
