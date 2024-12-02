@@ -310,9 +310,7 @@ int main(int argc, char *argv[]) {
 
     // NSA: wait so that the steady state computation is over for everyone and the results written by root process
     DYNAlgorithms::multiprocessing::Context::sync();
-#ifdef _MPI_
     mpiContext.broadcast(successN);
-#endif
     // NSA: Every process has to fail if the N ran by the root process failed
     if (!successN)
       return EXIT_FAILURE;
