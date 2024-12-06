@@ -264,15 +264,13 @@ TEST(TestPar, DynModel) {
       dfl::algo::VSCDefinition(vscStation2->converterId, vscStation2->qMax, vscStation2->qMin, vscStation2->qMin, 10., vscStation2->points), boost::none,
       boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   auto hvdcLineVSCACEmulation1 =
-      dfl::algo::HVDCDefinition("HVDCVSCLine1", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation22", "BUS_22",
-      true, "VSCStation33", "BUS_33", true,
-      dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, {0., 0.}, 0.,
-      vscStation22, vscStation33, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
+      dfl::algo::HVDCDefinition("HVDCVSCLine1", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation22", "BUS_22", true, "VSCStation33", "BUS_33", true,
+                                dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, {0., 0.},
+                                0., vscStation22, vscStation33, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
   auto hvdcLineVSCACEmulation2 =
-      dfl::algo::HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation22", "BUS_22",
-      true, "VSCStation44", "BUS_44", true,
-      dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, {0., 0.}, 0.,
-      vscStation22, vscStation44, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
+      dfl::algo::HVDCDefinition("HVDCVSCLine2", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation22", "BUS_22", true, "VSCStation44", "BUS_44", true,
+                                dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVEmulationSet, {0., 0.},
+                                0., vscStation22, vscStation44, 5, 120., false, 320, 322, 0.125, {0.01, 0.01});
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC),
                                                 std::make_pair(hvdcLineVSCACEmulation1.id, hvdcLineVSCACEmulation1),
@@ -403,24 +401,36 @@ TEST(TestPar, writeVRRemote) {
   auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2", "BUS_1", false,
                                     HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
                                     boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
-  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_3", false,
-                                    HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {}, 0., boost::none,
+  auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", false, "VSCStation2", "BUS_3", true,
+                                    HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDangling, {}, 0., boost::none,
                                     boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   HVDCLineDefinitions hvdcDefs{hvdcLines};
 
   std::string bus1 = "BUS_1";
   std::string bus2 = "BUS_2";
+  std::string bus3 = "BUS_3";
   dfl::inputs::NetworkManager::BusMapRegulating busesToNumberOfRegulationMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
-                                                                                {bus2, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES}};
+                                                                                {bus2, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
+                                                                                {bus3, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES}};
+
+  std::vector<GeneratorDefinition> generators = {
+      GeneratorDefinition("G1", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "00", {}, 1., 10., 11., 110., 0, 100, bus1),
+      GeneratorDefinition("G4", GeneratorDefinition::ModelType::PROP_SIGNALN_INFINITE, "04", {}, 3., 30., -33., 330., 0, 0, bus2)};
   DynamicModelDefinitions noModels;
 
   outputPath.append(filename);
   dfl::inputs::Configuration config("res/config_activepowercompensation_p.json");
-  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), {}, hvdcDefs, busesToNumberOfRegulationMap,
-                                                               manager, {}, noModels, {}, {}, {}, {}));
+  dfl::outputs::Par parWriter(dfl::outputs::Par::ParDefinition(basename, config, outputPath.generic_string(), generators, hvdcDefs,
+                                                               busesToNumberOfRegulationMap, manager, {}, noModels, {}, {}, {}, {}));
 
   parWriter.write();
+
+  boost::filesystem::path reference("reference");
+  reference.append(basename);
+  reference.append(filename);
+
+  dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
 }
 
 TEST(TestPar, startingPointMode) {

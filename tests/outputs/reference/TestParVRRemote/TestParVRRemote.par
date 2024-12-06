@@ -3,7 +3,7 @@
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="0.01"/>
   </macroParameterSet>
   <set id="HVDCLCCLine">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
@@ -34,8 +34,8 @@
     <par name="hvdc_Q2MaxPu" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="hvdc_Q2MinPu" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="hvdc_Q2Nom" type="DOUBLE" value="100"/>
-    <par name="hvdc_modeU10" type="BOOL" value="false"/>
-    <par name="hvdc_modeU20" type="BOOL" value="true"/>
+    <par name="hvdc_modeU10" type="BOOL" value="true"/>
+    <par name="hvdc_modeU20" type="BOOL" value="false"/>
     <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p2_pu"/>
     <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p2_pu"/>
     <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p1_pu"/>
@@ -44,6 +44,7 @@
     <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q1_pu"/>
     <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation1"/>
+    <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v1_pu"/>
@@ -53,19 +54,55 @@
   </set>
   <set id="Model_Signal_NQ_BUS_1">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G1"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G1"/>
+    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="G1"/>
+    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="G1"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ_BUS_2">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="G4"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="G4"/>
+    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="G4"/>
+    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="G4"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ_BUS_3">
-    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>
-    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>
+    <par name="vrremote_Frozen0" type="BOOL" value="true"/>
+    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <macroParSet id="macro_remoteVControl_vr"/>
+  </set>
+  <set id="propSignalNGenerator">
+    <par name="generator_KGover" type="DOUBLE" value="1"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QPercent" origData="IIDM" origName="qMax_pu"/>
+    <reference type="DOUBLE" name="generator_QRef0Pu" origData="IIDM" origName="targetQ_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+  </set>
+  <set id="propSignalNGeneratorFixedP">
+    <par name="generator_KGover" type="DOUBLE" value="0"/>
+    <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
+    <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
+    <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>
+    <reference type="DOUBLE" name="generator_Q0Pu" origData="IIDM" origName="q_pu"/>
+    <reference type="DOUBLE" name="generator_QPercent" origData="IIDM" origName="qMax_pu"/>
+    <reference type="DOUBLE" name="generator_QRef0Pu" origData="IIDM" origName="targetQ_pu"/>
+    <reference type="DOUBLE" name="generator_U0Pu" origData="IIDM" origName="v_pu"/>
+    <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
+    <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
   </set>
 </parametersSet>
