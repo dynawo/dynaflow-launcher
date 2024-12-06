@@ -15,8 +15,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
-    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
-    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_propSignalNGeneratorRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -33,8 +33,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
-    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
@@ -54,8 +54,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="1"/>
-    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
-    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_signalNGeneratorFixedP">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -70,8 +70,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
-    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
-    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <macroParameterSet id="macro_signalNGeneratorFixedPRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -86,8 +86,8 @@
     <reference type="DOUBLE" name="generator_UPhase0" origData="IIDM" origName="angle_pu"/>
     <reference type="DOUBLE" name="generator_URef0Pu" origData="IIDM" origName="targetV_pu"/>
     <par name="generator_KGover" type="DOUBLE" value="0"/>
-    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
-    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
   </macroParameterSet>
   <set id="3c4cdde8-fc12-5177-860a-b033252b5a42">
     <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestPar_Diagram/G10_Diagram.txt"/>
@@ -141,10 +141,10 @@
     <par name="generator_KGover" type="DOUBLE" value="1"/>
     <par name="generator_PMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_QDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_UDeadBand" type="DOUBLE" value="0.0001"/>
+    <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PNom" origData="IIDM" origName="p_pu"/>
     <reference type="DOUBLE" name="generator_PRef0Pu" origData="IIDM" origName="targetP_pu"/>

@@ -143,8 +143,8 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
   }
 
   if (!def.hasRpcl() || def.isUsingDiagram()) {
-    macroParameterSet->addParameter(helper::buildParameter("generator_QDeadBand", 0.0001));
-    macroParameterSet->addParameter(helper::buildParameter("generator_UDeadBand", 0.0001));
+    macroParameterSet->addParameter(helper::buildParameter("generator_QDeadBandPu", 0.0001));
+    macroParameterSet->addParameter(helper::buildParameter("generator_UDeadBandPu", 0.0001));
   }
   switch (def.model) {
   case ModelType::PROP_SIGNALN_INFINITE:
@@ -198,8 +198,8 @@ void ParGenerator::updateSignalNGenerator(std::shared_ptr<parameters::Parameters
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMax", constants::powerValueMax));
-  set->addParameter(helper::buildParameter("generator_QDeadBand", 0.0001));
-  set->addParameter(helper::buildParameter("generator_UDeadBand", 0.0001));
+  set->addParameter(helper::buildParameter("generator_QDeadBandPu", 0.0001));
+  set->addParameter(helper::buildParameter("generator_UDeadBandPu", 0.0001));
 
   switch (activePowerCompensation) {
   case ActivePowerCompensation::P:
@@ -237,8 +237,8 @@ void ParGenerator::updateSignalNGenerator(std::shared_ptr<parameters::Parameters
 }
 
 std::shared_ptr<parameters::ParametersSet> ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
-                                                                                       const algo::GeneratorDefinition &generator,
-                                                                                       StartingPointMode startingPointMode) {
+                                                                                     const algo::GeneratorDefinition &generator,
+                                                                                     StartingPointMode startingPointMode) {
   auto set = parameters::ParametersSetFactory::newParametersSet(helper::getGeneratorParameterSetId(generator));
   updateSignalNGenerator(set, activePowerCompensation, generator.targetP, startingPointMode);
   switch (generator.model) {
@@ -259,7 +259,7 @@ void ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinit
 }
 
 std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
-                                                                          const boost::filesystem::path &dirname) {
+                                                                        const boost::filesystem::path &dirname) {
   std::string uuid = constants::uuid(def.id);
 
   //  Use the hash id in exported files to prevent use of non-ascii characters
