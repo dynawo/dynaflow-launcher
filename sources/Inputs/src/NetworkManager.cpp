@@ -166,7 +166,7 @@ void NetworkManager::buildTree() {
         updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[regulatedBusId]);
       }
       nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
-                                              generator->getQMin(), generator->getQMax(), pmin, pmax, generator->getQ(), targetP,
+                                              generator->getQMin(), generator->getQMax(), pmin, pmax, -generator->getQ(), targetP,
                                               generator->getBusInterface()->getVNom(), regulatedBusId, nodeid,
                                               generator->getEnergySource() == DYN::GeneratorInterface::SOURCE_NUCLEAR);
       LOG(debug, NodeContainsGen, nodeid, generator->getID());
