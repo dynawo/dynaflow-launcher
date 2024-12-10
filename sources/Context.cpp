@@ -358,38 +358,34 @@ void Context::executeSecurityAnalysis() {
 }
 
 void Context::exportResults(bool simulationOk) {
-  switch (def_.simulationKind) {
-  case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION: {
-    boost::property_tree::ptree resultsTree;
-    boost::property_tree::ptree componentResultsTree;
-    boost::property_tree::ptree componentResultsChild;
-    resultsTree.put("version", "1.2");
-    resultsTree.put("isOK", simulationOk);
-    resultsTree.put("metrics.useInfiniteReactiveLimits", config_.useInfiniteReactiveLimits());
-    resultsTree.put("metrics.isSVCRegulationOn", config_.isSVarCRegulationOn());
-    resultsTree.put("metrics.isShuntRegulationOn", config_.isShuntRegulationOn());
-    resultsTree.put("metrics.isAutomaticSlackBusOn", config_.isAutomaticSlackBusOn());
-    componentResultsChild.put("connectedComponentNum", 0);
-    componentResultsChild.put("synchronousComponentNum", 0);
-    componentResultsChild.put("status", simulationOk ? "CONVERGED" : "SOLVER_FAILED");
-    componentResultsChild.put("iterationCount", 0);
-    if (slackNode_)
-      componentResultsChild.put("slackBusId", slackNode_->id);
-    else
-      componentResultsChild.put("slackBusId", "NOT FOUND");
-    componentResultsChild.put("slackBusActivePowerMismatch", 0);
-    componentResultsTree.push_back(std::make_pair("", componentResultsChild));
-    resultsTree.add_child("componentResults", componentResultsTree);
+  boost::property_tree::ptree resultsTree;
+  boost::property_tree::ptree componentResultsTree;
+  boost::property_tree::ptree componentResultsChild;
+  resultsTree.put("version", "1.2");
+  resultsTree.put("isOK", simulationOk);
+  resultsTree.put("metrics.useInfiniteReactiveLimits", config_.useInfiniteReactiveLimits());
+  resultsTree.put("metrics.isSVCRegulationOn", config_.isSVarCRegulationOn());
+  resultsTree.put("metrics.isShuntRegulationOn", config_.isShuntRegulationOn());
+  resultsTree.put("metrics.isAutomaticSlackBusOn", config_.isAutomaticSlackBusOn());
+  componentResultsChild.put("connectedComponentNum", 0);
+  componentResultsChild.put("synchronousComponentNum", 0);
+  componentResultsChild.put("status", simulationOk ? "CONVERGED" : "SOLVER_FAILED");
+  componentResultsChild.put("iterationCount", 0);
+  if (slackNode_)
+    componentResultsChild.put("slackBusId", slackNode_->id);
+  else
+    componentResultsChild.put("slackBusId", "NOT FOUND");
+  componentResultsChild.put("slackBusActivePowerMismatch", 0);
+  componentResultsTree.push_back(std::make_pair("", componentResultsChild));
+  resultsTree.add_child("componentResults", componentResultsTree);
 
-    file::path resultsOutput(config_.outputDir());
-    resultsOutput.append("results.json");
-    std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
-    boost::property_tree::json_parser::write_json(ofs, resultsTree);
-    break;
-  }
-  case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS:
-    break;
-  }
+  file::path resultsOutput(config_.outputDir());
+  std::string fileName = "results.json";
+  if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
+    fileName = "results_sa.json";
+  resultsOutput.append(fileName);
+  std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
+  boost::property_tree::json_parser::write_json(ofs, resultsTree);
 }
 
 void Context::walkNodesMain() {
