@@ -45,43 +45,56 @@ void DydEvent::write() const {
   auto dynamicModels = dynamicdata::DynamicModelsCollectionFactory::newCollection();
 
   // macro connectors
-  const auto &connector = dynamicdata::MacroConnectorFactory::newMacroConnector("MC_EventQuadripoleDisconnection");
+  std::unique_ptr<dynamicdata::MacroConnector> connector = dynamicdata::MacroConnectorFactory::newMacroConnector("MC_EventQuadripoleDisconnection");
   connector->addConnect("event_state1_value", "@NAME@_state_value");
-  dynamicModels->addMacroConnector(connector);
+  dynamicModels->addMacroConnector(std::move(connector));
 
   // models and connections
   for (const auto &element : def_.contingency.elements) {
     if (isNetwork(element.id)) {
-      dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildNetworkStateDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
       addNetworkStateDisconnectionConnect(dynamicModels, element.id);
       continue;
     }
     switch (element.type) {
     case Type::BRANCH:
     case Type::LINE:
-    case Type::TWO_WINDINGS_TRANSFORMER:
-      dynamicModels->addModel(buildBranchDisconnection(element.id, def_.basename));
-      dynamicModels->addMacroConnect(buildBranchDisconnectionConnect(element.id));
+    case Type::TWO_WINDINGS_TRANSFORMER: {
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildBranchDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
+      std::unique_ptr<dynamicdata::MacroConnect> macroConnect = buildBranchDisconnectionConnect(element.id);
+      dynamicModels->addMacroConnect(std::move(macroConnect));
       break;
-    case Type::LOAD:
-      dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
+    }
+    case Type::LOAD: {
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildSwitchOffSignalDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "switchOff2");
       break;
-    case Type::GENERATOR:
-      dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
+    }
+    case Type::GENERATOR: {
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildSwitchOffSignalDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "generator_switchOffSignal2");
       break;
-    case Type::HVDC_LINE:
-      dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
+    }
+    case Type::HVDC_LINE: {
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildSwitchOffSignalDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2Side1");
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "hvdc_switchOffSignal2Side2");
       break;
-    case Type::STATIC_VAR_COMPENSATOR:
-      dynamicModels->addModel(buildSwitchOffSignalDisconnection(element.id, def_.basename));
+    }
+    case Type::STATIC_VAR_COMPENSATOR: {
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildSwitchOffSignalDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
       addSwitchOffSignalDisconnectionConnect(dynamicModels, element.id, "SVarC_switchOffSignal2");
       break;
+    }
     default:
-      dynamicModels->addModel(buildNetworkStateDisconnection(element.id, def_.basename));
+      std::unique_ptr<dynamicdata::BlackBoxModel> bbm = buildNetworkStateDisconnection(element.id, def_.basename);
+      dynamicModels->addModel(std::move(bbm));
       addNetworkStateDisconnectionConnect(dynamicModels, element.id);
     }
   }
@@ -89,22 +102,23 @@ void DydEvent::write() const {
   exporter.exportToFile(dynamicModels, def_.filename, constants::xmlEncoding);
 }
 
-boost::shared_ptr<dynamicdata::BlackBoxModel> DydEvent::buildBranchDisconnection(const std::string &branchId, const std::string &basename) {
-  auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + branchId);
+std::unique_ptr<dynamicdata::BlackBoxModel> DydEvent::buildBranchDisconnection(const std::string &branchId, const std::string &basename) {
+  std::unique_ptr<dynamicdata::BlackBoxModel> model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + branchId);
   model->setLib("EventQuadripoleDisconnection");
   model->setParFile(basename + ".par");
   model->setParId("Disconnect_" + branchId);
   return model;
 }
 
-boost::shared_ptr<dynamicdata::MacroConnect> DydEvent::buildBranchDisconnectionConnect(const std::string &branchId) {
-  auto connect = dynamicdata::MacroConnectFactory::newMacroConnect("MC_EventQuadripoleDisconnection", "Disconnect_" + branchId, constants::networkModelName);
+std::unique_ptr<dynamicdata::MacroConnect> DydEvent::buildBranchDisconnectionConnect(const std::string &branchId) {
+  std::unique_ptr<dynamicdata::MacroConnect> connect =
+      dynamicdata::MacroConnectFactory::newMacroConnect("MC_EventQuadripoleDisconnection", "Disconnect_" + branchId, constants::networkModelName);
   connect->setName2(branchId);
   return connect;
 }
 
-boost::shared_ptr<dynamicdata::BlackBoxModel> DydEvent::buildSwitchOffSignalDisconnection(const std::string &elementId, const std::string &basename) {
-  auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
+std::unique_ptr<dynamicdata::BlackBoxModel> DydEvent::buildSwitchOffSignalDisconnection(const std::string &elementId, const std::string &basename) {
+  std::unique_ptr<dynamicdata::BlackBoxModel> model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
   model->setLib("EventSetPointBoolean");
   model->setParFile(basename + ".par");
   model->setParId("Disconnect_" + elementId);
@@ -116,8 +130,8 @@ void DydEvent::addSwitchOffSignalDisconnectionConnect(boost::shared_ptr<dynamicd
   dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", elementId, var2);
 }
 
-boost::shared_ptr<dynamicdata::BlackBoxModel> DydEvent::buildNetworkStateDisconnection(const std::string &elementId, const std::string &basename) {
-  auto model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
+std::unique_ptr<dynamicdata::BlackBoxModel> DydEvent::buildNetworkStateDisconnection(const std::string &elementId, const std::string &basename) {
+  std::unique_ptr<dynamicdata::BlackBoxModel> model = dynamicdata::BlackBoxModelFactory::newModel("Disconnect_" + elementId);
   model->setLib("EventConnectedStatus");
   model->setParFile(basename + ".par");
   model->setParId("Disconnect_" + elementId);
