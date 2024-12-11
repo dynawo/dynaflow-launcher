@@ -37,8 +37,7 @@
 #include <DYDMacroStaticReference.h>
 #include <boost/shared_ptr.hpp>
 #include <string>
-#include <unordered_map>
-#include <vector>
+
 
 namespace dfl {
 namespace outputs {
@@ -94,7 +93,7 @@ class DydEvent {
    *
    * @returns model for the branch disconnection event
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildBranchDisconnection(const std::string& branchId, const std::string& basename);
+  static std::unique_ptr<dynamicdata::BlackBoxModel> buildBranchDisconnection(const std::string& branchId, const std::string& basename);
 
   /**
    * @brief Create connections for branch disconnection events
@@ -105,7 +104,7 @@ class DydEvent {
    *
    * @returns the macro connection elements
    */
-  static boost::shared_ptr<dynamicdata::MacroConnect> buildBranchDisconnectionConnect(const std::string& branchId);
+  static std::unique_ptr<dynamicdata::MacroConnect> buildBranchDisconnectionConnect(const std::string& branchId);
 
   /**
    * @brief Create black box model for disconnecting an equipment through a switchOffSignal
@@ -115,7 +114,7 @@ class DydEvent {
    *
    * @returns model for the equipment disconnection event
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildSwitchOffSignalDisconnection(const std::string& elementId, const std::string& basename);
+  static std::unique_ptr<dynamicdata::BlackBoxModel> buildSwitchOffSignalDisconnection(const std::string& elementId, const std::string& basename);
 
   /**
    * @brief Adds connections for disconnection events that use a switch off signal
@@ -136,7 +135,7 @@ class DydEvent {
    *
    * @returns model for the equipment disconnection event
    */
-  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildNetworkStateDisconnection(const std::string& elementId, const std::string& basename);
+  static std::unique_ptr<dynamicdata::BlackBoxModel> buildNetworkStateDisconnection(const std::string& elementId, const std::string& basename);
 
   /**
    * @brief Adds connections for disconnection events that use a change in Network state
