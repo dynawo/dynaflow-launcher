@@ -20,8 +20,8 @@
 #include "Options.h"
 
 #include <DYNError.h>
-#include <DYNMultiProcessingContext.h>
 #include <DYNMessage.h>
+#include <DYNMultiProcessingContext.h>
 #include <DYNTrace.h>
 
 namespace dfl {
@@ -37,7 +37,7 @@ class Log {
    *
    * @returns the tag for dynaflow launcher log
    */
-  static const std::string& getTag();
+  static const std::string &getTag();
 
   /**
    * @brief Initialize log from runtime options
@@ -48,7 +48,20 @@ class Log {
    * @param options user options
    * @param outputDir directory where the log should be written
    */
-  static void init(const common::Options& options, const std::string& outputDir);
+  static void init(const common::Options &options, const std::string &outputDir);
+
+  /**
+   * @brief Put the content of a log file in a map
+   *
+   * This function reads the content of a log file specified by its absolute path and stores it as a string in the
+   * provided map, using the relative path as the key.
+   *
+   * @param logFileRelativePath the relative path to the log file, used as the key in the map
+   * @param logFileAbsolutePath the absolute path to the log file, used to locate and read its content
+   * @param mapOutputFilesData the map where the log file content is stored, with the relative path as the key
+   */
+  static void addLogFileContentInMapData(const std::string &logFileRelativePath, const std::string &logFileAbsolutePath,
+                                         std::unordered_map<std::string, std::string> &mapOutputFilesData);
 };
 
 }  // namespace common
@@ -62,8 +75,8 @@ class Log {
  * @param level the level of the log: must be "error", "warn", "info" or "debug"
  * @param key the log key from the dictionary
  */
-#define LOG(level, key, ...)                                                                                                      \
-  (DYNAlgorithms::multiprocessing::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::getTag()) : DYN::TraceStream()) \
+#define LOG(level, key, ...)                                                                                                                                   \
+  (DYNAlgorithms::multiprocessing::context().isRootProc() ? DYN::Trace::level(dfl::common::Log::getTag()) : DYN::TraceStream())                                \
       << (DYN::Message("DFLLOG", dfl::KeyLog_t::names(dfl::KeyLog_t::key)), ##__VA_ARGS__) << DYN::Trace::endline
 
 /**
@@ -76,6 +89,6 @@ class Log {
  *
  * @return an Error
  */
-#define Error(key, ...)                                                                  \
-  DYN::Error(DYN::Error::GENERAL, dfl::KeyError_t::key, std::string(__FILE__), __LINE__, \
+#define Error(key, ...)                                                                                                                                        \
+  DYN::Error(DYN::Error::GENERAL, dfl::KeyError_t::key, std::string(__FILE__), __LINE__,                                                                       \
              (DYN::Message("DFLERROR", dfl::KeyError_t::names(dfl::KeyError_t::key)), ##__VA_ARGS__))

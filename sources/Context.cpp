@@ -47,10 +47,10 @@
 namespace file = boost::filesystem;
 
 namespace dfl {
-Context::Context(const ContextDef &def, inputs::Configuration &config)
+Context::Context(const ContextDef &def, inputs::Configuration &config, std::unordered_map<std::string, std::string> &mapOutputFilesData)
     : def_(def), networkManager_(def.networkFilepath), dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
-      contingenciesManager_(def.contingenciesFilePath),
-      config_(config), basename_{}, slackNode_{}, slackNodeOrigin_{SlackNodeOrigin::ALGORITHM}, generators_{}, loads_{}, staticVarCompensators_{},
+      contingenciesManager_(def.contingenciesFilePath), config_(config), mapOutputFilesData_(mapOutputFilesData), basename_{}, slackNode_{},
+      slackNodeOrigin_{SlackNodeOrigin::ALGORITHM}, generators_{}, loads_{}, staticVarCompensators_{},
       algoResults_(new algo::AlgorithmsResults()), jobEntry_{}, jobsEvents_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
@@ -162,9 +162,6 @@ void Context::exportOutputs() {
   DYN::Timer timer("DFL::Context::exportOutputs()");
 #endif
   LOG(info, ExportInfo, basename_);
-
-  // create output directory
-  file::path outputDir(config_.outputDir());
 
   // Job
   exportOutputJob();
@@ -302,24 +299,31 @@ void Context::execute() {
         simu->setLostEquipmentsExportMode(DYN::Simulation::EXPORT_LOSTEQUIPMENTS_NONE);
       }
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const DYN::Terminate &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const DYN::MessageError &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const char *) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const std::string &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const std::exception &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     }
     simu->terminate();
+    populateOutputsMapWithSimulationOutputs(simu);
     simu->clean();
     break;
   }
@@ -350,7 +354,11 @@ void Context::executeSecurityAnalysis() {
   multipleJobs->setScenarios(scenarios);
   auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
   saLauncher->setMultipleJobs(multipleJobs);
-  saLauncher->setOutputFile("aggregatedResults.xml");
+  if (def_.outputIsZip) {
+    saLauncher->setOutputFile("outputs.zip");
+  } else {
+    saLauncher->setOutputFile("aggregatedResults.xml");
+  }
   saLauncher->setDirectory(config_.outputDir().generic_string());
   saLauncher->init();
   saLauncher->launch();
@@ -379,13 +387,66 @@ void Context::exportResults(bool simulationOk) {
   componentResultsTree.push_back(std::make_pair("", componentResultsChild));
   resultsTree.add_child("componentResults", componentResultsTree);
 
-  file::path resultsOutput(config_.outputDir());
   std::string fileName = "results.json";
   if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
     fileName = "results_sa.json";
-  resultsOutput.append(fileName);
-  std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
-  boost::property_tree::json_parser::write_json(ofs, resultsTree);
+  if (def_.outputIsZip) {
+    std::ostringstream jsonResultStream;
+    boost::property_tree::json_parser::write_json(jsonResultStream, resultsTree);
+    mapOutputFilesData_[fileName] = jsonResultStream.str();
+  } else {
+    file::path resultsOutput(config_.outputDir());
+    resultsOutput.append(fileName);
+    std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
+    boost::property_tree::json_parser::write_json(ofs, resultsTree);
+  }
+}
+
+void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation> &simulation) const {
+  if (def_.outputIsZip) {
+    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
+      std::ostringstream timelineStream;
+      simulation->printTimeline(timelineStream);
+      const boost::filesystem::path timelineFilePath = simulation->getTimelineOutputFile();
+      const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
+      mapOutputFilesData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
+    }
+
+    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
+      std::ostringstream constraintsStream;
+      simulation->printConstraints(constraintsStream);
+      const boost::filesystem::path constraintsFilePath = simulation->getContraintsOutputFile();
+      const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
+      mapOutputFilesData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
+    }
+
+    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::LOSTEQ)) {
+      std::ostringstream lostEquipmentsStream;
+      simulation->printLostEquipments(lostEquipmentsStream);
+      const boost::filesystem::path lostEquipementsFilePath = simulation->getLostEquipmentsOutputFile();
+      const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
+      mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
+    }
+
+    const boost::optional<boost::filesystem::path> &iidmFilePath = simulation->getExportIIDMFile();
+    assert(iidmFilePath.is_initialized());
+    std::stringstream outputIIDMStream;
+    simulation->dumpIIDMFile(outputIIDMStream);
+    const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
+    mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
+
+    DYN::Trace::resetCustomAppender("", DYN::Trace::severityLevelFromString(def_.dynawoLogLevel));  // to force flush in dynawo.log
+    const std::vector<boost::shared_ptr<job::AppenderEntry>> &jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
+    for (const boost::shared_ptr<job::AppenderEntry> &jobLogAppender : jobLogAppenders) {
+      if (jobLogAppender->getTag() == "") {
+        boost::filesystem::path jobLogFileRelativePath =
+            boost::filesystem::path(jobEntry_->getOutputsEntry()->getOutputsDirectory()) / boost::filesystem::path("logs");
+        jobLogFileRelativePath = boost::filesystem::path(jobLogFileRelativePath) / boost::filesystem::path(jobLogAppender->getFilePath());
+        boost::filesystem::path jobLogFileAbsolutePath(config_.outputDir() / jobLogFileRelativePath);
+        dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath.generic_string(), jobLogFileAbsolutePath.generic_string(), mapOutputFilesData_);
+      }
+    }
+  }
 }
 
 void Context::walkNodesMain() {

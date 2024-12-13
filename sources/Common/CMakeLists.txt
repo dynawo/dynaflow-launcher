@@ -53,6 +53,7 @@ target_link_libraries(dfl_Common
 
   PRIVATE
     Boost::filesystem
+    libZIP::libZIP
 )
 add_library(DynaFlowLauncher::common ALIAS dfl_Common)
 install(FILES ${CMAKE_SOURCE_DIR}/etc/Dictionaries/DFLLog_en_GB.dic ${CMAKE_SOURCE_DIR}/etc/Dictionaries/DFLError_en_GB.dic DESTINATION share)

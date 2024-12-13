@@ -37,6 +37,10 @@
 #include <JOBJobEntry.h>
 #include <boost/filesystem.hpp>
 
+namespace DYN {
+class Simulation;
+}
+
 namespace dfl {
 /**
  * @brief Dynaflow launcher context
@@ -63,6 +67,7 @@ class Context {
     boost::filesystem::path settingFilePath;                          ///< setting file path for dynamic data base
     boost::filesystem::path assemblingFilePath;                       ///< assembling file path for dynamic data base
     boost::filesystem::path contingenciesFilePath;                    ///< contigencies file path for Security Analysis simulation
+    bool outputIsZip;                                                 ///< true if the output is zip archive, false otherwise
     std::string dynawoLogLevel;                                       ///< string representation of the dynawo log level
     boost::filesystem::path dynawoResDir;                             ///< DYNAWO resources
     std::string locale;                                               ///< localization
@@ -74,8 +79,9 @@ class Context {
    *
    * @param def The context definition
    * @param config configuration to use
+   * @param mapOutputFilesData map associating the simulation output file names to the data contained in these files
    */
-  Context(const ContextDef &def, inputs::Configuration &config);
+  Context(const ContextDef& def, inputs::Configuration& config, std::unordered_map<std::string, std::string>& mapOutputFilesData);
 
   /**
    * @brief Retrieve the basename of current simulation
@@ -178,12 +184,20 @@ class Context {
   /// @param elementsNetworkType ids of network elements with a network type
   void exportOutputsContingency(const inputs::Contingency &contingency, const std::unordered_set<std::string> &elementsNetworkType);
 
+  /**
+   * @brief Populate the map with the file paths and corresponding data from the simulation outputs
+   *
+   * @param simulation shared pointer to the simulation object containing the outputs to be processed
+   */
+  void populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation>& simulation) const;
+
  private:
   ContextDef def_;                                         ///< context definition
   inputs::NetworkManager networkManager_;                  ///< network manager
   inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
   inputs::ContingenciesManager contingenciesManager_;      ///< contingencies manager in a Security Analysis
-  inputs::Configuration &config_;                          ///< configuration
+  inputs::Configuration& config_;                          ///< configuration
+  std::unordered_map<std::string, std::string>& mapOutputFilesData_;  ///< map associating the simulation output file names to the data contained in these files
 
   std::string basename_;                                                        ///< basename for all files
   std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components
