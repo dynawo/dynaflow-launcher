@@ -9,6 +9,9 @@
 
 #include "Options.h"
 #include "Tests.h"
+#include "DFLError_keys.h"
+
+#include <gtest_dynawo.h>
 
 #include <sstream>
 
@@ -56,6 +59,14 @@ TEST(Options, missingCONFIG) {
   ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
 }
 
+TEST(Options, noInputProvided) {
+  dfl::common::Options options;
+
+  char programName[] = {"DynaFlowLauncher"};
+  char* argv[] = {programName};
+  ASSERT_EQ(dfl::common::Options::Request::HELP, options.parse(1, argv));
+}
+
 TEST(Options, nominal) {
   dfl::common::Options options;
 
@@ -88,6 +99,60 @@ TEST(Options, wrongLogLevel) {
   char argv3[] = {"--log-level=NO_LEVEL"};  // this level is not defined
   char* argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, nominalArchive) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/nominalArchive/nominalArchive.zip"};
+  char* argv[] = {argv0, argv1};
+  auto status = options.parse(2, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
+}
+
+TEST(Options, nominalArchiveLogLevel) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/nominalArchiveLogLevel/nominalArchiveLogLevel.zip"};
+  char argv2[] = {"--log-level=DEBUG"};
+  char* argv[] = {argv0, argv1, argv2};
+  auto status = options.parse(3, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
+}
+
+TEST(Options, nominalArchiveWrongLogLevel) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/nominalArchiveWrongLogLevel/nominalArchiveWrongLogLevel.zip"};
+  char argv2[] = {"--log-level=NO_LEVEL"};  // this level is not defined
+  char* argv[] = {argv0, argv1, argv2};
+  auto status = options.parse(3, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, InvalidCombination_NetworkFileAndInputArchive) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--network=test.iidm"};
+  char argv2[] = {"--input-archive=res/test.zip"};
+  char* argv[] = {argv0, argv1, argv2};
+  auto status = options.parse(3, argv);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, InvalidCombination_ConfigFileAndInputArchive) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--config=test.json"};
+  char argv2[] = {"--input-archive=res/test.zip"};
+  char* argv[] = {argv0, argv1, argv2};
+  auto status = options.parse(3, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
 
@@ -218,4 +283,40 @@ TEST(Options, NSAWrongLogLevel) {
   char* argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
   auto status = options.parse(6, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
+}
+
+TEST(Options, AlreadyInitializedNetworkFile) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/AlreadyInitializedNetworkFile/2NetworksArchive.zip"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_THROW_DYNAWO(options.parse(2, argv), DYN::Error::GENERAL, dfl::KeyError_t::AlreadyInitializedNetworkFileInput);
+}
+
+TEST(Options, AlreadyInitializedConfigFileInput) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/AlreadyInitializedConfigFile/2ConfigFilesArchive.zip"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_THROW_DYNAWO(options.parse(2, argv), DYN::Error::GENERAL, dfl::KeyError_t::AlreadyInitializedConfigFileInput);
+}
+
+TEST(Options, AlreadyInitializedContingenciesInput) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/AlreadyInitializedContingencies/2ContingenciesFilesArchive.zip"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_THROW_DYNAWO(options.parse(2, argv), DYN::Error::GENERAL, dfl::KeyError_t::AlreadyInitializedContingenciesInput);
+}
+
+TEST(Options, NoConfigFileFound) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--input-archive=res/NoConfigFileFound/FakeConfig.zip"};
+  char* argv[] = {argv0, argv1};
+  ASSERT_THROW_DYNAWO(options.parse(2, argv), DYN::Error::GENERAL, dfl::KeyError_t::NoConfigFileFound);
 }

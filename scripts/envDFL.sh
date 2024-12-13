@@ -497,13 +497,22 @@ launch() {
     if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
     fi
-    if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $3 doesn't exist"
+
+    if [[ "$2" == *.zip ]]; then
+        echo "$DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL --input-archive $2"
+
+        $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+        --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+        --input-archive $2
+    else
+        if [ ! -f "$3" ]; then
+            error_exit "DFL configuration file $3 doesn't exist"
+        fi
+        $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+        --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+        --network $2 \
+        --config $3
     fi
-    $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
-    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $2 \
-    --config $3
 }
 
 launch_gdb() {

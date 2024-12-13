@@ -24,6 +24,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <libzip/ZipFileFactory.h>
+#include <libzip/ZipOutputStream.h>
 #include <chrono>
 #include <cstdlib>
 #include <sstream>
@@ -337,6 +339,17 @@ int main(int argc, char *argv[]) {
       boost::shared_ptr<dfl::Context> context = buildContext(params, configSA);
       execSimulation(context, params);
     }
+  std::string archivePath = createAbsolutePath("test.zip", outputDir.generic_string());
+
+  std::map<std::string, std::string > mapData;
+
+  boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
+
+  for (std::map<std::string, std::string>::const_iterator it = mapData.begin();
+      it != mapData.end(); it++) {
+    archive->addEntry(it->first, it->second);
+  }
+  zip::ZipOutputStream::write(archivePath, archive);
   } catch (DYN::Error &e) {
     if (mpiContext.isRootProc()) {
       std::cerr << "Simulation failed: " << e.what() << std::endl;
