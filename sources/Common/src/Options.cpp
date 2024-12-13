@@ -13,12 +13,19 @@
  */
 
 #include "Options.h"
-
+#include "Log.h"
 #include "version.h"
+
+#include <libzip/ZipInputStream.h>
+
+#include <DYNFileSystemUtils.h>
 
 #include <algorithm>
 #include <boost/filesystem.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <sstream>
+
 
 namespace dfl {
 namespace common {
@@ -81,14 +88,16 @@ Options::basename(const std::string& filepath) {
   return path.filename().replace_extension().generic_string();
 }
 
-Options::Options() : desc_{}, config_{"", "", "", "", defaultLogLevel_} {
-  desc_.add_options()("help,h", "Display help message")(
-      "log-level", po::value<ParsedLogLevel>(),
-      (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())(
-      "network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
-      "contingencies", po::value<std::string>(&config_.contingenciesFilePath), "Contingencies file path to process (Security Analysis)")(
-      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version")(
-      "nsa", "Run steady state calculation followed by security analysis. Requires contingencies file to be defined.");
+Options::Options() : desc_{}, config_{"", "", "", "", defaultLogLevel_, ""} {
+  desc_.add_options()
+      ("help,h", "Display help message")
+      ("log-level", po::value<ParsedLogLevel>(),
+          (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())
+      ("network", po::value<std::string>(&config_.networkFilePath), "Network file path to process (IIDM support only)")
+      ("contingencies", po::value<std::string>(&config_.contingenciesFilePath), "Contingencies file path to process (Security Analysis)")
+      ("config", po::value<std::string>(&config_.configPath), "launcher Configuration file to use")
+      ("version,v", "Display version")("nsa", "Run steady state calculation followed by security analysis. Requires contingencies file to be defined.")
+      ("input-archive", po::value<std::string>(&config_.zipArchive), "zip archive");
 }
 
 Options::Request
@@ -106,7 +115,85 @@ Options::parse(int argc, char* argv[]) {
       return Request::VERSION;
     }
 
+    if (!vm.count("network") && !vm.count("config") && !vm.count("input-archive")) {
+      DYN::Trace::error(dfl::common::Log::getTag()) << "No input provided" << DYN::Trace::endline;
+      return Request::HELP;
+    }
+
+    int option_error = false;
+    if ((vm.count("network") && !vm.count("config")) || (vm.count("config") && !vm.count("network"))) {
+      option_error = true;
+      DYN::Trace::error(dfl::common::Log::getTag()) << "--network and --config must be used together" << DYN::Trace::endline;
+    }
+
+    if ((vm.count("network") || vm.count("config")) && vm.count("input-archive")) {
+      option_error = true;
+      DYN::Trace::error(dfl::common::Log::getTag()) << "--network and --config options can't be used with --input-archive" << DYN::Trace::endline;
+    }
+
     po::notify(vm);
+
+    if (option_error) {
+      return Request::ERROR;
+    }
+
+    if (!config_.networkFilePath.empty() && !config_.configPath.empty()) {
+      // nothing to do
+    } else if (!config_.zipArchive.empty()) {
+      std::vector<std::string> zipArchiveFiles;
+      boost::shared_ptr<zip::ZipFile> archive = zip::ZipInputStream::read(config_.zipArchive);
+      std::string archiveParentPath = boost::filesystem::path(config_.zipArchive).parent_path().string();
+      for (std::map<std::string, boost::shared_ptr<zip::ZipEntry>>::const_iterator itE = archive->getEntries().begin();
+            itE != archive->getEntries().end(); ++itE) {
+        std::string name = itE->first;
+        std::string data(itE->second->getData());
+        std::ofstream file;
+        std::string filepath = createAbsolutePath(name, archiveParentPath);
+        file.open(createAbsolutePath(name, archiveParentPath).c_str(), std::ios::binary);
+        file << data;
+        file.close();
+        zipArchiveFiles.push_back(filepath);
+      }
+      for (const std::string& zipArchiveFile : zipArchiveFiles) {
+        if (extensionEquals(zipArchiveFile, ".iidm")) {
+          if (!config_.networkFilePath.empty()) {
+            throw Error(AlreadyInitializedNetworkFileInput);
+          }
+          config_.networkFilePath = zipArchiveFile;
+        } else if (extensionEquals(zipArchiveFile, ".json")) {
+          boost::property_tree::ptree tree;
+          boost::property_tree::read_json(zipArchiveFile, tree);
+
+          boost::property_tree::ptree::const_assoc_iterator configTreeIt = tree.find("dfl-config");
+          if (configTreeIt != tree.not_found()) {
+            if (!config_.configPath.empty()) {
+              throw Error(AlreadyInitializedConfigFileInput);
+            }
+            config_.configPath = zipArchiveFile;
+          }
+
+          boost::property_tree::ptree::const_assoc_iterator contingenciesTreeIt = tree.find("contingencies");
+          if (contingenciesTreeIt != tree.not_found()) {
+            if (!config_.contingenciesFilePath.empty()) {
+              throw Error(AlreadyInitializedContingenciesInput);
+            }
+            config_.contingenciesFilePath = zipArchiveFile;
+          }
+        } else {
+          throw Error(ErrorConfigFileRead, zipArchiveFile);
+        }
+      }
+    } else {
+      throw std::logic_error("Wrong boolean value.");
+    }
+
+    if (config_.configPath.empty()) {
+      throw Error(NoConfigFileFound);
+    }
+
+    // if (config_.contingenciesFilePath.empty()) {
+    //   throw std::runtime_error("ERREUR");
+    // }
 
     // These are not binded automatically
     if (vm.count("log-level") > 0) {
@@ -114,16 +201,18 @@ Options::parse(int argc, char* argv[]) {
     }
 
     if (vm.count("nsa") > 0) {
-      if (vm.count("contingencies") > 0) {
+      if (!config_.contingenciesFilePath.empty()) {
         return Request::RUN_SIMULATION_NSA;
       } else {
         return Request::ERROR;
       }
-    } else if (vm.count("contingencies") > 0) {
+    } else if (!config_.contingenciesFilePath.empty()) {
       return Request::RUN_SIMULATION_SA;
     } else {
       return Request::RUN_SIMULATION_N;
     }
+  } catch (const DYN::Error& err) {
+    throw;
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
     return Request::ERROR;

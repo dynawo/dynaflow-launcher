@@ -497,13 +497,20 @@ launch() {
     if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
     fi
-    if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $3 doesn't exist"
+
+    if [[ "$2" == *.zip ]]; then
+        $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+        --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+        --input-archive $2
+    else
+        if [ ! -f "$3" ]; then
+            error_exit "DFL configuration file $3 doesn't exist"
+        fi
+        $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+        --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+        --network $2 \
+        --config $3
     fi
-    $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
-    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-    --network $2 \
-    --config $3
 }
 
 launch_gdb() {
@@ -537,23 +544,34 @@ launch_sa() {
     if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
     fi
-    if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $3 doesn't exist"
-    fi
-    if [ ! -f "$4" ]; then
-        error_exit "Security Analysis contingencies file $4 doesn't exist"
-    fi
+
     export_preload
-    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
-      "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-                                                                                      --network $2 \
-                                                                                      --config $3 \
-                                                                                      --contingencies $4
+    if [[ "$2" == *.zip ]]; then
+        if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+            "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                            --input-archive $2
+        else
+            $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                --input-archive $2
+        fi
     else
-      $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-                                                          --network $2 \
-                                                          --config $3 \
-                                                          --contingencies $4
+      if [ ! -f "$3" ]; then
+          error_exit "DFL configuration file $3 doesn't exist"
+      fi
+      if [ ! -f "$4" ]; then
+          error_exit "Security Analysis contingencies file $4 doesn't exist"
+      fi
+      if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+          "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                          --network $2 \
+                                                                                          --config $3 \
+                                                                                          --contingencies $4
+      else
+          $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                              --network $2 \
+                                                              --config $3 \
+                                                              --contingencies $4
+      fi
     fi
     unset LD_PRELOAD
 }
@@ -562,25 +580,40 @@ launch_nsa() {
     if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
     fi
-    if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $3 doesn't exist"
-    fi
-    if [ ! -f "$4" ]; then
-        error_exit "Security Analysis contingencies file $4 doesn't exist"
-    fi
+
     export_preload
-    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
-      "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-                                                                                      --network $2 \
-                                                                                      --config $3 \
-                                                                                      --contingencies $4 \
-                                                                                      --nsa # Steady state calculations.
+    if [[ "$2" == *.zip ]]; then
+        if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+            "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                            --input-archive $2 \
+                                                                                            --nsa # Steady state calculations.
+        else
+            $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                --network $2 \
+                                                                --config $3 \
+                                                                --contingencies $4 \
+                                                                --nsa # Steady state calculations.
+        fi
     else
-      $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
-                                                          --network $2 \
-                                                          --config $3 \
-                                                          --contingencies $4 \
-                                                          --nsa # Steady state calculations.
+        if [ ! -f "$3" ]; then
+            error_exit "DFL configuration file $3 doesn't exist"
+        fi
+        if [ ! -f "$4" ]; then
+            error_exit "Security Analysis contingencies file $4 doesn't exist"
+        fi
+        if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+            "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                            --network $2 \
+                                                                                            --config $3 \
+                                                                                            --contingencies $4 \
+                                                                                            --nsa # Steady state calculations.
+        else
+            $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                --network $2 \
+                                                                --config $3 \
+                                                                --contingencies $4 \
+                                                                --nsa # Steady state calculations.
+        fi
     fi
     unset LD_PRELOAD
 }
