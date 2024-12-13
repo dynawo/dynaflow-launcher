@@ -40,17 +40,23 @@ To launch Dynaflow, two inputs are required:
 The command line used to launch Dynaflow is the following:
 
 \begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-$> ./myEnvDFL.sh <PATH TO NETWORK FILE> <PATH TO CONFIG FILE>
+$> ./myEnvDFL.sh launch <PATH TO NETWORK FILE> <PATH TO CONFIG FILE>
 \end{lstlisting}
 
 for example:
 
 \begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-$> ./myEnvDFL.sh tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json
+$> ./myEnvDFL.sh launch tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json
 \end{lstlisting}
 
 This command will compute the steady-state of the network and provides as
-output the constraints and lostEquipments files (see \Dynawo documentation for more details on those files).
+output the constraints and lostEquipments files (see \Dynawo documentation for more details on those files).\newline
+
+You can also provide a zip archive as input. In this case, you need to specify the path of the zip archive along with the paths of the unzipped files :
+
+\begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+$> ./myEnvDFL.sh launch tests/main/res/TestIIDM_launch.iidm tests/main/res/config_launch.json --input-archive tests/main/archive.zip
+\end{lstlisting}
 
 \subsubsection{Dynaflow systematic analysis}
 
@@ -66,13 +72,13 @@ Three inputs are required:
 The command line used to launch Dynaflow static analysis is the following:
 
 \begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-$> ./myEnvDFL.sh <PATH TO NETWORK FILE> <PATH TO CONFIG FILE> <PATH TO CONTINGENCIES FILE>
+$> ./myEnvDFL.sh launch-sa <PATH TO NETWORK FILE> <PATH TO CONFIG FILE> <PATH TO CONTINGENCIES FILE>
 \end{lstlisting}
 
 for example:
 
 \begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-$> ./myEnvDFL.sh tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json
+$> ./myEnvDFL.sh launch-sa tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json
 \end{lstlisting}
 
 This command will simulate all the events described in the contingencies file and provide as outputs the constraints and lostEquipments files for each of them.
@@ -87,7 +93,7 @@ To automatically perform the steady-state initialization followed by a systemati
 For example:
 
 \begin{lstlisting}[language=bash, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-  $> ./myEnvDFL.sh tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json --nsa
+  $> ./myEnvDFL.sh launch-nsa tests/main_sa/res/TestIIDM_launch.iidm tests/main_sa/res/config_launch.json tests/main_sa/res/contingencies_launch.json
 \end{lstlisting}
 
 \subsection[Dynaflow-launcher outputs]{Dynaflow-launcher outputs}

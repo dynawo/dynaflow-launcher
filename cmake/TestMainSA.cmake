@@ -7,7 +7,12 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-set(_dfl_cmd ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json)
+if(${USE_ZIP} STREQUAL "YES")
+  execute_process(COMMAND zip -j res/${TEST_NAME}.zip res/TestIIDM_${TEST_NAME}.iidm res/config_${TEST_NAME}.json res/contingencies_${TEST_NAME}.json)
+  set(_dfl_cmd ${EXE} --network=TestIIDM_${TEST_NAME}.iidm --config=config_${TEST_NAME}.json --contingencies=contingencies_${TEST_NAME}.json --input-archive=res/${TEST_NAME}.zip)
+else ()
+  set(_dfl_cmd ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json)
+endif()
 if(NOT DEFINED USE_MPI OR USE_MPI STREQUAL "")
   message(FATAL_ERROR "USE_MPI is not defined")
 endif()
@@ -26,6 +31,9 @@ if(_result)
 endif()
 
 set(_command ${PYTHON_COMMAND} ${DIFF_SCRIPT} . ${TEST_NAME} res/config_${TEST_NAME}.json)
+if(${USE_ZIP} STREQUAL "YES")
+  list(APPEND _command --output-zip outputs.zip)
+endif()
 if(DEFINED DIFF_SCRIPT)
   message(STATUS "Execute process: ${_command}")
   execute_process(COMMAND ${_command} RESULT_VARIABLE _result)

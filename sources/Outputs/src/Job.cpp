@@ -41,8 +41,6 @@
 #include <JOBSolverEntry.h>
 #include <JOBSolverEntryFactory.h>
 #include <JOBTimelineEntry.h>
-#include <boost/make_shared.hpp>
-#include <fstream>
 #include <xml/sax/formatter/AttributeList.h>
 #include <xml/sax/formatter/Formatter.h>
 

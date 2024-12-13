@@ -10,6 +10,8 @@
 #include "Options.h"
 #include "Tests.h"
 
+#include <boost/filesystem.hpp>
+
 #include <sstream>
 
 TEST(Options, help) {
@@ -17,7 +19,7 @@ TEST(Options, help) {
 
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--help"};
-  char* argv[] = {argv0, argv1};
+  char *argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::HELP, options.parse(2, argv));
 
   auto desc = options.desc();
@@ -34,7 +36,7 @@ TEST(Options, version) {
 
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--version"};
-  char* argv[] = {argv0, argv1};
+  char *argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::VERSION, options.parse(2, argv));
 }
 
@@ -43,7 +45,7 @@ TEST(Options, missingIIDM) {
 
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--config=test.json"};
-  char* argv[] = {argv0, argv1};
+  char *argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
 }
 
@@ -52,7 +54,7 @@ TEST(Options, missingCONFIG) {
 
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
-  char* argv[] = {argv0, argv1};
+  char *argv[] = {argv0, argv1};
   ASSERT_EQ(dfl::common::Options::Request::ERROR, options.parse(2, argv));
 }
 
@@ -62,9 +64,39 @@ TEST(Options, nominal) {
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm "};
   char argv2[] = {"--config=test.json"};
-  char* argv[] = {argv0, argv1, argv2};
+  char *argv[] = {argv0, argv1, argv2};
   auto status = options.parse(3, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
+}
+
+TEST(Options, archive) {
+  dfl::common::Options options;
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--network=test1.iidm"};
+  char argv2[] = {"--config=test1.json"};
+  char argv3[] = {"--input-archive=res/archive.zip"};
+  char *argv[] = {argv0, argv1, argv2, argv3};
+  auto status = options.parse(4, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
+  ASSERT_EQ(options.config().networkFilePath, "test1.iidm");
+  ASSERT_EQ(options.config().configPath, "test1.json");
+  ASSERT_EQ(options.config().zipArchivePath, "res/archive.zip");
+}
+
+TEST(Options, archiveSA) {
+  dfl::common::Options options;
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--network=test1.iidm"};
+  char argv2[] = {"--config=test1.json"};
+  char argv3[] = {"--contingencies=contingencies.json"};
+  char argv4[] = {"--input-archive=res/archive.zip"};
+  char *argv[] = {argv0, argv1, argv2, argv3, argv4};
+  auto status = options.parse(5, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_SA, status);
+  ASSERT_EQ(options.config().networkFilePath, "test1.iidm");
+  ASSERT_EQ(options.config().configPath, "test1.json");
+  ASSERT_EQ(options.config().contingenciesFilePath, "contingencies.json");
+  ASSERT_EQ(options.config().zipArchivePath, "res/archive.zip");
 }
 
 TEST(Options, nominalLogLevel) {
@@ -74,7 +106,7 @@ TEST(Options, nominalLogLevel) {
   char argv1[] = {"--network=test.iidm "};
   char argv2[] = {"--config=test.json "};
   char argv3[] = {"--log-level=DEBUG"};
-  char* argv[] = {argv0, argv1, argv2, argv3};
+  char *argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
 }
@@ -86,7 +118,7 @@ TEST(Options, wrongLogLevel) {
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--log-level=NO_LEVEL"};  // this level is not defined
-  char* argv[] = {argv0, argv1, argv2, argv3};
+  char *argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
@@ -100,7 +132,7 @@ TEST(Options, systematicAnalysis) {
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
-  char* argv[] = {argv0, argv1, argv2, argv3};
+  char *argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_SA, status);
 }
@@ -113,7 +145,7 @@ TEST(Options, systematicAnalysisLogLevel) {
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
   char argv4[] = {"--log-level=DEBUG"};
-  char* argv[] = {argv0, argv1, argv2, argv3, argv4};
+  char *argv[] = {argv0, argv1, argv2, argv3, argv4};
   auto status = options.parse(5, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_SA, status);
 }
@@ -126,7 +158,7 @@ TEST(Options, systematicAnalysisWrongLogLevel) {
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
   char argv4[] = {"--log-level=NO_LEVEL"};  // this level is not defined
-  char* argv[] = {argv0, argv1, argv2, argv3, argv4};
+  char *argv[] = {argv0, argv1, argv2, argv3, argv4};
   auto status = options.parse(5, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
@@ -137,7 +169,7 @@ TEST(Options, systematicAnalysisMissingConfig) {
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--contingencies=test.json"};
-  char* argv[] = {argv0, argv1, argv2};
+  char *argv[] = {argv0, argv1, argv2};
   auto status = options.parse(3, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
@@ -148,7 +180,7 @@ TEST(Options, systematicAnalysisMissingIIDM) {
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--config=test.json"};
   char argv2[] = {"--contingencies=test.json"};
-  char* argv[] = {argv0, argv1, argv2};
+  char *argv[] = {argv0, argv1, argv2};
   auto status = options.parse(3, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
@@ -163,7 +195,7 @@ TEST(Options, NSA) {
   char argv2[] = {"--config=test.json"};
   char argv3[] = {"--contingencies=test.json"};
   char argv4[] = {"--nsa"};
-  char* argv[] = {argv0, argv1, argv2, argv3, argv4};
+  char *argv[] = {argv0, argv1, argv2, argv3, argv4};
   auto status = options.parse(5, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_NSA, status);
 }
@@ -175,7 +207,7 @@ TEST(Options, NSAMissingIIDM) {
   char argv1[] = {"--config=test.json"};
   char argv2[] = {"--contingencies=test.json"};
   char argv3[] = {"--nsa"};
-  char* argv[] = {argv0, argv1, argv2, argv3};
+  char *argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
@@ -187,7 +219,7 @@ TEST(Options, NSAMissingConfig) {
   char argv1[] = {"--network=test.iidm"};
   char argv2[] = {"--contingencies=test.json"};
   char argv3[] = {"--nsa"};
-  char* argv[] = {argv0, argv1, argv2, argv3};
+  char *argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }
@@ -201,7 +233,7 @@ TEST(Options, NSALogLevel) {
   char argv3[] = {"--contingencies=test.json"};
   char argv4[] = {"--log-level=DEBUG"};
   char argv5[] = {"--nsa"};
-  char* argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
+  char *argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
   auto status = options.parse(6, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_NSA, status);
 }
@@ -215,7 +247,7 @@ TEST(Options, NSAWrongLogLevel) {
   char argv3[] = {"--contingencies=test.json"};
   char argv4[] = {"--log-level=NO_LEVEL"};  // this level is not defined
   char argv5[] = {"--nsa"};
-  char* argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
+  char *argv[] = {argv0, argv1, argv2, argv3, argv4, argv5};
   auto status = options.parse(6, argv);
   ASSERT_EQ(dfl::common::Options::Request::ERROR, status);
 }

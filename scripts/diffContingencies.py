@@ -15,6 +15,7 @@ import sys
 import argparse
 import json
 import iidmDiff
+import zipfile
 import constraintsDiff
 try:
     from itertools import zip_longest
@@ -34,6 +35,7 @@ def get_argparser():
     parser.add_argument("root", type=str, help="Root directory to process")
     parser.add_argument("testdir", type=str, help="Test directory to process")
     parser.add_argument("config", type=str, help="Simulation configuration file")
+    parser.add_argument("--output-zip", type=str, help="zip archive to process")
 
     return parser
 
@@ -45,6 +47,17 @@ def compare_file(options, contingency_folder, chosen_outputs):
     nb_differences = 0
 
     if buildType == "Debug" or buildType == "Release" or buildType == "Coverage":
+
+        if options.output_zip:
+            zip_archive_parent_directory = os.path.join(options.root, "resultsTestsTmp", options.testdir)
+            zip_archive_path = os.path.join(zip_archive_parent_directory, options.output_zip)
+            unzipped_archive_path = zip_archive_parent_directory
+            try:
+                with zipfile.ZipFile(zip_archive_path, "r") as zip_ref:
+                    zip_ref.extractall(unzipped_archive_path)
+            except FileNotFoundError:
+                print("[ERROR] " + zip_archive_path + " is missing")
+                nb_differences += 1
 
         if buildType == "Debug" or (buildType == "Release" and "STEADYSTATE" in chosen_outputs) or buildType == "Coverage":
             # output IIDM

@@ -161,22 +161,26 @@ where [option] can be:
         update-references                         update MAIN tests references
 
         =========== Launch
-        launch [network] [config]                 launch DynaFlow Launcher:
+        launch [network] [config] --input-archive [archive]
+                                                  launch DynaFlow Launcher:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
+                                                  - archive: path to a zip archive containing the network and configuration
 
-        launch-sa [network] [config] [contingencies] --nbThreads [nbprocs]
+        launch-sa [network] [config] [contingencies] --input-archive [archive] --nbThreads [nbprocs]
                                                   launch DynaFlow Launcher to run a Security Analysis:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
+                                                  - archive: path to a zip archive containing the network, configuration and contingencies
                                                   - nbprocs: number of MPI processes to use for SA (default 1)
 
-        launch-nsa [network] [config] [contingencies] --nbThreads [nbprocs]
+        launch-nsa [network] [config] [contingencies] --input-archive [archive] --nbThreads [nbprocs]
                                                   launch DynaFlow Launcher to run a steadystate calculcation followed by a security Analysis:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
+                                                  - archive: path to a zip archive containing the network, configuration and contingencies
                                                   - nbprocs: number of MPI processes to use for SA (default 1)
 
 
@@ -494,120 +498,248 @@ build_tests_coverage() {
 }
 
 launch() {
+  if [ -n "$ZIP_ARCHIVE" ]; then
+    if [ ! -f "$ZIP_ARCHIVE" ]; then
+      error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+    fi
+    $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $2 \
+    --config $3 \
+    --input-archive $ZIP_ARCHIVE
+  else
     if [ ! -f "$2" ]; then
-        error_exit "IIDM network file $2 doesn't exist"
+      error_exit "IIDM network file $2 doesn't exist"
     fi
     if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $3 doesn't exist"
+      error_exit "DFL configuration file $3 doesn't exist"
     fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $2 \
     --config $3
+  fi
 }
 
 launch_gdb() {
+  if [ -n "$ZIP_ARCHIVE" ]; then
+    if [ ! -f "$ZIP_ARCHIVE" ]; then
+      error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+    fi
+    gdb --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $2 \
+    --config $3 \
+    --input-archive $ZIP_ARCHIVE
+  else
     if [ ! -f "$2" ]; then
-        error_exit "IIDM network file $1 doesn't exist"
+      error_exit "IIDM network file $1 doesn't exist"
     fi
     if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $2 doesn't exist"
+      error_exit "DFL configuration file $2 doesn't exist"
     fi
     gdb --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $2 \
     --config $3
+  fi
 }
 
 launch_valgrind() {
+  if [ -n "$ZIP_ARCHIVE" ]; then
+    if [ ! -f "$ZIP_ARCHIVE" ]; then
+      error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+    fi
+    valgrind --tool=callgrind --dump-instr=yes --collect-jumps=yes $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
+    --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+    --network $2 \
+    --config $3 \
+    --input-archive $ZIP_ARCHIVE
+  else
     if [ ! -f "$2" ]; then
-        error_exit "IIDM network file $1 doesn't exist"
+      error_exit "IIDM network file $1 doesn't exist"
     fi
     if [ ! -f "$3" ]; then
-        error_exit "DFL configuration file $2 doesn't exist"
+      error_exit "DFL configuration file $2 doesn't exist"
     fi
     valgrind --tool=callgrind --dump-instr=yes --collect-jumps=yes $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $2 \
     --config $3
+  fi
 }
 
 
 launch_sa() {
-    if [ ! -f "$2" ]; then
+  export_preload
+  if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+    if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
+      "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                      --network $2 \
+                                                                                      --config $3 \
+                                                                                      --contingencies $4 \
+                                                                                      --input-archive $ZIP_ARCHIVE
+    else
+      if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
-    fi
-    if [ ! -f "$3" ]; then
+      fi
+      if [ ! -f "$3" ]; then
         error_exit "DFL configuration file $3 doesn't exist"
-    fi
-    if [ ! -f "$4" ]; then
+      fi
+      if [ ! -f "$4" ]; then
         error_exit "Security Analysis contingencies file $4 doesn't exist"
-    fi
-    export_preload
-    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+      fi
       "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                                       --network $2 \
                                                                                       --config $3 \
                                                                                       --contingencies $4
+    fi
+  else
+    if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
+      $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                          --network $2 \
+                                                          --config $3 \
+                                                          --contingencies $4 \
+                                                          --input-archive $ZIP_ARCHIVE
     else
+      if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $2 doesn't exist"
+      fi
+      if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $3 doesn't exist"
+      fi
+      if [ ! -f "$4" ]; then
+        error_exit "Security Analysis contingencies file $4 doesn't exist"
+      fi
       $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                           --network $2 \
                                                           --config $3 \
                                                           --contingencies $4
     fi
-    unset LD_PRELOAD
+  fi
+  unset LD_PRELOAD
 }
 
 launch_nsa() {
-    if [ ! -f "$2" ]; then
+  export_preload
+  if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+    if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
+      "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                      --network $2 \
+                                                                                      --config $3 \
+                                                                                      --contingencies $4 \
+                                                                                      --input-archive $ZIP_ARCHIVE \
+                                                                                      --nsa # Steady state calculations.
+    else
+      if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
-    fi
-    if [ ! -f "$3" ]; then
+      fi
+      if [ ! -f "$3" ]; then
         error_exit "DFL configuration file $3 doesn't exist"
-    fi
-    if [ ! -f "$4" ]; then
+      fi
+      if [ ! -f "$4" ]; then
         error_exit "Security Analysis contingencies file $4 doesn't exist"
-    fi
-    export_preload
-    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+      fi
       "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                                       --network $2 \
                                                                                       --config $3 \
                                                                                       --contingencies $4 \
                                                                                       --nsa # Steady state calculations.
+    fi
+  else
+    if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
+      $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                          --network $2 \
+                                                          --config $3 \
+                                                          --contingencies $4 \
+                                                          --input-archive $ZIP_ARCHIVE \
+                                                          --nsa # Steady state calculations.
     else
+      if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $2 doesn't exist"
+      fi
+      if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $3 doesn't exist"
+      fi
+      if [ ! -f "$4" ]; then
+        error_exit "Security Analysis contingencies file $4 doesn't exist"
+      fi
       $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                           --network $2 \
                                                           --config $3 \
                                                           --contingencies $4 \
                                                           --nsa # Steady state calculations.
     fi
-    unset LD_PRELOAD
+  fi
+  unset LD_PRELOAD
 }
 
 launch_sa_gdb() {
-    if [ ! -f "$2" ]; then
+  export_preload
+  if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+    if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
+      "$MPIRUN_PATH" -np $NBPROCS xterm -e gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                                                              --network $2 \
+                                                                                                              --config $3 \
+                                                                                                              --contingencies $4 \
+                                                                                                              --input-archive $ZIP_ARCHIVE
+    else
+      if [ ! -f "$2" ]; then
         error_exit "IIDM network file $2 doesn't exist"
-    fi
-    if [ ! -f "$3" ]; then
+      fi
+      if [ ! -f "$3" ]; then
         error_exit "DFL configuration file $3 doesn't exist"
-    fi
-    if [ ! -f "$4" ]; then
+      fi
+      if [ ! -f "$4" ]; then
         error_exit "Security Analysis contingencies file $4 doesn't exist"
-    fi
-    export_preload
-    if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
+      fi
       "$MPIRUN_PATH" -np $NBPROCS xterm -e gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                                                               --network $2 \
                                                                                                               --config $3 \
                                                                                                               --contingencies $4
+    fi
+  else
+    if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
+      gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
+                                                                        --network $2 \
+                                                                        --config $3 \
+                                                                        --contingencies $4 \
+                                                                        --input-archive $ZIP_ARCHIVE
     else
+      if [ ! -f "$2" ]; then
+        error_exit "IIDM network file $2 doesn't exist"
+      fi
+      if [ ! -f "$3" ]; then
+        error_exit "DFL configuration file $3 doesn't exist"
+      fi
+      if [ ! -f "$4" ]; then
+        error_exit "Security Analysis contingencies file $4 doesn't exist"
+      fi
       gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                         --network $2 \
                                                                         --config $3 \
                                                                         --contingencies $4
     fi
-    unset LD_PRELOAD
+  fi
+  unset LD_PRELOAD
 }
 
 version() {
@@ -740,11 +872,19 @@ case "$1" in
         ;;
 esac
 
-# Nb Threads
+# parse options
 ARGS=""
 while (($#)); do
     key="$1"
     case "$key" in
+      --input-archive)
+        ZIP_ARCHIVE=$2
+        shift 2 # pass argument and value
+        ;;
+      --input-archive=*)
+        ZIP_ARCHIVE="${1#*=}"
+        shift # past value
+      ;;
       --nbThreads|-np)
         NBPROCS=$2
         shift 2 # pass argument and value

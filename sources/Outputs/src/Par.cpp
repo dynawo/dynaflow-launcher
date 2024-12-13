@@ -19,10 +19,8 @@
 
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
-#include <PARReference.h>
-#include <PARReferenceFactory.h>
 #include <PARXmlExporter.h>
-#include <type_traits>
+
 
 namespace dfl {
 namespace outputs {
