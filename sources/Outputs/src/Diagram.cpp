@@ -20,7 +20,6 @@
 #include "OutputsConstants.h"
 
 #include <boost/filesystem.hpp>
-#include <fstream>
 
 namespace dfl {
 namespace outputs {

@@ -33,7 +33,8 @@ MissingICInWarmStartingPointMode =  no initial condition (p, q, v or theta) was 
 
 //------------------ Outputs -----------------------
 MissingGeneratorHvdcParameterInSettings = parameter %1% not found in settings file for generator or hvdc %2%
-NoSVCInFlatStartingPointMode =        simulation of secondary voltage controls is not possible with 'FLAT' starting point mode
+NoSVCInFlatStartingPointMode =     simulation of secondary voltage controls is not possible with 'FLAT' starting point mode
+FileCreationFailed           =     failed to create %1%
 //------------------ Main ---------------------------
 EnvVariableMissing           =     cannot find environnement variable %1% please check runtime environment
 NetworkFileNotFound          =     network file %1% does not exist
@@ -42,3 +43,4 @@ ContextProcessError          =     processing of the network %1% failed
 ConnexityError               =     slack node of id %1% not present in main connex component
 NetworkHasNoRegulatingGenerator         =     network file %1% has no generator regulating voltage in the main connex component
 SlackNodeNotFound            =     no slack node found for network '%1%'
+FailToOpenLogFile            =     failed to open %1% log file

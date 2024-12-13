@@ -8,25 +8,46 @@
 #
 
 DEFINE_TEST(TestJob OUTPUTS)
-target_link_libraries(OUTPUTS.TestJob DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestJob
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
 set_property(TEST OUTPUTS.TestJob APPEND PROPERTY ENVIRONMENT "DYNAWO_HOME=${DYNAWO_HOME}")
 
 DEFINE_TEST_XML(TestSolverPar OUTPUTS)
-target_link_libraries(OUTPUTS.TestSolverPar DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestSolverPar
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
 
 DEFINE_TEST_XML(TestDyd OUTPUTS)
-target_link_libraries(OUTPUTS.TestDyd DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestDyd
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
 set_property(TEST OUTPUTS.TestDyd APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_XSD=")  # to avoid parse validation error
 
 DEFINE_TEST_XML(TestDydEvent OUTPUTS)
-target_link_libraries(OUTPUTS.TestDydEvent DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestDydEvent
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
 
 DEFINE_TEST_XML(TestPar OUTPUTS)
-target_link_libraries(OUTPUTS.TestPar DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestPar
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
 set_property(TEST OUTPUTS.TestPar APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_XSD=")  # to avoid parse validation error
 
 DEFINE_TEST_XML(TestParEvent OUTPUTS)
-target_link_libraries(OUTPUTS.TestParEvent DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestParEvent
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
 
 DEFINE_TEST(TestDiagram OUTPUTS)
-target_link_libraries(OUTPUTS.TestDiagram DynaFlowLauncher::outputs)
+target_link_libraries(OUTPUTS.TestDiagram
+ PRIVATE
+  DynaFlowLauncher::outputs
+)
