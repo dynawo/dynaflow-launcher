@@ -16,6 +16,10 @@
 
 #include "version.h"
 
+#include <libzip/ZipInputStream.h>
+
+#include <DYNFileSystemUtils.h>
+
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <sstream>
@@ -81,14 +85,18 @@ Options::basename(const std::string& filepath) {
   return path.filename().replace_extension().generic_string();
 }
 
-Options::Options() : desc_{}, config_{"", "", "", "", defaultLogLevel_} {
-  desc_.add_options()("help,h", "Display help message")(
-      "log-level", po::value<ParsedLogLevel>(),
-      (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())(
-      "network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")(
-      "contingencies", po::value<std::string>(&config_.contingenciesFilePath), "Contingencies file path to process (Security Analysis)")(
-      "config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")("version,v", "Display version")(
-      "nsa", "Run steady state calculation followed by security analysis. Requires contingencies file to be defined.");
+Options::Options() : desc_{}, config_{"", "", "", "", "", defaultLogLevel_} {
+  desc_.add_options()
+      ("help,h", "Display help message")
+      ("version,v", "Display version")
+      ("log-level", po::value<ParsedLogLevel>(),
+          (std::string("Dynawo logger level (allowed values are ERROR, WARN, INFO, DEBUG): default is ") + defaultLogLevel_).c_str())
+      ("network", po::value<std::string>(&config_.networkFilePath)->required(), "Network file path to process (IIDM support only)")
+      ("config", po::value<std::string>(&config_.configPath)->required(), "launcher Configuration file to use")
+      ("contingencies", po::value<std::string>(&config_.contingenciesFilePath), "Contingencies file path to process (Security Analysis)")
+      ("nsa", "Run steady state calculation followed by security analysis. Requires contingencies file to be defined.")
+      ("input-archive", po::value<std::string>(&config_.zipArchivePath),
+          "Path to a ZIP archive containing input files for '--network', '--config', and '--contingencies'.");
 }
 
 Options::Request
@@ -107,6 +115,21 @@ Options::parse(int argc, char* argv[]) {
     }
 
     po::notify(vm);
+
+    if (vm.count("input-archive") > 0) {
+      boost::shared_ptr<zip::ZipFile> archive = zip::ZipInputStream::read(config_.zipArchivePath);
+      std::string archiveParentPath = boost::filesystem::path(config_.zipArchivePath).parent_path().string();
+      for (std::map<std::string, boost::shared_ptr<zip::ZipEntry> >::const_iterator archiveIt = archive->getEntries().begin();
+          archiveIt != archive->getEntries().end(); ++archiveIt) {
+        std::string name = archiveIt->first;
+        std::string data(archiveIt->second->getData());
+        std::ofstream file;
+        std::string filepath = createAbsolutePath(name, archiveParentPath);
+        file.open(createAbsolutePath(name, archiveParentPath).c_str(), std::ios::binary);
+        file << data;
+        file.close();
+      }
+    }
 
     // These are not binded automatically
     if (vm.count("log-level") > 0) {

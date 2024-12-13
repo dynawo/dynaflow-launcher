@@ -53,12 +53,14 @@ static inline double elapsed(const std::chrono::steady_clock::time_point &timePo
 
 static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const &params, dfl::inputs::Configuration &config) {
   auto timeContextStart = std::chrono::steady_clock::now();
+  bool outputIsZip = !params.runtimeConfig->zipArchivePath.empty();
   dfl::Context::ContextDef def{config.getStartingPointMode(),
                                params.simulationKind,
                                params.networkFilePath,
                                config.settingFilePath(),
                                config.assemblingFilePath(),
                                params.runtimeConfig->contingenciesFilePath,
+                               outputIsZip,
                                params.runtimeConfig->dynawoLogLevel,
                                params.resourcesDirPath,
                                params.locale};

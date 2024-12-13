@@ -63,6 +63,7 @@ class Context {
     boost::filesystem::path settingFilePath;                          ///< setting file path for dynamic data base
     boost::filesystem::path assemblingFilePath;                       ///< assembling file path for dynamic data base
     boost::filesystem::path contingenciesFilePath;                    ///< contigencies file path for Security Analysis simulation
+    bool outputIsZip;                                                 ///< true if the output is zip archive, false otherwise
     std::string dynawoLogLevel;                                       ///< string representation of the dynawo log level
     boost::filesystem::path dynawoResDir;                             ///< DYNAWO resources
     std::string locale;                                               ///< localization
