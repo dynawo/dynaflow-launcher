@@ -150,6 +150,7 @@ macro(DEFINE_TEST _name _module_name)
       set_target_properties(${_module_name}.${_name} PROPERTIES OUTPUT_NAME ${_name})
 
       target_link_libraries(${_module_name}.${_name}
+       PRIVATE
         DynaFlowLauncherTest
         "$<$<BOOL:${_with_xml}>:XMLSAXParser${LibXML_LINK_SUFFIX};LibXml2::LibXml2>"
       )

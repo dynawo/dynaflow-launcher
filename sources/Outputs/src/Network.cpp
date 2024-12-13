@@ -23,7 +23,6 @@
 #include <PARParametersSetCollection.h>
 #include <PARParametersSetCollectionFactory.h>
 #include <PARXmlExporter.h>
-#include <type_traits>
 
 namespace dfl {
 namespace outputs {

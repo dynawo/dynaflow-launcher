@@ -14,9 +14,7 @@
 #include <DYNMultiProcessingContext.h>
 
 #include <array>
-#include <fstream>
 #include <gtest_dynawo.h>
-#include <iostream>
 #include <tuple>
 #include <xml/sax/parser/Parser.h>
 #include <xml/sax/parser/ParserException.h>
