@@ -56,8 +56,8 @@ boost::optional<std::string> ParDynModel::getTransformerComponentId(const algo::
 }
 
 std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set &set,
-                                                                               const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
-                                                                               const algo::DynamicModelDefinition &automaton) {
+                                                                             const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
+                                                                             const algo::DynamicModelDefinition &automaton) {
   auto new_set = parameters::ParametersSetFactory::newParametersSet(set.id);
 
   std::unordered_map<std::string, unsigned> regulatorIdToInitialIndex;
@@ -143,9 +143,15 @@ std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(con
                                                      genInitialParamToValues["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
       }
       new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p1_pu", "DOUBLE", hvdcDefinition.id));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q1_pu", "DOUBLE", hvdcDefinition.id));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v1_pu", "DOUBLE", hvdcDefinition.id));
+      std::string side = "1";
+      if (hvdcDefinition.converterStationOnSide2())
+        side = "2";
+      new_set->addReference(
+          helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p" + side + "_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(
+          helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q" + side + "_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(
+          helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v" + side + "_pu", "DOUBLE", hvdcDefinition.id));
 
       assert(hvdcDefinition.vscDefinition1);
       if (hvdcDefinition.vscDefinition1->q < hvdcDefinition.vscDefinition1->qmax && hvdcDefinition.vscDefinition1->q > hvdcDefinition.vscDefinition1->qmin) {

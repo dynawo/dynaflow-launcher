@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="SVCToUMeasurement">
+    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu"/>
+  </macroConnection>
+  <macroConnection id="SVCToHVDC" index1="true">
+    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
+    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
+  </macroConnection>
+  <singleAssociation id="MESURE_MODELE_VL">
+    <bus voltageLevel="VL"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCVSCLine">
+    <hvdcLine name="HVDCVSCLine" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCVSCLine2">
+    <hvdcLine name="HVDCVSCLine2" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCVSCLine3">
+    <hvdcLine name="HVDCVSCLine3" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCLineBothInMain2">
+    <hvdcLine name="HVDCLineBothInMain2" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCLineBothInMain3">
+    <hvdcLine name="HVDCLineBothInMain3" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCLineBothInMain4">
+    <hvdcLine name="HVDCLineBothInMain4" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCLineBothInMain5">
+    <hvdcLine name="HVDCLineBothInMain5" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCVSCLineSwitch1">
+    <hvdcLine name="HVDCVSCLineSwitch1" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <singleAssociation id="HVDCVSCLineSwitch2">
+    <hvdcLine name="HVDCVSCLineSwitch2" converterStation1="SIDE2"/>
+  </singleAssociation>
+  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+    <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLine"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLine2"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLine3"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCLineBothInMain2"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCLineBothInMain3"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCLineBothInMain4"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCLineBothInMain5"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLineSwitch1"/>
+    <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLineSwitch2"/>
+  </dynamicAutomaton>
+</assembling>

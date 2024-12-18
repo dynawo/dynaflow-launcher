@@ -123,7 +123,13 @@ class HVDCDefinition {
     HvdcPVRpcl2Side1,
     HvdcPVDiagramPQRpcl2Side1,
     HvdcPVDanglingRpcl2Side1,
-    HvdcPVDanglingDiagramPQRpcl2Side1
+    HvdcPVDanglingDiagramPQRpcl2Side1,
+    HvdcPVEmulationSetRpcl2Side2,
+    HvdcPVDiagramPQEmulationSetRpcl2Side2,
+    HvdcPVRpcl2Side2,
+    HvdcPVDiagramPQRpcl2Side2,
+    HvdcPVDanglingRpcl2Side2,
+    HvdcPVDanglingDiagramPQRpcl2Side2
   };
 
   /**
@@ -135,7 +141,8 @@ class HVDCDefinition {
            model == HVDCModel::HvdcPTanPhiDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQ || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet ||
            model == HVDCModel::HvdcPVDiagramPQ || model == HVDCModel::HvdcPVDiagramPQEmulationSet ||
            model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQRpcl2Side1 ||
-           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1;
+           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2 ||
+           model == HVDCModel::HvdcPVDiagramPQRpcl2Side2 || model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2;
   }
 
   /**
@@ -145,7 +152,8 @@ class HVDCDefinition {
   bool hasEmulationModel() const {
     return model == HVDCModel::HvdcPQPropEmulationSet || model == HVDCModel::HvdcPQPropDiagramPQEmulationSet || model == HVDCModel::HvdcPVEmulationSet ||
            model == HVDCModel::HvdcPVDiagramPQEmulationSet || model == HVDCModel::HvdcPVEmulationSetRpcl2Side1 ||
-           model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1;
+           model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1 || model == HVDCModel::HvdcPVEmulationSetRpcl2Side2 ||
+           model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2;
   }
 
   /**
@@ -164,7 +172,8 @@ class HVDCDefinition {
   bool hasDanglingModel() const {
     return model == HVDCModel::HvdcPTanPhiDangling || model == HVDCModel::HvdcPTanPhiDanglingDiagramPQ || model == HVDCModel::HvdcPQPropDangling ||
            model == HVDCModel::HvdcPQPropDanglingDiagramPQ || model == HVDCModel::HvdcPVDangling || model == HVDCModel::HvdcPVDanglingDiagramPQ ||
-           model == HVDCModel::HvdcPVDanglingRpcl2Side1 || model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1;
+           model == HVDCModel::HvdcPVDanglingRpcl2Side1 || model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1 ||
+           model == HVDCModel::HvdcPVDanglingRpcl2Side2 || model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2;
   }
   /**
    * @brief test is the  HVDC definition has a reactive power control loop 2 for connection to the secondary voltage control
@@ -174,7 +183,19 @@ class HVDCDefinition {
   bool hasRpcl2() const {
     return model == HVDCModel::HvdcPVEmulationSetRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1 ||
            model == HVDCModel::HvdcPVRpcl2Side1 || model == HVDCModel::HvdcPVDiagramPQRpcl2Side1 || model == HVDCModel::HvdcPVDanglingRpcl2Side1 ||
-           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1;
+           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1 || model == HVDCModel::HvdcPVEmulationSetRpcl2Side2 ||
+           model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2 || model == HVDCModel::HvdcPVRpcl2Side2 || model == HVDCModel::HvdcPVDiagramPQRpcl2Side2 ||
+           model == HVDCModel::HvdcPVDanglingRpcl2Side2 || model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2;
+  }
+  /**
+   * @brief test is the  HVDC definition has a reactive power control loop 2 for connection to the secondary voltage control
+   *
+   * @return @b true if the  HVDC definition has a reactive power control loop 2 for connection to the secondary voltage control, @b false otherwise
+   */
+  bool converterStationOnSide2() const {
+    return model == HVDCModel::HvdcPVEmulationSetRpcl2Side2 || model == HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2 ||
+           model == HVDCModel::HvdcPVRpcl2Side2 || model == HVDCModel::HvdcPVDiagramPQRpcl2Side2 || model == HVDCModel::HvdcPVDanglingRpcl2Side2 ||
+           model == HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2;
   }
 
   /**
@@ -201,18 +222,20 @@ class HVDCDefinition {
    * @param pSetPoint active power set-point of the hvdc line in MW
    * @param rdc dc resistance of the hvdc line in Ohm
    * @param lossFactors loss factors for converters 1 and 2
+   * @param ConverterStationSide1 whether the side1 of the hvdc should be connected to the side1 of the network
    */
   explicit HVDCDefinition(const HvdcLineId &id, const inputs::HvdcLine::ConverterType converterType, const ConverterId &converter1Id,
                           const BusId &converter1BusId, const boost::optional<bool> &converter1VoltageRegulationOn, const ConverterId &converter2Id,
                           const BusId &converter2BusId, const boost::optional<bool> &converter2VoltageRegulationOn, const Position position,
                           const HVDCModel &model, const std::array<double, 2> &powerFactors, double pMax, const boost::optional<VSCDefinition> &vscDefinition1,
                           const boost::optional<VSCDefinition> &vscDefinition2, const boost::optional<double> &droop, const boost::optional<double> &p0,
-                          bool isConverter1Rectifier, const double vdcNom, const double pSetPoint, const double rdc, const std::array<double, 2> &lossFactors)
+                          bool isConverter1Rectifier, const double vdcNom, const double pSetPoint, const double rdc, const std::array<double, 2> &lossFactors,
+                          bool ConverterStationSide1)
       : id{id}, converterType{converterType}, converter1Id{converter1Id}, converter1BusId{converter1BusId},
         converter1VoltageRegulationOn{converter1VoltageRegulationOn}, converter2Id{converter2Id}, converter2BusId{converter2BusId},
         converter2VoltageRegulationOn{converter2VoltageRegulationOn}, position{position}, model{model}, powerFactors(powerFactors), pMax{pMax},
         vscDefinition1(vscDefinition1), vscDefinition2(vscDefinition2), droop(droop), p0(p0), isConverter1Rectifier{isConverter1Rectifier}, vdcNom(vdcNom),
-        pSetPoint(pSetPoint), rdc(rdc), lossFactors(lossFactors) {}
+        pSetPoint(pSetPoint), rdc(rdc), lossFactors(lossFactors), ConverterStationSide1(ConverterStationSide1) {}
 
   const HvdcLineId id;                                        ///< HvdcLine id
   const ConverterType converterType;                          ///< type of converter of the hvdc line
@@ -235,6 +258,7 @@ class HVDCDefinition {
   const double pSetPoint;                                     ///< active power set-point of the hvdc line in MW
   const double rdc;                                           ///< dc resistance of the hvdc line in Ohm
   const std::array<double, 2> lossFactors;                    ///< loss factors for converters 1 and 2
+  const bool ConverterStationSide1;                           ///< whether the side1 of the hvdc should be connected to the side1 of the network
 };
 
 /// @brief HVDC line definitions
@@ -328,7 +352,8 @@ class HVDCDefinitionAlgorithm {
   const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap_;  ///< mapping of busId and the number of generators that regulates them
   const bool infiniteReactiveLimits_;                                             ///< whether we use infinite reactive limits
   std::unordered_map<inputs::Converter::ConverterId, std::shared_ptr<inputs::Converter>> vscConverters_;  ///< List of VSC converters to use
-  std::unordered_set<std::string> hvdcLinesInSVC;  ///< If a hvdc line id is in this map then it belongs to a secondary voltage control area
+  std::unordered_map<std::string, inputs::AssemblingDataBase::HvdcLineConverterSide>
+      hvdcLinesInSVC_;  ///< If a hvdc line id is in this map then it belongs to a secondary voltage control area
 };
 
 }  // namespace algo

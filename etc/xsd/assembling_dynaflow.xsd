@@ -120,7 +120,15 @@ SPDX-License-Identifier: MPL-2.0 -->
 
   <xs:complexType name="HVDC">
     <xs:attribute name="name" use="required" type="xs:string"/>
+    <xs:attribute name="converterStation1" use="optional" type="converterStationSide"/>
   </xs:complexType>
+
+  <xs:simpleType name="converterStationSide">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SIDE1"/>
+      <xs:enumeration value="SIDE2"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="MacroConnect">
     <xs:attribute name="macroConnection" use="required" type="xs:string"/>

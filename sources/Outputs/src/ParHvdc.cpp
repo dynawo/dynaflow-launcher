@@ -26,9 +26,9 @@ void ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection> &para
 }
 
 std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,
-                                                                    const boost::filesystem::path &dirname,
-                                                                    dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                                                                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+                                                                  const boost::filesystem::path &dirname,
+                                                                  dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                                                                  const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   auto dirnameDiagram = dirname;
   dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
@@ -82,7 +82,7 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
   auto set = parameters::ParametersSetFactory::newParametersSet(hvdcDefinition.id);
   std::string first = "1";
   std::string second = "2";
-  if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+  if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcDefinition.converterStationOnSide2()) {
     first = "2";
     second = "1";
   }
@@ -161,19 +161,25 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
     set->addParameter(helper::buildParameter("hvdc_Q2MaxPu", std::numeric_limits<double>::max()));
   } else {
     const auto &hvdcConverterIdMain =
-        (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? hvdcDefinition.converter2Id : hvdcDefinition.converter1Id;
-    size_t converterNumber = (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) ? 2 : 1;
+        (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcDefinition.converterStationOnSide2())
+            ? hvdcDefinition.converter2Id
+            : hvdcDefinition.converter1Id;
+    size_t converterNumber =
+        (hvdcDefinition.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcDefinition.converterStationOnSide2()) ? 2 : 1;
     constexpr size_t parameterMainNumber = 1;
     updateHVDCParams(set, hvdcConverterIdMain, converterNumber, parameterMainNumber);
 
     if (hvdcDefinition.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT) {
       // always converter 2 on parameter number 2 to add in that case
-      updateHVDCParams(set, hvdcDefinition.converter2Id, 2, 2);
+      if (hvdcDefinition.converterStationOnSide2())
+        updateHVDCParams(set, hvdcDefinition.converter1Id, 1, 2);
+      else
+        updateHVDCParams(set, hvdcDefinition.converter2Id, 2, 2);
     }
   }
 
   if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::VSC) {
-    if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+    if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcDefinition.converterStationOnSide2()) {
       set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter2VoltageRegulationOn.value()));
       set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter1VoltageRegulationOn.value()));
       set->addReference(helper::buildReference("hvdc_Q1Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
@@ -239,7 +245,7 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
   }
 
   if (hvdcDefinition.converterType == dfl::inputs::HvdcLine::ConverterType::LCC) {
-    if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT) {
+    if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcDefinition.converterStationOnSide2()) {
       set->addReference(helper::buildReference("hvdc_CosPhi1Ref0", "powerFactor", "DOUBLE", hvdcDefinition.converter2Id));
       set->addReference(helper::buildReference("hvdc_CosPhi2Ref0", "powerFactor", "DOUBLE", hvdcDefinition.converter1Id));
     } else {
@@ -257,13 +263,21 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
       set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter2Id));
       break;
     case dfl::algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT:
-      set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter1Id));
-      set->addReference(helper::buildReference("hvdc_QPercent2", "qMax_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      if (hvdcDefinition.converterStationOnSide2()) {
+        set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter2Id));
+        set->addReference(helper::buildReference("hvdc_QPercent2", "qMax_pu", "DOUBLE", hvdcDefinition.converter1Id));
+      } else {
+        set->addReference(helper::buildReference("hvdc_QPercent1", "qMax_pu", "DOUBLE", hvdcDefinition.converter1Id));
+        set->addReference(helper::buildReference("hvdc_QPercent2", "qMax_pu", "DOUBLE", hvdcDefinition.converter2Id));
+      }
       break;
     }
   }
   if (!hvdcDefinition.hasDanglingModel() && !hvdcDefinition.hasEmulationModel()) {
-    set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
+    if (hvdcDefinition.converterStationOnSide2())
+      set->addReference(helper::buildReference("P1Ref_ValueIn", "p2_pu", "DOUBLE"));
+    else
+      set->addReference(helper::buildReference("P1Ref_ValueIn", "p1_pu", "DOUBLE"));
   }
   if (hvdcDefinition.hasEmulationModel()) {
     // Try to use AC emulation tFilter from the setting ddb (if provided in the ddb, use default value otherwise)

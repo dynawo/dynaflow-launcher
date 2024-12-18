@@ -72,6 +72,8 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_NO_THROW(assembling.getSingleAssociation("MESURE_I_SALON"));
   ASSERT_NO_THROW(assembling.getSingleAssociation("ORDER_SALON"));
   ASSERT_NO_THROW(assembling.getSingleAssociation("HVDC_LINE"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("HVDC_LINE_SIDE1"));
+  ASSERT_NO_THROW(assembling.getSingleAssociation("HVDC_LINE_SIDE2"));
   auto singleAssoc = assembling.getSingleAssociation("MESURE_MODELE_1_VL4");
   ASSERT_EQ(singleAssoc.id, "MESURE_MODELE_1_VL4");
   ASSERT_FALSE(singleAssoc.line);
@@ -112,6 +114,25 @@ TEST(AssemblingXmlDocument, readFile) {
   ASSERT_FALSE(singleAssoc.line);
   ASSERT_FALSE(singleAssoc.shunt);
   ASSERT_EQ(singleAssoc.hvdcLine->name, "MyHvdc");
+  ASSERT_EQ(singleAssoc.hvdcLine->converterStation1, dfl::inputs::AssemblingDataBase::HvdcLineConverterSide::SIDE1);
+  singleAssoc = assembling.getSingleAssociation("HVDC_LINE_SIDE1");
+  ASSERT_EQ(singleAssoc.id, "HVDC_LINE_SIDE1");
+  ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_TRUE(singleAssoc.hvdcLine);
+  ASSERT_FALSE(singleAssoc.tfo);
+  ASSERT_FALSE(singleAssoc.line);
+  ASSERT_FALSE(singleAssoc.shunt);
+  ASSERT_EQ(singleAssoc.hvdcLine->name, "MyHvdc");
+  ASSERT_EQ(singleAssoc.hvdcLine->converterStation1, dfl::inputs::AssemblingDataBase::HvdcLineConverterSide::SIDE1);
+  singleAssoc = assembling.getSingleAssociation("HVDC_LINE_SIDE2");
+  ASSERT_EQ(singleAssoc.id, "HVDC_LINE_SIDE2");
+  ASSERT_FALSE(singleAssoc.bus);
+  ASSERT_TRUE(singleAssoc.hvdcLine);
+  ASSERT_FALSE(singleAssoc.tfo);
+  ASSERT_FALSE(singleAssoc.line);
+  ASSERT_FALSE(singleAssoc.shunt);
+  ASSERT_EQ(singleAssoc.hvdcLine->name, "MyHvdc");
+  ASSERT_EQ(singleAssoc.hvdcLine->converterStation1, dfl::inputs::AssemblingDataBase::HvdcLineConverterSide::SIDE2);
 
   ASSERT_THROW_DYNAWO(assembling.getMultipleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownMultiAssoc);
   ASSERT_NO_THROW(assembling.getMultipleAssociation("SHUNTS_MODELE_1_VL4"));

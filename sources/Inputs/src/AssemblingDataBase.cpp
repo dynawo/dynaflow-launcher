@@ -232,7 +232,15 @@ AssemblingDataBase::AssemblingXmlDocument::TfoHandler::TfoHandler(const elementN
 }
 
 AssemblingDataBase::AssemblingXmlDocument::HvdcLineHandler::HvdcLineHandler(const elementName_type &root) {
-  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) { currentHvdcLine->name = attributes["name"].as_string(); });
+  onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
+    currentHvdcLine->name = attributes["name"].as_string();
+    currentHvdcLine->converterStation1 = AssemblingDataBase::HvdcLineConverterSide::SIDE1;
+    if (attributes.has("converterStation1")) {
+      if (attributes["converterStation1"].as_string() == "SIDE2") {
+        currentHvdcLine->converterStation1 = AssemblingDataBase::HvdcLineConverterSide::SIDE2;
+      }
+    }
+  });
 }
 
 AssemblingDataBase::AssemblingXmlDocument::SingleShuntHandler::SingleShuntHandler(const elementName_type &root) {
