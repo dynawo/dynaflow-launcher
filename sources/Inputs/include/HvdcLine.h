@@ -19,9 +19,9 @@
 
 #include "Behaviours.h"
 
+#include <array>
 #include <boost/optional.hpp>
 #include <string>
-#include <array>
 
 namespace dfl {
 namespace inputs {

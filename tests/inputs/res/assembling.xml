@@ -59,6 +59,12 @@
   <singleAssociation id="HVDC_LINE">
     <hvdcLine name="MyHvdc"/>
   </singleAssociation>
+  <singleAssociation id="HVDC_LINE_SIDE1">
+    <hvdcLine name="MyHvdc" converterStation1="SIDE1"/>
+  </singleAssociation>
+  <singleAssociation id="HVDC_LINE_SIDE2">
+    <hvdcLine name="MyHvdc" converterStation1="SIDE2"/>
+  </singleAssociation>
   <singleAssociation id="GeneratorId">
     <generator name="GeneratorId1"/>
     <generator name="GeneratorId_1"/>

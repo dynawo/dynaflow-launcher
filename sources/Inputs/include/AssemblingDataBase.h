@@ -32,6 +32,12 @@ namespace inputs {
  */
 class AssemblingDataBase {
  public:
+  /// @brief Different tables in the diagram, qmin or qmax
+  enum class HvdcLineConverterSide {
+    SIDE1 = 0,  ///< Side 1
+    SIDE2       ///< Side 2
+  };
+
   /**
    * @brief Connection XML element
    */
@@ -93,7 +99,8 @@ class AssemblingDataBase {
    * @brief Hvdc line XML element
    */
   struct HvdcLine {
-    std::string name;  ///< name of the Hvdc line
+    std::string name;                         ///< name of the Hvdc line
+    HvdcLineConverterSide converterStation1;  ///< side of the network on which the side1 of the hvdc should be connected
   };
 
   /**

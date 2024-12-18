@@ -133,10 +133,10 @@ TEST(Dyd, writeHvdc) {
 
   auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "_BUS___11_TN", false, "LCCStation2",
                                     "_BUS___10_TN", false, HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling,
-                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                                    {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01}, true);
   auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "_BUS___10_TN", true, "VSCStation2",
                                     "_BUS___11_TN", false, HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPVDangling, {},
-                                    0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                                    0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01}, true);
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   HVDCLineDefinitions hvdcDefs{hvdcLines};
@@ -228,7 +228,7 @@ TEST(Dyd, writeDynamicModel) {
   auto hvdcLineVSC =
       dfl::algo::HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_2", false,
                                 dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1,
-                                {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                                {}, 0., boost::none, boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01}, true);
   //  maybe watch out but you can't access the hdvLine from the converterInterface
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC)};
   HVDCLineDefinitions hvdcDefs{hvdcLines};
@@ -354,10 +354,10 @@ TEST(Dyd, writeVRRemote) {
 
   auto hvdcLineLCC = HVDCDefinition("HVDCLCCLine", dfl::inputs::HvdcLine::ConverterType::LCC, "LCCStation1", "BUS_3", false, "LCCStation2", "BUS_1", false,
                                     HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPTanPhiDangling, {}, 0., boost::none,
-                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01}, true);
   auto hvdcLineVSC = HVDCDefinition("HVDCVSCLine", dfl::inputs::HvdcLine::ConverterType::VSC, "VSCStation1", "BUS_1", true, "VSCStation2", "BUS_3", true,
                                     HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT, HVDCDefinition::HVDCModel::HvdcPQPropDangling, {}, 0., boost::none,
-                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01});
+                                    boost::none, boost::none, boost::none, false, 320, 322, 0.125, {0.01, 0.01}, true);
   HVDCLineDefinitions::HvdcLineMap hvdcLines = {std::make_pair(hvdcLineVSC.id, hvdcLineVSC), std::make_pair(hvdcLineLCC.id, hvdcLineLCC)};
   HVDCLineDefinitions hvdcDefs{hvdcLines};
 
