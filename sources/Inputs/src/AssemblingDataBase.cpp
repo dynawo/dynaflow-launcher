@@ -235,10 +235,8 @@ AssemblingDataBase::AssemblingXmlDocument::HvdcLineHandler::HvdcLineHandler(cons
   onStartElement(root, [this](const parser::ElementName &, const attributes_type &attributes) {
     currentHvdcLine->name = attributes["name"].as_string();
     currentHvdcLine->converterStation1 = AssemblingDataBase::HvdcLineConverterSide::SIDE1;
-    if (attributes.has("converterStation1")) {
-      if (attributes["converterStation1"].as_string() == "SIDE2") {
-        currentHvdcLine->converterStation1 = AssemblingDataBase::HvdcLineConverterSide::SIDE2;
-      }
+    if (attributes.has("converterStation1") && attributes["converterStation1"].as_string() == "SIDE2") {
+      currentHvdcLine->converterStation1 = AssemblingDataBase::HvdcLineConverterSide::SIDE2;
     }
   });
 }

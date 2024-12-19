@@ -40,6 +40,7 @@ CannotLoadLibrary             =     cannot load library %1% : %2%
 DynModelLibraryNotFound       =     library %1% not found : model %2% will be skipped
 ContingencyInvalidForSimulation =   element %1% from contingency %2% is not valid: not in main connected component or has an invalid type. It will be ignored.
 ContingencyInvalidForSimulationNoValidElements =     contingency %1% is invalid for simulation. All elements are invalid (not in main connected component or invalid type)
+HvdcActivePowerControlActivatedNoDroop = active power control is activated in hvdc %1% but droop is zero. Active power control will be considered as disabled.
 
 //------------------ Outputs -----------------------
 TFOComponentNotFound          =     reference %1% references a TFO element but model %2% does not use a TFO association : reference is ignored
