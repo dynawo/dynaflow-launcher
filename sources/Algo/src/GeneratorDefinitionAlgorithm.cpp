@@ -171,7 +171,7 @@ void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_p
       }
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.q,
-                             generator.targetP, generator.regulatedBusId, generator.isNuclear);
+                             generator.targetP, generator.regulatedBusId, generator.isNuclear, generator.hasActivePowerControl);
   }
 }
 
