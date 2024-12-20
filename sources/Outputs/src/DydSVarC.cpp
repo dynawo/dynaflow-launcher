@@ -38,7 +38,8 @@ DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamic
       continue;
     }
     std::string parId = constants::uuid(svarc.id);
-    auto blackBoxModel = helper::buildBlackBoxStaticId(svarc.id, svarc.id, svarcModelsNames_.at(svarc.model), basename + ".par", parId);
+    std::unique_ptr<dynamicdata::BlackBoxModel> blackBoxModel =
+        helper::buildBlackBoxStaticId(svarc.id, svarc.id, svarcModelsNames_.at(svarc.model), basename + ".par", parId);
     blackBoxModel->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSVarCName_));
     switch (svarc.model) {
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVMODEHANDLING:
@@ -50,9 +51,10 @@ DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamic
     default:
       break;
     }
-    auto sVarCMacroConnectRef = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, constants::networkModelName);
-    dynamicModelsToConnect->addModel(blackBoxModel);
-    dynamicModelsToConnect->addMacroConnect(sVarCMacroConnectRef);
+    std::unique_ptr<dynamicdata::MacroConnect>
+        sVarCMacroConnectRef = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorSVarCName_, svarc.id, constants::networkModelName);
+    dynamicModelsToConnect->addModel(std::move(blackBoxModel));
+    dynamicModelsToConnect->addMacroConnect(std::move(sVarCMacroConnectRef));
   }
   writeMacroConnector(dynamicModelsToConnect);
   writeMacroStaticReference(dynamicModelsToConnect);
@@ -61,20 +63,21 @@ DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamic
 void
 DydSVarC::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
   if (!svarcsDefinitions_.empty()) {
-    auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorSVarCName_);
+    std::unique_ptr<dynamicdata::MacroConnector> connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorSVarCName_);
     connector->addConnect("SVarC_terminal", "@STATIC_ID@@NODE@_ACPIN");
-    dynamicModelsToConnect->addMacroConnector(connector);
+    dynamicModelsToConnect->addMacroConnector(std::move(connector));
   }
 }
 
 void
 DydSVarC::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
   if (!svarcsDefinitions_.empty()) {
-    auto macroStaticReference = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
+    std::unique_ptr<dynamicdata::MacroStaticReference> macroStaticReference =
+        dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSVarCName_);
     macroStaticReference->addStaticRef("SVarC_PInjPu", "p");
     macroStaticReference->addStaticRef("SVarC_QInjPu", "q");
     macroStaticReference->addStaticRef("SVarC_state", "state");
-    dynamicModelsToConnect->addMacroStaticReference(macroStaticReference);
+    dynamicModelsToConnect->addMacroStaticReference(std::move(macroStaticReference));
   }
 }
 }  // namespace outputs
