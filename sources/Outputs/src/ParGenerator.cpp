@@ -44,7 +44,7 @@ void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> 
                            dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getSingleAssociationFromGenerator(generator.id)),
                            generator.hasRpcl2());
       if (!generator.isUsingDiagram()) {
-        updateSignalNGenerator(paramSet, activePowerCompensation, generator.targetP, startingPointMode);
+        updateSignalNGenerator(paramSet, activePowerCompensation, generator.targetP, startingPointMode, generator.hasActivePowerControl);
       }
     }
     if (paramSet && generator.hasTransformer()) {
@@ -122,7 +122,7 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
     }
 
     macroParameterSet->addReference(helper::buildReference("generator_PRef0Pu", "targetP_pu", "DOUBLE"));
-    macroParameterSet->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(targetP)));
+    setKGover(macroParameterSet, def.hasActivePowerControl, targetP);
 
     switch (activePowerCompensation) {
     case ActivePowerCompensation::P:
@@ -192,8 +192,8 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
 }
 
 void ParGenerator::updateSignalNGenerator(std::shared_ptr<parameters::ParametersSet> set, ActivePowerCompensation activePowerCompensation, double targetP,
-                                          StartingPointMode startingPointMode) {
-  set->addParameter(helper::buildParameter("generator_KGover", getKGoverValue(targetP)));
+                                          StartingPointMode startingPointMode, bool hasActivePowerControl) {
+  setKGover(set, hasActivePowerControl, targetP);
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_QMax", constants::powerValueMax));
   set->addParameter(helper::buildParameter("generator_PMin", -constants::powerValueMax));
@@ -240,7 +240,7 @@ std::shared_ptr<parameters::ParametersSet> ParGenerator::writeConstantGenerators
                                                                                      const algo::GeneratorDefinition &generator,
                                                                                      StartingPointMode startingPointMode) {
   auto set = parameters::ParametersSetFactory::newParametersSet(helper::getGeneratorParameterSetId(generator));
-  updateSignalNGenerator(set, activePowerCompensation, generator.targetP, startingPointMode);
+  updateSignalNGenerator(set, activePowerCompensation, generator.targetP, startingPointMode, generator.hasActivePowerControl);
   switch (generator.model) {
   case ModelType::PROP_SIGNALN_INFINITE:
   case ModelType::PROP_DIAGRAM_PQ_SIGNALN:
@@ -320,6 +320,18 @@ void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSe
       set->addParameter(helper::buildParameter(parameter.first, paramIt->value));
     else if (!set->hasParameter(parameter.first) && !set->hasReference(parameter.first))
       set->addReference(helper::buildReference(parameter.first, parameter.second, "DOUBLE"));
+  }
+}
+
+template <class T> void ParGenerator::setKGover(T &set, const bool hasActivePowerControl, const double targetP) {
+  if (DYN::doubleIsZero(targetP)) {
+    set->addParameter(helper::buildParameter("generator_KGover", constants::kGoverNullValue_));
+  } else {
+    if (hasActivePowerControl) {
+      set->addReference(helper::buildReference("generator_KGover", "kGover", "DOUBLE"));
+    } else {
+      set->addParameter(helper::buildParameter("generator_KGover", constants::kGoverDefaultValue_));
+    }
   }
 }
 
