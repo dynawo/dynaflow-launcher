@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <string>
@@ -43,6 +42,7 @@ class Options {
     std::string networkFilePath;        ///< Network filepath to process
     std::string contingenciesFilePath;  ///< Contingencies filepath for security analysis
     std::string configPath;             ///< Launcher configuration filepath
+    std::string zipArchivePath;         ///< zip archive path to unzip to get input files
     std::string dynawoLogLevel;         ///< chosen log level
   };
 
