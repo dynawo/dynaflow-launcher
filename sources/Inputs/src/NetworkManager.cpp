@@ -38,7 +38,6 @@
 #include <DYNVoltageLevelInterface.h>
 #include <DYNVscConverterInterface.h>
 
-
 namespace dfl {
 namespace inputs {
 
@@ -326,6 +325,8 @@ void NetworkManager::buildTree() {
 
     // active power control external IIDM extension
     const bool activePowerEnabled = hvdcLine->isActivePowerControlEnabled().get_value_or(false);
+    if (activePowerEnabled && DYN::doubleIsZero(hvdcLine->getDroop().value()))
+      LOG(warn, HvdcActivePowerControlActivatedNoDroop, hvdcLine->getID());
     auto activePowerControl =
         activePowerEnabled
             ? boost::optional<HvdcLine::ActivePowerControl>(HvdcLine::ActivePowerControl(hvdcLine->getDroop().value(), hvdcLine->getP0().value()))
