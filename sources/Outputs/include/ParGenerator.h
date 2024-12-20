@@ -41,7 +41,7 @@ class ParGenerator {
    *
    * @param generatorDefinitions reference to the list of generator definitions
    */
-  explicit ParGenerator(const std::vector<algo::GeneratorDefinition>& generatorDefinitions) : generatorDefinitions_(generatorDefinitions) {}
+  explicit ParGenerator(const std::vector<algo::GeneratorDefinition> &generatorDefinitions) : generatorDefinitions_(generatorDefinitions) {}
 
   /**
    * @brief enrich the parameter set collection for generators
@@ -53,13 +53,9 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void
-  write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-        ActivePowerCompensation activePowerCompensation,
-        const std::string& basename,
-        const boost::filesystem::path& dirname,
-        StartingPointMode startingPointMode,
-        const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
+             const std::string &basename, const boost::filesystem::path &dirname, StartingPointMode startingPointMode,
+             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
   /**
@@ -80,7 +76,7 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @return the new macro parameter set
    */
-  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def,
+  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition &def,
                                                                                    ActivePowerCompensation activePowerCompensation, double targetP,
                                                                                    StartingPointMode startingPointMode);
 
@@ -94,7 +90,7 @@ class ParGenerator {
    * @returns the parameter set
    */
   std::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
-                                                                           const algo::GeneratorDefinition& generator, StartingPointMode startingPointMode);
+                                                                         const algo::GeneratorDefinition &generator, StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -103,9 +99,10 @@ class ParGenerator {
    * @param activePowerCompensation the type of active power compensation
    * @param targetP generator targetP value
    * @param startingPointMode starting point mode
+   * @param hasActivePowerControl true if the generator has active power control information
    */
   void updateSignalNGenerator(std::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
-                              double targetP, StartingPointMode startingPointMode);
+                              double targetP, StartingPointMode startingPointMode, bool hasActivePowerControl);
 
   /**
    * @brief Update parameter set with transformer parameters
@@ -123,7 +120,7 @@ class ParGenerator {
    * @param databaseSetting the settings found in setting file
    * @param Rcpl2 true if the model used is RPCL2, false otherwise
    */
-  void updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string& genId, const inputs::SettingDataBase::Set& databaseSetting,
+  void updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string &genId, const inputs::SettingDataBase::Set &databaseSetting,
                             bool Rcpl2);
 
   /**
@@ -135,18 +132,17 @@ class ParGenerator {
    *
    * @returns the parameter set
    */
-  std::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition& def, const std::string& basename,
-                                                              const boost::filesystem::path& dirname);
+  std::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
+                                                            const boost::filesystem::path &dirname);
 
   /**
-   * @brief determine value of kGover based on generator targetP value
+   * @brief
    *
+   * @param set the parameter set to update
+   * @param hasActivePowerControl if the generator has active power control information
    * @param targetP generator targetP value
-   * @returns kGover value
    */
-  inline double getKGoverValue(double targetP) {
-    return DYN::doubleIsZero(targetP) ? constants::kGoverNullValue_ : constants::kGoverDefaultValue_;
-  }
+  template <class T> void setKGover(T &set, const bool hasActivePowerControl, const double targetP);
 
   /**
    * @brief update a parameter set with information specific to remote voltage regulation for a generator
@@ -155,10 +151,10 @@ class ParGenerator {
    * @param def the generator definition to use
    * @param set the parameter set to be updated
    */
-  void updateRemoteRegulationParameters(const algo::GeneratorDefinition& def, std::shared_ptr<parameters::ParametersSet> set);
+  void updateRemoteRegulationParameters(const algo::GeneratorDefinition &def, std::shared_ptr<parameters::ParametersSet> set);
 
  private:
-  const std::vector<algo::GeneratorDefinition>& generatorDefinitions_;  ///< list of generators definitions
+  const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;  ///< list of generators definitions
 };
 
 }  // namespace outputs

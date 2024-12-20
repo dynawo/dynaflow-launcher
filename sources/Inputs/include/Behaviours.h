@@ -69,13 +69,14 @@ struct Generator {
    * @param regulatedBusId the Bus Id this generator is regulating
    * @param connectedBusId the Bus Id this generator is connected to
    * @param isNuclear true if the energy source of this generator is nuclear
+   * @param hasActivePowerControl true if the generator has active power control information
    */
   explicit Generator(const GeneratorId &genId, const bool isVoltageRegulationOn, const std::vector<ReactiveCurvePoint> &curvePoints, double qmin, double qmax,
                      double pmin, double pmax, double q, double targetP, double VNom, const BusId &regulatedBusId, const BusId &connectedBusId,
-                     bool isNuclear = false)
+                     bool isNuclear = false, bool hasActivePowerControl = false)
       : id{genId}, isVoltageRegulationOn{isVoltageRegulationOn},
         points(curvePoints), qmin{qmin}, qmax{qmax}, pmin{pmin}, pmax{pmax}, q{q}, targetP{targetP}, VNom{VNom}, regulatedBusId{regulatedBusId},
-        connectedBusId{connectedBusId}, isNuclear{isNuclear} {}
+        connectedBusId{connectedBusId}, isNuclear{isNuclear}, hasActivePowerControl{hasActivePowerControl} {}
 
   GeneratorId id;                          ///< generator id
   const bool isVoltageRegulationOn;        ///< determines if generator is regulating voltage or not
@@ -90,6 +91,7 @@ struct Generator {
   const BusId regulatedBusId;              ///< regulated Bus Id
   const BusId connectedBusId;              ///< connected Bus Id
   const bool isNuclear;                    ///< true if the energy source of this generator is nuclear
+  const bool hasActivePowerControl;        ///< true if the generator has active power control information
 };
 
 class HvdcLine;
