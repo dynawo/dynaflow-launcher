@@ -12,7 +12,7 @@ DEFINE_TEST(varEnv MAIN_SA COMMAND $<TARGET_FILE:DynaFlowLauncher> --network=res
 set_property(TEST MAIN_SA.varEnv APPEND PROPERTY ENVIRONMENT DYNAFLOW_LAUNCHER_LOCALE=en_GB)
 set_tests_properties(MAIN_SA.varEnv PROPERTIES WILL_FAIL TRUE)
 
-macro(DEFINE_LAUNCH_TEST_SA _name)
+macro(DEFINE_LAUNCH_TEST_SA _name _use_zip)
   DEFINE_TEST_FULLENV(${_name} MAIN_SA
                       COMMAND ${CMAKE_COMMAND}
                               -DPYTHON_COMMAND=${PYTHON_EXECUTABLE}
@@ -22,9 +22,11 @@ macro(DEFINE_LAUNCH_TEST_SA _name)
                               -DTEST_NAME=${_name}
                               -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diffContingencies.py
                               -DCHECK_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/checkContingencies.py
+                              -DUSE_ZIP=${_use_zip}
                               -P ${CMAKE_SOURCE_DIR}/cmake/TestMainSA.cmake
   )
 endmacro()
 
-DEFINE_LAUNCH_TEST_SA(launch)
-DEFINE_LAUNCH_TEST_SA(noContingencies)
+DEFINE_LAUNCH_TEST_SA(launch NO)
+DEFINE_LAUNCH_TEST_SA(launch_archive YES)
+DEFINE_LAUNCH_TEST_SA(noContingencies NO)

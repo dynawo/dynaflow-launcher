@@ -8,6 +8,9 @@
 #
 
 set(_dfl_cmd ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json)
+if(${USE_ZIP} STREQUAL "YES")
+  list(APPEND _dfl_cmd --input-archive=res/${TEST_NAME}.zip)
+endif()
 if(NOT DEFINED USE_MPI OR USE_MPI STREQUAL "")
   message(FATAL_ERROR "USE_MPI is not defined")
 endif()

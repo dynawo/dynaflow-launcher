@@ -8,6 +8,9 @@
 #
 
 set(_command ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json)
+if(${USE_ZIP} STREQUAL "YES")
+  list(APPEND _command --input-archive=res/${TEST_NAME}.zip)
+endif()
 message(STATUS "Execute process: ${_command}")
 execute_process(COMMAND ${_command} RESULT_VARIABLE _result)
 if(_result)
