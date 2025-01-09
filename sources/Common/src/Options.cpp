@@ -13,16 +13,18 @@
  */
 
 #include "Options.h"
-
+#include "ZipErrorMessage.h"
 #include "version.h"
 
 #include <libzip/ZipInputStream.h>
+#include <libzip/ZipException.h>
+#include <boost/filesystem.hpp>
 
 #include <DYNFileSystemUtils.h>
 
 #include <algorithm>
-#include <boost/filesystem.hpp>
 #include <sstream>
+
 
 namespace dfl {
 namespace common {
@@ -147,6 +149,10 @@ Options::parse(int argc, char* argv[]) {
     } else {
       return Request::RUN_SIMULATION_N;
     }
+  } catch (const zip::ZipException& e) {
+    std::string zipErrorMessage = formatZipErrorMessage(e);
+    std::cerr << zipErrorMessage << std::endl;
+    return Request::ERROR;
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
     return Request::ERROR;
