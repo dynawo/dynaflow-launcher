@@ -25,7 +25,7 @@ on:
   #   - cron:  "30 4 * * 2-6"  # 30 minutes later after Dynawo-algorithms nightly-release.yml
 
 env:
-  DYNAWO_VERSION: 1.7.0
+  DYNAWO_VERSION: 1.8.0
   DYNAWO_TAG: nightly
 
 jobs:
