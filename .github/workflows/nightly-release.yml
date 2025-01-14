@@ -198,14 +198,14 @@ jobs:
       - name: Dynawo-algorithms version
         shell: cmd
         env:
-          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.9.13\x64
         run: call ..\deploy\dynawo-algorithms\dynawo-algorithms verbose version || exit /b 1
 
       # use a minimal PATH to avoid too long command lines and conflict with Strawberry pkg-config !
       - name: Build and install
         shell: cmd
         env:
-          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.9.13\x64
         run: |
           setlocal enableDelayedExpansion
           if "${{ matrix.use-mpi.value }}" == "YES" (
@@ -221,14 +221,14 @@ jobs:
       - name: Dynaflow-launcher version
         shell: cmd
         env:
-          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.9.13\x64
         run: call ..\dfl-i\dynaflow-launcher verbose version || exit /b 1
 
       - name: Build and run NRT
         if: github.event_name != 'workflow_dispatch' || inputs.perform-nrt
         shell: cmd
         env:
-          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.7.9\x64;C:\hostedtoolcache\windows\Python\3.7.9\x64\Scripts
+          PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.9.13\x64;C:\hostedtoolcache\windows\Python\3.9.13\x64\Scripts
         run: |
           setlocal enableDelayedExpansion
           if "${{ matrix.use-mpi.value }}" == "YES" (
