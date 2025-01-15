@@ -1,0 +1,6 @@
+{
+  "dfl-config": {
+    "OutputDir": "../resultsTestsTmp/launch_kGover",
+    "ActivePowerCompensation": "P"
+  }
+}
