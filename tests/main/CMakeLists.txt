@@ -33,6 +33,7 @@ DEFINE_LAUNCH_TEST(launch_diagram)
 DEFINE_LAUNCH_TEST(launch_diagram_tfo)
 
 DEFINE_LAUNCH_TEST(launch_P)
+DEFINE_LAUNCH_TEST(launch_kGover)
 
 DEFINE_LAUNCH_TEST(launch_infinite)
 
