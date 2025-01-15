@@ -136,7 +136,7 @@ class ParGenerator {
                                                             const boost::filesystem::path &dirname);
 
   /**
-   * @brief
+   * @brief set the kGover value based on if generator has active power control and targetP value
    *
    * @param set the parameter set to update
    * @param hasActivePowerControl if the generator has active power control information
