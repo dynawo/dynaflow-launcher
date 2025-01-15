@@ -47,11 +47,22 @@
 namespace file = boost::filesystem;
 
 namespace dfl {
-Context::Context(const ContextDef &def, inputs::Configuration &config)
-    : def_(def), networkManager_(def.networkFilepath), dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
-      contingenciesManager_(def.contingenciesFilePath),
-      config_(config), basename_{}, slackNode_{}, slackNodeOrigin_{SlackNodeOrigin::ALGORITHM}, generators_{}, loads_{}, staticVarCompensators_{},
-      algoResults_(new algo::AlgorithmsResults()), jobEntry_{}, jobsEvents_{} {
+Context::Context(const ContextDef& def, inputs::Configuration& config, std::unordered_map<std::string, std::string>& mapData) :
+    def_(def),
+    networkManager_(def.networkFilepath),
+    dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
+    contingenciesManager_(def.contingenciesFilePath),
+    config_(config),
+    mapData_(mapData),
+    basename_{},
+    slackNode_{},
+    slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
+    generators_{},
+    loads_{},
+    staticVarCompensators_{},
+    algoResults_(new algo::AlgorithmsResults()),
+    jobEntry_{},
+    jobsEvents_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
@@ -162,9 +173,6 @@ void Context::exportOutputs() {
   DYN::Timer timer("DFL::Context::exportOutputs()");
 #endif
   LOG(info, ExportInfo, basename_);
-
-  // create output directory
-  file::path outputDir(config_.outputDir());
 
   // Job
   exportOutputJob();

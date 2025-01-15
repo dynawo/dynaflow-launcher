@@ -24,9 +24,14 @@
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <libzip/ZipFileFactory.h>
+#include <libzip/ZipOutputStream.h>
+
 #include <chrono>
 #include <cstdlib>
 #include <sstream>
+#include <unordered_map>
+
 
 static inline std::string getMandatoryEnvVar(const std::string &key) {
   char *var = getenv(key.c_str());
@@ -51,7 +56,9 @@ static inline double elapsed(const std::chrono::steady_clock::time_point &timePo
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
-static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const &params, dfl::inputs::Configuration &config) {
+static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const& params,
+                                                    dfl::inputs::Configuration& config,
+                                                    std::unordered_map<std::string, std::string>& mapData) {
   auto timeContextStart = std::chrono::steady_clock::now();
   bool outputIsZip = !params.runtimeConfig->zipArchivePath.empty();
   dfl::Context::ContextDef def{config.getStartingPointMode(),
@@ -65,7 +72,7 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
                                params.resourcesDirPath,
                                params.locale};
 
-  boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config));
+  boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config, mapData));
 
   if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT && context->dynamicDataBaseAssemblingContainsSVC()) {
     throw Error(NoSVCInFlatStartingPointMode);
@@ -97,6 +104,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
     LOG(info, InitEnd, elapsed(params.timeStart));
     auto timeFilesStart = std::chrono::steady_clock::now();
     context->exportOutputs();
+    DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(), DYN::DEBUG);  // to force flush
     LOG(info, FilesEnd, elapsed(timeFilesStart));
 
     DYNAlgorithms::multiprocessing::Context::sync();
@@ -134,6 +142,46 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
   }
 }
 
+void dumpLogData(std::unordered_map<std::string, std::string>& mapData,
+                  boost::filesystem::path outputPath,
+                  const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
+  const std::string programLogFileName = runtimeConfig.programName + ".log";
+  const std::string programLogFilePath = createAbsolutePath(programLogFileName, outputPath.generic_string());
+  std::ifstream programLogFileStream(programLogFilePath);
+  if (programLogFileStream.is_open()) {
+    std::stringstream strStream;
+    strStream << programLogFileStream.rdbuf();
+    mapData[programLogFileName] = strStream.str();
+    programLogFileStream.close();
+  } else {
+    std::cerr << "failed to open " << programLogFileName << '\n';
+  }
+
+  bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
+
+  if (outputIsZip) {
+    boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
+
+    for (const std::pair<std::string, std::string>& outputFile : mapData) {
+      archive->addEntry(outputFile.first, outputFile.second);
+    }
+
+    const std::string archivePath = createAbsolutePath("output.zip", outputPath.generic_string());
+    zip::ZipOutputStream::write(archivePath, archive);
+  } else {
+    for (const std::pair<std::string, std::string>& outputFile : mapData) {
+      std::string filepath = createAbsolutePath(outputFile.first, outputPath.generic_string());
+      std::ofstream file;
+      file.open(filepath.c_str(), std::ios::binary);
+      if (!file.is_open()) {
+        throw Error(FileCreationFailed, filepath.c_str());
+      }
+      file << outputFile.second;
+      file.close();
+    }
+  }
+}
+
 int main(int argc, char *argv[]) {
   DYNAlgorithms::multiprocessing::Context mpiContext;  // Should only be used once per process in the main thread
   DYN::InitXerces xerces;
@@ -167,10 +215,12 @@ int main(int argc, char *argv[]) {
   std::string locale;
   boost::filesystem::path resourcesDir;
   boost::filesystem::path configPath(runtimeConfig.configPath);
+  boost::filesystem::path outputDir;
+  std::unordered_map<std::string, std::string> mapData;
   try {
     dfl::inputs::Configuration configN(configPath, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
 
-    boost::filesystem::path outputDir = configN.outputDir();
+    outputDir = configN.outputDir();
 
     try {
       if (mpiContext.isRootProc()) {
@@ -200,6 +250,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
+      dumpLogData(mapData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (DYN::MessageError &e) {
       if (mpiContext.isRootProc()) {
@@ -208,6 +259,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
+      dumpLogData(mapData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (std::exception &e) {
       if (mpiContext.isRootProc()) {
@@ -216,6 +268,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
+      dumpLogData(mapData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (...) {
       if (mpiContext.isRootProc()) {
@@ -226,6 +279,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
+      dumpLogData(mapData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     }
 
@@ -270,7 +324,7 @@ int main(int argc, char *argv[]) {
         configN.addChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE);
       }
 
-      boost::shared_ptr<dfl::Context> context = buildContext(params, configN);
+      boost::shared_ptr<dfl::Context> context = buildContext(params, configN, mapData);
       try {
         execSimulation(context, params);
       } catch (DYN::Error &e) {
@@ -314,8 +368,10 @@ int main(int argc, char *argv[]) {
     DYNAlgorithms::multiprocessing::Context::sync();
     mpiContext.broadcast(successN);
     // NSA: Every process has to fail if the N ran by the root process failed
-    if (!successN)
+    if (!successN) {
+      dumpLogData(mapData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
+    }
 
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_SA || userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA) {
       dfl::inputs::Configuration configSA(configPath, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
@@ -336,7 +392,7 @@ int main(int argc, char *argv[]) {
         configSA.setStartTime(configN.getStopTime());
         configSA.setTimeOfEvent(configN.getStopTime() + configSA.getTimeOfEvent());
       }
-      boost::shared_ptr<dfl::Context> context = buildContext(params, configSA);
+      boost::shared_ptr<dfl::Context> context = buildContext(params, configSA, mapData);
       execSimulation(context, params);
     }
   } catch (DYN::Error &e) {
@@ -346,6 +402,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
+    dumpLogData(mapData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
@@ -354,6 +411,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
+    dumpLogData(mapData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
@@ -362,6 +420,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
+    dumpLogData(mapData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (...) {
     if (mpiContext.isRootProc()) {
@@ -372,8 +431,10 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
+    dumpLogData(mapData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   }
 
+  dumpLogData(mapData, outputDir, runtimeConfig);
   return EXIT_SUCCESS;
 }
