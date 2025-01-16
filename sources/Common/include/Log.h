@@ -49,6 +49,10 @@ class Log {
    * @param outputDir directory where the log should be written
    */
   static void init(const common::Options& options, const std::string& outputDir);
+
+  static void addLogFileContentInMapData(const std::string& logFileRelativePath,
+                                          const std::string& logFileAbsolutePath,
+                                          std::unordered_map<std::string, std::string>& mapData);
 };
 
 }  // namespace common

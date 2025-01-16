@@ -53,5 +53,20 @@ Log::init(const common::Options& options, const std::string& outputDir) {
   Trace::clearAndAddAppenders(appenders);
 }
 
+void
+Log::addLogFileContentInMapData(const std::string& logFileRelativePath,
+                                const std::string& logFileAbsolutePath,
+                                std::unordered_map<std::string, std::string>& mapData) {
+  std::ifstream programLogFileStream(logFileAbsolutePath);
+  if (programLogFileStream.is_open()) {
+    std::ostringstream strStream;
+    strStream << programLogFileStream.rdbuf();
+    mapData[logFileRelativePath] = strStream.str();
+    programLogFileStream.close();
+  } else {
+    std::cerr << "failed to open " << logFileAbsolutePath << '\n';
+  }
+}
+
 }  // namespace common
 }  // namespace dfl

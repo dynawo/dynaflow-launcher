@@ -145,17 +145,9 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
 void dumpLogData(std::unordered_map<std::string, std::string>& mapData,
                   boost::filesystem::path outputPath,
                   const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
-  const std::string programLogFileName = runtimeConfig.programName + ".log";
-  const std::string programLogFilePath = createAbsolutePath(programLogFileName, outputPath.generic_string());
-  std::ifstream programLogFileStream(programLogFilePath);
-  if (programLogFileStream.is_open()) {
-    std::stringstream strStream;
-    strStream << programLogFileStream.rdbuf();
-    mapData[programLogFileName] = strStream.str();
-    programLogFileStream.close();
-  } else {
-    std::cerr << "failed to open " << programLogFileName << '\n';
-  }
+  const std::string programLogFileRelativePath = runtimeConfig.programName + ".log";
+  const std::string programLogFileAbsolutePath = createAbsolutePath(programLogFileRelativePath, outputPath.generic_string());
+  dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapData);
 
   bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
 
