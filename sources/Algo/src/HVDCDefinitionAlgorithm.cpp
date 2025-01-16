@@ -87,7 +87,7 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
     if (type == inputs::HvdcLine::ConverterType::LCC) {
       return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhi : HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ};
     } else {
-      const bool hvdcAngleDroopActivePowerControlIsEnabled = hvdcline.activePowerControl.has_value();
+      const bool hvdcAngleDroopActivePowerControlIsEnabled = hvdcline.activePowerControl.has_value() && !DYN::doubleIsZero(hvdcline.activePowerControl->droop);
       if (!hvdcAngleDroopActivePowerControlIsEnabled) {
         if (isInSVC) {
           if (converterSide1)
