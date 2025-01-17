@@ -161,22 +161,26 @@ where [option] can be:
         update-references                         update MAIN tests references
 
         =========== Launch
-        launch [network] [config]                 launch DynaFlow Launcher:
+        launch [network] [config] --input-archive [archive]
+                                                  launch DynaFlow Launcher:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
+                                                  - archive: path to a zip archive containing the network and configuration
 
-        launch-sa [network] [config] [contingencies] --nbThreads [nbprocs]
+        launch-sa [network] [config] [contingencies] --input-archive [archive] --nbThreads [nbprocs]
                                                   launch DynaFlow Launcher to run a Security Analysis:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
+                                                  - archive: path to a zip archive containing the network, configuration and contingencies
                                                   - nbprocs: number of MPI processes to use for SA (default 1)
 
-        launch-nsa [network] [config] [contingencies] --nbThreads [nbprocs]
+        launch-nsa [network] [config] [contingencies] --input-archive [archive] --nbThreads [nbprocs]
                                                   launch DynaFlow Launcher to run a steadystate calculcation followed by a security Analysis:
                                                   - network: filepath (only IIDM is supported)
                                                   - config: filepath (JSON configuration file)
                                                   - contingencies: filepath (JSON file)
+                                                  - archive: path to a zip archive containing the network, configuration and contingencies
                                                   - nbprocs: number of MPI processes to use for SA (default 1)
 
 
