@@ -430,9 +430,16 @@ void Context::exportResults(bool simulationOk) {
   std::string fileName = "results.json";
   if (def_.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS)
     fileName = "results_sa.json";
-  std::ostringstream jsonResultStream;
-  boost::property_tree::json_parser::write_json(jsonResultStream, resultsTree);
-  mapData_[fileName] = jsonResultStream.str();
+  if (def_.outputIsZip) {
+    std::ostringstream jsonResultStream;
+    boost::property_tree::json_parser::write_json(jsonResultStream, resultsTree);
+    mapData_[fileName] = jsonResultStream.str();
+  } else {
+    file::path resultsOutput(config_.outputDir());
+    resultsOutput.append(fileName);
+    std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
+    boost::property_tree::json_parser::write_json(ofs, resultsTree);
+  }
 }
 
 void Context::walkNodesMain() {

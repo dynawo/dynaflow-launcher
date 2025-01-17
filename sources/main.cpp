@@ -160,17 +160,6 @@ void dumpLogData(std::unordered_map<std::string, std::string>& mapData,
 
     const std::string archivePath = createAbsolutePath("output.zip", outputPath.generic_string());
     zip::ZipOutputStream::write(archivePath, archive);
-  } else {
-    for (const std::pair<std::string, std::string>& outputFile : mapData) {
-      std::string filepath = createAbsolutePath(outputFile.first, outputPath.generic_string());
-      std::ofstream file;
-      file.open(filepath.c_str(), std::ios::binary);
-      if (!file.is_open()) {
-        throw Error(FileCreationFailed, filepath.c_str());
-      }
-      file << outputFile.second;
-      file.close();
-    }
   }
 }
 
