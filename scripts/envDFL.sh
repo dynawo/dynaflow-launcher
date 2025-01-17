@@ -499,6 +499,9 @@ build_tests_coverage() {
 
 launch() {
   if [ -n "$ZIP_ARCHIVE" ]; then
+    if [ ! -f "$ZIP_ARCHIVE" ]; then
+      error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+    fi
     $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $2 \
@@ -520,6 +523,9 @@ launch() {
 
 launch_gdb() {
   if [ -n "$ZIP_ARCHIVE" ]; then
+    if [ ! -f "$ZIP_ARCHIVE" ]; then
+      error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+    fi
     gdb --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $2 \
@@ -541,6 +547,9 @@ launch_gdb() {
 
 launch_valgrind() {
   if [ -n "$ZIP_ARCHIVE" ]; then
+    if [ ! -f "$ZIP_ARCHIVE" ]; then
+      error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+    fi
     valgrind --tool=callgrind --dump-instr=yes --collect-jumps=yes $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher \
     --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
     --network $2 \
@@ -565,6 +574,9 @@ launch_sa() {
   export_preload
   if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
     if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
       "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                                       --network $2 \
                                                                                       --config $3 \
@@ -587,6 +599,9 @@ launch_sa() {
     fi
   else
     if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
       $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                           --network $2 \
                                                           --config $3 \
@@ -615,6 +630,9 @@ launch_nsa() {
   export_preload
   if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
     if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
       "$MPIRUN_PATH" -np $NBPROCS $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                                       --network $2 \
                                                                                       --config $3 \
@@ -639,6 +657,9 @@ launch_nsa() {
     fi
   else
     if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
       $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                           --network $2 \
                                                           --config $3 \
@@ -669,6 +690,9 @@ launch_sa_gdb() {
   export_preload
   if [ "${DYNAWO_USE_MPI}" == "YES" ]; then
     if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
       "$MPIRUN_PATH" -np $NBPROCS xterm -e gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                                                               --network $2 \
                                                                                                               --config $3 \
@@ -691,6 +715,9 @@ launch_sa_gdb() {
     fi
   else
     if [ -n "$ZIP_ARCHIVE" ]; then
+      if [ ! -f "$ZIP_ARCHIVE" ]; then
+        error_exit "Zip archive $ZIP_ARCHIVE doesn't exist"
+      fi
       gdb -q --args $DYNAFLOW_LAUNCHER_INSTALL_DIR/bin/DynaFlowLauncher --log-level $DYNAFLOW_LAUNCHER_LOG_LEVEL \
                                                                         --network $2 \
                                                                         --config $3 \
