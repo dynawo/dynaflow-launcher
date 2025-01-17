@@ -142,7 +142,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
   }
 }
 
-void dumpLogData(std::unordered_map<std::string, std::string>& mapOutputFilesData,
+void dumpZipArchive(std::unordered_map<std::string, std::string>& mapOutputFilesData,
                   boost::filesystem::path outputPath,
                   const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
   bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
@@ -231,7 +231,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+      dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (DYN::MessageError &e) {
       if (mpiContext.isRootProc()) {
@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+      dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (std::exception &e) {
       if (mpiContext.isRootProc()) {
@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+      dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (...) {
       if (mpiContext.isRootProc()) {
@@ -260,7 +260,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+      dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     }
 
@@ -350,7 +350,7 @@ int main(int argc, char *argv[]) {
     mpiContext.broadcast(successN);
     // NSA: Every process has to fail if the N ran by the root process failed
     if (!successN) {
-      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+      dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     }
 
@@ -383,7 +383,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+    dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
@@ -392,7 +392,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+    dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
@@ -401,7 +401,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+    dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (...) {
     if (mpiContext.isRootProc()) {
@@ -412,10 +412,10 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+    dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   }
 
-  dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
+  dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
   return EXIT_SUCCESS;
 }
