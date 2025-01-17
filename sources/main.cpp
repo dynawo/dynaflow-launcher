@@ -145,13 +145,13 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
 void dumpLogData(std::unordered_map<std::string, std::string>& mapData,
                   boost::filesystem::path outputPath,
                   const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
-  const std::string programLogFileRelativePath = runtimeConfig.programName + ".log";
-  const std::string programLogFileAbsolutePath = createAbsolutePath(programLogFileRelativePath, outputPath.generic_string());
-  dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapData);
-
   bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
 
   if (outputIsZip) {
+    const std::string programLogFileRelativePath = runtimeConfig.programName + ".log";
+    const std::string programLogFileAbsolutePath = createAbsolutePath(programLogFileRelativePath, outputPath.generic_string());
+    dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapData);
+
     boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
 
     for (const std::pair<std::string, std::string>& outputFile : mapData) {

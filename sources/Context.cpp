@@ -329,37 +329,39 @@ void Context::execute() {
     }
     simu->terminate();
 
-    std::ostringstream timelineStream;
-    simu->printTimeline(timelineStream);
-    const boost::filesystem::path timelineFilePath = simu->getTimelineOutputFile();
-    const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
-    mapData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
+    if (def_.outputIsZip) {
+      std::ostringstream timelineStream;
+      simu->printTimeline(timelineStream);
+      const boost::filesystem::path timelineFilePath = simu->getTimelineOutputFile();
+      const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
+      mapData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
 
-    std::ostringstream constraintsStream;
-    simu->printConstraints(constraintsStream);
-    const boost::filesystem::path constraintsFilePath = simu->getContraintsOutputFile();
-    const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
-    mapData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
+      std::ostringstream constraintsStream;
+      simu->printConstraints(constraintsStream);
+      const boost::filesystem::path constraintsFilePath = simu->getContraintsOutputFile();
+      const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
+      mapData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
 
-    std::ostringstream lostEquipmentsStream;
-    simu->printLostEquipments(lostEquipmentsStream);
-    const boost::filesystem::path lostEquipementsFilePath = simu->getLostEquipmentsOutputFile();
-    const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
-    mapData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
+      std::ostringstream lostEquipmentsStream;
+      simu->printLostEquipments(lostEquipmentsStream);
+      const boost::filesystem::path lostEquipementsFilePath = simu->getLostEquipmentsOutputFile();
+      const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
+      mapData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
 
-    const boost::optional<boost::filesystem::path>& iidmFilePath = simu->getExportIIDMFile();
-    if (!iidmFilePath.is_initialized())
-      throw Error(MissingFinalStateIIDMFile);
-    std::stringstream outputIIDMStream;
-    simu->dumpIIDMFile(outputIIDMStream);
-    const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
-    mapData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
+      const boost::optional<boost::filesystem::path>& iidmFilePath = simu->getExportIIDMFile();
+      if (!iidmFilePath.is_initialized())
+        throw Error(MissingFinalStateIIDMFile);
+      std::stringstream outputIIDMStream;
+      simu->dumpIIDMFile(outputIIDMStream);
+      const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
+      mapData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
 
-    const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
-    for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
-      const std::string jobLogFileRelativePath = "outputs/logs/" + jobLogAppender->getFilePath();
-      const std::string jobLogFileAbsolutePath = createAbsolutePath(jobLogFileRelativePath, config_.outputDir().generic_string());
-      dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath, jobLogFileAbsolutePath, mapData_);
+      const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
+      for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
+        const std::string jobLogFileRelativePath = "outputs/logs/" + jobLogAppender->getFilePath();
+        const std::string jobLogFileAbsolutePath = createAbsolutePath(jobLogFileRelativePath, config_.outputDir().generic_string());
+        dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath, jobLogFileAbsolutePath, mapData_);
+      }
     }
 
     simu->clean();
