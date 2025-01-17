@@ -12,4 +12,11 @@
 
 #include <libzip/ZipException.h>
 
+/**
+ * @brief Formats an error message based on the provided ZipException
+ *
+ * @param e ZipException object
+ *
+ * @return error message based on the provided ZipException
+ */
 std::string formatZipErrorMessage(const zip::ZipException& e);

@@ -50,6 +50,16 @@ class Log {
    */
   static void init(const common::Options& options, const std::string& outputDir);
 
+  /**
+   * @brief Put the content of a log file in a map
+   *
+   * This function reads the content of a log file specified by its absolute path and stores it as a string in the
+   * provided map, using the relative path as the key.
+   *
+   * @param logFileRelativePath the relative path to the log file, used as the key in the map
+   * @param logFileAbsolutePath the absolute path to the log file, used to locate and read its content
+   * @param mapData the map where the log file content is stored, with the relative path as the key
+   */
   static void addLogFileContentInMapData(const std::string& logFileRelativePath,
                                           const std::string& logFileAbsolutePath,
                                           std::unordered_map<std::string, std::string>& mapData);
