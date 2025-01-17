@@ -347,7 +347,7 @@ void Context::execute() {
     const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
     mapData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
 
-    std::ostringstream outputIIDMStream;
+    std::stringstream outputIIDMStream;
     simu->dumpIIDMFile(outputIIDMStream);
     const boost::optional<boost::filesystem::path>& iidmFilePath = simu->getExportIIDMFile();
     const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());  // Attention
