@@ -58,7 +58,7 @@ static inline double elapsed(const std::chrono::steady_clock::time_point &timePo
 
 static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const& params,
                                                     dfl::inputs::Configuration& config,
-                                                    std::unordered_map<std::string, std::string>& mapData) {
+                                                    std::unordered_map<std::string, std::string>& mapOutputFilesData) {
   auto timeContextStart = std::chrono::steady_clock::now();
   bool outputIsZip = !params.runtimeConfig->zipArchivePath.empty();
   dfl::Context::ContextDef def{config.getStartingPointMode(),
@@ -72,7 +72,7 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
                                params.resourcesDirPath,
                                params.locale};
 
-  boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config, mapData));
+  boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config, mapOutputFilesData));
 
   if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT && context->dynamicDataBaseAssemblingContainsSVC()) {
     throw Error(NoSVCInFlatStartingPointMode);
@@ -142,7 +142,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
   }
 }
 
-void dumpLogData(std::unordered_map<std::string, std::string>& mapData,
+void dumpLogData(std::unordered_map<std::string, std::string>& mapOutputFilesData,
                   boost::filesystem::path outputPath,
                   const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
   bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
@@ -150,11 +150,11 @@ void dumpLogData(std::unordered_map<std::string, std::string>& mapData,
   if (outputIsZip) {
     const std::string programLogFileRelativePath = runtimeConfig.programName + ".log";
     const std::string programLogFileAbsolutePath = createAbsolutePath(programLogFileRelativePath, outputPath.generic_string());
-    dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapData);
+    dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapOutputFilesData);
 
     boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
 
-    for (const std::pair<std::string, std::string>& outputFile : mapData) {
+    for (const std::pair<std::string, std::string>& outputFile : mapOutputFilesData) {
       archive->addEntry(outputFile.first, outputFile.second);
     }
 
@@ -197,7 +197,7 @@ int main(int argc, char *argv[]) {
   boost::filesystem::path resourcesDir;
   boost::filesystem::path configPath(runtimeConfig.configPath);
   boost::filesystem::path outputDir;
-  std::unordered_map<std::string, std::string> mapData;
+  std::unordered_map<std::string, std::string> mapOutputFilesData;
   try {
     dfl::inputs::Configuration configN(configPath, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
 
@@ -231,7 +231,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapData, outputDir, runtimeConfig);
+      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (DYN::MessageError &e) {
       if (mpiContext.isRootProc()) {
@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapData, outputDir, runtimeConfig);
+      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (std::exception &e) {
       if (mpiContext.isRootProc()) {
@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Initialization failed: " << e.what() << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapData, outputDir, runtimeConfig);
+      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     } catch (...) {
       if (mpiContext.isRootProc()) {
@@ -260,7 +260,7 @@ int main(int argc, char *argv[]) {
         DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
         DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
       }
-      dumpLogData(mapData, outputDir, runtimeConfig);
+      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     }
 
@@ -305,7 +305,7 @@ int main(int argc, char *argv[]) {
         configN.addChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE);
       }
 
-      boost::shared_ptr<dfl::Context> context = buildContext(params, configN, mapData);
+      boost::shared_ptr<dfl::Context> context = buildContext(params, configN, mapOutputFilesData);
       try {
         execSimulation(context, params);
       } catch (DYN::Error &e) {
@@ -350,7 +350,7 @@ int main(int argc, char *argv[]) {
     mpiContext.broadcast(successN);
     // NSA: Every process has to fail if the N ran by the root process failed
     if (!successN) {
-      dumpLogData(mapData, outputDir, runtimeConfig);
+      dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
       return EXIT_FAILURE;
     }
 
@@ -373,7 +373,7 @@ int main(int argc, char *argv[]) {
         configSA.setStartTime(configN.getStopTime());
         configSA.setTimeOfEvent(configN.getStopTime() + configSA.getTimeOfEvent());
       }
-      boost::shared_ptr<dfl::Context> context = buildContext(params, configSA, mapData);
+      boost::shared_ptr<dfl::Context> context = buildContext(params, configSA, mapOutputFilesData);
       execSimulation(context, params);
     }
   } catch (DYN::Error &e) {
@@ -383,7 +383,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapData, outputDir, runtimeConfig);
+    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (DYN::MessageError &e) {
     if (mpiContext.isRootProc()) {
@@ -392,7 +392,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapData, outputDir, runtimeConfig);
+    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (std::exception &e) {
     if (mpiContext.isRootProc()) {
@@ -401,7 +401,7 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Simulation failed: " << e.what() << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapData, outputDir, runtimeConfig);
+    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   } catch (...) {
     if (mpiContext.isRootProc()) {
@@ -412,10 +412,10 @@ int main(int argc, char *argv[]) {
       DYN::Trace::error(dfl::common::Log::getTag()) << " Unknown error" << DYN::Trace::endline;
       DYN::Trace::error(dfl::common::Log::getTag()) << " ============================================================ " << DYN::Trace::endline;
     }
-    dumpLogData(mapData, outputDir, runtimeConfig);
+    dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
     return EXIT_FAILURE;
   }
 
-  dumpLogData(mapData, outputDir, runtimeConfig);
+  dumpLogData(mapOutputFilesData, outputDir, runtimeConfig);
   return EXIT_SUCCESS;
 }

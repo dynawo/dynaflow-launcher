@@ -75,8 +75,9 @@ class Context {
    *
    * @param def The context definition
    * @param config configuration to use
+   * @param mapOutputFilesData map associating the simulation output file names to the data contained in these files
    */
-  Context(const ContextDef& def, inputs::Configuration& config, std::unordered_map<std::string, std::string>& mapData);
+  Context(const ContextDef& def, inputs::Configuration& config, std::unordered_map<std::string, std::string>& mapOutputFilesData);
 
   /**
    * @brief Retrieve the basename of current simulation
@@ -185,7 +186,7 @@ class Context {
   inputs::DynamicDataBaseManager dynamicDataBaseManager_;  ///< dynamic model configuration manager
   inputs::ContingenciesManager contingenciesManager_;      ///< contingencies manager in a Security Analysis
   inputs::Configuration& config_;                          ///< configuration
-  std::unordered_map<std::string, std::string>& mapData_;
+  std::unordered_map<std::string, std::string>& mapOutputFilesData_;  ///< map associating the simulation output file names to the data contained in these files
 
   std::string basename_;                                                        ///< basename for all files
   std::vector<ProcessNodeCallBackMainComponent> callbacksMainConnexComponent_;  ///< List of algorithms to run in main components

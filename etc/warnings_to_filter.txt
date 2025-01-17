@@ -4,6 +4,7 @@ warning: return type of member dfl::inputs::helper::updateValue is not documente
 warning: return type of member dfl::inputs::helper::parserFile is not documented
 warning: return type of member dfl::common::validate is not documented
 warning: return type of member dfl::common::Log::init is not documented
+warning: return type of member dfl::common::Log::addLogFileContentInMapData is not documented
 warning: return type of member dfl::inputs::ContingencyElement::isCompatible is not documented
 warning: return type of member dfl::inputs::NetworkManager::updateMapRegulatingBuses is not documented
 warning: return type of member dfl::inputs::NetworkManager::updateVSCMapRegulatingBuses is not documented
