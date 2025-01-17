@@ -64,7 +64,7 @@ Log::addLogFileContentInMapData(const std::string& logFileRelativePath,
     mapData[logFileRelativePath] = strStream.str();
     programLogFileStream.close();
   } else {
-    std::cerr << "failed to open " << logFileAbsolutePath << '\n';
+    throw Error(FailToOpenLogFile, logFileAbsolutePath);
   }
 }
 
