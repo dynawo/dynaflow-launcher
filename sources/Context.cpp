@@ -310,60 +310,31 @@ void Context::execute() {
         simu->setLostEquipmentsExportMode(DYN::Simulation::EXPORT_LOSTEQUIPMENTS_NONE);
       }
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const DYN::Terminate &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const DYN::MessageError &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const char *) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const std::string &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     } catch (const std::exception &) {
       simu->terminate();
+      populateOutputsMapWithSimulationOutputs(simu);
       throw;
     }
     simu->terminate();
-
-    if (def_.outputIsZip) {
-      std::ostringstream timelineStream;
-      simu->printTimeline(timelineStream);
-      const boost::filesystem::path timelineFilePath = simu->getTimelineOutputFile();
-      const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
-      mapOutputFilesData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
-
-      std::ostringstream constraintsStream;
-      simu->printConstraints(constraintsStream);
-      const boost::filesystem::path constraintsFilePath = simu->getContraintsOutputFile();
-      const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
-      mapOutputFilesData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
-
-      std::ostringstream lostEquipmentsStream;
-      simu->printLostEquipments(lostEquipmentsStream);
-      const boost::filesystem::path lostEquipementsFilePath = simu->getLostEquipmentsOutputFile();
-      const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
-      mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
-
-      const boost::optional<boost::filesystem::path>& iidmFilePath = simu->getExportIIDMFile();
-      if (!iidmFilePath.is_initialized())
-        throw Error(MissingFinalStateIIDMFile);
-      std::stringstream outputIIDMStream;
-      simu->dumpIIDMFile(outputIIDMStream);
-      const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
-      mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
-
-      const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
-      for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
-        const std::string jobLogFileRelativePath = "outputs/logs/" + jobLogAppender->getFilePath();
-        const std::string jobLogFileAbsolutePath = createAbsolutePath(jobLogFileRelativePath, config_.outputDir().generic_string());
-        dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath, jobLogFileAbsolutePath, mapOutputFilesData_);
-      }
-    }
-
+    populateOutputsMapWithSimulationOutputs(simu);
     simu->clean();
     break;
   }
@@ -439,6 +410,43 @@ void Context::exportResults(bool simulationOk) {
     resultsOutput.append(fileName);
     std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
     boost::property_tree::json_parser::write_json(ofs, resultsTree);
+  }
+}
+
+void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation>& simulation) const {
+  if (def_.outputIsZip) {
+    std::ostringstream timelineStream;
+    simulation->printTimeline(timelineStream);
+    const boost::filesystem::path timelineFilePath = simulation->getTimelineOutputFile();
+    const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
+    mapOutputFilesData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
+
+    std::ostringstream constraintsStream;
+    simulation->printConstraints(constraintsStream);
+    const boost::filesystem::path constraintsFilePath = simulation->getContraintsOutputFile();
+    const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
+    mapOutputFilesData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
+
+    std::ostringstream lostEquipmentsStream;
+    simulation->printLostEquipments(lostEquipmentsStream);
+    const boost::filesystem::path lostEquipementsFilePath = simulation->getLostEquipmentsOutputFile();
+    const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
+    mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
+
+    const boost::optional<boost::filesystem::path>& iidmFilePath = simulation->getExportIIDMFile();
+    if (!iidmFilePath.is_initialized())
+      throw Error(MissingFinalStateIIDMFile);
+    std::stringstream outputIIDMStream;
+    simulation->dumpIIDMFile(outputIIDMStream);
+    const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
+    mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
+
+    const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
+    for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
+      const std::string jobLogFileRelativePath = "outputs/logs/" + jobLogAppender->getFilePath();
+      const std::string jobLogFileAbsolutePath = createAbsolutePath(jobLogFileRelativePath, config_.outputDir().generic_string());
+      dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath, jobLogFileAbsolutePath, mapOutputFilesData_);
+    }
   }
 }
 
