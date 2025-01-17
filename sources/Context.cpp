@@ -348,12 +348,12 @@ void Context::execute() {
     mapData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
 
     const boost::optional<boost::filesystem::path>& iidmFilePath = simu->getExportIIDMFile();
-    if (iidmFilePath.is_initialized()) {
-      std::stringstream outputIIDMStream;
-      simu->dumpIIDMFile(outputIIDMStream);
-      const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
-      mapData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
-    }
+    if (!iidmFilePath.is_initialized())
+      throw Error(MissingFinalStateIIDMFile);
+    std::stringstream outputIIDMStream;
+    simu->dumpIIDMFile(outputIIDMStream);
+    const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
+    mapData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
 
     const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
     for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
