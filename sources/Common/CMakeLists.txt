@@ -12,7 +12,6 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/version.h.in ${CMAKE_CURRENT_SOURCE_DIR
 set(SOURCES
 src/Options.cpp
 src/Log.cpp
-src/ZipErrorMessage.cpp
 src/DFLLog_keys.cpp
 src/DFLError_keys.cpp
 )
