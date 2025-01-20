@@ -43,5 +43,4 @@ ContextProcessError          =     processing of the network %1% failed
 ConnexityError               =     slack node of id %1% not present in main connex component
 NetworkHasNoRegulatingGenerator         =     network file %1% has no generator regulating voltage in the main connex component
 SlackNodeNotFound            =     no slack node found for network '%1%'
-MissingFinalStateIIDMFile    =     steady state simulation did not generate a final state IIDM file
 FailToOpenLogFile            =     failed to open %1% log file

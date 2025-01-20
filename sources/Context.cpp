@@ -415,27 +415,32 @@ void Context::exportResults(bool simulationOk) {
 
 void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation>& simulation) const {
   if (def_.outputIsZip) {
-    std::ostringstream timelineStream;
-    simulation->printTimeline(timelineStream);
-    const boost::filesystem::path timelineFilePath = simulation->getTimelineOutputFile();
-    const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
-    mapOutputFilesData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
+    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
+      std::ostringstream timelineStream;
+      simulation->printTimeline(timelineStream);
+      const boost::filesystem::path timelineFilePath = simulation->getTimelineOutputFile();
+      const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
+      mapOutputFilesData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
+    }
 
-    std::ostringstream constraintsStream;
-    simulation->printConstraints(constraintsStream);
-    const boost::filesystem::path constraintsFilePath = simulation->getContraintsOutputFile();
-    const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
-    mapOutputFilesData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
+    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
+      std::ostringstream constraintsStream;
+      simulation->printConstraints(constraintsStream);
+      const boost::filesystem::path constraintsFilePath = simulation->getContraintsOutputFile();
+      const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
+      mapOutputFilesData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
+    }
 
-    std::ostringstream lostEquipmentsStream;
-    simulation->printLostEquipments(lostEquipmentsStream);
-    const boost::filesystem::path lostEquipementsFilePath = simulation->getLostEquipmentsOutputFile();
-    const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
-    mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
+    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::LOSTEQ)) {
+      std::ostringstream lostEquipmentsStream;
+      simulation->printLostEquipments(lostEquipmentsStream);
+      const boost::filesystem::path lostEquipementsFilePath = simulation->getLostEquipmentsOutputFile();
+      const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
+      mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
+    }
 
     const boost::optional<boost::filesystem::path>& iidmFilePath = simulation->getExportIIDMFile();
-    if (!iidmFilePath.is_initialized())
-      throw Error(MissingFinalStateIIDMFile);
+    assert(iidmFilePath.is_initialized());
     std::stringstream outputIIDMStream;
     simulation->dumpIIDMFile(outputIIDMStream);
     const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
