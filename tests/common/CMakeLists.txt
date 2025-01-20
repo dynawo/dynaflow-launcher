@@ -8,4 +8,7 @@
 #
 
 DEFINE_TEST(TestOptions COMMON)
-target_link_libraries(COMMON.TestOptions DynaFlowLauncher::common)
+target_link_libraries(COMMON.TestOptions
+  DynaFlowLauncher::common
+  Boost::filesystem
+)

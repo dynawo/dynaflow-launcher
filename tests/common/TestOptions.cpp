@@ -10,6 +10,8 @@
 #include "Options.h"
 #include "Tests.h"
 
+#include <boost/filesystem.hpp>
+
 #include <sstream>
 
 TEST(Options, help) {
@@ -65,6 +67,20 @@ TEST(Options, nominal) {
   char* argv[] = {argv0, argv1, argv2};
   auto status = options.parse(3, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
+}
+
+TEST(Options, archive) {
+  dfl::common::Options options;
+
+  char argv0[] = {"DynaFlowLauncher"};
+  char argv1[] = {"--network=res/test.iidm "};
+  char argv2[] = {"--config=res/test.json"};
+  char argv3[] = {"--input-archive=res/test.zip"};
+  char* argv[] = {argv0, argv1, argv2, argv3};
+  auto status = options.parse(4, argv);
+  ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
+  ASSERT_TRUE(boost::filesystem::exists("res/test.iidm"));
+  ASSERT_TRUE(boost::filesystem::exists("res/test.json"));
 }
 
 TEST(Options, nominalLogLevel) {
