@@ -70,8 +70,15 @@ TEST(Options, nominal) {
 }
 
 TEST(Options, archive) {
-  dfl::common::Options options;
+  // Ensure the files are removed if they already exist before unzipping the archive
+  const std::vector<boost::filesystem::path> archiveFiles = {"res/test.iidm", "res/test.json"};
+  for (const boost::filesystem::path& archiveFile : archiveFiles) {
+    if (boost::filesystem::exists(archiveFile)) {
+      boost::filesystem::remove(archiveFile);
+    }
+  }
 
+  dfl::common::Options options;
   char argv0[] = {"DynaFlowLauncher"};
   char argv1[] = {"--network=res/test.iidm "};
   char argv2[] = {"--config=res/test.json"};
