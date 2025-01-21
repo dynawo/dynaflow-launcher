@@ -176,7 +176,7 @@ Options::areRequiredFilesMissing(const po::variables_map& vm, const boost::share
   bool missingFiles = false;
   for (const std::string& requiredFile : requiredFiles) {
     if (archive->getEntries().find(requiredFile) == archive->getEntries().end()) {
-      std::cerr << requiredFile << "is not contained in " << config_.zipArchivePath << std::endl;
+      std::cerr << requiredFile << " is not contained in " << config_.zipArchivePath << std::endl;
       missingFiles = true;
     }
   }
