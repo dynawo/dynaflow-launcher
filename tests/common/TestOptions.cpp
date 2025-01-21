@@ -71,7 +71,7 @@ TEST(Options, nominal) {
 
 TEST(Options, archive) {
   // Ensure the files are removed if they already exist before unzipping the archive
-  const std::vector<boost::filesystem::path> archiveFiles = {"res/test.iidm", "res/test.json"};
+  const std::vector<boost::filesystem::path> archiveFiles = {"res/test1.iidm", "res/test1.json"};
   for (const boost::filesystem::path& archiveFile : archiveFiles) {
     if (boost::filesystem::exists(archiveFile)) {
       boost::filesystem::remove(archiveFile);
@@ -80,14 +80,35 @@ TEST(Options, archive) {
 
   dfl::common::Options options;
   char argv0[] = {"DynaFlowLauncher"};
-  char argv1[] = {"--network=res/test.iidm"};
-  char argv2[] = {"--config=res/test.json"};
-  char argv3[] = {"--input-archive=res/test.zip"};
+  char argv1[] = {"--network=res/test1.iidm"};
+  char argv2[] = {"--config=res/test1.json"};
+  char argv3[] = {"--input-archive=res/archive.zip"};
   char* argv[] = {argv0, argv1, argv2, argv3};
   auto status = options.parse(4, argv);
   ASSERT_EQ(dfl::common::Options::Request::RUN_SIMULATION_N, status);
-  ASSERT_TRUE(boost::filesystem::exists("res/test.iidm"));
-  ASSERT_TRUE(boost::filesystem::exists("res/test.json"));
+  ASSERT_TRUE(boost::filesystem::exists("res/test1.iidm"));
+  ASSERT_TRUE(boost::filesystem::exists("res/test1.json"));
+}
+
+TEST(Options, archiveMissingFiles) {
+  dfl::common::Options optionsN;
+  char argvN0[] = {"DynaFlowLauncher"};
+  char argvN1[] = {"--network=res/test2N.iidm"};
+  char argvN2[] = {"--config=res/missingFileN.json"};
+  char argvN3[] = {"--input-archive=res/invalid_archiveN.zip"};
+  char* argvN[] = {argvN0, argvN1, argvN2, argvN3};
+  auto statusN = optionsN.parse(4, argvN);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, statusN);
+
+  dfl::common::Options optionsSA;
+  char argvSA0[] = {"DynaFlowLauncher"};
+  char argvSA1[] = {"--network=res/test2SA.iidm"};
+  char argvSA2[] = {"--config=res/test2SA.json"};
+  char argvSA3[] = {"--contingencies=res/missingFileSA.json"};
+  char argvSA4[] = {"--input-archive=res/invalid_archiveSA.zip"};
+  char* argvSA[] = {argvSA0, argvSA1, argvSA2, argvSA3, argvSA4};
+  auto statusSA = optionsSA.parse(5, argvSA);
+  ASSERT_EQ(dfl::common::Options::Request::ERROR, statusSA);
 }
 
 TEST(Options, nominalLogLevel) {
