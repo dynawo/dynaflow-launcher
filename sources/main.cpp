@@ -104,7 +104,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
     LOG(info, InitEnd, elapsed(params.timeStart));
     auto timeFilesStart = std::chrono::steady_clock::now();
     context->exportOutputs();
-    DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(), DYN::DEBUG);  // to force flush
+    DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(), DYN::DEBUG);  // to force flush to DynaFlowLauncher.log
     LOG(info, FilesEnd, elapsed(timeFilesStart));
 
     DYNAlgorithms::multiprocessing::Context::sync();

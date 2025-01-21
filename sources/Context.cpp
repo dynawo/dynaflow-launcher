@@ -446,6 +446,7 @@ void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DY
     const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
     mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
 
+    DYN::Trace::resetCustomAppender("", DYN::DEBUG);  // to force flush in dynawo.log
     const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
     for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
       const std::string jobLogFileRelativePath = "outputs/logs/" + jobLogAppender->getFilePath();
