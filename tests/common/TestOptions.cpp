@@ -80,7 +80,7 @@ TEST(Options, archive) {
 
   dfl::common::Options options;
   char argv0[] = {"DynaFlowLauncher"};
-  char argv1[] = {"--network=res/test.iidm "};
+  char argv1[] = {"--network=res/test.iidm"};
   char argv2[] = {"--config=res/test.json"};
   char argv3[] = {"--input-archive=res/test.zip"};
   char* argv[] = {argv0, argv1, argv2, argv3};
