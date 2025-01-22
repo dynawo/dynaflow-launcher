@@ -44,3 +44,5 @@ ConnexityError               =     slack node of id %1% not present in main conn
 NetworkHasNoRegulatingGenerator         =     network file %1% has no generator regulating voltage in the main connex component
 SlackNodeNotFound            =     no slack node found for network '%1%'
 FailToOpenLogFile            =     failed to open %1% log file
+FileNotFound                 =     file %1 not found
+LibZipError                  =     zip error for file %1 : %2
