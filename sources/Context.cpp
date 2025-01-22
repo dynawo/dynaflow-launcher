@@ -47,22 +47,11 @@
 namespace file = boost::filesystem;
 
 namespace dfl {
-Context::Context(const ContextDef& def, inputs::Configuration& config, std::unordered_map<std::string, std::string>& mapOutputFilesData) :
-    def_(def),
-    networkManager_(def.networkFilepath),
-    dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
-    contingenciesManager_(def.contingenciesFilePath),
-    config_(config),
-    mapOutputFilesData_(mapOutputFilesData),
-    basename_{},
-    slackNode_{},
-    slackNodeOrigin_{SlackNodeOrigin::ALGORITHM},
-    generators_{},
-    loads_{},
-    staticVarCompensators_{},
-    algoResults_(new algo::AlgorithmsResults()),
-    jobEntry_{},
-    jobsEvents_{} {
+Context::Context(const ContextDef &def, inputs::Configuration &config, std::unordered_map<std::string, std::string> &mapOutputFilesData)
+    : def_(def), networkManager_(def.networkFilepath), dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
+      contingenciesManager_(def.contingenciesFilePath), config_(config), mapOutputFilesData_(mapOutputFilesData), basename_{}, slackNode_{},
+      slackNodeOrigin_{SlackNodeOrigin::ALGORITHM}, generators_{}, loads_{}, staticVarCompensators_{},
+      algoResults_(new algo::AlgorithmsResults()), jobEntry_{}, jobsEvents_{} {
   file::path path(def.networkFilepath);
   basename_ = path.filename().replace_extension().generic_string();
 
@@ -366,7 +355,7 @@ void Context::executeSecurityAnalysis() {
   auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
   saLauncher->setMultipleJobs(multipleJobs);
   if (def_.outputIsZip) {
-    saLauncher->setOutputFile("output.zip");
+    saLauncher->setOutputFile("outputs.zip");
   } else {
     saLauncher->setOutputFile("aggregatedResults.xml");
   }
@@ -413,7 +402,7 @@ void Context::exportResults(bool simulationOk) {
   }
 }
 
-void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation>& simulation) const {
+void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation> &simulation) const {
   if (def_.outputIsZip) {
     if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
       std::ostringstream timelineStream;
@@ -439,19 +428,23 @@ void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DY
       mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
     }
 
-    const boost::optional<boost::filesystem::path>& iidmFilePath = simulation->getExportIIDMFile();
+    const boost::optional<boost::filesystem::path> &iidmFilePath = simulation->getExportIIDMFile();
     assert(iidmFilePath.is_initialized());
     std::stringstream outputIIDMStream;
     simulation->dumpIIDMFile(outputIIDMStream);
     const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
     mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
 
-    DYN::Trace::resetCustomAppender("", DYN::DEBUG);  // to force flush in dynawo.log
-    const std::vector<boost::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
-    for (const boost::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
-      const std::string jobLogFileRelativePath = "outputs/logs/" + jobLogAppender->getFilePath();
-      const std::string jobLogFileAbsolutePath = createAbsolutePath(jobLogFileRelativePath, config_.outputDir().generic_string());
-      dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath, jobLogFileAbsolutePath, mapOutputFilesData_);
+    DYN::Trace::resetCustomAppender("", DYN::Trace::severityLevelFromString(def_.dynawoLogLevel));  // to force flush in dynawo.log
+    const std::vector<boost::shared_ptr<job::AppenderEntry>> &jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
+    for (const boost::shared_ptr<job::AppenderEntry> &jobLogAppender : jobLogAppenders) {
+      if (jobLogAppender->getTag() == "") {
+        boost::filesystem::path jobLogFileRelativePath =
+            boost::filesystem::path(jobEntry_->getOutputsEntry()->getOutputsDirectory()) / boost::filesystem::path("logs");
+        jobLogFileRelativePath = boost::filesystem::path(jobLogFileRelativePath) / boost::filesystem::path(jobLogAppender->getFilePath());
+        boost::filesystem::path jobLogFileAbsolutePath(config_.outputDir() / jobLogFileRelativePath);
+        dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath.c_str(), jobLogFileAbsolutePath.c_str(), mapOutputFilesData_);
+      }
     }
   }
 }

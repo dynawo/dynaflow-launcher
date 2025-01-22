@@ -25,13 +25,13 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <libzip/ZipFileFactory.h>
+#include <libzip/ZipInputStream.h>
 #include <libzip/ZipOutputStream.h>
 
 #include <chrono>
 #include <cstdlib>
 #include <sstream>
 #include <unordered_map>
-
 
 static inline std::string getMandatoryEnvVar(const std::string &key) {
   char *var = getenv(key.c_str());
@@ -56,9 +56,8 @@ static inline double elapsed(const std::chrono::steady_clock::time_point &timePo
   return static_cast<double>(duration.count()) / 1000;  // To have the time in seconds as a double
 }
 
-static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const& params,
-                                                    dfl::inputs::Configuration& config,
-                                                    std::unordered_map<std::string, std::string>& mapOutputFilesData) {
+static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParams const &params, dfl::inputs::Configuration &config,
+                                                    std::unordered_map<std::string, std::string> &mapOutputFilesData) {
   auto timeContextStart = std::chrono::steady_clock::now();
   bool outputIsZip = !params.runtimeConfig->zipArchivePath.empty();
   dfl::Context::ContextDef def{config.getStartingPointMode(),
@@ -66,7 +65,7 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
                                params.networkFilePath,
                                config.settingFilePath(),
                                config.assemblingFilePath(),
-                               params.runtimeConfig->contingenciesFilePath,
+                               params.contingencyFilePath,
                                outputIsZip,
                                params.runtimeConfig->dynawoLogLevel,
                                params.resourcesDirPath,
@@ -142,24 +141,28 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
   }
 }
 
-void dumpZipArchive(std::unordered_map<std::string, std::string>& mapOutputFilesData,
-                  boost::filesystem::path outputPath,
-                  const dfl::common::Options::RuntimeConfiguration& runtimeConfig) {
-  bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
+void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFilesData, boost::filesystem::path outputPath,
+                    const dfl::common::Options::RuntimeConfiguration &runtimeConfig) {
+  DYNAlgorithms::multiprocessing::Context &mpiContext = DYNAlgorithms::multiprocessing::context();
+  mpiContext.sync();
+  if (mpiContext.isRootProc()) {
+    bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
 
-  if (outputIsZip) {
-    const std::string programLogFileRelativePath = runtimeConfig.programName + ".log";
-    const std::string programLogFileAbsolutePath = createAbsolutePath(programLogFileRelativePath, outputPath.generic_string());
-    dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapOutputFilesData);
+    if (outputIsZip) {
+      const std::string programLogFileRelativePath = runtimeConfig.programName + ".log";
+      const std::string programLogFileAbsolutePath = createAbsolutePath(programLogFileRelativePath, outputPath.generic_string());
+      dfl::common::Log::addLogFileContentInMapData(programLogFileRelativePath, programLogFileAbsolutePath, mapOutputFilesData);
 
-    boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
+      boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
+      const std::string archivePath = createAbsolutePath("outputs.zip", outputPath.generic_string());
+      if (!runtimeConfig.contingenciesFilePath.empty())
+        archive = zip::ZipInputStream::read(archivePath);
+      for (const std::pair<std::string, std::string> &outputFile : mapOutputFilesData) {
+        archive->addEntry(outputFile.first, outputFile.second);
+      }
 
-    for (const std::pair<std::string, std::string>& outputFile : mapOutputFilesData) {
-      archive->addEntry(outputFile.first, outputFile.second);
+      zip::ZipOutputStream::write(archivePath, archive);
     }
-
-    const std::string archivePath = createAbsolutePath("output.zip", outputPath.generic_string());
-    zip::ZipOutputStream::write(archivePath, archive);
   }
 }
 
@@ -196,6 +199,30 @@ int main(int argc, char *argv[]) {
   std::string locale;
   boost::filesystem::path resourcesDir;
   boost::filesystem::path configPath(runtimeConfig.configPath);
+  boost::filesystem::path networkPath(runtimeConfig.networkFilePath);
+  boost::filesystem::path contingencyPath(runtimeConfig.contingenciesFilePath);
+  if (!runtimeConfig.zipArchivePath.empty()) {
+    if (mpiContext.isRootProc()) {
+      boost::shared_ptr<zip::ZipFile> archive = zip::ZipInputStream::read(runtimeConfig.zipArchivePath);
+      std::string archiveParentPath = boost::filesystem::path(runtimeConfig.zipArchivePath).parent_path().string();
+      for (std::map<std::string, boost::shared_ptr<zip::ZipEntry>>::const_iterator archiveIt = archive->getEntries().begin();
+           archiveIt != archive->getEntries().end(); ++archiveIt) {
+        std::string name = archiveIt->first;
+        std::string data(archiveIt->second->getData());
+        std::ofstream file;
+        std::string filepath = createAbsolutePath(name, archiveParentPath);
+        file.open(filepath.c_str(), std::ios::binary);
+        file << data;
+        file.close();
+      }
+    }
+    mpiContext.sync();
+    boost::filesystem::path zipPath(runtimeConfig.zipArchivePath);
+    configPath = zipPath.parent_path() / configPath;
+    networkPath = zipPath.parent_path() / networkPath;
+    if (!contingencyPath.empty())
+      contingencyPath = zipPath.parent_path() / contingencyPath;
+  }
   boost::filesystem::path outputDir;
   std::unordered_map<std::string, std::string> mapOutputFilesData;
   try {
@@ -264,13 +291,13 @@ int main(int argc, char *argv[]) {
       return EXIT_FAILURE;
     }
 
-    if (!boost::filesystem::exists(boost::filesystem::path(runtimeConfig.networkFilePath))) {
+    if (!boost::filesystem::exists(networkPath)) {
       throw Error(NetworkFileNotFound, runtimeConfig.networkFilePath);
     }
-    if (!runtimeConfig.contingenciesFilePath.empty() && !boost::filesystem::exists(boost::filesystem::path(runtimeConfig.contingenciesFilePath))) {
+    if (!contingencyPath.empty() && !boost::filesystem::exists(boost::filesystem::path(contingencyPath))) {
       throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
-    if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA && runtimeConfig.contingenciesFilePath.empty()) {
+    if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA && contingencyPath.empty()) {
       throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
 
@@ -295,7 +322,8 @@ int main(int argc, char *argv[]) {
     params.runtimeConfig = &runtimeConfig;
     params.timeStart = timeStart;
     params.resourcesDirPath = resourcesDir;
-    params.networkFilePath = runtimeConfig.networkFilePath;
+    params.networkFilePath = networkPath;
+    params.contingencyFilePath = contingencyPath;
     params.locale = locale;
     bool successN = true;
 

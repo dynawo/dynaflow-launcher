@@ -22,15 +22,14 @@ namespace file = boost::filesystem;
 namespace dfl {
 namespace common {
 
-const std::string& Log::getTag() {
-  static const std::string& dynaflowLauncherLogTag ="DYNAFLOW_LAUNCHER";
+const std::string &Log::getTag() {
+  static const std::string &dynaflowLauncherLogTag = "DYNAFLOW_LAUNCHER";
   return dynaflowLauncherLogTag;
 }
 
-void
-Log::init(const common::Options& options, const std::string& outputDir) {
+void Log::init(const common::Options &options, const std::string &outputDir) {
   using DYN::Trace;
-  auto& config = options.config();
+  auto &config = options.config();
 
   std::vector<Trace::TraceAppender> appenders;
   Trace::TraceAppender appender;
@@ -53,10 +52,8 @@ Log::init(const common::Options& options, const std::string& outputDir) {
   Trace::clearAndAddAppenders(appenders);
 }
 
-void
-Log::addLogFileContentInMapData(const std::string& logFileRelativePath,
-                                const std::string& logFileAbsolutePath,
-                                std::unordered_map<std::string, std::string>& mapOutputFilesData) {
+void Log::addLogFileContentInMapData(const std::string &logFileRelativePath, const std::string &logFileAbsolutePath,
+                                     std::unordered_map<std::string, std::string> &mapOutputFilesData) {
   std::ifstream programLogFileStream(logFileAbsolutePath);
   if (programLogFileStream.is_open()) {
     std::ostringstream strStream;

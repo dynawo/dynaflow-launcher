@@ -7,9 +7,10 @@
 # SPDX-License-Identifier: MPL-2.0
 #
 
-set(_command ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json)
 if(${USE_ZIP} STREQUAL "YES")
-  list(APPEND _command --input-archive=res/${TEST_NAME}.zip)
+  set(_command ${EXE} --network=TestIIDM_${TEST_NAME}.iidm --config=config_${TEST_NAME}.json --input-archive=res/${TEST_NAME}.zip)
+else()
+  set(_command ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json)
 endif()
 message(STATUS "Execute process: ${_command}")
 execute_process(COMMAND ${_command} RESULT_VARIABLE _result)
