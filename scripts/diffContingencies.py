@@ -48,17 +48,6 @@ def compare_file(options, contingency_folder, chosen_outputs):
 
     if buildType == "Debug" or buildType == "Release" or buildType == "Coverage":
 
-        if options.output_zip:
-            zip_archive_parent_directory = os.path.join(options.root, "resultsTestsTmp", options.testdir)
-            zip_archive_path = os.path.join(zip_archive_parent_directory, options.output_zip)
-            unzipped_archive_path = zip_archive_parent_directory
-            try:
-                with zipfile.ZipFile(zip_archive_path, "r") as zip_ref:
-                    zip_ref.extractall(unzipped_archive_path)
-            except FileNotFoundError:
-                print("[ERROR] " + zip_archive_path + " is missing")
-                nb_differences += 1
-
         if buildType == "Debug" or (buildType == "Release" and "STEADYSTATE" in chosen_outputs) or buildType == "Coverage":
             # output IIDM
             result_path = full_path(
@@ -157,6 +146,15 @@ if __name__ == "__main__":
 
     results_root = full_path(options.root, "resultsTestsTmp", options.testdir)
     reference_root = full_path(options.root, "reference", options.testdir)
+
+    if options.output_zip:
+        zip_archive_path = os.path.join(results_root, options.output_zip)
+        try:
+            with zipfile.ZipFile(zip_archive_path, "r") as zip_ref:
+                zip_ref.extractall(results_root)
+        except FileNotFoundError:
+            print("[ERROR] " + zip_archive_path + " is missing")
+            total_diffs += 1
 
     print(results_root)
     for folder in os.listdir(results_root):
