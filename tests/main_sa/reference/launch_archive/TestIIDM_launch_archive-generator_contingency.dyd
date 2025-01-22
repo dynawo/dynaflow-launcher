@@ -3,6 +3,6 @@
   <dyn:macroConnector id="MC_EventQuadripoleDisconnection">
     <dyn:connect var1="event_state1_value" var2="@NAME@_state_value"/>
   </dyn:macroConnector>
-  <dyn:blackBoxModel id="Disconnect__046c3ee7-c766-11e1-8775-005056c00008" lib="EventSetPointBoolean" parFile="TestIIDM_launch-generator_contingency.par" parId="Disconnect__046c3ee7-c766-11e1-8775-005056c00008"/>
+  <dyn:blackBoxModel id="Disconnect__046c3ee7-c766-11e1-8775-005056c00008" lib="EventSetPointBoolean" parFile="TestIIDM_launch_archive-generator_contingency.par" parId="Disconnect__046c3ee7-c766-11e1-8775-005056c00008"/>
   <dyn:connect id1="Disconnect__046c3ee7-c766-11e1-8775-005056c00008" var1="event_state1" id2="_046c3ee7-c766-11e1-8775-005056c00008" var2="generator_switchOffSignal2"/>
 </dyn:dynamicModelsArchitecture>

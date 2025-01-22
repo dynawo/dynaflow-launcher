@@ -58,8 +58,8 @@ if __name__ == "__main__":
 
     if options.output_zip:
         zip_archive_parent_directory = os.path.join(options.root, "resultsTestsTmp", options.testdir)
-        zip_archive_path = os.path.join(zip_archive_parent_directory, "output.zip")
-        unzipped_archive_path = os.path.join(zip_archive_parent_directory, "output")
+        zip_archive_path = os.path.join(zip_archive_parent_directory, options.output_zip)
+        unzipped_archive_path = zip_archive_parent_directory
         try:
             with zipfile.ZipFile(zip_archive_path, "r") as zip_ref:
                 zip_ref.extractall(unzipped_archive_path)
@@ -78,8 +78,6 @@ if __name__ == "__main__":
 
         outputiidm_result_paths = list()
         outputiidm_result_paths.append(os.path.realpath(os.path.join(results_root, "outputs/finalState/outputIIDM.xml")))
-        if options.output_zip:
-            outputiidm_result_paths.append(os.path.realpath(os.path.join(results_root, "output/outputs/finalState/outputIIDM.xml")))
         outputiidm_reference_path = os.path.realpath(os.path.join(reference_root, "outputIIDM.xml"))
 
         if not os.path.exists(outputiidm_reference_path):
@@ -103,8 +101,6 @@ if __name__ == "__main__":
             #constraints
             constraints_result_paths = list()
             constraints_result_paths.append(os.path.realpath(os.path.join(results_root, "outputs/constraints/constraints.xml")))
-            if options.output_zip:
-                constraints_result_paths.append(os.path.realpath(os.path.join(results_root, "output/outputs/constraints/constraints.xml")))
             constraints_reference_path = os.path.realpath(os.path.join(reference_root, "constraints.xml"))
 
             if not os.path.exists(constraints_reference_path):
@@ -126,8 +122,6 @@ if __name__ == "__main__":
             #lost equipments
             lost_equipments_result_paths = list()
             lost_equipments_result_paths.append(os.path.realpath(os.path.join(results_root, "outputs/lostEquipments/lostEquipments.xml")))
-            if options.output_zip:
-                lost_equipments_result_paths.append(os.path.realpath(os.path.join(results_root, "output/outputs/lostEquipments/lostEquipments.xml")))
             lost_equipments_reference_path = os.path.realpath(os.path.join(reference_root, "lostEquipments.xml"))
 
             if not os.path.exists(lost_equipments_reference_path):
