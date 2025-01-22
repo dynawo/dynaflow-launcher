@@ -8,7 +8,10 @@
 #
 
 if(${USE_ZIP} STREQUAL "YES")
-  execute_process(COMMAND zip -j res/${TEST_NAME}.zip res/TestIIDM_${TEST_NAME}.iidm res/config_${TEST_NAME}.json res/contingencies_${TEST_NAME}.json)
+  # clean-up : delete the zip archive and the previous unzipped files
+  execute_process(COMMAND rm -f res/${TEST_NAME}.zip res/TestIIDM_${TEST_NAME}.iidm res/config_${TEST_NAME}.json res/contingencies_${TEST_NAME}.json)
+
+  execute_process(COMMAND zip -j res/${TEST_NAME}.zip res/res_to_zip/TestIIDM_${TEST_NAME}.iidm res/res_to_zip/config_${TEST_NAME}.json res/res_to_zip/contingencies_${TEST_NAME}.json)
   set(_dfl_cmd ${EXE} --network=TestIIDM_${TEST_NAME}.iidm --config=config_${TEST_NAME}.json --contingencies=contingencies_${TEST_NAME}.json --input-archive=res/${TEST_NAME}.zip --nsa)
 else()
   set(_dfl_cmd ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json --contingencies=res/contingencies_${TEST_NAME}.json --nsa)
