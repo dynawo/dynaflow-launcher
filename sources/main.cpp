@@ -103,7 +103,6 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
     LOG(info, InitEnd, elapsed(params.timeStart));
     auto timeFilesStart = std::chrono::steady_clock::now();
     context->exportOutputs();
-    DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(), DYN::DEBUG);  // to force flush to DynaFlowLauncher.log
     LOG(info, FilesEnd, elapsed(timeFilesStart));
 
     DYNAlgorithms::multiprocessing::Context::sync();
@@ -144,6 +143,8 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
 void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFilesData, boost::filesystem::path outputPath,
                     const dfl::common::Options::RuntimeConfiguration &runtimeConfig) {
   DYNAlgorithms::multiprocessing::Context &mpiContext = DYNAlgorithms::multiprocessing::context();
+  DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(),
+                                            DYN::Trace::severityLevelFromString(runtimeConfig.dynawoLogLevel));  // to force flush to DynaFlowLauncher.log
   mpiContext.sync();
   if (mpiContext.isRootProc()) {
     bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
