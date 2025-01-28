@@ -83,7 +83,7 @@ std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(con
 
   std::unordered_map<std::string, double> genInitialParamToValues;
   for (const auto &param : set.doubleParameters) {
-    if (param.name == "secondaryVoltageControl_Alpha" || param.name == "secondaryVoltageControl_Beta") {
+    if (param.name == "secondaryVoltageControl_Alpha" || param.name == "secondaryVoltageControl_Beta" || param.name == "secondaryVoltageControl_UDeadBandPu") {
       new_set->addParameter(helper::buildParameter(param.name, param.value));
     } else if (param.name.find("secondaryVoltageControl_Qr_") != std::string::npos) {
       genInitialParamToValues[param.name] = param.value;
