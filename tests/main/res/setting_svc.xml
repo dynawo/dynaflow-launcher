@@ -7,6 +7,7 @@
     <par type="DOUBLE" name="secondaryVoltageControl_SNom_1_" value="2401.27"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
     <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
+    <par type="DOUBLE" name="secondaryVoltageControl_UDeadBandPu" value="0.0001"/>
   </set>
   <set id="GEN1">
     <!-- _GEN____1_SM parameters -->

@@ -130,6 +130,7 @@
     <par name="secondaryVoltageControl_Qr_1_" type="DOUBLE" value="300"/>
     <par name="secondaryVoltageControl_Qr_2_" type="DOUBLE" value="280"/>
     <par name="secondaryVoltageControl_SNom_0_" type="DOUBLE" value="2401.27"/>
+    <par name="secondaryVoltageControl_UDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="secondaryVoltageControl_XTfoPu_0_" type="DOUBLE" value="0.1426"/>
     <par name="secondaryVoltageControl_XTfoPu_1_" type="DOUBLE" value="0.1426"/>
     <par name="secondaryVoltageControl_limUQDown0_0_" type="BOOL" value="false"/>

@@ -72,6 +72,7 @@
     <par name="secondaryVoltageControl_Participate0_0_" type="BOOL" value="true"/>
     <par name="secondaryVoltageControl_Qr_0_" type="DOUBLE" value="290"/>
     <par name="secondaryVoltageControl_SNom_0_" type="DOUBLE" value="2401.27"/>
+    <par name="secondaryVoltageControl_UDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="secondaryVoltageControl_limUQDown0_0_" type="BOOL" value="false"/>
     <par name="secondaryVoltageControl_limUQUp0_0_" type="BOOL" value="false"/>
     <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_0_" origData="IIDM" origName="p_pu" componentId="_GEN____2_SM"/>

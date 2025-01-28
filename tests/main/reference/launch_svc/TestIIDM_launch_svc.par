@@ -98,6 +98,7 @@
     <par name="secondaryVoltageControl_Qr_0_" type="DOUBLE" value="280"/>
     <par name="secondaryVoltageControl_Qr_1_" type="DOUBLE" value="290"/>
     <par name="secondaryVoltageControl_SNom_1_" type="DOUBLE" value="2401.27"/>
+    <par name="secondaryVoltageControl_UDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="secondaryVoltageControl_limUQDown0_0_" type="BOOL" value="false"/>
     <par name="secondaryVoltageControl_limUQDown0_1_" type="BOOL" value="false"/>
     <par name="secondaryVoltageControl_limUQUp0_0_" type="BOOL" value="false"/>
