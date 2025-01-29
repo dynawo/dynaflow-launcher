@@ -32,10 +32,10 @@ Network::Network(NetworkDefinition&& def) : def_{std::move(def)} {}
 void
 Network::write() const {
   parameters::XmlExporter exporter;
-  boost::shared_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
+  std::unique_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   paramSetCollection->addParametersSet(writeNetworkSet());
   boost::filesystem::path networkFileName(def_.filepath_);
-  exporter.exportToFile(paramSetCollection, networkFileName.generic_string(), constants::xmlEncoding);
+  exporter.exportToFile(std::move(paramSetCollection), networkFileName.generic_string(), constants::xmlEncoding);
 }
 
 std::shared_ptr<parameters::ParametersSet>

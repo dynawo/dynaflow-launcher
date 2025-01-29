@@ -27,9 +27,11 @@ ParDynModel::ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefin
   }
 }
 
-void ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection,
-                        const inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::ShuntCounterDefinitions &shuntCounters,
-                        const algo::LinesByIdDefinitions &linesByIdDefinitions, const algo::TransformersByIdDefinitions &transformersById) {
+void ParDynModel::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+                        const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+                        const algo::ShuntCounterDefinitions& shuntCounters,
+                        const algo::LinesByIdDefinitions& linesByIdDefinitions,
+                        const algo::TransformersByIdDefinitions& transformersById) {
   for (const auto &dynModel : dynamicModelsDefinitions_.models) {
     std::shared_ptr<parameters::ParametersSet> new_set;
 

@@ -30,7 +30,7 @@ Par::Par(ParDefinition&& def) : def_{std::move(def)} {}
 void Par::write() const {
   parameters::XmlExporter exporter;
 
-  auto paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
+  std::unique_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   // adding load parameter set
   def_.parLoads_->write(paramSetCollection, def_.startingPointMode_);
   def_.parGenerator_->write(paramSetCollection, def_.activePowerCompensation_, def_.basename_, def_.dirname_, def_.startingPointMode_,
@@ -40,7 +40,7 @@ void Par::write() const {
   def_.parDynModel_->write(paramSetCollection, def_.dynamicDataBaseManager_, def_.shuntCounters_, def_.linesByIdDefinitions_, def_.tfosByIdDefinitions_);
   def_.parVRRemote_->writeVRRemotes(paramSetCollection);
 
-  exporter.exportToFile(paramSetCollection, def_.filepath_.generic_string(), constants::xmlEncoding);
+  exporter.exportToFile(std::move(paramSetCollection), def_.filepath_.generic_string(), constants::xmlEncoding);
 }
 
 }  // namespace outputs

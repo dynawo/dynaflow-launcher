@@ -26,7 +26,7 @@
 #include "TransfoDefinitionAlgorithm.h"
 
 #include <PARParametersSetCollection.h>
-#include <boost/shared_ptr.hpp>
+
 
 namespace dfl {
 namespace outputs {
@@ -55,9 +55,11 @@ class ParDynModel {
    * @param linesByIdDefinitions lines by id to use
    * @param transformersById transformers by id to use
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
-             const algo::ShuntCounterDefinitions &shuntCounters, const algo::LinesByIdDefinitions &linesByIdDefinitions,
-             const algo::TransformersByIdDefinitions &transformersById);
+  void write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+              const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
+              const algo::ShuntCounterDefinitions& shuntCounters,
+              const algo::LinesByIdDefinitions& linesByIdDefinitions,
+              const algo::TransformersByIdDefinitions& transformersById);
 
  private:
   /**

@@ -46,7 +46,7 @@ class ParVRRemote {
    *
    * @param paramSetCollection parameter set collection to enrich
    */
-  void writeVRRemotes(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection);
+  void writeVRRemotes(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection);
 
  private:
   const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;            ///< list of generators definitions

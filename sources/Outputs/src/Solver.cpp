@@ -30,11 +30,11 @@ Solver::Solver(SolverDefinition &&def) : def_{std::move(def)} {}
 
 void Solver::write() const {
   parameters::XmlExporter exporter;
-  auto paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
+  std::unique_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   paramSetCollection->addParametersSet(writeSolverSet());
   boost::filesystem::path solverFileName(def_.outputDir_);
   solverFileName.append(constants::solverParFileName);
-  exporter.exportToFile(paramSetCollection, solverFileName.generic_string(), constants::xmlEncoding);
+  exporter.exportToFile(std::move(paramSetCollection), solverFileName.generic_string(), constants::xmlEncoding);
 }
 
 std::shared_ptr<parameters::ParametersSet> Solver::writeSolverSet() const {
