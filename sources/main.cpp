@@ -145,7 +145,7 @@ void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFiles
   DYNAlgorithms::multiprocessing::Context &mpiContext = DYNAlgorithms::multiprocessing::context();
   DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(),
                                             DYN::Trace::severityLevelFromString(runtimeConfig.dynawoLogLevel));  // to force flush to DynaFlowLauncher.log
-  mpiContext.sync();
+  DYNAlgorithms::multiprocessing::Context::sync();
   if (mpiContext.isRootProc()) {
     bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
 
@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
         file.close();
       }
     }
-    mpiContext.sync();
+    DYNAlgorithms::multiprocessing::Context::sync();
     boost::filesystem::path zipPath(runtimeConfig.zipArchivePath);
     configPath = zipPath.parent_path() / configPath;
     networkPath = zipPath.parent_path() / networkPath;
