@@ -15,7 +15,7 @@
 namespace dfl {
 namespace outputs {
 
-void ParVRRemote::writeVRRemotes(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection) {
+void ParVRRemote::writeVRRemotes(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection) {
   std::unordered_map<algo::GeneratorDefinitionAlgorithm::BusId, bool> componentToFrozen;
   for (const auto &busId2Number : busesToNumberOfRegulationMap_)
     if (busId2Number.second == dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES)

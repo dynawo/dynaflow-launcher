@@ -20,7 +20,7 @@
 #include "LoadDefinitionAlgorithm.h"
 
 #include <PARParametersSetCollection.h>
-#include <boost/shared_ptr.hpp>
+
 
 namespace dfl {
 namespace outputs {
@@ -43,7 +43,7 @@ class ParLoads {
    * @param paramSetCollection parameter set collection to enrich
    * @param startingPointMode starting point mode
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+  void write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
               dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:

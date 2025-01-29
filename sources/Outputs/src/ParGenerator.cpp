@@ -17,9 +17,12 @@
 namespace dfl {
 namespace outputs {
 
-void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
-                         const std::string &basename, const boost::filesystem::path &dirname, StartingPointMode startingPointMode,
-                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+void ParGenerator::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+                          ActivePowerCompensation activePowerCompensation,
+                          const std::string& basename,
+                          const boost::filesystem::path& dirname,
+                          StartingPointMode startingPointMode,
+                          const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
   for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {

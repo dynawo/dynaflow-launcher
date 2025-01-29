@@ -16,7 +16,7 @@ namespace dfl {
 namespace outputs {
 
 void
-ParLoads::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+ParLoads::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
                 dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!loadsDefinitions_.empty()) {
     paramSetCollection->addParametersSet(writeConstantLoadsSet(startingPointMode));

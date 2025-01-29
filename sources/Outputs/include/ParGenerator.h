@@ -53,9 +53,12 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
-             const std::string &basename, const boost::filesystem::path &dirname, StartingPointMode startingPointMode,
-             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
+  void write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+              ActivePowerCompensation activePowerCompensation,
+              const std::string& basename,
+              const boost::filesystem::path& dirname,
+              StartingPointMode startingPointMode,
+              const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   /**

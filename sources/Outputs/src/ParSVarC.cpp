@@ -21,7 +21,7 @@ namespace outputs {
 const std::string ParSVarC::macroParameterSetStaticCompensator_("MacroParameterSetStaticCompensator");
 
 void
-ParSVarC::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+ParSVarC::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
                 dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!svarcsDefinitions_.empty()) {
     paramSetCollection->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators(startingPointMode));

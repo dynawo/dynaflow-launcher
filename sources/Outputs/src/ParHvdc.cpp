@@ -17,9 +17,11 @@
 namespace dfl {
 namespace outputs {
 
-void ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
-                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+void ParHvdc::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+                    const std::string& basename,
+                    const boost::filesystem::path& dirname,
+                    dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
   for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
     paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode, dynamicDataBaseManager));
   }

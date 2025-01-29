@@ -35,7 +35,7 @@ void ParEvent::write() {
   using Type = dfl::inputs::ContingencyElement::Type;
   parameters::XmlExporter exporter;
 
-  auto parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
+  std::unique_ptr<parameters::ParametersSetCollection> parametersSets = parameters::ParametersSetCollectionFactory::newCollection();
   for (const auto &element : def_.contingency.elements) {
     if (isNetwork(element.id)) {
       parametersSets->addParametersSet(buildEventConnectedStatusDisconnection(element.id, def_.timeOfEvent));
@@ -58,7 +58,7 @@ void ParEvent::write() {
     }
   }
 
-  exporter.exportToFile(parametersSets, def_.filename, constants::xmlEncoding);
+  exporter.exportToFile(std::move(parametersSets), def_.filename, constants::xmlEncoding);
 }
 
 std::shared_ptr<parameters::ParametersSet> ParEvent::buildBranchDisconnection(const std::string &branchId, const double timeOfEvent) {

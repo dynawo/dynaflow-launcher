@@ -22,7 +22,7 @@
 #include "OutputsConstants.h"
 
 #include <PARParametersSetCollection.h>
-#include <boost/shared_ptr.hpp>
+
 
 namespace dfl {
 namespace outputs {
@@ -48,8 +48,11 @@ class ParHvdc {
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename, const boost::filesystem::path &dirname,
-             dfl::inputs::Configuration::StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
+  void write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
+              const std::string& basename,
+              const boost::filesystem::path& dirname,
+              dfl::inputs::Configuration::StartingPointMode startingPointMode,
+              const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
 
  private:
   /**
