@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <constraints xmlns="http://www.rte-france.com/dynawo">
-  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="10" type="Line" kind="OverloadUp" limit="1000" value="1014.9734202697034" side="1" acceptableDuration="900"/>
-  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="10" type="Line" kind="PATL" limit="1000" value="1014.9734202697034" side="1"/>
+  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="10.0000" type="Line" kind="OverloadUp" limit="1000" value="1014.9734202697034" side="1" acceptableDuration="900"/>
+  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="10.0000" type="Line" kind="PATL" limit="1000" value="1014.9734202697034" side="1"/>
 </constraints>

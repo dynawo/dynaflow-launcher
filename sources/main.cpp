@@ -27,6 +27,7 @@
 #include <libzip/ZipFileFactory.h>
 #include <libzip/ZipInputStream.h>
 #include <libzip/ZipOutputStream.h>
+#include <libzip/ZipException.h>
 
 #include <chrono>
 #include <cstdlib>
@@ -145,7 +146,7 @@ void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFiles
   DYNAlgorithms::multiprocessing::Context &mpiContext = DYNAlgorithms::multiprocessing::context();
   DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(),
                                             DYN::Trace::severityLevelFromString(runtimeConfig.dynawoLogLevel));  // to force flush to DynaFlowLauncher.log
-  mpiContext.sync();
+  DYNAlgorithms::multiprocessing::Context::sync();
   if (mpiContext.isRootProc()) {
     bool outputIsZip = !runtimeConfig.zipArchivePath.empty();
 
@@ -156,7 +157,7 @@ void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFiles
 
       boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
       const std::string archivePath = createAbsolutePath("outputs.zip", outputPath.generic_string());
-      if (!runtimeConfig.contingenciesFilePath.empty())
+      if (!runtimeConfig.contingenciesFilePath.empty() && boost::filesystem::exists(archivePath))
         archive = zip::ZipInputStream::read(archivePath);
       for (const std::pair<std::string, std::string> &outputFile : mapOutputFilesData) {
         archive->addEntry(outputFile.first, outputFile.second);
@@ -204,7 +205,26 @@ int main(int argc, char *argv[]) {
   boost::filesystem::path contingencyPath(runtimeConfig.contingenciesFilePath);
   if (!runtimeConfig.zipArchivePath.empty()) {
     if (mpiContext.isRootProc()) {
-      boost::shared_ptr<zip::ZipFile> archive = zip::ZipInputStream::read(runtimeConfig.zipArchivePath);
+      boost::shared_ptr<zip::ZipFile> archive;
+      try {
+        try {
+          archive = zip::ZipInputStream::read(runtimeConfig.zipArchivePath);
+        } catch (const zip::ZipException& e) {
+          switch (e.getErrorCode()) {
+            case zip::Error::Code::LIBARCHIVE_INTERNAL_ERROR:
+              throw Error(LibZipError, runtimeConfig.zipArchivePath, e.what());
+            case zip::Error::Code::FILE_NOT_FOUND:
+              throw Error(FileNotFound, e.what());
+            default:
+              // other libzip errors
+              throw;
+          }
+        }
+      } catch (std::exception& e) {
+        std::cerr << "Initialization failed: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+      }
+
       std::string archiveParentPath = boost::filesystem::path(runtimeConfig.zipArchivePath).parent_path().string();
       for (std::map<std::string, boost::shared_ptr<zip::ZipEntry>>::const_iterator archiveIt = archive->getEntries().begin();
            archiveIt != archive->getEntries().end(); ++archiveIt) {
@@ -217,7 +237,7 @@ int main(int argc, char *argv[]) {
         file.close();
       }
     }
-    mpiContext.sync();
+    DYNAlgorithms::multiprocessing::Context::sync();
     boost::filesystem::path zipPath(runtimeConfig.zipArchivePath);
     configPath = zipPath.parent_path() / configPath;
     networkPath = zipPath.parent_path() / networkPath;
