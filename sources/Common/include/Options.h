@@ -20,16 +20,10 @@
  * @brief Options header file
  */
 
-namespace zip {
-class ZipFile;
-}
-
 /// @brief Namespace for dynaflow launcher components
 namespace dfl {
 /// @brief Namespace for common components to dynawo-launcher
 namespace common {
-
-namespace po = boost::program_options;
 
 /**
  * @brief Manager for input programm options
@@ -93,19 +87,6 @@ class Options {
    * @returns the request
    */
   Request parse(int argc, char* argv[]);
-
-  /**
-   * @brief Check whether all required files are present in the specified archive
-   *
-   * This method checks if the zip archive contains all files required for execution, such as the network file,
-   * configuration file, and optionally the contingencies file.
-   *
-   * @param vm A variables map containing the input arguments passed to Dynaflow-launcher. It is used to determine if the optional contingencies file is required.
-   * @param archive A shared pointer to the zip archive to be checked.
-   *
-   * @returns true if one or more required files are missing, false otherwise
-   */
-  bool areRequiredFilesMissing(const po::variables_map& vm, const boost::shared_ptr<zip::ZipFile>& archive) const;
 
   /**
    * @brief Retrieves description of options
