@@ -13,7 +13,7 @@
 #include "ParCommon.h"
 
 #include <PARMacroParameterSet.h>
-#include <boost/make_shared.hpp>
+
 
 namespace dfl {
 namespace outputs {
@@ -34,9 +34,10 @@ ParSVarC::write(const std::unique_ptr<parameters::ParametersSetCollection>& para
   }
 }
 
-boost::shared_ptr<parameters::MacroParameterSet>
+std::unique_ptr<parameters::MacroParameterSet>
 ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
-  auto macro = boost::make_shared<parameters::MacroParameterSet>(macroParameterSetStaticCompensator_);
+  std::unique_ptr<parameters::MacroParameterSet> macro =
+              std::unique_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(macroParameterSetStaticCompensator_));
 
   switch (startingPointMode) {
   case dfl::inputs::Configuration::StartingPointMode::WARM:
@@ -57,9 +58,9 @@ ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration
 
 std::shared_ptr<parameters::ParametersSet>
 ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc) {
-  auto set = parameters::ParametersSetFactory::newParametersSet(constants::uuid(svarc.id));
+  std::shared_ptr<parameters::ParametersSet> set = parameters::ParametersSetFactory::newParametersSet(constants::uuid(svarc.id));
 
-  set->addMacroParSet(boost::make_shared<parameters::MacroParSet>(macroParameterSetStaticCompensator_));
+  set->addMacroParSet(std::unique_ptr<parameters::MacroParSet>(new parameters::MacroParSet(macroParameterSetStaticCompensator_)));
   double value;
 
   value = svarc.voltageSetPoint / svarc.UNom;

@@ -23,7 +23,7 @@
 
 #include <DYNCommon.h>
 #include <PARParametersSetCollection.h>
-#include <boost/shared_ptr.hpp>
+
 
 namespace dfl {
 namespace outputs {
@@ -79,9 +79,10 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @return the new macro parameter set
    */
-  boost::shared_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition &def,
-                                                                                   ActivePowerCompensation activePowerCompensation, double targetP,
-                                                                                   StartingPointMode startingPointMode);
+  std::unique_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def,
+                                                                                  ActivePowerCompensation activePowerCompensation,
+                                                                                  double targetP,
+                                                                                  StartingPointMode startingPointMode);
 
   /**
    * @brief Write constants parameter sets for generators

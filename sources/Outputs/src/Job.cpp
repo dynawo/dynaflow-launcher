@@ -53,8 +53,8 @@ const std::string Job::solverParId_ = "SimplifiedSolver";
 
 Job::Job(JobDefinition &&def) : def_{std::move(def)} {}
 
-boost::shared_ptr<job::JobEntry> Job::write() const {
-  auto job = job::JobEntryFactory::newInstance();
+std::unique_ptr<job::JobEntry> Job::write() const {
+  std::unique_ptr<job::JobEntry> job = job::JobEntryFactory::newInstance();
   job->setName(def_.filename);
 
   job->setSolverEntry(writeSolver());
@@ -65,8 +65,8 @@ boost::shared_ptr<job::JobEntry> Job::write() const {
   return job;
 }
 
-boost::shared_ptr<job::SolverEntry> Job::writeSolver() const {
-  auto solver = job::SolverEntryFactory::newInstance();
+std::unique_ptr<job::SolverEntry> Job::writeSolver() const {
+  std::unique_ptr<job::SolverEntry> solver = job::SolverEntryFactory::newInstance();
   solver->setLib(solverName_);
   solver->setParametersFile(solverFilename_);
   solver->setParametersId(solverParId_);
@@ -74,36 +74,36 @@ boost::shared_ptr<job::SolverEntry> Job::writeSolver() const {
   return solver;
 }
 
-boost::shared_ptr<job::ModelerEntry> Job::writeModeler() const {
-  auto modeler = job::ModelerEntryFactory::newInstance();
+std::unique_ptr<job::ModelerEntry> Job::writeModeler() const {
+  std::unique_ptr<job::ModelerEntry> modeler = job::ModelerEntryFactory::newInstance();
   if (def_.contingencyId) {
     modeler->setCompileDir("outputs-" + def_.contingencyId.get() + "/compilation");
   } else {
     modeler->setCompileDir("outputs/compilation");
   }
 
-  auto models = job::DynModelsEntryFactory::newInstance();
+  std::unique_ptr<job::DynModelsEntry> models = job::DynModelsEntryFactory::newInstance();
   models->setDydFile(def_.filename + ".dyd");
-  modeler->addDynModelsEntry(models);
+  modeler->addDynModelsEntry(std::move(models));
   if (def_.baseFilename) {
-    auto modelsBase = job::DynModelsEntryFactory::newInstance();
+    std::unique_ptr<job::DynModelsEntry> modelsBase = job::DynModelsEntryFactory::newInstance();
     modelsBase->setDydFile(def_.baseFilename.get() + ".dyd");
-    modeler->addDynModelsEntry(modelsBase);
+    modeler->addDynModelsEntry(std::move(modelsBase));
   }
 
   if (!def_.configuration.startingDumpFilePath().empty()) {
-    auto initialState = job::InitialStateEntryFactory::newInstance();
+    std::unique_ptr<job::InitialStateEntry> initialState = job::InitialStateEntryFactory::newInstance();
     initialState->setInitialStateFile(def_.configuration.startingDumpFilePath().generic_string());
-    modeler->setInitialStateEntry(initialState);
+    modeler->setInitialStateEntry(std::move(initialState));
   }
 
-  auto network = job::NetworkEntryFactory::newInstance();
+  std::unique_ptr<job::NetworkEntry> network = job::NetworkEntryFactory::newInstance();
   network->setIidmFile("");  // not providing IIDM file here as data interface will be provided to simulation
   network->setNetworkParFile("Network.par");
   network->setNetworkParId("Network");
-  modeler->setNetworkEntry(network);
+  modeler->setNetworkEntry(std::move(network));
 
-  auto premodels = job::ModelsDirEntryFactory::newInstance();
+  std::shared_ptr<job::ModelsDirEntry> premodels = job::ModelsDirEntryFactory::newInstance();
   premodels->setUseStandardModels(useStandardModels_);
   modeler->setPreCompiledModelsDirEntry(premodels);
   modeler->setModelicaModelsDirEntry(premodels);
@@ -111,8 +111,8 @@ boost::shared_ptr<job::ModelerEntry> Job::writeModeler() const {
   return modeler;
 }
 
-boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
-  auto simu = job::SimulationEntryFactory::newInstance();
+std::unique_ptr<job::SimulationEntry> Job::writeSimulation() const {
+  std::unique_ptr<job::SimulationEntry> simu = job::SimulationEntryFactory::newInstance();
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
   simu->setPrecision(def_.configuration.getPrecision().value_or(1e-4));
@@ -120,52 +120,53 @@ boost::shared_ptr<job::SimulationEntry> Job::writeSimulation() const {
   return simu;
 }
 
-boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
-  auto output = job::OutputsEntryFactory::newInstance();
+std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
+  std::unique_ptr<job::OutputsEntry> output = job::OutputsEntryFactory::newInstance();
   if (def_.contingencyId) {
     output->setOutputsDirectory("outputs-" + def_.contingencyId.get());
   } else {
     output->setOutputsDirectory("outputs");
   }
 
-  auto log = job::LogsEntryFactory::newInstance();
-  auto appender = job::AppenderEntryFactory::newInstance();
+  std::unique_ptr<job::LogsEntry> log = job::LogsEntryFactory::newInstance();
+  std::unique_ptr<job::AppenderEntry> appender = job::AppenderEntryFactory::newInstance();
   appender->setTag("");
   appender->setFilePath("dynawo.log");
   appender->setLvlFilter(def_.dynawoLogLevel);
-  log->addAppenderEntry(appender);
+  log->addAppenderEntry(std::move(appender));
 
-  output->setLogsEntry(log);
+  output->setLogsEntry(std::move(log));
 
-  auto final_state = job::FinalStateEntryFactory::newInstance();
+  std::unique_ptr<job::FinalStateEntry> final_state = job::FinalStateEntryFactory::newInstance();
 
   final_state->setExportIIDMFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   final_state->setExportDumpFile(def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE));
-  output->addFinalStateEntry(final_state);
+  output->addFinalStateEntry(std::move(final_state));
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
-    auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
+    std::unique_ptr<job::ConstraintsEntry> constraints = std::unique_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
     constraints->setExportMode("XML");
-    output->setConstraintsEntry(constraints);
+    output->setConstraintsEntry(std::move(constraints));
   }
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::LOSTEQ)) {
-    auto lostEquipments = boost::shared_ptr<job::LostEquipmentsEntry>(new job::LostEquipmentsEntry());
+    std::unique_ptr<job::LostEquipmentsEntry> lostEquipments = std::unique_ptr<job::LostEquipmentsEntry>(new job::LostEquipmentsEntry());
     lostEquipments->setDumpLostEquipments(true);
-    output->setLostEquipmentsEntry(lostEquipments);
+    output->setLostEquipmentsEntry(std::move(lostEquipments));
   }
 
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
-    auto timeline = boost::shared_ptr<job::TimelineEntry>(new job::TimelineEntry());
+    std::unique_ptr<job::TimelineEntry> timeline = std::unique_ptr<job::TimelineEntry>(new job::TimelineEntry());
     timeline->setExportMode("XML");
-    output->setTimelineEntry(timeline);
+    output->setTimelineEntry(std::move(timeline));
   }
 
   return output;
 }
 
-void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry,
-                    const dfl::inputs::Configuration &config) {
+void Job::exportJob(const std::shared_ptr<job::JobEntry>& jobEntry,
+                    const boost::filesystem::path& networkFileEntry,
+                    const dfl::inputs::Configuration& config) {
   boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {
@@ -243,7 +244,7 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
 
   // simu
 
-  auto simu = jobEntry->getSimulationEntry();
+  std::shared_ptr<job::SimulationEntry> simu = jobEntry->getSimulationEntry();
   attrs.add("startTime", simu->getStartTime());
   attrs.add("stopTime", simu->getStopTime());
   attrs.add("precision", simu->getPrecision());
@@ -252,14 +253,14 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
   formatter->endElement();  // simulation
 
   // outputs
-  auto outputs = jobEntry->getOutputsEntry();
+  std::shared_ptr<job::OutputsEntry> outputs = jobEntry->getOutputsEntry();
   attrs.add("directory", outputs->getOutputsDirectory());
   formatter->startElement("dyn", "outputs", attrs);
   attrs.clear();
 
   // final state
 
-  auto constraints = outputs->getConstraintsEntry();
+  std::shared_ptr<job::ConstraintsEntry> constraints = outputs->getConstraintsEntry();
   if (constraints) {
     attrs.add("exportMode", constraints->getExportMode());
     formatter->startElement("dyn", "constraints", attrs);
@@ -267,7 +268,7 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
     formatter->endElement();
   }
 
-  auto timeline = outputs->getTimelineEntry();
+  std::shared_ptr<job::TimelineEntry> timeline = outputs->getTimelineEntry();
   if (timeline) {
     attrs.add("exportMode", timeline->getExportMode());
     formatter->startElement("dyn", "timeline", attrs);
@@ -281,16 +282,16 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
   attrs.clear();
   formatter->endElement();  // finalState
 
-  auto lostEquipments = outputs->getLostEquipmentsEntry();
+  std::shared_ptr<job::LostEquipmentsEntry> lostEquipments = outputs->getLostEquipmentsEntry();
   if (lostEquipments) {
     formatter->startElement("dyn", "lostEquipments", attrs);
     attrs.clear();
     formatter->endElement();
   }
 
-  auto logs = outputs->getLogsEntry();
+  std::shared_ptr<job::LogsEntry> logs = outputs->getLogsEntry();
   formatter->startElement("dyn", "logs");
-  auto appenders = logs->getAppenderEntries();
+  const std::vector<std::shared_ptr<job::AppenderEntry> >& appenders = logs->getAppenderEntries();
   for (auto appender : appenders) {
     attrs.add("tag", appender->getTag());
     attrs.add("file", appender->getFilePath());

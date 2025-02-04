@@ -75,8 +75,9 @@ class Job {
    * @param networkFileEntry path to the input network file
    * @param config configuration
    */
-  static void exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry,
-                        const dfl::inputs::Configuration &config);
+  static void exportJob(const std::shared_ptr<job::JobEntry>& jobEntry,
+                        const boost::filesystem::path& networkFileEntry,
+                        const dfl::inputs::Configuration& config);
   /**
    * @brief Constructor
    *
@@ -89,7 +90,7 @@ class Job {
    *
    * @returns a job entry
    */
-  boost::shared_ptr<job::JobEntry> write() const;
+  std::unique_ptr<job::JobEntry> write() const;
 
  private:
   static const std::string solverName_;      ///< The solver name used during the simulation
@@ -102,28 +103,28 @@ class Job {
    *
    * @returns solver entry to add to the job entry
    */
-  boost::shared_ptr<job::SolverEntry> writeSolver() const;
+  std::unique_ptr<job::SolverEntry> writeSolver() const;
 
   /**
    * @brief Write the modeler element of the job file in formatter
    *
    * @returns modeler entry to add to the job
    */
-  boost::shared_ptr<job::ModelerEntry> writeModeler() const;
+  std::unique_ptr<job::ModelerEntry> writeModeler() const;
 
   /**
    * @brief Write the simulation element of the job file in formatter
    *
    * @returns simulation entry to add to the job
    */
-  boost::shared_ptr<job::SimulationEntry> writeSimulation() const;
+  std::unique_ptr<job::SimulationEntry> writeSimulation() const;
 
   /**
    * @brief Write the outputs element of the job file in formatter
    *
    * @returns outputs entry to add to the job
    */
-  boost::shared_ptr<job::OutputsEntry> writeOutputs() const;
+  std::unique_ptr<job::OutputsEntry> writeOutputs() const;
 
  private:
   static constexpr bool useStandardModels_ = true;  ///< use standard models in job entry and file
