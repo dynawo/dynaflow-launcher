@@ -36,6 +36,7 @@
 
 #include <JOBJobEntry.h>
 #include <boost/filesystem.hpp>
+#include <memory>
 
 namespace DYN {
 class Simulation;
@@ -216,7 +217,7 @@ class Context {
   boost::optional<algo::ValidContingencies> validContingencies_;             ///< contingencies accepted for simulation in a Security Analyasis
   std::shared_ptr<algo::AlgorithmsResults> algoResults_;                     ///< reference to algorithms results class
 
-  boost::shared_ptr<job::JobEntry> jobEntry_;                 ///< Dynawo job entry
-  std::vector<boost::shared_ptr<job::JobEntry>> jobsEvents_;  ///< Dynawo job entries for contingencies
+  std::shared_ptr<job::JobEntry> jobEntry_;                  ///< Dynawo job entry
+  std::vector<std::shared_ptr<job::JobEntry> > jobsEvents_;  ///< Dynawo job entries for contingencies
 };
 }  // namespace dfl

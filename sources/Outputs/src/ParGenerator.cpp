@@ -98,10 +98,11 @@ std::string ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, b
   return id;
 }
 
-boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition &def,
-                                                                                               ActivePowerCompensation activePowerCompensation, double targetP,
-                                                                                               StartingPointMode startingPointMode) {
-  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet = boost::shared_ptr<parameters::MacroParameterSet>(
+std::unique_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def,
+                                                                                              ActivePowerCompensation activePowerCompensation,
+                                                                                              double targetP,
+                                                                                              StartingPointMode startingPointMode) {
+  std::unique_ptr<parameters::MacroParameterSet> macroParameterSet = std::unique_ptr<parameters::MacroParameterSet>(
       new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(targetP))));
 
   if (def.isUsingDiagram()) {
@@ -269,7 +270,7 @@ std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const al
   auto set = parameters::ParametersSetFactory::newParametersSet(uuid);
   // The macroParSet is associated to a macroParameterSet via the id
   set->addMacroParSet(
-      boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
+      std::unique_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
 
   if (!def.isUsingRectangularDiagram()) {
     auto dirname_diagram = dirname;

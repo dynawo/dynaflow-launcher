@@ -44,7 +44,7 @@ namespace helper {
  *
  * @return Dynawo parameter with this name and value
  */
-template <class T> boost::shared_ptr<parameters::Parameter> buildParameter(const std::string &name, const T &value) {
+template <class T> std::unique_ptr<parameters::Parameter> buildParameter(const std::string &name, const T &value) {
   return parameters::ParameterFactory::newParameter(name, value);
 }
 
@@ -57,9 +57,9 @@ template <class T> boost::shared_ptr<parameters::Parameter> buildParameter(const
  * @param componentId component where the reference should be found
  * @return the new reference
  */
-inline boost::shared_ptr<parameters::Reference> buildReference(const std::string &name, const std::string &origName, const std::string &type,
+inline std::unique_ptr<parameters::Reference> buildReference(const std::string &name, const std::string &origName, const std::string &type,
                                                                const boost::optional<std::string> &componentId = {}) {
-  auto ref = parameters::ReferenceFactory::newReference(name, parameters::Reference::OriginData::IIDM);
+  std::unique_ptr<parameters::Reference> ref = parameters::ReferenceFactory::newReference(name, parameters::Reference::OriginData::IIDM);
   ref->setOrigName(origName);
   ref->setType(type);
   if (componentId.is_initialized()) {
@@ -83,9 +83,9 @@ inline std::string getMacroParameterSetId(const std::string &modelType) { return
  * @param modelType string to identify the macro parameter
  * @return a Dynawo macro parameter set for vrremote
  */
-inline boost::shared_ptr<parameters::MacroParameterSet> buildMacroParameterSetVRRemote(const std::string &modelType) {
-  boost::shared_ptr<parameters::MacroParameterSet> macroParameterSet =
-      boost::shared_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
+inline std::unique_ptr<parameters::MacroParameterSet> buildMacroParameterSetVRRemote(const std::string &modelType) {
+  std::unique_ptr<parameters::MacroParameterSet> macroParameterSet =
+      std::unique_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(modelType));
   if (modelType == getMacroParameterSetId(constants::remoteVControlVRParId)) {
     macroParameterSet->addParameter(buildParameter("vrremote_Gain", 1.));
     macroParameterSet->addParameter(buildParameter("vrremote_tIntegral", 0.01));
@@ -103,10 +103,10 @@ inline boost::shared_ptr<parameters::MacroParameterSet> buildMacroParameterSetVR
  * @returns the parameter set
  */
 inline std::shared_ptr<parameters::ParametersSet> writeVRRemote(const std::string &busId, const std::string &elementId) {
-  auto set = parameters::ParametersSetFactory::newParametersSet("Model_Signal_NQ_" + busId);
+  std::shared_ptr<parameters::ParametersSet> set = parameters::ParametersSetFactory::newParametersSet("Model_Signal_NQ_" + busId);
   set->addReference(buildReference("vrremote_U0Pu", "targetV_pu", "DOUBLE", elementId));
   set->addReference(buildReference("vrremote_URef0Pu", "targetV_pu", "DOUBLE", elementId));
-  set->addMacroParSet(boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getMacroParameterSetId(constants::remoteVControlVRParId))));
+  set->addMacroParSet(std::unique_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getMacroParameterSetId(constants::remoteVControlVRParId))));
   return set;
 }
 

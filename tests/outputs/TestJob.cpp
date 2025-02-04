@@ -35,7 +35,7 @@ TEST(Job, write) {
     dfl::inputs::Configuration config("res/config_jobs.json", simulationKind);
     dfl::outputs::Job job(dfl::outputs::Job::JobDefinition("TestJob", "INFO", config));
 
-    auto jobEntry = job.write();
+    std::unique_ptr<job::JobEntry> jobEntry = job.write();
 
     ASSERT_EQ("TestJob", jobEntry->getName());
 
@@ -151,7 +151,7 @@ TEST(Job, write) {
     if (!boost::filesystem::exists(outputPath)) {
       boost::filesystem::create_directories(outputPath);
     }
-    job.exportJob(jobEntry, "TestIIDM.iidm", config);
+    job.exportJob(std::move(jobEntry), "TestIIDM.iidm", config);
 
     boost::filesystem::path reference("reference");
     reference.append(basename);
@@ -177,7 +177,7 @@ TEST(Job, writePrecision) {
   dfl::inputs::Configuration config("res/config.json");
   dfl::outputs::Job job(dfl::outputs::Job::JobDefinition(basename, "INFO", config));
 
-  auto jobEntry = job.write();
+  std::unique_ptr<job::JobEntry> jobEntry = job.write();
 
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
@@ -189,7 +189,7 @@ TEST(Job, writePrecision) {
   boost::filesystem::path reference("reference");
   reference.append(basename);
 
-  job.exportJob(jobEntry, "TestIIDM.iidm", config);
+  job.exportJob(std::move(jobEntry), "TestIIDM.iidm", config);
 
   const std::string filename_output = basename + ".jobs";
   outputPath.append(filename_output);
@@ -240,12 +240,12 @@ TEST(Job, ChosenOutputs) {
       const boost::filesystem::path chosenOutputsPath = static_cast<boost::filesystem::path>(chosenOutput.first);
       dfl::inputs::Configuration config(chosenOutputsPath, simulationKind);
       dfl::outputs::Job job(dfl::outputs::Job::JobDefinition("TestJobChosenOutputs", "INFO", config));
-      boost::shared_ptr<job::JobEntry> jobEntry = job.write();
-      const boost::shared_ptr<job::OutputsEntry> &outputsEntry = jobEntry->getOutputsEntry();
-      const std::vector<boost::shared_ptr<job::FinalStateEntry>> &finalStateEntry = outputsEntry->getFinalStateEntries();
-      const boost::shared_ptr<job::ConstraintsEntry> &constraintsEntry = outputsEntry->getConstraintsEntry();
-      const boost::shared_ptr<job::TimelineEntry> &timelineEntry = outputsEntry->getTimelineEntry();
-      const boost::shared_ptr<job::LostEquipmentsEntry> &lostEquipmentsEntry = outputsEntry->getLostEquipmentsEntry();
+      const std::unique_ptr<job::JobEntry> jobEntry = job.write();
+      const std::shared_ptr<job::OutputsEntry>& outputsEntry = jobEntry->getOutputsEntry();
+      const std::vector<std::shared_ptr<job::FinalStateEntry> >& finalStateEntry = outputsEntry->getFinalStateEntries();
+      const std::shared_ptr<job::ConstraintsEntry>& constraintsEntry = outputsEntry->getConstraintsEntry();
+      const std::shared_ptr<job::TimelineEntry>& timelineEntry = outputsEntry->getTimelineEntry();
+      const std::shared_ptr<job::LostEquipmentsEntry>& lostEquipmentsEntry = outputsEntry->getLostEquipmentsEntry();
 
       if (chosenOutput.second & 0b1000) {
         ASSERT_TRUE(finalStateEntry.front()->getExportIIDMFile());

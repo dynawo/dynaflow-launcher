@@ -21,7 +21,7 @@
 #include "Configuration.h"
 
 #include <PARParametersSetCollection.h>
-#include <boost/shared_ptr.hpp>
+
 
 namespace dfl {
 namespace outputs {
@@ -53,7 +53,7 @@ class ParSVarC {
    * @param startingPointMode starting point mode
    * @returns the macro parameter set for SVarC
    */
-  boost::shared_ptr<parameters::MacroParameterSet> writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  std::unique_ptr<parameters::MacroParameterSet> writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
   /**
    * @brief Write parameter set for static var compensator

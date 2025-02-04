@@ -261,7 +261,7 @@ void Context::exportOutputsContingency(const inputs::Contingency &contingency, c
 #if _DEBUG_
   // A JOBS file for every contingency is produced only in DEBUG mode
   outputs::Job jobEventWriter(outputs::Job::JobDefinition(basenameEvent, def_.dynawoLogLevel, config_, contingency.id, basename_));
-  boost::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
+  std::shared_ptr<job::JobEntry> jobEvent = jobEventWriter.write();
   jobsEvents_.emplace_back(jobEvent);
   outputs::Job::exportJob(jobEvent, absolute(def_.networkFilepath), config_);
 #endif
@@ -271,7 +271,7 @@ void Context::execute() {
 #if defined(_DEBUG_) || defined(PRINT_TIMERS)
   DYN::Timer timer("DFL::Context::execute()");
 #endif
-  auto simu_context = boost::make_shared<DYN::SimulationContext>();
+  std::unique_ptr<DYN::SimulationContext> simu_context = std::unique_ptr<DYN::SimulationContext>(new DYN::SimulationContext());
   simu_context->setResourcesDirectory(def_.dynawoResDir.generic_string());
   simu_context->setLocale(def_.locale);
 
@@ -288,7 +288,7 @@ void Context::execute() {
     LOG(info, SimulateInfo, basename_);
 
     // For a power flow calculation it is ok to directly run here a single simulation
-    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, simu_context, networkManager_.dataInterface());
+    auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, std::move(simu_context), networkManager_.dataInterface());
     simu->init();
     try {
       simu->simulate();
@@ -436,8 +436,8 @@ void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DY
     mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
 
     DYN::Trace::resetCustomAppender("", DYN::Trace::severityLevelFromString(def_.dynawoLogLevel));  // to force flush in dynawo.log
-    const std::vector<boost::shared_ptr<job::AppenderEntry>> &jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
-    for (const boost::shared_ptr<job::AppenderEntry> &jobLogAppender : jobLogAppenders) {
+    const std::vector<std::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
+    for (const std::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
       if (jobLogAppender->getTag() == "") {
         boost::filesystem::path jobLogFileRelativePath =
             boost::filesystem::path(jobEntry_->getOutputsEntry()->getOutputsDirectory()) / boost::filesystem::path("logs");
