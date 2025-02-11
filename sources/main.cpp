@@ -159,7 +159,7 @@ void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFiles
       const std::string archivePath = createAbsolutePath("outputs.zip", outputPath.generic_string());
       if (!runtimeConfig.contingenciesFilePath.empty() && boost::filesystem::exists(archivePath))
         archive = zip::ZipInputStream::read(archivePath);
-      for (const std::pair<std::string, std::string> &outputFile : mapOutputFilesData) {
+      for (auto &outputFile : mapOutputFilesData) {
         archive->addEntry(outputFile.first, outputFile.second);
       }
 
