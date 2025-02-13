@@ -294,7 +294,8 @@ void ParGenerator::updateTransfoParameters(std::shared_ptr<parameters::Parameter
 
 void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string &genId,
                                         const inputs::SettingDataBase::Set &databaseSetting, bool Rcpl2) {
-  std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu"};
+  std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_UStatorRefMaxPu",
+                                        "reactivePowerControlLoop_UStatorRefMinPu"};
   if (Rcpl2) {
     parameters.push_back("reactivePowerControlLoop_CqMaxPu");
     parameters.push_back("reactivePowerControlLoop_DeltaURefMaxPu");
