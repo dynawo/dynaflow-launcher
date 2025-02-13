@@ -66,12 +66,16 @@
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1"/>
     <par name="reactivePowerControlLoop_Tech" type="DOUBLE" value="10"/>
     <par name="reactivePowerControlLoop_Ti" type="DOUBLE" value="60"/>
+    <par name="reactivePowerControlLoop_UStatorRefMaxPu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="reactivePowerControlLoop_UStatorRefMinPu" type="DOUBLE" value="0.84999999999999998"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>
   <set id="99c2bba2-a805-50f1-9d84-49b63951bae6">
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00020000000000000001"/>
     <par name="reactivePowerControlLoop_QrPu" type="DOUBLE" value="1.3999999999999999"/>
     <par name="reactivePowerControlLoop_TiQ" type="DOUBLE" value="150"/>
+    <par name="reactivePowerControlLoop_UStatorRefMaxPu" type="DOUBLE" value="1.1499999999999999"/>
+    <par name="reactivePowerControlLoop_UStatorRefMinPu" type="DOUBLE" value="0.84999999999999998"/>
     <reference type="DOUBLE" name="generator_QNomAlt" origData="IIDM" origName="qNom"/>
     <reference type="DOUBLE" name="generator_SNom" origData="IIDM" origName="sNom"/>
     <macroParSet id="macro_signalNGeneratorRectangular"/>
