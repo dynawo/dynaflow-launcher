@@ -87,27 +87,55 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
     if (type == inputs::HvdcLine::ConverterType::LCC) {
       return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhi : HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ};
     } else {
+      auto converterVSC1 = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcline.converter1);
+      auto converterVSC2 = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcline.converter2);
+      bool voltageRegulation1 = converterVSC1->voltageRegulationOn;
+      bool voltageRegulation2 = converterVSC2->voltageRegulationOn;
       const bool hvdcAngleDroopActivePowerControlIsEnabled = hvdcline.activePowerControl.has_value() && !DYN::doubleIsZero(hvdcline.activePowerControl->droop);
       if (!hvdcAngleDroopActivePowerControlIsEnabled) {
         if (isInSVC) {
-          if (converterSide1)
-            return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side1
-                                                               : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1};
-          else
-            return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side2
-                                                               : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side2};
+          if (converterSide1) {
+            if (voltageRegulation1) {
+              return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side1
+                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1};
+            } else {
+              return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
+                                 HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
+            }
+          } else {
+            if (voltageRegulation2) {
+              return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side2
+                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side2};
+            } else {
+              return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
+                                 HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
+            }
+          }
         } else {
           return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
                                  HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
         }
       } else {
         if (isInSVC) {
-          if (converterSide1)
-            return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side1
-                                                               : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1};
-          else
-            return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side2
-                                                               : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2};
+          if (converterSide1) {
+            if (voltageRegulation1) {
+              return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side1
+                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1};
+            } else {
+              return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
+                                 HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
+                                 HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
+            }
+          } else {
+            if (voltageRegulation2) {
+              return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side2
+                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2};
+            } else {
+              return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
+                                 HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
+                                 HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
+            }
+          }
         } else {
           return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
                                  HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
@@ -121,7 +149,15 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
       return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPTanPhiDangling
                                                          : HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ};
     } else {
-      if (isInSVC) {
+      bool voltageRegulation = false;
+      if (position == HVDCDefinition::Position::FIRST_IN_MAIN_COMPONENT) {
+        auto converterVSC = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcline.converter1);
+        voltageRegulation = converterVSC->voltageRegulationOn;
+      } else {
+        auto converterVSC = std::dynamic_pointer_cast<inputs::VSCConverter>(hvdcline.converter2);
+        voltageRegulation = converterVSC->voltageRegulationOn;
+      }
+      if (isInSVC && voltageRegulation) {
         if (converterSide1)
           return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1
                                                              : HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1};
