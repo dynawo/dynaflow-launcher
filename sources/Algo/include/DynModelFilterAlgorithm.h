@@ -20,6 +20,7 @@
 #include "AssemblingDataBase.h"
 #include "DynModelDefinitionAlgorithm.h"
 #include "GeneratorDefinitionAlgorithm.h"
+#include "HVDCDefinitionAlgorithm.h"
 
 namespace dfl {
 namespace algo {
@@ -34,13 +35,16 @@ class DynModelFilterAlgorithm {
    *
    * @param assembling assembling database
    * @param generators the generators list to update
+   * @param hvdcLineDefinitions the HVDC lines list
    * @param dynamicModelsToFilter dynamic models by model id
    */
   DynModelFilterAlgorithm(const inputs::AssemblingDataBase& assembling,
                           GeneratorDefinitionAlgorithm::Generators& generators,
+                          HVDCLineDefinitions& hvdcLineDefinitions,
                           std::map<DynamicModelDefinition::DynModelId, DynamicModelDefinition>& dynamicModelsToFilter) :
     assembling_(assembling),
     generators_(generators),
+    hvdcLineDefinitions_(hvdcLineDefinitions),
     dynamicModelsToFilter_(dynamicModelsToFilter) {}
 
   /**
@@ -73,6 +77,7 @@ class DynModelFilterAlgorithm {
 
   const inputs::AssemblingDataBase& assembling_;                                         ///< assembling database
   GeneratorDefinitionAlgorithm::Generators& generators_;                                 ///< the generators list to update
+  HVDCLineDefinitions& hvdcLineDefinitions_;                                                  ///< the hvdclines list
   std::map<DynamicModelDefinition::DynModelId, DynamicModelDefinition>& dynamicModelsToFilter_;  ///< models by dynamic model id
 };
 

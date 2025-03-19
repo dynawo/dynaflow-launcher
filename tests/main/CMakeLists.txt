@@ -58,6 +58,7 @@ DEFINE_LAUNCH_TEST(hvdc_HvdcPV_HvdcPTanPhi_diagrams NO)
 DEFINE_LAUNCH_TEST(hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams NO)
 DEFINE_LAUNCH_TEST(hvdc_svc NO)
 DEFINE_LAUNCH_TEST(hvdc_svc_side2 NO)
+DEFINE_LAUNCH_TEST(hvdc_svc_off NO)
 
 DEFINE_LAUNCH_TEST(distant_regulation NO)
 

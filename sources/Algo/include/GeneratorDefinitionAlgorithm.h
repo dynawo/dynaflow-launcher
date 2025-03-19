@@ -99,7 +99,7 @@ class GeneratorDefinition {
            model == ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN;
   }
   /**
-   * @brief test is the generator has a reactive power control loop for connection to the secondary voltage control
+   * @brief test if the generator has a reactive power control loop for connection to the secondary voltage control
    *
    * @return @b true if the generator has a reactive power control loop for connection to the secondary voltage control, @b false otherwise
    */
@@ -111,7 +111,7 @@ class GeneratorDefinition {
            model == ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR || model == ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN;
   }
   /**
-   * @brief test is the generator has a reactive power control loop 2 for connection to the secondary voltage control
+   * @brief test if the generator has a reactive power control loop 2 for connection to the secondary voltage control
    *
    * @return @b true if the generator has a reactive power control loop 2 for connection to the secondary voltage control, @b false otherwise
    */

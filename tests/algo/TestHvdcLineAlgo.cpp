@@ -425,7 +425,7 @@ TEST(HvdcLine, modelsSVC) {
   auto &hvdcLines = hvdcDefs.hvdcLines;
   ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling);
-  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side1);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhi);
@@ -446,7 +446,7 @@ TEST(HvdcLine, modelsSVC) {
 
   ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ);
-  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side1);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ);
@@ -553,6 +553,7 @@ TEST(HvdcLine, modelsSVCSide2) {
   auto &hvdcLines = hvdcDefs.hvdcLines;
   ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDangling);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDangling);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side2);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingRpcl2Side2);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhi);
@@ -573,7 +574,7 @@ TEST(HvdcLine, modelsSVCSide2) {
 
   ASSERT_EQ(hvdcLines.size(), 11);
   ASSERT_EQ(hvdcLines.at("HVDCLCCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDanglingDiagramPQ);
-  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2);
+  ASSERT_EQ(hvdcLines.at("HVDCVSCLine").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQ);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine2").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2);
   ASSERT_EQ(hvdcLines.at("HVDCVSCLine3").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPVDanglingDiagramPQRpcl2Side2);
   ASSERT_EQ(hvdcLines.at("HVDCLineBothInMain1").model, dfl::algo::HVDCDefinition::HVDCModel::HvdcPTanPhiDiagramPQ);

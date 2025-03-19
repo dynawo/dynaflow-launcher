@@ -136,7 +136,7 @@ bool Context::process() {
   }
   walkNodesMain();
 
-  algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(dynamicDataBaseManager_.assembling(), generators_, dynamicModels_.models);
+  algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(dynamicDataBaseManager_.assembling(), generators_, hvdcLineDefinitions_, dynamicModels_.models);
   dynModelFilterAlgorithm.filter();
 
   // the validation of contingencies on algorithm definitions must be done after walking all nodes

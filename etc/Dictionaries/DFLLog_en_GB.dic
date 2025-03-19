@@ -67,4 +67,5 @@ SecurityAnalysisSimulationInfo  =     initializing Security Analysis simulation 
 ModelPartiallyConnected       =     dynamic model %1% is only partially connected to network so it is removed from exported models
 SVCConnectedToDefaultGen      =     ignoring connection from the non voltage regulating generator %1% to the secondary voltage control model %2%
 SVCConnectedToGenRegulatingNode  =     ignoring connection from the generator %1% to the secondary voltage control model %2% as the regulated node is regulated by several generators
+SVCConnectedToNonRegulatingVsc  =     ignoring connection from the converter %1% to the secondary voltage control model %2% as its voltage regulation is off
 EmptySVC                      =     secondary voltage control model %1% is ignored as no voltage regulating generator is participating in it

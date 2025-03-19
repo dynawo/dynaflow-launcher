@@ -33,6 +33,7 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
     const std::string dynModelId = "SVC";
     DynamicModelDefinition dynModel(dynModelId, dfl::common::constants::svcModelName);
     std::vector<dfl::algo::GeneratorDefinition> generators;
+    dfl::algo::HVDCLineDefinitions hvdcLineDefinitions;
     std::array<std::pair<std::string, dfl::algo::GeneratorDefinition::ModelType>, 12> gensArray = {
         std::make_pair("_GEN____1_SM", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_INFINITE),
         std::make_pair("_GEN____2_SM", dfl::algo::GeneratorDefinition::ModelType::SIGNALN_RPCL_RECTANGULAR),
@@ -85,7 +86,7 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
     models.insert({dynModelId, dynModel});
     models.insert({dynModelId2, dynModel2});
     dfl::inputs::AssemblingDataBase assembling("res/assembling_svc.xml");
-    dfl::algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(assembling, generators, models);
+    dfl::algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(assembling, generators, hvdcLineDefinitions, models);
     dynModelFilterAlgorithm.filter();
     auto modelsIt = models.find(dynModelId);
     switch (testConfig) {

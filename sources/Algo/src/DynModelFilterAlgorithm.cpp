@@ -84,15 +84,21 @@ DynModelFilterAlgorithm::filterPartiallyConnectedDynamicModels() {
     // Filtering generators with default model or regulating a node regulated by several generators from SVCs
     if (automaton.second.lib == dfl::common::constants::svcModelName) {
       std::vector<algo::DynamicModelDefinition::MacroConnection> toRemove;
+      auto &hvdcLines = hvdcLineDefinitions_.hvdcLines;
       for (const DynamicModelDefinition::MacroConnection& connection : modelDef.nodeConnections) {
         DynamicModelDefinition::MacroConnection::ElementId compId = connection.connectedElementId;
-        auto found = std::find_if(generators_.begin(), generators_.end(),
+        auto foundGen = std::find_if(generators_.begin(), generators_.end(),
                                   [&compId](const algo::GeneratorDefinition& genDefinition) { return genDefinition.id == compId; });
-        if (found != generators_.end() && found->isNetwork()) {
+        auto foundHvdc = hvdcLines.find(compId);
+        if (foundGen != generators_.end() && foundGen->isNetwork()) {
           LOG(debug, SVCConnectedToDefaultGen, connection.connectedElementId, automaton.second.id);
           toRemove.push_back(connection);
-        } else if (found != generators_.end() && !found->hasRpcl()) {
+        } else if (foundGen != generators_.end() && !foundGen->hasRpcl()) {
           LOG(debug, SVCConnectedToGenRegulatingNode, connection.connectedElementId, automaton.second.id);
+          toRemove.push_back(connection);
+        }
+        if (foundHvdc != hvdcLines.end() && !foundHvdc->second.hasRpcl()) {
+          LOG(debug, SVCConnectedToNonRegulatingVsc, connection.connectedElementId, automaton.second.id);
           toRemove.push_back(connection);
         }
       }
