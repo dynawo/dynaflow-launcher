@@ -22,15 +22,15 @@ if(DYNAFLOW_LAUNCHER_BUILD_TESTS)
 
     set(BUILD_SHARED_LIBS ON CACHE INTERNAL "Build shared libraries")
     set(gtest_force_shared_crt ON CACHE INTERNAL "Force shared crt")
-    set(googletest_version   1.8.1)
+    set(googletest_version   1.16.0)
     set(googletest_name      googletest-release-${googletest_version}.tar.gz)
     if(DEFINED ENV{DYNAFLOW_LAUNCHER_GOOGLETEST_DOWNLOAD_URL})
       set(googletest_prefix_url $ENV{DYNAFLOW_LAUNCHER_GOOGLETEST_DOWNLOAD_URL})
     else()
       set(googletest_prefix_url https://github.com/google/googletest/archive)
     endif()
-    set(googletest_url       ${googletest_prefix_url}/release-${googletest_version}.tar.gz)
-    set(googletest_md5       2E6FBEB6A91310A16EFE181886C59596)
+    set(googletest_url       ${googletest_prefix_url}/v${googletest_version}.tar.gz)
+    set(googletest_md5       9a75eb2ac97300cdb8b65b1a5833f411)
     FetchContent_Declare(
       googletest
 
