@@ -30,7 +30,8 @@ target_link_libraries(INPUTS.TestDynamicDataBaseManager
  PRIVATE
   DynaFlowLauncher::inputs
 )
-set_property(TEST INPUTS.TestDynamicDataBaseManager APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd")
+set_property(TEST INPUTS.TestDynamicDataBaseManager APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_XSD=${CMAKE_SOURCE_DIR}/etc/xsd"
+                                                    APPEND PROPERTY ENVIRONMENT "DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION=true")
 
 DEFINE_TEST(TestNetworkManager INPUTS IIDM)
 target_link_libraries(INPUTS.TestNetworkManager
