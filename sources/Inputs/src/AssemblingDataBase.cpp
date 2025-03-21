@@ -33,10 +33,6 @@ namespace inputs {
  * @return the corresponding xsd filepath or an empty path if not found
  */
 static file::path computeXsdPath(const file::path &filepath) {
-  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
-  if (validation != NULL && std::string(validation) != "true") {
-    return file::path("");
-  }
   auto basename = filepath.filename().replace_extension().generic_string();
 
   auto var = getenv("DYNAFLOW_LAUNCHER_XSD");
@@ -70,12 +66,17 @@ AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path &assembling
     return;
   }
 
-  auto xsd = computeXsdPath(assemblingFilePath);
-  if (xsd.empty()) {
-    LOG(warn, DynModelFileXSDNotFound, assemblingFilePath.generic_string());
-    xsdValidation = false;
+  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
+  if (validation != NULL && (std::string(validation) == "true" || std::string(validation) == "TRUE")) {
+    auto xsd = computeXsdPath(assemblingFilePath);
+    if (xsd.empty()) {
+      LOG(warn, DynModelFileXSDNotFound, assemblingFilePath.generic_string());
+      xsdValidation = false;
+    } else {
+      parser->addXmlSchema(xsd.generic_string());
+    }
   } else {
-    parser->addXmlSchema(xsd.generic_string());
+    xsdValidation = false;
   }
 
   try {
