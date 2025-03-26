@@ -40,10 +40,6 @@ const std::string SettingDataBase::SettingXmlDocument::origData_("IIDM");
  * @return the corresponding xsd filepath or an empty path if not found
  */
 static file::path computeXsdPath(const file::path &filepath) {
-  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
-  if (validation != NULL && std::string(validation) != "true") {
-    return file::path("");
-  }
   auto basename = filepath.filename().replace_extension().generic_string();
 
   auto var = getenv("DYNAFLOW_LAUNCHER_XSD");
@@ -77,12 +73,17 @@ SettingDataBase::SettingDataBase(const boost::filesystem::path &settingFilePath)
     return;
   }
 
-  auto xsd = computeXsdPath(settingFilePath);
-  if (xsd.empty()) {
-    LOG(warn, DynModelFileXSDNotFound, settingFilePath.generic_string());
-    xsdValidation = false;
+  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
+  if (validation != NULL && (std::string(validation) == "true" || std::string(validation) == "TRUE")) {
+    auto xsd = computeXsdPath(settingFilePath);
+    if (xsd.empty()) {
+      LOG(warn, DynModelFileXSDNotFound, settingFilePath.generic_string());
+      xsdValidation = false;
+    } else {
+      parser->addXmlSchema(xsd.generic_string());
+    }
   } else {
-    parser->addXmlSchema(xsd.generic_string());
+    xsdValidation = false;
   }
 
   try {
