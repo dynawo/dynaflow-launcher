@@ -37,10 +37,8 @@ class Network {
      * @param filename file path for output Network model parameters file (corresponds to basename)
      * @param startingPointMode starting point mode
      */
-    NetworkDefinition(const boost::filesystem::path& filename,
-                      dfl::inputs::Configuration::StartingPointMode startingPointMode) :
-        filepath_(filename),
-        startingPointMode_(startingPointMode) {}
+    NetworkDefinition(const boost::filesystem::path &filename, dfl::inputs::Configuration::StartingPointMode startingPointMode)
+        : filepath_(filename), startingPointMode_(startingPointMode) {}
 
     boost::filesystem::path filepath_;                                 ///< file path of the output file to write
     dfl::inputs::Configuration::StartingPointMode startingPointMode_;  ///< starting point mode
@@ -51,7 +49,7 @@ class Network {
    *
    * @param def Network model parameters file description
    */
-  explicit Network(NetworkDefinition&& def);
+  explicit Network(NetworkDefinition &&def);
 
   /**
    * @brief Export Network model parameters file
@@ -64,7 +62,7 @@ class Network {
    *
    * @return the new parameter set for network
    */
-  std::shared_ptr<parameters::ParametersSet> writeNetworkSet() const;
+  boost::shared_ptr<parameters::ParametersSet> writeNetworkSet() const;
 
   NetworkDefinition def_;  ///< Network model parameters file description
 };

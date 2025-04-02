@@ -89,8 +89,8 @@ class ParGenerator {
    *
    * @returns the parameter set
    */
-  std::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
-                                                                         const algo::GeneratorDefinition &generator, StartingPointMode startingPointMode);
+  boost::shared_ptr<parameters::ParametersSet> writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
+                                                                           const algo::GeneratorDefinition &generator, StartingPointMode startingPointMode);
 
   /**
    * @brief Update parameter set with SignalN generator parameters and references
@@ -101,7 +101,7 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @param hasActivePowerControl true if the generator has active power control information
    */
-  void updateSignalNGenerator(std::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
+  void updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation,
                               double targetP, StartingPointMode startingPointMode, bool hasActivePowerControl);
 
   /**
@@ -110,7 +110,7 @@ class ParGenerator {
    * @param set the parameter set to update
    * @param isNuclear true if the energy source of the generator is nuclear
    */
-  void updateTransfoParameters(std::shared_ptr<parameters::ParametersSet> set, bool isNuclear);
+  void updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear);
 
   /**
    * @brief Update parameter set with Rpcl parameters
@@ -120,7 +120,7 @@ class ParGenerator {
    * @param databaseSetting the settings found in setting file
    * @param Rcpl2 true if the model used is RPCL2, false otherwise
    */
-  void updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string &genId, const inputs::SettingDataBase::Set &databaseSetting,
+  void updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string &genId, const inputs::SettingDataBase::Set &databaseSetting,
                             bool Rcpl2);
 
   /**
@@ -132,8 +132,8 @@ class ParGenerator {
    *
    * @returns the parameter set
    */
-  std::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
-                                                            const boost::filesystem::path &dirname);
+  boost::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
+                                                              const boost::filesystem::path &dirname);
 
   /**
    * @brief set the kGover value based on if generator has active power control and targetP value
@@ -151,7 +151,7 @@ class ParGenerator {
    * @param def the generator definition to use
    * @param set the parameter set to be updated
    */
-  void updateRemoteRegulationParameters(const algo::GeneratorDefinition &def, std::shared_ptr<parameters::ParametersSet> set);
+  void updateRemoteRegulationParameters(const algo::GeneratorDefinition &def, boost::shared_ptr<parameters::ParametersSet> set);
 
  private:
   const std::vector<algo::GeneratorDefinition> &generatorDefinitions_;  ///< list of generators definitions

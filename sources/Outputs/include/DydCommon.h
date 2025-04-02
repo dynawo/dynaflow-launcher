@@ -19,8 +19,7 @@
 
 #include <DYDBlackBoxModel.h>
 #include <DYDBlackBoxModelFactory.h>
-
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 namespace dfl {
 namespace outputs {
@@ -37,9 +36,9 @@ namespace helper {
  * @param parId par id referring to
  * @return a black box model referring to a static id
  */
-inline std::unique_ptr<dynamicdata::BlackBoxModel>
-buildBlackBoxStaticId(const std::string& modelId, const std::string& staticId, const std::string& lib, const std::string& parFile, const std::string& parId) {
-  std::unique_ptr<dynamicdata::BlackBoxModel> model = dynamicdata::BlackBoxModelFactory::newModel(modelId);
+inline boost::shared_ptr<dynamicdata::BlackBoxModel> buildBlackBoxStaticId(const std::string &modelId, const std::string &staticId, const std::string &lib,
+                                                                           const std::string &parFile, const std::string &parId) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(modelId);
   model->setStaticId(staticId);
   model->setLib(lib);
   model->setParFile(parFile);
@@ -56,9 +55,9 @@ buildBlackBoxStaticId(const std::string& modelId, const std::string& staticId, c
  * @param parId par id referring to
  * @return a black box model referring to a static id
  */
-inline std::unique_ptr<dynamicdata::BlackBoxModel>
-buildBlackBox(const std::string& modelId, const std::string& lib, const std::string& parFile, const std::string& parId) {
-  std::unique_ptr<dynamicdata::BlackBoxModel> model = dynamicdata::BlackBoxModelFactory::newModel(modelId);
+inline boost::shared_ptr<dynamicdata::BlackBoxModel> buildBlackBox(const std::string &modelId, const std::string &lib, const std::string &parFile,
+                                                                   const std::string &parId) {
+  auto model = dynamicdata::BlackBoxModelFactory::newModel(modelId);
   model->setLib(lib);
   model->setParFile(parFile);
   model->setParId(parId);

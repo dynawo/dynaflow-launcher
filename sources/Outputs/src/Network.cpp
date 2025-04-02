@@ -27,10 +27,9 @@
 namespace dfl {
 namespace outputs {
 
-Network::Network(NetworkDefinition&& def) : def_{std::move(def)} {}
+Network::Network(NetworkDefinition &&def) : def_{std::move(def)} {}
 
-void
-Network::write() const {
+void Network::write() const {
   parameters::XmlExporter exporter;
   boost::shared_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   paramSetCollection->addParametersSet(writeNetworkSet());
@@ -38,10 +37,9 @@ Network::write() const {
   exporter.exportToFile(paramSetCollection, networkFileName.generic_string(), constants::xmlEncoding);
 }
 
-std::shared_ptr<parameters::ParametersSet>
-Network::writeNetworkSet() const {
+boost::shared_ptr<parameters::ParametersSet> Network::writeNetworkSet() const {
   // Network
-  auto set = parameters::ParametersSetFactory::newParametersSet(constants::networkParId);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::networkParId));
 
   set->addParameter(helper::buildParameter("capacitor_no_reclosing_delay", 300.));
   set->addParameter(helper::buildParameter("dangling_line_currentLimit_maxTimeOperation", 90.));

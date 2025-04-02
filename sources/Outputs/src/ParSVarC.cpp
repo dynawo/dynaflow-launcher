@@ -20,12 +20,11 @@ namespace outputs {
 
 const std::string ParSVarC::macroParameterSetStaticCompensator_("MacroParameterSetStaticCompensator");
 
-void
-ParSVarC::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+void ParSVarC::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection,
+                     dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!svarcsDefinitions_.empty()) {
     paramSetCollection->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators(startingPointMode));
-    for (const auto& svarc : svarcsDefinitions_) {
+    for (const auto &svarc : svarcsDefinitions_) {
       if (svarc.isNetwork()) {
         continue;
       }
@@ -55,9 +54,8 @@ ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration
   return macro;
 }
 
-std::shared_ptr<parameters::ParametersSet>
-ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc) {
-  auto set = parameters::ParametersSetFactory::newParametersSet(constants::uuid(svarc.id));
+boost::shared_ptr<parameters::ParametersSet> ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition &svarc) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::uuid(svarc.id)));
 
   set->addMacroParSet(boost::make_shared<parameters::MacroParSet>(macroParameterSetStaticCompensator_));
   double value;

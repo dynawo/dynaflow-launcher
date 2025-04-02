@@ -8,25 +8,23 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
-#include "Configuration.h"
 #include "ParLoads.h"
+#include "Configuration.h"
 #include "ParCommon.h"
 
 namespace dfl {
 namespace outputs {
 
-void
-ParLoads::write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+void ParLoads::write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection,
+                     dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!loadsDefinitions_.empty()) {
     paramSetCollection->addParametersSet(writeConstantLoadsSet(startingPointMode));
   }
 }
 
-std::shared_ptr<parameters::ParametersSet>
-ParLoads::writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+boost::shared_ptr<parameters::ParametersSet> ParLoads::writeConstantLoadsSet(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   // Load
-  auto set = parameters::ParametersSetFactory::newParametersSet(constants::loadParId);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(constants::loadParId));
   set->addParameter(helper::buildParameter("load_Alpha", 1.5));
   set->addParameter(helper::buildParameter("load_Beta", 2.5));
   set->addParameter(helper::buildParameter("load_UMax0Pu", 1.15));

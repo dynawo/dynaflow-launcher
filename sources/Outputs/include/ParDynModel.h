@@ -81,7 +81,7 @@ class ParDynModel {
    *
    * @returns the parameter set to add
    */
-  std::shared_ptr<parameters::ParametersSet>
+  boost::shared_ptr<parameters::ParametersSet>
   writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &set, const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
                                 const algo::DynamicModelDefinition &automaton, const algo::ShuntCounterDefinitions &counters,
                                 const algo::DynamicModelDefinitions &models, const algo::LinesByIdDefinitions &linesById,
@@ -96,7 +96,7 @@ class ParDynModel {
    *
    * @returns the parameter set to add
    */
-  std::shared_ptr<parameters::ParametersSet> writeSVCParameterSet(const inputs::SettingDataBase::Set &set,
+  boost::shared_ptr<parameters::ParametersSet> writeSVCParameterSet(const inputs::SettingDataBase::Set &set,
                                                                     const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
                                                                     const algo::DynamicModelDefinition &automaton);
 

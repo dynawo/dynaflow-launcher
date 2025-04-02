@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "SVarCDefinitionAlgorithm.h"
 #include "Configuration.h"
+#include "SVarCDefinitionAlgorithm.h"
 
 #include <PARParametersSetCollection.h>
 #include <boost/shared_ptr.hpp>
@@ -36,7 +36,7 @@ class ParSVarC {
    *
    * @param svarcsDefinitions reference to the list of SVarCs definitions
    */
-  explicit ParSVarC(const std::vector<algo::StaticVarCompensatorDefinition>& svarcsDefinitions) : svarcsDefinitions_(svarcsDefinitions) {}
+  explicit ParSVarC(const std::vector<algo::StaticVarCompensatorDefinition> &svarcsDefinitions) : svarcsDefinitions_(svarcsDefinitions) {}
 
   /**
    * @brief enrich the parameter set collection for SvarCs
@@ -44,8 +44,7 @@ class ParSVarC {
    * @param paramSetCollection parameter set collection to enrich
    * @param startingPointMode starting point mode
    */
-  void write(boost::shared_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-              dfl::inputs::Configuration::StartingPointMode startingPointMode);
+  void write(boost::shared_ptr<parameters::ParametersSetCollection> &paramSetCollection, dfl::inputs::Configuration::StartingPointMode startingPointMode);
 
  private:
   /**
@@ -60,7 +59,7 @@ class ParSVarC {
    * @param svarc the static var compensator to use
    * @returns the parameter set to add to the exported file
    */
-  std::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc);
+  boost::shared_ptr<parameters::ParametersSet> writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition &svarc);
 
   /**
    * @brief Computes the susceptance value in PU unit
@@ -71,9 +70,7 @@ class ParSVarC {
    * @param VNom the nominal voltage of the corresponding SVarC
    * @returns the converted susceptance value
    */
-  inline double computeBPU(double b, double VNom) {
-    return b * VNom * VNom / Sb_;
-  }
+  inline double computeBPU(double b, double VNom) { return b * VNom * VNom / Sb_; }
 
  private:
   std::vector<algo::StaticVarCompensatorDefinition> svarcsDefinitions_;  ///< list of SVarCs definitions

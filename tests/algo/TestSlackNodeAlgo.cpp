@@ -31,9 +31,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   using MapKey = std::tuple<std::string, std::string>;
 
  public:
-  void clear() {
-    map_.clear();
-  }
+  void clear() { map_.clear(); }
 
   /**
    * @brief Add a switch connection
@@ -44,7 +42,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
    * @param VLId the voltage level id containing both buses
    * @param otherbusid the other bus id
    */
-  void add(const std::string& busId, const std::string& VLId, const std::string& otherbusid) {
+  void add(const std::string &busId, const std::string &VLId, const std::string &otherbusid) {
     map_[std::tie(busId, VLId)].push_back(otherbusid);
     map_[std::tie(otherbusid, VLId)].push_back(busId);
   }
@@ -52,14 +50,14 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getBusesConnectedBySwitch
    */
-  std::vector<std::string> getBusesConnectedBySwitch(const std::string& busId, const std::string& VLId) const final {
+  std::vector<std::string> getBusesConnectedBySwitch(const std::string &busId, const std::string &VLId) const final {
     auto it = map_.find(std::tie(busId, VLId));
     if (it == map_.end()) {
       return {};
     }
 
     std::set<std::string> set;
-    for (const auto& id : it->second) {
+    for (const auto &id : it->second) {
       updateSet(set, busId, VLId);
     }
     std::vector<std::string> ret(set.begin(), set.end());
@@ -70,12 +68,10 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getRegulatedBus
    */
-  std::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string& regulatingComponent) const final {
-    return std::shared_ptr<DYN::BusInterface>();
-  }
+  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string &regulatingComponent) const final { return boost::shared_ptr<DYN::BusInterface>(); }
 
  private:
-  void updateSet(std::set<std::string>& set, const std::string& str, const std::string& vlid) const {
+  void updateSet(std::set<std::string> &set, const std::string &str, const std::string &vlid) const {
     if (set.count(str) > 0) {
       return;
     }
@@ -86,7 +82,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
       return;
     }
 
-    for (const auto& id : it->second) {
+    for (const auto &id : it->second) {
       updateSet(set, id, vlid);
     }
   }

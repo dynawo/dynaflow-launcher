@@ -25,15 +25,15 @@ void ParHvdc::write(boost::shared_ptr<parameters::ParametersSetCollection> &para
   }
 }
 
-std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,
-                                                                  const boost::filesystem::path &dirname,
-                                                                  dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                                                                  const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+boost::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,
+                                                                    const boost::filesystem::path &dirname,
+                                                                    dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                                                                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   auto dirnameDiagram = dirname;
   dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
   // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable
-  auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram, &dynamicDataBaseManager](std::shared_ptr<parameters::ParametersSet> set,
+  auto updateHVDCParams = [&hvdcDefinition, &dirnameDiagram, &dynamicDataBaseManager](boost::shared_ptr<parameters::ParametersSet> set,
                                                                                       const algo::HVDCDefinition::ConverterId &converterId,
                                                                                       size_t converterNumber, size_t parameterNumber) {
     constexpr double factorPU = 100;
@@ -79,7 +79,7 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
     }
   };
 
-  auto set = parameters::ParametersSetFactory::newParametersSet(hvdcDefinition.id);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(hvdcDefinition.id));
   std::string first = "1";
   std::string second = "2";
   if (hvdcDefinition.position == dfl::algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcDefinition.converterStationOnSide2()) {

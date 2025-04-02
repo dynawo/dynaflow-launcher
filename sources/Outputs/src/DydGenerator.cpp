@@ -55,10 +55,9 @@ void DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>
       continue;
     }
     std::string parId = helper::getGeneratorParameterSetId(generator);
-    std::unique_ptr<dynamicdata::BlackBoxModel> blackBoxModel =
-        helper::buildBlackBoxStaticId(generator.id, generator.id, correspondence_lib_.at(generator.model), basename + ".par", parId);
+    auto blackBoxModel = helper::buildBlackBoxStaticId(generator.id, generator.id, correspondence_lib_.at(generator.model), basename + ".par", parId);
     blackBoxModel->addMacroStaticRef(dynamicdata::MacroStaticRefFactory::newMacroStaticRef(macroStaticRefSignalNGeneratorName_));
-    dynamicModelsToConnect->addModel(std::move(blackBoxModel));
+    dynamicModelsToConnect->addModel(blackBoxModel);
   }
   writeThetaRefConnect(dynamicModelsToConnect, slackNodeId);
   writeMacroConnector(dynamicModelsToConnect);
@@ -69,33 +68,32 @@ void DydGenerator::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>
 
 void DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!generatorDefinitions_.empty()) {
-    std::unique_ptr<dynamicdata::MacroConnector> connector1 = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
-    connector1->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
-    connector1->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
-    dynamicModelsToConnect->addMacroConnector(std::move(connector1));
+    auto connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
+    connector->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
+    connector->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
+    dynamicModelsToConnect->addMacroConnector(connector);
 
-    std::unique_ptr<dynamicdata::MacroConnector> connector2 = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
-    connector2->addConnect("generator_N", "signalN_N");
-    dynamicModelsToConnect->addMacroConnector(std::move(connector2));
+    connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
+    connector->addConnect("generator_N", "signalN_N");
+    dynamicModelsToConnect->addMacroConnector(connector);
   }
 }
 
 void DydGenerator::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!generatorDefinitions_.empty()) {
-    std::unique_ptr<dynamicdata::MacroStaticReference> macroStaticReference =
-        dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
+    auto macroStaticReference = dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefSignalNGeneratorName_);
     macroStaticReference->addStaticRef("generator_PGenPu", "p");
     macroStaticReference->addStaticRef("generator_QGenPu", "q");
     macroStaticReference->addStaticRef("generator_state", "state");
-    dynamicModelsToConnect->addMacroStaticReference(std::move(macroStaticReference));
+    dynamicModelsToConnect->addMacroStaticReference(macroStaticReference);
   }
 }
 
 void DydGenerator::writeSignalNBlackBox(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!generatorDefinitions_.empty()) {
-    std::unique_ptr<dynamicdata::BlackBoxModel> blackBoxModelSignalN = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
+    auto blackBoxModelSignalN = dynamicdata::BlackBoxModelFactory::newModel(signalNModelName_);
     blackBoxModelSignalN->setLib("SignalN");
-    dynamicModelsToConnect->addModel(std::move(blackBoxModelSignalN));
+    dynamicModelsToConnect->addModel(blackBoxModelSignalN);
   }
 }
 
@@ -111,12 +109,10 @@ void DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModel
       dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U_value");
     }
 
-    std::unique_ptr<dynamicdata::MacroConnect> connection =
-        dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenName_, it->id, constants::networkModelName);
-    std::unique_ptr<dynamicdata::MacroConnect> signal =
-        dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenSignalNName_, it->id, signalNModelName_);
-    dynamicModelsToConnect->addMacroConnect(std::move(connection));
-    dynamicModelsToConnect->addMacroConnect(std::move(signal));
+    auto connection = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenName_, it->id, constants::networkModelName);
+    auto signal = dynamicdata::MacroConnectFactory::newMacroConnect(macroConnectorGenSignalNName_, it->id, signalNModelName_);
+    dynamicModelsToConnect->addMacroConnect(connection);
+    dynamicModelsToConnect->addMacroConnect(signal);
   }
 }
 

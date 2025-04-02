@@ -37,7 +37,8 @@
 #include <DYDMacroStaticReference.h>
 #include <boost/shared_ptr.hpp>
 #include <string>
-
+#include <unordered_map>
+#include <vector>
 
 namespace dfl {
 namespace outputs {
@@ -59,17 +60,14 @@ class DydEvent {
      * @param contingency definition of the contingency for which we have to create a DYD file
      * @param networkElements set of contingencies elements using network cpp model
      */
-    DydEventDefinition(const std::string& base, const std::string& filepath, const inputs::Contingency& contingency,
-                       const std::unordered_set<std::string>& networkElements) :
-        basename(base),
-        filename(filepath),
-        contingency(contingency),
-        networkElements_(networkElements) {}
+    DydEventDefinition(const std::string &base, const std::string &filepath, const inputs::Contingency &contingency,
+                       const std::unordered_set<std::string> &networkElements)
+        : basename(base), filename(filepath), contingency(contingency), networkElements_(networkElements) {}
 
     std::string basename;                                     ///< basename for file
     std::string filename;                                     ///< filepath for file to write
-    const inputs::Contingency& contingency;                   ///< the contingency for which event dynamic models will be built
-    const std::unordered_set<std::string>& networkElements_;  ///< set of contingencies elements using network cpp model
+    const inputs::Contingency &contingency;                   ///< the contingency for which event dynamic models will be built
+    const std::unordered_set<std::string> &networkElements_;  ///< set of contingencies elements using network cpp model
   };
 
   /**
@@ -77,7 +75,7 @@ class DydEvent {
    *
    * @param def the dyd definition
    */
-  explicit DydEvent(DydEventDefinition&& def);
+  explicit DydEvent(DydEventDefinition &&def);
 
   /**
    * @brief Write the dyd file
@@ -93,7 +91,7 @@ class DydEvent {
    *
    * @returns model for the branch disconnection event
    */
-  static std::unique_ptr<dynamicdata::BlackBoxModel> buildBranchDisconnection(const std::string& branchId, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildBranchDisconnection(const std::string &branchId, const std::string &basename);
 
   /**
    * @brief Create connections for branch disconnection events
@@ -104,7 +102,7 @@ class DydEvent {
    *
    * @returns the macro connection elements
    */
-  static std::unique_ptr<dynamicdata::MacroConnect> buildBranchDisconnectionConnect(const std::string& branchId);
+  static boost::shared_ptr<dynamicdata::MacroConnect> buildBranchDisconnectionConnect(const std::string &branchId);
 
   /**
    * @brief Create black box model for disconnecting an equipment through a switchOffSignal
@@ -114,7 +112,7 @@ class DydEvent {
    *
    * @returns model for the equipment disconnection event
    */
-  static std::unique_ptr<dynamicdata::BlackBoxModel> buildSwitchOffSignalDisconnection(const std::string& elementId, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildSwitchOffSignalDisconnection(const std::string &elementId, const std::string &basename);
 
   /**
    * @brief Adds connections for disconnection events that use a switch off signal
@@ -124,8 +122,8 @@ class DydEvent {
    * @param var2Prefix the prefix of the var2 name in the connect depends on the type of equipment ("generator", ...)
    *
    */
-  static void addSwitchOffSignalDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId,
-                                                     const std::string& var2Prefix);
+  static void addSwitchOffSignalDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId,
+                                                     const std::string &var2Prefix);
 
   /**
    * @brief Create black box model for disconnecting an equipment through a change in Network state
@@ -135,7 +133,7 @@ class DydEvent {
    *
    * @returns model for the equipment disconnection event
    */
-  static std::unique_ptr<dynamicdata::BlackBoxModel> buildNetworkStateDisconnection(const std::string& elementId, const std::string& basename);
+  static boost::shared_ptr<dynamicdata::BlackBoxModel> buildNetworkStateDisconnection(const std::string &elementId, const std::string &basename);
 
   /**
    * @brief Adds connections for disconnection events that use a change in Network state
@@ -144,7 +142,7 @@ class DydEvent {
    * @param elementId the static id of the equipment to process
    *
    */
-  static void addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
+  static void addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId);
 
   /**
    * @brief Adds connections for disconnection events that use a change in Network state1 and state2 attributes
@@ -153,7 +151,7 @@ class DydEvent {
    * @param elementId the static id of the equipment to process
    *
    */
-  static void addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModels, const std::string& elementId);
+  static void addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId);
 
   /**
    * @brief Determines if contingency element is using a network cpp model
@@ -162,7 +160,7 @@ class DydEvent {
    *
    * @returns true if contingency element is using a network cpp model
    */
-  bool isNetwork(const std::string& elementId) const;
+  bool isNetwork(const std::string &elementId) const;
 
  private:
   DydEventDefinition def_;  ///< Dyd file information

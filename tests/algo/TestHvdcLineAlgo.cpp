@@ -77,7 +77,7 @@ class TestAlgoServiceManagerInterface : public DYN::ServiceManagerInterface {
   /**
    * @copydoc DYN::ServiceManagerInterface::getRegulatedBus
    */
-  std::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string &regulatingComponent) const final { return std::shared_ptr<DYN::BusInterface>(); }
+  boost::shared_ptr<DYN::BusInterface> getRegulatedBus(const std::string &regulatingComponent) const final { return boost::shared_ptr<DYN::BusInterface>(); }
 
  private:
   void updateSet(std::set<std::string> &set, const std::string &str, const std::string &vlid) const {

@@ -31,7 +31,7 @@ void ParDynModel::write(boost::shared_ptr<parameters::ParametersSetCollection> &
                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::ShuntCounterDefinitions &shuntCounters,
                         const algo::LinesByIdDefinitions &linesByIdDefinitions, const algo::TransformersByIdDefinitions &transformersById) {
   for (const auto &dynModel : dynamicModelsDefinitions_.models) {
-    std::shared_ptr<parameters::ParametersSet> new_set;
+    boost::shared_ptr<parameters::ParametersSet> new_set;
 
     if (dynModel.second.lib == common::constants::svcModelName) {
       new_set = writeSVCParameterSet(dynamicDataBaseManager.setting().getSet(dynModel.first), dynamicDataBaseManager, dynModel.second);
@@ -55,10 +55,10 @@ boost::optional<std::string> ParDynModel::getTransformerComponentId(const algo::
   return boost::none;
 }
 
-std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set &set,
-                                                                             const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
-                                                                             const algo::DynamicModelDefinition &automaton) {
-  auto new_set = parameters::ParametersSetFactory::newParametersSet(set.id);
+boost::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(const inputs::SettingDataBase::Set &set,
+                                                                               const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
+                                                                               const algo::DynamicModelDefinition &automaton) {
+  auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
 
   std::unordered_map<std::string, unsigned> regulatorIdToInitialIndex;
   auto itAutomaton = dynamicDataBaseManager.assembling().dynamicAutomatons().find(automaton.id);
@@ -176,7 +176,7 @@ std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(con
   return new_set;
 }
 
-std::shared_ptr<parameters::ParametersSet>
+boost::shared_ptr<parameters::ParametersSet>
 ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &set, const inputs::DynamicDataBaseManager &dynamicDataBaseManager,
                                            const algo::DynamicModelDefinition &automaton, const algo::ShuntCounterDefinitions &counters,
                                            const algo::DynamicModelDefinitions &models, const algo::LinesByIdDefinitions &linesById,
@@ -186,7 +186,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
     return nullptr;
   }
 
-  auto new_set = parameters::ParametersSetFactory::newParametersSet(set.id);
+  auto new_set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(set.id));
   for (const auto &count : set.counts) {
     const auto &multipleAssociation = dynamicDataBaseManager.assembling().getMultipleAssociation(count.id);
     if (multipleAssociation.shunt) {

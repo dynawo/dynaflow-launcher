@@ -137,7 +137,7 @@ class NetworkManager {
    * @brief Update the network conditioning status based on a component conditioning status
    * @param componentInterface the data interface to use
    */
-  void updateConditioningStatus(const std::shared_ptr<DYN::ComponentInterface> &componentInterface);
+  void updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface> &componentInterface);
 
  private:
   boost::shared_ptr<DYN::DataInterface> interface_;           ///< data interface

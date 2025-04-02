@@ -37,6 +37,7 @@
 #include <DYNTwoWTransformerInterface.h>
 #include <DYNVoltageLevelInterface.h>
 #include <DYNVscConverterInterface.h>
+#include <boost/make_shared.hpp>
 
 namespace dfl {
 namespace inputs {
@@ -60,7 +61,7 @@ void NetworkManager::updateMapRegulatingBuses(BusMapRegulating &map, const std::
   }
 }
 
-void NetworkManager::updateConditioningStatus(const std::shared_ptr<DYN::ComponentInterface> &componentInterface) {
+void NetworkManager::updateConditioningStatus(const boost::shared_ptr<DYN::ComponentInterface> &componentInterface) {
   if (componentInterface->hasInitialConditions()) {
     isPartiallyConditioned_ = true;
   } else {
@@ -292,7 +293,7 @@ void NetworkManager::buildTree() {
     HvdcLine::ConverterType converterType;
     if (converterDyn1->getConverterType() == DYN::ConverterInterface::ConverterType_t::VSC_CONVERTER) {
       converterType = HvdcLine::ConverterType::VSC;
-      auto vscConverterDyn1 = std::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn1);
+      auto vscConverterDyn1 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn1);
       updateConditioningStatus(vscConverterDyn1);
       bool voltageRegulationOn = vscConverterDyn1->getVoltageRegulatorOn();
       converter1 = std::make_shared<VSCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, voltageRegulationOn,
@@ -301,7 +302,7 @@ void NetworkManager::buildTree() {
       if (voltageRegulationOn) {
         updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[converterDyn1->getBusInterface()->getID()]);
       }
-      auto vscConverterDyn2 = std::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn2);
+      auto vscConverterDyn2 = boost::dynamic_pointer_cast<DYN::VscConverterInterface>(converterDyn2);
       updateConditioningStatus(vscConverterDyn2);
       voltageRegulationOn = vscConverterDyn2->getVoltageRegulatorOn();
       converter2 = std::make_shared<VSCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, voltageRegulationOn,
@@ -312,12 +313,12 @@ void NetworkManager::buildTree() {
       }
     } else {
       converterType = HvdcLine::ConverterType::LCC;
-      auto lccConverterDyn1 = std::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn1);
+      auto lccConverterDyn1 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn1);
       updateConditioningStatus(lccConverterDyn1);
       converter1 =
           std::make_shared<LCCConverter>(converterDyn1->getID(), converterDyn1->getBusInterface()->getID(), nullptr, lccConverterDyn1->getPowerFactor());
 
-      auto lccConverterDyn2 = std::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn2);
+      auto lccConverterDyn2 = boost::dynamic_pointer_cast<DYN::LccConverterInterface>(converterDyn2);
       updateConditioningStatus(lccConverterDyn2);
       converter2 =
           std::make_shared<LCCConverter>(converterDyn2->getID(), converterDyn2->getBusInterface()->getID(), nullptr, lccConverterDyn2->getPowerFactor());

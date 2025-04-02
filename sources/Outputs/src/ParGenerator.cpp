@@ -25,7 +25,7 @@ void ParGenerator::write(boost::shared_ptr<parameters::ParametersSetCollection> 
     if (generator.isNetwork()) {
       continue;
     }
-    std::shared_ptr<parameters::ParametersSet> paramSet;
+    boost::shared_ptr<parameters::ParametersSet> paramSet;
     if (helper::generatorSharesParId(generator)) {
       if (!paramSetCollection->hasParametersSet(helper::getGeneratorParameterSetId(generator))) {
         paramSet = writeConstantGeneratorsSets(activePowerCompensation, generator, startingPointMode);
@@ -191,7 +191,7 @@ boost::shared_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMac
   return macroParameterSet;
 }
 
-void ParGenerator::updateSignalNGenerator(std::shared_ptr<parameters::ParametersSet> set, ActivePowerCompensation activePowerCompensation, double targetP,
+void ParGenerator::updateSignalNGenerator(boost::shared_ptr<parameters::ParametersSet> set, ActivePowerCompensation activePowerCompensation, double targetP,
                                           StartingPointMode startingPointMode, bool hasActivePowerControl) {
   setKGover(set, hasActivePowerControl, targetP);
   set->addParameter(helper::buildParameter("generator_QMin", -constants::powerValueMax));
@@ -236,10 +236,10 @@ void ParGenerator::updateSignalNGenerator(std::shared_ptr<parameters::Parameters
   }
 }
 
-std::shared_ptr<parameters::ParametersSet> ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
-                                                                                     const algo::GeneratorDefinition &generator,
-                                                                                     StartingPointMode startingPointMode) {
-  auto set = parameters::ParametersSetFactory::newParametersSet(helper::getGeneratorParameterSetId(generator));
+boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeConstantGeneratorsSets(ActivePowerCompensation activePowerCompensation,
+                                                                                       const algo::GeneratorDefinition &generator,
+                                                                                       StartingPointMode startingPointMode) {
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(helper::getGeneratorParameterSetId(generator)));
   updateSignalNGenerator(set, activePowerCompensation, generator.targetP, startingPointMode, generator.hasActivePowerControl);
   switch (generator.model) {
   case ModelType::PROP_SIGNALN_INFINITE:
@@ -254,16 +254,16 @@ std::shared_ptr<parameters::ParametersSet> ParGenerator::writeConstantGenerators
   return set;
 }
 
-void ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinition &def, std::shared_ptr<parameters::ParametersSet> set) {
+void ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinition &def, boost::shared_ptr<parameters::ParametersSet> set) {
   set->addReference(helper::buildReference("generator_URegulated0", "U", "DOUBLE", def.regulatedBusId));
 }
 
-std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
-                                                                        const boost::filesystem::path &dirname) {
+boost::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
+                                                                          const boost::filesystem::path &dirname) {
   std::string uuid = constants::uuid(def.id);
 
   //  Use the hash id in exported files to prevent use of non-ascii characters
-  auto set = parameters::ParametersSetFactory::newParametersSet(uuid);
+  auto set = boost::shared_ptr<parameters::ParametersSet>(new parameters::ParametersSet(uuid));
   // The macroParSet is associated to a macroParameterSet via the id
   set->addMacroParSet(
       boost::shared_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
@@ -280,7 +280,7 @@ std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const al
   return set;
 }
 
-void ParGenerator::updateTransfoParameters(std::shared_ptr<parameters::ParametersSet> set, bool isNuclear) {
+void ParGenerator::updateTransfoParameters(boost::shared_ptr<parameters::ParametersSet> set, bool isNuclear) {
   if (!set->hasParameter("generator_QNomAlt") && !set->hasReference("generator_QNomAlt"))
     set->addReference(helper::buildReference("generator_QNomAlt", "qNom", "DOUBLE"));
   if (!set->hasParameter("generator_SNom") && !set->hasReference("generator_SNom"))
@@ -292,10 +292,10 @@ void ParGenerator::updateTransfoParameters(std::shared_ptr<parameters::Parameter
   }
 }
 
-void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string &genId,
+void ParGenerator::updateRpclParameters(boost::shared_ptr<parameters::ParametersSet> set, const std::string &genId,
                                         const inputs::SettingDataBase::Set &databaseSetting, bool Rcpl2) {
   std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_UStatorRefMaxPu",
-                                        "reactivePowerControlLoop_UStatorRefMinPu"};
+                                         "reactivePowerControlLoop_UStatorRefMinPu"};
   if (Rcpl2) {
     parameters.push_back("reactivePowerControlLoop_CqMaxPu");
     parameters.push_back("reactivePowerControlLoop_DeltaURefMaxPu");

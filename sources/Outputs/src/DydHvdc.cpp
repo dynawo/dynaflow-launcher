@@ -54,8 +54,7 @@ const std::unordered_map<algo::HVDCDefinition::HVDCModel, std::string> DydHvdc::
 void DydHvdc::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename) {
   for (const auto &keyValue : hvdcDefinitions_.hvdcLines) {
     auto hvdcLine = keyValue.second;
-    std::unique_ptr<dynamicdata::BlackBoxModel> blackBoxModel =
-        helper::buildBlackBoxStaticId(hvdcLine.id, hvdcLine.id, hvdcModelsNames_.at(hvdcLine.model), basename + ".par", hvdcLine.id);
+    auto blackBoxModel = helper::buildBlackBoxStaticId(hvdcLine.id, hvdcLine.id, hvdcModelsNames_.at(hvdcLine.model), basename + ".par", hvdcLine.id);
     if (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcLine.converterStationOnSide2()) {
       blackBoxModel->addStaticRef("hvdc_PInj1Pu", "p2");
       blackBoxModel->addStaticRef("hvdc_QInj1Pu", "q2");
@@ -72,7 +71,7 @@ void DydHvdc::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dyn
       blackBoxModel->addStaticRef("hvdc_QInj2Pu", "q2");
       blackBoxModel->addStaticRef("hvdc_state", "state2");
     }
-    dynamicModelsToConnect->addModel(std::move(blackBoxModel));
+    dynamicModelsToConnect->addModel(blackBoxModel);
     writeConnect(dynamicModelsToConnect, hvdcLine);
   }
 }
