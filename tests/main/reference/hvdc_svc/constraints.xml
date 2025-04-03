@@ -1,32 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <constraints xmlns="http://www.rte-france.com/dynawo">
-  <constraint modelName="HADESP7_S_VL7_TN1" description="U &lt; Umin" time="1470.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="387.86256194672114"/>
-  <constraint modelName="HADESP7_S_VL7_TN2" description="U &lt; Umin" time="1470.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="387.86256194672114"/>
-  <constraint modelName="ATHENP7_S_VL7_TN1" description="U &lt; Umin" time="1480.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="387.02072615701258"/>
-  <constraint modelName="HERAP7_S_VL7_TN1" description="U &lt; Umin" time="1490.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="388.86476477401237"/>
-  <constraint modelName="ACHILP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="215.7111405903957"/>
-  <constraint modelName="ACHILP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="215.7111405903957"/>
-  <constraint modelName="ACHILP6_S_VL6_TN3" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="215.7111405903957"/>
-  <constraint modelName="AGAMEP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.43243218501868"/>
-  <constraint modelName="AGAMEP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.43243218501868"/>
-  <constraint modelName="AGAMEP6_S_VL6_TN3" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.43243218501868"/>
-  <constraint modelName="AGAMEP6_S_VL6_TN4" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.43243218501868"/>
-  <constraint modelName="ATHENP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.65298061834773"/>
-  <constraint modelName="CIRCEP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.52422805929902"/>
-  <constraint modelName="CIRCEP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.52422805929902"/>
-  <constraint modelName="CIRCEP6_S_VL6_TN3" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.52422805929902"/>
-  <constraint modelName="DOLONP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.47528801567222"/>
-  <constraint modelName="DOLONP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.47528801567222"/>
-  <constraint modelName="HELENP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.5242070242675"/>
-  <constraint modelName="HELENP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.5242070242675"/>
-  <constraint modelName="MYDONP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.71588199141243"/>
-  <constraint modelName="MYDONP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.71588199141243"/>
-  <constraint modelName="NIREEP61" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.37874319139368"/>
-  <constraint modelName="PARISP61" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="216.37470040636276"/>
-  <constraint modelName="PRIAMP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="217.34185693524057"/>
-  <constraint modelName="PRIAMP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="217.34185693524057"/>
-  <constraint modelName="ULYSSP6_S_VL6_TN1" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.0523732042715"/>
-  <constraint modelName="ULYSSP6_S_VL6_TN2" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.0523732042715"/>
-  <constraint modelName="ULYSSP6_S_VL6_TN3" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.0523732042715"/>
-  <constraint modelName="ULYSSP6_S_VL6_TN4" description="U &lt; Umin" time="1500.0000" type="Node" kind="UInfUmin" limit="220" value="218.0523732042715"/>
+  <constraint modelName="HERAP7_S_VL7_TN1" description="U &gt; Umax" time="1810.0000" type="Node" kind="USupUmax" limit="410" value="418.86196477401222"/>
 </constraints>
