@@ -96,7 +96,7 @@ void DydVRRemote::writeConnections(boost::shared_ptr<dynamicdata::DynamicModelsC
       std::string id = constants::modelSignalNQprefix_ + busId.first;
       std::unique_ptr<dynamicdata::BlackBoxModel> blackBoxModelVRRemote = helper::buildBlackBox(id, "VRRemote", basename + ".par", id);
       dynamicModelsToConnect->addModel(std::move(blackBoxModelVRRemote));
-      dynamicModelsToConnect->addConnect(id, "vrremote_URegulatedPu", constants::networkModelName, busId.first + "_Upu_value");
+      dynamicModelsToConnect->addConnect(id, "vrremote_URegulated", constants::networkModelName, busId.first + "_U_value");
     }
   }
 }

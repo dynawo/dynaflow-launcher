@@ -57,6 +57,6 @@
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
   <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
   <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="BUS_1_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulatedPu" id2="NETWORK" var2="BUS_2_Upu_value"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulated" id2="NETWORK" var2="BUS_2_U_value"/>
 </dyn:dynamicModelsArchitecture>

@@ -3,7 +3,7 @@
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="0.01"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
   <set id="HVDCLCCLine">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
@@ -211,13 +211,13 @@
     <reference type="DOUBLE" name="hvdc_UPhase20" origData="IIDM" origName="angle2_pu"/>
   </set>
   <set id="Model_Signal_NQ__BUS___11_TN">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation2"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__BUS___12_TN">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="VSCStation3"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="VSCStation3"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
 </parametersSet>
