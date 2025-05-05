@@ -38,7 +38,7 @@
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="0.01"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
   <macroParameterSet id="macro_signalNGeneratorFixedPRectangular">
     <reference type="DOUBLE" name="generator_P0Pu" origData="IIDM" origName="p_pu"/>
@@ -85,8 +85,8 @@
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
   <set id="Model_Signal_NQ__BUS____1_TN">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_GEN____1_SM"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_GEN____1_SM"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="decba20f-146d-56a3-848f-6ecf94043607">

@@ -3,7 +3,7 @@
   <macroParameterSet id="macro_remoteVControl_vr">
     <par name="vrremote_FreezingActivated" type="BOOL" value="true"/>
     <par name="vrremote_Gain" type="DOUBLE" value="1"/>
-    <par name="vrremote_tIntegral" type="DOUBLE" value="0.01"/>
+    <par name="vrremote_tIntegral" type="DOUBLE" value="1"/>
   </macroParameterSet>
   <set id="GenericRestorativeLoad">
     <par name="load_Alpha" type="DOUBLE" value="1.5"/>
@@ -19,128 +19,128 @@
   </set>
   <set id="Model_Signal_NQ__2b6ed98a-027e-11e7-afc1-94659cb4e466">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7ea-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7ea-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef7ea-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef7ea-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ed9d2-027e-11e7-afc1-94659cb4e466">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef79a-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef79a-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef79a-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef79a-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edab6-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef80c-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef80c-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef80c-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef80c-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edafe-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef906-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef906-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef906-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef906-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edb0a-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef894-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef894-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef894-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef894-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edb46-027e-11e7-afc1-94659cb4e466">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef86c-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef86c-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef86c-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef86c-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edc72-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef98a-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef98a-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef98a-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef98a-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edca2-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6efa3b-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6efa3b-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6efa3b-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6efa3b-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edcae-027e-11e7-afc1-94659cb4e466">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef91a-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef91a-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef91a-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef91a-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edcc6-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef9ff-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef9ff-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef9ff-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef9ff-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edd0e-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef93e-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef93e-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef93e-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef93e-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6edee5-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef922-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef922-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef922-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef922-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee04e-027e-11e7-afc1-94659cb4e466">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7ae-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7ae-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef7ae-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef7ae-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee066-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7dc-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7dc-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef7dc-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef7dc-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee072-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7f8-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef7f8-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef7f8-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef7f8-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee08a-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef864-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef864-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef864-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef864-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee0ae-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8a2-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8a2-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef8a2-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef8a2-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee157-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef826-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef826-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef826-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef826-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee163-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef834-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef834-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef834-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef834-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee17b-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8bc-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8bc-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef8bc-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef8bc-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee193-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8de-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8de-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef8de-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef8de-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee1ab-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef96e-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef96e-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef96e-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef96e-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee64d-027e-11e7-afc1-94659cb4e466">
     <par name="vrremote_Frozen0" type="BOOL" value="true"/>
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8f2-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef8f2-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef8f2-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef8f2-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="Model_Signal_NQ__2b6ee6de-027e-11e7-afc1-94659cb4e466">
-    <reference type="DOUBLE" name="vrremote_U0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef97c-027e-11e7-afc1-94659cb4e466"/>
-    <reference type="DOUBLE" name="vrremote_URef0Pu" origData="IIDM" origName="targetV_pu" componentId="_2b6ef97c-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_U0" origData="IIDM" origName="targetV" componentId="_2b6ef97c-027e-11e7-afc1-94659cb4e466"/>
+    <reference type="DOUBLE" name="vrremote_URef0" origData="IIDM" origName="targetV" componentId="_2b6ef97c-027e-11e7-afc1-94659cb4e466"/>
     <macroParSet id="macro_remoteVControl_vr"/>
   </set>
   <set id="propSignalNGenerator">

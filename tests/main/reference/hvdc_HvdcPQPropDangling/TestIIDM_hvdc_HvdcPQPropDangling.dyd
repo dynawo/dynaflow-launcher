@@ -66,5 +66,5 @@
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_ACPIN" id2="HVDCVSCLinebis" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="_BUS___11_TN_ACPIN" id2="HVDCVSCLinebis" var2="hvdc_terminal2"/>
   <dyn:connect id1="NETWORK" var1="_BUS___10_TN_switchOff" id2="HVDCVSCLinebis" var2="hvdc_switchOffSignal1Side1"/>
-  <dyn:connect id1="Model_Signal_NQ__BUS___10_TN" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_BUS___10_TN_Upu_value"/>
+  <dyn:connect id1="Model_Signal_NQ__BUS___10_TN" var1="vrremote_URegulated" id2="NETWORK" var2="_BUS___10_TN_U_value"/>
 </dyn:dynamicModelsArchitecture>
