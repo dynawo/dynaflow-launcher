@@ -73,6 +73,7 @@ TEST(Config, Nominal) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(1e-3, config.getPrecision().value());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10, config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.6, config.getTimeStep());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(0.6, config.getMinTimeStep());
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -101,6 +102,7 @@ TEST(Config, Default) {
   ASSERT_EQ(dfl::inputs::Configuration::ActivePowerCompensation::PMAX, config.getActivePowerCompensation());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeStep());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(1., config.getMinTimeStep());
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -135,6 +137,7 @@ TEST(Config, ConfigN) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(111, config.getStopTime());
   ASSERT_DOUBLE_EQUALS_DYNAWO(1e-4, config.getPrecision().value());
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.2, config.getTimeStep());
+  ASSERT_DOUBLE_EQUALS_DYNAWO(0.5, config.getMinTimeStep());
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -171,6 +174,7 @@ TEST(Config, ConfigSA) {
     ASSERT_DOUBLE_EQUALS_DYNAWO(101, config.getStopTime());
     ASSERT_DOUBLE_EQUALS_DYNAWO(1e-5, config.getPrecision().value());
     ASSERT_DOUBLE_EQUALS_DYNAWO(1.7, config.getTimeStep());
+    ASSERT_DOUBLE_EQUALS_DYNAWO(1.2, config.getMinTimeStep());
     ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
     if (configFile == "res/config_SA.json") {
       ASSERT_EQ(canonical(config.startingDumpFilePath().string()), canonical("myStartingDumpFile.dmp", prefixConfigFile));

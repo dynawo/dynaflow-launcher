@@ -51,9 +51,9 @@ class Configuration {
 
   /**
    * @brief performs sanity checks on the configuration
-   * 
+   *
    * @attention This method should be called after the constructor to verify that the configuration is properly set up.
-   * 
+   *
    * @attention The sanity checks should be executed after log initialization to ensure that any potential errors in the configuration are logged appropriately.
    */
   void sanityCheck() const;
@@ -165,6 +165,13 @@ class Configuration {
    * @return value of timestep
    */
   double getTimeStep() const { return timeStep_; }
+
+  /**
+   * @brief retrieves the maximum value of the solver timestep
+   *
+   * @return value of timestep
+   */
+  double getMinTimeStep() const { return minTimeStep_; }
 
   /**
    * @brief type of active power compensation for generator
@@ -285,8 +292,8 @@ class Configuration {
   void updateChosenOutput(const boost::property_tree::ptree &tree, SimulationKind simulationKind, const bool saMode);
 
  private:
-  boost::filesystem::path filepath_;                                                 ///< the configuration file path
-  SimulationKind simulationKind_;                                                    ///< the simulation kind (Steady state or Security analysis)
+  boost::filesystem::path filepath_;  ///< the configuration file path
+  SimulationKind simulationKind_;     ///< the simulation kind (Steady state or Security analysis)
 
   // General
   StartingPointMode startingPointMode_ = StartingPointMode::WARM;                    ///< simulation starting point mode
@@ -303,6 +310,7 @@ class Configuration {
   double stopTime_ = 100.;                                                           ///< stop time for simulation
   boost::optional<double> precision_;                                                ///< Precision of the simulation
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
+  double minTimeStep_ = 1.;                                                          ///< minimum value of the solver timestep
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
   double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
 

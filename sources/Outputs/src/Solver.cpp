@@ -43,7 +43,7 @@ std::shared_ptr<parameters::ParametersSet> Solver::writeSolverSet() const {
   set->addParameter(helper::buildParameter("fnormtolAlg", 1e-4));
   set->addParameter(helper::buildParameter("fnormtolAlgJ", 1e-4));
   set->addParameter(helper::buildParameter("hMax", def_.timeStep_));
-  set->addParameter(helper::buildParameter("hMin", 1.));
+  set->addParameter(helper::buildParameter("hMin", def_.minTimeStep_));
   set->addParameter(helper::buildParameter("initialaddtol", 0.1));
   set->addParameter(helper::buildParameter("initialaddtolAlg", 0.1));
   set->addParameter(helper::buildParameter("initialaddtolAlgJ", 0.1));

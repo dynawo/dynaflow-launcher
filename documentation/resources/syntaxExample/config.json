@@ -18,6 +18,7 @@
       "TimeOfEvent": 50,
       "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp"
     },
-    "TimeStep" : 2.6
+    "TimeStep" : 2.6,
+    "MinTimeStep" : 0.5
   }
 }

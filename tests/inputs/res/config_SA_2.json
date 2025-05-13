@@ -16,6 +16,7 @@
     "StopTime": 101,
     "Precision": 1e-5,
     "TimeStep": 1.7,
+    "MinTimeStep": 1.2,
     "sa": {
       "TimeOfEvent": 50
     }
