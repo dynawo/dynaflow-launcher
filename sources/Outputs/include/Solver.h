@@ -38,10 +38,12 @@ class Solver {
      *
      * @param config input configuration
      */
-    explicit SolverDefinition(const dfl::inputs::Configuration& config) : outputDir_(config.outputDir()), timeStep_(config.getTimeStep()) {}
+    explicit SolverDefinition(const dfl::inputs::Configuration &config)
+        : outputDir_(config.outputDir()), timeStep_(config.getTimeStep()), minTimeStep_(config.getMinTimeStep()) {}
 
     boost::filesystem::path outputDir_;  ///< directory for output files
     double timeStep_;                    ///< maximum value of the solver timestep
+    double minTimeStep_;                 ///< minimum value of the solver timestep
   };
 
   /**
@@ -49,7 +51,7 @@ class Solver {
    *
    * @param def reference to SolverDefinition object
    */
-  explicit Solver(SolverDefinition&& def);
+  explicit Solver(SolverDefinition &&def);
 
   /**
    * @brief Export solver par file
@@ -58,10 +60,10 @@ class Solver {
 
  private:
   /**
-  * @brief creates the parameter set for solver
-  *
-  * @return reference to the new created parameter set
-  */
+   * @brief creates the parameter set for solver
+   *
+   * @return reference to the new created parameter set
+   */
   std::shared_ptr<parameters::ParametersSet> writeSolverSet() const;
 
   SolverDefinition def_;  ///< solver par definition

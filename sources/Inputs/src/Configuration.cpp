@@ -125,7 +125,7 @@ void updateValue(bool &value, const boost::property_tree::ptree &tree, const std
   if (value_opt.is_initialized()) {
     parameterValueModified.insert(key);
     std::string value_str = value_opt->get_value<std::string>();
-    std::transform(value_str.begin(), value_str.end(), value_str.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
+    std::transform(value_str.begin(), value_str.end(), value_str.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     if (value_str == "false") {
       value = false;
     } else if (value_str == "true") {
@@ -164,9 +164,7 @@ static void updateActivePowerCompensationValue(Configuration::ActivePowerCompens
 
 }  // namespace helper
 
-Configuration::Configuration(const boost::filesystem::path &filepath, SimulationKind simulationKind) :
-    filepath_(filepath),
-    simulationKind_(simulationKind) {
+Configuration::Configuration(const boost::filesystem::path &filepath, SimulationKind simulationKind) : filepath_(filepath), simulationKind_(simulationKind) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -210,6 +208,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updateValue(startTime_, config, "StartTime", saMode, parameterValueModified_);
     helper::updateValue(stopTime_, config, "StopTime", saMode, parameterValueModified_);
     helper::updateValue(timeStep_, config, "TimeStep", saMode, parameterValueModified_);
+    helper::updateValue(minTimeStep_, config, "MinTimeStep", saMode, parameterValueModified_);
     helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode, parameterValueModified_);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode, parameterValueModified_);
     if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
@@ -221,11 +220,8 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
   }
 }
 
-void
-Configuration::sanityCheck() const {
-  if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS &&
-      !startingDumpFilePath_.empty() &&
-      !exists(startingDumpFilePath_)) {
+void Configuration::sanityCheck() const {
+  if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS && !startingDumpFilePath_.empty() && !exists(startingDumpFilePath_)) {
     throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
   }
 
@@ -253,7 +249,7 @@ void Configuration::updateStartingPointMode(const boost::property_tree::ptree &t
   if (optionalStartingPointMode.is_initialized()) {
     std::string startingPointMode = optionalStartingPointMode->get_value<std::string>();
     std::transform(startingPointMode.begin(), startingPointMode.end(), startingPointMode.begin(),
-                   [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     if (startingPointMode == "warm") {
       startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::WARM;
     } else if (startingPointMode == "flat") {
@@ -302,7 +298,7 @@ void Configuration::updateChosenOutput(const boost::property_tree::ptree &tree,
     for (auto &chosenOutputElement : optionalChosenOutputs.get()) {
       std::string chosenOutputName = chosenOutputElement.second.get_value<std::string>();
       std::transform(chosenOutputName.begin(), chosenOutputName.end(), chosenOutputName.begin(),
-                     [](unsigned char c){ return static_cast<char>(std::toupper(c)); });
+                     [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
       if (chosenOutputName == "STEADYSTATE") {
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE);
       } else if (chosenOutputName == "CONSTRAINTS") {
