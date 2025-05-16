@@ -211,9 +211,9 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updateValue(minTimeStep_, config, "MinTimeStep", saMode, parameterValueModified_);
     helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode, parameterValueModified_);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode, parameterValueModified_);
+    helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
     if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
       helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true, parameterValueModified_);
-      helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
     }
   } catch (std::exception &e) {
     throw Error(ErrorConfigFileRead, e.what());
