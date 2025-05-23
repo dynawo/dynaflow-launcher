@@ -28,8 +28,22 @@ macro(DEFINE_LAUNCH_TEST _name _use_zip)
   )
 endmacro()
 
+macro(DEFINE_LAUNCH_TEST_ZIPNAMED _name _zip_name)
+  DEFINE_TEST_FULLENV(${_name} MAIN
+                      COMMAND ${CMAKE_COMMAND}
+                              -DPYTHON_COMMAND=${PYTHON_EXECUTABLE}
+                              -DEXE=$<TARGET_FILE:DynaFlowLauncher>
+                              -DTEST_NAME=${_name}
+                              -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diff.py
+                              -DUSE_ZIP=YES
+                              -DZIP_NAME=${_zip_name}
+                              -P ${CMAKE_SOURCE_DIR}/cmake/TestMain.cmake
+  )
+endmacro()
+
 DEFINE_LAUNCH_TEST(launch NO)
 DEFINE_LAUNCH_TEST(launch_archive YES)
+DEFINE_LAUNCH_TEST_ZIPNAMED(launch_archive_named customOut.zip)
 DEFINE_LAUNCH_TEST(launch_slack NO)
 DEFINE_LAUNCH_TEST(launch_diagram NO)
 DEFINE_LAUNCH_TEST(launch_diagram_tfo NO)

@@ -162,6 +162,28 @@ static void updateActivePowerCompensationValue(Configuration::ActivePowerCompens
   }
 }
 
+/**
+ * @brief Helper function to update the value for a file name parameter,
+ * Force the extension file if missing in the config file value
+ *
+ * @param fileName the value to update
+ * @param fileExtension the expected extension for this file
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ * @param saMode true if simulation is in SA, false otherwise
+ * @param parameterValueModified a parameter key is added in this if the value
+ * was redefined in the configuration file
+ */
+static void updateFileNameValue(std::string &fileName, std::string fileExtension, const boost::property_tree::ptree &tree, const std::string &key,
+                                const bool saMode, std::unordered_set<std::string> &parameterValueModified) {
+  helper::updateValue(fileName, tree, key, saMode, parameterValueModified);
+
+  std::size_t found = fileName.find(fileExtension);
+  if (found != fileName.length() - fileExtension.length()) {
+    fileName = fileName + fileExtension;
+  }
+}
+
 }  // namespace helper
 
 Configuration::Configuration(const boost::filesystem::path &filepath, SimulationKind simulationKind) : filepath_(filepath), simulationKind_(simulationKind) {
@@ -201,6 +223,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn", saMode, parameterValueModified_);
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn", saMode, parameterValueModified_);
     helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile, false);  // Not possible to override outputDir in SA
+    helper::updateFileNameValue(outputZipName_, ".zip", config, "OutputZipName", saMode, parameterValueModified_);
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel", saMode, parameterValueModified_);
     helper::updatePathValue(settingFilePath_, config, "SettingPath", prefixConfigFile, saMode);
     helper::updatePathValue(assemblingFilePath_, config, "AssemblingPath", prefixConfigFile, saMode);

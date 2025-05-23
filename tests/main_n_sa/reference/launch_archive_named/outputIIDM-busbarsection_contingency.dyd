@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="MC_EventQuadripoleDisconnection">
+    <dyn:connect var1="event_state1_value" var2="@NAME@_state_value"/>
+  </dyn:macroConnector>
+  <dyn:blackBoxModel id="Disconnect__1d9c9c35-b7b6-432a-b3ed-3d747111008c" lib="EventConnectedStatus" parFile="outputIIDM-busbarsection_contingency.par" parId="Disconnect__1d9c9c35-b7b6-432a-b3ed-3d747111008c"/>
+  <dyn:connect id1="Disconnect__1d9c9c35-b7b6-432a-b3ed-3d747111008c" var1="event_state1" id2="NETWORK" var2="_1d9c9c35-b7b6-432a-b3ed-3d747111008c_state"/>
+</dyn:dynamicModelsArchitecture>

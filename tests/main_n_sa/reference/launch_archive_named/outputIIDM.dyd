@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
+    <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
+    <dyn:connect var1="generator_N" var2="signalN_N"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
+    <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
+    <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
+    <dyn:connect var1="Ii_value" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
+    <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
+    <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
+  </dyn:macroConnector>
+  <dyn:macroConnector id="StaticVarCompensatorMacroConnector">
+    <dyn:connect var1="SVarC_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
+  </dyn:macroConnector>
+  <dyn:macroStaticReference id="GeneratorStaticRef">
+    <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
+    <dyn:staticRef var="generator_QGenPu" staticVar="q"/>
+    <dyn:staticRef var="generator_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="LoadRef">
+    <dyn:staticRef var="PPu_value" staticVar="p"/>
+    <dyn:staticRef var="QPu_value" staticVar="q"/>
+    <dyn:staticRef var="state_value" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:macroStaticReference id="StaticVarCompensatorStaticRef">
+    <dyn:staticRef var="SVarC_PInjPu" staticVar="p"/>
+    <dyn:staticRef var="SVarC_QInjPu" staticVar="q"/>
+    <dyn:staticRef var="SVarC_state" staticVar="state"/>
+  </dyn:macroStaticReference>
+  <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
+  <dyn:blackBoxModel id="_044ca8f0-c766-11e1-8775-005056c00008" staticId="_044ca8f0-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_044cd00a-c766-11e1-8775-005056c00008" staticId="_044cd00a-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0452ea80-c766-11e1-8775-005056c00008" staticId="_0452ea80-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045868c0-c766-11e1-8775-005056c00008" staticId="_045868c0-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045868c1-c766-11e1-8775-005056c00008" staticId="_045868c1-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0458ddf1-c766-11e1-8775-005056c00008" staticId="_0458ddf1-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_045ab2b0-c766-11e1-8775-005056c00008" staticId="_045ab2b0-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04633e31-c766-11e1-8775-005056c00008" staticId="_04633e31-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_046c3ee7-c766-11e1-8775-005056c00008" staticId="_046c3ee7-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0472a789-c766-11e1-8775-005056c00008" staticId="_0472a789-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_047fc6e6-c766-11e1-8775-005056c00008" staticId="_047fc6e6-c766-11e1-8775-005056c00008" lib="StaticVarCompensatorPV" parFile="outputIIDM.par" parId="fe1399cb-0b68-5f0e-b350-353232179f46">
+    <dyn:macroStaticRef id="StaticVarCompensatorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0483224a-c766-11e1-8775-005056c00008" staticId="_0483224a-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04839777-c766-11e1-8775-005056c00008" staticId="_04839777-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04856c34-c766-11e1-8775-005056c00008" staticId="_04856c34-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04859346-c766-11e1-8775-005056c00008" staticId="_04859346-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_04867dab-c766-11e1-8775-005056c00008" staticId="_04867dab-c766-11e1-8775-005056c00008" lib="DYNModelLoadRestorativeWithLimits" parFile="outputIIDM.par" parId="GenericRestorativeLoad">
+    <dyn:macroStaticRef id="LoadRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_0489b1fa-c766-11e1-8775-005056c00008" staticId="_0489b1fa-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_048aea70-c766-11e1-8775-005056c00008" staticId="_048aea70-c766-11e1-8775-005056c00008" lib="GeneratorPVTfoSignalN" parFile="outputIIDM.par" parId="signalNTfoGenerator">
+    <dyn:macroStaticRef id="GeneratorStaticRef"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" staticId="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" lib="HvdcPTanPhi" parFile="outputIIDM.par" parId="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
+  <dyn:blackBoxModel id="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" staticId="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" lib="HvdcPV" parFile="outputIIDM.par" parId="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b">
+    <dyn:staticRef var="hvdc_PInj1Pu" staticVar="p1"/>
+    <dyn:staticRef var="hvdc_PInj2Pu" staticVar="p2"/>
+    <dyn:staticRef var="hvdc_QInj1Pu" staticVar="q1"/>
+    <dyn:staticRef var="hvdc_QInj2Pu" staticVar="q2"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state1"/>
+    <dyn:staticRef var="hvdc_state" staticVar="state2"/>
+  </dyn:blackBoxModel>
+  <dyn:macroConnect connector="LOAD_NETWORK_CONNECTOR" id1="_04867dab-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c0-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044ca8f0-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045868c1-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_044cd00a-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0452ea80-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0489b1fa-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0458ddf1-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="_047fc6e6-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_0_phi_value"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_1_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_1_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_3_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_2_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_3_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_2_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side2"/>
+</dyn:dynamicModelsArchitecture>
