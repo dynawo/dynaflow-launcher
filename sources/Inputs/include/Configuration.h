@@ -94,6 +94,13 @@ class Configuration {
   const boost::filesystem::path &outputDir() const { return outputDir_; }
 
   /**
+   * @brief Retrieves the output zip file name
+   *
+   * @returns the parameter value
+   */
+  std::string getOutputZipName() const { return outputZipName_; }
+
+  /**
    * @brief Retrieves the minimum voltage level of the load to be taken into
    * account
    *
@@ -302,6 +309,7 @@ class Configuration {
   bool isShuntRegulationOn_ = true;                                                  ///< Shunt regulation on
   bool isAutomaticSlackBusOn_ = true;                                                ///< automatic slack bus on
   boost::filesystem::path outputDir_ = boost::filesystem::current_path();            ///< Directory for output files
+  std::string outputZipName_ = std::string("outputs.zip");                           ///< Name of the zip outputs archive, by default "outputs.zip"
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
   boost::filesystem::path settingFilePath_;                                          ///< setting file path
