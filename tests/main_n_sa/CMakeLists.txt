@@ -28,8 +28,26 @@ macro(DEFINE_LAUNCH_TEST_NSA _name _use_zip)
   )
 endmacro()
 
+macro(DEFINE_LAUNCH_TEST_NSA_ZIPNAMED _name _zip_name)
+  DEFINE_TEST_FULLENV(${_name} MAIN_NSA
+                      COMMAND ${CMAKE_COMMAND}
+                              -DPYTHON_COMMAND=${PYTHON_EXECUTABLE}
+                              -DEXE=$<TARGET_FILE:DynaFlowLauncher>
+                              -DUSE_MPI=${USE_MPI}
+                              -DMPI_RUN=${MPI_RUN}
+                              -DTEST_NAME=${_name}
+                              -DN_DIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diff.py
+                              -DSA_DIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diffContingencies.py
+                              -DSA_CHECK_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/checkContingencies.py
+                              -DUSE_ZIP=YES
+                              -DZIP_NAME=${_zip_name}
+                              -P ${CMAKE_SOURCE_DIR}/cmake/TestMainNSA.cmake
+  )
+endmacro()
+
 DEFINE_LAUNCH_TEST_NSA(launch NO)
 DEFINE_LAUNCH_TEST_NSA(launch_archive YES)
+DEFINE_LAUNCH_TEST_NSA_ZIPNAMED(launch_archive_named customOut.zip)
 DEFINE_LAUNCH_TEST_NSA(noContingencies NO)
 DEFINE_LAUNCH_TEST_NSA(badN NO)
 set_tests_properties(MAIN_NSA.badN PROPERTIES WILL_FAIL TRUE)
