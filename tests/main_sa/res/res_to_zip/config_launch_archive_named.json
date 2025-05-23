@@ -1,0 +1,9 @@
+{
+  "dfl-config": {
+      "InfiniteReactiveLimits": "true",
+      "AutomaticSlackBusOn": "true",
+      "OutputDir": "../resultsTestsTmp/launch_archive_named",
+      "OutputZipName": "customOut",
+      "DsoVoltageLevel": 133.0
+  }
+}

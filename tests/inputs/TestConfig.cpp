@@ -94,6 +94,7 @@ TEST(Config, Default) {
   ASSERT_TRUE(config.isSVarCRegulationOn());
   ASSERT_TRUE(config.isShuntRegulationOn());
   ASSERT_TRUE(config.isAutomaticSlackBusOn());
+  ASSERT_EQ(config.getOutputZipName(), "outputs.zip");
   ASSERT_EQ(config.settingFilePath().generic_string(), "");
   ASSERT_EQ(config.assemblingFilePath().generic_string(), "");
   ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
