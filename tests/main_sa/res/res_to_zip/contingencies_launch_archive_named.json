@@ -1,0 +1,245 @@
+{
+  "version": "1.0",
+  "name": "list",
+  "contingencies": [
+    {
+      "id": "load_contingency",
+      "elements": [
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008",
+          "type": "LOAD"
+        }
+      ]
+    },
+    {
+      "id": "load_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "LOAD"
+        }
+      ]
+    },
+    {
+      "id": "load_contingency_bad_type",
+      "elements": [
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "load_multiple_elements_one_bad",
+      "elements": [
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008",
+          "type": "LOAD"
+        },
+        {
+          "id": "_047abdd7-c766-11e1-8775-005056c00008XXX",
+          "type": "LOAD"
+        }
+
+      ]
+    },
+    {
+      "id": "generator_contingency",
+      "elements": [
+        {
+          "id": "_046c3ee7-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "generator_disconnected_contingency",
+      "elements": [
+        {
+          "id": "_047f0391-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "generator_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "generator_network_contingency",
+      "elements": [
+        {
+          "id": "_046bf0c4-c766-11e1-8775-005056c00008",
+          "type": "GENERATOR"
+        }
+      ]
+    },
+    {
+      "id": "shunt_compensator_contingency",
+      "elements": [
+        {
+          "id": "_0449e9d5-c766-11e1-8775-005056c00008",
+          "type": "SHUNT_COMPENSATOR"
+        }
+      ]
+    },
+    {
+      "id": "shunt_compensator_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "SHUNT_COMPENSATOR"
+        }
+      ]
+    },
+    {
+      "id": "branch_contingency",
+      "elements": [
+        {
+          "id": "_044cd006-c766-11e1-8775-005056c00008",
+          "type": "BRANCH"
+        }
+      ]
+    },
+    {
+      "id": "branch_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "BRANCH"
+        }
+      ]
+    },
+    {
+      "id": "hvdcline_contingency",
+      "elements": [
+        {
+          "id": "_11d10c55-94cc-47e4-8e24-bc5ac4d026c0",
+          "type": "HVDC_LINE"
+        }
+      ]
+    },
+    {
+      "id": "hvdcline_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "HVDC_LINE"
+        }
+      ]
+    },
+    {
+      "id": "busbarsection_contingency",
+      "elements": [
+        {
+          "id": "_1d9c9c35-b7b6-432a-b3ed-3d747111008c",
+          "type": "BUSBAR_SECTION"
+        }
+      ]
+    },
+    {
+      "id": "busbar_section_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "BUSBAR_SECTION"
+        }
+      ]
+    },
+    {
+      "id": "dangling_line_contingency",
+      "elements": [
+        {
+          "id": "_0482fb33-c766-11e1-8775-005056c00008",
+          "type": "DANGLING_LINE"
+        }
+      ]
+    },
+    {
+      "id": "line_contingency",
+      "elements": [
+        {
+          "id": "_044cd006-c766-11e1-8775-005056c00008",
+          "type": "LINE"
+        }
+      ]
+    },
+    {
+      "id": "line_contingency_open_ended",
+      "elements": [
+        {
+          "id": "_044c5ada-c766-11e1-8775-005056c00008-1",
+          "type": "LINE"
+        }
+      ]
+    },
+    {
+      "id": "two_windings_transformer_contingency",
+      "elements": [
+        {
+          "id": "_045cae83-c766-11e1-8775-005056c00008",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
+      "id": "two_windings_transformer_contingency_bad_id",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
+      "id": "two_windings_transformer_open_ended",
+      "elements": [
+        {
+          "id": "_045e3525-c766-11e1-8775-005056c00008-1",
+          "type": "TWO_WINDINGS_TRANSFORMER"
+        }
+      ]
+    },
+    {
+      "id": "three_windings_transformer_contingency",
+      "elements": [
+          {
+            "id": "_86d83c7d-7826-4c16-b161-4ce17174e77f-1",
+            "type": "THREE_WINDINGS_TRANSFORMER"
+          }
+      ]
+    },
+    {
+      "id": "contingency_bad_type",
+      "elements": [
+        {
+          "id": "_XXX",
+          "type": "THIS_TYPE_DOES_NOT_EXIST"
+        }
+      ]
+    },
+    {
+      "id" : "static_var_compensator_contingency",
+      "elements" : [
+        {
+          "id" : "_047fc6e6-c766-11e1-8775-005056c00008",
+          "type" : "STATIC_VAR_COMPENSATOR"
+        }
+      ]
+    },
+    {
+      "id" : "static_var_compensator_network_contingency",
+      "elements" : [
+        {
+          "id" : "_svc_network",
+          "type" : "STATIC_VAR_COMPENSATOR"
+        }
+      ]
+    }
+  ]
+}

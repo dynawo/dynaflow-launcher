@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parametersSet xmlns="http://www.rte-france.com/dynawo">
+  <set id="Disconnect__11d10c55-94cc-47e4-8e24-bc5ac4d026c0">
+    <par name="event_stateEvent1" type="BOOL" value="true"/>
+    <par name="event_tEvent" type="DOUBLE" value="10"/>
+  </set>
+</parametersSet>
