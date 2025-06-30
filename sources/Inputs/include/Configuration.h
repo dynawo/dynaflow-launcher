@@ -98,7 +98,7 @@ class Configuration {
    *
    * @returns the parameter value
    */
-  std::string getOutputZipName() const { return outputZipName_; }
+  const std::string &getOutputZipName() const { return outputZipName_; }
 
   /**
    * @brief Retrieves the minimum voltage level of the load to be taken into
