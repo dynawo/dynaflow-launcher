@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
+  <dyn:macroConnector id="MC_EventQuadripoleDisconnection">
+    <dyn:connect var1="event_state1_value" var2="@NAME@_state_value"/>
+  </dyn:macroConnector>
+  <dyn:blackBoxModel id="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_1" lib="EventQuadripoleDisconnection" parFile="TestIIDM_launch_archive_named-three_windings_transformer_contingency.par" parId="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_1"/>
+  <dyn:blackBoxModel id="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_2" lib="EventQuadripoleDisconnection" parFile="TestIIDM_launch_archive_named-three_windings_transformer_contingency.par" parId="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_2"/>
+  <dyn:blackBoxModel id="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_3" lib="EventQuadripoleDisconnection" parFile="TestIIDM_launch_archive_named-three_windings_transformer_contingency.par" parId="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_3"/>
+  <dyn:macroConnect connector="MC_EventQuadripoleDisconnection" id1="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_1" id2="NETWORK" name2="_86d83c7d-7826-4c16-b161-4ce17174e77f-1_1"/>
+  <dyn:macroConnect connector="MC_EventQuadripoleDisconnection" id1="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_2" id2="NETWORK" name2="_86d83c7d-7826-4c16-b161-4ce17174e77f-1_2"/>
+  <dyn:macroConnect connector="MC_EventQuadripoleDisconnection" id1="Disconnect__86d83c7d-7826-4c16-b161-4ce17174e77f-1_3" id2="NETWORK" name2="_86d83c7d-7826-4c16-b161-4ce17174e77f-1_3"/>
+</dyn:dynamicModelsArchitecture>
