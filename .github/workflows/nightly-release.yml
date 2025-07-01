@@ -134,7 +134,7 @@ jobs:
   windows:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch'))
     name: Windows 2019 (Release, VS2019) (${{ matrix.use-mpi.text }})
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       matrix:
         use-mpi:
@@ -215,7 +215,7 @@ jobs:
             set "MSMPI_BIN=C:\Program Files\Microsoft MPI\Bin\"
             set "PATH=!MSMPI_BIN!;%PATH%"
           )
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           call scripts\dynaflow-launcher verbose build || exit /b 1
 
       - name: Dynaflow-launcher version
@@ -239,7 +239,7 @@ jobs:
             set "PATH=!MSMPI_BIN!;%PATH%"
           )
           pip install lxml
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           call scripts\dynaflow-launcher verbose tests "^^M" || exit /b 1
 
       - name: Create distribution
