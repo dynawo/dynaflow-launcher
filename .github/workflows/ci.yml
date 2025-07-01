@@ -121,7 +121,7 @@ jobs:
           $CONTAINER_WORKSPACE/sonar/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.cfamily.threads=2
 
   build-windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - name: No LF to CRLF conversion
         shell: cmd
@@ -177,7 +177,7 @@ jobs:
           PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.9.13\x64
         run: |
           set PATH=%MSMPI_BIN%;%PATH%
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           call scripts\dynaflow-launcher verbose build
 
       - name: Dynaflow-Launcher version
@@ -196,5 +196,5 @@ jobs:
           PATH: C:\Windows\system32;C:\Program Files\Git\cmd;C:\hostedtoolcache\windows\Python\3.9.13\x64
         run: |
           set PATH=%MSMPI_BIN%;%PATH%
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           call scripts\dynaflow-launcher verbose tests "^^[^^M]"
