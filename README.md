@@ -75,7 +75,7 @@ $> ./dynaflow-launcher.sh help
 
 #### Windows
 
-Download the zip of the distribution and unzip it somewhere. Then open either `Command Prompt` or `x64 Native Tools Command Prompt for VS2019` and use cd to go into the directory you previously unzipped. You should see a dynaflow-launcher.cmd file at the top of the folder. You can then launch:
+Download the zip of the distribution and unzip it somewhere. Then open either `Command Prompt` or `x64 Native Tools Command Prompt for VS2022` and use cd to go into the directory you previously unzipped. You should see a dynaflow-launcher.cmd file at the top of the folder. You can then launch:
 
 ``` batch
 > dynaflow-launcher help
@@ -167,7 +167,7 @@ $> ./myEnvDFL.sh help
 
 ### Build
 
-Open `x64 Native Tools Command Prompt for VS2019` and run the following commands (don't forget to adjust the path to the Dyna&omega;o deploy folder in the DYNAWO_HOME define and the path to the Dyna&omega;o-Algorithms deploy folder in the DYNAWO_ALGORITHMS_HOME define):
+Open `x64 Native Tools Command Prompt for VS2022` and run the following commands (don't forget to adjust the path to the Dyna&omega;o deploy folder in the DYNAWO_HOME define and the path to the Dyna&omega;o-Algorithms deploy folder in the DYNAWO_ALGORITHMS_HOME define):
 
 ``` batch
 > git config --global core.eol lf

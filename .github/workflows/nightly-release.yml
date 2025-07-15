@@ -133,7 +133,7 @@ jobs:
 
   windows:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-windows' || (github.event_name == 'workflow_dispatch' && inputs.perform-windows) || !endsWith(github.event_name, '_dispatch'))
-    name: Windows 2019 (Release, VS2019) (${{ matrix.use-mpi.text }})
+    name: Windows 2022 (Release, VS2022) (${{ matrix.use-mpi.text }})
     runs-on: windows-2022
     strategy:
       matrix:

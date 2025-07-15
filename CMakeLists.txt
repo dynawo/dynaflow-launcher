@@ -133,7 +133,7 @@ endif()
 add_definitions(-DBOOST_ALL_DYN_LINK)
 # Tell BOOST to disable auto linking
 add_definitions(-DBOOST_ALL_NO_LIB)
-find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization)
+find_package(Boost 1.70.0 REQUIRED COMPONENTS program_options filesystem system log serialization date_time)
 
 # install target is deploy too !
 option(DYNAFLOW_LAUNCHER_DEPLOY "Deploy dynawo and dynawo-algorithms while install dynaflow-launcher" ON)
