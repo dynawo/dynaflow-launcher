@@ -192,6 +192,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
     if (multipleAssociation.shunt) {
       if (counters.nbShunts.count(multipleAssociation.shunt->voltageLevel) == 0) {
         // case voltage level not in network, skip
+        new_set->addParameter(helper::buildParameter(count.name, 0));
         continue;
       }
       new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(multipleAssociation.shunt->voltageLevel))));
