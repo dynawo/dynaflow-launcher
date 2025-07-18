@@ -146,6 +146,7 @@ std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
     std::unique_ptr<job::ConstraintsEntry> constraints = std::unique_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
     constraints->setExportMode("XML");
+    constraints->setFilterType(DYN::CONSTRAINTS_KEEP_LAST);
     output->setConstraintsEntry(std::move(constraints));
   }
 
@@ -164,9 +165,7 @@ std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
   return output;
 }
 
-void Job::exportJob(const std::shared_ptr<job::JobEntry>& jobEntry,
-                    const boost::filesystem::path& networkFileEntry,
-                    const dfl::inputs::Configuration& config) {
+void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost::filesystem::path &networkFileEntry, const dfl::inputs::Configuration &config) {
   boost::filesystem::path path(config.outputDir());
 
   if (!boost::filesystem::is_directory(path)) {
@@ -264,6 +263,7 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry>& jobEntry,
   if (constraints) {
     attrs.add("exportMode", constraints->getExportMode());
     formatter->startElement("dyn", "constraints", attrs);
+    attrs.add("filter", "LAST");
     attrs.clear();
     formatter->endElement();
   }
@@ -291,7 +291,7 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry>& jobEntry,
 
   std::shared_ptr<job::LogsEntry> logs = outputs->getLogsEntry();
   formatter->startElement("dyn", "logs");
-  const std::vector<std::shared_ptr<job::AppenderEntry> >& appenders = logs->getAppenderEntries();
+  const std::vector<std::shared_ptr<job::AppenderEntry>> &appenders = logs->getAppenderEntries();
   for (auto appender : appenders) {
     attrs.add("tag", appender->getTag());
     attrs.add("file", appender->getFilePath());
