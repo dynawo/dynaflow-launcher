@@ -27,11 +27,9 @@ ParDynModel::ParDynModel(const algo::DynamicModelDefinitions &dynamicModelsDefin
   }
 }
 
-void ParDynModel::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                        const inputs::DynamicDataBaseManager& dynamicDataBaseManager,
-                        const algo::ShuntCounterDefinitions& shuntCounters,
-                        const algo::LinesByIdDefinitions& linesByIdDefinitions,
-                        const algo::TransformersByIdDefinitions& transformersById) {
+void ParDynModel::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection,
+                        const inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::ShuntCounterDefinitions &shuntCounters,
+                        const algo::LinesByIdDefinitions &linesByIdDefinitions, const algo::TransformersByIdDefinitions &transformersById) {
   for (const auto &dynModel : dynamicModelsDefinitions_.models) {
     std::shared_ptr<parameters::ParametersSet> new_set;
 
@@ -194,6 +192,7 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
     if (multipleAssociation.shunt) {
       if (counters.nbShunts.count(multipleAssociation.shunt->voltageLevel) == 0) {
         // case voltage level not in network, skip
+        new_set->addParameter(helper::buildParameter(count.name, 0));
         continue;
       }
       new_set->addParameter(helper::buildParameter(count.name, static_cast<int>(counters.nbShunts.at(multipleAssociation.shunt->voltageLevel))));

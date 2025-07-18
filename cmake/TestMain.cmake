@@ -9,9 +9,13 @@
 
 if(${USE_ZIP} STREQUAL "YES")
   # clean-up : delete the zip archive and the previous unzipped files
-  execute_process(COMMAND rm -f res/${TEST_NAME}.zip res/TestIIDM_${TEST_NAME}.iidm res/config_${TEST_NAME}.json)
+  file(REMOVE  ${CMAKE_CURRENT_SOURCE_DIR}/res/${TEST_NAME}.zip  ${CMAKE_CURRENT_SOURCE_DIR}/res/TestIIDM_${TEST_NAME}.iidm  ${CMAKE_CURRENT_SOURCE_DIR}/res/config_${TEST_NAME}.json)
 
-  execute_process(COMMAND zip -j res/${TEST_NAME}.zip res/res_to_zip/TestIIDM_${TEST_NAME}.iidm res/res_to_zip/config_${TEST_NAME}.json)
+  execute_process(COMMAND
+    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_SOURCE_DIR}/res/${TEST_NAME}.zip" --format=zip
+       "TestIIDM_${TEST_NAME}.iidm"
+       "config_${TEST_NAME}.json"
+       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res/res_to_zip/)
   set(_command ${EXE} --network=TestIIDM_${TEST_NAME}.iidm --config=config_${TEST_NAME}.json --input-archive=res/${TEST_NAME}.zip)
 else()
   set(_command ${EXE} --network=res/TestIIDM_${TEST_NAME}.iidm --config=res/config_${TEST_NAME}.json)
