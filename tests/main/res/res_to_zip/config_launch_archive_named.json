@@ -1,0 +1,6 @@
+{
+  "dfl-config": {
+    "OutputDir": "../resultsTestsTmp/launch_archive_named",
+    "OutputZipName": "customOut"
+  }
+}

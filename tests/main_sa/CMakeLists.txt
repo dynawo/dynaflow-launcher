@@ -27,6 +27,23 @@ macro(DEFINE_LAUNCH_TEST_SA _name _use_zip)
   )
 endmacro()
 
+macro(DEFINE_LAUNCH_TEST_SA_ZIPNAMED _name _zip_name)
+  DEFINE_TEST_FULLENV(${_name} MAIN_SA
+                      COMMAND ${CMAKE_COMMAND}
+                              -DPYTHON_COMMAND=${PYTHON_EXECUTABLE}
+                              -DEXE=$<TARGET_FILE:DynaFlowLauncher>
+                              -DUSE_MPI=${USE_MPI}
+                              -DMPI_RUN=${MPI_RUN}
+                              -DTEST_NAME=${_name}
+                              -DDIFF_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/diffContingencies.py
+                              -DCHECK_SCRIPT=${CMAKE_SOURCE_DIR}/scripts/checkContingencies.py
+                              -DUSE_ZIP=YES
+                              -DZIP_NAME=${_zip_name}
+                              -P ${CMAKE_SOURCE_DIR}/cmake/TestMainSA.cmake
+  )
+endmacro()
+
 DEFINE_LAUNCH_TEST_SA(launch NO)
 DEFINE_LAUNCH_TEST_SA(launch_archive YES)
+DEFINE_LAUNCH_TEST_SA_ZIPNAMED(launch_archive_named customOut.zip)
 DEFINE_LAUNCH_TEST_SA(noContingencies NO)
