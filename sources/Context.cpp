@@ -355,7 +355,7 @@ void Context::executeSecurityAnalysis() {
   auto saLauncher = boost::make_shared<DYNAlgorithms::SystematicAnalysisLauncher>();
   saLauncher->setMultipleJobs(multipleJobs);
   if (def_.outputIsZip) {
-    saLauncher->setOutputFile("outputs.zip");
+    saLauncher->setOutputFile(config_.getOutputZipName());
   } else {
     saLauncher->setOutputFile("aggregatedResults.xml");
   }
