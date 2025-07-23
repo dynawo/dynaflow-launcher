@@ -6,7 +6,7 @@ on:
     types: [nightly-linux]
 
 env:
-  DYNAWO_VERSION: 1.7.0
+  DYNAWO_VERSION: 1.7.1
 
 jobs:
   fedora:
