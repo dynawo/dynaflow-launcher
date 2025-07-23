@@ -10,7 +10,7 @@
 
 This directory contains LaTeX sources for Dynaflow-launcher documentation.
 
-You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.6.0/DynaflowLauncherDocumentation.pdf).
+You can download Dynaflow-launcher documentation [here](https://github.com/dynawo/dynaflow-launcher/releases/download/v1.7.0/DynaflowLauncherDocumentation.pdf).
 
 Scripts:
 * **compile.sh**: compile each separated LaTex document (except the licenses).
