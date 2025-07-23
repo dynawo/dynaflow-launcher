@@ -33,6 +33,29 @@ Dynaflow-launcher is licensed under the terms of the \href{http://mozilla.org/MP
 The source code is hosted into a \href{https://github.com/dynawo/dynaflow-launcher} {\underline{GitHub repository}}. \\
 
 \section{Changes from previous versions}
+\subsection{Changes from v1.7.0}
+\underline{Modeling:}
+\begin{itemize}
+\item Automatically disable EmulationAC if droop is 0 in a hvdc
+\item Retrieve groups kGover values from IIDM when available
+\item Added the possibility to override "acemulation\_tFilter" parameter from Hvdcs with the dynamic database
+\end{itemize}
+
+\underline{Options:}
+\begin{itemize}
+\item Added an option to override solver's minimal timestep
+\end{itemize}
+
+\underline{Systematic analysis:}
+\begin{itemize}
+\item Added the possibility to provide compressed inputs
+\end{itemize}
+
+\underline{3rd parties:}
+\begin{itemize}
+\item now using powsybl-iidm4cpp v1.5.1-rc2
+\end{itemize}
+
 \subsection{Changes from v1.6.0}
 
 \begin{itemize}
