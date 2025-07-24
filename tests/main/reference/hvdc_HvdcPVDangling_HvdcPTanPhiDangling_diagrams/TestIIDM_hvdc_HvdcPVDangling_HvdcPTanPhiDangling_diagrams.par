@@ -30,6 +30,9 @@
   </set>
   <set id="HVDCLCCLine">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
+    <par name="hvdc_P10Pu" type="DOUBLE" value="-1"/>
+    <par name="hvdc_P1RefSetPu" type="DOUBLE" value="-1"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="1.0000125"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.01"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmax"/>
@@ -38,9 +41,6 @@
     <par name="hvdc_QInj1MinTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmin"/>
     <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation1"/>
     <reference type="DOUBLE" name="hvdc_CosPhi2Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation2"/>
-    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p1_pu"/>
-    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p1_pu"/>
-    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p2_pu"/>
     <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
     <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q1_pu"/>
     <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q2_pu"/>
@@ -52,6 +52,9 @@
   <set id="HVDCVSCLine">
     <par name="hvdc_KLosses" type="DOUBLE" value="1"/>
     <par name="hvdc_Lambda1Pu" type="DOUBLE" value="0"/>
+    <par name="hvdc_P10Pu" type="DOUBLE" value="1"/>
+    <par name="hvdc_P1RefSetPu" type="DOUBLE" value="1"/>
+    <par name="hvdc_P20Pu" type="DOUBLE" value="-1.0000125"/>
     <par name="hvdc_Q1Nom" type="DOUBLE" value="570.326409495549"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="3.9110880316518295"/>
     <par name="hvdc_QInj1MaxTableFile" type="STRING" value="/tests/main/./res/../resultsTestsTmp/hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams/TestIIDM_hvdc_HvdcPVDangling_HvdcPTanPhiDangling_diagrams_Diagram/VSCStation1_Diagram.txt"/>
@@ -61,9 +64,6 @@
     <par name="hvdc_QInj1MinTableName" type="STRING" value="60eebf37-7079-5285-9411-515b0b3a8acf_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
     <par name="hvdc_modeU20" type="BOOL" value="false"/>
-    <reference type="DOUBLE" name="hvdc_P10Pu" origData="IIDM" origName="p2_pu"/>
-    <reference type="DOUBLE" name="hvdc_P1RefSetPu" origData="IIDM" origName="p2_pu"/>
-    <reference type="DOUBLE" name="hvdc_P20Pu" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_PMaxPu" origData="IIDM" origName="pMax_pu"/>
     <reference type="DOUBLE" name="hvdc_Q10Pu" origData="IIDM" origName="q2_pu"/>
     <reference type="DOUBLE" name="hvdc_Q1Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation1"/>
