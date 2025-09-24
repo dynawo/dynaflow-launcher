@@ -13,6 +13,7 @@
       <dyn:constraints exportMode="XML"/>
       <dyn:timeline exportMode="XML"/>
       <dyn:finalState exportIIDMFile="true" exportDumpFile="false"/>
+      <dyn:timetable step="3"/>
       <dyn:lostEquipments/>
       <dyn:logs>
         <dyn:appender tag="" file="dynawo.log" lvlFilter="INFO"/>
