@@ -16,6 +16,7 @@
     "StopTime": 111,
     "Precision": 1e-4,
     "TimeStep": 2.2,
-    "MinTimeStep": 0.5
+    "MinTimeStep": 0.5,
+    "TimeTable" : 5
   }
 }

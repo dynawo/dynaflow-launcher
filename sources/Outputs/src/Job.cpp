@@ -128,6 +128,13 @@ std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
     output->setOutputsDirectory("outputs");
   }
 
+  auto timeTableStep = def_.configuration.timeTableStep();
+  if (timeTableStep > 0) {
+    std::unique_ptr<job::TimetableEntry> timetable = std::unique_ptr<job::TimetableEntry>(new job::TimetableEntry());
+    timetable->setStep(timeTableStep);
+    output->setTimetableEntry(std::move(timetable));
+  }
+
   std::unique_ptr<job::LogsEntry> log = job::LogsEntryFactory::newInstance();
   std::unique_ptr<job::AppenderEntry> appender = job::AppenderEntryFactory::newInstance();
   appender->setTag("");
@@ -281,6 +288,14 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   formatter->startElement("dyn", "finalState", attrs);
   attrs.clear();
   formatter->endElement();  // finalState
+
+  std::shared_ptr<job::TimetableEntry> ttEntry = outputs->getTimetableEntry();
+  if (ttEntry) {
+    attrs.add("step", ttEntry->getStep());
+    formatter->startElement("dyn", "timetable", attrs);
+    attrs.clear();
+    formatter->endElement();  // timetable
+  }
 
   std::shared_ptr<job::LostEquipmentsEntry> lostEquipments = outputs->getLostEquipmentsEntry();
   if (lostEquipments) {
