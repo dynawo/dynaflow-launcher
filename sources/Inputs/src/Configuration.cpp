@@ -233,6 +233,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updateValue(timeStep_, config, "TimeStep", saMode, parameterValueModified_);
     helper::updateValue(minTimeStep_, config, "MinTimeStep", saMode, parameterValueModified_);
     helper::updateValue(tfoVoltageLevel_, config, "TfoVoltageLevel", saMode, parameterValueModified_);
+    helper::updateValue(timeTableStep_, config, "TimeTable", saMode, parameterValueModified_);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode, parameterValueModified_);
     helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
     if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {

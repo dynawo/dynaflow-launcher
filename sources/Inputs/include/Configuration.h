@@ -66,6 +66,13 @@ class Configuration {
   bool useInfiniteReactiveLimits() const { return useInfiniteReactiveLimits_; }
 
   /**
+   * @brief getter for time table step value
+   *
+   * @returns the time table step value
+   */
+  unsigned int timeTableStep() const { return timeTableStep_; }
+
+  /**
    * @brief determines if SVarC regulation is on
    *
    * @returns the parameter value
@@ -320,7 +327,8 @@ class Configuration {
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
   double minTimeStep_ = 1.;                                                          ///< minimum value of the solver timestep
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
-  double tfoVoltageLevel_ = 100;  ///< Maximum voltage level we assume that generator's transformers are already described in the static description
+  double tfoVoltageLevel_ = 100;     ///< Maximum voltage level we assume that generator's transformers are already described in the static description
+  unsigned int timeTableStep_ = 0;  ///< time table step to display progress
 
   // SA
   double timeOfEvent_ = 10.;                                ///< time for contingency simulation (security analysis only)
