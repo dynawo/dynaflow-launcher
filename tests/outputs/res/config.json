@@ -1,6 +1,7 @@
 {
     "dfl-config": {
         "Precision": 1e-3,
+        "TimeTable" : 3,
         "OutputDir": "../resultsTestsTmp/TestJobPrecision"
     }
   }

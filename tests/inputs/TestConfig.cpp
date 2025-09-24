@@ -103,6 +103,7 @@ TEST(Config, Default) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(10., config.getTimeStep());
   ASSERT_DOUBLE_EQUALS_DYNAWO(1., config.getMinTimeStep());
+  ASSERT_EQ(config.timeTableStep(), 0);
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -138,6 +139,7 @@ TEST(Config, ConfigN) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(1e-4, config.getPrecision().value());
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.2, config.getTimeStep());
   ASSERT_DOUBLE_EQUALS_DYNAWO(0.5, config.getMinTimeStep());
+  ASSERT_EQ(config.timeTableStep(), 5);
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
