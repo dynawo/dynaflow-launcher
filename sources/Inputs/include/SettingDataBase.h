@@ -210,9 +210,9 @@ class SettingDataBase {
  public:
   /**
    * @brief Constructor
-   * @param settingFilePath the setting document file path
+   * @param settingFilePaths the setting documents file paths
    */
-  explicit SettingDataBase(const boost::filesystem::path& settingFilePath);
+  explicit SettingDataBase(const std::vector<boost::filesystem::path> & settingFilePaths);
 
   /**
    * @brief Retrieve a parameter set with its id

@@ -425,9 +425,9 @@ class AssemblingDataBase {
  public:
   /**
    * @brief Constructor
-   * @param assemblingFilePath the assembling document file path
+   * @param assemblingFilePaths the assembling documents file paths
    */
-  explicit AssemblingDataBase(const boost::filesystem::path &assemblingFilePath);
+  explicit AssemblingDataBase(const std::vector<boost::filesystem::path> & assemblingFilePaths);
 
   /**
    * @brief Retrieve a macro connection with its id

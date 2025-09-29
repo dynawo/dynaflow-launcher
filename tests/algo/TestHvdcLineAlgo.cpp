@@ -117,7 +117,8 @@ static bool hvdcLineDefinitionEqual(const dfl::algo::HVDCDefinition &lhs, const 
 
 TEST(HvdcLine, base) {
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   auto vl = std::make_shared<dfl::inputs::VoltageLevel>("VL");
   std::vector<std::shared_ptr<dfl::inputs::Node>> nodes{
       dfl::inputs::Node::build("0", vl, 98.0, {}, false, testServiceManager), dfl::inputs::Node::build("1", vl, 111.0, {}, false, testServiceManager),
@@ -287,7 +288,8 @@ TEST(HvdcLine, models) {
       vscStation1, vscStation2, vscStation21, vscStation22, vscStation23, vscStation5,  vscStation6,
       vscStation7, vscStation8, vscStation9,  vscStation10, vscStation11, vscStation12,
   };
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, busMap, useReactiveLimits, set, manager);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -415,7 +417,8 @@ TEST(HvdcLine, modelsSVC) {
       vscStation1, vscStation2, vscStation21, vscStation22, vscStation23, vscStation5,  vscStation6,
       vscStation7, vscStation8, vscStation9,  vscStation10, vscStation11, vscStation12,
   };
-  dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_hvdc.xml");
+    std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, std::vector<boost::filesystem::path>(1, "res/assembling_test_hvdc.xml"));
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, busMap, useReactiveLimits, set, manager);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -543,7 +546,10 @@ TEST(HvdcLine, modelsSVCSide2) {
       vscStation1, vscStation2, vscStation21, vscStation22, vscStation23, vscStation5,  vscStation6,
       vscStation7, vscStation8, vscStation9,  vscStation10, vscStation11, vscStation12,
   };
-  dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_hvdc_side2.xml");
+
+
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, std::vector<boost::filesystem::path>(1, "res/assembling_test_hvdc_side2.xml"));
   dfl::algo::HVDCDefinitionAlgorithm algo(hvdcDefs, busMap, useReactiveLimits, set, manager);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {

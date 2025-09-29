@@ -14,6 +14,7 @@
  */
 
 #include "SettingDataBase.h"
+#include "XsdPath.hpp"
 
 #include "Log.h"
 
@@ -33,63 +34,29 @@ static parser::namespace_uri ns("");
 
 const std::string SettingDataBase::SettingXmlDocument::origData_("IIDM");
 
-/**
- * @brief retrieve the xsd for a xml file
- *
- * @param filepath xml file path
- * @return the corresponding xsd filepath or an empty path if not found
- */
-static file::path computeXsdPath(const file::path &filepath) {
-  auto basename = filepath.filename().replace_extension().generic_string();
-
-  auto var = getenv("DYNAFLOW_LAUNCHER_XSD");
-  file::path xsdFile;
-  if (var != NULL) {
-    xsdFile = file::path(var);
-  } else {
-    xsdFile = file::current_path();
-  }
-
-  xsdFile.append("setting_dynaflow.xsd");
-
-  if (!file::exists(xsdFile)) {
-    return file::path("");
-  }
-
-  return xsdFile;
-}
-
-SettingDataBase::SettingDataBase(const boost::filesystem::path &settingFilePath) {
-  parser::ParserFactory factory;
-  SettingXmlDocument settingXml(*this);
-  auto parser = factory.createParser();
-  bool xsdValidation = true;
-
-  std::ifstream in(settingFilePath.c_str());
-  if (!in) {
-    // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
-    if (!settingFilePath.empty())
-      LOG(warn, DynModelFileNotFound, settingFilePath.generic_string());
+SettingDataBase::SettingDataBase(const std::vector<boost::filesystem::path> & settingFilePaths) {
+  if (settingFilePaths.empty())
     return;
-  }
 
-  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
-  if (validation != NULL && (std::string(validation) == "true" || std::string(validation) == "TRUE")) {
-    auto xsd = computeXsdPath(settingFilePath);
-    if (xsd.empty()) {
-      LOG(warn, DynModelFileXSDNotFound, settingFilePath.generic_string());
-      xsdValidation = false;
-    } else {
-      parser->addXmlSchema(xsd.generic_string());
+  parser::ParserPtr parser = parser::ParserFactory().createParser();
+
+  file::path xsdPath = getXsdPath("setting_dynaflow.xsd");
+  if (xsdPath != "")
+    parser->addXmlSchema(xsdPath.generic_string());
+
+  SettingXmlDocument settingXml(*this);
+  for (const boost::filesystem::path & path : settingFilePaths) {
+    std::ifstream in(path.c_str());
+    if (!in) {
+      LOG(warn, DynModelFileNotFound, path.generic_string());
+      continue;
     }
-  } else {
-    xsdValidation = false;
-  }
 
-  try {
-    parser->parse(in, settingXml, xsdValidation);
-  } catch (const xml::sax::parser::ParserException &e) {
-    throw Error(DynModelFileReadError, settingFilePath.generic_string(), e.what());
+    try {
+      parser->parse(in, settingXml, xsdPath != "");
+    } catch (const xml::sax::parser::ParserException &e) {
+      throw Error(DynModelFileReadError, path.generic_string(), e.what());
+    }
   }
 }
 
@@ -118,6 +85,8 @@ SettingDataBase::SettingXmlDocument::SettingXmlDocument(SettingDataBase &db) : s
 
   setHandler_.onStart([this]() { setHandler_.currentSet = Set(); });
   setHandler_.onEnd([this, &db]() {
+    if (db.sets_.find(setHandler_.currentSet->id) != db.sets_.end())
+      LOG(warn, DuplicateParamSet, setHandler_.currentSet->id);
     db.sets_[setHandler_.currentSet->id] = *setHandler_.currentSet;
     setHandler_.currentSet.reset();
   });

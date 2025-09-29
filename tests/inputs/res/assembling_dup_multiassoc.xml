@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <multipleAssociation id="SHUNTS_MODELE_1_VL6">
+    <shunt voltageLevel="VL6"/>
+  </multipleAssociation>
+</assembling>

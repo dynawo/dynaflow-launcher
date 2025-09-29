@@ -76,7 +76,8 @@ TEST(TestAlgoDynModel, base) {
   using dfl::algo::DynamicModelDefinitions;
   using dfl::inputs::DynamicDataBaseManager;
 
-  DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+  DynamicDataBaseManager manager(std::vector<boost::filesystem::path>(1, "res/setting.xml"),
+                                 std::vector<boost::filesystem::path>(1, "res/assembling.xml"));
   DynamicModelDefinitions defs;
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
 
@@ -271,7 +272,8 @@ TEST(TestAlgoDynModel, noRegulation) {
   using dfl::algo::DynamicModelDefinitions;
   using dfl::inputs::DynamicDataBaseManager;
 
-  DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+  DynamicDataBaseManager manager(std::vector<boost::filesystem::path>(1, "res/setting.xml"),
+                                 std::vector<boost::filesystem::path>(1, "res/assembling.xml"));
   DynamicModelDefinitions defs;
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
 
@@ -423,7 +425,8 @@ TEST(TestAlgoDynModel, noRegulationAndBusDisconnected) {
   using dfl::algo::DynamicModelDefinitions;
   using dfl::inputs::DynamicDataBaseManager;
 
-  DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+  DynamicDataBaseManager manager(std::vector<boost::filesystem::path>(1, "res/setting.xml"),
+                                 std::vector<boost::filesystem::path>(1, "res/assembling.xml"));
   DynamicModelDefinitions defs;
   auto testServiceManager = boost::make_shared<test::TestAlgoServiceManagerInterface>();
   testServiceManager->addDisconnectedNode("VL1");

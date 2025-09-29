@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <property id="MyProp">
+    <device id="MyDevice"/>
+    <device id="MyDevice3"/>
+  </property>
+</assembling>

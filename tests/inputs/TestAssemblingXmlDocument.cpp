@@ -30,8 +30,7 @@ testing::Environment *const env = initXmlEnvironment();
 DYNAlgorithms::multiprocessing::Context mpiContext;
 
 TEST(AssemblingXmlDocument, readFile) {
-  const std::string filepath = "res/assembling.xml";
-  dfl::inputs::AssemblingDataBase assembling(filepath);
+  dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>(1, "res/assembling.xml"));
 
   ASSERT_THROW_DYNAWO(assembling.getMultipleAssociation("dummy"), DYN::Error::GENERAL, dfl::KeyError_t::UnknownMultiAssoc);
 
@@ -190,7 +189,60 @@ TEST(AssemblingXmlDocument, readFile) {
 }
 
 TEST(AssemblingXmlDocument, AssemblingContainsSVC) {
-  const std::string filepath = "res/assembling_svc.xml";
-  dfl::inputs::AssemblingDataBase assembling(filepath);
+  dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>(1, "res/assembling_svc.xml"));
   ASSERT_TRUE(assembling.containsSVC());
 }
+
+TEST(AssemblingXmlDocument, ExtendsDb) {
+  dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>{"res/assembling.xml", "res/assembling_new_macrocon.xml"});
+
+  auto macro = assembling.getMacroConnection("ToUMeasurement");
+  ASSERT_EQ(macro.id, "ToUMeasurement");
+  ASSERT_TRUE(macro.indexId.empty());
+  ASSERT_EQ(macro.connections.size(), 1);
+  ASSERT_EQ(macro.connections.front().var1, "U_IMPIN");
+  ASSERT_EQ(macro.connections.front().var2, "@NAME@_U");
+
+  macro = assembling.getMacroConnection("MyNewMacroConnection");
+  ASSERT_EQ(macro.id, "MyNewMacroConnection");
+  ASSERT_TRUE(macro.indexId.empty());
+  ASSERT_EQ(macro.connections.size(), 1);
+  ASSERT_EQ(macro.connections.front().var1, "myVar1");
+  ASSERT_EQ(macro.connections.front().var2, "myVar2");
+}
+
+TEST(AssemblingXmlDocument, MergeProps) {
+  dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>{"res/assembling.xml", "res/assembling_enrich_prop.xml"});
+
+  ASSERT_TRUE(assembling.isProperty("MyProp"));
+  const auto &prop = assembling.getProperty("MyProp");
+  ASSERT_EQ(prop.devices.size(), 3);
+  ASSERT_EQ(prop.devices[0].id, "MyDevice");
+  ASSERT_EQ(prop.devices[1].id, "MyDevice2");
+  ASSERT_EQ(prop.devices[2].id, "MyDevice3");
+}
+
+TEST(AssemblingXmlDocument, ThrowOnDuplicate) {
+  ASSERT_THROW_DYNAWO(dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>{"res/assembling.xml",
+                                                                                                      "res/assembling_dup_macrocon.xml"}),
+                      DYN::Error::GENERAL,
+                      dfl::KeyError_t::DynModelFileReadError);
+
+  ASSERT_THROW_DYNAWO(dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>{"res/assembling.xml",
+                                                                                                      "res/assembling_dup_singleassoc.xml"}),
+                      DYN::Error::GENERAL,
+                      dfl::KeyError_t::DynModelFileReadError);
+
+  ASSERT_THROW_DYNAWO(dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>{"res/assembling.xml",
+                                                                                                      "res/assembling_dup_multiassoc.xml"}),
+                      DYN::Error::GENERAL,
+                      dfl::KeyError_t::DynModelFileReadError);
+
+  ASSERT_THROW_DYNAWO(dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>{"res/assembling.xml",
+                                                                                                      "res/assembling_dup_dynautoma.xml"}),
+                      DYN::Error::GENERAL,
+                      dfl::KeyError_t::DynModelFileReadError);
+}
+
+
+

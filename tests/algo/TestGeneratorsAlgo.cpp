@@ -172,7 +172,8 @@ TEST(Generators, base) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
@@ -253,7 +254,9 @@ TEST(Generators, baseSVC) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
+
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, std::vector<boost::filesystem::path>(1, "res/assembling_test_generator.xml"));
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -333,7 +336,9 @@ TEST(Generators, baseSVCRpcl2) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
+
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, std::vector<boost::filesystem::path>(1, "res/assembling_test_generator_rpcl2.xml"));
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -413,7 +418,9 @@ TEST(Generators, baseSVCTfo) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator.xml");
+
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, std::vector<boost::filesystem::path>(1, "res/assembling_test_generator.xml"));
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -493,7 +500,9 @@ TEST(Generators, baseSVCTfoRpcl2) {
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus5, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "res/assembling_test_generator_rpcl2.xml");
+
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, std::vector<boost::filesystem::path>(1, "res/assembling_test_generator_rpcl2.xml"));
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -571,7 +580,8 @@ TEST(Generators, generatorRemoteRegulationWithTfo) {
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -648,7 +658,8 @@ TEST(Generators, generatorWithTfo) {
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::ONE},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 5.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -694,7 +705,8 @@ TEST(Generators, noGeneratorRegulating) {
   nodes[0]->generators.emplace_back("01", false, points, 0, 0, 0, 0, 0, 0, 0, bus1, bus1);
   dfl::algo::GeneratorDefinitionAlgorithm::Generators generators;
   dfl::inputs::NetworkManager::BusMapRegulating busMap;
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   for (const auto &node : nodes) {
@@ -764,7 +776,8 @@ TEST(Generators, SwitchConnexity) {
   dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus2, dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES},
                                                           {bus3, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, true, 10.);
 
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
@@ -805,7 +818,8 @@ static void testDiagramValidity(std::vector<dfl::inputs::Generator::ReactiveCurv
 
   const dfl::inputs::NetworkManager::BusMapRegulating busMap = {{bus1, dfl::inputs::NetworkManager::NbOfRegulating::ONE}};
   std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
   dfl::algo::GeneratorDefinitionAlgorithm algo_infinite(generators, busMap, manager, false, 10.);
 
   node->generators.emplace_back(generator);

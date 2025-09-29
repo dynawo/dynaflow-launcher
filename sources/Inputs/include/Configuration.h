@@ -210,13 +210,13 @@ class Configuration {
    * @brief Retrieves the setting file path
    * @returns the setting file path
    */
-  const boost::filesystem::path &settingFilePath() const { return settingFilePath_; }
+  const std::vector<boost::filesystem::path> & settingFilePaths() const { return settingFilePaths_; }
 
   /**
    * @brief Retrieves the assembling file path
    * @returns the assembling file path
    */
-  const boost::filesystem::path &assemblingFilePath() const { return assemblingFilePath_; }
+  const std::vector<boost::filesystem::path> & assemblingFilePaths() const { return assemblingFilePaths_; }
 
   /**
    * @brief Retrieves the starting dump file path
@@ -319,8 +319,8 @@ class Configuration {
   std::string outputZipName_ = std::string("outputs.zip");                           ///< Name of the zip outputs archive, by default "outputs.zip"
   double dsoVoltageLevel_ = 45.0;                                                    ///< Minimum voltage level of the load to be taken into account
   ActivePowerCompensation activePowerCompensation_ = ActivePowerCompensation::PMAX;  ///< Type of active power compensation
-  boost::filesystem::path settingFilePath_;                                          ///< setting file path
-  boost::filesystem::path assemblingFilePath_;                                       ///< assembling file path
+  std::vector<boost::filesystem::path> settingFilePaths_;                            ///< setting file paths
+  std::vector<boost::filesystem::path> assemblingFilePaths_;                         ///< assembling file paths
   double startTime_ = 0.;                                                            ///< start time of simulation
   double stopTime_ = 100.;                                                           ///< stop time for simulation
   boost::optional<double> precision_;                                                ///< Precision of the simulation

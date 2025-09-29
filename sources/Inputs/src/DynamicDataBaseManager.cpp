@@ -20,10 +20,10 @@
 namespace dfl {
 namespace inputs {
 
-DynamicDataBaseManager::DynamicDataBaseManager(const boost::filesystem::path& settingFilePath, const boost::filesystem::path& assemblingFilePath) :
-    assembling_(assemblingFilePath),
-    setting_(settingFilePath) {}
-
+DynamicDataBaseManager::DynamicDataBaseManager(const std::vector<boost::filesystem::path> & settingFilePaths,
+                                               const std::vector<boost::filesystem::path> & assemblingFilePaths) :
+  assembling_(assemblingFilePaths),
+  setting_(settingFilePaths) {}
 }  // namespace inputs
 
 }  // namespace dfl
