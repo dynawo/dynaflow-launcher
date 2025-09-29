@@ -272,7 +272,21 @@ The conditions and models used are given below.
 \subsection{Dynamic models}
 \label{DFL_Dyn_Models}
 
-A generic way to simulate components not defined in the static model (e.g. special protection schemes) is provided in Dynaflow-launcher through the optional xml assembling and setting files.
+A generic way to simulate components not defined in the static model (e.g. special protection schemes) is provided in Dynaflow-launcher through the optional xml assembling and setting files. Theses files are referenced in the config file (see \ref{Dynaflow_Launcher_Configuration_Configuration_File}) by the following keys :
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+"AssemblingPath" : "/tmp/input/assembling.xml",
+"SettingPath" : "/tmp/input/setting.xml",
+\end{lstlisting}
+
+More than one assembling or setting file may be referenced by inserting a ";" separator, eg :
+
+\begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
+"AssemblingPath" : "/tmp/input/assembling_1.xml;/tmp/input/assembling_2.xml",
+"SettingPath" : "/tmp/input/setting_1.xml;/tmp/input/setting_2.xml;/tmp/input/setting_3.xml",
+\end{lstlisting}
+
+In that case, the different files are concatenated at read-time.
 
 \subsubsection{Defining a special protection scheme automaton in the assembling and setting files: general case}
 \paragraph{Defining a dynamicAutomaton in the assembling and setting\\}

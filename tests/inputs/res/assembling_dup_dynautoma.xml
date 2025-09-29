@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <dynamicAutomaton id="MODELE_1_VL6" lib="DYNModel1">
+    <macroConnect macroConnection="ToUMeasurement" id="MESURE_MODELE_1_VL6"/>
+    <macroConnect macroConnection="ToControlledShunts" id="SHUNTS_MODELE_1_VL6"/>
+  </dynamicAutomaton>
+</assembling>

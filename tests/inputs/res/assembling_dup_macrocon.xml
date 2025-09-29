@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="ToUMeasurement">
+    <connection var1="U_IMPIN" var2="@NAME@_U"/>
+  </macroConnection>
+</assembling>

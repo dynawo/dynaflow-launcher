@@ -62,8 +62,8 @@ TEST(Config, Nominal) {
 
   std::string prefixConfigFile = removeFileName(createAbsolutePath("./res/config.json", currentPath()));
 
-  ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
-  ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
+  ASSERT_EQ(canonical(config.settingFilePaths().front().string()), canonical("setting.xml", prefixConfigFile));
+  ASSERT_EQ(canonical(config.assemblingFilePaths().front().string()), canonical("assembling.xml", prefixConfigFile));
   ASSERT_EQ(absolute("/tmp"), absolute(config.outputDir().string()));
   ASSERT_DOUBLE_EQUALS_DYNAWO(63.0, config.getDsoVoltageLevel());
   ASSERT_DOUBLE_EQUALS_DYNAWO(150., config.getTfoVoltageLevel());
@@ -95,8 +95,8 @@ TEST(Config, Default) {
   ASSERT_TRUE(config.isShuntRegulationOn());
   ASSERT_TRUE(config.isAutomaticSlackBusOn());
   ASSERT_EQ(config.getOutputZipName(), "outputs.zip");
-  ASSERT_EQ(config.settingFilePath().generic_string(), "");
-  ASSERT_EQ(config.assemblingFilePath().generic_string(), "");
+  ASSERT_TRUE(config.settingFilePaths().empty());
+  ASSERT_TRUE(config.assemblingFilePaths().empty());
   ASSERT_EQ(boost::filesystem::current_path().generic_string(), config.outputDir());
   ASSERT_DOUBLE_EQUALS_DYNAWO(45.0, config.getDsoVoltageLevel());
   ASSERT_DOUBLE_EQUALS_DYNAWO(100., config.getTfoVoltageLevel());
@@ -129,8 +129,8 @@ TEST(Config, ConfigN) {
 
   std::string prefixConfigFile = removeFileName(createAbsolutePath("./res/config_N.json", currentPath()));
 
-  ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
-  ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
+  ASSERT_EQ(canonical(config.settingFilePaths().front().string()), canonical("setting.xml", prefixConfigFile));
+  ASSERT_EQ(canonical(config.assemblingFilePaths().front().string()), canonical("assembling.xml", prefixConfigFile));
   ASSERT_EQ(absolute("/tmp"), absolute(config.outputDir().string()));
   ASSERT_DOUBLE_EQUALS_DYNAWO(74.0, config.getDsoVoltageLevel());
   ASSERT_DOUBLE_EQUALS_DYNAWO(160., config.getTfoVoltageLevel());
@@ -167,8 +167,8 @@ TEST(Config, ConfigSA) {
 
     std::string prefixConfigFile = removeFileName(createAbsolutePath("./res/config_SA.json", currentPath()));
 
-    ASSERT_EQ(canonical(config.settingFilePath().string()), canonical("setting.xml", prefixConfigFile));
-    ASSERT_EQ(canonical(config.assemblingFilePath().string()), canonical("assembling.xml", prefixConfigFile));
+    ASSERT_EQ(canonical(config.settingFilePaths().front().string()), canonical("setting.xml", prefixConfigFile));
+    ASSERT_EQ(canonical(config.assemblingFilePaths().front().string()), canonical("assembling.xml", prefixConfigFile));
     ASSERT_EQ(absolute("/tmp"), absolute(config.outputDir().string()));
     ASSERT_DOUBLE_EQUALS_DYNAWO(83.0, config.getDsoVoltageLevel());
     ASSERT_DOUBLE_EQUALS_DYNAWO(114., config.getTfoVoltageLevel());

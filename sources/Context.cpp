@@ -48,7 +48,7 @@ namespace file = boost::filesystem;
 
 namespace dfl {
 Context::Context(const ContextDef &def, inputs::Configuration &config, std::unordered_map<std::string, std::string> &mapOutputFilesData)
-    : def_(def), networkManager_(def.networkFilepath), dynamicDataBaseManager_(def.settingFilePath, def.assemblingFilePath),
+    : def_(def), networkManager_(def.networkFilepath), dynamicDataBaseManager_(def.settingFilePaths, def.assemblingFilePaths),
       contingenciesManager_(def.contingenciesFilePath), config_(config), mapOutputFilesData_(mapOutputFilesData), basename_{}, slackNode_{},
       slackNodeOrigin_{SlackNodeOrigin::ALGORITHM}, generators_{}, loads_{}, staticVarCompensators_{},
       algoResults_(new algo::AlgorithmsResults()), jobEntry_{}, jobsEvents_{} {

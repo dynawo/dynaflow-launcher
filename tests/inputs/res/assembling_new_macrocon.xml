@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembling>
+  <macroConnection id="MyNewMacroConnection">
+    <connection var1="myVar1" var2="myVar2"/>
+  </macroConnection>
+</assembling>

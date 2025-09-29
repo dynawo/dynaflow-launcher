@@ -29,7 +29,8 @@ using dfl::algo::LoadDefinition;
 using dfl::algo::StaticVarCompensatorDefinition;
 
 TEST(TestPar, write) {
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   std::string basename = "TestPar";
   std::string filename = basename + ".par";
@@ -72,7 +73,8 @@ TEST(TestPar, write) {
 }
 
 TEST(TestPar, writeRemote) {
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   std::string basename = "TestParRemote";
   std::string filename = basename + ".par";
@@ -120,7 +122,8 @@ TEST(TestPar, writeHdvc) {
   std::string basename = "TestParHvdc";
   std::string filename = basename + ".par";
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
@@ -187,7 +190,8 @@ TEST(TestPar, writeHdvc) {
 }
 
 TEST(TestPar, DynModel) {
-  dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+  dfl::inputs::DynamicDataBaseManager manager(std::vector<boost::filesystem::path>(1, "res/setting.xml"),
+                                              std::vector<boost::filesystem::path>(1, "res/assembling.xml"));
 
   std::string basename = "TestParDynModel";
   std::string filename = basename + ".par";
@@ -300,7 +304,8 @@ TEST(TestPar, DynModel) {
 }
 
 TEST(TestPar, writeStaticVarCompensator) {
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   std::string basename = "TestParSVarC";
   std::string filename = basename + ".par";
@@ -347,7 +352,8 @@ TEST(TestPar, writeStaticVarCompensator) {
 }
 
 TEST(TestPar, writeLoad) {
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   std::string basename = "TestParLoad";
   std::string filename = basename + ".par";
@@ -386,7 +392,8 @@ TEST(TestPar, writeLoad) {
 
 TEST(TestPar, writeVRRemote) {
   using dfl::algo::HVDCDefinition;
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   std::string basename = "TestParVRRemote";
   std::string filename = basename + ".par";
@@ -436,7 +443,8 @@ TEST(TestPar, writeVRRemote) {
 TEST(TestPar, startingPointMode) {
   using dfl::algo::HVDCDefinition;
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   std::string basename = "TestStartingPointMode";
 

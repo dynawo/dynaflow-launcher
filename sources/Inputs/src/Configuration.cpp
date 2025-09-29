@@ -22,6 +22,7 @@
 #include <DYNFileSystemUtils.h>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/algorithm/string.hpp>
 #include <limits>
 
 namespace dfl {
@@ -101,6 +102,39 @@ void updatePathValue(boost::filesystem::path &value, const boost::property_tree:
     value = value_opt->get_value<boost::filesystem::path>();
     value = createAbsolutePath(value.generic_string(), configDirectoryPath);
   }
+}
+
+
+
+/**
+ * @brief Helper function to update a list of internal parameters of type boost::filesystem::path
+ * @param values the values to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ * @param configDirectoryPath the absolute path of the directory containing the
+ * configuration file
+ * @param saMode true if simulation is in SA, false otherwise
+ */
+void updatePathValueMultiple(std::vector<boost::filesystem::path> & values, const boost::property_tree::ptree & tree,
+                             const std::string & key, const std::string & configDirectoryPath, const bool saMode) {
+  values.clear();
+
+  auto value_opt = boost::optional<const boost::property_tree::ptree &>();
+  if (saMode)
+    value_opt = tree.get_child_optional("sa." + key);
+
+  if (!saMode || !value_opt.is_initialized())
+    value_opt = tree.get_child_optional(key);
+
+  if (!value_opt.is_initialized())
+    return;
+
+  std::string valuesStr = value_opt->get_value<std::string>();
+
+  std::vector<std::string> valuesStrList;
+  boost::split(valuesStrList, valuesStr, boost::is_any_of(";"));
+  for (const std::string & value : valuesStrList)
+    values.push_back(createAbsolutePath(value, configDirectoryPath));
 }
 
 /**
@@ -225,8 +259,8 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile, false);  // Not possible to override outputDir in SA
     helper::updateFileNameValue(outputZipName_, ".zip", config, "OutputZipName", saMode, parameterValueModified_);
     helper::updateValue(dsoVoltageLevel_, config, "DsoVoltageLevel", saMode, parameterValueModified_);
-    helper::updatePathValue(settingFilePath_, config, "SettingPath", prefixConfigFile, saMode);
-    helper::updatePathValue(assemblingFilePath_, config, "AssemblingPath", prefixConfigFile, saMode);
+    helper::updatePathValueMultiple(settingFilePaths_, config, "SettingPath", prefixConfigFile, saMode);
+    helper::updatePathValueMultiple(assemblingFilePaths_, config, "AssemblingPath", prefixConfigFile, saMode);
     helper::updateValue(precision_, config, "Precision", saMode, parameterValueModified_);
     helper::updateValue(startTime_, config, "StartTime", saMode, parameterValueModified_);
     helper::updateValue(stopTime_, config, "StopTime", saMode, parameterValueModified_);
@@ -249,11 +283,11 @@ void Configuration::sanityCheck() const {
     throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
   }
 
-  if (!settingFilePath_.empty() && assemblingFilePath_.empty()) {
+  if (!settingFilePaths_.empty() && assemblingFilePaths_.empty()) {
     throw Error(SettingFileWithoutAssemblingFile, filepath_.generic_string());
   }
 
-  if (!assemblingFilePath_.empty() && settingFilePath_.empty()) {
+  if (!assemblingFilePaths_.empty() && settingFilePaths_.empty()) {
     throw Error(AssemblingFileWithoutSettingFile, filepath_.generic_string());
   }
 

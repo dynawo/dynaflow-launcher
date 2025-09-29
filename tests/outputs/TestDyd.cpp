@@ -34,7 +34,8 @@ TEST(Dyd, write) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -80,7 +81,8 @@ TEST(Dyd, writeRemote) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -125,7 +127,8 @@ TEST(Dyd, writeHvdc) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -165,7 +168,8 @@ TEST(Dyd, writeDynamicModel) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("res/setting.xml", "res/assembling.xml");
+  dfl::inputs::DynamicDataBaseManager manager(std::vector<boost::filesystem::path>(1, "res/setting.xml"),
+                                              std::vector<boost::filesystem::path>(1, "res/assembling.xml"));
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -257,7 +261,8 @@ TEST(Dyd, writeStaticVarCompensator) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -305,7 +310,8 @@ TEST(Dyd, writeLoad) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);
@@ -343,7 +349,8 @@ TEST(Dyd, writeVRRemote) {
   boost::filesystem::path outputPath(outputPathResults);
   outputPath.append(basename);
 
-  dfl::inputs::DynamicDataBaseManager manager("", "");
+  std::vector<boost::filesystem::path> emptyPathList;
+  dfl::inputs::DynamicDataBaseManager manager(emptyPathList, emptyPathList);
 
   if (!boost::filesystem::exists(outputPath)) {
     boost::filesystem::create_directories(outputPath);

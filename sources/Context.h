@@ -65,8 +65,8 @@ class Context {
     dfl::inputs::Configuration::StartingPointMode startingPointMode;  ///< starting point mode of the simulation
     dfl::inputs::Configuration::SimulationKind simulationKind;        ///< kind of simulation requested (steady-state or security analysis)
     boost::filesystem::path networkFilepath;                          ///< network filepath
-    boost::filesystem::path settingFilePath;                          ///< setting file path for dynamic data base
-    boost::filesystem::path assemblingFilePath;                       ///< assembling file path for dynamic data base
+    std::vector<boost::filesystem::path> settingFilePaths;            ///< setting file paths for dynamic data base
+    std::vector<boost::filesystem::path> assemblingFilePaths;         ///< assembling file paths for dynamic data base
     boost::filesystem::path contingenciesFilePath;                    ///< contigencies file path for Security Analysis simulation
     bool outputIsZip;                                                 ///< true if the output is zip archive, false otherwise
     std::string dynawoLogLevel;                                       ///< string representation of the dynawo log level

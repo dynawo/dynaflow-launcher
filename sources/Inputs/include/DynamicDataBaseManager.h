@@ -21,6 +21,7 @@
 #include "SettingDataBase.h"
 
 #include <boost/filesystem.hpp>
+#include <vector>
 
 namespace dfl {
 namespace inputs {
@@ -32,10 +33,10 @@ class DynamicDataBaseManager {
  public:
   /**
    * @brief Constructor
-   * @param settingFilePath the setting document file path
-   * @param assemblingFilePath the assembling document file path
+   * @param settingFilePaths the setting documents file paths
+   * @param assemblingFilePaths the assembling documents file paths
    */
-  DynamicDataBaseManager(const boost::filesystem::path& settingFilePath, const boost::filesystem::path& assemblingFilePath);
+  DynamicDataBaseManager(const std::vector<boost::filesystem::path> & settingFilePaths, const std::vector<boost::filesystem::path> & assemblingFilePaths);
 
   /**
    * @brief get current assembling database

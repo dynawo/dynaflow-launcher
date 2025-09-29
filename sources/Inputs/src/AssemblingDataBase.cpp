@@ -14,10 +14,8 @@
  */
 
 #include "AssemblingDataBase.h"
-
+#include "XsdPath.hpp"
 #include "Constants.h"
-#include "Log.h"
-
 #include <xml/sax/parser/ParserFactory.h>
 
 namespace parser = xml::sax::parser;
@@ -26,63 +24,28 @@ namespace file = boost::filesystem;
 namespace dfl {
 namespace inputs {
 
-/**
- * @brief retrieve the xsd for a xml file
- *
- * @param filepath xml file path
- * @return the corresponding xsd filepath or an empty path if not found
- */
-static file::path computeXsdPath(const file::path &filepath) {
-  auto basename = filepath.filename().replace_extension().generic_string();
-
-  auto var = getenv("DYNAFLOW_LAUNCHER_XSD");
-  file::path xsdFile;
-  if (var != NULL) {
-    xsdFile = file::path(var);
-  } else {
-    xsdFile = file::current_path();
-  }
-
-  xsdFile.append("assembling_dynaflow.xsd");
-
-  if (!file::exists(xsdFile)) {
-    return file::path("");
-  }
-
-  return xsdFile;
-}
-
-AssemblingDataBase::AssemblingDataBase(const boost::filesystem::path &assemblingFilePath) : containsSVC_(false) {
-  parser::ParserFactory factory;
-  AssemblingXmlDocument assemblingXml(*this);
-  auto parser = factory.createParser();
-  bool xsdValidation = true;
-
-  std::ifstream in(assemblingFilePath.c_str());
-  if (!in) {
-    // only a warning here because not providing an assembling or setting file is an expected behaviour for some simulations
-    if (!assemblingFilePath.empty())
-      LOG(warn, DynModelFileNotFound, assemblingFilePath.generic_string());
+AssemblingDataBase::AssemblingDataBase(const std::vector<boost::filesystem::path> & assemblingFilePaths) : containsSVC_(false) {
+  if (assemblingFilePaths.empty())
     return;
-  }
 
-  auto validation = getenv("DYNAFLOW_LAUNCHER_USE_XSD_VALIDATION");
-  if (validation != NULL && (std::string(validation) == "true" || std::string(validation) == "TRUE")) {
-    auto xsd = computeXsdPath(assemblingFilePath);
-    if (xsd.empty()) {
-      LOG(warn, DynModelFileXSDNotFound, assemblingFilePath.generic_string());
-      xsdValidation = false;
-    } else {
-      parser->addXmlSchema(xsd.generic_string());
+  parser::ParserPtr parser = parser::ParserFactory().createParser();
+  file::path xsdPath = getXsdPath("assembling_dynaflow.xsd");
+  if (xsdPath != "")
+    parser->addXmlSchema(xsdPath.generic_string());
+
+  AssemblingXmlDocument settingXml(*this);
+  for (const boost::filesystem::path & path : assemblingFilePaths) {
+    std::ifstream in(path.c_str());
+    if (!in) {
+      LOG(warn, DynModelFileNotFound, path.generic_string());
+      continue;
     }
-  } else {
-    xsdValidation = false;
-  }
 
-  try {
-    parser->parse(in, assemblingXml, xsdValidation);
-  } catch (const xml::sax::parser::ParserException &e) {
-    throw Error(DynModelFileReadError, assemblingFilePath.generic_string(), e.what());
+    try {
+      parser->parse(in, settingXml, xsdPath != "");
+    } catch (const xml::sax::parser::ParserException &e) {
+      throw Error(DynModelFileReadError, path.generic_string(), e.what());
+    }
   }
 }
 
@@ -160,35 +123,48 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
 
   macroConnectionHandler_.onStart([this]() { macroConnectionHandler_.currentMacroConnection = AssemblingDataBase::MacroConnection(); });
   macroConnectionHandler_.onEnd([this, &db]() {
+    std::string id = macroConnectionHandler_.currentMacroConnection->id;
     if (macroConnectionHandler_.currentMacroConnection->network) {
-      db.networkMacroConnections_[macroConnectionHandler_.currentMacroConnection->id] = *macroConnectionHandler_.currentMacroConnection;
+      if (db.networkMacroConnections_.find(id) != db.networkMacroConnections_.end())
+        throw Error(DuplicateAssemblingEntry, id);
+      db.networkMacroConnections_[id] = *macroConnectionHandler_.currentMacroConnection;
     } else {
-      db.macroConnections_[macroConnectionHandler_.currentMacroConnection->id] = *macroConnectionHandler_.currentMacroConnection;
+      if (db.macroConnections_.find(id) != db.macroConnections_.end())
+        throw Error(DuplicateAssemblingEntry, id);
+      db.macroConnections_[id] = *macroConnectionHandler_.currentMacroConnection;
     }
     macroConnectionHandler_.currentMacroConnection.reset();
   });
 
   singleAssociationHandler_.onStart([this]() { singleAssociationHandler_.currentSingleAssociation = AssemblingDataBase::SingleAssociation(); });
   singleAssociationHandler_.onEnd([this, &db]() {
-    db.singleAssociations_[singleAssociationHandler_.currentSingleAssociation->id] = *singleAssociationHandler_.currentSingleAssociation;
+    std::string id = singleAssociationHandler_.currentSingleAssociation->id;
+    if (db.singleAssociations_.find(id) != db.singleAssociations_.end())
+      throw Error(DuplicateAssemblingEntry, id);
+    db.singleAssociations_[id] = *singleAssociationHandler_.currentSingleAssociation;
     for (const auto &gen : singleAssociationHandler_.currentSingleAssociation->generators) {
-      db.generatorIdToSingleAssociationsId_[gen.name] = singleAssociationHandler_.currentSingleAssociation->id;
+      db.generatorIdToSingleAssociationsId_[gen.name] = id;
     }
     if (singleAssociationHandler_.currentSingleAssociation->hvdcLine)
-      db.HvdcIdToSingleAssociationsId_[singleAssociationHandler_.currentSingleAssociation->hvdcLine->name] =
-          singleAssociationHandler_.currentSingleAssociation->id;
+      db.HvdcIdToSingleAssociationsId_[singleAssociationHandler_.currentSingleAssociation->hvdcLine->name] = id;
     singleAssociationHandler_.currentSingleAssociation.reset();
   });
 
   multipleAssociationHandler_.onStart([this]() { multipleAssociationHandler_.currentMultipleAssociation = AssemblingDataBase::MultipleAssociation(); });
   multipleAssociationHandler_.onEnd([this, &db]() {
-    db.multipleAssociations_[multipleAssociationHandler_.currentMultipleAssociation->id] = *multipleAssociationHandler_.currentMultipleAssociation;
+    std::string id = multipleAssociationHandler_.currentMultipleAssociation->id;
+    if (db.multipleAssociations_.find(id) != db.multipleAssociations_.end())
+      throw Error(DuplicateAssemblingEntry, id);
+    db.multipleAssociations_[id] = *multipleAssociationHandler_.currentMultipleAssociation;
     multipleAssociationHandler_.currentMultipleAssociation.reset();
   });
 
   dynamicAutomatonHandler_.onStart([this]() { dynamicAutomatonHandler_.currentDynamicAutomaton = AssemblingDataBase::DynamicAutomaton(); });
   dynamicAutomatonHandler_.onEnd([this, &db]() {
-    db.dynamicAutomatons_[dynamicAutomatonHandler_.currentDynamicAutomaton->id] = *dynamicAutomatonHandler_.currentDynamicAutomaton;
+    std::string id = dynamicAutomatonHandler_.currentDynamicAutomaton->id;
+    if (db.dynamicAutomatons_.find(id) != db.dynamicAutomatons_.end())
+      throw Error(DuplicateAssemblingEntry, id);
+    db.dynamicAutomatons_[id] = *dynamicAutomatonHandler_.currentDynamicAutomaton;
     if ((*dynamicAutomatonHandler_.currentDynamicAutomaton).lib == dfl::common::constants::svcModelName) {
       db.containsSVC_ = true;
     }
@@ -197,7 +173,19 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
 
   propertyHandler_.onStart([this]() { propertyHandler_.currentProperty = AssemblingDataBase::Property(); });
   propertyHandler_.onEnd([this, &db]() {
-    db.properties_[propertyHandler_.currentProperty->id] = *propertyHandler_.currentProperty;
+    const std::string & currId = propertyHandler_.currentProperty->id;
+    if (db.properties_.find(currId) == db.properties_.end()) {
+      db.properties_[currId] = *propertyHandler_.currentProperty;
+    } else {
+      std::set<std::string> propSet;
+      for (const Device & device : propertyHandler_.currentProperty->devices)
+        propSet.insert(device.id);
+      for (const Device & device : db.properties_[currId].devices)
+        propSet.insert(device.id);
+      db.properties_[currId].devices.clear();
+      for (const std::string & deviceId : propSet)
+        db.properties_[currId].devices.push_back(Device{deviceId});
+    }
     propertyHandler_.currentProperty.reset();
   });
 }

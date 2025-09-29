@@ -30,7 +30,7 @@ DYNAlgorithms::multiprocessing::Context mpiContext;
 
 TEST(SettingXmlDocument, readFile) {
   const std::string filepath = "res/setting.xml";
-  dfl::inputs::SettingDataBase setting(filepath);
+  dfl::inputs::SettingDataBase setting(std::vector<boost::filesystem::path>(1, filepath));
 
   auto set = setting.getSet("MODELE_1_VL4");
   ASSERT_EQ(set.id, "MODELE_1_VL4");
@@ -158,5 +158,45 @@ TEST(SettingXmlDocument, readFile) {
 
 TEST(SettingXmlDocument, error) {
   const std::string filepath = "res/setting_error.xml";
-  ASSERT_ANY_THROW(dfl::inputs::SettingDataBase setting(filepath));
+  ASSERT_ANY_THROW(dfl::inputs::SettingDataBase setting(std::vector<boost::filesystem::path>(1, filepath)));
 }
+
+TEST(AssemblingXmlDocument, ExtendsDb) {
+  dfl::inputs::SettingDataBase setting(std::vector<boost::filesystem::path>{"res/setting.xml", "res/setting2.xml"});
+
+  // unchanged from setting.xml
+  auto set = setting.getSet("MODELE_2_TZE");
+  ASSERT_EQ(set.id, "MODELE_2_TZE");
+  ASSERT_EQ(set.references.size(), 0);
+  ASSERT_EQ(set.refs.size(), 0);
+  ASSERT_EQ(set.counts.size(), 2);
+  auto count = set.counts[0];
+  ASSERT_EQ(count.id, "SHUNTS_HAUTS_MODELE_2_TZE");
+  ASSERT_EQ(count.name, "nbShuntsHV");
+  count = set.counts[1];
+  ASSERT_EQ(count.id, "SHUNTS_BAS_MODELE_2_TZE");
+  ASSERT_EQ(count.name, "nbShuntsLV");
+  ASSERT_EQ(set.boolParameters.size(), 0);
+  ASSERT_EQ(set.integerParameters.size(), 1);
+  auto param_int = set.integerParameters.front();
+  ASSERT_EQ(param_int.name, "modeRegulation");
+  ASSERT_EQ(param_int.value, 1);
+  ASSERT_EQ(set.doubleParameters.size(), 16);
+
+  // overwritten by setting2.xml
+  set = setting.getSet("MODELE_1_VL4");
+  ASSERT_EQ(set.id, "MODELE_1_VL4");
+  ASSERT_EQ(set.doubleParameters.size(), 1);
+  auto param = set.doubleParameters[0];
+  ASSERT_EQ(param.name, "myOverwrittingPar");
+  ASSERT_EQ(param.value, 666.0);
+
+  // new one from setting2.xml
+  set = setting.getSet("myNewParset");
+  ASSERT_EQ(set.id, "myNewParset");
+  ASSERT_EQ(set.doubleParameters.size(), 2);
+  param = set.doubleParameters[1];
+  ASSERT_EQ(param.name, "myNewPar2");
+  ASSERT_EQ(param.value, 43.0);
+}
+

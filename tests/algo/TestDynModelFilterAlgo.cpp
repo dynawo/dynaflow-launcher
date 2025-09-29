@@ -85,7 +85,7 @@ TEST(DynModelFilter, RemoveRPCLIfMissingConnexionToSvc) {
     std::map<DynamicModelDefinition::DynModelId, DynamicModelDefinition> models;
     models.insert({dynModelId, dynModel});
     models.insert({dynModelId2, dynModel2});
-    dfl::inputs::AssemblingDataBase assembling("res/assembling_svc.xml");
+    dfl::inputs::AssemblingDataBase assembling(std::vector<boost::filesystem::path>(1, "res/assembling_svc.xml"));
     dfl::algo::DynModelFilterAlgorithm dynModelFilterAlgorithm(assembling, generators, hvdcLineDefinitions, models);
     dynModelFilterAlgorithm.filter();
     auto modelsIt = models.find(dynModelId);

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setting>
+  <set id="MODELE_1_VL4">
+    <par name="myOverwrittingPar" type="DOUBLE" value="666.0"/>
+  </set>
+  <set id="myNewParset">
+    <par name="myNewPar1" type="DOUBLE" value="42.0"/>
+    <par name="myNewPar2" type="DOUBLE" value="43.0"/>
+  </set>
+</setting>
