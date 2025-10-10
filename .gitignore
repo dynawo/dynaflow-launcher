@@ -10,6 +10,9 @@ version.h
 *.orig
 DicoKeys.*
 tests/**/resultsTestsTmp/**
+tests/**/res/*.zip
+tests/**/res/*_archive*.json
+tests/**/res/*_archive*.iidm
 results/
 myEnvDFL.sh
 sources/Common/include/*_keys.h
