@@ -153,7 +153,7 @@ std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
     std::unique_ptr<job::ConstraintsEntry> constraints = std::unique_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
     constraints->setExportMode("XML");
-    constraints->setFilterType(DYN::CONSTRAINTS_KEEP_LAST);
+    constraints->setFilterType(DYN::CONSTRAINTS_DYNAFLOW);
     output->setConstraintsEntry(std::move(constraints));
   }
 
