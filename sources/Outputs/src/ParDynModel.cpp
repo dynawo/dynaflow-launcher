@@ -83,96 +83,87 @@ std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(con
 
   std::unordered_map<std::string, double> genInitialParamToValues;
   for (const auto &param : set.doubleParameters) {
-    if (param.name == "secondaryVoltageControl_Alpha" || param.name == "secondaryVoltageControl_Beta" || param.name == "secondaryVoltageControl_UDeadBandPu") {
+    if (param.name == "Alpha" || param.name == "Beta" || param.name == "UDeadBandPu" || param.name == "tSample") {
       new_set->addParameter(helper::buildParameter(param.name, param.value));
-    } else if (param.name.find("secondaryVoltageControl_Qr_") != std::string::npos) {
+    } else if (param.name.find("Qr_") != std::string::npos) {
       genInitialParamToValues[param.name] = param.value;
-    } else if (param.name.find("secondaryVoltageControl_SNom_") != std::string::npos) {
+    } else if (param.name.find("SNom_") != std::string::npos) {
       genInitialParamToValues[param.name] = param.value;
     }
   }
 
   unsigned idx = 0;
-  new_set->addParameter(helper::buildParameter("secondaryVoltageControl_DerLevelMaxPu", 0.085));
-  new_set->addParameter(helper::buildParameter("secondaryVoltageControl_FreezingActivated", true));
   bool frozen = true;
   for (const auto &connection : automaton.nodeConnections) {
     const auto &generatorIdx = generatorIdToIndex_.find(connection.connectedElementId);
     const auto &hvdcIt = hvdcDefinitions_.hvdcLines.find(connection.connectedElementId);
     if (generatorIdx != generatorIdToIndex_.end()) {
       const auto &genDefinition = generatorDefinitions_[generatorIdx->second];
-      if (!genDefinition.isNetwork()) {
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
-      }
 
       auto it = regulatorIdToInitialIndex.find(genDefinition.id);
       if (it != regulatorIdToInitialIndex.end()) {
-        assert(genInitialParamToValues.find("secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_") != genInitialParamToValues.end());
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Qr_" + std::to_string(idx) + "_",
-                                                     genInitialParamToValues["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
-        auto sNomIt = genInitialParamToValues.find("secondaryVoltageControl_SNom_" + std::to_string(it->second) + "_");
+        assert(genInitialParamToValues.find("Qr_" + std::to_string(it->second)) != genInitialParamToValues.end());
+        new_set->addParameter(helper::buildParameter("Qr_" + std::to_string(idx), genInitialParamToValues["Qr_" + std::to_string(it->second)]));
+        auto sNomIt = genInitialParamToValues.find("SNom_" + std::to_string(it->second));
         if (sNomIt != genInitialParamToValues.end()) {
-          new_set->addParameter(helper::buildParameter("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", sNomIt->second));
+          new_set->addParameter(helper::buildParameter("SNom_" + std::to_string(idx), sNomIt->second));
         } else {
-          new_set->addReference(helper::buildReference("secondaryVoltageControl_SNom_" + std::to_string(idx) + "_", "sNom", "DOUBLE", genDefinition.id));
+          new_set->addReference(helper::buildReference("SNom_" + std::to_string(idx), "sNom", "DOUBLE", genDefinition.id));
         }
       }
 
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p_pu", "DOUBLE", genDefinition.id));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q_pu", "DOUBLE", genDefinition.id));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v_pu", "DOUBLE", genDefinition.id));
-      if (genDefinition.hasTransformer())
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_XTfoPu_" + std::to_string(idx) + "_",
-                                                     (genDefinition.isNuclear) ? constants::generatorNucXPuValue : constants::generatorXPuValue));
+      new_set->addReference(helper::buildReference("P0Pu_" + std::to_string(idx), "p_pu", "DOUBLE", genDefinition.id));
+      new_set->addReference(helper::buildReference("Q0Pu_" + std::to_string(idx), "q_pu", "DOUBLE", genDefinition.id));
+      new_set->addReference(helper::buildReference("U0Pu_" + std::to_string(idx), "v_pu", "DOUBLE", genDefinition.id));
+      //      if (genDefinition.hasTransformer())
+      //        new_set->addParameter(helper::buildParameter("XTfoPu_" + std::to_string(idx),
+      //                                                     (genDefinition.isNuclear) ? constants::generatorNucXPuValue : constants::generatorXPuValue));
 
-      if (genDefinition.q < genDefinition.qmax && genDefinition.q > genDefinition.qmin) {
-        frozen = false;
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_", false));
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_", false));
-      } else {
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_", genDefinition.q >= genDefinition.qmax));
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_", genDefinition.q <= genDefinition.qmin));
-      }
+      //      if (genDefinition.q < genDefinition.qmax && genDefinition.q > genDefinition.qmin) {  // TODO(rosiereflo)
+      //        frozen = false;
+      //        new_set->addParameter(helper::buildParameter("limUQUp0_" + std::to_string(idx), false));
+      //        new_set->addParameter(helper::buildParameter("limUQDown0_" + std::to_string(idx), false));
+      //      } else {
+      //        new_set->addParameter(helper::buildParameter("limUQUp0_" + std::to_string(idx), genDefinition.q >= genDefinition.qmax));
+      //        new_set->addParameter(helper::buildParameter("limUQDown0_" + std::to_string(idx), genDefinition.q <= genDefinition.qmin));
+      //      }
       ++idx;
     } else if (hvdcIt != hvdcDefinitions_.hvdcLines.end()) {
       const auto &hvdcDefinition = hvdcIt->second;
       auto it = regulatorIdToInitialIndex.find(hvdcDefinition.id);
       if (it != regulatorIdToInitialIndex.end()) {
-        assert(genInitialParamToValues.find("secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_") != genInitialParamToValues.end());
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Qr_" + std::to_string(idx) + "_",
-                                                     genInitialParamToValues["secondaryVoltageControl_Qr_" + std::to_string(it->second) + "_"]));
+        assert(genInitialParamToValues.find("Qr_" + std::to_string(it->second)) != genInitialParamToValues.end());
+        new_set->addParameter(helper::buildParameter("Qr_" + std::to_string(idx), genInitialParamToValues["Qr_" + std::to_string(it->second)]));
       }
-      new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Participate0_" + std::to_string(idx) + "_", true));
+      //      new_set->addParameter(helper::buildParameter("Participate0_" + std::to_string(idx), true));
       std::string side = "1";
       if (hvdcDefinition.converterStationOnSide2())
         side = "2";
-      new_set->addReference(
-          helper::buildReference("secondaryVoltageControl_P0Pu_" + std::to_string(idx) + "_", "p" + side + "_pu", "DOUBLE", hvdcDefinition.id));
-      new_set->addReference(
-          helper::buildReference("secondaryVoltageControl_Q0Pu_" + std::to_string(idx) + "_", "q" + side + "_pu", "DOUBLE", hvdcDefinition.id));
-      new_set->addReference(
-          helper::buildReference("secondaryVoltageControl_U0Pu_" + std::to_string(idx) + "_", "v" + side + "_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(helper::buildReference("P0Pu_" + std::to_string(idx), "p" + side + "_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(helper::buildReference("Q0Pu_" + std::to_string(idx), "q" + side + "_pu", "DOUBLE", hvdcDefinition.id));
+      new_set->addReference(helper::buildReference("U0Pu_" + std::to_string(idx), "v" + side + "_pu", "DOUBLE", hvdcDefinition.id));
 
-      assert(hvdcDefinition.vscDefinition1);
-      if (hvdcDefinition.vscDefinition1->q < hvdcDefinition.vscDefinition1->qmax && hvdcDefinition.vscDefinition1->q > hvdcDefinition.vscDefinition1->qmin) {
-        frozen = false;
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_", false));
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_", false));
-      } else {
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQUp0_" + std::to_string(idx) + "_",
-                                                     hvdcDefinition.vscDefinition1->q >= hvdcDefinition.vscDefinition1->qmax));
-        new_set->addParameter(helper::buildParameter("secondaryVoltageControl_limUQDown0_" + std::to_string(idx) + "_",
-                                                     hvdcDefinition.vscDefinition1->q <= hvdcDefinition.vscDefinition1->qmin));
-      }
+      //      assert(hvdcDefinition.vscDefinition1);
+      //      if (hvdcDefinition.vscDefinition1->q < hvdcDefinition.vscDefinition1->qmax && hvdcDefinition.vscDefinition1->q >
+      //      hvdcDefinition.vscDefinition1->qmin) {
+      //        frozen = false;
+      //        new_set->addParameter(helper::buildParameter("limUQUp0_" + std::to_string(idx), false));
+      //        new_set->addParameter(helper::buildParameter("limUQDown0_" + std::to_string(idx), false));
+      //      } else {
+      //        new_set->addParameter(
+      //            helper::buildParameter("limUQUp0_" + std::to_string(idx), hvdcDefinition.vscDefinition1->q >= hvdcDefinition.vscDefinition1->qmax));
+      //        new_set->addParameter(
+      //            helper::buildParameter("limUQDown0_" + std::to_string(idx), hvdcDefinition.vscDefinition1->q <= hvdcDefinition.vscDefinition1->qmin));
+      //      }
       ++idx;
     } else {
       // We assume this is a node
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_Up0Pu", "Upu", "DOUBLE", connection.connectedElementId));
-      new_set->addReference(helper::buildReference("secondaryVoltageControl_UpRef0Pu", "Upu", "DOUBLE", connection.connectedElementId));
+      new_set->addReference(helper::buildReference("UpRef0Pu", "Upu", "DOUBLE", connection.connectedElementId));
     }
   }
+  new_set->addParameter(helper::buildParameter<int>("nbGenerators", idx));
   if (frozen)
-    new_set->addParameter(helper::buildParameter("secondaryVoltageControl_Frozen0", true));
+    new_set->addParameter(helper::buildParameter("Frozen0", true));
   return new_set;
 }
 
@@ -262,10 +253,14 @@ ParDynModel::writeDynamicModelParameterSet(const inputs::SettingDataBase::Set &s
       componentId->replace(strIndex, constants::connectedStaticId.length() + 1, "");
       auto macroConnectId = componentId->substr(strIndex, componentId->find('@', strIndex) - strIndex);
       componentId->replace(strIndex, macroConnectId.length() + 2, "");
-      auto index = componentId->substr(strIndex, componentId->find('@', strIndex) - strIndex);
-      assert(macroConnectionToStaticId.find(macroConnectId + "_" + index) != macroConnectionToStaticId.end());
-      componentId = componentId->substr(0, strIndex) + macroConnectionToStaticId[macroConnectId + "_" + index] +
-                    componentId->substr(componentId->find('@', strIndex) + 1, componentId->length());
+      if (!componentId->empty()) {
+        auto index = componentId->substr(strIndex, componentId->find('@', strIndex) - strIndex);
+        assert(macroConnectionToStaticId.find(macroConnectId + "_" + index) != macroConnectionToStaticId.end());
+        componentId = componentId->substr(0, strIndex) + macroConnectionToStaticId[macroConnectId + "_" + index] +
+                      componentId->substr(componentId->find('@', strIndex) + 1, componentId->length());
+      } else {
+        componentId = macroConnectionToStaticId[macroConnectId + "_0"];
+      }
     }
     new_set->addReference(helper::buildReference(ref.name, ref.origName, inputs::SettingDataBase::Reference::toString(ref.dataType), componentId));
   }

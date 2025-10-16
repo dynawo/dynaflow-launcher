@@ -276,11 +276,13 @@ void DynModelAlgorithm::addMacroConnectionToModelDefinitions(const dfl::inputs::
                                                              const DynamicModelDefinition::MacroConnection &macroConnection) {
   if (dynamicModels_.models.count(automaton.id) == 0) {
     DynamicModelDefinition modelDef(automaton.id, automaton.lib);
+    std::cout << automaton.id << " " << macroConnection.connectedElementId << std::endl;
     modelDef.nodeConnections.insert(macroConnection);
 
     dynamicModels_.models.insert({automaton.id, modelDef});
   } else {
     auto &modelDef = dynamicModels_.models.at(automaton.id);
+    std::cout << automaton.id << " " << macroConnection.connectedElementId << std::endl;
     modelDef.nodeConnections.insert(macroConnection);
   }
 }

@@ -15,22 +15,22 @@
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToGenerator">
-    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
-    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
-    <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="generator_QStator"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="generator_blocker"/>
+    <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToGeneratorNetwork">
-    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="Network_generator_limUQDown"/>
-    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="Network_generator_limUQUp"/>
-    <dyn:connect var1="secondaryVoltageControl_level" var2="Network_reactivePowerControlLoop_level"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="generator_QStator"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="generator_blocker"/>
+    <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToHVDC">
-    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
-    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
-    <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="hvdc_QStator"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="hvdc_blocker"/>
+    <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
-    <dyn:connect var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+    <dyn:connect var1="UpPu_value" var2="@NAME@_Upu_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="TestLoadConnection">
     <dyn:connect var1="U_IMPIN" var2="U_value"/>

@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assembling>
   <macroConnection id="SVCToUMeasurement">
-    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+    <connection var1="UpPu_value" var2="@NAME@_Upu_value"/>
   </macroConnection>
   <macroConnection id="SVCToGenerator" index1="true" indexId="SVCToComponent">
-    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
-    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
-    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
+    <connection var1="level_value" var2="reactivePowerControlLoop_level"/>
+    <connection var1="blocker_@INDEX@_value" var2="generator_blocker"/>
+    <connection var1="QStator_@INDEX@_value" var2="generator_QStator"/>
   </macroConnection>
   <macroConnection id="SVCToHvdc" index1="true" indexId="SVCToComponent">
-    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
-    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
-    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
+    <connection var1="level_value" var2="reactivePowerControlLoop_level"/>
+    <connection var1="blocker_@INDEX@_value" var2="hvdc_blockerSide1"/>
+    <connection var1="QStator_@INDEX@_value" var2="hvdc_QInj1"/>
   </macroConnection>
   <singleAssociation id="UMeasurement">
     <bus voltageLevel="HADESP6_S_VL6"/>
@@ -25,7 +25,7 @@
   <singleAssociation id="HADES7HADES2_NGU_SM">
     <generator name="HADES7HADES2_NGU_SM"/>
   </singleAssociation>
-  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+  <dynamicAutomaton id="SVC" lib="DYNModelSecondaryVoltageControlSimplified">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
     <macroConnect macroConnection="SVCToHvdc" id="HERA9AJAX1"/>
     <macroConnect macroConnection="SVCToGenerator" id="HADES7HADES1_NGU_SM"/>

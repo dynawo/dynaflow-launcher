@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assembling>
   <macroConnection id="SVCToUMeasurement">
-    <connection var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu"/>
+    <connection var1="UpPu_value" var2="@NAME@_Upu_value"/>
   </macroConnection>
   <macroConnection id="SVCToHVDC" index1="true">
-    <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
-    <connection var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
-    <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
+    <connection var1="level_value" var2="reactivePowerControlLoop_level"/>
+    <connection var1="blocker_@INDEX@_value" var2="hvdc_blockerSide1"/>
+    <connection var1="QStator_@INDEX@_value" var2="hvdc_QInj1"/>
   </macroConnection>
   <singleAssociation id="MESURE_MODELE_VL">
     <bus voltageLevel="VL"/>
@@ -38,7 +38,7 @@
   <singleAssociation id="HVDCVSCLineSwitch2">
     <hvdcLine name="HVDCVSCLineSwitch2" converterStation1="SIDE2"/>
   </singleAssociation>
-  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+  <dynamicAutomaton id="SVC" lib="DYNModelSecondaryVoltageControlSimplified">
     <macroConnect macroConnection="SVCToUMeasurement" id="MESURE_MODELE_VL"/>
     <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLine"/>
     <macroConnect macroConnection="SVCToHVDC" id="HVDCVSCLine2"/>
