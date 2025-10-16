@@ -184,14 +184,12 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
       set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter1VoltageRegulationOn.value()));
       set->addReference(helper::buildReference("hvdc_Q1Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
       set->addReference(helper::buildReference("hvdc_Q2Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter1Id));
-      set->addReference(helper::buildReference("hvdc_U1Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter2Id));
       set->addReference(helper::buildReference("hvdc_U2Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter1Id));
     } else {
       set->addParameter(helper::buildParameter("hvdc_modeU10", hvdcDefinition.converter1VoltageRegulationOn.value()));
       set->addParameter(helper::buildParameter("hvdc_modeU20", hvdcDefinition.converter2VoltageRegulationOn.value()));
       set->addReference(helper::buildReference("hvdc_Q1Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter1Id));
       set->addReference(helper::buildReference("hvdc_Q2Ref0Pu", "targetQ_pu", "DOUBLE", hvdcDefinition.converter2Id));
-      set->addReference(helper::buildReference("hvdc_U1Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter1Id));
       set->addReference(helper::buildReference("hvdc_U2Ref0Pu", "targetV_pu", "DOUBLE", hvdcDefinition.converter2Id));
     }
   }
@@ -209,6 +207,15 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
         set->addParameter(helper::buildParameter(parameter, paramIt->value));
       else
         throw DFLError(MissingGeneratorHvdcParameterInSettings, parameter, hvdcDefinition.id);
+    }
+
+    std::vector<std::string> optionalParameters = {"reactivePowerControlLoop_QDeadBand"};
+
+    for (auto parameter : optionalParameters) {
+      auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                  [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+      if (paramIt != databaseSetting.doubleParameters.end())
+        set->addParameter(helper::buildParameter(parameter, paramIt->value));
     }
 
     // Try to use values from the setting ddb (for the case with no diagram, otherwise done in updateHVDCParams)

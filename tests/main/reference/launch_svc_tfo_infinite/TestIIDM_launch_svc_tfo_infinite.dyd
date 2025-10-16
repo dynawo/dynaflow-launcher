@@ -15,12 +15,12 @@
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToGenerator">
-    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
-    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
-    <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="generator_QStator"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="generator_blocker"/>
+    <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
-    <dyn:connect var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+    <dyn:connect var1="UpPu_value" var2="@NAME@_Upu_value"/>
   </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
@@ -33,7 +33,7 @@
     <dyn:staticRef var="state_value" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
-  <dyn:blackBoxModel id="SVC" lib="SecondaryVoltageControlSimp" parFile="TestIIDM_launch_svc_tfo_infinite.par" parId="SVC"/>
+  <dyn:blackBoxModel id="SVC" lib="DYNModelSecondaryVoltageControlSimplified" parFile="TestIIDM_launch_svc_tfo_infinite.par" parId="SVC"/>
   <dyn:blackBoxModel id="_GEN____1_SM" staticId="_GEN____1_SM" lib="GeneratorPVTfoRpclSignalN" parFile="TestIIDM_launch_svc_tfo_infinite.par" parId="99c2bba2-a805-50f1-9d84-49b63951bae6">
     <dyn:macroStaticRef id="GeneratorStaticRef"/>
   </dyn:blackBoxModel>
