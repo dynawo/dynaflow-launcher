@@ -2,13 +2,14 @@
 <setting>
   <set id="SVC">
     <!-- SVC parameters -->
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_0_" value="280"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="290"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="300"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_SNom_1_" value="2401.27"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_UDeadBandPu" value="0.0001"/>
+    <par type="DOUBLE" name="Qr_0" value="280"/>
+    <par type="DOUBLE" name="Qr_1" value="290"/>
+    <par type="DOUBLE" name="Qr_2" value="300"/>
+    <par type="DOUBLE" name="SNom_1" value="2401.27"/>
+    <par type="DOUBLE" name="Alpha" value="0.0308641975"/>
+    <par type="DOUBLE" name="Beta" value="1.2345679"/>
+    <par type="DOUBLE" name="UDeadBandPu" value="0.0001"/>
+    <par type="DOUBLE" name="tSample" value="10"/>
   </set>
   <set id="HADES7HADES1_NGU_SM">
     <!-- HADES7HADES1_NGU_SM parameters -->

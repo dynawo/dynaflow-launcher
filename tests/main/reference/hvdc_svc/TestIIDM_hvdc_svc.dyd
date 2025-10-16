@@ -25,17 +25,17 @@
     <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToGenerator">
-    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
-    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="generator_limUQUp"/>
-    <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="generator_QStator"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="generator_blocker"/>
+    <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToHvdc">
-    <dyn:connect var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
-    <dyn:connect var1="secondaryVoltageControl_limUQUp_@INDEX@_" var2="hvdc_limUQUp1"/>
-    <dyn:connect var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="hvdc_QInj1"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="hvdc_blockerSide1"/>
+    <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
-    <dyn:connect var1="secondaryVoltageControl_UpPu" var2="@NAME@_Upu_value"/>
+    <dyn:connect var1="UpPu_value" var2="@NAME@_Upu_value"/>
   </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
@@ -75,7 +75,7 @@
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:blackBoxModel id="Model_Signal_NQ_AJAXP7_S_VL7_TN1" lib="VRRemote" parFile="TestIIDM_hvdc_svc.par" parId="Model_Signal_NQ_AJAXP7_S_VL7_TN1"/>
   <dyn:blackBoxModel id="Model_Signal_NQ_HERAP7_S_VL7_TN1" lib="VRRemote" parFile="TestIIDM_hvdc_svc.par" parId="Model_Signal_NQ_HERAP7_S_VL7_TN1"/>
-  <dyn:blackBoxModel id="SVC" lib="SecondaryVoltageControlSimp" parFile="TestIIDM_hvdc_svc.par" parId="SVC"/>
+  <dyn:blackBoxModel id="SVC" lib="DYNModelSecondaryVoltageControlSimplified" parFile="TestIIDM_hvdc_svc.par" parId="SVC"/>
   <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="HADES7HADES1_NGU_SM" index1="0"/>
   <dyn:macroConnect connector="SVCToGenerator" id1="SVC" id2="HADES7HADES2_NGU_SM" index1="1"/>
   <dyn:macroConnect connector="SVCToHvdc" id1="SVC" id2="HERA9AJAX1" index1="2"/>

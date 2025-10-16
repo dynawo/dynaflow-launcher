@@ -180,7 +180,6 @@
     <reference type="DOUBLE" name="hvdc_Q20Pu" origData="IIDM" origName="q1_pu"/>
     <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation1"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v2_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v1_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation1"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle2_pu"/>
@@ -209,7 +208,6 @@
     <reference type="DOUBLE" name="hvdc_Q2Ref0Pu" origData="IIDM" origName="targetQ_pu" componentId="VSCStation1"/>
     <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v2_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v1_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation1"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle2_pu"/>
@@ -247,7 +245,6 @@
     <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
@@ -279,7 +276,6 @@
     <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
@@ -311,7 +307,6 @@
     <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="VSCStation3"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>

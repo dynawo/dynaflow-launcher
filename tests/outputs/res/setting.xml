@@ -45,15 +45,15 @@
   </set>
   <set id="SVC">
     <!-- SVC parameters -->
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_0_" value="280"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="290"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="300"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_3_" value="310"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_4_" value="320"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_SNom_0_" value="110.45"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_SNom_1_" value="110.45"/>
+    <par type="DOUBLE" name="Qr_0" value="280"/>
+    <par type="DOUBLE" name="Qr_1" value="290"/>
+    <par type="DOUBLE" name="Qr_2" value="300"/>
+    <par type="DOUBLE" name="Qr_3" value="310"/>
+    <par type="DOUBLE" name="Qr_4" value="320"/>
+    <par type="DOUBLE" name="Alpha" value="0.0308641975"/>
+    <par type="DOUBLE" name="Beta" value="1.2345679"/>
+    <par type="DOUBLE" name="SNom_0" value="110.45"/>
+    <par type="DOUBLE" name="SNom_1" value="110.45"/>
   </set>
   <set id="G5">
     <!-- G5 parameters -->

@@ -213,7 +213,7 @@ TEST(TestPar, DynModel) {
   defs.usedMacroConnections.insert("SVCToGenerator");
   defs.usedMacroConnections.insert("SVCToHvdc");
   defs.usedMacroConnections.insert("CLAToIMeasurement");
-  defs.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "SecondaryVoltageControlSimp")});
+  defs.models.insert({"SVC", dfl::algo::DynamicModelDefinition("SVC", "DYNModelSecondaryVoltageControlSimplified")});
   defs.models.insert({"DM_TEST", dfl::algo::DynamicModelDefinition("DM_TEST", "PhaseShifterI")});
   auto macro =
       dfl::algo::DynamicModelDefinition::MacroConnection("SVCToUMeasurement", dfl::algo::DynamicModelDefinition::MacroConnection::ElementType::NODE, "0", "");
