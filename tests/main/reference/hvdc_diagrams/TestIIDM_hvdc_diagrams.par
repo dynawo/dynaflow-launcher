@@ -85,7 +85,6 @@
     <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="HERAP7_HERA_TER_1"/>
     <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="AJAXP7_AJAX_TER_1"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="HERAP7_HERA_TER_1"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="AJAXP7_AJAX_TER_1"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>
@@ -123,7 +122,6 @@
     <reference type="DOUBLE" name="hvdc_QPercent1" origData="IIDM" origName="qMax_pu" componentId="HERAP7_HERA_TER_2"/>
     <reference type="DOUBLE" name="hvdc_QPercent2" origData="IIDM" origName="qMax_pu" componentId="AJAXP7_AJAX_TER_2"/>
     <reference type="DOUBLE" name="hvdc_U10Pu" origData="IIDM" origName="v1_pu"/>
-    <reference type="DOUBLE" name="hvdc_U1Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="HERAP7_HERA_TER_2"/>
     <reference type="DOUBLE" name="hvdc_U20Pu" origData="IIDM" origName="v2_pu"/>
     <reference type="DOUBLE" name="hvdc_U2Ref0Pu" origData="IIDM" origName="targetV_pu" componentId="AJAXP7_AJAX_TER_2"/>
     <reference type="DOUBLE" name="hvdc_UPhase10" origData="IIDM" origName="angle1_pu"/>

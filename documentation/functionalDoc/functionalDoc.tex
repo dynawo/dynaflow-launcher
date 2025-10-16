@@ -512,7 +512,7 @@ If we complete our current example with the following associations we will end u
 
 The secondary voltage control automaton is a specific case from the assembling and setting.
 
-If the assembling defines a \textit{dynamicAutomaton} using the library \textbf{SecondaryVoltageControlSimp} then the model of the generators connected to
+If the assembling defines a \textit{dynamicAutomaton} using the library \textbf{DYNModelSecondaryVoltageControlSimplified} then the model of the generators connected to
 this secondary voltage control automaton will contain a reactive power control loop (Rpcl) connected to the secondary voltage control.
 
 This secondary voltage control automaton should be connected to one bus and some generators.
@@ -541,7 +541,7 @@ An example is given below.
     <generator name="_GEN____2_SM"/>
   </singleAssociation>
 
-  <dynamicAutomaton id="SVC" lib="SecondaryVoltageControlSimp">
+  <dynamicAutomaton id="SVC" lib="DYNModelSecondaryVoltageControlSimplified">
     <macroConnect macroConnection="SVCToUMeasurement" id="UMeasurement"/>
     <macroConnect macroConnection="SVCToGenerator" id="GEN1"/>
     <macroConnect macroConnection="SVCToGenerator" id="GEN2"/>
@@ -551,7 +551,7 @@ An example is given below.
 \end{lstlisting}
 
 
-Similarly to any \textit{dynamicAutomaton}, a set of parameters should be given in the setting file for the \textbf{SecondaryVoltageControlSimp} model.
+Similarly to any \textit{dynamicAutomaton}, a set of parameters should be given in the setting file for the \textbf{DYNModelSecondaryVoltageControlSimplified} model.
 Moreover the setting should also contain the Rpcl parameters for all generators as follows:
 
 \begin{lstlisting}[language=XML, breaklines=true, breakatwhitespace=false, columns=fullflexible]
@@ -560,13 +560,20 @@ Moreover the setting should also contain the Rpcl parameters for all generators 
   <set id="SVC">
     <!-- SVC parameters -->
 
-    <!-- GEN1 Qr -->
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_1_" value="280"/>
-    <!-- GEN2 Qr -->
-    <par type="DOUBLE" name="secondaryVoltageControl_Qr_2_" value="280"/>
+    <!-- GEN1 Qr and apparent power -->
+    <par type="DOUBLE" name="Qr_0" value="280"/>
+    <par type="DOUBLE" name="SNom_0" value="50"/>
+    <!-- GEN2 Qr and apparent power -->
+    <par type="DOUBLE" name="Qr_1" value="280"/>
+    <par type="DOUBLE" name="SNom_1" value="50"/>
 
-    <par type="DOUBLE" name="secondaryVoltageControl_Alpha" value="0.0308641975"/>
-    <par type="DOUBLE" name="secondaryVoltageControl_Beta" value="1.2345679"/>
+    <par type="DOUBLE" name="Alpha" value="0.0308641975"/>
+    <par type="DOUBLE" name="Beta" value="1.2345679"/>
+
+    <!-- voltage deadband in per unit (base UNom) -->
+    <par name="UDeadBandPu" type="DOUBLE" value="0.01"/>
+    <!-- sample time in s -->
+    <par name="tSample" type="DOUBLE" value="10.0"/>
   </set>
 
   <set id="GEN1">

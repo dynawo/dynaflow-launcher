@@ -72,29 +72,23 @@
     <reference type="DOUBLE" name="load_UPhase0" origData="IIDM" origName="angle_pu"/>
   </set>
   <set id="SVC">
-    <par name="secondaryVoltageControl_Alpha" type="DOUBLE" value="0.030864197499999999"/>
-    <par name="secondaryVoltageControl_Beta" type="DOUBLE" value="1.2345679000000001"/>
-    <par name="secondaryVoltageControl_DerLevelMaxPu" type="DOUBLE" value="0.085000000000000006"/>
-    <par name="secondaryVoltageControl_FreezingActivated" type="BOOL" value="true"/>
-    <par name="secondaryVoltageControl_Participate0_0_" type="BOOL" value="true"/>
-    <par name="secondaryVoltageControl_Participate0_1_" type="BOOL" value="true"/>
-    <par name="secondaryVoltageControl_Qr_0_" type="DOUBLE" value="280"/>
-    <par name="secondaryVoltageControl_Qr_1_" type="DOUBLE" value="290"/>
-    <par name="secondaryVoltageControl_SNom_1_" type="DOUBLE" value="2401.27"/>
-    <par name="secondaryVoltageControl_UDeadBandPu" type="DOUBLE" value="0.0001"/>
-    <par name="secondaryVoltageControl_limUQDown0_0_" type="BOOL" value="false"/>
-    <par name="secondaryVoltageControl_limUQDown0_1_" type="BOOL" value="false"/>
-    <par name="secondaryVoltageControl_limUQUp0_0_" type="BOOL" value="false"/>
-    <par name="secondaryVoltageControl_limUQUp0_1_" type="BOOL" value="false"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_0_" origData="IIDM" origName="p_pu" componentId="_GEN____1_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_P0Pu_1_" origData="IIDM" origName="p_pu" componentId="_GEN____2_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_0_" origData="IIDM" origName="q_pu" componentId="_GEN____1_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_Q0Pu_1_" origData="IIDM" origName="q_pu" componentId="_GEN____2_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_SNom_0_" origData="IIDM" origName="sNom" componentId="_GEN____1_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_0_" origData="IIDM" origName="v_pu" componentId="_GEN____1_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_U0Pu_1_" origData="IIDM" origName="v_pu" componentId="_GEN____2_SM"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_Up0Pu" origData="IIDM" origName="Upu" componentId="_BUS____1_TN"/>
-    <reference type="DOUBLE" name="secondaryVoltageControl_UpRef0Pu" origData="IIDM" origName="Upu" componentId="_BUS____1_TN"/>
+    <par name="Alpha" type="DOUBLE" value="0.030864197499999999"/>
+    <par name="Beta" type="DOUBLE" value="1.2345679000000001"/>
+    <par name="Frozen0" type="BOOL" value="true"/>
+    <par name="Qr_0" type="DOUBLE" value="280"/>
+    <par name="Qr_1" type="DOUBLE" value="290"/>
+    <par name="SNom_1" type="DOUBLE" value="2401.27"/>
+    <par name="UDeadBandPu" type="DOUBLE" value="0.0001"/>
+    <par name="nbGenerators" type="INT" value="2"/>
+    <par name="tSample" type="DOUBLE" value="10"/>
+    <reference type="DOUBLE" name="P0Pu_0" origData="IIDM" origName="p_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="P0Pu_1" origData="IIDM" origName="p_pu" componentId="_GEN____2_SM"/>
+    <reference type="DOUBLE" name="Q0Pu_0" origData="IIDM" origName="q_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="Q0Pu_1" origData="IIDM" origName="q_pu" componentId="_GEN____2_SM"/>
+    <reference type="DOUBLE" name="SNom_0" origData="IIDM" origName="sNom" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="U0Pu_0" origData="IIDM" origName="v_pu" componentId="_GEN____1_SM"/>
+    <reference type="DOUBLE" name="U0Pu_1" origData="IIDM" origName="v_pu" componentId="_GEN____2_SM"/>
+    <reference type="DOUBLE" name="UpRef0Pu" origData="IIDM" origName="Upu" componentId="_BUS____1_TN"/>
   </set>
   <set id="signalNGeneratorFixedP">
     <par name="generator_KGover" type="DOUBLE" value="0"/>
