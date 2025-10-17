@@ -33,7 +33,7 @@ if __name__ == "__main__":
             continue
 
         for file in files:
-            if file != "outputIIDM.xml" and file != "constraints.xml" and file != "lostEquipments.xml":
+            if file != "outputIIDM.xml" and file != "constraints.xml" and file != "lostEquipments.xml" and not file.endswith(".dyd") and not file.endswith(".par"):
                 continue
             filepath = os.path.join(root, file)
             root_filetest = root.split("results")[0]
@@ -43,7 +43,7 @@ if __name__ == "__main__":
             filepathreference = os.path.join(
                 root_filetest, "reference", testname, file)
 
-            if len(splittedPath) and splittedPath[2] != "outputs":
+            if len(splittedPath) > 2 and splittedPath[2] != "outputs":
                 # case main SA
                 filepathreference = os.path.join(
                     root_filetest, "reference", testname, splittedPath[2], file)
@@ -59,7 +59,7 @@ if __name__ == "__main__":
             elif file =="constraints.xml":
                 (nb_differences, msg) = constraintsDiff.output_constraints_close_enough(
                     filepath, filepathreference)
-            elif file =="lostEquipments.xml":
+            elif file =="lostEquipments.xml" or file.endswith(".dyd") or file.endswith(".par"):
                 # compare line per line with universal newline, stop at first diff
                 with open(filepath) as f1, open(filepathreference) as f2:
                     identical = all(l1 == l2 for l1, l2 in zip_longest(f1, f2))

@@ -25,8 +25,8 @@
     <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToHVDC">
-    <dyn:connect var1="QStator_@INDEX@_value" var2="hvdc_QStator"/>
-    <dyn:connect var1="blocker_@INDEX@_value" var2="hvdc_blocker"/>
+    <dyn:connect var1="QStator_@INDEX@_value" var2="hvdc_QInj1"/>
+    <dyn:connect var1="blocker_@INDEX@_value" var2="hvdc_blockerSide1"/>
     <dyn:connect var1="level_value" var2="reactivePowerControlLoop_level"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="SVCToUMeasurement">
