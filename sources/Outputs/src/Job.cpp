@@ -269,8 +269,8 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   std::shared_ptr<job::ConstraintsEntry> constraints = outputs->getConstraintsEntry();
   if (constraints) {
     attrs.add("exportMode", constraints->getExportMode());
+    attrs.add("filter", "DYNAFLOW");
     formatter->startElement("dyn", "constraints", attrs);
-    attrs.add("filter", "LAST");
     attrs.clear();
     formatter->endElement();
   }
