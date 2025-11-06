@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <constraints xmlns="http://www.rte-france.com/dynawo">
-  <constraint modelName="AJAXP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="395.05312420372417" valueMin="380"/>
-  <constraint modelName="ATHENP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="394.7721018606959" valueMin="380"/>
-  <constraint modelName="HADESP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="393.03608197570509" valueMin="380"/>
-  <constraint modelName="HADESP7_S_VL7_TN2" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="393.03608197570509" valueMin="380"/>
-  <constraint modelName="HERAP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="422.1993248887195" valueMin="380"/>
-  <constraint modelName="HERAP7_S_VL7_TN1" description="U &gt; Umax" time="10.0000" type="Node" kind="USupUmax" limit="410" value="403.99486308157049" valueMax="422.1993248887195"/>
+  <constraint modelName="AJAXP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="395.05312420372422" valueMin="380"/>
+  <constraint modelName="ATHENP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="394.77210186069607" valueMin="380"/>
+  <constraint modelName="HADESP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="393.0360819757052" valueMin="380"/>
+  <constraint modelName="HADESP7_S_VL7_TN2" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="393.0360819757052" valueMin="380"/>
+  <constraint modelName="HERAP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="422.19932488871967" valueMin="380"/>
+  <constraint modelName="HERAP7_S_VL7_TN1" description="U &gt; Umax" time="0.0000" type="Node" kind="USupUmax" limit="410" value="403.99486308157043" valueMax="422.19932488871967"/>
 </constraints>
