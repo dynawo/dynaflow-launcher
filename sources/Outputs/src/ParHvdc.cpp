@@ -17,11 +17,9 @@
 namespace dfl {
 namespace outputs {
 
-void ParHvdc::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                    const std::string& basename,
-                    const boost::filesystem::path& dirname,
-                    dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+void ParHvdc::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
+                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
     paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode, dynamicDataBaseManager));
   }
@@ -200,7 +198,7 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
 
   if (hvdcDefinition.hasRpcl2()) {
     std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_CqMaxPu", "reactivePowerControlLoop_DeltaURefMaxPu",
-                                           "reactivePowerControlLoop_Tech", "reactivePowerControlLoop_Ti"};
+                                           "reactivePowerControlLoop_Tech", "reactivePowerControlLoop_Ti",      "reactivePowerControlLoop_QDeadBand"};
 
     const auto &databaseSetting =
         dynamicDataBaseManager.setting().getSet(dynamicDataBaseManager.assembling().getSingleAssociationFromHvdcLine(hvdcDefinition.id));

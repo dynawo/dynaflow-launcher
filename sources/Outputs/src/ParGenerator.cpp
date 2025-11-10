@@ -17,12 +17,9 @@
 namespace dfl {
 namespace outputs {
 
-void ParGenerator::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                          ActivePowerCompensation activePowerCompensation,
-                          const std::string& basename,
-                          const boost::filesystem::path& dirname,
-                          StartingPointMode startingPointMode,
-                          const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+void ParGenerator::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
+                         const std::string &basename, const boost::filesystem::path &dirname, StartingPointMode startingPointMode,
+                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {
@@ -98,12 +95,11 @@ std::string ParGenerator::getGeneratorMacroParameterSetId(ModelType modelType, b
   return id;
 }
 
-std::unique_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def,
-                                                                                              ActivePowerCompensation activePowerCompensation,
-                                                                                              double targetP,
-                                                                                              StartingPointMode startingPointMode) {
-  std::unique_ptr<parameters::MacroParameterSet> macroParameterSet = std::unique_ptr<parameters::MacroParameterSet>(
-      new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(targetP))));
+std::unique_ptr<parameters::MacroParameterSet> ParGenerator::buildGeneratorMacroParameterSet(const algo::GeneratorDefinition &def,
+                                                                                             ActivePowerCompensation activePowerCompensation, double targetP,
+                                                                                             StartingPointMode startingPointMode) {
+  std::unique_ptr<parameters::MacroParameterSet> macroParameterSet =
+      std::unique_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(targetP))));
 
   if (def.isUsingDiagram()) {
     // Otherwise was already added by updateSignalNGenerator
@@ -299,7 +295,7 @@ void ParGenerator::updateTransfoParameters(std::shared_ptr<parameters::Parameter
 void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string &genId,
                                         const inputs::SettingDataBase::Set &databaseSetting, bool Rcpl2) {
   std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_UStatorRefMaxPu",
-                                        "reactivePowerControlLoop_UStatorRefMinPu"};
+                                         "reactivePowerControlLoop_UStatorRefMinPu", "reactivePowerControlLoop_QDeadBand"};
   if (Rcpl2) {
     parameters.push_back("reactivePowerControlLoop_CqMaxPu");
     parameters.push_back("reactivePowerControlLoop_DeltaURefMaxPu");
