@@ -153,6 +153,7 @@ boost::shared_ptr<job::OutputsEntry> Job::writeOutputs() const {
   if (def_.configuration.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
     auto constraints = boost::shared_ptr<job::ConstraintsEntry>(new job::ConstraintsEntry());
     constraints->setExportMode("XML");
+    constraints->setFilterType(DYN::CONSTRAINTS_DYNAFLOW);
     output->setConstraintsEntry(constraints);
   }
 
@@ -269,6 +270,7 @@ void Job::exportJob(const boost::shared_ptr<job::JobEntry> &jobEntry, const boos
   auto constraints = outputs->getConstraintsEntry();
   if (constraints) {
     attrs.add("exportMode", constraints->getExportMode());
+    attrs.add("filter", "DYNAFLOW");
     formatter->startElement("dyn", "constraints", attrs);
     attrs.clear();
     formatter->endElement();

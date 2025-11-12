@@ -10,7 +10,7 @@
     </dyn:modeler>
     <dyn:simulation startTime="0" stopTime="100" precision="0.0001"/>
     <dyn:outputs directory="outputs">
-      <dyn:constraints exportMode="XML"/>
+      <dyn:constraints exportMode="XML" filter="DYNAFLOW"/>
       <dyn:timeline exportMode="XML"/>
       <dyn:finalState exportIIDMFile="true" exportDumpFile="false"/>
       <dyn:lostEquipments/>
