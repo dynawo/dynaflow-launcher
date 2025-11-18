@@ -17,11 +17,9 @@
 namespace dfl {
 namespace outputs {
 
-void ParHvdc::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                    const std::string& basename,
-                    const boost::filesystem::path& dirname,
-                    dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                    const inputs::DynamicDataBaseManager& dynamicDataBaseManager) {
+void ParHvdc::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
+                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
     paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode, dynamicDataBaseManager));
   }
@@ -210,7 +208,7 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
       if (paramIt != databaseSetting.doubleParameters.end())
         set->addParameter(helper::buildParameter(parameter, paramIt->value));
       else
-        throw Error(MissingGeneratorHvdcParameterInSettings, parameter, hvdcDefinition.id);
+        throw DFLError(MissingGeneratorHvdcParameterInSettings, parameter, hvdcDefinition.id);
     }
 
     // Try to use values from the setting ddb (for the case with no diagram, otherwise done in updateHVDCParams)

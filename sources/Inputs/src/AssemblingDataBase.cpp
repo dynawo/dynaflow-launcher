@@ -14,8 +14,8 @@
  */
 
 #include "AssemblingDataBase.h"
-#include "XsdPath.hpp"
 #include "Constants.h"
+#include "XsdPath.hpp"
 #include <xml/sax/parser/ParserFactory.h>
 
 namespace parser = xml::sax::parser;
@@ -24,7 +24,7 @@ namespace file = boost::filesystem;
 namespace dfl {
 namespace inputs {
 
-AssemblingDataBase::AssemblingDataBase(const std::vector<boost::filesystem::path> & assemblingFilePaths) : containsSVC_(false) {
+AssemblingDataBase::AssemblingDataBase(const std::vector<boost::filesystem::path> &assemblingFilePaths) : containsSVC_(false) {
   if (assemblingFilePaths.empty())
     return;
 
@@ -34,7 +34,7 @@ AssemblingDataBase::AssemblingDataBase(const std::vector<boost::filesystem::path
     parser->addXmlSchema(xsdPath.generic_string());
 
   AssemblingXmlDocument settingXml(*this);
-  for (const boost::filesystem::path & path : assemblingFilePaths) {
+  for (const boost::filesystem::path &path : assemblingFilePaths) {
     std::ifstream in(path.c_str());
     if (!in) {
       LOG(warn, DynModelFileNotFound, path.generic_string());
@@ -44,7 +44,7 @@ AssemblingDataBase::AssemblingDataBase(const std::vector<boost::filesystem::path
     try {
       parser->parse(in, settingXml, xsdPath != "");
     } catch (const xml::sax::parser::ParserException &e) {
-      throw Error(DynModelFileReadError, path.generic_string(), e.what());
+      throw DFLError(DynModelFileReadError, path.generic_string(), e.what());
     }
   }
 }
@@ -58,7 +58,7 @@ const AssemblingDataBase::MacroConnection &AssemblingDataBase::getMacroConnectio
   const auto it = macroConnections_.find(id);
   if (it != macroConnections_.end())
     return it->second;
-  throw Error(UnknownMacroConnection, id);
+  throw DFLError(UnknownMacroConnection, id);
 }
 
 bool AssemblingDataBase::hasNetworkMacroConnection(const std::string &id) const { return networkMacroConnections_.find(id) != networkMacroConnections_.end(); }
@@ -67,7 +67,7 @@ const AssemblingDataBase::SingleAssociation &AssemblingDataBase::getSingleAssoci
   const auto it = singleAssociations_.find(id);
   if (it != singleAssociations_.end())
     return it->second;
-  throw Error(UnknownSingleAssoc, id);
+  throw DFLError(UnknownSingleAssoc, id);
 }
 
 bool AssemblingDataBase::isSingleAssociation(const std::string &id) const { return singleAssociations_.find(id) != singleAssociations_.end(); }
@@ -76,7 +76,7 @@ const AssemblingDataBase::MultipleAssociation &AssemblingDataBase::getMultipleAs
   const auto it = multipleAssociations_.find(id);
   if (it != multipleAssociations_.end())
     return it->second;
-  throw Error(UnknownMultiAssoc, id);
+  throw DFLError(UnknownMultiAssoc, id);
 }
 
 std::string AssemblingDataBase::getSingleAssociationFromGenerator(const std::string &name) const {
@@ -101,7 +101,7 @@ const AssemblingDataBase::Property &AssemblingDataBase::getProperty(const std::s
   const auto it = properties_.find(id);
   if (it != properties_.end())
     return it->second;
-  throw Error(UnknownProperty, id);
+  throw DFLError(UnknownProperty, id);
 }
 
 bool AssemblingDataBase::isProperty(const std::string &id) const { return properties_.find(id) != properties_.end(); }
@@ -126,11 +126,11 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
     std::string id = macroConnectionHandler_.currentMacroConnection->id;
     if (macroConnectionHandler_.currentMacroConnection->network) {
       if (db.networkMacroConnections_.find(id) != db.networkMacroConnections_.end())
-        throw Error(DuplicateAssemblingEntry, id);
+        throw DFLError(DuplicateAssemblingEntry, id);
       db.networkMacroConnections_[id] = *macroConnectionHandler_.currentMacroConnection;
     } else {
       if (db.macroConnections_.find(id) != db.macroConnections_.end())
-        throw Error(DuplicateAssemblingEntry, id);
+        throw DFLError(DuplicateAssemblingEntry, id);
       db.macroConnections_[id] = *macroConnectionHandler_.currentMacroConnection;
     }
     macroConnectionHandler_.currentMacroConnection.reset();
@@ -140,7 +140,7 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   singleAssociationHandler_.onEnd([this, &db]() {
     std::string id = singleAssociationHandler_.currentSingleAssociation->id;
     if (db.singleAssociations_.find(id) != db.singleAssociations_.end())
-      throw Error(DuplicateAssemblingEntry, id);
+      throw DFLError(DuplicateAssemblingEntry, id);
     db.singleAssociations_[id] = *singleAssociationHandler_.currentSingleAssociation;
     for (const auto &gen : singleAssociationHandler_.currentSingleAssociation->generators) {
       db.generatorIdToSingleAssociationsId_[gen.name] = id;
@@ -154,7 +154,7 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   multipleAssociationHandler_.onEnd([this, &db]() {
     std::string id = multipleAssociationHandler_.currentMultipleAssociation->id;
     if (db.multipleAssociations_.find(id) != db.multipleAssociations_.end())
-      throw Error(DuplicateAssemblingEntry, id);
+      throw DFLError(DuplicateAssemblingEntry, id);
     db.multipleAssociations_[id] = *multipleAssociationHandler_.currentMultipleAssociation;
     multipleAssociationHandler_.currentMultipleAssociation.reset();
   });
@@ -163,7 +163,7 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
   dynamicAutomatonHandler_.onEnd([this, &db]() {
     std::string id = dynamicAutomatonHandler_.currentDynamicAutomaton->id;
     if (db.dynamicAutomatons_.find(id) != db.dynamicAutomatons_.end())
-      throw Error(DuplicateAssemblingEntry, id);
+      throw DFLError(DuplicateAssemblingEntry, id);
     db.dynamicAutomatons_[id] = *dynamicAutomatonHandler_.currentDynamicAutomaton;
     if ((*dynamicAutomatonHandler_.currentDynamicAutomaton).lib == dfl::common::constants::svcModelName) {
       db.containsSVC_ = true;
@@ -173,17 +173,17 @@ AssemblingDataBase::AssemblingXmlDocument::AssemblingXmlDocument(AssemblingDataB
 
   propertyHandler_.onStart([this]() { propertyHandler_.currentProperty = AssemblingDataBase::Property(); });
   propertyHandler_.onEnd([this, &db]() {
-    const std::string & currId = propertyHandler_.currentProperty->id;
+    const std::string &currId = propertyHandler_.currentProperty->id;
     if (db.properties_.find(currId) == db.properties_.end()) {
       db.properties_[currId] = *propertyHandler_.currentProperty;
     } else {
       std::set<std::string> propSet;
-      for (const Device & device : propertyHandler_.currentProperty->devices)
+      for (const Device &device : propertyHandler_.currentProperty->devices)
         propSet.insert(device.id);
-      for (const Device & device : db.properties_[currId].devices)
+      for (const Device &device : db.properties_[currId].devices)
         propSet.insert(device.id);
       db.properties_[currId].devices.clear();
-      for (const std::string & deviceId : propSet)
+      for (const std::string &deviceId : propSet)
         db.properties_[currId].devices.push_back(Device{deviceId});
     }
     propertyHandler_.currentProperty.reset();

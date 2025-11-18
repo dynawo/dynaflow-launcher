@@ -20,9 +20,9 @@
 #include "Log.h"
 
 #include <DYNFileSystemUtils.h>
+#include <boost/algorithm/string.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/algorithm/string.hpp>
 #include <limits>
 
 namespace dfl {
@@ -104,8 +104,6 @@ void updatePathValue(boost::filesystem::path &value, const boost::property_tree:
   }
 }
 
-
-
 /**
  * @brief Helper function to update a list of internal parameters of type boost::filesystem::path
  * @param values the values to update
@@ -115,8 +113,8 @@ void updatePathValue(boost::filesystem::path &value, const boost::property_tree:
  * configuration file
  * @param saMode true if simulation is in SA, false otherwise
  */
-void updatePathValueMultiple(std::vector<boost::filesystem::path> & values, const boost::property_tree::ptree & tree,
-                             const std::string & key, const std::string & configDirectoryPath, const bool saMode) {
+void updatePathValueMultiple(std::vector<boost::filesystem::path> &values, const boost::property_tree::ptree &tree, const std::string &key,
+                             const std::string &configDirectoryPath, const bool saMode) {
   values.clear();
 
   auto value_opt = boost::optional<const boost::property_tree::ptree &>();
@@ -133,7 +131,7 @@ void updatePathValueMultiple(std::vector<boost::filesystem::path> & values, cons
 
   std::vector<std::string> valuesStrList;
   boost::split(valuesStrList, valuesStr, boost::is_any_of(";"));
-  for (const std::string & value : valuesStrList)
+  for (const std::string &value : valuesStrList)
     values.push_back(createAbsolutePath(value, configDirectoryPath));
 }
 
@@ -274,25 +272,25 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
       helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true, parameterValueModified_);
     }
   } catch (std::exception &e) {
-    throw Error(ErrorConfigFileRead, e.what());
+    throw DFLError(ErrorConfigFileRead, e.what());
   }
 }
 
 void Configuration::sanityCheck() const {
   if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS && !startingDumpFilePath_.empty() && !exists(startingDumpFilePath_)) {
-    throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
+    throw DFLError(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
   }
 
   if (!settingFilePaths_.empty() && assemblingFilePaths_.empty()) {
-    throw Error(SettingFileWithoutAssemblingFile, filepath_.generic_string());
+    throw DFLError(SettingFileWithoutAssemblingFile, filepath_.generic_string());
   }
 
   if (!assemblingFilePaths_.empty() && settingFilePaths_.empty()) {
-    throw Error(AssemblingFileWithoutSettingFile, filepath_.generic_string());
+    throw DFLError(AssemblingFileWithoutSettingFile, filepath_.generic_string());
   }
 
   if (startingPointMode_ == Configuration::StartingPointMode::FLAT && activePowerCompensation_ == Configuration::ActivePowerCompensation::P) {
-    throw Error(InvalidActivePowerCompensation, filepath_.generic_string());
+    throw DFLError(InvalidActivePowerCompensation, filepath_.generic_string());
   }
 }
 
@@ -313,7 +311,7 @@ void Configuration::updateStartingPointMode(const boost::property_tree::ptree &t
     } else if (startingPointMode == "flat") {
       startingPointMode_ = dfl::inputs::Configuration::StartingPointMode::FLAT;
     } else {
-      throw Error(StartingPointModeDoesntExist, startingPointMode);
+      throw DFLError(StartingPointModeDoesntExist, startingPointMode);
     }
   }
 }
@@ -368,7 +366,7 @@ void Configuration::updateChosenOutput(const boost::property_tree::ptree &tree,
       } else if (chosenOutputName == "DUMPSTATE") {
         chosenOutputs_.insert(dfl::inputs::Configuration::ChosenOutputEnum::DUMPSTATE);
       } else {
-        throw Error(ChosenOutputDoesntExist, chosenOutputName);
+        throw DFLError(ChosenOutputDoesntExist, chosenOutputName);
       }
     }
   }

@@ -25,14 +25,13 @@
 namespace dfl {
 namespace inputs {
 
-ContingenciesManager::ContingenciesManager(const boost::filesystem::path& filepath) {
+ContingenciesManager::ContingenciesManager(const boost::filesystem::path &filepath) {
   if (!filepath.empty()) {
     load(filepath);
   }
 }
 
-void
-ContingenciesManager::load(const boost::filesystem::path& filepath) {
+void ContingenciesManager::load(const boost::filesystem::path &filepath) {
   try {
     boost::property_tree::ptree tree;
     boost::property_tree::read_json(filepath.generic_string(), tree);
@@ -64,14 +63,14 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
 
     LOG(info, ContingenciesReadingFrom, filepath.generic_string());
     contingencies_.reserve(tree.get_child("contingencies").size());
-    for (const auto& contingencyPtree : tree.get_child("contingencies")) {
-      const auto& contingencyId = contingencyPtree.second.get<std::string>("id");
+    for (const auto &contingencyPtree : tree.get_child("contingencies")) {
+      const auto &contingencyId = contingencyPtree.second.get<std::string>("id");
 
       Contingency contingency(contingencyId);
       bool valid = true;
-      for (const auto& elementPtree : contingencyPtree.second.get_child("elements")) {
-        const auto& elementId = elementPtree.second.get<std::string>("id");
-        const auto& elementTypeStr = elementPtree.second.get<std::string>("type");
+      for (const auto &elementPtree : contingencyPtree.second.get_child("elements")) {
+        const auto &elementId = elementPtree.second.get<std::string>("id");
+        const auto &elementTypeStr = elementPtree.second.get<std::string>("type");
 
         const auto elementType = ContingencyElement::typeFromString(elementTypeStr);
         if (elementType) {
@@ -100,8 +99,8 @@ ContingenciesManager::load(const boost::filesystem::path& filepath) {
         contingencies_.push_back(contingency);
       }
     }
-  } catch (std::exception& e) {
-    throw Error(ContingenciesReadError, filepath.generic_string(), e.what());
+  } catch (std::exception &e) {
+    throw DFLError(ContingenciesReadError, filepath.generic_string(), e.what());
   }
 }
 

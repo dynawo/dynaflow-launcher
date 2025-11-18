@@ -34,7 +34,7 @@ static parser::namespace_uri ns("");
 
 const std::string SettingDataBase::SettingXmlDocument::origData_("IIDM");
 
-SettingDataBase::SettingDataBase(const std::vector<boost::filesystem::path> & settingFilePaths) {
+SettingDataBase::SettingDataBase(const std::vector<boost::filesystem::path> &settingFilePaths) {
   if (settingFilePaths.empty())
     return;
 
@@ -45,7 +45,7 @@ SettingDataBase::SettingDataBase(const std::vector<boost::filesystem::path> & se
     parser->addXmlSchema(xsdPath.generic_string());
 
   SettingXmlDocument settingXml(*this);
-  for (const boost::filesystem::path & path : settingFilePaths) {
+  for (const boost::filesystem::path &path : settingFilePaths) {
     std::ifstream in(path.c_str());
     if (!in) {
       LOG(warn, DynModelFileNotFound, path.generic_string());
@@ -55,7 +55,7 @@ SettingDataBase::SettingDataBase(const std::vector<boost::filesystem::path> & se
     try {
       parser->parse(in, settingXml, xsdPath != "");
     } catch (const xml::sax::parser::ParserException &e) {
-      throw Error(DynModelFileReadError, path.generic_string(), e.what());
+      throw DFLError(DynModelFileReadError, path.generic_string(), e.what());
     }
   }
 }
@@ -64,7 +64,7 @@ const SettingDataBase::Set &SettingDataBase::getSet(const std::string &id) const
   const auto it = sets_.find(id);
   if (it != sets_.end())
     return it->second;
-  throw Error(UnknownParamSet, id);
+  throw DFLError(UnknownParamSet, id);
 }
 
 /**
@@ -155,7 +155,7 @@ SettingDataBase::SettingXmlDocument::CountHandler::CountHandler(const elementNam
     currentCount->id = attributes["id"].as_string();
     const auto &name = attributes["name"].as_string();
     if (!check(name)) {
-      throw Error(UnsupportedCountName, name);
+      throw DFLError(UnsupportedCountName, name);
     }
     currentCount->name = name;
   });
@@ -179,7 +179,7 @@ SettingDataBase::SettingXmlDocument::ReferenceHandler::ReferenceHandler(const el
     currentReference->origName = attributes["origName"].as_string();
 
     if (attributes["origData"].as_string() != origData_) {
-      throw Error(UnsupportedOrigDataReference, attributes["origData"].as_string(), currentReference->name);
+      throw DFLError(UnsupportedOrigDataReference, attributes["origData"].as_string(), currentReference->name);
     }
 
     auto type = attributes["type"].as_string();
@@ -192,7 +192,7 @@ SettingDataBase::SettingXmlDocument::ReferenceHandler::ReferenceHandler(const el
     } else if (type == "STRING") {
       currentReference->dataType = Reference::DataType::STRING;
     } else {
-      throw Error(UnsupportedDataTypeReference, type, currentReference->name);
+      throw DFLError(UnsupportedDataTypeReference, type, currentReference->name);
     }
   });
 }
@@ -209,7 +209,7 @@ SettingDataBase::SettingXmlDocument::ParameterHandler::ParameterHandler(const el
     } else if (type == "STRING") {
       createOptionalParameter(currentStringParameter, attributes);
     } else {
-      throw Error(UnsupportedParameterDataType, type);
+      throw DFLError(UnsupportedParameterDataType, type);
     }
   });
 }

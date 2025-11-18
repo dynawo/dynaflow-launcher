@@ -61,7 +61,7 @@ void Log::addLogFileContentInMapData(const std::string &logFileRelativePath, con
     mapOutputFilesData[logFileRelativePath] = strStream.str();
     programLogFileStream.close();
   } else {
-    throw Error(FailToOpenLogFile, logFileAbsolutePath);
+    throw DFLError(FailToOpenLogFile, logFileAbsolutePath);
   }
 }
 

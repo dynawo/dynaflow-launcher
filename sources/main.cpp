@@ -24,10 +24,10 @@
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <libzip/ZipException.h>
 #include <libzip/ZipFileFactory.h>
 #include <libzip/ZipInputStream.h>
 #include <libzip/ZipOutputStream.h>
-#include <libzip/ZipException.h>
 
 #include <chrono>
 #include <cstdlib>
@@ -40,7 +40,7 @@ static inline std::string getMandatoryEnvVar(const std::string &key) {
     return std::string(var);
   } else {
     // we cannot use dictionnary errors since they may not be initialized yet
-    throw Error(EnvVariableMissing, key);
+    throw DFLError(EnvVariableMissing, key);
   }
 }
 
@@ -75,12 +75,12 @@ static boost::shared_ptr<dfl::Context> buildContext(dfl::inputs::SimulationParam
   boost::shared_ptr<dfl::Context> context = boost::shared_ptr<dfl::Context>(new dfl::Context(def, config, mapOutputFilesData));
 
   if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::FLAT && context->dynamicDataBaseAssemblingContainsSVC()) {
-    throw Error(NoSVCInFlatStartingPointMode);
+    throw DFLError(NoSVCInFlatStartingPointMode);
   }
 
   if (config.getStartingPointMode() == dfl::inputs::Configuration::StartingPointMode::WARM) {
     if (!context->isPartiallyConditioned()) {
-      throw Error(MissingICInWarmStartingPointMode);
+      throw DFLError(MissingICInWarmStartingPointMode);
     } else {
       if (!context->isFullyConditioned()) {
         LOG(warn, NetworkNotFullyConditioned);
@@ -99,7 +99,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
   try {
     if (!context->process()) {
       LOG(info, InitEnd, elapsed(params.timeStart));
-      throw Error(ContextProcessError, context->basename());
+      throw DFLError(ContextProcessError, context->basename());
     }
     LOG(info, InitEnd, elapsed(params.timeStart));
     auto timeFilesStart = std::chrono::steady_clock::now();
@@ -141,8 +141,7 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
   }
 }
 
-void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFilesData, boost::filesystem::path outputPath,
-                    const std::string &outputArchiveName,
+void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFilesData, boost::filesystem::path outputPath, const std::string &outputArchiveName,
                     const dfl::common::Options::RuntimeConfiguration &runtimeConfig) {
   DYNAlgorithms::multiprocessing::Context &mpiContext = DYNAlgorithms::multiprocessing::context();
   DYN::Trace::resetPersistentCustomAppender(dfl::common::Log::getTag(),
@@ -210,18 +209,18 @@ int main(int argc, char *argv[]) {
       try {
         try {
           archive = zip::ZipInputStream::read(runtimeConfig.zipArchivePath);
-        } catch (const zip::ZipException& e) {
+        } catch (const zip::ZipException &e) {
           switch (e.getErrorCode()) {
-            case zip::Error::Code::LIBARCHIVE_INTERNAL_ERROR:
-              throw Error(LibZipError, runtimeConfig.zipArchivePath, e.what());
-            case zip::Error::Code::FILE_NOT_FOUND:
-              throw Error(FileNotFound, e.what());
-            default:
-              // other libzip errors
-              throw;
+          case zip::Error::Code::LIBARCHIVE_INTERNAL_ERROR:
+            throw DFLError(LibZipError, runtimeConfig.zipArchivePath, e.what());
+          case zip::Error::Code::FILE_NOT_FOUND:
+            throw DFLError(FileNotFound, e.what());
+          default:
+            // other libzip errors
+            throw;
           }
         }
-      } catch (std::exception& e) {
+      } catch (std::exception &e) {
         std::cerr << "Initialization failed: " << e.what() << std::endl;
         return EXIT_FAILURE;
       }
@@ -316,13 +315,13 @@ int main(int argc, char *argv[]) {
     }
 
     if (!boost::filesystem::exists(networkPath)) {
-      throw Error(NetworkFileNotFound, runtimeConfig.networkFilePath);
+      throw DFLError(NetworkFileNotFound, runtimeConfig.networkFilePath);
     }
     if (!contingencyPath.empty() && !boost::filesystem::exists(boost::filesystem::path(contingencyPath))) {
-      throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
+      throw DFLError(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
     if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA && contingencyPath.empty()) {
-      throw Error(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
+      throw DFLError(ContingenciesFileNotFound, runtimeConfig.contingenciesFilePath);
     }
 
     switch (userRequest) {
@@ -414,7 +413,7 @@ int main(int argc, char *argv[]) {
         if (userRequest == dfl::common::Options::Request::RUN_SIMULATION_NSA)
           configSA.setStartingPointMode(dfl::inputs::Configuration::StartingPointMode::WARM);  // In NSA starting point mode for SA is forced to warm
         else
-          throw Error(NoFlatStartingPointModeInSA);
+          throw DFLError(NoFlatStartingPointModeInSA);
       }
       params.simulationKind = dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS;
 
