@@ -98,13 +98,13 @@ bool Context::process() {
   networkManager_.walkNodes();
 
   if (!slackNode_) {
-    throw Error(SlackNodeNotFound, basename_);
+    throw DFLError(SlackNodeNotFound, basename_);
   }
   LOG(info, SlackNode, slackNode_->id, static_cast<unsigned int>(slackNodeOrigin_));
 
   if (!checkConnexity()) {
     if (slackNodeOrigin_ == SlackNodeOrigin::FILE) {
-      throw Error(ConnexityError, slackNode_->id);
+      throw DFLError(ConnexityError, slackNode_->id);
     } else {
       LOG(warn, ConnexityErrorReCompute, slackNode_->id);
       // Compute slack node only on main connex component
@@ -148,7 +148,7 @@ bool Context::process() {
 
   if (!algoResults_->isAtLeastOneGeneratorRegulating) {
     // no generator is regulating the voltage in the main connex component : do not simulate
-    throw Error(NetworkHasNoRegulatingGenerator, def_.networkFilepath);
+    throw DFLError(NetworkHasNoRegulatingGenerator, def_.networkFilepath);
   }
   if (validContingencies_) {
     validContingencies_->keepContingenciesWithAllElementsValid();
@@ -436,8 +436,8 @@ void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DY
     mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
 
     DYN::Trace::resetCustomAppender("", DYN::Trace::severityLevelFromString(def_.dynawoLogLevel));  // to force flush in dynawo.log
-    const std::vector<std::shared_ptr<job::AppenderEntry> >& jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
-    for (const std::shared_ptr<job::AppenderEntry>& jobLogAppender : jobLogAppenders) {
+    const std::vector<std::shared_ptr<job::AppenderEntry>> &jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
+    for (const std::shared_ptr<job::AppenderEntry> &jobLogAppender : jobLogAppenders) {
       if (jobLogAppender->getTag() == "") {
         boost::filesystem::path jobLogFileRelativePath =
             boost::filesystem::path(jobEntry_->getOutputsEntry()->getOutputsDirectory()) / boost::filesystem::path("logs");

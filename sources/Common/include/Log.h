@@ -89,6 +89,6 @@ class Log {
  *
  * @return an Error
  */
-#define Error(key, ...)                                                                                                                                        \
+#define DFLError(key, ...)                                                                                                                                     \
   DYN::Error(DYN::Error::GENERAL, dfl::KeyError_t::key, std::string(__FILE__), __LINE__,                                                                       \
              (DYN::Message("DFLERROR", dfl::KeyError_t::names(dfl::KeyError_t::key)), ##__VA_ARGS__))
