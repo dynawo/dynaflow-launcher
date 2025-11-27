@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <constraints xmlns="http://www.rte-france.com/dynawo">
-  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="110.0000" type="Line" kind="OverloadUp" limit="1000" value="1002.4847854395418" side="1" acceptableDuration="900"/>
-  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="110.0000" type="Line" kind="PATL" limit="1000" value="1002.4847854395418" side="1"/>
-  <constraint modelName="_048badc5-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="110.0000" type="Line" kind="OverloadUp" limit="1000" value="1011.7244414410488" side="1" acceptableDuration="900"/>
-  <constraint modelName="_048badc5-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="110.0000" type="Line" kind="PATL" limit="1000" value="1011.7244414410488" side="1"/>
+  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="110.0000" type="Line" kind="OverloadUp" limit="1000" value="1002.4821706390951" side="1" acceptableDuration="900"/>
+  <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="110.0000" type="Line" kind="PATL" limit="1000" value="1002.4821706390951" side="1"/>
+  <constraint modelName="_048badc5-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="110.0000" type="Line" kind="OverloadUp" limit="1000" value="1011.7249551028241" side="1" acceptableDuration="900"/>
+  <constraint modelName="_048badc5-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="110.0000" type="Line" kind="PATL" limit="1000" value="1011.7249551028241" side="1"/>
 </constraints>
