@@ -60,31 +60,31 @@ class StaticVarCompensatorDefinition {
    * @param b0 the initial susceptance value  of the SVarC
    * @param slope the slope (kV/MVar) of the SVarC voltage regulation
    * @param UNomRemote the nominal voltage of the remotely regulated bus
+   * @param regulatedBusId id of the regulated bus
    */
-  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid& sVarCId, ModelType modelType, const double bMin, const double bMax,
+  StaticVarCompensatorDefinition(const inputs::StaticVarCompensator::SVarCid &sVarCId, ModelType modelType, const double bMin, const double bMax,
                                  const double voltageSetPoint, const double UNom, const double UMinActivation, const double UMaxActivation,
-                                 const double USetPointMin, const double USetPointMax, const double b0, const double slope, const double UNomRemote) :
-      id{sVarCId},
-      model{modelType},
-      bMin{bMin},
-      bMax{bMax},
-      voltageSetPoint{voltageSetPoint},
-      UNom{UNom},
-      UMinActivation{UMinActivation},
-      UMaxActivation{UMaxActivation},
-      USetPointMin{USetPointMin},
-      USetPointMax{USetPointMax},
-      b0{b0},
-      slope{slope},
-      UNomRemote{UNomRemote} {}
+                                 const double USetPointMin, const double USetPointMax, const double b0, const double slope, const double UNomRemote,
+                                 const std::string &regulatedBusId = "")
+      : id{sVarCId}, model{modelType}, bMin{bMin}, bMax{bMax}, voltageSetPoint{voltageSetPoint}, UNom{UNom}, UMinActivation{UMinActivation},
+        UMaxActivation{UMaxActivation}, USetPointMin{USetPointMin}, USetPointMax{USetPointMax}, b0{b0}, slope{slope}, UNomRemote{UNomRemote},
+        regulatedBusId{regulatedBusId} {}
 
   /**
    * @brief determines if the SVarC model type is network
    *
    * @return true when model type is network
    */
-  bool isNetwork() const {
-    return model == ModelType::NETWORK;
+  bool isNetwork() const { return model == ModelType::NETWORK; }
+
+  /**
+   * @brief determines if the SVarC has a remote regulation
+   *
+   * @return true when model type has a remote regulation
+   */
+  bool isRemoteRegulation() const {
+    return model == ModelType::SVARCPVREMOTE || model == ModelType::SVARCPVREMOTEMODEHANDLING || model == ModelType::SVARCPVPROPREMOTE ||
+           model == ModelType::SVARCPVPROPREMOTEMODEHANDLING;
   }
 
   inputs::StaticVarCompensator::SVarCid id;  ///< the id of the SVarC
@@ -100,6 +100,7 @@ class StaticVarCompensatorDefinition {
   const double b0;                           ///< the initial susceptance value of the SVarC
   const double slope;                        ///< the slope (kV/MVar) of the SVarC voltage regulation
   const double UNomRemote;                   ///< the nominal voltage of the remotely regulated bus
+  const std::string regulatedBusId;          ///< The bus id regulated by this sVarC
 };
 
 /// @brief Static var compensator algorithm
@@ -112,7 +113,7 @@ class StaticVarCompensatorAlgorithm {
    * @brief Constructor
    * @param svarcs the list of SVarCs to update
    */
-  explicit StaticVarCompensatorAlgorithm(SVarCDefinitions& svarcs);
+  explicit StaticVarCompensatorAlgorithm(SVarCDefinitions &svarcs);
 
   /**
    * @brief Perform algorithm
@@ -120,10 +121,10 @@ class StaticVarCompensatorAlgorithm {
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
+  void operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes);
 
  private:
-  SVarCDefinitions& svarcs_;  ///< the list of SVarCs to update
+  SVarCDefinitions &svarcs_;  ///< the list of SVarCs to update
 };
 }  // namespace algo
 }  // namespace dfl

@@ -14,18 +14,16 @@
 
 #include <PARMacroParameterSet.h>
 
-
 namespace dfl {
 namespace outputs {
 
 const std::string ParSVarC::macroParameterSetStaticCompensator_("MacroParameterSetStaticCompensator");
 
-void
-ParSVarC::write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-                dfl::inputs::Configuration::StartingPointMode startingPointMode) {
+void ParSVarC::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection,
+                     dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   if (!svarcsDefinitions_.empty()) {
     paramSetCollection->addMacroParameterSet(writeMacroParameterSetStaticVarCompensators(startingPointMode));
-    for (const auto& svarc : svarcsDefinitions_) {
+    for (const auto &svarc : svarcsDefinitions_) {
       if (svarc.isNetwork()) {
         continue;
       }
@@ -37,7 +35,7 @@ ParSVarC::write(const std::unique_ptr<parameters::ParametersSetCollection>& para
 std::unique_ptr<parameters::MacroParameterSet>
 ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration::StartingPointMode startingPointMode) {
   std::unique_ptr<parameters::MacroParameterSet> macro =
-              std::unique_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(macroParameterSetStaticCompensator_));
+      std::unique_ptr<parameters::MacroParameterSet>(new parameters::MacroParameterSet(macroParameterSetStaticCompensator_));
 
   switch (startingPointMode) {
   case dfl::inputs::Configuration::StartingPointMode::WARM:
@@ -56,15 +54,19 @@ ParSVarC::writeMacroParameterSetStaticVarCompensators(dfl::inputs::Configuration
   return macro;
 }
 
-std::shared_ptr<parameters::ParametersSet>
-ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& svarc) {
+std::shared_ptr<parameters::ParametersSet> ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition &svarc) {
   std::shared_ptr<parameters::ParametersSet> set = parameters::ParametersSetFactory::newParametersSet(constants::uuid(svarc.id));
 
   set->addMacroParSet(std::unique_ptr<parameters::MacroParSet>(new parameters::MacroParSet(macroParameterSetStaticCompensator_)));
   double value;
 
-  value = svarc.voltageSetPoint / svarc.UNom;
-  set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
+  if (svarc.isRemoteRegulation()) {
+    value = svarc.voltageSetPoint / svarc.UNomRemote;
+    set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
+  } else {
+    value = svarc.voltageSetPoint / svarc.UNom;
+    set->addParameter(helper::buildParameter("SVarC_URef0Pu", value));
+  }
   set->addParameter(helper::buildParameter("SVarC_UNom", svarc.UNom));
   value = computeBPU(svarc.b0, svarc.UNom);
   set->addParameter(helper::buildParameter("SVarC_BShuntPu", value));
@@ -111,12 +113,12 @@ ParSVarC::writeStaticVarCompensator(const algo::StaticVarCompensatorDefinition& 
     set->addParameter(helper::buildParameter("SVarC_tThresholdUp", static_cast<double>(svarcThresholdUp_)));
     break;
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTE:
-    value = svarc.slope * Sb_ / svarc.UNom;
+    value = svarc.slope * Sb_ / svarc.UNomRemote;
     set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
     set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
     break;
   case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING:
-    value = svarc.slope * Sb_ / svarc.UNom;
+    value = svarc.slope * Sb_ / svarc.UNomRemote;
     set->addParameter(helper::buildParameter("SVarC_LambdaPu", value));
     set->addParameter(helper::buildParameter("SVarC_UNomRemote", svarc.UNomRemote));
     set->addReference(helper::buildReference("SVarC_Mode0", "regulatingMode", "INT"));
