@@ -15,12 +15,11 @@
 namespace dfl {
 namespace algo {
 
-StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(SVarCDefinitions& svarcs) : svarcs_(svarcs) {}
+StaticVarCompensatorAlgorithm::StaticVarCompensatorAlgorithm(SVarCDefinitions &svarcs) : svarcs_(svarcs) {}
 
-void
-StaticVarCompensatorAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
-  const auto& svarcs = node->svarcs;
-  for (const auto& svarc : svarcs) {
+void StaticVarCompensatorAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &) {
+  const auto &svarcs = node->svarcs;
+  for (const auto &svarc : svarcs) {
     ModelType model = ModelType::NETWORK;
     if (svarc.isRegulatingVoltage) {
       model = ModelType::SVARCPV;
@@ -38,7 +37,7 @@ StaticVarCompensatorAlgorithm::operator()(const NodePtr& node, std::shared_ptr<A
       }
     }
     svarcs_.emplace_back(svarc.id, model, svarc.bMin, svarc.bMax, svarc.voltageSetPoint, svarc.UNom, svarc.UMinActivation, svarc.UMaxActivation,
-                         svarc.USetPointMin, svarc.USetPointMax, svarc.b0, svarc.slope, svarc.UNomRemote);
+                         svarc.USetPointMin, svarc.USetPointMax, svarc.b0, svarc.slope, svarc.UNomRemote, svarc.regulatedBusId);
   }
 }
 
