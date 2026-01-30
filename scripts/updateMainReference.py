@@ -33,7 +33,7 @@ if __name__ == "__main__":
             continue
 
         for file in files:
-            if file != "outputIIDM.xml" and file != "constraints.xml" and file != "lostEquipments.xml":
+            if file != "outputIIDM.xml" and not (file.startswith("constraints") and file.endswith(".xml")) and file != "lostEquipments.xml":
                 continue
             filepath = os.path.join(root, file)
             root_filetest = root.split("results")[0]
@@ -49,14 +49,18 @@ if __name__ == "__main__":
                     root_filetest, "reference", testname, splittedPath[2], file)
 
             if not os.path.exists(filepathreference):
-                # No reference : ignore
-                continue
+                contingency_name = file.replace("constraints_", "").replace(".xml", "")
+                filepathreference = os.path.join(
+                    root_filetest, "reference", testname, contingency_name, "constraints.xml")
+                if not os.path.exists(filepathreference):
+                    # No reference : ignore
+                    continue
 
             nb_differences = 0
             if file == "outputIIDM.xml":
                 (nb_differences, msg) = iidmDiff.OutputIIDMCloseEnough(
                     filepath, filepathreference)
-            elif file =="constraints.xml":
+            elif file.startswith("constraints") and file.endswith(".xml"):
                 (nb_differences, msg) = constraintsDiff.output_constraints_close_enough(
                     filepath, filepathreference)
             elif file =="lostEquipments.xml":
