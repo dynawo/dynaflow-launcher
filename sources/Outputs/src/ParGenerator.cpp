@@ -294,8 +294,7 @@ void ParGenerator::updateTransfoParameters(std::shared_ptr<parameters::Parameter
 
 void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSet> set, const std::string &genId,
                                         const inputs::SettingDataBase::Set &databaseSetting, bool Rcpl2) {
-  std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu", "reactivePowerControlLoop_UStatorRefMaxPu",
-                                        "reactivePowerControlLoop_UStatorRefMinPu"};
+  std::vector<std::string> parameters = {"reactivePowerControlLoop_QrPu"};
   if (Rcpl2) {
     parameters.push_back("reactivePowerControlLoop_CqMaxPu");
     parameters.push_back("reactivePowerControlLoop_DeltaURefMaxPu");
@@ -312,6 +311,13 @@ void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSe
       set->addParameter(helper::buildParameter(parameter, paramIt->value));
     else
       throw Error(MissingGeneratorHvdcParameterInSettings, parameter, genId);
+  }
+  std::vector<std::string> optionalParameters = {"reactivePowerControlLoop_UStatorRefMaxPu", "reactivePowerControlLoop_UStatorRefMinPu"};
+  for (auto parameter : optionalParameters) {
+    auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
+                                [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
+    if (paramIt != databaseSetting.doubleParameters.end())
+      set->addParameter(helper::buildParameter(parameter, paramIt->value));
   }
   std::unordered_map<std::string, std::string> parameterOrReference = {{"generator_QNomAlt", "qNom"}, {"generator_SNom", "sNom"}};
   for (auto parameter : parameterOrReference) {
