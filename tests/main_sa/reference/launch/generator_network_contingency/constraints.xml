@@ -2,6 +2,4 @@
 <constraints xmlns="http://www.rte-france.com/dynawo">
   <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="overload 900s side 1" time="10.0000" type="Line" kind="OverloadUp" limit="1000" value="1025.9003957466662" side="1" acceptableDuration="900" limitName="_4f767c6c-7f3a-4cb0-8a7d-04b1b4897817"/>
   <constraint modelName="_0484a8e4-c766-11e1-8775-005056c00008" description="permanent limit side 1" time="10.0000" type="Line" kind="PATL" limit="1000" value="1025.9003957466662" side="1"/>
-  <constraint modelName="_86d83c7d-7826-4c16-b161-4ce17174e77f-1_1" description="overload 1800s side 2" time="0.0000" type="TwoWindingsTransformer" kind="OverloadUp" limit="500" value="188.76978382392537" valueMax="2179.9927470237494" side="2" acceptableDuration="1800" limitName="_3fd18f6e-749a-4fa7-af1b-b0c2d3952638-1"/>
-  <constraint modelName="_86d83c7d-7826-4c16-b161-4ce17174e77f-1_1" description="permanent limit side 2" time="0.0000" type="TwoWindingsTransformer" kind="PATL" limit="500" value="188.76978382392537" valueMax="2179.9927470237494" side="2"/>
 </constraints>

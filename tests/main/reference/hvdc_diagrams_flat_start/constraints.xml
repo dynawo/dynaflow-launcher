@@ -1,8 +1,2 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
-<constraints xmlns="http://www.rte-france.com/dynawo">
-  <constraint modelName="AJAXP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="409.17714922812598" valueMin="380"/>
-  <constraint modelName="ATHENP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="391.28709269337963" valueMin="380"/>
-  <constraint modelName="HADESP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="394.22149854902102" valueMin="380"/>
-  <constraint modelName="HADESP7_S_VL7_TN2" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="394.22149854902102" valueMin="380"/>
-  <constraint modelName="HERAP7_S_VL7_TN1" description="U &lt; Umin" time="0.0000" type="Node" kind="UInfUmin" limit="390.00000000000006" value="404.2060922027797" valueMin="380"/>
-</constraints>
+<constraints xmlns="http://www.rte-france.com/dynawo"/>
