@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <constraints xmlns="http://www.rte-france.com/dynawo">
-  <constraint modelName="_BUS____1-BUS____2-1_AC" description="permanent limit side 1" time="0.0000" type="Line" kind="PATL" limit="836.74000000000001" value="1248.7122572461385" valueMax="1250.6899005350494" side="1"/>
+  <constraint modelName="_BUS____1-BUS____2-1_AC" description="permanent limit side 1" time="10.0000" type="Line" kind="PATL" limit="836.74000000000001" value="1248.7122572461385" valueMax="1250.6899005350494" side="1"/>
 </constraints>
