@@ -94,6 +94,13 @@ class Configuration {
   bool isAutomaticSlackBusOn() const { return isAutomaticSlackBusOn_; }
 
   /**
+   * @brief determines if fictitious loads are modeled as restorative
+   *
+   * @returns the parameter value
+   */
+  bool isRestorativeFictitiousLoads() const { return restorativeFictitiousLoads_; }
+
+  /**
    * @brief Retrieves the output directory
    *
    * @returns the parameter value
@@ -210,13 +217,13 @@ class Configuration {
    * @brief Retrieves the setting file path
    * @returns the setting file path
    */
-  const std::vector<boost::filesystem::path> & settingFilePaths() const { return settingFilePaths_; }
+  const std::vector<boost::filesystem::path> &settingFilePaths() const { return settingFilePaths_; }
 
   /**
    * @brief Retrieves the assembling file path
    * @returns the assembling file path
    */
-  const std::vector<boost::filesystem::path> & assemblingFilePaths() const { return assemblingFilePaths_; }
+  const std::vector<boost::filesystem::path> &assemblingFilePaths() const { return assemblingFilePaths_; }
 
   /**
    * @brief Retrieves the starting dump file path
@@ -327,8 +334,9 @@ class Configuration {
   double timeStep_ = 10.;                                                            ///< maximum value of the solver timestep
   double minTimeStep_ = 1.;                                                          ///< minimum value of the solver timestep
   std::unordered_set<ChosenOutputEnum, ChosenOutputHash> chosenOutputs_;             ///< chosen configuration outputs
-  double tfoVoltageLevel_ = 100;     ///< Maximum voltage level we assume that generator's transformers are already described in the static description
-  unsigned int timeTableStep_ = 0;  ///< time table step to display progress
+  double tfoVoltageLevel_ = 100;             ///< Maximum voltage level we assume that generator's transformers are already described in the static description
+  unsigned int timeTableStep_ = 0;           ///< time table step to display progress
+  bool restorativeFictitiousLoads_ = false;  ///< determines if fictitious loads are modeled as restorative
 
   // SA
   double timeOfEvent_ = 10.;                                ///< time for contingency simulation (security analysis only)

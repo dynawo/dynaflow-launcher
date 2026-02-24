@@ -46,19 +46,15 @@ class LoadDefinition {
    * @param modelType type of model used
    * @param nodeId the node id connected to the load
    */
-  explicit LoadDefinition(const inputs::Load::LoadId& loadId, ModelType modelType, const inputs::Node::NodeId& nodeId) :
-      id{loadId},
-      modelType{modelType},
-      nodeId{nodeId} {}
+  explicit LoadDefinition(const inputs::Load::LoadId &loadId, ModelType modelType, const inputs::Node::NodeId &nodeId)
+      : id{loadId}, modelType{modelType}, nodeId{nodeId} {}
 
   /**
    * @brief determines if the load model type is network
    *
    * @return true when model type is network
    */
-  bool isNetwork() const {
-    return modelType == ModelType::NETWORK;
-  }
+  bool isNetwork() const { return modelType == ModelType::NETWORK; }
 
   inputs::Load::LoadId id;      ///< load id
   ModelType modelType;          ///< model type
@@ -77,8 +73,9 @@ class LoadDefinitionAlgorithm {
    *
    * @param loads the list of loads to update
    * @param dsoVoltageLevel Minimum voltage level of the load to be taken into account
+   * @param restorativeFictitiousLoads determines if fictitious loads are modeled as restorative
    */
-  explicit LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel);
+  explicit LoadDefinitionAlgorithm(Loads &loads, double dsoVoltageLevel, bool restorativeFictitiousLoads);
 
   /**
    * @brief Perform the algorithm
@@ -89,11 +86,12 @@ class LoadDefinitionAlgorithm {
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>& algoRes);
+  void operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes);
 
  private:
-  Loads& loads_;            ///< the loads to update
-  double dsoVoltageLevel_;  ///< Minimum voltage level of the load to be taken into account
+  Loads &loads_;                             ///< the loads to update
+  double dsoVoltageLevel_;                   ///< Minimum voltage level of the load to be taken into account
+  bool restorativeFictitiousLoads_ = false;  ///< determines if fictitious loads are modeled as restorative
 };
 }  // namespace algo
 }  // namespace dfl

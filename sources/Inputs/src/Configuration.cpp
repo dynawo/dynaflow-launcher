@@ -252,6 +252,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     updateChosenOutput(config, simulationKind_, saMode);
     helper::updateValue(useInfiniteReactiveLimits_, config, "InfiniteReactiveLimits", saMode, parameterValueModified_);
     helper::updateValue(isSVarCRegulationOn_, config, "SVCRegulationOn", saMode, parameterValueModified_);
+    helper::updateValue(restorativeFictitiousLoads_, config, "RestorativeFictitiousLoads", saMode, parameterValueModified_);
     helper::updateValue(isShuntRegulationOn_, config, "ShuntRegulationOn", saMode, parameterValueModified_);
     helper::updateValue(isAutomaticSlackBusOn_, config, "AutomaticSlackBusOn", saMode, parameterValueModified_);
     helper::updatePathValue(outputDir_, config, "OutputDir", prefixConfigFile, false);  // Not possible to override outputDir in SA

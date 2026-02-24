@@ -118,7 +118,7 @@ bool Context::process() {
 
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, networkManager_.getBusRegulationMap(), dynamicDataBaseManager_,
                                                                  config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
-  onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel()));
+  onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel(), config_.isRestorativeFictitiousLoads()));
   onNodeOnMainConnexComponent(algo::HVDCDefinitionAlgorithm(hvdcLineDefinitions_, networkManager_.getBusRegulationMap(), config_.useInfiniteReactiveLimits(),
                                                             networkManager_.computeVSCConverters(), dynamicDataBaseManager_));
   onNodeOnMainConnexComponent(algo::DynModelAlgorithm(dynamicModels_, dynamicDataBaseManager_, config_.isShuntRegulationOn()));
