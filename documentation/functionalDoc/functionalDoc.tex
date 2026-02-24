@@ -30,15 +30,19 @@ The description of the behavior of the models mentionned below can be found in t
 
 \subsection{Loads}
 
-The models that are used for the loads depend on the parameter \textit{DsoVoltageLevel} in the config file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
+The models that are used for the loads depend on the parameter \textit{DsoVoltageLevel} and \textit{RestorativeFictitiousLoads} in the config file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
 \begin{table}[h!]
 \center
-\begin{tabular}{ l | c }
+\begin{tabular}{ l | c | c }
 \toprule
-\textbf{{Voltage condition}} & \textbf{{Model}}\\
+\textbf{{Voltage condition}} & \tiny{\textbf{RestorativeFictitiousLoads}} & \textbf{{Model}}\\
 \midrule
- $voltage < DsoVoltageLevel$ &  fixed PQ load \\
- $voltage \geq DsoVoltageLevel$ &  DYNModelLoadRestorativeWithLimits \\
+\rowcolor{white}
+ \small{$voltage < DsoVoltageLevel$} &  . & \small{Fixed PQ load} \\
+ \rowcolor{gray!10}
+ \small{$voltage \geq DsoVoltageLevel$} &  true & \small{Restorative load if fictitious} \\
+  \rowcolor{white}
+ \small{$voltage \geq DsoVoltageLevel$} &  false & \small{DYNModelLoadRestorativeWithLimits} \\
 \bottomrule
 \end{tabular}
 \caption{Loads modelling}

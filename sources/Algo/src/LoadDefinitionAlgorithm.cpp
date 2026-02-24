@@ -14,19 +14,20 @@
 
 namespace dfl {
 namespace algo {
-LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads& loads, double dsoVoltageLevel) : loads_(loads), dsoVoltageLevel_(dsoVoltageLevel) {}
+LoadDefinitionAlgorithm::LoadDefinitionAlgorithm(Loads &loads, double dsoVoltageLevel, bool restorativeFictitiousLoads)
+    : loads_(loads), dsoVoltageLevel_(dsoVoltageLevel), restorativeFictitiousLoads_{restorativeFictitiousLoads} {}
 
-void
-LoadDefinitionAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults>&) {
+void LoadDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &) {
   LoadDefinition::ModelType model = LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
   bool isUnderDsoVoltage = false;
   if (DYN::doubleNotEquals(node->nominalVoltage, dsoVoltageLevel_) && node->nominalVoltage < dsoVoltageLevel_) {
     isUnderDsoVoltage = true;
   }
 
-  for (const auto& load : node->loads) {
-    model = load.isFictitious || isUnderDsoVoltage || load.isNotInjecting ? LoadDefinition::ModelType::NETWORK
-                                                                          : LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
+  for (const auto &load : node->loads) {
+    model = (!restorativeFictitiousLoads_ && load.isFictitious) || isUnderDsoVoltage || load.isNotInjecting
+                ? LoadDefinition::ModelType::NETWORK
+                : LoadDefinition::ModelType::LOADRESTORATIVEWITHLIMITS;
     loads_.emplace_back(load.id, model, node->id);
   }
 }
