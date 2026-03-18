@@ -313,7 +313,7 @@ void ParGenerator::updateRpclParameters(std::shared_ptr<parameters::ParametersSe
       throw DFLError(MissingGeneratorHvdcParameterInSettings, parameter, genId);
   }
   std::vector<std::string> optionalParameters = {"reactivePowerControlLoop_UStatorRefMaxPu", "reactivePowerControlLoop_UStatorRefMinPu",
-                                                 "reactivePowerControlLoop_QDeadBand"};
+                                                 "reactivePowerControlLoop_QDeadBandPu"};
   for (auto parameter : optionalParameters) {
     auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
                                 [&parameter](const inputs::SettingDataBase::Parameter<double> &setting) { return setting.name == parameter; });
