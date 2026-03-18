@@ -209,7 +209,7 @@ std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HV
         throw DFLError(MissingGeneratorHvdcParameterInSettings, parameter, hvdcDefinition.id);
     }
 
-    std::vector<std::string> optionalParameters = {"reactivePowerControlLoop_QDeadBand"};
+    std::vector<std::string> optionalParameters = {"reactivePowerControlLoop_QDeadBandPu"};
 
     for (auto parameter : optionalParameters) {
       auto paramIt = std::find_if(databaseSetting.doubleParameters.begin(), databaseSetting.doubleParameters.end(),
