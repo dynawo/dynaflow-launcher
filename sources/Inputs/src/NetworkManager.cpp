@@ -178,7 +178,7 @@ void NetworkManager::buildTree() {
         auto bus1 = sw->getBusInterface1();
         auto bus2 = sw->getBusInterface2();
         auto found1 = shuntsMap.find(bus1->getID());
-        auto found2 = shuntsMap.find(bus1->getID());
+        auto found2 = shuntsMap.find(bus2->getID());
         if (found1 == shuntsMap.end() && found2 == shuntsMap.end())
           continue;
       }
