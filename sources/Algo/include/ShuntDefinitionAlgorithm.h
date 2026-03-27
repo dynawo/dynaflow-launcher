@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "AlgorithmsResults.h"
 #include "NetworkManager.h"
 #include "Node.h"
 
@@ -49,8 +50,9 @@ class ShuntCounterAlgorithm {
    * The algorithm counts the number of shunts by voltage level
    *
    * @param node the node to process
+   * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node);
+  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults> &algoRes);
 
  private:
   ShuntCounterDefinitions& shuntCounterDefs_;  ///< the counter definitions to update
