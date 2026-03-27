@@ -36,9 +36,12 @@ TEST(Counter, base) {
   };
 
   dfl::algo::ShuntCounterDefinitions defs;
+  std::shared_ptr<dfl::algo::AlgorithmsResults> algoRes(new dfl::algo::AlgorithmsResults());
   dfl::algo::ShuntCounterAlgorithm algo(defs);
 
-  std::for_each(nodes.begin(), nodes.end(), algo);
+  for (const auto &node : nodes) {
+    algo(node, algoRes);
+  }
 
   ASSERT_EQ(defs.nbShunts.size(), 3);
   ASSERT_EQ(defs.nbShunts.at("VL"), 6);
