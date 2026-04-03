@@ -122,14 +122,14 @@
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0472a789-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04839777-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
-  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
-  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04859346-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_048aea70-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04633e31-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
+  <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="NETWORK"/>
+  <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_046c3ee7-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_04856c34-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="GEN_NETWORK_CONNECTOR" id1="_045ab2b0-c766-11e1-8775-005056c00008" id2="NETWORK"/>
@@ -138,12 +138,12 @@
   <dyn:macroConnect connector="GEN_SIGNALN_CONNECTOR" id1="_0483224a-c766-11e1-8775-005056c00008" id2="Model_Signal_N"/>
   <dyn:macroConnect connector="StaticVarCompensatorMacroConnector" id1="_047fc6e6-c766-11e1-8775-005056c00008" id2="NETWORK"/>
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_0_phi_value"/>
-  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_1_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_2_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_ACPIN" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_1_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__3bbfa58a-a1ad-4b23-a526-3d76b096c1f4_2_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side1"/>
   <dyn:connect id1="NETWORK" var1="calculatedBus__04f97116-552a-4a34-afd9-4862f62ac7aa_0_switchOff" id2="_11d10c55-94cc-47e4-8e24-bc5ac4d026c0" var2="hvdc_switchOffSignal1Side2"/>
-  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_3_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal1"/>
-  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_2_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_3_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side1"/>
-  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_2_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_6_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_5_ACPIN" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_terminal2"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_6_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="calculatedBus__04544a18-c766-11e1-8775-005056c00008_5_switchOff" id2="_d9a49bc9-f4b8-4bfa-9d0f-d18f12f2575b" var2="hvdc_switchOffSignal1Side2"/>
 </dyn:dynamicModelsArchitecture>

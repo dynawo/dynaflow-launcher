@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <lostEquipments xmlns="http://www.rte-france.com/dynawo">
   <lostEquipment id="_045cae83-c766-11e1-8775-005056c00008" type="TWO_WINDINGS_TRANSFORMER"/>
+  <lostEquipment id="_4e8f404b-ad7e-4684-bc52-e3464e34ee79" type="SWITCH"/>
+  <lostEquipment id="_5f1203b6-43c0-44bf-ba48-25564bbefef9" type="SWITCH"/>
 </lostEquipments>

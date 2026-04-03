@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <lostEquipments xmlns="http://www.rte-france.com/dynawo">
   <lostEquipment id="_044c5ada-c766-11e1-8775-005056c00008-1" type="LINE"/>
+  <lostEquipment id="_686e884a-a0b1-454e-b7d1-33c7ad46f89f-1" type="SWITCH"/>
 </lostEquipments>
