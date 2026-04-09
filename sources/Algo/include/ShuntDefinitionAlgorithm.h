@@ -42,7 +42,7 @@ class ShuntCounterAlgorithm {
    * @brief Constructor
    * @param shuntCounterDefs the counter definitions to update
    */
-  explicit ShuntCounterAlgorithm(ShuntCounterDefinitions& shuntCounterDefs);
+  explicit ShuntCounterAlgorithm(ShuntCounterDefinitions &shuntCounterDefs);
 
   /**
    * @brief Performs the algorithm
@@ -52,10 +52,10 @@ class ShuntCounterAlgorithm {
    * @param node the node to process
    * @param algoRes pointer to algorithms results class
    */
-  void operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults> &algoRes);
+  void operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> &algoRes);
 
  private:
-  ShuntCounterDefinitions& shuntCounterDefs_;  ///< the counter definitions to update
+  ShuntCounterDefinitions &shuntCounterDefs_;  ///< the counter definitions to update
 };
 
 }  // namespace algo

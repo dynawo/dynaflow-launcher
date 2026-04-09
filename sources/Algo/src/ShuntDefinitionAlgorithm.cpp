@@ -15,10 +15,9 @@
 namespace dfl {
 namespace algo {
 
-ShuntCounterAlgorithm::ShuntCounterAlgorithm(ShuntCounterDefinitions& defs) : shuntCounterDefs_(defs) {}
+ShuntCounterAlgorithm::ShuntCounterAlgorithm(ShuntCounterDefinitions &defs) : shuntCounterDefs_(defs) {}
 
-void
-ShuntCounterAlgorithm::operator()(const NodePtr& node, std::shared_ptr<AlgorithmsResults> &) {
+void ShuntCounterAlgorithm::operator()(const NodePtr &node, std::shared_ptr<AlgorithmsResults> & /* algoRes */) {
   auto vl = node->voltageLevel.lock();
   shuntCounterDefs_.nbShunts[vl->id] += static_cast<unsigned int>(node->shunts.size());
 }
