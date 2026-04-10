@@ -127,7 +127,6 @@ std::shared_ptr<parameters::ParametersSet> ParDynModel::writeSVCParameterSet(con
         assert(genInitialParamToValues.find("Qr_" + std::to_string(it->second)) != genInitialParamToValues.end());
         new_set->addParameter(helper::buildParameter("Qr_" + std::to_string(idx), genInitialParamToValues["Qr_" + std::to_string(it->second)]));
       }
-      //      new_set->addParameter(helper::buildParameter("Participate0_" + std::to_string(idx), true));
       std::string side = "1";
       if (hvdcDefinition.converterStationOnSide2())
         side = "2";
