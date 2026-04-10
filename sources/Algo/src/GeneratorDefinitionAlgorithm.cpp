@@ -94,60 +94,22 @@ void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_p
       const bool isRPCL2 = isInSVC && svcIt->second;
       model = ModelType::SIGNALN_INFINITE;
       algoRes->isAtLeastOneGeneratorRegulating = true;
+      constexpr bool withTfo = true;
 
-      if (generator.regulatedBusId == generator.connectedBusId && (generator.VNom > tfoVoltageLevel_ || DYN::doubleEquals(generator.VNom, tfoVoltageLevel_))) {
+      if ((isInSVC || generator.regulatedBusId == generator.connectedBusId) &&
+          (generator.VNom > tfoVoltageLevel_ || DYN::doubleEquals(generator.VNom, tfoVoltageLevel_))) {
         // Generator is assumed to have no transformer in the static model description
         // and regulatedBus equals to connectedBus
-        if (useInfiniteReactivelimits_) {
-          if (isInSVC) {
-            if (isRPCL2) {
-              model = ModelType::SIGNALN_TFO_RPCL2_INFINITE;
-            } else {
-              model = ModelType::SIGNALN_TFO_RPCL_INFINITE;
-            }
-          } else {
-            model = ModelType::SIGNALN_TFO_INFINITE;
-          }
-        } else {
-          if (isInSVC) {
-            if (isRPCL2) {
-              model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN;
-            } else {
-              model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN;
-            }
-          } else {
-            model = isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_SIGNALN;
-          }
-        }
+        model = selectDiagramGenerators(generator, withTfo, useInfiniteReactivelimits_, isInSVC, isRPCL2);
       } else {
         // Generator is assumed to have its transformer in the static model description
         // or regulatedBus different from connectedBus
         switch (nbOfRegulatingGenerators) {
         case dfl::inputs::NetworkManager::NbOfRegulating::ONE:
           // Only one generator regulates this node
-          if (generator.regulatedBusId == generator.connectedBusId) {
+          if (isInSVC || generator.regulatedBusId == generator.connectedBusId) {
             // local regulation
-            if (useInfiniteReactivelimits_) {
-              if (isInSVC) {
-                if (isRPCL2) {
-                  model = ModelType::SIGNALN_RPCL2_INFINITE;
-                } else {
-                  model = ModelType::SIGNALN_RPCL_INFINITE;
-                }
-              } else {
-                model = ModelType::SIGNALN_INFINITE;
-              }
-            } else {
-              if (isInSVC) {
-                if (isRPCL2) {
-                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL2_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL2_SIGNALN;
-                } else {
-                  model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL_SIGNALN;
-                }
-              } else {
-                model = isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
-              }
-            }
+            model = selectDiagramGenerators(generator, !withTfo, useInfiniteReactivelimits_, isInSVC, isRPCL2);
           } else {
             // remote regulation
             if (useInfiniteReactivelimits_) {
@@ -160,9 +122,20 @@ void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_p
         case dfl::inputs::NetworkManager::NbOfRegulating::MULTIPLES:
           // Several generators regulate this node
           if (useInfiniteReactivelimits_) {
-            model = ModelType::PROP_SIGNALN_INFINITE;
+            if (isInSVC) {
+              model = selectDiagramGenerators(generator, !withTfo, useInfiniteReactivelimits_, isInSVC, isRPCL2);
+            } else {
+              model = ModelType::PROP_SIGNALN_INFINITE;
+            }
           } else {
-            model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+            dfl::inputs::NetworkManager::BusMapRegulating::const_iterator it2 = busesToNumberOfRegulationMap_.find(generator.connectedBusId);
+            dfl::inputs::NetworkManager::NbOfRegulating nbOfRegulatingGeneratorsLocal =
+                (it2 != busesToNumberOfRegulationMap_.end()) ? it2->second : dfl::inputs::NetworkManager::NbOfRegulating::ONE;
+            if (isInSVC && nbOfRegulatingGeneratorsLocal == dfl::inputs::NetworkManager::NbOfRegulating::ONE) {
+              model = selectDiagramGenerators(generator, !withTfo, useInfiniteReactivelimits_, isInSVC, isRPCL2);
+            } else {
+              model = isDiagramRectangular(generator) ? ModelType::PROP_SIGNALN_RECTANGULAR : ModelType::PROP_DIAGRAM_PQ_SIGNALN;
+            }
           }
           break;
         default:  //  impossible by definition of the enum
@@ -172,6 +145,55 @@ void GeneratorDefinitionAlgorithm::operator()(const NodePtr &node, std::shared_p
     }
     generators_.emplace_back(generator.id, model, node->id, generator.points, generator.qmin, generator.qmax, generator.pmin, generator.pmax, generator.q,
                              generator.targetP, generator.regulatedBusId, generator.isNuclear, generator.hasActivePowerControl);
+  }
+}
+
+GeneratorDefinitionAlgorithm::ModelType GeneratorDefinitionAlgorithm::selectDiagramGenerators(const inputs::Generator &generator, bool withTfo,
+                                                                                              bool infiniteReactiveLimits, bool isInSVC, bool isRPCL2) const {
+  if (infiniteReactiveLimits) {
+    if (withTfo) {
+      if (isInSVC) {
+        if (isRPCL2) {
+          return ModelType::SIGNALN_TFO_RPCL2_INFINITE;
+        } else {
+          return ModelType::SIGNALN_TFO_RPCL_INFINITE;
+        }
+      } else {
+        return ModelType::SIGNALN_TFO_INFINITE;
+      }
+    } else {
+      if (isInSVC) {
+        if (isRPCL2) {
+          return ModelType::SIGNALN_RPCL2_INFINITE;
+        } else {
+          return ModelType::SIGNALN_RPCL_INFINITE;
+        }
+      } else {
+        return ModelType::SIGNALN_INFINITE;
+      }
+    }
+  } else {
+    if (withTfo) {
+      if (isInSVC) {
+        if (isRPCL2) {
+          return isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RPCL2_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_RPCL2_SIGNALN;
+        } else {
+          return isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_RPCL_SIGNALN;
+        }
+      } else {
+        return isDiagramRectangular(generator) ? ModelType::SIGNALN_TFO_RECTANGULAR : ModelType::DIAGRAM_PQ_TFO_SIGNALN;
+      }
+    } else {
+      if (isInSVC) {
+        if (isRPCL2) {
+          return isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL2_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL2_SIGNALN;
+        } else {
+          return isDiagramRectangular(generator) ? ModelType::SIGNALN_RPCL_RECTANGULAR : ModelType::DIAGRAM_PQ_RPCL_SIGNALN;
+        }
+      } else {
+        return isDiagramRectangular(generator) ? ModelType::SIGNALN_RECTANGULAR : ModelType::DIAGRAM_PQ_SIGNALN;
+      }
+    }
   }
 }
 
