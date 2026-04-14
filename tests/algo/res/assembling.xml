@@ -12,10 +12,10 @@
     <connection var1="currentLimitAutomaton_IMonitored" var2="@NAME@_iSide1" required="true" internal="false"/>
   </macroConnection>
   <macroConnection id="CLAToControlledLineState" name2="true">
-    <connection var1="currentLimitAutomaton_order" var2="@NAME@_state" required="true" internal="false"/>
+    <connection var1="currentLimitAutomaton_order" var2="@NAME@_state_value" required="true" internal="false"/>
   </macroConnection>
   <macroConnection id="CLAToAutomatonActivated" name2="true">
-    <connection var1="currentLimitAutomaton_AutomatonExists" var2="@NAME@_desactivate_currentLimits" required="true" internal="false"/>
+    <connection var1="currentLimitAutomaton_AutomatonExists" var2="@NAME@_desactivate_currentLimits_value" required="true" internal="false"/>
   </macroConnection>
   <macroConnection id="DummyMacro" index1="true" name2="true">
     <connection var1="dummy_state_@INDEX@" var2="@NAME@_state" required="true" internal="false"/>
@@ -48,7 +48,7 @@
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
   </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
-    <bus voltageLevel="VL"/>/>
+    <bus voltageLevel="VL"/>
   </singleAssociation>
   <multipleAssociation id="SHUNTS_MODELE_1_VL4">
     <shunt voltageLevel="VL"/>

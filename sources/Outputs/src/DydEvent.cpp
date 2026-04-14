@@ -46,7 +46,7 @@ void DydEvent::write() const {
 
   // macro connectors
   std::unique_ptr<dynamicdata::MacroConnector> connector = dynamicdata::MacroConnectorFactory::newMacroConnector("MC_EventQuadripoleDisconnection");
-  connector->addConnect("event_state1_value", "@NAME@_state_value");
+  connector->addConnect("event_state1", "@NAME@_state_value");
   dynamicModels->addMacroConnector(std::move(connector));
 
   // models and connections
@@ -139,12 +139,12 @@ std::unique_ptr<dynamicdata::BlackBoxModel> DydEvent::buildNetworkStateDisconnec
 }
 
 void DydEvent::addNetworkStateDisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId) {
-  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state");
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state_value");
 }
 
 void DydEvent::addNetworkState12DisconnectionConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModels, const std::string &elementId) {
-  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state1");
-  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state2");
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state1_value");
+  dynamicModels->addConnect("Disconnect_" + elementId, "event_state1", constants::networkModelName, elementId + "_state2_value");
 }
 
 bool DydEvent::isNetwork(const std::string &elementId) const { return (def_.networkElements_.find(elementId) != def_.networkElements_.end()); }
