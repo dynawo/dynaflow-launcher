@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
   <dyn:macroConnector id="MC_EventQuadripoleDisconnection">
-    <dyn:connect var1="event_state1_value" var2="@NAME@_state_value"/>
+    <dyn:connect var1="event_state1" var2="@NAME@_state_value"/>
   </dyn:macroConnector>
   <dyn:blackBoxModel id="Disconnect_TestBranch" lib="EventQuadripoleDisconnection" parFile="TestDydEvent.par" parId="Disconnect_TestBranch"/>
   <dyn:blackBoxModel id="Disconnect_TestGenerator" lib="EventSetPointBoolean" parFile="TestDydEvent.par" parId="Disconnect_TestGenerator"/>
@@ -17,9 +17,9 @@
   <dyn:connect id1="Disconnect_TestLoad" var1="event_state1" id2="TestLoad" var2="switchOff2"/>
   <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2Side1"/>
   <dyn:connect id1="Disconnect_TestHvdcLine" var1="event_state1" id2="TestHvdcLine" var2="hvdc_switchOffSignal2Side2"/>
-  <dyn:connect id1="Disconnect_TestShuntCompensator" var1="event_state1" id2="NETWORK" var2="TestShuntCompensator_state"/>
+  <dyn:connect id1="Disconnect_TestShuntCompensator" var1="event_state1" id2="NETWORK" var2="TestShuntCompensator_state_value"/>
   <dyn:connect id1="Disconnect_TestStaticVarCompensator" var1="event_state1" id2="TestStaticVarCompensator" var2="SVarC_switchOffSignal2"/>
-  <dyn:connect id1="Disconnect_TestGeneratorNetwork" var1="event_state1" id2="NETWORK" var2="TestGeneratorNetwork_state"/>
-  <dyn:connect id1="Disconnect_TestLoadNetwork" var1="event_state1" id2="NETWORK" var2="TestLoadNetwork_state"/>
-  <dyn:connect id1="Disconnect_TestStaticVarCompensatorNetwork" var1="event_state1" id2="NETWORK" var2="TestStaticVarCompensatorNetwork_state"/>
+  <dyn:connect id1="Disconnect_TestGeneratorNetwork" var1="event_state1" id2="NETWORK" var2="TestGeneratorNetwork_state_value"/>
+  <dyn:connect id1="Disconnect_TestLoadNetwork" var1="event_state1" id2="NETWORK" var2="TestLoadNetwork_state_value"/>
+  <dyn:connect id1="Disconnect_TestStaticVarCompensatorNetwork" var1="event_state1" id2="NETWORK" var2="TestStaticVarCompensatorNetwork_state_value"/>
 </dyn:dynamicModelsArchitecture>
