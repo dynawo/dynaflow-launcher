@@ -357,7 +357,7 @@ of connections to apply between the special protection scheme automaton and anot
     <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated">
-    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
   </macroConnection>
 ...
 </assembling>
@@ -489,7 +489,7 @@ If we complete our current example with the following associations we will end u
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
 ...
   <dyn:macroConnector id="PhaseShifterToAutomatonActivated">
-    <dyn:connect var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+    <dyn:connect var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
   </dyn:macroConnector>
 
   <dyn:macroConnector id="PhaseShifterToIMeasurement">

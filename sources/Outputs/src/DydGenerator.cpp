@@ -71,7 +71,7 @@ void DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMod
   if (!generatorDefinitions_.empty()) {
     std::unique_ptr<dynamicdata::MacroConnector> connector1 = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
     connector1->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
-    connector1->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
+    connector1->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff_value");
     dynamicModelsToConnect->addMacroConnector(std::move(connector1));
 
     std::unique_ptr<dynamicdata::MacroConnector> connector2 = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);

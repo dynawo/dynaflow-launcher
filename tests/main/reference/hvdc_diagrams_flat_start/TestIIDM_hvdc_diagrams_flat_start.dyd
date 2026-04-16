@@ -2,7 +2,7 @@
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
   <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
     <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
-    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
     <dyn:connect var1="generator_N" var2="signalN_N"/>
@@ -75,12 +75,12 @@
   <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="HADESP7_S_VL7_TN1_phi_value"/>
   <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_switchOff" id2="HERA9AJAX1" var2="hvdc_switchOffSignal1Side1"/>
-  <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_switchOff" id2="HERA9AJAX1" var2="hvdc_switchOffSignal1Side2"/>
+  <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_switchOff_value" id2="HERA9AJAX1" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_switchOff_value" id2="HERA9AJAX1" var2="hvdc_switchOffSignal1Side2"/>
   <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1bis" var2="hvdc_terminal1"/>
   <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_ACPIN" id2="HERA9AJAX1bis" var2="hvdc_terminal2"/>
-  <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_switchOff" id2="HERA9AJAX1bis" var2="hvdc_switchOffSignal1Side1"/>
-  <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_switchOff" id2="HERA9AJAX1bis" var2="hvdc_switchOffSignal1Side2"/>
+  <dyn:connect id1="NETWORK" var1="HERAP7_S_VL7_TN1_switchOff_value" id2="HERA9AJAX1bis" var2="hvdc_switchOffSignal1Side1"/>
+  <dyn:connect id1="NETWORK" var1="AJAXP7_S_VL7_TN1_switchOff_value" id2="HERA9AJAX1bis" var2="hvdc_switchOffSignal1Side2"/>
   <dyn:connect id1="Model_Signal_NQ_AJAXP7_S_VL7_TN1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="AJAXP7_S_VL7_TN1_Upu_value"/>
   <dyn:connect id1="Model_Signal_NQ_HERAP7_S_VL7_TN1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="HERAP7_S_VL7_TN1_Upu_value"/>
 </dyn:dynamicModelsArchitecture>
