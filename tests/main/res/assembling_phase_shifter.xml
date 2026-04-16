@@ -10,7 +10,7 @@
     <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated">
-    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
   </macroConnection>
   <singleAssociation id="MESURE_I_PHASE_5_6">
     <tfo name="_BUS____5-BUS____6-1_PS"/>

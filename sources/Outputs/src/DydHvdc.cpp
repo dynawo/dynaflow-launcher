@@ -81,16 +81,16 @@ void DydHvdc::writeConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollectio
   if (hvdcLine.position == algo::HVDCDefinition::Position::SECOND_IN_MAIN_COMPONENT || hvdcLine.converterStationOnSide2()) {
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
-    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_switchOff", hvdcLine.id, "hvdc_switchOffSignal1Side1");
+    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_switchOff_value", hvdcLine.id, "hvdc_switchOffSignal1Side1");
     if (hvdcLine.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT)
-      dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_switchOff", hvdcLine.id, "hvdc_switchOffSignal1Side2");
+      dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_switchOff_value", hvdcLine.id, "hvdc_switchOffSignal1Side2");
   } else {
     // case both : 1 <-> 1 and 2 <-> 2
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal1");
     dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_ACPIN", hvdcLine.id, "hvdc_terminal2");
-    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_switchOff", hvdcLine.id, "hvdc_switchOffSignal1Side1");
+    dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter1BusId + "_switchOff_value", hvdcLine.id, "hvdc_switchOffSignal1Side1");
     if (hvdcLine.position == algo::HVDCDefinition::Position::BOTH_IN_MAIN_COMPONENT)
-      dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_switchOff", hvdcLine.id, "hvdc_switchOffSignal1Side2");
+      dynamicModelsToConnect->addConnect(constants::networkModelName, hvdcLine.converter2BusId + "_switchOff_value", hvdcLine.id, "hvdc_switchOffSignal1Side2");
   }
 }
 }  // namespace outputs
