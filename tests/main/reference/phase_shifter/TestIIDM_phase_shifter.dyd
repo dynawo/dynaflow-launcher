@@ -24,7 +24,7 @@
     <dyn:connect var1="phaseShifter_P" var2="@NAME@_P1"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="PhaseShifterToTap">
-    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step"/>
+    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step_value"/>
   </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>

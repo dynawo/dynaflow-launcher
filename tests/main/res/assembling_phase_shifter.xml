@@ -7,7 +7,7 @@
     <connection var1="phaseShifter_P" var2="@NAME@_P1"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToTap">
-    <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
+    <connection var1="phaseShifter_tap" var2="@NAME@_step_value"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated">
     <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
