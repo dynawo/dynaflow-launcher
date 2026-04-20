@@ -354,7 +354,7 @@ of connections to apply between the special protection scheme automaton and anot
     <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToTap">
-    <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
+    <connection var1="phaseShifter_tap" var2="@NAME@_step_value"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated">
     <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
@@ -497,7 +497,7 @@ If we complete our current example with the following associations we will end u
   </dyn:macroConnector>
 
   <dyn:macroConnector id="PhaseShifterToTap">
-    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step"/>
+    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step_value"/>
   </dyn:macroConnector>
 
   <dyn:macroConnect connector="PhaseShifterToAutomatonActivated" id1="PhaseShifter_5_6" id2="NETWORK" index1="0" name2="_BUS____5-BUS____6-1_PS"/>
