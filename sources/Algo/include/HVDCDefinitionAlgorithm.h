@@ -180,9 +180,7 @@ class HVDCDefinition {
    *
    * @return @b true if the  HVDC definition has a reactive power control loop for connection to the secondary voltage control, @b false otherwise
    */
-  bool hasRpcl() const {
-    return hasRpcl2();
-  }
+  bool hasRpcl() const { return hasRpcl2(); }
   /**
    * @brief test is the  HVDC definition has a reactive power control loop 2 for connection to the secondary voltage control
    *

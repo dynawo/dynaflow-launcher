@@ -70,9 +70,6 @@ Context::Context(const ContextDef &def, inputs::Configuration &config, std::unor
   }
 
   networkManager_.onNode(algo::MainConnexComponentAlgorithm(mainConnexNodes_));
-  if (config_.isShuntRegulationOn()) {
-    networkManager_.onNode(algo::ShuntCounterAlgorithm(counters_));
-  }
   networkManager_.onNode(algo::LinesByIdAlgorithm(linesById_));
   networkManager_.onNode(algo::TransformersByIdAlgorithm(tfosById_));
 
@@ -116,6 +113,9 @@ bool Context::process() {
     }
   }
 
+  if (config_.isShuntRegulationOn()) {
+    onNodeOnMainConnexComponent(algo::ShuntCounterAlgorithm(counters_));
+  }
   onNodeOnMainConnexComponent(algo::GeneratorDefinitionAlgorithm(generators_, networkManager_.getBusRegulationMap(), dynamicDataBaseManager_,
                                                                  config_.useInfiniteReactiveLimits(), config_.getTfoVoltageLevel()));
   onNodeOnMainConnexComponent(algo::LoadDefinitionAlgorithm(loads_, config_.getDsoVoltageLevel(), config_.isRestorativeFictitiousLoads()));

@@ -23,7 +23,6 @@
 
 #include <PARParametersSetCollection.h>
 
-
 namespace dfl {
 namespace outputs {
 
@@ -48,11 +47,9 @@ class ParHvdc {
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-              const std::string& basename,
-              const boost::filesystem::path& dirname,
-              dfl::inputs::Configuration::StartingPointMode startingPointMode,
-              const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
+             const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
+             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
   /**
@@ -67,9 +64,9 @@ class ParHvdc {
    * @returns the parameter set
    */
   std::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition &hvdcLine, const std::string &basename,
-                                                             const boost::filesystem::path &dirname,
-                                                             dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                                                             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
+                                                           const boost::filesystem::path &dirname,
+                                                           dfl::inputs::Configuration::StartingPointMode startingPointMode,
+                                                           const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
   /**
    * @brief Computes KAC emulation parameter
@@ -86,6 +83,16 @@ class ParHvdc {
    * @returns pSet, in pu (base SnRef=100MW)
    */
   inline double computePSET(double p0) { return p0 / 100.; }
+
+  /**
+   * @brief Computes active set point of the hvdc
+   *
+   * @param hvdcDefinition the hvdc line definition to use
+   * @param first suffix for the side of the hvdc that belongs to the main connex component
+   * @param second suffix for the other side of the hvdc
+   * @returns the initial flat active power on side 1 and 2
+   */
+  std::pair<double, double> computeFlatP1RefSetPu(const algo::HVDCDefinition &hvdcDefinition, const std::string &first, const std::string &second) const;
 
  private:
   const algo::HVDCLineDefinitions &hvdcDefinitions_;  ///< list of hvdcs definitions

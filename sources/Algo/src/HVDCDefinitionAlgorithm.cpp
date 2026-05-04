@@ -97,18 +97,18 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
           if (converterSide1) {
             if (voltageRegulation1) {
               return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side1
-                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1};
+                                                                 : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side1};
             } else {
               return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
-                                 HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
+                                     HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
             }
           } else {
             if (voltageRegulation2) {
               return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVRpcl2Side2
-                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side2};
+                                                                 : HVDCDefinition::HVDCModel::HvdcPVDiagramPQRpcl2Side2};
             } else {
               return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQProp, HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQ,
-                                 HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
+                                     HVDCDefinition::HVDCModel::HvdcPV, HVDCDefinition::HVDCModel::HvdcPVDiagramPQ);
             }
           }
         } else {
@@ -120,20 +120,20 @@ auto HVDCDefinitionAlgorithm::computeModel(const inputs::HvdcLine &hvdcline, HVD
           if (converterSide1) {
             if (voltageRegulation1) {
               return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side1
-                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1};
+                                                                 : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side1};
             } else {
               return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
-                                 HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
-                                 HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
+                                     HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
+                                     HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
             }
           } else {
             if (voltageRegulation2) {
               return HVDCModelDefinition{infiniteReactiveLimits_ ? HVDCDefinition::HVDCModel::HvdcPVEmulationSetRpcl2Side2
-                                                                : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2};
+                                                                 : HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSetRpcl2Side2};
             } else {
               return computeModelVSC(hvdcline, position, HVDCDefinition::HVDCModel::HvdcPQPropEmulationSet,
-                                 HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
-                                 HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
+                                     HVDCDefinition::HVDCModel::HvdcPQPropDiagramPQEmulationSet, HVDCDefinition::HVDCModel::HvdcPVEmulationSet,
+                                     HVDCDefinition::HVDCModel::HvdcPVDiagramPQEmulationSet);
             }
           }
         } else {
