@@ -70,14 +70,13 @@ class Par {
                   const dfl::inputs::DynamicDataBaseManager &dynamicDataBaseManager, const algo::ShuntCounterDefinitions &counters,
                   const algo::DynamicModelDefinitions &models, const algo::LinesByIdDefinitions &linesById, const algo::TransformersByIdDefinitions &tfosById,
                   const std::vector<algo::StaticVarCompensatorDefinition> &svarcsDefinitions, const std::vector<algo::LoadDefinition> &loadsDefinitions)
-        : basename_(base), dirname_(config.outputDir()), filepath_(filename), activePowerCompensation_(config.getActivePowerCompensation()),
-          dynamicDataBaseManager_(dynamicDataBaseManager), shuntCounters_(counters), linesByIdDefinitions_(linesById), tfosByIdDefinitions_(tfosById),
-          parLoads_(new ParLoads(loadsDefinitions)), parSVarC_(new ParSVarC(svarcsDefinitions)), parHvdc_(new ParHvdc(hvdcDefinitions)),
-          parGenerator_(new ParGenerator(gens)), parDynModel_(new ParDynModel(models, gens, hvdcDefinitions)),
-          parVRRemote_(new ParVRRemote(gens, busesToNumberOfRegulationMap, hvdcDefinitions)), startingPointMode_(config.getStartingPointMode()) {}
+        : basename_(base), filepath_(filename), activePowerCompensation_(config.getActivePowerCompensation()), dynamicDataBaseManager_(dynamicDataBaseManager),
+          shuntCounters_(counters), linesByIdDefinitions_(linesById), tfosByIdDefinitions_(tfosById), parLoads_(new ParLoads(loadsDefinitions)),
+          parSVarC_(new ParSVarC(svarcsDefinitions)), parHvdc_(new ParHvdc(hvdcDefinitions)), parGenerator_(new ParGenerator(gens)),
+          parDynModel_(new ParDynModel(models, gens, hvdcDefinitions)), parVRRemote_(new ParVRRemote(gens, busesToNumberOfRegulationMap, hvdcDefinitions)),
+          startingPointMode_(config.getStartingPointMode()) {}
 
     std::string basename_;                                                         ///< basename
-    boost::filesystem::path dirname_;                                              ///< Dirname of output file relative to execution dir
     boost::filesystem::path filepath_;                                             ///< file path of the output file to write
     dfl::inputs::Configuration::ActivePowerCompensation activePowerCompensation_;  ///< the type of active power compensation
     const inputs::DynamicDataBaseManager &dynamicDataBaseManager_;                 ///< dynamic database manager
