@@ -24,7 +24,6 @@
 #include <DYNCommon.h>
 #include <PARParametersSetCollection.h>
 
-
 namespace dfl {
 namespace outputs {
 
@@ -49,16 +48,11 @@ class ParGenerator {
    * @param paramSetCollection parameter set collection to enrich
    * @param activePowerCompensation the type of active power compensation
    * @param basename basename for current simulation
-   * @param dirname the dirname of the output PAR file
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
-  void write(const std::unique_ptr<parameters::ParametersSetCollection>& paramSetCollection,
-              ActivePowerCompensation activePowerCompensation,
-              const std::string& basename,
-              const boost::filesystem::path& dirname,
-              StartingPointMode startingPointMode,
-              const inputs::DynamicDataBaseManager& dynamicDataBaseManager);
+  void write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
+             const std::string &basename, StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
   /**
@@ -79,10 +73,9 @@ class ParGenerator {
    * @param startingPointMode starting point mode
    * @return the new macro parameter set
    */
-  std::unique_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition& def,
-                                                                                  ActivePowerCompensation activePowerCompensation,
-                                                                                  double targetP,
-                                                                                  StartingPointMode startingPointMode);
+  std::unique_ptr<parameters::MacroParameterSet> buildGeneratorMacroParameterSet(const algo::GeneratorDefinition &def,
+                                                                                 ActivePowerCompensation activePowerCompensation, double targetP,
+                                                                                 StartingPointMode startingPointMode);
 
   /**
    * @brief Write constants parameter sets for generators
@@ -132,12 +125,10 @@ class ParGenerator {
    *
    * @param def the generator definition to use
    * @param basename the basename for the simulation
-   * @param dirname the dirname of the output directory
    *
    * @returns the parameter set
    */
-  std::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
-                                                            const boost::filesystem::path &dirname);
+  std::shared_ptr<parameters::ParametersSet> writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename);
 
   /**
    * @brief set the kGover value based on if generator has active power control and targetP value

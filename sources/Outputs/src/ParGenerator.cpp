@@ -18,8 +18,7 @@ namespace dfl {
 namespace outputs {
 
 void ParGenerator::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, ActivePowerCompensation activePowerCompensation,
-                         const std::string &basename, const boost::filesystem::path &dirname, StartingPointMode startingPointMode,
-                         const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+                         const std::string &basename, StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &generator : generatorDefinitions_) {
     // if network model, nothing to do
     if (generator.isNetwork()) {
@@ -36,7 +35,7 @@ void ParGenerator::write(const std::unique_ptr<parameters::ParametersSetCollecti
         paramSetCollection->addMacroParameterSet(buildGeneratorMacroParameterSet(generator, activePowerCompensation, generator.targetP, startingPointMode));
       }
       // if generator is not using infinite diagrams, no need to create constant sets
-      paramSet = writeGenerator(generator, basename, dirname);
+      paramSet = writeGenerator(generator, basename);
     }
 
     if (paramSet && generator.hasRpcl()) {
@@ -258,8 +257,7 @@ void ParGenerator::updateRemoteRegulationParameters(const algo::GeneratorDefinit
   set->addReference(helper::buildReference("generator_URegulated0", "U", "DOUBLE", def.regulatedBusId));
 }
 
-std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename,
-                                                                        const boost::filesystem::path &dirname) {
+std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const algo::GeneratorDefinition &def, const std::string &basename) {
   std::string uuid = constants::uuid(def.id);
 
   //  Use the hash id in exported files to prevent use of non-ascii characters
@@ -269,7 +267,7 @@ std::shared_ptr<parameters::ParametersSet> ParGenerator::writeGenerator(const al
       std::unique_ptr<parameters::MacroParSet>(new parameters::MacroParSet(getGeneratorMacroParameterSetId(def.model, DYN::doubleIsZero(def.targetP)))));
 
   if (!def.isUsingRectangularDiagram()) {
-    auto dirname_diagram = dirname;
+    boost::filesystem::path dirname_diagram("@PAR_PATH@");
     dirname_diagram.append(basename + common::constants::diagramDirectorySuffix).append(constants::diagramFilename(def.id));
 
     set->addParameter(helper::buildParameter("generator_QMaxTableFile", dirname_diagram.generic_string()));

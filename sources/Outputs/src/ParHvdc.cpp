@@ -18,10 +18,9 @@ namespace dfl {
 namespace outputs {
 
 void ParHvdc::write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
-                    const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
-                    const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
+                    dfl::inputs::Configuration::StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
   for (const auto &hvdcLine : hvdcDefinitions_.hvdcLines) {
-    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, dirname, startingPointMode, dynamicDataBaseManager));
+    paramSetCollection->addParametersSet(writeHdvcLine(hvdcLine.second, basename, startingPointMode, dynamicDataBaseManager));
   }
 }
 
@@ -55,10 +54,9 @@ std::pair<double, double> ParHvdc::computeFlatP1RefSetPu(const algo::HVDCDefinit
 }
 
 std::shared_ptr<parameters::ParametersSet> ParHvdc::writeHdvcLine(const algo::HVDCDefinition &hvdcDefinition, const std::string &basename,
-                                                                  const boost::filesystem::path &dirname,
                                                                   dfl::inputs::Configuration::StartingPointMode startingPointMode,
                                                                   const inputs::DynamicDataBaseManager &dynamicDataBaseManager) {
-  auto dirnameDiagram = dirname;
+  boost::filesystem::path dirnameDiagram("@PAR_PATH@");
   dirnameDiagram.append(basename + common::constants::diagramDirectorySuffix);
 
   // Define this function as a lambda instead of a class function to avoid too much arguments that would make it less readable

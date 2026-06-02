@@ -87,16 +87,16 @@
     <macroParSet id="MacroParameterSetStaticCompensator"/>
   </set>
   <set id="625b3a25-dec7-53f7-93d8-2d9a3a3c9827">
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/G4_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmax"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/G4_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmin"/>
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmax"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>
@@ -137,16 +137,16 @@
     <par name="hvdc_P1RefSetPu" type="DOUBLE" value="-3.2200000000000002"/>
     <par name="hvdc_P20Pu" type="DOUBLE" value="3.1571750170898438"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/LCCStation1_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="0a9a24ae-2f88-58a4-b4bb-39c1b77335cc_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/LCCStation2_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="75349bf8-fc8b-5bd9-b09a-0fa669160396_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/LCCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/LCCStation2_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="75349bf8-fc8b-5bd9-b09a-0fa669160396_tableqmin"/>
     <reference type="DOUBLE" name="P1Ref_ValueIn" origData="IIDM" origName="p1_pu"/>
     <reference type="DOUBLE" name="hvdc_CosPhi1Ref0" origData="IIDM" origName="powerFactor" componentId="LCCStation1"/>
@@ -193,10 +193,10 @@
     <par name="hvdc_P20Pu" type="DOUBLE" value="-3.1571750170898438"/>
     <par name="hvdc_Q1Nom" type="DOUBLE" value="2"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="false"/>
     <par name="hvdc_modeU20" type="BOOL" value="true"/>
@@ -223,16 +223,16 @@
     <par name="hvdc_Q1Nom" type="DOUBLE" value="2"/>
     <par name="hvdc_Q2Nom" type="DOUBLE" value="3"/>
     <par name="hvdc_QInj1Max0Pu" type="DOUBLE" value="0.029999999999999999"/>
-    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MaxTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmax"/>
     <par name="hvdc_QInj1Min0Pu" type="DOUBLE" value="-0.029999999999999999"/>
-    <par name="hvdc_QInj1MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
+    <par name="hvdc_QInj1MinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/VSCStation2_Diagram.txt"/>
     <par name="hvdc_QInj1MinTableName" type="STRING" value="2694128b-f023-56c2-848d-48bf17753088_tableqmin"/>
     <par name="hvdc_QInj2Max0Pu" type="DOUBLE" value="0.040000000000000001"/>
-    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
+    <par name="hvdc_QInj2MaxTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
     <par name="hvdc_QInj2MaxTableName" type="STRING" value="22c38c24-e943-5798-b70f-168c03610315_tableqmax"/>
     <par name="hvdc_QInj2Min0Pu" type="DOUBLE" value="-0.040000000000000001"/>
-    <par name="hvdc_QInj2MinTableFile" type="STRING" value="resultsTestsTmp/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
+    <par name="hvdc_QInj2MinTableFile" type="STRING" value="@PAR_PATH@/TestStartingPointMode_Diagram/VSCStation3_Diagram.txt"/>
     <par name="hvdc_QInj2MinTableName" type="STRING" value="22c38c24-e943-5798-b70f-168c03610315_tableqmin"/>
     <par name="hvdc_modeU10" type="BOOL" value="true"/>
     <par name="hvdc_modeU20" type="BOOL" value="true"/>
