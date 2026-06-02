@@ -2,4 +2,5 @@
 <lostEquipments xmlns="http://www.rte-france.com/dynawo">
   <lostEquipment id="InternalAsBreaker_hvdc" type="SWITCH"/>
   <lostEquipment id="_7393a68e-c4e6-48dd-9347-543858363fdb" type="LCC_CONVERTER"/>
+  <lostEquipment id="_cf08be5d-b85e-46be-9378-6eb35540e070" type="SWITCH"/>
 </lostEquipments>
