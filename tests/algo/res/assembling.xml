@@ -26,7 +26,7 @@
     <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1" required="true" internal="false"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToTap" name2="true">
-    <connection var1="phaseShifter_tap" var2="@NAME@_step" required="true" internal="false"/>
+    <connection var1="phaseShifter_tap" var2="@NAME@_step_value" required="true" internal="false"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated" name2="true">
     <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value" required="true" internal="false"/>
