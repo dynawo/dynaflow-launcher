@@ -38,10 +38,10 @@
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G5_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G5_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="51629263-3f1c-580f-907d-8333de7c55aa_tableqmax"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G5_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G5_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="51629263-3f1c-580f-907d-8333de7c55aa_tableqmin"/>
     <par name="generator_QNomAlt" type="DOUBLE" value="10"/>
     <par name="generator_SNom" type="DOUBLE" value="110.45"/>
@@ -61,16 +61,16 @@
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="625b3a25-dec7-53f7-93d8-2d9a3a3c9827">
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G4_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmax"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G4_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G4_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="625b3a25-dec7-53f7-93d8-2d9a3a3c9827_tableqmin"/>
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="67cb6a4a-4134-5e63-b62d-5b6abc9a2367">
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmax"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G2_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G2_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="67cb6a4a-4134-5e63-b62d-5b6abc9a2367_tableqmin"/>
     <macroParSet id="macro_signalNGenerator"/>
   </set>
@@ -220,10 +220,10 @@
     <par name="generator_PMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
     <par name="generator_QDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="generator_QMax" type="DOUBLE" value="1.7976931348623157e+308"/>
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G6_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G6_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="de83c408-b7db-5e14-bae6-f629f6d84c21_tableqmax"/>
     <par name="generator_QMin" type="DOUBLE" value="-1.7976931348623157e+308"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G6_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G6_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="de83c408-b7db-5e14-bae6-f629f6d84c21_tableqmin"/>
     <par name="generator_UDeadBandPu" type="DOUBLE" value="0.0001"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
@@ -244,9 +244,9 @@
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="e4c4a114-4cc4-58b8-a2a5-cc865b2d21ad">
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G7_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G7_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="e4c4a114-4cc4-58b8-a2a5-cc865b2d21ad_tableqmax"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G7_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G7_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="e4c4a114-4cc4-58b8-a2a5-cc865b2d21ad_tableqmin"/>
     <par name="generator_QNomAlt" type="DOUBLE" value="10"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00040000000000000002"/>
@@ -258,9 +258,9 @@
     <macroParSet id="macro_signalNGeneratorFixedP"/>
   </set>
   <set id="f5256528-b984-55f5-bb31-aac7569c7e54">
-    <par name="generator_QMaxTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G8_Diagram.txt"/>
+    <par name="generator_QMaxTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G8_Diagram.txt"/>
     <par name="generator_QMaxTableName" type="STRING" value="f5256528-b984-55f5-bb31-aac7569c7e54_tableqmax"/>
-    <par name="generator_QMinTableFile" type="STRING" value="resultsTestsTmp/TestParDynModel_Diagram/G8_Diagram.txt"/>
+    <par name="generator_QMinTableFile" type="STRING" value="@PAR_PATH@/TestParDynModel_Diagram/G8_Diagram.txt"/>
     <par name="generator_QMinTableName" type="STRING" value="f5256528-b984-55f5-bb31-aac7569c7e54_tableqmin"/>
     <par name="generator_XTfoPu" type="DOUBLE" value="0.12280000000000001"/>
     <par name="reactivePowerControlLoop_DerURefMaxPu" type="DOUBLE" value="0.00050000000000000001"/>
