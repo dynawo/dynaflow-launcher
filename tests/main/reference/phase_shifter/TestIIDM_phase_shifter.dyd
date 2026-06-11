@@ -18,10 +18,10 @@
     <dyn:connect var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="PhaseShifterToIMeasurement">
-    <dyn:connect var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
+    <dyn:connect var1="phaseShifter_iMonitored" var2="@NAME@_i1_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="PhaseShifterToP">
-    <dyn:connect var1="phaseShifter_P" var2="@NAME@_P1"/>
+    <dyn:connect var1="phaseShifter_P" var2="@NAME@_P1_value"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="PhaseShifterToTap">
     <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step"/>
