@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assembling>
   <macroConnection id="PhaseShifterToIMeasurement">
-    <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
+    <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1_value"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToP">
-    <connection var1="phaseShifter_P" var2="@NAME@_P1"/>
+    <connection var1="phaseShifter_P" var2="@NAME@_P1_value"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToTap">
     <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
