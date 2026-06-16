@@ -213,6 +213,7 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updateValue(timeTableStep_, config, "TimeTable", saMode, parameterValueModified_);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode, parameterValueModified_);
     helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
+    helper::updatePathValue(criteriaFilePath_, config, "CriteriaPath", prefixConfigFile, saMode);
     if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
       helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true, parameterValueModified_);
     }
@@ -224,6 +225,10 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
 void Configuration::sanityCheck() const {
   if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS && !startingDumpFilePath_.empty() && !exists(startingDumpFilePath_)) {
     throw Error(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
+  }
+
+  if (!criteriaFilePath_.empty() && !exists(criteriaFilePath_)) {
+    throw Error(CriteriaFileNotFound, criteriaFilePath_.generic_string());
   }
 
   if (!settingFilePath_.empty() && assemblingFilePath_.empty()) {
