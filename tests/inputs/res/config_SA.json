@@ -35,7 +35,8 @@
       "TimeStep": 1.7,
       "MinTimeStep": 1.2,
       "TimeOfEvent": 50,
-      "StartingDumpFile" : "myStartingDumpFile.dmp"
+      "StartingDumpFile" : "myStartingDumpFile.dmp",
+      "CriteriaPath" : "myCriteriaFile.crt"
     }
   }
 }
