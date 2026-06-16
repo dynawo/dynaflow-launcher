@@ -16,7 +16,8 @@
     "StopTime": 120,
     "sa": {
       "TimeOfEvent": 50,
-      "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp"
+      "StartingDumpFile" : "myStartingDumpFileDoesNotExists.dmp",
+      "CriteriaPath" : "myCriteriaFile.crt"
     },
     "TimeStep" : 2.6,
     "MinTimeStep" : 0.5
