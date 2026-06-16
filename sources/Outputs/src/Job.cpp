@@ -116,6 +116,9 @@ std::unique_ptr<job::SimulationEntry> Job::writeSimulation() const {
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
   simu->setPrecision(def_.configuration.getPrecision().value_or(1e-4));
+  if (!def_.configuration.criteriaFilePath().empty()) {
+    simu->addCriteriaFile(def_.configuration.criteriaFilePath().generic_string());
+  }
 
   return simu;
 }
@@ -256,6 +259,12 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   attrs.add("precision", simu->getPrecision());
   formatter->startElement("dyn", "simulation", attrs);
   attrs.clear();
+  for (const auto &criteriaFile : simu->getCriteriaFiles()) {
+    attrs.add("criteriaPath", criteriaFile);
+    formatter->startElement("dyn", "criteria", attrs);
+    attrs.clear();
+    formatter->endElement();  // criteria
+  }
   formatter->endElement();  // simulation
 
   // outputs
