@@ -283,6 +283,10 @@ void Configuration::sanityCheck() const {
     throw DFLError(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
   }
 
+  if (!criteriaFilePath_.empty() && !exists(criteriaFilePath_)) {
+    throw DFLError(CriteriaFileNotFound, criteriaFilePath_.generic_string());
+  }
+
   if (!settingFilePaths_.empty() && assemblingFilePaths_.empty()) {
     throw DFLError(SettingFileWithoutAssemblingFile, filepath_.generic_string());
   }
