@@ -16,6 +16,7 @@ InvalidActivePowerCompensation =    parameter ActivePowerCompensation can't be s
 ChosenOutputDoesntExist       =     chosen output %1% doesn't exist
 NoFlatStartingPointModeInSA   =     flat mode cannot be used in security analysis
 StartingDumpFileNotFound      =     an starting dump file %1% was specified in the configuration file but it does not exist
+CriteriaFileNotFound          =     a criteria file %1% was specified in the configuration file but it does not exist
 ContingenciesReadError        =     error while reading contingencies file %1%: %2%
 DynModelFileReadError         =     cannot parse %1% : %2%
 UnsupportedCountName          =     unsupported count name %1% for setting set

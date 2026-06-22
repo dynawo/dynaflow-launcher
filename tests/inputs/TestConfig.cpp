@@ -37,6 +37,9 @@ TEST(Config, Incorrect) {
 
   dfl::inputs::Configuration config5(configFile, dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
   ASSERT_THROW_DYNAWO(config5.sanityCheck(), DYN::Error::GENERAL, dfl::KeyError_t::StartingDumpFileNotFound);
+
+  dfl::inputs::Configuration config6("res/config_criteria_notfound.json");
+  ASSERT_THROW_DYNAWO(config6.sanityCheck(), DYN::Error::GENERAL, dfl::KeyError_t::CriteriaFileNotFound);
 }
 
 TEST(Config, CaseInsensitive) {
@@ -74,6 +77,7 @@ TEST(Config, Nominal) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(10, config.getTimeOfEvent());
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.6, config.getTimeStep());
   ASSERT_DOUBLE_EQUALS_DYNAWO(0.6, config.getMinTimeStep());
+  ASSERT_TRUE(config.criteriaFilePath().empty());
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -141,6 +145,7 @@ TEST(Config, ConfigN) {
   ASSERT_DOUBLE_EQUALS_DYNAWO(2.2, config.getTimeStep());
   ASSERT_DOUBLE_EQUALS_DYNAWO(0.5, config.getMinTimeStep());
   ASSERT_EQ(config.timeTableStep(), 5);
+  ASSERT_EQ(canonical(config.criteriaFilePath().string()), canonical("myCriteriaFile.crt", prefixConfigFile));
 #if _DEBUG_
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
   ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::CONSTRAINTS));
@@ -181,8 +186,10 @@ TEST(Config, ConfigSA) {
     ASSERT_DOUBLE_EQUALS_DYNAWO(50, config.getTimeOfEvent());
     if (configFile == "res/config_SA.json") {
       ASSERT_EQ(canonical(config.startingDumpFilePath().string()), canonical("myStartingDumpFile.dmp", prefixConfigFile));
+      ASSERT_EQ(canonical(config.criteriaFilePath().string()), canonical("myCriteriaFile.crt", prefixConfigFile));
     } else {
       ASSERT_TRUE(config.startingDumpFilePath().empty());
+      ASSERT_TRUE(config.criteriaFilePath().empty());
     }
 #if _DEBUG_
     ASSERT_TRUE(config.isChosenOutput(dfl::inputs::Configuration::ChosenOutputEnum::STEADYSTATE));
