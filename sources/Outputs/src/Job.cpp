@@ -261,7 +261,7 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   formatter->startElement("dyn", "simulation", attrs);
   attrs.clear();
   for (const auto &criteriaFile : simu->getCriteriaFiles()) {
-    attrs.add("criteriaPath", criteriaFile);
+    attrs.add("criteriaFile", criteriaFile);
     formatter->startElement("dyn", "criteria", attrs);
     attrs.clear();
     formatter->endElement();  // criteria
