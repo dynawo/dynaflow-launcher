@@ -347,8 +347,8 @@ class Configuration {
   // SA
   double timeOfEvent_ = 10.;                                ///< time for contingency simulation (security analysis only)
   boost::filesystem::path startingDumpFilePath_;            ///< starting dump file path
-  boost::filesystem::path criteriaFilePath_;                ///< criteria file path (optional)
                                                             ///< are already described in the static description
+  boost::filesystem::path criteriaFilePath_;                ///< criteria file path (optional)
   std::unordered_set<std::string> parameterValueModified_;  ///< a parameter key is present in this if the
                                                             ///< value was redefined in the configuration
                                                             ///< file
