@@ -174,6 +174,9 @@ class Context {
   /// @brief Execute security analysis by running simulations for the base case and all the valid contingencies
   void executeSecurityAnalysis();
 
+  /// @brief Execute a base case simulation
+  void executeSimulation();
+
   /// @brief Prepare the job file
   void exportOutputJob();
 
@@ -184,13 +187,6 @@ class Context {
   /// @param contingency the contingency
   /// @param elementsNetworkType ids of network elements with a network type
   void exportOutputsContingency(const inputs::Contingency &contingency, const std::unordered_set<std::string> &elementsNetworkType);
-
-  /**
-   * @brief Populate the map with the file paths and corresponding data from the simulation outputs
-   *
-   * @param simulation shared pointer to the simulation object containing the outputs to be processed
-   */
-  void populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation>& simulation) const;
 
  private:
   ContextDef def_;                                         ///< context definition
