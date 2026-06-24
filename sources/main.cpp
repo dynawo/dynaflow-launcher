@@ -110,17 +110,8 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
     DYNAlgorithms::multiprocessing::Context::sync();
 
     auto timeSimuStart = std::chrono::steady_clock::now();
-    if (params.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
-      context->execute();
-      context->exportResults(true);
-    } else {
-      // For steady-state calculation, only the root process is allowed to
-      // perform the simulation.
-      if (mpiContext.isRootProc()) {
-        context->execute();
-        context->exportResults(true);
-      }
-    }
+    context->execute();
+    context->exportResults(true);
 
     if (mpiContext.isRootProc()) {
       LOG(info, SimulationEnded, context->basename(), elapsed(timeSimuStart));
