@@ -41,6 +41,7 @@
 #include <JOBSolverEntry.h>
 #include <JOBSolverEntryFactory.h>
 #include <JOBTimelineEntry.h>
+#include <fstream>
 #include <xml/sax/formatter/AttributeList.h>
 #include <xml/sax/formatter/Formatter.h>
 

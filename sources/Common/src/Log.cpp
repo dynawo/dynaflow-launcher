@@ -16,6 +16,8 @@
 #include "Log.h"
 
 #include <boost/filesystem.hpp>
+#include <fstream>
+#include <sstream>
 
 namespace file = boost::filesystem;
 
