@@ -37,6 +37,7 @@
 #include <DYNSimulation.h>
 #include <DYNSimulationContext.h>
 #include <DYNSystematicAnalysisLauncher.h>
+#include <DYNComputeSimulationLauncher.h>
 #include <DYNTimer.h>
 #include <algorithm>
 #include <boost/filesystem.hpp>
@@ -225,9 +226,9 @@ void Context::exportOutputJob() {
   }
   default:
     // For the rest of calculations, only export the jobs file when in DEBUG mode
-#if _DEBUG_
+// #if _DEBUG_
     outputs::Job::exportJob(jobEntry_, absolute(def_.networkFilepath), config_);
-#endif
+// #endif
     break;
   }
 }
@@ -273,6 +274,7 @@ void Context::execute() {
 #if defined(_DEBUG_) || defined(PRINT_TIMERS)
   DYN::Timer timer("DFL::Context::execute()");
 #endif
+/*
   std::unique_ptr<DYN::SimulationContext> simu_context = std::unique_ptr<DYN::SimulationContext>(new DYN::SimulationContext());
   simu_context->setResourcesDirectory(def_.dynawoResDir.generic_string());
   simu_context->setLocale(def_.locale);
@@ -281,14 +283,16 @@ void Context::execute() {
   auto path = file::canonical(inputPath);
   simu_context->setInputDirectory(path.generic_string());
   simu_context->setWorkingDirectory(config_.outputDir().generic_string());
-
+*/
   switch (def_.simulationKind) {
   case dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION: {
     // This shall be the last log performed before building simulation,
     // because simulation constructor will re-initialize traces for Dynawo
     // Since DFL traces are persistent, they can be re-used after simulation is performed outside this function
     LOG(info, SimulateInfo, basename_);
-
+    executeSimulation();
+    break;
+    /*
     // For a power flow calculation it is ok to directly run here a single simulation
     auto simu = boost::make_shared<DYN::Simulation>(jobEntry_, std::move(simu_context), networkManager_.dataInterface());
     simu->init();
@@ -328,6 +332,7 @@ void Context::execute() {
     populateOutputsMapWithSimulationOutputs(simu);
     simu->clean();
     break;
+    */
   }
   case dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS: {
     LOG(info, SecurityAnalysisSimulationInfo, basename_, def_.contingenciesFilePath);
@@ -335,6 +340,27 @@ void Context::execute() {
     break;
   }
   }
+}
+
+void Context::executeSimulation() {
+  // Use dynawo-algorithms Compute Simulation Launcher to simulate
+  auto simulationLauncher = boost::make_shared<DYNAlgorithms::ComputeSimulationLauncher>();
+  std::string jobsFileName = jobEntry_->getName() + ".jobs";
+  std::string aggregatedResultsFileName = "aggregatedResults.xml";
+  file::path dirPath = config_.outputDir();
+  auto canonicalDirPath = file::canonical(dirPath);
+  auto fullInputPath = canonicalDirPath / jobsFileName;
+  auto fullOutputPath = canonicalDirPath / aggregatedResultsFileName;
+  simulationLauncher->setOutputFile(fullOutputPath.generic_string());
+  simulationLauncher->setInputFile(fullInputPath.generic_string());
+  simulationLauncher->setDirectory(config_.outputDir().generic_string());
+  // There is a single job for a steady-state calculation: only the root process needs to run
+  // it, otherwise every process would redo the exact same simulation.
+  if (DYNAlgorithms::multiprocessing::context().isRootProc()) {
+    simulationLauncher->launch();
+  }
+  // writeResults() starts with a collective synchronization, so every process must call it.
+  simulationLauncher->writeResults();
 }
 
 void Context::executeSecurityAnalysis() {
