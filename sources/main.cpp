@@ -109,17 +109,8 @@ static void execSimulation(boost::shared_ptr<dfl::Context> context, dfl::inputs:
     DYNAlgorithms::multiprocessing::Context::sync();
 
     auto timeSimuStart = std::chrono::steady_clock::now();
-    if (params.simulationKind == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
-      context->execute();
-      context->exportResults(true);
-    } else {
-      // For steady-state calculation, only the root process is allowed to
-      // perform the simulation.
-      if (mpiContext.isRootProc()) {
-        context->execute();
-        context->exportResults(true);
-      }
-    }
+    context->execute();
+    context->exportResults(true);
 
     if (mpiContext.isRootProc()) {
       LOG(info, SimulationEnded, context->basename(), elapsed(timeSimuStart));
@@ -157,7 +148,7 @@ void dumpZipArchive(std::unordered_map<std::string, std::string> &mapOutputFiles
 
       boost::shared_ptr<zip::ZipFile> archive = zip::ZipFileFactory::newInstance();
       const std::string archivePath = createAbsolutePath("outputs.zip", outputPath.generic_string());
-      if (!runtimeConfig.contingenciesFilePath.empty() && boost::filesystem::exists(archivePath))
+      if (boost::filesystem::exists(archivePath))
         archive = zip::ZipInputStream::read(archivePath);
       for (auto &outputFile : mapOutputFilesData) {
         archive->addEntry(outputFile.first, outputFile.second);
@@ -250,6 +241,12 @@ int main(int argc, char *argv[]) {
     dfl::inputs::Configuration configN(configPath, dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
 
     outputDir = configN.outputDir();
+
+    if (mpiContext.isRootProc() && !runtimeConfig.zipArchivePath.empty()) {
+      const std::string previousArchivePath = createAbsolutePath("outputs.zip", outputDir.generic_string());
+      if (boost::filesystem::exists(previousArchivePath) && !boost::filesystem::equivalent(previousArchivePath, runtimeConfig.zipArchivePath))
+        boost::filesystem::remove(previousArchivePath);
+    }
 
     try {
       if (mpiContext.isRootProc()) {
@@ -397,6 +394,17 @@ int main(int argc, char *argv[]) {
     // NSA: wait so that the steady state computation is over for everyone and the results written by root process
     DYNAlgorithms::multiprocessing::Context::sync();
     mpiContext.broadcast(successN);
+
+    if (userRequest != dfl::common::Options::Request::RUN_SIMULATION_SA && mpiContext.isRootProc() && !runtimeConfig.zipArchivePath.empty()) {
+      const std::string archivePathN = createAbsolutePath("outputs.zip", outputDir.generic_string());
+      if (boost::filesystem::exists(archivePathN)) {
+        boost::shared_ptr<zip::ZipFile> archiveN = zip::ZipInputStream::read(archivePathN);
+        for (const auto &entry : archiveN->getEntries())
+          mapOutputFilesData["outputs/" + entry.first] = entry.second->getData();
+        boost::filesystem::remove(archivePathN);
+      }
+    }
+
     // NSA: Every process has to fail if the N ran by the root process failed
     if (!successN) {
       dumpZipArchive(mapOutputFilesData, outputDir, runtimeConfig);
