@@ -106,7 +106,7 @@
     <macroConnect macroConnection="SVCToGenerator" id="G8"/>
   </dynamicAutomaton>
   <macroConnection id="CLAToIMeasurement">
-    <connection var1="currentLimitAutomaton_IMonitored" var2="@NAME@_iSide1"/>
+    <connection var1="currentLimitAutomaton_IMonitored" var2="@NAME@_iSide1_value"/>
   </macroConnection>
   <singleAssociation id="MESURE_I_CLA_TEST">
     <tfo name="TFOId"/>
