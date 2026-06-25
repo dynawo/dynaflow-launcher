@@ -42,6 +42,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <fstream>
+#include <sstream>
 #include <tuple>
 
 namespace file = boost::filesystem;
