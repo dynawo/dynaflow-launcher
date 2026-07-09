@@ -45,7 +45,7 @@ void DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dy
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING:
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPMODEHANDLING:
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING:
-      blackBoxModel->addStaticRef("SVarC_modeHandling_mode_value", "regulatingMode");
+      blackBoxModel->addStaticRef("SVarC_modeHandling_mode", "regulatingMode");
       break;
     default:
       break;
