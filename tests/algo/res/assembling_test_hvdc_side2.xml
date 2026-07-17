@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assembling>
   <macroConnection id="SVCToUMeasurement">
-    <connection var1="UpPu_value" var2="@NAME@_Upu_value"/>
+    <connection var1="UpPu" var2="@NAME@_Upu"/>
   </macroConnection>
   <macroConnection id="SVCToHVDC" index1="true">
-    <connection var1="level_value" var2="reactivePowerControlLoop_level"/>
-    <connection var1="blocker_@INDEX@_value" var2="hvdc_blockerSide1"/>
-    <connection var1="QStator_@INDEX@_value" var2="hvdc_QInj1"/>
+    <connection var1="level" var2="reactivePowerControlLoop_level"/>
+    <connection var1="blocker_@INDEX@_" var2="hvdc_blockerSide1"/>
+    <connection var1="QStator_@INDEX@_" var2="hvdc_QInj1"/>
   </macroConnection>
   <singleAssociation id="MESURE_MODELE_VL">
     <bus voltageLevel="VL"/>

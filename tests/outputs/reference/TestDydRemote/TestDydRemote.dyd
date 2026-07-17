@@ -2,7 +2,7 @@
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
   <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
     <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
-    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff_value"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
     <dyn:connect var1="generator_N" var2="signalN_N"/>
@@ -54,9 +54,9 @@
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G3" id2="Model_Signal_NQ_BUS_1" index2="1"/>
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G4" id2="Model_Signal_NQ_BUS_2" index2="0"/>
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="G5" id2="Model_Signal_NQ_BUS_2" index2="1"/>
-  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi_value"/>
-  <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U_value"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="BUS_1_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulatedPu" id2="NETWORK" var2="BUS_2_Upu_value"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="Slack_phi"/>
+  <dyn:connect id1="G0" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U"/>
+  <dyn:connect id1="G2" var1="generator_URegulated" id2="NETWORK" var2="BUS_1_U"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_1" var1="vrremote_URegulatedPu" id2="NETWORK" var2="BUS_1_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ_BUS_2" var1="vrremote_URegulatedPu" id2="NETWORK" var2="BUS_2_Upu"/>
 </dyn:dynamicModelsArchitecture>

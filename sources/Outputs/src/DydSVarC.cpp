@@ -59,7 +59,7 @@ void DydSVarC::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dy
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVPROPREMOTEMODEHANDLING:
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTE:
     case algo::StaticVarCompensatorDefinition::ModelType::SVARCPVREMOTEMODEHANDLING:
-      dynamicModelsToConnect->addConnect(svarc.id, "SVarC_URegulatedPu", "NETWORK", svarc.regulatedBusId + "_Upu_value");
+      dynamicModelsToConnect->addConnect(svarc.id, "SVarC_URegulatedPu", "NETWORK", svarc.regulatedBusId + "_Upu");
       break;
     default:
       break;

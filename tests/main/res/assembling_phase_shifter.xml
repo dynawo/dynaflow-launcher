@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assembling>
   <macroConnection id="PhaseShifterToIMeasurement">
-    <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1_value"/>
+    <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToP">
-    <connection var1="phaseShifter_P" var2="@NAME@_P1_value"/>
+    <connection var1="phaseShifter_P" var2="@NAME@_P1"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToTap">
-    <connection var1="phaseShifter_tap" var2="@NAME@_step_value"/>
+    <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated">
-    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
+    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
   </macroConnection>
   <singleAssociation id="MESURE_I_PHASE_5_6">
     <tfo name="_BUS____5-BUS____6-1_PS"/>
