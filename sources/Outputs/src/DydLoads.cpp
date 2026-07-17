@@ -21,9 +21,8 @@
 namespace dfl {
 namespace outputs {
 
-void
-DydLoads::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect, const std::string& basename) {
-  for (const auto& load : loadsDefinitions_) {
+void DydLoads::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &basename) {
+  for (const auto &load : loadsDefinitions_) {
     if (load.isNetwork()) {
       continue;
     }
@@ -39,27 +38,25 @@ DydLoads::write(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamic
   writeMacroStaticReference(dynamicModelsToConnect);
 }
 
-void
-DydLoads::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+void DydLoads::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!loadsDefinitions_.empty()) {
     std::unique_ptr<dynamicdata::MacroConnector> connector = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorLoadName_);
-    connector->addConnect("Ur_value", "@STATIC_ID@@NODE@_ACPIN_V_re");
-    connector->addConnect("Ui_value", "@STATIC_ID@@NODE@_ACPIN_V_im");
-    connector->addConnect("Ir_value", "@STATIC_ID@@NODE@_ACPIN_i_re");
-    connector->addConnect("Ii_value", "@STATIC_ID@@NODE@_ACPIN_i_im");
-    connector->addConnect("switchOff1_value", "@STATIC_ID@@NODE@_switchOff_value");
+    connector->addConnect("Ur", "@STATIC_ID@@NODE@_ACPIN_V_re");
+    connector->addConnect("Ui", "@STATIC_ID@@NODE@_ACPIN_V_im");
+    connector->addConnect("Ir", "@STATIC_ID@@NODE@_ACPIN_i_re");
+    connector->addConnect("Ii", "@STATIC_ID@@NODE@_ACPIN_i_im");
+    connector->addConnect("switchOff1", "@STATIC_ID@@NODE@_switchOff");
     dynamicModelsToConnect->addMacroConnector(std::move(connector));
   }
 }
 
-void
-DydLoads::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicModelsCollection>& dynamicModelsToConnect) {
+void DydLoads::writeMacroStaticReference(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect) {
   if (!loadsDefinitions_.empty()) {
     std::unique_ptr<dynamicdata::MacroStaticReference> macroStaticReference =
         dynamicdata::MacroStaticReferenceFactory::newMacroStaticReference(macroStaticRefLoadName_);
-    macroStaticReference->addStaticRef("PPu_value", "p");
-    macroStaticReference->addStaticRef("QPu_value", "q");
-    macroStaticReference->addStaticRef("state_value", "state");
+    macroStaticReference->addStaticRef("PPu", "p");
+    macroStaticReference->addStaticRef("QPu", "q");
+    macroStaticReference->addStaticRef("state", "state");
     dynamicModelsToConnect->addMacroStaticReference(std::move(macroStaticReference));
   }
 }

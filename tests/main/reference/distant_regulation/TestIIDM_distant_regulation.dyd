@@ -2,7 +2,7 @@
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
   <dyn:macroConnector id="GEN_NETWORK_CONNECTOR">
     <dyn:connect var1="generator_terminal" var2="@STATIC_ID@@NODE@_ACPIN"/>
-    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff_value"/>
+    <dyn:connect var1="generator_switchOffSignal1" var2="@STATIC_ID@@NODE@_switchOff"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="GEN_SIGNALN_CONNECTOR">
     <dyn:connect var1="generator_N" var2="signalN_N"/>
@@ -13,11 +13,11 @@
     <dyn:connect var1="generator_limUQUp" var2="vrremote_limUQUp_@INDEX@_"/>
   </dyn:macroConnector>
   <dyn:macroConnector id="LOAD_NETWORK_CONNECTOR">
-    <dyn:connect var1="Ui_value" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
-    <dyn:connect var1="Ur_value" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
-    <dyn:connect var1="Ii_value" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
-    <dyn:connect var1="Ir_value" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
-    <dyn:connect var1="switchOff1_value" var2="@STATIC_ID@@NODE@_switchOff_value"/>
+    <dyn:connect var1="Ui" var2="@STATIC_ID@@NODE@_ACPIN_V_im"/>
+    <dyn:connect var1="Ur" var2="@STATIC_ID@@NODE@_ACPIN_V_re"/>
+    <dyn:connect var1="Ii" var2="@STATIC_ID@@NODE@_ACPIN_i_im"/>
+    <dyn:connect var1="Ir" var2="@STATIC_ID@@NODE@_ACPIN_i_re"/>
+    <dyn:connect var1="switchOff1" var2="@STATIC_ID@@NODE@_switchOff"/>
   </dyn:macroConnector>
   <dyn:macroStaticReference id="GeneratorStaticRef">
     <dyn:staticRef var="generator_PGenPu" staticVar="p"/>
@@ -25,9 +25,9 @@
     <dyn:staticRef var="generator_state" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:macroStaticReference id="LoadRef">
-    <dyn:staticRef var="PPu_value" staticVar="p"/>
-    <dyn:staticRef var="QPu_value" staticVar="q"/>
-    <dyn:staticRef var="state_value" staticVar="state"/>
+    <dyn:staticRef var="PPu" staticVar="p"/>
+    <dyn:staticRef var="QPu" staticVar="q"/>
+    <dyn:staticRef var="state" staticVar="state"/>
   </dyn:macroStaticReference>
   <dyn:blackBoxModel id="Model_Signal_N" lib="SignalN"/>
   <dyn:blackBoxModel id="Model_Signal_NQ__2b6ed98a-027e-11e7-afc1-94659cb4e466" lib="VRRemote" parFile="TestIIDM_distant_regulation.par" parId="Model_Signal_NQ__2b6ed98a-027e-11e7-afc1-94659cb4e466"/>
@@ -527,42 +527,42 @@
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="_2b6ef85e-027e-11e7-afc1-94659cb4e466" id2="Model_Signal_NQ__2b6ee08a-027e-11e7-afc1-94659cb4e466" index2="1"/>
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="_2b6ef86c-027e-11e7-afc1-94659cb4e466" id2="Model_Signal_NQ__2b6edb46-027e-11e7-afc1-94659cb4e466" index2="0"/>
   <dyn:macroConnect connector="GEN_VRREMOTE_CONNECTOR" id1="_2b6ef872-027e-11e7-afc1-94659cb4e466" id2="Model_Signal_NQ__2b6edb46-027e-11e7-afc1-94659cb4e466" index2="1"/>
-  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="_2b6edc5a-027e-11e7-afc1-94659cb4e466_phi_value"/>
-  <dyn:connect id1="_2b6ef9e1-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee37f-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef9e9-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee38b-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef9f1-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee397-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6efa2b-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6edcd2-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6efa13-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee277-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef848-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee313-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef9a8-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee373-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef7ce-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee05a-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef856-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee07e-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef958-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee0ba-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef880-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee096-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6ef966-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee6d2-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="_2b6efa1b-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6eda54-027e-11e7-afc1-94659cb4e466_U_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ed98a-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ed98a-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ed9d2-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ed9d2-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edab6-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edab6-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edafe-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edafe-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edb0a-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edb0a-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edb46-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edb46-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edc72-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edc72-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edca2-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edca2-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edcae-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edcae-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edcc6-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edcc6-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edd0e-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edd0e-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6edee5-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edee5-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee04e-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee04e-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee066-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee066-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee072-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee072-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee08a-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee08a-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee0ae-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee0ae-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee157-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee157-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee163-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee163-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee17b-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee17b-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee193-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee193-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee1ab-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee1ab-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee64d-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee64d-027e-11e7-afc1-94659cb4e466_Upu_value"/>
-  <dyn:connect id1="Model_Signal_NQ__2b6ee6de-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee6de-027e-11e7-afc1-94659cb4e466_Upu_value"/>
+  <dyn:connect id1="Model_Signal_N" var1="signalN_thetaRef" id2="NETWORK" var2="_2b6edc5a-027e-11e7-afc1-94659cb4e466_phi"/>
+  <dyn:connect id1="_2b6ef9e1-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee37f-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef9e9-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee38b-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef9f1-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee397-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6efa2b-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6edcd2-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6efa13-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee277-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef848-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee313-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef9a8-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee373-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef7ce-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee05a-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef856-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee07e-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef958-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee0ba-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef880-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee096-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6ef966-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6ee6d2-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="_2b6efa1b-027e-11e7-afc1-94659cb4e466" var1="generator_URegulated" id2="NETWORK" var2="_2b6eda54-027e-11e7-afc1-94659cb4e466_U"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ed98a-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ed98a-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ed9d2-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ed9d2-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edab6-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edab6-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edafe-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edafe-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edb0a-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edb0a-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edb46-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edb46-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edc72-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edc72-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edca2-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edca2-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edcae-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edcae-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edcc6-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edcc6-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edd0e-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edd0e-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6edee5-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6edee5-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee04e-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee04e-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee066-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee066-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee072-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee072-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee08a-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee08a-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee0ae-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee0ae-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee157-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee157-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee163-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee163-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee17b-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee17b-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee193-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee193-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee1ab-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee1ab-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee64d-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee64d-027e-11e7-afc1-94659cb4e466_Upu"/>
+  <dyn:connect id1="Model_Signal_NQ__2b6ee6de-027e-11e7-afc1-94659cb4e466" var1="vrremote_URegulatedPu" id2="NETWORK" var2="_2b6ee6de-027e-11e7-afc1-94659cb4e466_Upu"/>
 </dyn:dynamicModelsArchitecture>

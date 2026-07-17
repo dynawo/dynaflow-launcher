@@ -71,7 +71,7 @@ void DydGenerator::writeMacroConnector(boost::shared_ptr<dynamicdata::DynamicMod
   if (!generatorDefinitions_.empty()) {
     std::unique_ptr<dynamicdata::MacroConnector> connector1 = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenName_);
     connector1->addConnect("generator_terminal", "@STATIC_ID@@NODE@_ACPIN");
-    connector1->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff_value");
+    connector1->addConnect("generator_switchOffSignal1", "@STATIC_ID@@NODE@_switchOff");
     dynamicModelsToConnect->addMacroConnector(std::move(connector1));
 
     std::unique_ptr<dynamicdata::MacroConnector> connector2 = dynamicdata::MacroConnectorFactory::newMacroConnector(macroConnectorGenSignalNName_);
@@ -108,7 +108,7 @@ void DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModel
     if (it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE ||
         it->model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
         it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR) {
-      dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U_value");
+      dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U");
     }
 
     std::unique_ptr<dynamicdata::MacroConnect> connection =
@@ -122,7 +122,7 @@ void DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModel
 
 void DydGenerator::writeThetaRefConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &slackNodeId) {
   if (!generatorDefinitions_.empty()) {
-    dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, slackNodeId + "_phi_value");
+    dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, slackNodeId + "_phi");
   }
 }
 }  // namespace outputs
