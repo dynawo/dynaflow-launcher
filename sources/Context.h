@@ -173,6 +173,9 @@ class Context {
   /// @brief Execute security analysis by running simulations for the base case and all the valid contingencies
   void executeSecurityAnalysis();
 
+  /// @brief Execute a base case simulation
+  void executeSimulation();
+
   /// @brief Prepare the job file
   void exportOutputJob();
 
