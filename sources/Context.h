@@ -188,13 +188,6 @@ class Context {
   /// @param elementsNetworkType ids of network elements with a network type
   void exportOutputsContingency(const inputs::Contingency &contingency, const std::unordered_set<std::string> &elementsNetworkType);
 
-  /**
-   * @brief Populate the map with the file paths and corresponding data from the simulation outputs
-   *
-   * @param simulation shared pointer to the simulation object containing the outputs to be processed
-   */
-  void populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation>& simulation) const;
-
  private:
   ContextDef def_;                                         ///< context definition
   inputs::NetworkManager networkManager_;                  ///< network manager

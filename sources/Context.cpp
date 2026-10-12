@@ -283,14 +283,21 @@ void Context::executeSimulation() {
   // Use dynawo-algorithms Compute Simulation Launcher to simulate
   auto simulationLauncher = boost::make_shared<DYNAlgorithms::ComputeSimulationLauncher>();
   std::string jobsFileName = jobEntry_->getName() + ".jobs";
-  std::string aggregatedResultsFileName = "aggregatedResults.xml";
+  // std::string aggregatedResultsFileName = "aggregatedResults.xml";
   file::path dirPath = config_.outputDir();
   auto canonicalDirPath = file::canonical(dirPath);
   auto fullInputPath = canonicalDirPath / jobsFileName;
-  auto fullOutputPath = canonicalDirPath / aggregatedResultsFileName;
-  simulationLauncher->setOutputFile(fullOutputPath.generic_string());
+  // auto fullOutputPath = canonicalDirPath / aggregatedResultsFileName;
+  // simulationLauncher->setOutputFile(fullOutputPath.generic_string());
   simulationLauncher->setInputFile(fullInputPath.generic_string());
   simulationLauncher->setDirectory(config_.outputDir().generic_string());
+  if (def_.outputIsZip) {
+    simulationLauncher->setOutputFile(config_.getOutputZipName());
+  } else {
+    std::string aggregatedResultsFileName = "aggregatedResults.xml";
+    auto fullOutputPath = canonicalDirPath / aggregatedResultsFileName;
+    simulationLauncher->setOutputFile(fullOutputPath.generic_string());
+  }
   // There is a single job for a steady-state calculation: only the root process needs to run
   // it, otherwise every process would redo the exact same simulation.
   if (DYNAlgorithms::multiprocessing::context().isRootProc()) {
@@ -364,53 +371,6 @@ void Context::exportResults(bool simulationOk) {
     resultsOutput.append(fileName);
     std::ofstream ofs(resultsOutput.c_str(), std::ios::binary);
     boost::property_tree::json_parser::write_json(ofs, resultsTree);
-  }
-}
-
-void Context::populateOutputsMapWithSimulationOutputs(const boost::shared_ptr<DYN::Simulation> &simulation) const {
-  if (def_.outputIsZip) {
-    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::TIMELINE)) {
-      std::ostringstream timelineStream;
-      simulation->printTimeline(timelineStream);
-      const boost::filesystem::path timelineFilePath = simulation->getTimelineOutputFile();
-      const boost::filesystem::path timelineFileRelativePath = boost::filesystem::relative(timelineFilePath, config_.outputDir());
-      mapOutputFilesData_[timelineFileRelativePath.generic_string()] = timelineStream.str();
-    }
-
-    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::CONSTRAINTS)) {
-      std::ostringstream constraintsStream;
-      simulation->printConstraints(constraintsStream);
-      const boost::filesystem::path constraintsFilePath = simulation->getContraintsOutputFile();
-      const boost::filesystem::path constraintsFileRelativePath = boost::filesystem::relative(constraintsFilePath, config_.outputDir());
-      mapOutputFilesData_[constraintsFileRelativePath.generic_string()] = constraintsStream.str();
-    }
-
-    if (config_.isChosenOutput(inputs::Configuration::ChosenOutputEnum::LOSTEQ)) {
-      std::ostringstream lostEquipmentsStream;
-      simulation->printLostEquipments(lostEquipmentsStream);
-      const boost::filesystem::path lostEquipementsFilePath = simulation->getLostEquipmentsOutputFile();
-      const boost::filesystem::path lostEquipementsFileRelativePath = boost::filesystem::relative(lostEquipementsFilePath, config_.outputDir());
-      mapOutputFilesData_[lostEquipementsFileRelativePath.generic_string()] = lostEquipmentsStream.str();
-    }
-
-    const boost::optional<boost::filesystem::path> &iidmFilePath = simulation->getExportIIDMFile();
-    assert(iidmFilePath.is_initialized());
-    std::stringstream outputIIDMStream;
-    simulation->dumpIIDMFile(outputIIDMStream);
-    const boost::filesystem::path iidmFileRelativePath = boost::filesystem::relative(*iidmFilePath, config_.outputDir());
-    mapOutputFilesData_[iidmFileRelativePath.generic_string()] = outputIIDMStream.str();
-
-    DYN::Trace::resetCustomAppender("", DYN::Trace::severityLevelFromString(def_.dynawoLogLevel));  // to force flush in dynawo.log
-    const std::vector<std::shared_ptr<job::AppenderEntry>> &jobLogAppenders = jobEntry_->getOutputsEntry()->getLogsEntry()->getAppenderEntries();
-    for (const std::shared_ptr<job::AppenderEntry> &jobLogAppender : jobLogAppenders) {
-      if (jobLogAppender->getTag() == "") {
-        boost::filesystem::path jobLogFileRelativePath =
-            boost::filesystem::path(jobEntry_->getOutputsEntry()->getOutputsDirectory()) / boost::filesystem::path("logs");
-        jobLogFileRelativePath = boost::filesystem::path(jobLogFileRelativePath) / boost::filesystem::path(jobLogAppender->getFilePath());
-        boost::filesystem::path jobLogFileAbsolutePath(config_.outputDir() / jobLogFileRelativePath);
-        dfl::common::Log::addLogFileContentInMapData(jobLogFileRelativePath.generic_string(), jobLogFileAbsolutePath.generic_string(), mapOutputFilesData_);
-      }
-    }
   }
 }
 
