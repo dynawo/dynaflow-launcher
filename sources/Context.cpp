@@ -283,12 +283,9 @@ void Context::executeSimulation() {
   // Use dynawo-algorithms Compute Simulation Launcher to simulate
   auto simulationLauncher = boost::make_shared<DYNAlgorithms::ComputeSimulationLauncher>();
   std::string jobsFileName = jobEntry_->getName() + ".jobs";
-  // std::string aggregatedResultsFileName = "aggregatedResults.xml";
   file::path dirPath = config_.outputDir();
   auto canonicalDirPath = file::canonical(dirPath);
   auto fullInputPath = canonicalDirPath / jobsFileName;
-  // auto fullOutputPath = canonicalDirPath / aggregatedResultsFileName;
-  // simulationLauncher->setOutputFile(fullOutputPath.generic_string());
   simulationLauncher->setInputFile(fullInputPath.generic_string());
   simulationLauncher->setDirectory(config_.outputDir().generic_string());
   if (def_.outputIsZip) {
@@ -303,7 +300,6 @@ void Context::executeSimulation() {
   if (DYNAlgorithms::multiprocessing::context().isRootProc()) {
     simulationLauncher->launch();
   }
-  // writeResults() starts with a collective synchronization, so every process must call it.
   simulationLauncher->writeResults();
 }
 
