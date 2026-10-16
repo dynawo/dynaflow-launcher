@@ -12,14 +12,14 @@ env:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
-    container: dynawo/dynawo-ci:latest
+    container: dynawo/dynawo-ci-ol8:latest
     env:
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Debug
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
-      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
+      DYNAWO_PYTHON_COMMAND: python3
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -41,9 +41,7 @@ jobs:
 
       - name: Build
         run: |
-          source /etc/profile.d/00-modulepath.sh
           source /etc/profile.d/modules.sh
-          source /usr/share/lmod/lmod/init/bash
           module load mpi/mpich-x86_64
           export DYNAWO_HOME=$(pwd)/dynawo
           export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
@@ -52,15 +50,15 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    container: dynawo/dynawo-ci:latest
+    container: dynawo/dynawo-ci-ol8:latest
     env:
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Debug
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
-      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "ON"
       DYNAFLOW_LAUNCHER_BROWSER_SHOW: "false"
+      DYNAWO_PYTHON_COMMAND: python3
     steps:
       - name: Install Sonar wrapper
         working-directory: ${{ runner.workspace }}
@@ -100,9 +98,7 @@ jobs:
         env:
           CONTAINER_WORKSPACE: ${{ runner.workspace }}
         run: |
-          source /etc/profile.d/00-modulepath.sh
           source /etc/profile.d/modules.sh
-          source /usr/share/lmod/lmod/init/bash
           module load mpi/mpich-x86_64
           export DYNAWO_HOME=$(pwd)/dynawo
           export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
