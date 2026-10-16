@@ -15,6 +15,10 @@ on:
         description: Build Windows release
         type: boolean
         default: true
+      perform-documentation:
+        description: Build documentation
+        type: boolean
+        default: true
       perform-nrt:
         description: Run NRT on Windows
         type: boolean
@@ -59,18 +63,18 @@ jobs:
             const release = require('.github/release.js')
             await release({github, context, core, glob})
 
-  fedora:
+  ol8:
     if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-linux) || !endsWith(github.event_name, '_dispatch'))
-    name: Linux Fedora (Release, GCC, cxx11)
+    name: Linux OL8 (Release, GCC)
     runs-on: ubuntu-latest
     needs: nightly
     env:
       DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
-      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
+      DYNAWO_PYTHON_COMMAND: python3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,20 +89,21 @@ jobs:
           unzip -qq "Dynawo_headers_v${DYNAWO_VERSION}.zip"
           unzip -qq "DynawoAlgorithms_headers_v${DYNAWO_VERSION}.zip"
 
-      - name: Build, Build documentation
+      - name: Build
         uses: addnab/docker-run-action@v3
         with:
-          image: dynawo/dynawo-distribution-cxx11:latest
-          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS
+          image: dynawo/dynawo-distribution-ol8:latest
+          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS -e DYNAWO_PYTHON_COMMAND
           shell: bash
           run: |
+            dnf install -y cmake
+            git config --global --add safe.directory /dynaflow-launcher
             cd /dynaflow-launcher
             export DYNAWO_HOME=$(pwd)/dynawo
             export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
             export DYNAFLOW_LAUNCHER_HOME=$(pwd)
             export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
             scripts/envDFL.sh build-user
-            scripts/envDFL.sh build-doc
 
       - name: Prepare files for distribution
         run: |
@@ -124,6 +129,46 @@ jobs:
           prerelease: true
           files: |
             distributions/*.zip
+        with:
+          retries: 3
+          script: |
+            const release = require('./dynawo/.github/release.js')
+            await release({github, context, core, glob})
+
+  documentation:
+    if: always() && !cancelled() && !failure() && (github.event.action == 'nightly-linux' || (github.event_name == 'workflow_dispatch' && inputs.perform-documentation) || !endsWith(github.event_name, '_dispatch'))
+    name: Documentation
+    runs-on: ubuntu-latest
+    needs: nightly
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends texlive-latex-extra texlive-pictures texlive-science texlive-fonts-recommended lmodern
+
+      - name: Build documentation
+        run: |
+          cd documentation
+          bash dynaflow_launcher_documentation.sh
+
+      - name: Fetch release script
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/dynawo
+          sparse-checkout: .github/release.js
+          sparse-checkout-cone-mode: false
+          path: dynawo
+
+      - name: Upload assets for release
+        uses: actions/github-script@v7
+        env:
+          tag_name: ${{ env.DYNAWO_TAG }}
+          draft: false
+          prerelease: true
+          files: |
             documentation/dynaflowLauncherDocumentation/DynaflowLauncherDocumentation.pdf
         with:
           retries: 3

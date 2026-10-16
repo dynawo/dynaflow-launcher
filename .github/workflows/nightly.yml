@@ -9,10 +9,10 @@ env:
   DYNAWO_VERSION: 2.0.0
 
 jobs:
-  fedora:
-    name: Linux Fedora (${{ matrix.build-type }})
+  ol8:
+    name: Linux OL8 (${{ matrix.build-type }})
     runs-on: ubuntu-latest
-    container: dynawo/dynawo-ci-nightly-fedora:latest
+    container: dynawo/dynawo-distribution-ol8:latest
     strategy:
       matrix:
         build-type: [Release, Debug]
@@ -20,14 +20,17 @@ jobs:
     env:
       DYNAFLOW_LAUNCHER_BUILD_TYPE: ${{ matrix.build-type }}
       DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
-      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "ON"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "ON"
+      DYNAWO_PYTHON_COMMAND: python3
 
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
+
+      - name: Install cmake
+        run: dnf install -y cmake
 
       - name: Fetch Dynawo
         run: |
