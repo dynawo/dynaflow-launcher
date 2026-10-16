@@ -9,12 +9,8 @@ on:
         description: ID of the published release
         type: string
         required: true
-      perform-linux-cxx11:
-        description: Create assets for Linux cxx11
-        type: boolean
-        default: true
       perform-linux-ol8:
-        description: Create assets for Linux OL8
+        description: Create assets for Linux (OL8)
         type: boolean
         default: true
       perform-windows:
@@ -26,68 +22,6 @@ env:
   DYNAWO_VERSION: 2.0.0
 
 jobs:
-  distribution-cxx11:
-    if: github.event_name != 'workflow_dispatch' || inputs.perform-linux-cxx11
-    name: Distribution Linux cxx11
-    runs-on: ubuntu-latest
-    env:
-      DYNAFLOW_LAUNCHER_BUILD_TYPE: Release
-      DYNAFLOW_LAUNCHER_PROCESSORS_USED: 2
-      DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI: "true"
-      DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
-      DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
-      DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
-
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-
-      - name: Fetch Dynawo and Dynawo-algorithms
-        run: |
-          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/v$DYNAWO_VERSION/Dynawo_Linux_v$DYNAWO_VERSION.zip
-          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/v$DYNAWO_VERSION/DynawoAlgorithms_Linux_headers_v$DYNAWO_VERSION.zip
-
-      - name: Unzip Dynawo and Dynawo-algorithms
-        run: |
-          unzip -qq "Dynawo_Linux_v${DYNAWO_VERSION}.zip"
-          unzip -qq "DynawoAlgorithms_Linux_headers_v${DYNAWO_VERSION}.zip"
-
-      - name: Build
-        uses: addnab/docker-run-action@v3
-        with:
-          image: dynawo/dynawo-distribution-cxx11:latest
-          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_FORCE_CXX11_ABI -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS
-          shell: bash
-          run: |
-            cd /dynaflow-launcher
-            export DYNAWO_HOME=$(pwd)/dynawo
-            export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
-            export DYNAFLOW_LAUNCHER_HOME=$(pwd)
-            export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
-            scripts/envDFL.sh build-user
-            version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
-            zip -r DynaFlowLauncher_Linux_v${version}.zip dynaflow-launcher
-
-      - name: Fetch release script
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository_owner }}/dynawo
-          sparse-checkout: .github/release.js
-          sparse-checkout-cone-mode: false
-          path: dynawo
-
-      - name: Upload assets
-        uses: actions/github-script@v7
-        env:
-          release_id: ${{ github.event_name != 'workflow_dispatch' && github.event.release.id || inputs.release-id }}
-          files: |
-            DynaFlowLauncher_*.zip
-        with:
-          retries: 3
-          script: |
-            const release = require('./dynawo/.github/release.js')
-            await release({github, context, core, glob})
-
   distribution-ol8:
     if: github.event_name != 'workflow_dispatch' || inputs.perform-linux-ol8
     name: Distribution Linux ol8
@@ -106,13 +40,13 @@ jobs:
 
       - name: Fetch Dynawo and Dynawo Algorithms
         run: |
-          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/v$DYNAWO_VERSION/Dynawo_Linux_ol8_v$DYNAWO_VERSION.zip
-          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/v$DYNAWO_VERSION/DynawoAlgorithms_Linux_headers_ol8_v$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/v$DYNAWO_VERSION/Dynawo_Linux_v$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/v$DYNAWO_VERSION/DynawoAlgorithms_Linux_headers_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo and Dynawo algorithms
         run: |
-          unzip -qq "Dynawo_Linux_ol8_v${DYNAWO_VERSION}.zip"
-          unzip -qq "DynawoAlgorithms_Linux_headers_ol8_v${DYNAWO_VERSION}.zip"
+          unzip -qq "Dynawo_Linux_v${DYNAWO_VERSION}.zip"
+          unzip -qq "DynawoAlgorithms_Linux_headers_v${DYNAWO_VERSION}.zip"
 
       - name: Build
         uses: addnab/docker-run-action@v3
@@ -130,7 +64,7 @@ jobs:
             export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
             scripts/envDFL.sh build-user
             version=$(scripts/envDFL.sh version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-            zip -r DynaFlowLauncher_Linux_ol8_v${version}.zip dynaflow-launcher
+            zip -r DynaFlowLauncher_Linux_v${version}.zip dynaflow-launcher
 
       - name: Fetch release script
         uses: actions/checkout@v4
