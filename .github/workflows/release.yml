@@ -122,13 +122,14 @@ jobs:
           shell: bash
           run: |
             dnf install -y zip cmake
+            git config --global --add safe.directory /dynaflow-launcher
             cd /dynaflow-launcher
             export DYNAWO_HOME=$(pwd)/dynawo
             export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
             export DYNAFLOW_LAUNCHER_HOME=$(pwd)
             export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
             scripts/envDFL.sh build-user
-            version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
+            version=$(scripts/envDFL.sh version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
             zip -r DynaFlowLauncher_Linux_ol8_v${version}.zip dynaflow-launcher
 
       - name: Fetch release script
