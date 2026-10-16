@@ -121,7 +121,7 @@ jobs:
           options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS -e DYNAWO_PYTHON_COMMAND
           shell: bash
           run: |
-            dnf install -y zip
+            dnf install -y zip cmake
             cd /dynaflow-launcher
             export DYNAWO_HOME=$(pwd)/dynawo
             export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
