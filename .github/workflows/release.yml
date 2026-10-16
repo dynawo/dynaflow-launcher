@@ -98,6 +98,7 @@ jobs:
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
+      DYNAWO_PYTHON_COMMAND: python3
 
     steps:
       - name: Checkout sources
@@ -117,9 +118,10 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: dynawo/dynawo-distribution-ol8:latest
-          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS
+          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS -e DYNAWO_PYTHON_COMMAND
           shell: bash
           run: |
+            dnf install -y zip
             cd /dynaflow-launcher
             export DYNAWO_HOME=$(pwd)/dynawo
             export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
