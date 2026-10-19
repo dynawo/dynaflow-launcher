@@ -43,13 +43,11 @@ class ParHvdc {
    *
    * @param paramSetCollection parameter set collection to enrich
    * @param basename the basename for the simulation
-   * @param dirname the dirname of the output directory
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    */
   void write(const std::unique_ptr<parameters::ParametersSetCollection> &paramSetCollection, const std::string &basename,
-             const boost::filesystem::path &dirname, dfl::inputs::Configuration::StartingPointMode startingPointMode,
-             const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
+             dfl::inputs::Configuration::StartingPointMode startingPointMode, const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 
  private:
   /**
@@ -57,14 +55,12 @@ class ParHvdc {
    *
    * @param hvdcLine the hvdc line definition to use
    * @param basename the basename for the simulation
-   * @param dirname the dirname of the output directory
    * @param startingPointMode starting point mode
    * @param dynamicDataBaseManager the dynamic DB manager to use
    *
    * @returns the parameter set
    */
   std::shared_ptr<parameters::ParametersSet> writeHdvcLine(const algo::HVDCDefinition &hvdcLine, const std::string &basename,
-                                                           const boost::filesystem::path &dirname,
                                                            dfl::inputs::Configuration::StartingPointMode startingPointMode,
                                                            const inputs::DynamicDataBaseManager &dynamicDataBaseManager);
 

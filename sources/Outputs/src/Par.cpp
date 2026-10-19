@@ -21,11 +21,10 @@
 #include <PARParametersSetCollectionFactory.h>
 #include <PARXmlExporter.h>
 
-
 namespace dfl {
 namespace outputs {
 
-Par::Par(ParDefinition&& def) : def_{std::move(def)} {}
+Par::Par(ParDefinition &&def) : def_{std::move(def)} {}
 
 void Par::write() const {
   parameters::XmlExporter exporter;
@@ -33,10 +32,9 @@ void Par::write() const {
   std::unique_ptr<parameters::ParametersSetCollection> paramSetCollection = parameters::ParametersSetCollectionFactory::newCollection();
   // adding load parameter set
   def_.parLoads_->write(paramSetCollection, def_.startingPointMode_);
-  def_.parGenerator_->write(paramSetCollection, def_.activePowerCompensation_, def_.basename_, def_.dirname_, def_.startingPointMode_,
-                            def_.dynamicDataBaseManager_);
+  def_.parGenerator_->write(paramSetCollection, def_.activePowerCompensation_, def_.basename_, def_.startingPointMode_, def_.dynamicDataBaseManager_);
   def_.parSVarC_->write(paramSetCollection, def_.startingPointMode_);
-  def_.parHvdc_->write(paramSetCollection, def_.basename_, def_.dirname_, def_.startingPointMode_, def_.dynamicDataBaseManager_);
+  def_.parHvdc_->write(paramSetCollection, def_.basename_, def_.startingPointMode_, def_.dynamicDataBaseManager_);
   def_.parDynModel_->write(paramSetCollection, def_.dynamicDataBaseManager_, def_.shuntCounters_, def_.linesByIdDefinitions_, def_.tfosByIdDefinitions_);
   def_.parVRRemote_->writeVRRemotes(paramSetCollection);
 
