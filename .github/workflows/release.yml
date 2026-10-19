@@ -98,6 +98,7 @@ jobs:
       DYNAFLOW_LAUNCHER_LOCALE: "en_GB"
       DYNAFLOW_LAUNCHER_USE_DOXYGEN: "OFF"
       DYNAFLOW_LAUNCHER_BUILD_TESTS: "OFF"
+      DYNAWO_PYTHON_COMMAND: python3
 
     steps:
       - name: Checkout sources
@@ -117,16 +118,18 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: dynawo/dynawo-distribution-ol8:latest
-          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS
+          options: -v ${{ github.workspace }}:/dynaflow-launcher -e DYNAFLOW_LAUNCHER_BUILD_TYPE -e DYNAFLOW_LAUNCHER_PROCESSORS_USED -e DYNAFLOW_LAUNCHER_LOCALE -e DYNAFLOW_LAUNCHER_USE_DOXYGEN -e DYNAFLOW_LAUNCHER_BUILD_TESTS -e DYNAWO_PYTHON_COMMAND
           shell: bash
           run: |
+            dnf install -y zip cmake
+            git config --global --add safe.directory /dynaflow-launcher
             cd /dynaflow-launcher
             export DYNAWO_HOME=$(pwd)/dynawo
             export DYNAWO_ALGORITHMS_HOME=$(pwd)/dynawo-algorithms
             export DYNAFLOW_LAUNCHER_HOME=$(pwd)
             export DYNAFLOW_LAUNCHER_INSTALL_DIR=$DYNAFLOW_LAUNCHER_HOME/dynaflow-launcher
             scripts/envDFL.sh build-user
-            version=$(scripts/envDFL.sh version 2>&1 | cut -f1 -d' ')
+            version=$(scripts/envDFL.sh version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
             zip -r DynaFlowLauncher_Linux_ol8_v${version}.zip dynaflow-launcher
 
       - name: Fetch release script
