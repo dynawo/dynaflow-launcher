@@ -204,6 +204,19 @@ TEST(Config, ConfigSA) {
   }
 }
 
+TEST(Config, CriteriaStep) {
+  dfl::inputs::Configuration configN("res/config_criteria_step.json", dfl::inputs::Configuration::SimulationKind::STEADY_STATE_CALCULATION);
+  ASSERT_TRUE(configN.getCriteriaStep());
+  ASSERT_EQ(5, configN.getCriteriaStep().get());
+
+  dfl::inputs::Configuration configSA("res/config_criteria_step.json", dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS);
+  ASSERT_TRUE(configSA.getCriteriaStep());
+  ASSERT_EQ(15, configSA.getCriteriaStep().get());
+
+  dfl::inputs::Configuration configNone("res/config_default.json");
+  ASSERT_FALSE(configNone.getCriteriaStep());
+}
+
 TEST(Config, ChosenOutputTest) {
   /*
   To check which field should be displayed we use four masks :
