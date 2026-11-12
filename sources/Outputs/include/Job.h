@@ -126,6 +126,18 @@ class Job {
    */
   std::unique_ptr<job::OutputsEntry> writeOutputs() const;
 
+  /**
+   * @brief Retrieves the criteria step to export in the job file
+   *
+   * The criteria step is the one set in the configuration file if provided,
+   * 1 if a criteria file is set, and boost::none if neither is set
+   *
+   * @param config the configuration
+   * @returns the criteria step to export, boost::none if the criteria step
+   * attribute should not be exported
+   */
+  static boost::optional<int> getCriteriaStepToExport(const dfl::inputs::Configuration &config);
+
  private:
   static constexpr bool useStandardModels_ = true;  ///< use standard models in job entry and file
 

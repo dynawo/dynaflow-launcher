@@ -1,0 +1,9 @@
+{
+  "dfl-config": {
+    "CriteriaPath": "myCriteriaFile.crt",
+    "CriteriaStep": 5,
+    "sa": {
+      "CriteriaStep": 15
+    }
+  }
+}
