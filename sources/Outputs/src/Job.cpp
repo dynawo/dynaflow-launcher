@@ -120,8 +120,19 @@ std::unique_ptr<job::SimulationEntry> Job::writeSimulation() const {
   if (!def_.configuration.criteriaFilePath().empty()) {
     simu->addCriteriaFile(def_.configuration.criteriaFilePath().generic_string());
   }
+  boost::optional<int> criteriaStep = getCriteriaStepToExport(def_.configuration);
+  if (criteriaStep) {
+    simu->setCriteriaStep(*criteriaStep);
+  }
 
   return simu;
+}
+
+boost::optional<int> Job::getCriteriaStepToExport(const dfl::inputs::Configuration &config) {
+  boost::optional<int> criteriaStep = config.getCriteriaStep();
+  if (!criteriaStep && !config.criteriaFilePath().empty())
+    criteriaStep = 1;
+  return criteriaStep;
 }
 
 std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
@@ -257,6 +268,7 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   std::shared_ptr<job::SimulationEntry> simu = jobEntry->getSimulationEntry();
   attrs.add("startTime", simu->getStartTime());
   attrs.add("stopTime", simu->getStopTime());
+  attrs.add("criteriaStep", getCriteriaStepToExport(config));
   attrs.add("precision", simu->getPrecision());
   formatter->startElement("dyn", "simulation", attrs);
   attrs.clear();
