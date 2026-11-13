@@ -46,7 +46,7 @@ void DydEvent::write() const {
 
   // macro connectors
   std::unique_ptr<dynamicdata::MacroConnector> connector = dynamicdata::MacroConnectorFactory::newMacroConnector("MC_EventQuadripoleDisconnection");
-  connector->addConnect("event_state1_value", "@NAME@_state_value");
+  connector->addConnect("event_state1", "@NAME@_state");
   dynamicModels->addMacroConnector(std::move(connector));
 
   // models and connections

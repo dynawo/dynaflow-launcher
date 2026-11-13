@@ -41,6 +41,7 @@
 #include <JOBSolverEntry.h>
 #include <JOBSolverEntryFactory.h>
 #include <JOBTimelineEntry.h>
+#include <fstream>
 #include <xml/sax/formatter/AttributeList.h>
 #include <xml/sax/formatter/Formatter.h>
 
@@ -116,8 +117,22 @@ std::unique_ptr<job::SimulationEntry> Job::writeSimulation() const {
   simu->setStartTime(def_.configuration.getStartTime());
   simu->setStopTime(def_.configuration.getStopTime());
   simu->setPrecision(def_.configuration.getPrecision().value_or(1e-4));
+  if (!def_.configuration.criteriaFilePath().empty()) {
+    simu->addCriteriaFile(def_.configuration.criteriaFilePath().generic_string());
+  }
+  boost::optional<int> criteriaStep = getCriteriaStepToExport(def_.configuration);
+  if (criteriaStep) {
+    simu->setCriteriaStep(*criteriaStep);
+  }
 
   return simu;
+}
+
+boost::optional<int> Job::getCriteriaStepToExport(const dfl::inputs::Configuration &config) {
+  boost::optional<int> criteriaStep = config.getCriteriaStep();
+  if (!criteriaStep && !config.criteriaFilePath().empty())
+    criteriaStep = 1;
+  return criteriaStep;
 }
 
 std::unique_ptr<job::OutputsEntry> Job::writeOutputs() const {
@@ -253,9 +268,16 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   std::shared_ptr<job::SimulationEntry> simu = jobEntry->getSimulationEntry();
   attrs.add("startTime", simu->getStartTime());
   attrs.add("stopTime", simu->getStopTime());
+  attrs.add("criteriaStep", getCriteriaStepToExport(config));
   attrs.add("precision", simu->getPrecision());
   formatter->startElement("dyn", "simulation", attrs);
   attrs.clear();
+  for (const auto &criteriaFile : simu->getCriteriaFiles()) {
+    attrs.add("criteriaFile", criteriaFile);
+    formatter->startElement("dyn", "criteria", attrs);
+    attrs.clear();
+    formatter->endElement();  // criteria
+  }
   formatter->endElement();  // simulation
 
   // outputs

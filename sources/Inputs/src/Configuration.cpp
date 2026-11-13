@@ -81,6 +81,31 @@ void updateValue(boost::optional<double> &value, const boost::property_tree::ptr
 
 /**
  * @brief Helper function to update an internal parameter of type
+ * boost::optional<int>
+ *
+ * @param value the value to update
+ * @param tree the element of the boost tree
+ * @param key the key of the parameter to retrieve
+ * @param saMode true if simulation is in SA, false otherwise
+ * @param parameterValueModified a parameter key is added in this if the value
+ */
+template <>
+void updateValue(boost::optional<int> &value, const boost::property_tree::ptree &tree, const std::string &key, const bool saMode,
+                 std::unordered_set<std::string> &parameterValueModified) {
+  std::string jsonKey = key;
+  if (saMode)
+    jsonKey = "sa." + key;
+  auto value_opt = tree.get_child_optional(jsonKey);
+  if (!value_opt.is_initialized())
+    value_opt = tree.get_child_optional(key);
+  if (value_opt.is_initialized()) {
+    parameterValueModified.insert(key);
+    value = value_opt->get_value<int>();
+  }
+}
+
+/**
+ * @brief Helper function to update an internal parameter of type
  * boost::filesystem::path
  *
  * @param value the value to update
@@ -269,6 +294,8 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
     helper::updateValue(timeTableStep_, config, "TimeTable", saMode, parameterValueModified_);
     helper::updateActivePowerCompensationValue(activePowerCompensation_, config, saMode, parameterValueModified_);
     helper::updatePathValue(startingDumpFilePath_, config, "StartingDumpFile", prefixConfigFile, true);
+    helper::updatePathValue(criteriaFilePath_, config, "CriteriaPath", prefixConfigFile, saMode);
+    helper::updateValue(criteriaStep_, config, "CriteriaStep", saMode, parameterValueModified_);
     if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS) {
       helper::updateValue(timeOfEvent_, config, "TimeOfEvent", true, parameterValueModified_);
     }
@@ -280,6 +307,10 @@ Configuration::Configuration(const boost::filesystem::path &filepath, Simulation
 void Configuration::sanityCheck() const {
   if (simulationKind_ == dfl::inputs::Configuration::SimulationKind::SECURITY_ANALYSIS && !startingDumpFilePath_.empty() && !exists(startingDumpFilePath_)) {
     throw DFLError(StartingDumpFileNotFound, startingDumpFilePath_.generic_string());
+  }
+
+  if (!criteriaFilePath_.empty() && !exists(criteriaFilePath_)) {
+    throw DFLError(CriteriaFileNotFound, criteriaFilePath_.generic_string());
   }
 
   if (!settingFilePaths_.empty() && assemblingFilePaths_.empty()) {

@@ -69,11 +69,11 @@ struct DynamicModelDefinition {
      *
      * @param macroid the macro connector id to use
      * @param type type of the element to connect
-     * @param id the element id to connect
+     * @param connectedId the element id to connect
      * @param indexId used to index the macroConnections
      */
-    MacroConnection(const MacroId &macroid, const ElementType &type, const ElementId &id, const std::string &indexId)
-        : id(macroid), elementType(type), connectedElementId(id), indexId(indexId) {}
+    MacroConnection(const MacroId &macroid, const ElementType &type, const ElementId &connectedId, const std::string &indexId)
+        : id(macroid), elementType(type), connectedElementId(connectedId), indexId(indexId) {}
 
     /**
      * @brief Equality operator

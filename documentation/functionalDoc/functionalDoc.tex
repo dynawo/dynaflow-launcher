@@ -354,10 +354,10 @@ of connections to apply between the special protection scheme automaton and anot
     <connection var1="phaseShifter_iMonitored" var2="@NAME@_i1"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToTap">
-    <connection var1="phaseShifter_tap" var2="@NAME@_step"/>
+    <connection var1="phaseShifter_tap" var2="@NAME@_step_value"/>
   </macroConnection>
   <macroConnection id="PhaseShifterToAutomatonActivated">
-    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+    <connection var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
   </macroConnection>
 ...
 </assembling>
@@ -489,7 +489,7 @@ If we complete our current example with the following associations we will end u
 <dyn:dynamicModelsArchitecture xmlns:dyn="http://www.rte-france.com/dynawo">
 ...
   <dyn:macroConnector id="PhaseShifterToAutomatonActivated">
-    <dyn:connect var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger"/>
+    <dyn:connect var1="phaseShifter_AutomatonExists" var2="@NAME@_disable_internal_tapChanger_value"/>
   </dyn:macroConnector>
 
   <dyn:macroConnector id="PhaseShifterToIMeasurement">
@@ -497,7 +497,7 @@ If we complete our current example with the following associations we will end u
   </dyn:macroConnector>
 
   <dyn:macroConnector id="PhaseShifterToTap">
-    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step"/>
+    <dyn:connect var1="phaseShifter_tap" var2="@NAME@_step_value"/>
   </dyn:macroConnector>
 
   <dyn:macroConnect connector="PhaseShifterToAutomatonActivated" id1="PhaseShifter_5_6" id2="NETWORK" index1="0" name2="_BUS____5-BUS____6-1_PS"/>
@@ -682,8 +682,7 @@ The solver used is the Simplified Solver (SolverSIM) from \Dynawo.
 The Maximum time step value is by default 10s. This value can be modified in the configuration file (see section \ref{Dynaflow_Launcher_Configuration_Configuration_File}).
 Notice that the maximum step value should be reduced only when the simulation is including
 Special Protection Scheme automatons with a timescale smaller than 10 seconds: this would allow one to properly
-take into account the SPS behaviour, avoiding any artificial synchronization effect. When modifying the
-solver maximum time step, its value must be included in $ 1.0  < TimeStep \leq 10.0 $ seconds.
+take into account the SPS behaviour, avoiding any artificial synchronization effect.
 
 The full configuration (with default values) used is the following:
 

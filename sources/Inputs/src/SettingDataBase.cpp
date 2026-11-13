@@ -19,6 +19,7 @@
 #include "Log.h"
 
 #include <boost/optional.hpp>
+#include <fstream>
 #include <xml/sax/parser/ParserFactory.h>
 
 namespace parser = xml::sax::parser;

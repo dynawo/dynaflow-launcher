@@ -8,6 +8,9 @@
 // SPDX-License-Identifier: MPL-2.0
 //
 
+#include <fstream>
+#include <sstream>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 
@@ -203,6 +206,166 @@ TEST(Job, writePrecision) {
   reference.append(filename_reference);
 
   dfl::test::checkFilesEqual(outputPath.generic_string(), reference.generic_string());
+}
+
+TEST(Job, Criteria) {
+  const std::string basename = "TestJobCriteria";
+
+  dfl::inputs::Configuration config("res/config_jobs_criteria.json");
+  ASSERT_FALSE(config.criteriaFilePath().empty());
+  dfl::outputs::Job job(dfl::outputs::Job::JobDefinition(basename, "INFO", config));
+
+  std::unique_ptr<job::JobEntry> jobEntry = job.write();
+
+  auto simulationEntry = jobEntry->getSimulationEntry();
+  ASSERT_EQ(1, simulationEntry->getCriteriaFiles().size());
+  const std::string expectedCriteriaFile = config.criteriaFilePath().generic_string();
+  ASSERT_EQ(expectedCriteriaFile, simulationEntry->getCriteriaFiles().front());
+
+  boost::filesystem::path outputPath(outputPathResults);
+  outputPath.append(basename);
+
+  if (!boost::filesystem::exists(outputPath)) {
+    boost::filesystem::create_directories(outputPath);
+  }
+
+  job.exportJob(std::move(jobEntry), "TestIIDM.iidm", config);
+
+  const std::string filename_output = basename + ".jobs";
+  outputPath.append(filename_output);
+
+  std::ifstream jobsFile(outputPath.generic_string());
+  ASSERT_TRUE(jobsFile.is_open());
+  std::stringstream jobsContent;
+  jobsContent << jobsFile.rdbuf();
+  const std::string content = jobsContent.str();
+
+  // checks that the criteria file is exported with the "criteriaFile" attribute expected by jobs.xsd (and not "criteriaPath")
+  ASSERT_NE(std::string::npos, content.find("<dyn:criteria criteriaFile=\"" + expectedCriteriaFile + "\"/>"));
+
+  ASSERT_TRUE(hasEnvVar("DYNAWO_HOME"));
+  std::string xsd_file = getEnvVar("DYNAWO_HOME") + "/share/xsd/jobs.xsd";
+  ASSERT_TRUE(exists(xsd_file));
+  std::stringstream ssVal;
+  std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
+  executeCommand(command, ssVal);
+  std::string result = ssVal.str();
+  boost::range::remove_erase_if(result, boost::is_any_of("\r\n"));
+  ASSERT_EQ(result, "Executing command : " + command /*+ "\n"*/ + outputPath.generic_string() + " validates");
+}
+
+TEST(Job, CriteriaStep) {
+  // criteriaPath and criteriaStep are set: the given value is exported
+  {
+    const std::string basename = "TestJobCriteriaStep";
+
+    dfl::inputs::Configuration config("res/config_jobs_criteria_step.json");
+    ASSERT_EQ(15, config.getCriteriaStep().get());
+    dfl::outputs::Job job(dfl::outputs::Job::JobDefinition(basename, "INFO", config));
+
+    std::unique_ptr<job::JobEntry> jobEntry = job.write();
+
+    auto simulationEntry = jobEntry->getSimulationEntry();
+    ASSERT_EQ(15, simulationEntry->getCriteriaStep());
+
+    boost::filesystem::path outputPath(outputPathResults);
+    outputPath.append(basename);
+
+    if (!boost::filesystem::exists(outputPath)) {
+      boost::filesystem::create_directories(outputPath);
+    }
+
+    job.exportJob(std::move(jobEntry), "TestIIDM.iidm", config);
+
+    const std::string filename_output = basename + ".jobs";
+    outputPath.append(filename_output);
+
+    std::ifstream jobsFile(outputPath.generic_string());
+    ASSERT_TRUE(jobsFile.is_open());
+    std::stringstream jobsContent;
+    jobsContent << jobsFile.rdbuf();
+    const std::string content = jobsContent.str();
+
+    ASSERT_NE(std::string::npos, content.find("criteriaStep=\"15\""));
+    const std::string expectedCriteriaFile = config.criteriaFilePath().generic_string();
+    ASSERT_NE(std::string::npos, content.find("<dyn:criteria criteriaFile=\"" + expectedCriteriaFile + "\"/>"));
+
+    ASSERT_TRUE(hasEnvVar("DYNAWO_HOME"));
+    std::string xsd_file = getEnvVar("DYNAWO_HOME") + "/share/xsd/jobs.xsd";
+    ASSERT_TRUE(exists(xsd_file));
+    std::stringstream ssVal;
+    std::string command = "xmllint --schema " + xsd_file + " " + outputPath.generic_string() + " --noout";
+    executeCommand(command, ssVal);
+    std::string result = ssVal.str();
+    boost::range::remove_erase_if(result, boost::is_any_of("\r\n"));
+    ASSERT_EQ(result, "Executing command : " + command /*+ "\n"*/ + outputPath.generic_string() + " validates");
+  }
+
+  // criteriaPath is set and criteriaStep is not: 1 is exported by default
+  {
+    const std::string basename = "TestJobCriteriaDefaultStep";
+
+    dfl::inputs::Configuration config("res/config_jobs_criteria_default_step.json");
+    ASSERT_FALSE(config.getCriteriaStep());
+    dfl::outputs::Job job(dfl::outputs::Job::JobDefinition(basename, "INFO", config));
+
+    std::unique_ptr<job::JobEntry> jobEntry = job.write();
+
+    auto simulationEntry = jobEntry->getSimulationEntry();
+    ASSERT_EQ(1, simulationEntry->getCriteriaStep());
+
+    boost::filesystem::path outputPath(outputPathResults);
+    outputPath.append(basename);
+
+    if (!boost::filesystem::exists(outputPath)) {
+      boost::filesystem::create_directories(outputPath);
+    }
+
+    job.exportJob(std::move(jobEntry), "TestIIDM.iidm", config);
+
+    const std::string filename_output = basename + ".jobs";
+    outputPath.append(filename_output);
+
+    std::ifstream jobsFile(outputPath.generic_string());
+    ASSERT_TRUE(jobsFile.is_open());
+    std::stringstream jobsContent;
+    jobsContent << jobsFile.rdbuf();
+    const std::string content = jobsContent.str();
+
+    ASSERT_NE(std::string::npos, content.find("criteriaStep=\"1\""));
+  }
+
+  // neither criteriaPath nor criteriaStep is set: the criteriaStep attribute is not exported
+  {
+    const std::string basename = "TestJobNoCriteria";
+
+    dfl::inputs::Configuration config("res/config_jobs_no_criteria.json");
+    ASSERT_FALSE(config.getCriteriaStep());
+    ASSERT_TRUE(config.criteriaFilePath().empty());
+    dfl::outputs::Job job(dfl::outputs::Job::JobDefinition(basename, "INFO", config));
+
+    std::unique_ptr<job::JobEntry> jobEntry = job.write();
+
+    boost::filesystem::path outputPath(outputPathResults);
+    outputPath.append(basename);
+
+    if (!boost::filesystem::exists(outputPath)) {
+      boost::filesystem::create_directories(outputPath);
+    }
+
+    job.exportJob(std::move(jobEntry), "TestIIDM.iidm", config);
+
+    const std::string filename_output = basename + ".jobs";
+    outputPath.append(filename_output);
+
+    std::ifstream jobsFile(outputPath.generic_string());
+    ASSERT_TRUE(jobsFile.is_open());
+    std::stringstream jobsContent;
+    jobsContent << jobsFile.rdbuf();
+    const std::string content = jobsContent.str();
+
+    ASSERT_EQ(std::string::npos, content.find("criteriaStep"));
+  }
 }
 
 TEST(Job, ChosenOutputs) {

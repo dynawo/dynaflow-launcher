@@ -163,6 +163,8 @@ void NetworkManager::buildTree() {
       if (generator->isVoltageRegulationOn()) {
         // We don't use dynamic models for generators with voltage regulation disabled
         updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[regulatedBusId]);
+        if (nodeid != regulatedBusId)
+          updateMapRegulatingBuses(mapBusIdToNumberOfRegulation_, nodes_[nodeid]);
       }
       nodes_[nodeid]->generators.emplace_back(generator->getID(), generator->isVoltageRegulationOn(), generator->getReactiveCurvesPoints(),
                                               generator->getQMin(), generator->getQMax(), pmin, pmax, -generator->getQ(), targetP,

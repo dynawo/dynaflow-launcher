@@ -232,6 +232,19 @@ class Configuration {
   const boost::filesystem::path &startingDumpFilePath() const { return startingDumpFilePath_; }
 
   /**
+   * @brief Retrieves the criteria file path
+   * @returns the criteria file path (empty if not set)
+   */
+  const boost::filesystem::path &criteriaFilePath() const { return criteriaFilePath_; }
+
+  /**
+   * @brief Retrieves the criteria step
+   *
+   * @returns the criteria step value if set, boost::none otherwise
+   */
+  const boost::optional<int> getCriteriaStep() const { return criteriaStep_; }
+
+  /**
    * @brief Set the starting dump file path
    * @param startingDumpFilePath the new starting dump file path
    */
@@ -342,6 +355,8 @@ class Configuration {
   double timeOfEvent_ = 10.;                                ///< time for contingency simulation (security analysis only)
   boost::filesystem::path startingDumpFilePath_;            ///< starting dump file path
                                                             ///< are already described in the static description
+  boost::filesystem::path criteriaFilePath_;                ///< criteria file path (optional)
+  boost::optional<int> criteriaStep_;                       ///< criteria step (optional)
   std::unordered_set<std::string> parameterValueModified_;  ///< a parameter key is present in this if the
                                                             ///< value was redefined in the configuration
                                                             ///< file

@@ -183,6 +183,10 @@ The parameters are described below:
  & & \small{Model fictitious loads} & \\
  \rowcolor{gray!10}
  \multirow{-2}{*}{\small{RestorativeFictitiousLoads}} & \multirow{-2}{*}{\small{boolean}}  & \small{as restorative} & \multirow{-2}{*}{\small{false}}\\
+\rowcolor{white}
+\small{CriteriaPath} & \small{string} & \small{Path to a \Dynawo criteria file, that contains all the criteria to be checked during the simulation.} & \small{None} \\
+\rowcolor{gray!10}
+\small{CriteriaStep} & \small{integer} & \small{Number of iterations between two criteria checks during the simulation.} & \small{1 if \small{CriteriaPath} is set, None otherwise} \\
 \bottomrule
 \end{tabular}
 \caption{Simulation parameters}

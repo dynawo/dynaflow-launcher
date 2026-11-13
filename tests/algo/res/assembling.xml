@@ -40,7 +40,7 @@
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="generator_limUQDown"/>
   </macroConnection>
   <macroConnection id="SVCToLoad" index1="true">
-    <connection var1="secondaryVoltageControl_U_value" var2="load_U"/>
+    <connection var1="secondaryVoltageControl_U" var2="load_U"/>
   </macroConnection>
   <macroConnection id="SVCToHVDC" index1="true" indexId="SVCToRegulatingComponents">
     <connection var1="secondaryVoltageControl_level" var2="reactivePowerControlLoop_level"/>
@@ -48,7 +48,7 @@
     <connection var1="secondaryVoltageControl_limUQDown_@INDEX@_" var2="hvdc_limUQDown1"/>
   </macroConnection>
   <singleAssociation id="MESURE_MODELE_1_VL4">
-    <bus voltageLevel="VL"/>/>
+    <bus voltageLevel="VL"/>
   </singleAssociation>
   <multipleAssociation id="SHUNTS_MODELE_1_VL4">
     <shunt voltageLevel="VL"/>

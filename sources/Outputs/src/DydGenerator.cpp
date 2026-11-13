@@ -108,7 +108,7 @@ void DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModel
     if (it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_INFINITE ||
         it->model == algo::GeneratorDefinition::ModelType::REMOTE_DIAGRAM_PQ_SIGNALN ||
         it->model == algo::GeneratorDefinition::ModelType::REMOTE_SIGNALN_RECTANGULAR) {
-      dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U_value");
+      dynamicModelsToConnect->addConnect(it->id, "generator_URegulated", constants::networkModelName, it->regulatedBusId + "_U");
     }
 
     std::unique_ptr<dynamicdata::MacroConnect> connection =
@@ -122,7 +122,7 @@ void DydGenerator::writeMacroConnect(boost::shared_ptr<dynamicdata::DynamicModel
 
 void DydGenerator::writeThetaRefConnect(boost::shared_ptr<dynamicdata::DynamicModelsCollection> &dynamicModelsToConnect, const std::string &slackNodeId) {
   if (!generatorDefinitions_.empty()) {
-    dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, slackNodeId + "_phi_value");
+    dynamicModelsToConnect->addConnect(signalNModelName_, "signalN_thetaRef", constants::networkModelName, slackNodeId + "_phi");
   }
 }
 }  // namespace outputs

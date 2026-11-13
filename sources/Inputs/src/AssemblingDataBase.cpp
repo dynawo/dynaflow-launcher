@@ -16,6 +16,7 @@
 #include "AssemblingDataBase.h"
 #include "Constants.h"
 #include "XsdPath.hpp"
+#include <fstream>
 #include <xml/sax/parser/ParserFactory.h>
 
 namespace parser = xml::sax::parser;

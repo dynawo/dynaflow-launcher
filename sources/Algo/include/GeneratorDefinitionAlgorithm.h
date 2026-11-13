@@ -249,6 +249,18 @@ class GeneratorDefinitionAlgorithm {
    */
   bool isDiagramRectangular(const inputs::Generator &generator) const;
 
+  /**
+   * @brief selection of the most common generator models
+   *
+   * @param generator reference to input generator
+   * @param withTfo whether the transformer should be modeled within the model used or not
+   * @param infiniteReactiveLimits whether the selected generator should model reactive limits
+   * @param isInSVC whether the target generator belongs to a secondary voltage control area
+   * @param isRPCL2 whether the target generator uses reactive power control loop 2
+   * @return the selected generator model
+   */
+  ModelType selectDiagramGenerators(const inputs::Generator &generator, bool withTfo, bool infiniteReactiveLimits, bool isInSVC, bool isRPCL2) const;
+
   Generators &generators_;                                                        ///< the generators list to update
   const inputs::NetworkManager::BusMapRegulating &busesToNumberOfRegulationMap_;  ///< mapping of busId and the number of generators that regulates them
   std::unordered_map<std::string, bool> generatorsInSVC;  ///< If a generator id is in this map then it belongs to a secondary voltage control area,

@@ -20,19 +20,20 @@
 #include "GeneratorDefinitionAlgorithm.h"
 #include "HVDCDefinitionAlgorithm.h"
 
+#include <sstream>
 #include <string>
 #include <vector>
 namespace dfl {
 namespace outputs {
 
 /**
-* @brief Diagram writer
-*/
+ * @brief Diagram writer
+ */
 class Diagram {
  public:
   /**
-  * @brief Diagram definition to provide informations to build the Diagram file
-  */
+   * @brief Diagram definition to provide informations to build the Diagram file
+   */
   struct DiagramDefinition {
     /**
      * @brief Constructor
@@ -42,12 +43,9 @@ class Diagram {
      * @param gens generators definition coming from algorithms
      * @param hvdcDefinitions the HVDC definitions to used
      */
-    DiagramDefinition(const std::string& base, const std::string& directoryPath, const std::vector<algo::GeneratorDefinition>& gens,
-                      const algo::HVDCLineDefinitions& hvdcDefinitions) :
-        basename(base),
-        directoryPath(directoryPath),
-        generators(gens),
-        hvdcDefinitions(hvdcDefinitions) {}
+    DiagramDefinition(const std::string &base, const std::string &directoryPath, const std::vector<algo::GeneratorDefinition> &gens,
+                      const algo::HVDCLineDefinitions &hvdcDefinitions)
+        : basename(base), directoryPath(directoryPath), generators(gens), hvdcDefinitions(hvdcDefinitions) {}
 
     const std::string basename;       ///< basename for file
     const std::string directoryPath;  ///< directory path for files to write
@@ -61,7 +59,7 @@ class Diagram {
    *
    * @param def the Diagram definition
    */
-  explicit Diagram(DiagramDefinition&& def);
+  explicit Diagram(DiagramDefinition &&def);
 
   /**
    * @brief Write the Diagram file
@@ -100,8 +98,7 @@ class Diagram {
    * @param buffer The buffer to store the string that will be written to the file
    * @param table The enum determining if we write the Qmin or Qmax table
    */
-  template<class T>
-  static void writeTable(const T& element, std::stringstream& buffer, Tables table);
+  template <class T> static void writeTable(const T &element, std::stringstream &buffer, Tables table);
 
   /// @brief Write generator diagrams
   void writeGenerators() const;
@@ -112,7 +109,7 @@ class Diagram {
    * @brief Write VSC converter diagram
    * @param vscDefinition the VSC definition to use
    */
-  void writeVSC(const dfl::algo::VSCDefinition& vscDefinition) const;
+  void writeVSC(const dfl::algo::VSCDefinition &vscDefinition) const;
 
   /**
    * @brief Write LCC converter diagram
@@ -120,7 +117,7 @@ class Diagram {
    * @param powerFactor the power factor of the LCC
    * @param pMax the maximum p of the HVDC line which owns the LCC converter
    */
-  void writeLCC(const algo::HVDCDefinition::ConverterId& converterId, double powerFactor, double pMax) const;
+  void writeLCC(const algo::HVDCDefinition::ConverterId &converterId, double powerFactor, double pMax) const;
 
  private:
   DiagramDefinition def_;  ///< Diagram file information
