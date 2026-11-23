@@ -26,10 +26,10 @@ export_preload() {
   # fi
   lib=$lib".so"
 
-  externalTcMallocLib=$(find $DYNAWO_ALGORITHMS_HOME/lib -iname *$lib)
+  externalTcMallocLib=$(find "$DYNAWO_ALGORITHMS_HOME/lib" -iname "*$lib")
   if [ -n "$externalTcMallocLib" ]; then
     # echo "Use downloaded tcmalloc library $externalTcMallocLib"
-    export LD_PRELOAD=$externalTcMallocLib
+    export LD_PRELOAD="$externalTcMallocLib"
     return
   fi
 
@@ -44,7 +44,7 @@ export_preload() {
 INSTALL=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 export DYNAWO_HOME=$INSTALL
 export DYNAWO_ALGORITHMS_HOME=$INSTALL
-export LD_LIBRARY_PATH=$INSTALL/lib64:$INSTALL/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH="$INSTALL/lib64:$INSTALL/lib:$LD_LIBRARY_PATH"
 export IIDM_XML_XSD_PATH=$DYNAWO_HOME/share/iidm/xsd
 export_var_env DYNAFLOW_LAUNCHER_LOCALE=en_GB
 export DYNAFLOW_LAUNCHER_INSTALL=$INSTALL
@@ -53,7 +53,7 @@ export DYNAWO_DICTIONARIES=dictionaries_mapping
 export DYNAWO_DDB_DIR=$DYNAWO_HOME/ddb
 
 if [ -z "$DYNAWO_IIDM_EXTENSION" ]; then
-  if [ -f $DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so ]; then
+  if [ -f "$DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so" ]; then
     export DYNAWO_IIDM_EXTENSION=$DYNAWO_HOME/lib/libdynawo_RTE_DataInterfaceIIDMExtension.so
   fi
 fi
@@ -68,7 +68,7 @@ export DYNAWO_ALGORITHMS_LOCALE=$DYNAFLOW_LAUNCHER_LOCALE
 export_preload
 MPIRUN_PATH="$INSTALL/bin/mpirun"
 
-args=""
+args=()
 NBPROCS=1
 USEMPI=false
 DISPLAY_VERSION=false
@@ -78,14 +78,14 @@ case $1 in
     if [ ! -z "$2" ]; then
       USEMPI=true
     fi
-    args="$args --contingencies"
+    args+=("--contingencies")
     shift
     ;;
   --contingencies=*)
     if [ ! -z "${1#*=}" ]; then
       USEMPI=true
     fi
-    args="$args --contingencies=${1#*=}"
+    args+=("$1")
     shift
     ;;
   --nbThreads|-np)
@@ -98,11 +98,11 @@ case $1 in
     ;;
   --version)
     DISPLAY_VERSION=true
-    args="$args $1"
+    args+=("$1")
     shift
     ;;
   *)
-    args="$args $1"
+    args+=("$1")
     shift
     ;;
   esac
@@ -110,12 +110,12 @@ done
 
 
 if [ "$DISPLAY_VERSION" = true ]; then
-  VERSION=$($INSTALL/bin/DynaFlowLauncher $args 2>&1 > /dev/null)
+  VERSION=$("$INSTALL/bin/DynaFlowLauncher" "${args[@]}" 2>&1 > /dev/null)
   VERSION=`echo $VERSION | sed 's/Invalid MIT-MAGIC-COOKIE-1 key//g'`
   >&2 echo "$VERSION"
 elif [ "$USEMPI" = true ]; then
-  "$MPIRUN_PATH" -np $NBPROCS $INSTALL/bin/DynaFlowLauncher $args || error_exit "Dynaflow-launcher execution failed"
+  "$MPIRUN_PATH" -np "$NBPROCS" "$INSTALL/bin/DynaFlowLauncher" "${args[@]}" || error_exit "Dynaflow-launcher execution failed"
 else
-  $INSTALL/bin/DynaFlowLauncher $args || error_exit "Dynaflow-launcher execution failed"
+  "$INSTALL/bin/DynaFlowLauncher" "${args[@]}" || error_exit "Dynaflow-launcher execution failed"
 fi
 unset LD_PRELOAD

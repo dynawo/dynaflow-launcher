@@ -124,8 +124,8 @@ void updatePathValue(boost::filesystem::path &value, const boost::property_tree:
   if (!value_opt.is_initialized())
     value_opt = tree.get_child_optional(key);
   if (value_opt.is_initialized()) {
-    value = value_opt->get_value<boost::filesystem::path>();
-    value = createAbsolutePath(value.generic_string(), configDirectoryPath);
+    // read as std::string: boost::filesystem::path stream extraction stops at whitespace
+    value = createAbsolutePath(value_opt->get_value<std::string>(), configDirectoryPath);
   }
 }
 
