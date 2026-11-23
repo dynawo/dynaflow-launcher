@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <dyn:jobs xmlns:dyn="http://www.rte-france.com/dynawo">
   <dyn:job name="TestJob">
     <dyn:solver lib="dynawo_SolverSIM" parFile="solver.par" parId="SimplifiedSolver"/>

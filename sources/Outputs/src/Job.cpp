@@ -16,6 +16,7 @@
  */
 
 #include "Job.h"
+#include "OutputsConstants.h"
 
 #include <JOBAppenderEntry.h>
 #include <JOBAppenderEntryFactory.h>
@@ -197,7 +198,7 @@ void Job::exportJob(const std::shared_ptr<job::JobEntry> &jobEntry, const boost:
   path.append(jobEntry->getName() + ".jobs");
   std::ofstream os(path.c_str(), std::ios::binary);
 
-  auto formatter = xml::sax::formatter::Formatter::createFormatter(os);
+  auto formatter = xml::sax::formatter::Formatter::createFormatter(os, "", "  ", constants::xmlEncoding);
   formatter->addNamespace("dyn", "http://www.rte-france.com/dynawo");
 
   formatter->startDocument();
