@@ -30,7 +30,9 @@ on:
 
 env:
   DYNAWO_VERSION: 2.0.0
-  DYNAWO_TAG: nightly
+  DYNAWO_TAG: ${{ github.ref_name == 'master' && 'nightly' || format('nightly-{0}', github.ref_name) }}
+  DYNAWO_RELEASE_TAG: nightly-2292_om_1.24.4
+  DYNAWO_ALGORITHMS_RELEASE_TAG: nightly-0_om1245_test
 
 jobs:
   nightly:
@@ -54,9 +56,9 @@ jobs:
             **Don't use it for production**
           draft: false
           prerelease: true
-          release_name: Nightly
+          release_name: ${{ github.ref_name == 'master' && 'Nightly' || env.DYNAWO_TAG }}
           tag_name: ${{ env.DYNAWO_TAG }}
-          target_commitish: heads/master
+          target_commitish: heads/${{ github.ref_name }}
         with:
           retries: 3
           script: |
@@ -81,8 +83,8 @@ jobs:
 
       - name: Fetch Dynawo's and Dynawo-algorithms's nightly releases
         run: |
-          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/nightly/Dynawo_headers_v$DYNAWO_VERSION.zip
-          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_headers_v$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/$DYNAWO_RELEASE_TAG/Dynawo_headers_v$DYNAWO_VERSION.zip
+          curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/$DYNAWO_ALGORITHMS_RELEASE_TAG/DynawoAlgorithms_headers_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo and Dynawo-algorithms
         run: |
@@ -212,7 +214,7 @@ jobs:
 
       - name: Fetch Dynawo's nightly release
         shell: bash
-        run: curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/nightly/Dynawo_Windows_v$DYNAWO_VERSION.zip
+        run: curl -LOs https://github.com/${{ github.repository_owner }}/dynawo/releases/download/$DYNAWO_RELEASE_TAG/Dynawo_Windows_v$DYNAWO_VERSION.zip
 
       - name: Unzip Dynawo
         shell: cmd
@@ -226,9 +228,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.use-mpi.value }}" == "YES" ]; then
-            curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_v$DYNAWO_VERSION.zip
+            curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/$DYNAWO_ALGORITHMS_RELEASE_TAG/DynawoAlgorithms_Windows_v$DYNAWO_VERSION.zip
           else
-            curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/nightly/DynawoAlgorithms_Windows_without_mpi_v$DYNAWO_VERSION.zip
+            curl -LOs https://github.com/${{ github.repository_owner }}/dynawo-algorithms/releases/download/$DYNAWO_ALGORITHMS_RELEASE_TAG/DynawoAlgorithms_Windows_without_mpi_v$DYNAWO_VERSION.zip
           fi
 
       - name: Unzip Dynawo-algorithms
