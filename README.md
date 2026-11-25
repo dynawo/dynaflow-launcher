@@ -18,7 +18,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dynawo_dynaflow-launcher&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dynawo_dynaflow-launcher)
 [![MPL-2.0 License](https://img.shields.io/badge/license-MPL_2.0-blue.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
 
-**Dynaflow-launcher** is a utility tool used to easily run [Dynaflow](https://dynawo.github.io/about/dynaflow) starting from a minimal set of inputs.
+**Dynaflow-launcher** is a utility tool used to easily run [Dynaflow](https://dynawo.github.io/tools/dynaflow) starting from a minimal set of inputs.
 
 It provides the following possibilities:
 - **Unitary simulations**: computation of the steady-state solution on a given network (IIDM format) with Dynaflow;
@@ -28,7 +28,13 @@ Dynaflow-launcher depends on the [core dynawo libraries of Dyna&omega;o](https:/
 and [Dyna&omega;o algorithms](https://github.com/dynawo/dynawo-algorithms).
 
 ## Get involved!
-Dynaflow-launcher is an open-source project and as such, questions, discussions, feedbacks and more generally any form of contribution are very welcome and greatly appreciated! For further informations about contributing guidelines, please refers to the [contributing documentation](https://github.com/dynawo/.github/blob/master/CONTRIBUTING.md).
+Dynaflow-launcher is an open-source project and as such, questions, discussions, feedbacks and more generally any form of contribution are very welcome and greatly appreciated! For further information about contributing guidelines, please refer to the [contributing documentation](https://github.com/dynawo/.github/blob/master/CONTRIBUTING.md).
+
+## Supported platforms
+
+Dynaflow-launcher is tested on:
+- **Linux**: Oracle Linux 8, Debian and Ubuntu based distributions. Provided that you can install system packages, there should be no problem on any other Linux distribution;
+- **Windows**: Windows 10/11 with Visual Studio 2022.
 
 ## Dynaflow-launcher Distribution
 
@@ -39,17 +45,17 @@ You can download a pre-built Dynaflow-launcher release to start testing it. Pre-
 ### Linux Requirements for Distribution
 
 - Compilers: C and C++ ([gcc](https://www.gnu.org/software/gcc/) or [clang](https://clang.llvm.org/)), C++11 compatible for C++ standard
-- Python2 or Python3
-- Binary utilities: [curl](https://curl.haxx.se/) and unzip
+- Python3
+- Binary utilities: [curl](https://curl.se/) and unzip
 - [CMake](https://cmake.org/)
 
 **Note** For Python you need to have the `python` command available in your PATH. If you don't have one, you can use an environment variable to point to your Python version with `export DYNAWO_PYTHON_COMMAND="python3"`.
 
-You can install the dependencies for Ubuntu or Fedora with:
+You can install the dependencies with:
 
 ``` bash
-$> apt install -y g++ unzip curl python
-$> dnf install -y gcc-c++ unzip curl python
+$> apt install -y g++ unzip curl python3 # Debian/Ubuntu
+$> dnf install -y gcc-c++ unzip curl python3 # Oracle Linux
 ```
 
 ### Windows Requirements for Distribution
@@ -96,7 +102,7 @@ This command creates a deploy folder in ${DYNAWO_HOME}.
 The path to dynawo deploy is then the path to the subdirectory `dynawo` in the deploy folder. It is generally similar to:
 
 ``` bash
-PATH_TO_DYNAWO_DEPLOY=${DYNAWO_HOME}/deploy/gcc8/shared/dynawo/
+PATH_TO_DYNAWO_DEPLOY=${DYNAWO_HOME}/deploy/<COMPILER><COMPILER_VERSION>/shared/dynawo/ # for example deploy/gcc8/shared/dynawo/
 ```
 ### Dyna&omega;o-algorithms deploy
 
@@ -111,7 +117,7 @@ The latter command creates a deploy folder in ${DYNAWO_ALGORITHMS_HOME}.
 The path to dynawo-algorithms deploy is then the path to the subdirectory `dynawo-algorithms` in the deploy folder. It is generally similar to:
 
 ``` bash
-PATH_TO_DYNAWO_ALGORITHMS_DEPLOY=${DYNAWO_ALGORITHMS_HOME}/deploy/gcc8/dynawo-algorithms/
+PATH_TO_DYNAWO_ALGORITHMS_DEPLOY=${DYNAWO_ALGORITHMS_HOME}/deploy/<COMPILER><COMPILER_VERSION>/dynawo-algorithms/ # for example deploy/gcc8/dynawo-algorithms/
 ```
 ### Dynaflow-launcher
 
@@ -150,7 +156,7 @@ Then update the path "PATH_TO_DYNAWO_DEPLOY" in the file to your deployed instal
 $> ./myEnvDFL.sh build-user
 ```
 
-All commands described in the rest of this README are accessible throught this script. To access all options of the script myEnvDFL.sh, type:
+All commands described in the rest of this README are accessible through this script. To access all options of the script myEnvDFL.sh, type:
 ``` bash
 $> ./myEnvDFL.sh help
 ```
@@ -273,12 +279,12 @@ You can use the script myEnvDFL.sh with the "build-tests-coverage" option.
 $> ./myEnvDFL.sh build-tests-coverage
 ```
 
-## Developement standard
+## Development standard
 ### Check style
 The check style, based on Dynawo's, is based on a [clang-format file](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) using [clang-format](https://clang.llvm.org/docs/ClangFormat.html).
 
 The check style is checked:
-- before commiting. This check is performed by hooks. This hook is installed automatically when using the script myEnvDFL.sh with any option. The commit will be refused if formatting was not applied to the commited file.
+- before committing. This check is performed by hooks. This hook is installed automatically when using the script myEnvDFL.sh with any option. The commit will be refused if formatting was not applied to the committed file.
 - at compilation: coding style is applied on all modified files (git POV).
 
 ### SCM
@@ -298,18 +304,21 @@ A. Guironnet, M. Saugier, S. Petitrenaud, F. Xavier, and P. Panciatici, “Towar
 
 Dynaflow-launcher is licensed under the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0. You can also see the [LICENSE](LICENSE.txt) file for more information.
 
-Dynaflow-launcher is using some external libraries to run simulations:
-* on Linux:
-  * [MPICH](https://www.mpich.org/), an implementation of the Message Passing Interface (MPI) standard distributed under a BSD-like license. Dynaflow-launcher currently using the version 3.4.2.
-* on Windows:
-  * [MSMPI](https://learn.microsoft.com/en-us/message-passing-interface/microsoft-mpi?redirectedfrom=MSDN), a Microsoft implementation of the Message Passing Interface standard distributed under a MIT license. Dynaflow-launcher currently using the version 10.1.2.
+## Third parties
+
+In addition to the third parties of [Dyna&omega;o](https://github.com/dynawo/dynawo#license) and [Dyna&omega;o-algorithms](https://github.com/dynawo/dynawo-algorithms#third-parties), Dynaflow-launcher is using some external libraries to run simulations:
+* on Linux (downloaded and built during the build process if not found on the system):
+  * [MPICH](https://www.mpich.org/), an implementation of the Message Passing Interface (MPI) standard distributed under a BSD-like license. Dynaflow-launcher is currently using the version 3.4.2.
+* on Windows (to be installed before the build process):
+  * [MS-MPI](https://learn.microsoft.com/en-us/message-passing-interface/microsoft-mpi), a Microsoft implementation of the Message Passing Interface standard distributed under the MIT license. Dynaflow-launcher is currently using the version 10.1.2.
+
+In addition to these libraries needed for the simulation process, Dynaflow-launcher uses [cpplint](https://github.com/cpplint/cpplint), a tool used during the compilation process to ensure that the C++ files follow the Google's C++ style.
 
 ## Maintainers
 
 Dynaflow-launcher is currently maintained by the following people in RTE:
 
 * Gilles Aouizerate, [gilles.aouizerate@rte-france.com](mailto:gilles.aouizerate@rte-france.com)
-* Gautier Bureau, [gautier.bureau@rte-france.com](mailto:gautier.bureau@rte-france.com)
 * Marco Chiaramello, [marco.chiaramello@rte-france.com](mailto:marco.chiaramello@rte-france.com)
 * Julien De Sloovere, [julien.desloovere@rte-france.com](mailto:julien.desloovere@rte-france.com)
 * Joy El-Feghali, [joy.elfeghali@rte-france.com](mailto:joy.elfeghali@rte-france.com)
@@ -322,7 +331,7 @@ In case of questions or issues, you can also send an e-mail to [rte-dynawo@rte-f
 
 ## Links
 
-For more information about Dyna&omega;o and Dyna&omega;o-algorithms:
+For more information about Dyna&omega;o, Dyna&omega;o-algorithms and Dynaflow-launcher:
 
-* Consult [Dyna&omega;o website](http://dynawo.org)
+* Consult [Dyna&omega;o website](https://dynawo.github.io)
 * Contact us at [rte-dynawo@rte-france.com](mailto:rte-dynawo@rte-france.com)
